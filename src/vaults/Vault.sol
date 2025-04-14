@@ -17,7 +17,7 @@ contract Vault {
         7. merkle trees
     */
 
-    function x() public view {
+    function x() public pure {
         console2.log("hello there");
     }
 }
