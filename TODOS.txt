@@ -1,0 +1,44 @@
+SharesManager:
++ tokenless
++ erc20
+- lockup
+- pause (mint, burn, tranfer, all)
+- deposit whitelist with mappings
+- deposit whitelist with merkle
+- add lockup logic heres
+
+shares lockup logic
+until time T for all users
+until extra delta T for each user
+until extra delta T for some subset of users
+until time T for some subset of users 
+
+Hooks:
+1. onHandleEpoch deposit/redeem
+2. onTransfer
+
+Oracle:
+1. max relative deviation
+2. max absolute deviation
+3. timeout between reports
+
+NodeModule:
+1. limits
+2. permissions
+3. storage
+
+CallModule:
+1. delegate call?
+
+Configurations
+1. Nodes
+2. Crosschain
+3. Base
+
+Tests
+Symbiotic
+Lending
+Leverage
+Crosschain
+CEXes
+mellow-alm-toolkit

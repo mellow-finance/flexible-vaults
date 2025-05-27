@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "repository": "https://github.com/mellow-finance/simple-lrt",
   "scripts": {
-    "prettier": "forge fmt && forge fmt ./test/** && forge fmt ./scripts/**",
+    "prettier": "forge fmt ./src/** ./test/** ./scripts/**",
     "test": "forge test -vvv --fork-url $(grep HOLESKY_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 1000000000000000 --fork-block-number 2686616",
     "compile": "forge build --use 0.8.25 --cache-path cache",
     "sizes": "forge build --sizes --force",
