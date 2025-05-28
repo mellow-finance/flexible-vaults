@@ -60,8 +60,12 @@ abstract contract DepositModule is PermissionsModule {
         return _depositModuleStorage().depositQueues.tryGet(asset);
     }
 
-    function getDepositAssetsCount() public view returns (uint256) {
+    function depositAssets() public view returns (uint256) {
         return _depositModuleStorage().depositQueues.length();
+    }
+
+    function depositHook(address asset) external view returns (address) {
+        return _depositModuleStorage().hooks[asset];
     }
 
     function claimableSharesOf(address account) public view returns (uint256 shares) {
@@ -71,10 +75,6 @@ abstract contract DepositModule is PermissionsModule {
             (, address queue) = queues.at(i);
             shares += DepositQueue(queue).claimableOf(account);
         }
-    }
-
-    function depositHook(address asset) external view returns (address) {
-        return _depositModuleStorage().hooks[asset];
     }
 
     // Mutable functions
@@ -94,11 +94,8 @@ abstract contract DepositModule is PermissionsModule {
     }
 
     function setDepositHook(address asset, address hook) external onlyRole(SET_DEPOSIT_HOOK_ROLE) {
-        if (asset == address(0)) {
+        if (asset == address(0) || hook == address(0)) {
             revert("DepositModule: zero address");
-        }
-        if (hook == address(0)) {
-            revert("DepositModule: zero hook");
         }
         _depositModuleStorage().hooks[asset] = hook;
     }
