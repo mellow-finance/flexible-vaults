@@ -20,12 +20,15 @@ abstract contract DepositModule is PermissionsModule {
     struct DepositModuleStorage {
         address depositQueueImplementation;
         EnumerableMap.AddressToAddressMap depositQueues;
+        mapping(address asset => address hook) hooks;
         mapping(address => uint256) minDeposit;
         mapping(address => uint256) maxDeposit;
     }
 
     bytes32 public constant SET_MIN_DEPOSIT_ROLE = keccak256("DEPOSIT_MODULE:SET_MIN_DEPOSIT_ROLE");
     bytes32 public constant SET_MAX_DEPOSIT_ROLE = keccak256("DEPOSIT_MODULE:SET_MAX_DEPOSIT_ROLE");
+    bytes32 public constant SET_DEPOSIT_HOOK_ROLE =
+        keccak256("DEPOSIT_MODULE:SET_DEPOSIT_HOOK_ROLE");
     bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE =
         keccak256("DEPOSIT_MODULE:CREATE_DEPOSIT_QUEUE_ROLE");
 
@@ -70,6 +73,10 @@ abstract contract DepositModule is PermissionsModule {
         }
     }
 
+    function depositHook(address asset) external view returns (address) {
+        return _depositModuleStorage().hooks[asset];
+    }
+
     // Mutable functions
 
     function setMaxDeposit(address asset, uint256 amount) external onlyRole(SET_MIN_DEPOSIT_ROLE) {
@@ -84,6 +91,16 @@ abstract contract DepositModule is PermissionsModule {
             revert("DepositModule: zero address");
         }
         _depositModuleStorage().minDeposit[asset] = amount;
+    }
+
+    function setDepositHook(address asset, address hook) external onlyRole(SET_DEPOSIT_HOOK_ROLE) {
+        if (asset == address(0)) {
+            revert("DepositModule: zero address");
+        }
+        if (hook == address(0)) {
+            revert("DepositModule: zero hook");
+        }
+        _depositModuleStorage().hooks[asset] = hook;
     }
 
     function createDepositQueue(address asset) external onlyRole(CREATE_DEPOSIT_QUEUE_ROLE) {

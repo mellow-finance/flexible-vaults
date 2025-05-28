@@ -29,7 +29,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
         ) {
             revert("RedeemQueue: limit overflow");
         }
-        vault_.sharesManager().redeem(caller, shares);
+        vault_.sharesManager().pullShares(caller, shares);
         uint256 epoch = vault_.currentEpoch();
         requestOf[caller][epoch] += shares;
         demandAt[epoch] += shares;

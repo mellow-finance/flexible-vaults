@@ -15,6 +15,13 @@ abstract contract NodeModule is PermissionsModule {
 
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    struct Flows {
+        uint256 inflow;
+        uint256 outflow;
+        uint256 limit;
+        int256 correction;
+    }
+
     bytes32 public constant SET_PARENT_MODULE_ROLE = keccak256("NODE_MODULE:SET_PARENT_MODULE_ROLE");
     bytes32 public constant CONNECT_CHILD_NODE_ROLE =
         keccak256("NODE_MODULE:CONNECT_CHILD_NODE_ROLE");
@@ -23,11 +30,7 @@ abstract contract NodeModule is PermissionsModule {
 
     address public parentModule;
     EnumerableSet.AddressSet private _childModules;
-
-    mapping(address asset => mapping(address childModule => uint256)) public inflows;
-    mapping(address asset => mapping(address childModule => uint256)) public outflows;
-    mapping(address asset => mapping(address childModule => uint256)) public limits;
-    mapping(address asset => mapping(address childModule => int256)) public corrections;
+    mapping(address asset => mapping(address childModule => Flows)) private _flows;
 
     function setParentModule(address parentModule_)
         external
@@ -49,21 +52,22 @@ abstract contract NodeModule is PermissionsModule {
 
     function pushLiquidity(address childModule, address asset, uint256 assets)
         external
-        onlyRole(PULL_LIQUIDITY_ROLE)
+        onlyRole(PUSH_LIQUIDITY_ROLE)
     {
         if (!_childModules.contains(childModule)) {
             revert("NodeModule: child module not connected");
         }
 
+        Flows storage flows = _flows[asset][childModule];
         if (
-            int256(outflows[asset][childModule]) - int256(inflows[asset][childModule])
-                + int256(assets) < int256(limits[asset][childModule]) + corrections[asset][childModule]
+            int256(flows.outflow) - int256(flows.inflow) + int256(assets)
+                < int256(flows.limit) + flows.correction
         ) {
             revert("NodeModule: limit exceeded");
         }
 
         TransferLibrary.transfer(asset, address(this), childModule, assets);
-        outflows[asset][childModule] += assets;
+        flows.outflow += assets;
     }
 
     function pullLiquidity(address childModule, address asset, uint256 assets)
@@ -74,7 +78,7 @@ abstract contract NodeModule is PermissionsModule {
             revert("NodeModule: child module not connected");
         }
         NodeModule(payable(childModule)).transferLiquidity(asset, assets);
-        inflows[asset][childModule] += assets;
+        _flows[asset][childModule].inflow += assets;
     }
 
     function transferLiquidity(address asset, uint256 assets) external {

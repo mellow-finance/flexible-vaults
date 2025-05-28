@@ -3,6 +3,7 @@ pragma solidity 0.8.25;
 
 import "../modules/DepositModule.sol";
 
+import "../strategies/DepositHook.sol";
 import "./Queue.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -74,7 +75,20 @@ contract DepositQueue is Queue, ReentrancyGuard {
         uint256 demand = demandAt[epoch];
         if (demand != 0) {
             uint256 shares = Math.mulDiv(demand, priceD18, 1 ether);
-            TransferLibrary.transfer(asset_, address(this), address(vault_), demand);
+
+            address hook = DepositModule(payable(vault_)).depositHook(asset);
+            if (hook != address(0)) {
+                bytes memory response = Address.functionDelegateCall(
+                    hook, abi.encodeCall(DepositHook.hook, (asset, demand))
+                );
+                (address convertedAsset, uint256 convertedAssets) =
+                    abi.decode(response, (address, uint256));
+                TransferLibrary.transfer(
+                    convertedAsset, address(this), address(vault_), convertedAssets
+                );
+            } else {
+                TransferLibrary.transfer(asset_, address(this), address(vault_), demand);
+            }
             vault_.sharesManager().allocateShares(shares);
             conversionPriceAt[epoch] = priceD18;
             delete demandAt[epoch];

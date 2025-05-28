@@ -12,6 +12,7 @@ contract EigenLayerVerifier is CustomVerifier {
         4. DelegationManager:completeQueuedWithdrawal(data, tokens, true)
         5. DelegationManager:queueWithdrawals(requests)
     */
+
     function verifyCall(
         address who,
         address where,

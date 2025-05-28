@@ -1,37 +1,42 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../libraries/SharesManagerFlagLibrary.sol";
 import "../modules/DepositModule.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
 abstract contract SharesManager {
-    // Getters
-
-    address payable public immutable vault;
-    bool public hasDepositQueues;
-    bool public hasWithdrawalQueues;
+    using SharesManagerFlagLibrary for uint256;
 
     bytes32 public constant SET_FLAGS_ROLE = keccak256("SHARES_MANAGER:SET_FLAGS_ROLE");
+    address payable public immutable vault;
+
+    uint256 public flags;
+
+    mapping(address account => bool) public isSubjectToLockup;
+    mapping(address account => uint256) public lockedUntil;
+
+    mapping(address account => bool) public isWhitelisted;
+    mapping(address account => bool) public isBlacklisted;
 
     function sharesOf(address account) public view returns (uint256) {
         return activeSharesOf(account) + claimableSharesOf(account);
     }
 
     function claimableSharesOf(address account) public view returns (uint256) {
-        if (!hasDepositQueues) {
+        if (!flags.hasDepositQueues()) {
             return 0;
         }
         return DepositModule(vault).claimableSharesOf(account);
     }
 
     // Setters
-    function setFlags(bool _hasDepositQueues, bool _hasWithdrawalQueues) external {
+    function setFlags(uint256 flags_) external {
         require(
             IAccessControl(vault).hasRole(SET_FLAGS_ROLE, msg.sender),
             "SharesManager: Caller is not authorized to set flags"
         );
-        hasDepositQueues = _hasDepositQueues;
-        hasWithdrawalQueues = _hasWithdrawalQueues;
+        flags = flags_;
     }
 
     // Virtual functcions
@@ -44,7 +49,9 @@ abstract contract SharesManager {
 
     function mintAllocatedShares(address to, uint256 shares) external virtual;
 
-    function redeem(address from, uint256 amount) external virtual {}
+    function pullShares(address from, uint256 amount) external virtual;
+
+    function burnShares(address from, uint256 amount) external virtual;
 
     // Events
 
