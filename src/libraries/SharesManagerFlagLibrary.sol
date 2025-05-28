@@ -26,16 +26,24 @@ library SharesManagerFlagLibrary {
         return (mask & 0x20) != 0;
     }
 
-    function hasWhitelist(uint256 mask) internal pure returns (bool) {
+    function hasGlobalLockup(uint256 mask) internal pure returns (bool) {
         return (mask & 0x40) != 0;
     }
 
-    function hasBlackList(uint256 mask) internal pure returns (bool) {
+    function hasMappingWhitelist(uint256 mask) internal pure returns (bool) {
         return (mask & 0x80) != 0;
     }
 
-    function lockupPeriod(uint256 mask) internal pure returns (uint32) {
-        return uint32((mask >> 8) & type(uint32).max);
+    function hasMerkleWhitelist(uint256 mask) internal pure returns (bool) {
+        return (mask & 0x100) != 0;
+    }
+
+    function hasBlackList(uint256 mask) internal pure returns (bool) {
+        return (mask & 0x200) != 0;
+    }
+
+    function getLockupPeriod(uint256 mask) internal pure returns (uint32) {
+        return uint32((mask >> 10) & type(uint32).max);
     }
 
     function setHasDepositQueues(uint256 mask, bool value) internal pure returns (uint256) {
@@ -62,15 +70,23 @@ library SharesManagerFlagLibrary {
         return value ? (mask | 0x20) : (mask & ~uint256(0x20));
     }
 
-    function setHasWhitelist(uint256 mask, bool value) internal pure returns (uint256) {
+    function setHasGlobalLockup(uint256 mask, bool value) internal pure returns (uint256) {
         return value ? (mask | 0x40) : (mask & ~uint256(0x40));
     }
 
-    function setHasBlackList(uint256 mask, bool value) internal pure returns (uint256) {
+    function setHasMappingWhitelist(uint256 mask, bool value) internal pure returns (uint256) {
         return value ? (mask | 0x80) : (mask & ~uint256(0x80));
     }
 
+    function setHasMerkleWhitelist(uint256 mask, bool value) internal pure returns (uint256) {
+        return value ? (mask | 0x100) : (mask & ~uint256(0x100));
+    }
+
+    function setHasBlackList(uint256 mask, bool value) internal pure returns (uint256) {
+        return value ? (mask | 0x200) : (mask & ~uint256(0x200));
+    }
+
     function setLockupPeriod(uint256 mask, uint32 period) internal pure returns (uint256) {
-        return (mask & ~uint256(0xFFFFFFFF << 8)) | (uint256(period) << 8);
+        return (mask & ~uint256(0xFFFFFFFF << 10)) | (uint256(period) << 10);
     }
 }

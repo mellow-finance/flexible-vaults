@@ -4,6 +4,7 @@ pragma solidity 0.8.25;
 import "../libraries/SharesManagerFlagLibrary.sol";
 import "../modules/DepositModule.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 abstract contract SharesManager {
     using SharesManagerFlagLibrary for uint256;
@@ -12,12 +13,33 @@ abstract contract SharesManager {
     address payable public immutable vault;
 
     uint256 public flags;
-
+    bytes32 public whitelistMerkleRoot;
     mapping(address account => bool) public isSubjectToLockup;
     mapping(address account => uint256) public lockedUntil;
-
     mapping(address account => bool) public isWhitelisted;
     mapping(address account => bool) public isBlacklisted;
+
+    function isDepositAllowed(address account, bytes32[] calldata proof)
+        public
+        view
+        returns (bool)
+    {
+        if (flags.hasMintPause()) {
+            return false;
+        }
+        if (flags.hasMappingWhitelist() && !isWhitelisted[account]) {
+            return false;
+        }
+        if (
+            flags.hasMerkleWhitelist()
+                && !MerkleProof.verify(
+                    proof, whitelistMerkleRoot, keccak256(bytes.concat(keccak256(abi.encode(account))))
+                )
+        ) {
+            return false;
+        }
+        return true;
+    }
 
     function sharesOf(address account) public view returns (uint256) {
         return activeSharesOf(account) + claimableSharesOf(account);

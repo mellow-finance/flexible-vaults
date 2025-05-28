@@ -22,8 +22,6 @@ abstract contract Queue is Initializable {
         vault = SharesModule(payable(sharesModule_));
     }
 
-    function request(uint256 amount) external payable virtual;
-
     function handleEpochs(uint256 limit) public returns (uint256 counter) {
         uint256 epochIterator_ = epochIterator;
         while (counter < limit && _handleEpoch(epochIterator_ + counter)) {

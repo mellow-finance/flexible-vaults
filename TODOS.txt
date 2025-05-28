@@ -1,18 +1,3 @@
-SharesManager:
-+ tokenless
-+ erc20
-- lockup
-- pause (mint, burn, tranfer, all)
-- deposit whitelist with mappings
-- deposit whitelist with merkle
-- add lockup logic heres
-
-shares lockup logic
-until time T for all users
-until extra delta T for each user
-until extra delta T for some subset of users
-until time T for some subset of users 
-
 Hooks:
 1. onHandleEpoch deposit/redeem
 2. onTransfer
@@ -26,9 +11,7 @@ NodeModule:
 1. limits
 2. permissions
 3. storage
-
-CallModule:
-1. delegate call?
+4. hooks ?
 
 Configurations
 1. Nodes
@@ -37,6 +20,7 @@ Configurations
 
 Tests
 Symbiotic
+EigenLayer
 Lending
 Leverage
 Crosschain

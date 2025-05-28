@@ -20,15 +20,18 @@ contract DepositQueue is Queue, ReentrancyGuard {
         __Queue_init(asset_, sharesModule_);
     }
 
-    function request(uint256 assets) external payable override nonReentrant {
+    function request(uint256 assets, bytes32[] calldata proof) external payable nonReentrant {
         address caller = msg.sender;
+        SharesModule vault_ = vault;
+        if (!vault_.sharesManager().isDepositAllowed(caller, proof)) {
+            revert("DepositQueue: deposit not allowed");
+        }
         uint256 epoch = requestEpochOf[caller];
         if (epoch != 0) {
             if (claim(caller) == 0 && requestEpochOf[caller] != 0) {
                 revert("DepositQueue: pending request");
             }
         }
-        SharesModule vault_ = vault;
         address asset_ = asset;
         if (assets == 0 || assets < DepositModule(payable(vault_)).minDeposit(asset_)) {
             revert("DepositQueue: limit underflow");

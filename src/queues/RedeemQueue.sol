@@ -16,7 +16,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
         __Queue_init(asset_, sharesModule_);
     }
 
-    function request(uint256 shares) external payable override nonReentrant {
+    function request(uint256 shares) external nonReentrant {
         address caller = msg.sender;
         SharesModule vault_ = vault;
         address asset_ = asset;
