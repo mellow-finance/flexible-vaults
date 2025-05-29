@@ -1,29 +1,29 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 27      1554      235        70     1249        206           359.22
+Solidity                                 27      1897      274        64     1559        250           359.86
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/configurations/BaseVault.sol                   20        4         1       15          0             0.00
 src/configurations/OmniVault.sol                   31        4         1       26          0             0.00
-~src/libraries/SharesManagerFlagLibrary.sol        76       18         1       57          8            14.04
+~src/libraries/SharesManagerFlagLibrary.sol        92       22         1       69         10            14.49
 src/libraries/SlotLibrary.sol                      25        1         1       23          0             0.00
-src/libraries/TransferLibrary.sol                  24        4         2       18          8            44.44
+src/libraries/TransferLibrary.sol                  28        5         2       21          8            38.10
 src/modules/BaseModule.sol                         12        3         1        8          0             0.00
 src/modules/CallModule.sol                         21        3         1       17          1             5.88
-src/modules/DepositModule.sol                     135       25         4      106         16            15.09
-src/modules/NodeModule.sol                         96       13         7       76         13            17.11
+src/modules/DepositModule.sol                     132       25         4      103         16            15.53
+src/modules/NodeModule.sol                        198       29         4      165         31            18.79
 src/modules/PermissionsModule.sol                  51        8         2       41          5            12.20
 src/modules/RedeemModule.sol                      110       21         4       85         13            15.29
 src/modules/SharesModule.sol                       74       13         1       60          7            11.67
-src/oracles/Oracle.sol                             92       13         8       71         10            14.08
+src/oracles/Oracle.sol                            295       33         5      257         28            10.89
 src/permissions/BaseVerifier.sol                  118       14         3      101         10             9.90
 src/permissions/BitmaskVerifier.sol                37        3         1       33          7            21.21
 src/permissions/CustomVerifier.sol                 12        1         1       10          0             0.00
 ~rmissions/protocols/EigenLayerVerifier.sol        23        3         9       11          0             0.00
-src/queues/DepositQueue.sol                       132       12         1      119         34            28.57
-src/queues/Queue.sol                               46        9         1       36         10            27.78
+src/queues/DepositQueue.sol                       133       12         1      120         35            29.17
+src/queues/Queue.sol                               44        8         1       35         10            28.57
 src/queues/RedeemQueue.sol                         94        9         1       84         20            23.81
-src/shares/SharesManager.sol                       61       19         4       38          2             5.26
+src/shares/SharesManager.sol                       83       18         4       61          7            11.48
 src/shares/SharesManagerBase.sol                   86       10         4       72         20            27.78
 src/shares/SharesManagerERC20.sol                  62        9         1       52          8            15.38
 src/strategies/DepositHook.sol                     17        4         1       12          1             8.33
@@ -31,8 +31,8 @@ src/strategies/LidoStakingHook.sol                 38        3         1       3
 src/strategies/MulticallStrategy.sol               35        6         1       28          5            17.86
 src/strategies/NodeHook.sol                        26        3         7       16          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    27      1554      235        70     1249        206           359.22
+Total                                    27      1897      274        64     1559        250           359.86
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 51892 bytes, 0.052 megabytes (SI)
+Processed 64509 bytes, 0.065 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 

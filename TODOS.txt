@@ -1,17 +1,14 @@
-Hooks:
-1. onHandleEpoch deposit/redeem
-2. onTransfer
+ShareManager hooks:
+1. onMint
+2. onBurn
+3. onTransfer
 
-Oracle:
-1. max relative deviation
-2. max absolute deviation
-3. timeout between reports
+DepositModule:
+per block per token limits for instant deposit module (?)
 
-NodeModule:
-1. limits
-2. permissions
-3. storage
-4. hooks ?
+NodeModule hooks:
+1. onMint distribution
+2. beforeBurn pull (view function?)
 
 Configurations
 1. Nodes
