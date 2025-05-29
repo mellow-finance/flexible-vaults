@@ -20,7 +20,6 @@ library TransferLibrary {
     function receiveAssets(address asset, address from, uint256 assets) internal {
         if (asset == ETH) {
             require(msg.value == assets, "TransferLibrary: value mismatch");
-            // No need to transfer ETH from 'from' to 'to' as it is already sent with the call
         } else {
             IERC20(asset).safeTransferFrom(from, address(this), assets);
         }

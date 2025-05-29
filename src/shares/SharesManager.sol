@@ -14,6 +14,7 @@ abstract contract SharesManager {
 
     uint256 public flags;
     bytes32 public whitelistMerkleRoot;
+    uint256 public sharesSoftLimit;
     mapping(address account => bool) public isSubjectToLockup;
     mapping(address account => uint256) public lockedUntil;
     mapping(address account => bool) public isWhitelisted;
@@ -52,13 +53,22 @@ abstract contract SharesManager {
         return DepositModule(vault).claimableSharesOf(account);
     }
 
-    // Setters
+    // Mutable functions
+
     function setFlags(uint256 flags_) external {
         require(
             IAccessControl(vault).hasRole(SET_FLAGS_ROLE, msg.sender),
             "SharesManager: Caller is not authorized to set flags"
         );
         flags = flags_;
+    }
+
+    function setSharesSoftLimit(uint256 sharesSoftLimit_) external {
+        require(
+            IAccessControl(vault).hasRole(SET_FLAGS_ROLE, msg.sender),
+            "SharesManager: Caller is not authorized to set shares soft limit"
+        );
+        sharesSoftLimit = sharesSoftLimit_;
     }
 
     // Virtual functcions

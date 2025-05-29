@@ -11,12 +11,6 @@ import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 abstract contract DepositModule is PermissionsModule {
     using EnumerableMap for EnumerableMap.AddressToAddressMap;
 
-    struct DepositInfo {
-        address queue;
-        uint256 minDeposit;
-        uint256 maxDeposit;
-    }
-
     struct DepositModuleStorage {
         address depositQueueImplementation;
         EnumerableMap.AddressToAddressMap depositQueues;

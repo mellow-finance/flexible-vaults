@@ -122,6 +122,14 @@ contract Oracle is ContextUpgradeable {
         return _oracleStorage().isLocked;
     }
 
+    function getLatestDepositPrice(address asset)
+        public
+        view
+        returns (bool exists, uint224 priceD18)
+    {
+        (exists,, priceD18) = _oracleStorage().depositPriceReports[asset].latestCheckpoint();
+    }
+
     function getDepositEpochPrice(address asset, uint256 epoch)
         public
         view
@@ -137,6 +145,14 @@ contract Oracle is ContextUpgradeable {
         }
         priceD18 = $.depositPriceReports[asset].lowerLookup(uint32(timestamp));
         exists = priceD18 != 0;
+    }
+
+    function getLatestRedeemPrice(address asset)
+        public
+        view
+        returns (bool exists, uint224 priceD18)
+    {
+        (exists,, priceD18) = _oracleStorage().redeemPriceReports[asset].latestCheckpoint();
     }
 
     function getRedeemEpochPrice(address asset, uint256 epoch)
@@ -160,15 +176,13 @@ contract Oracle is ContextUpgradeable {
 
     function reportPrices(Report[] calldata reports) external onlyRole(REPORT_PRICES_ROLE) {
         OracleStorage storage $ = _oracleStorage();
-        // TODO: add sanity checks
-        uint32 timestamp = uint32(block.timestamp);
         Stack memory stack = Stack({
             vault: $.vault,
             maxAbsoluteDeviation: $.maxAbsoluteDeviation,
             maxRelativeDeviationD18: $.maxRelativeDeviationD18,
             suspiciousAbsoluteDeviation: $.suspiciousAbsoluteDeviation,
             suspiciousRelativeDeviationD18: $.suspiciousRelativeDeviationD18,
-            timestamp: timestamp,
+            timestamp: uint32(block.timestamp),
             timeout: $.timeout,
             depositSecureT: $.depositSecureT,
             redeemSecureT: $.redeemSecureT,
