@@ -51,7 +51,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
             return 0;
         }
         pulledAssetsAt[epoch] -= assets;
-        TransferLibrary.transfer(asset, address(this), account, assets);
+        TransferLibrary.sendAssets(asset, account, assets);
     }
 
     function claimableAssetsOf(address account, uint256 epoch)

@@ -39,7 +39,7 @@ contract DepositQueue is Queue, ReentrancyGuard {
         if (assets > DepositModule(payable(vault_)).maxDeposit(asset_)) {
             revert("DepositQueue: limit overflow");
         }
-        TransferLibrary.transfer(asset_, caller, address(this), assets);
+        TransferLibrary.receiveAssets(asset_, caller, assets);
         epoch = vault.currentEpoch();
         demandAt[epoch] += assets;
         requestOf[caller] = assets;
@@ -62,7 +62,7 @@ contract DepositQueue is Queue, ReentrancyGuard {
         demandAt[epoch] -= assets;
         delete requestOf[caller];
         delete requestEpochOf[caller];
-        TransferLibrary.transfer(asset_, address(this), caller, assets);
+        TransferLibrary.sendAssets(asset_, caller, assets);
     }
 
     function _handleEpoch(uint256 epoch) internal override returns (bool) {
@@ -86,11 +86,9 @@ contract DepositQueue is Queue, ReentrancyGuard {
                 );
                 (address convertedAsset, uint256 convertedAssets) =
                     abi.decode(response, (address, uint256));
-                TransferLibrary.transfer(
-                    convertedAsset, address(this), address(vault_), convertedAssets
-                );
+                TransferLibrary.sendAssets(convertedAsset, address(vault_), convertedAssets);
             } else {
-                TransferLibrary.transfer(asset_, address(this), address(vault_), demand);
+                TransferLibrary.sendAssets(asset_, address(vault_), demand);
             }
             vault_.sharesManager().allocateShares(shares);
             conversionPriceAt[epoch] = priceD18;

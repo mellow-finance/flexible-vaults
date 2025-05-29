@@ -75,7 +75,7 @@ abstract contract RedeemModule is PermissionsModule {
     function pull(address asset, uint256 assets) external {
         address caller = _msgSender();
         require(caller == _redeemModuleStorage().redeemQueues.get(asset), "RedeemModule: forbidden");
-        TransferLibrary.transfer(asset, address(this), caller, assets);
+        TransferLibrary.sendAssets(asset, caller, assets);
     }
 
     function createWithdrawalQueue(address asset) external {

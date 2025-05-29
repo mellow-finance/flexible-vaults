@@ -9,16 +9,20 @@ library TransferLibrary {
 
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
-    function transfer(address asset, address from, address to, uint256 assets) internal {
+    function sendAssets(address asset, address to, uint256 assets) internal {
         if (asset == ETH) {
-            if (from == address(this)) {
-                Address.sendValue(payable(to), assets);
-            } else {
-                require(msg.value == assets, "TransferLibrary: value mismatch");
-                // No need to transfer ETH from 'from' to 'to' as it is already sent with the call
-            }
+            Address.sendValue(payable(to), assets);
         } else {
-            IERC20(asset).safeTransferFrom(from, to, assets);
+            IERC20(asset).safeTransfer(to, assets);
+        }
+    }
+
+    function receiveAssets(address asset, address from, uint256 assets) internal {
+        if (asset == ETH) {
+            require(msg.value == assets, "TransferLibrary: value mismatch");
+            // No need to transfer ETH from 'from' to 'to' as it is already sent with the call
+        } else {
+            IERC20(asset).safeTransferFrom(from, address(this), assets);
         }
     }
 }

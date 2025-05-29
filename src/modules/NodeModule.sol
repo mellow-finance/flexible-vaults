@@ -122,7 +122,7 @@ abstract contract NodeModule is PermissionsModule {
             revert("NodeModule: limit exceeded");
         }
 
-        TransferLibrary.transfer(asset, address(this), childModule, assets);
+        TransferLibrary.sendAssets(asset, childModule, assets);
         $.flows[asset][childModule].outflow += int256(assets);
     }
 
@@ -139,8 +139,9 @@ abstract contract NodeModule is PermissionsModule {
     }
 
     function transferLiquidity(address asset, uint256 assets) external {
+        address caller = _msgSender();
         require(
-            _msgSender() == _nodeModuleStorage().parentModule,
+            caller == _nodeModuleStorage().parentModule,
             "NodeModule: only parent module can transfer liquidity"
         );
         if (assets == 0) {
@@ -149,7 +150,7 @@ abstract contract NodeModule is PermissionsModule {
         if (asset == address(0)) {
             revert("NodeModule: asset cannot be zero address");
         }
-        TransferLibrary.transfer(asset, address(this), _msgSender(), assets);
+        TransferLibrary.sendAssets(asset, caller, assets);
     }
 
     function setCorrections(SetValue[] calldata corrections)
