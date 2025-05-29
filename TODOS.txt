@@ -10,6 +10,12 @@ NodeModule hooks:
 1. onMint distribution
 2. beforeBurn pull (view function?)
 
+Proxy:
+1. Force update (?)
+
+Factories:
+1. per Configuration?
+
 Configurations
 1. Nodes
 2. Crosschain
