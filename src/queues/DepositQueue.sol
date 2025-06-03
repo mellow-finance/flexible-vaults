@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../modules/DepositModule.sol";
-
 import "../hooks/DepositHook.sol";
+import "../modules/DepositModule.sol";
 import "./Queue.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -12,7 +11,6 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 contract DepositQueue is Queue, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    uint256 public pendingRequests;
     mapping(address account => uint256 assets) public requestOf;
     mapping(address account => uint256 epoch) public requestEpochOf;
     mapping(uint256 epoch => uint256 priceD18) public conversionPriceAt;
@@ -37,14 +35,6 @@ contract DepositQueue is Queue, ReentrancyGuard {
             }
         }
         return Math.mulDiv(requestOf[account], priceD18, 1 ether);
-    }
-
-    function expectedShares() external view returns (uint256) {
-        (bool exists, uint256 priceD18) = vault.oracle().getLatestDepositPrice(asset);
-        if (!exists || priceD18 == 0) {
-            return 0;
-        }
-        return Math.mulDiv(priceD18, pendingRequests, 1 ether);
     }
 
     // Mutable functions
@@ -77,7 +67,6 @@ contract DepositQueue is Queue, ReentrancyGuard {
         demandAt[epoch] += assets;
         requestOf[caller] = assets;
         requestEpochOf[caller] = epoch;
-        pendingRequests += assets;
     }
 
     function cancelRequest() external nonReentrant {
@@ -97,7 +86,6 @@ contract DepositQueue is Queue, ReentrancyGuard {
         delete requestOf[caller];
         delete requestEpochOf[caller];
         TransferLibrary.sendAssets(asset_, caller, assets);
-        pendingRequests -= assets;
     }
 
     function claim(address account) public nonReentrant returns (uint256 shares) {
@@ -138,7 +126,6 @@ contract DepositQueue is Queue, ReentrancyGuard {
             vault_.sharesManager().allocateShares(shares);
             conversionPriceAt[epoch] = priceD18;
             delete demandAt[epoch];
-            pendingRequests -= demand;
         }
         return true;
     }

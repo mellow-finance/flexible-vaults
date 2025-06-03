@@ -20,6 +20,8 @@ abstract contract SharesManager {
     mapping(address account => bool) public isWhitelisted;
     mapping(address account => bool) public isBlacklisted;
 
+    // View functions
+
     function isDepositAllowed(address account, bytes32[] calldata proof)
         public
         view

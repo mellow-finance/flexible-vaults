@@ -32,6 +32,7 @@ contract SharesManagerBase is SharesManager {
     }
 
     function allocateShares(uint256 amount) external override {
+        // only deposit queue
         if (flags.hasMintPause()) {
             revert("SharesManagerBase: minting is paused");
         }
@@ -39,6 +40,7 @@ contract SharesManagerBase is SharesManager {
     }
 
     function mintAllocatedShares(address to, uint256 amount) external override {
+        // only deposit queue?
         if (flags.hasMintPause()) {
             revert("SharesManagerBase: minting is paused");
         }
@@ -52,6 +54,7 @@ contract SharesManagerBase is SharesManager {
     }
 
     function pullShares(address from, uint256 amount) external override {
+        // TODO: only redeemQueue
         if (flags.hasBurnPause()) {
             revert("SharesManagerBase: burning is paused");
         }
@@ -71,6 +74,7 @@ contract SharesManagerBase is SharesManager {
         if (flags.hasBurnPause()) {
             revert("SharesManagerBase: burning is paused");
         }
+        // from == msg.sender || from == redeemQueue
         if (from == address(0)) {
             revert("SharesManagerBase: zero address");
         }

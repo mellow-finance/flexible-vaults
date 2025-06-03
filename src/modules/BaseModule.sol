@@ -8,5 +8,7 @@ abstract contract BaseModule is Initializable {
         _disableInitializers();
     }
 
+    // Mutable functions
+
     receive() external payable {}
 }

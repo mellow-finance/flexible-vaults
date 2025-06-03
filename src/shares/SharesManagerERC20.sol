@@ -4,13 +4,7 @@ pragma solidity 0.8.25;
 import "./SharesManager.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
-contract SharesManagerBase is SharesManager, ERC20Upgradeable {
-    function _ERC20Storage() private pure returns (ERC20Storage storage $) {
-        assembly {
-            $.slot := 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00
-        }
-    }
-
+contract SharesManagerERC20 is SharesManager, ERC20Upgradeable {
     function activeSharesOf(address account) public view override returns (uint256) {
         return _ERC20Storage()._balances[account];
     }
@@ -52,11 +46,19 @@ contract SharesManagerBase is SharesManager, ERC20Upgradeable {
         if (from == address(0)) {
             revert("SharesManagerBase: zero address");
         }
+        ERC20Storage storage $ = _ERC20Storage();
+        $._balances[from] -= amount;
         unchecked {
-            _ERC20Storage()._balances[from] -= amount;
-            _ERC20Storage()._totalSupply -= amount;
+            $._totalSupply -= amount;
         }
         emit SharesBurned(from, amount);
         emit Transfer(from, address(0), amount);
+    }
+
+    function _ERC20Storage() private pure returns (ERC20Storage storage $) {
+        assembly {
+            // ERC20 storage location
+            $.slot := 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00
+        }
     }
 }

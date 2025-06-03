@@ -14,9 +14,10 @@ abstract contract DepositModule is PermissionsModule {
     using EnumerableMap for EnumerableMap.AddressToAddressMap;
 
     struct DepositModuleStorage {
+        uint256 verisions;
+        mapping(uint256 version => address implementation) implementations;
+        mapping(uint256 index => address queue) depositQueues;
         address defaultDepositHook;
-        address depositQueueImplementation;
-        EnumerableMap.AddressToAddressMap depositQueues;
         mapping(address asset => address hook) hooks;
         mapping(address => uint256) minDeposit;
         mapping(address => uint256) maxDeposit;
@@ -37,8 +38,12 @@ abstract contract DepositModule is PermissionsModule {
 
     // View functions:
 
-    function depositQueueImplementation() public view returns (address) {
-        return _depositModuleStorage().depositQueueImplementation;
+    function depositQueueImplementation(uint256 version) public view returns (address) {
+        return _depositModuleStorage().implementations[version];
+    }
+
+    function depositQueueVersions() public view returns (uint256) {
+        return _depositModuleStorage().verisions;
     }
 
     function maxDeposit(address asset) public view returns (uint256) {
@@ -47,18 +52,6 @@ abstract contract DepositModule is PermissionsModule {
 
     function minDeposit(address asset) public view returns (uint256) {
         return _depositModuleStorage().minDeposit[asset];
-    }
-
-    function getDepositAsset(uint256 index) public view returns (address asset) {
-        (asset,) = _depositModuleStorage().depositQueues.at(index);
-    }
-
-    function getDepositQueue(address asset) public view returns (bool, address) {
-        return _depositModuleStorage().depositQueues.tryGet(asset);
-    }
-
-    function depositAssets() public view returns (uint256) {
-        return _depositModuleStorage().depositQueues.length();
     }
 
     function defaultDepositHook() external view returns (address) {
@@ -75,12 +68,12 @@ abstract contract DepositModule is PermissionsModule {
     }
 
     function claimableSharesOf(address account) public view returns (uint256 shares) {
-        EnumerableMap.AddressToAddressMap storage queues = _depositModuleStorage().depositQueues;
-        uint256 n = queues.length();
-        for (uint256 i = 0; i < n; i++) {
-            (, address queue) = queues.at(i);
-            shares += DepositQueue(queue).claimableOf(account);
-        }
+        // EnumerableMap.AddressToAddressMap storage queues = _depositModuleStorage().depositQueues;
+        // uint256 n = queues.length();
+        // for (uint256 i = 0; i < n; i++) {
+        //     (, address queue) = queues.at(i);
+        //     shares += DepositQueue(queue).claimableOf(account);
+        // }
     }
 
     // Mutable functions
@@ -111,13 +104,13 @@ abstract contract DepositModule is PermissionsModule {
             revert("DepositModule: zero address");
         }
         DepositModuleStorage storage $ = _depositModuleStorage();
-        if ($.depositQueues.contains(asset)) {
-            revert("DepositModule: queue already exists");
-        }
-        address queue =
-            Clones.cloneDeterministic($.depositQueueImplementation, bytes32(bytes20(asset)));
-        DepositQueue(queue).initialize(asset, address(this));
-        $.depositQueues.set(asset, address(queue));
+        // if ($.depositQueues.contains(asset)) {
+        //     revert("DepositModule: queue already exists");
+        // }
+        // address queue =
+        //     // Clones.cloneDeterministic($.depositQueueImplementation, bytes32(bytes20(asset)));
+        // DepositQueue(queue).initialize(asset, address(this));
+        // $.depositQueues.set(asset, address(queue));
     }
 
     // Internal functions
@@ -133,7 +126,8 @@ abstract contract DepositModule is PermissionsModule {
         if (depositQueueImplementation_ == address(0)) {
             revert("DepositModule: zero address");
         }
-        _depositModuleStorage().depositQueueImplementation = depositQueueImplementation_;
-        _depositModuleStorage().defaultDepositHook = address(RedirectionDepositHook(address(this)));
+        DepositModuleStorage storage $ = _depositModuleStorage();
+        // $.depositQueueImplementation = depositQueueImplementation_;
+        // $.defaultDepositHook = address(new RedirectionDepositHook(address(this)));
     }
 }

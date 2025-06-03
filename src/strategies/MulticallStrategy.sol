@@ -5,6 +5,13 @@ import "../modules/CallModule.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MulticallStrategy is Ownable {
+    struct Call {
+        address where;
+        uint256 value;
+        bytes data;
+        BaseVerifier.VerificationPayload verificationPayload;
+    }
+
     address public immutable vault;
 
     constructor(address vault_) Ownable(msg.sender) {
@@ -12,12 +19,7 @@ contract MulticallStrategy is Ownable {
         vault = vault_;
     }
 
-    struct Call {
-        address where;
-        uint256 value;
-        bytes data;
-        BaseVerifier.VerificationPayload verificationPayload;
-    }
+    // Mutable functions
 
     function multicall(Call[] calldata calls) external payable onlyOwner {
         for (uint256 i = 0; i < calls.length; i++) {

@@ -18,6 +18,8 @@ abstract contract PermissionsModule is BaseModule, AccessControlEnumerableUpgrad
         _permissionsModuleStorageSlot = SlotLibrary.getSlot("Permissions", name_, version_);
     }
 
+    // View functions
+
     function verifier() public view returns (BaseVerifier) {
         return BaseVerifier(_permissionsModuleStorage().verifier);
     }

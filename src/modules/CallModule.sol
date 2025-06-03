@@ -2,12 +2,13 @@
 pragma solidity 0.8.25;
 
 import "../permissions/BaseVerifier.sol";
-import "../shares/SharesManager.sol";
 import "./PermissionsModule.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 abstract contract CallModule is PermissionsModule {
     using Address for address;
+
+    // Mutable functions
 
     function call(
         address where,
