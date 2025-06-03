@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "../queues/DepositQueue.sol";
 import "../queues/Queue.sol";
 
-import "../strategies/RedirectionDepositHook.sol";
+import "../hooks/RedirectionDepositHook.sol";
 import "./PermissionsModule.sol";
 
 import "@openzeppelin/contracts/proxy/Clones.sol";

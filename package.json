@@ -2,15 +2,11 @@
   "name": "flexible-vaults",
   "license": "UNLICENSED",
   "version": "1.0.0",
-  "repository": "https://github.com/mellow-finance/simple-lrt",
+  "repository": "https://github.com/mellow-finance/flexible-vaults",
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
-    "test": "forge test -vvv --fork-url $(grep HOLESKY_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 1000000000000000 --fork-block-number 2686616",
+    "test": "forge test -vvv",
     "compile": "forge build --use 0.8.25 --cache-path cache",
-    "sizes": "forge build --sizes --force",
-    "scc:report": "scc src --sort names --no-cocomo --exclude-dir interfaces --by-file --format wide > scc-report.txt",
-    "coverage": "forge coverage --force --fork-url $(grep HOLESKY_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 1000000000000000 --fork-block-number 2686616",
-    "coverage:report": "forge coverage --force --fork-url $(grep HOLESKY_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 1000000000000000 --fork-block-number 2686616 --report lcov && genhtml lcov.info -o report --branch-coverage --rc derive_function_end_line=0 && rm lcov.info",
-    "deploy:holesky:factory": "forge script --use 0.8.25 scripts/holesky/HoleskyDeploy.s.sol:Deploy --rpc-url $(grep HOLESKY_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --legacy -vvvv --verify --etherscan-api-key $(grep HOLESKY_API_KEY .env | cut -d '=' -f2)"
+    "sizes": "forge build --sizes --force"
   }
 }
