@@ -3,6 +3,8 @@ pragma solidity 0.8.25;
 
 import "../queues/DepositQueue.sol";
 import "../queues/Queue.sol";
+
+import "../strategies/RedirectionDepositHook.sol";
 import "./PermissionsModule.sol";
 
 import "@openzeppelin/contracts/proxy/Clones.sol";
@@ -12,6 +14,7 @@ abstract contract DepositModule is PermissionsModule {
     using EnumerableMap for EnumerableMap.AddressToAddressMap;
 
     struct DepositModuleStorage {
+        address defaultDepositHook;
         address depositQueueImplementation;
         EnumerableMap.AddressToAddressMap depositQueues;
         mapping(address asset => address hook) hooks;
@@ -58,8 +61,17 @@ abstract contract DepositModule is PermissionsModule {
         return _depositModuleStorage().depositQueues.length();
     }
 
+    function defaultDepositHook() external view returns (address) {
+        return _depositModuleStorage().defaultDepositHook;
+    }
+
     function depositHook(address asset) external view returns (address) {
-        return _depositModuleStorage().hooks[asset];
+        DepositModuleStorage storage $ = _depositModuleStorage();
+        address hook = $.hooks[asset];
+        if (hook == address(0)) {
+            hook = $.defaultDepositHook;
+        }
+        return hook;
     }
 
     function claimableSharesOf(address account) public view returns (uint256 shares) {
@@ -122,5 +134,6 @@ abstract contract DepositModule is PermissionsModule {
             revert("DepositModule: zero address");
         }
         _depositModuleStorage().depositQueueImplementation = depositQueueImplementation_;
+        _depositModuleStorage().defaultDepositHook = address(RedirectionDepositHook(address(this)));
     }
 }

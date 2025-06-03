@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "../queues/DepositQueue.sol";
 import "./DepositHook.sol";
 
-contract DefaultDepositHook is DepositHook {
+contract RedirectionDepositHook is DepositHook {
     address public immutable to;
 
     constructor(address to_) {
