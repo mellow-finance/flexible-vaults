@@ -48,7 +48,7 @@ contract DepositQueue is Queue, ReentrancyGuard {
     }
 
     // Mutable functions
-    
+
     function initialize(address asset_, address sharesModule_) external initializer {
         __Queue_init(asset_, sharesModule_);
     }
@@ -133,18 +133,8 @@ contract DepositQueue is Queue, ReentrancyGuard {
         uint256 demand = demandAt[epoch];
         if (demand != 0) {
             uint256 shares = Math.mulDiv(demand, priceD18, 1 ether);
-
             address hook = DepositModule(payable(vault_)).depositHook(asset);
-            if (hook != address(0)) {
-                bytes memory response = Address.functionDelegateCall(
-                    hook, abi.encodeCall(DepositHook.hook, (asset, demand))
-                );
-                (address convertedAsset, uint256 convertedAssets) =
-                    abi.decode(response, (address, uint256));
-                TransferLibrary.sendAssets(convertedAsset, address(vault_), convertedAssets);
-            } else {
-                TransferLibrary.sendAssets(asset_, address(vault_), demand);
-            }
+            Address.functionDelegateCall(hook, abi.encodeCall(DepositHook.hook, (asset, demand)));
             vault_.sharesManager().allocateShares(shares);
             conversionPriceAt[epoch] = priceD18;
             delete demandAt[epoch];

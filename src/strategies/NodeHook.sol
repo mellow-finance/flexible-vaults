@@ -10,14 +10,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 contract NodeHook is DepositHook {
-    function hook(address asset, uint256 assets)
-        external
-        override
-        onlyDelegateCall
-        returns (address, uint256)
-    {
-        // NodeModule nodeModule = NodeModule(payable(this));
+    function hook(address asset, uint256 assets) external virtual override onlyDelegateCall {
         /*
+            NodeModule nodeModule = NodeModule(payable(this));
             delegate provided stake into childs according to the limits?
             or at least some order
             idk

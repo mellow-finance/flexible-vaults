@@ -13,5 +13,5 @@ abstract contract DepositHook {
         _;
     }
 
-    function hook(address asset, uint256 assets) external virtual returns (address, uint256);
+    function hook(address asset, uint256 assets) external virtual;
 }
