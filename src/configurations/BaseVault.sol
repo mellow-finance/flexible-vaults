@@ -4,10 +4,7 @@ pragma solidity 0.8.25;
 import "../modules/CallModule.sol";
 
 contract BaseVault is CallModule {
-    constructor(string memory name_, uint256 version_)
-        CallModule()
-        PermissionsModule(name_, version_)
-    {
+    constructor(string memory name_, uint256 version_) CallModule() PermissionsModule(name_, version_) {
         _disableInitializers();
     }
 

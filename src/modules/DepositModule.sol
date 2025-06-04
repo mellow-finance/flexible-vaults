@@ -23,13 +23,6 @@ abstract contract DepositModule is PermissionsModule {
         mapping(address => uint256) maxDeposit;
     }
 
-    bytes32 public constant SET_MIN_DEPOSIT_ROLE = keccak256("DEPOSIT_MODULE:SET_MIN_DEPOSIT_ROLE");
-    bytes32 public constant SET_MAX_DEPOSIT_ROLE = keccak256("DEPOSIT_MODULE:SET_MAX_DEPOSIT_ROLE");
-    bytes32 public constant SET_DEPOSIT_HOOK_ROLE =
-        keccak256("DEPOSIT_MODULE:SET_DEPOSIT_HOOK_ROLE");
-    bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE =
-        keccak256("DEPOSIT_MODULE:CREATE_DEPOSIT_QUEUE_ROLE");
-
     bytes32 private immutable _depositModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -78,28 +71,28 @@ abstract contract DepositModule is PermissionsModule {
 
     // Mutable functions
 
-    function setMaxDeposit(address asset, uint256 amount) external onlyRole(SET_MIN_DEPOSIT_ROLE) {
+    function setMaxDeposit(address asset, uint256 amount) external onlyRole(PermissionsLibrary.SET_MIN_DEPOSIT_ROLE) {
         if (asset == address(0)) {
             revert("DepositModule: zero address");
         }
         _depositModuleStorage().maxDeposit[asset] = amount;
     }
 
-    function setMinDeposit(address asset, uint256 amount) external onlyRole(SET_MAX_DEPOSIT_ROLE) {
+    function setMinDeposit(address asset, uint256 amount) external onlyRole(PermissionsLibrary.SET_MAX_DEPOSIT_ROLE) {
         if (asset == address(0)) {
             revert("DepositModule: zero address");
         }
         _depositModuleStorage().minDeposit[asset] = amount;
     }
 
-    function setDepositHook(address asset, address hook) external onlyRole(SET_DEPOSIT_HOOK_ROLE) {
+    function setDepositHook(address asset, address hook) external onlyRole(PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE) {
         if (asset == address(0) || hook == address(0)) {
             revert("DepositModule: zero address");
         }
         _depositModuleStorage().hooks[asset] = hook;
     }
 
-    function createDepositQueue(address asset) external onlyRole(CREATE_DEPOSIT_QUEUE_ROLE) {
+    function createDepositQueue(address asset) external onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE) {
         if (asset == address(0)) {
             revert("DepositModule: zero address");
         }

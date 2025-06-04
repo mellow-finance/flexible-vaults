@@ -35,8 +35,9 @@ contract EigenLayerVerifier is CustomVerifier {
         if (value != 0) {
             return false;
         }
-        if (where == address(strategyManager)) {} else if (where == address(delegationManager)) {}
-        else if (where == address(rewardsCoordinator)) {} else {
+        if (where == address(strategyManager)) {} else if (where == address(delegationManager)) {} else if (
+            where == address(rewardsCoordinator)
+        ) {} else {
             return false;
         }
 

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 import "./CustomVerifier.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
@@ -27,8 +28,6 @@ contract BaseVerifier is ContextUpgradeable {
         bytes32 merkleRoot;
     }
 
-    bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("BASE_VERIFIER:SET_MERKLE_ROOT_ROLE");
-    bytes32 public constant CALL_ROLE = keccak256("BASE_VERIFIER:CALL_ROLE");
     bytes32 private immutable _baseVerifierStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -54,7 +53,7 @@ contract BaseVerifier is ContextUpgradeable {
 
     function setMerkleRoot(bytes32 merkleRoot_) external {
         require(
-            vault().hasRole(SET_MERKLE_ROOT_ROLE, _msgSender()),
+            vault().hasRole(PermissionsLibrary.SET_MERKLE_ROOT_ROLE, _msgSender()),
             "BaseVerifier: only admin can set merkle root"
         );
         require(merkleRoot_ != bytes32(0), "BaseVerifier: zero merkle root");
@@ -69,8 +68,7 @@ contract BaseVerifier is ContextUpgradeable {
         VerificationPayload calldata verificationPayload
     ) external view {
         require(
-            getVerificationResult(who, where, value, data, verificationPayload),
-            "BaseVerifier: verification failed"
+            getVerificationResult(who, where, value, data, verificationPayload), "BaseVerifier: verification failed"
         );
     }
 
@@ -81,7 +79,7 @@ contract BaseVerifier is ContextUpgradeable {
         bytes calldata callData,
         VerificationPayload calldata verificationPayload
     ) public view virtual returns (bool) {
-        if (!vault().hasRole(CALL_ROLE, who)) {
+        if (!vault().hasRole(PermissionsLibrary.CALL_ROLE, who)) {
             return false;
         }
         bytes32 leaf = keccak256(

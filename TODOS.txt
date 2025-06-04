@@ -5,6 +5,12 @@ ShareManager hooks:
 
 DepositModule:
 per block per token limits for instant deposit module (?)
+queue versions
+onDepositFee
+
+RedeemModule:
+queue verisions
+onRedeemFee
 
 NodeModule hooks:
 1. onMint distribution
@@ -15,6 +21,11 @@ Proxy:
 
 Factories:
 1. per Configuration?
+
+Hooks
+splitter hook?
+transfer on deposit
+default hook
 
 Configurations
 1. Nodes
@@ -29,3 +40,5 @@ Leverage
 Crosschain
 CEXes
 mellow-alm-toolkit
+Gearbox
+rstETH

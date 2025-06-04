@@ -4,6 +4,7 @@ pragma solidity 0.8.25;
 import "../queues/RedeemQueue.sol";
 import "./PermissionsModule.sol";
 
+import "../libraries/PermissionsLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -20,10 +21,6 @@ abstract contract RedeemModule is PermissionsModule {
         mapping(address asset => uint256 shares) maxRedeem;
     }
 
-    bytes32 public constant SET_MIN_REDEEM_ROLE = keccak256("RedeemModule.setMinRedeem");
-    bytes32 public constant SET_MAX_REDEEM_ROLE = keccak256("RedeemModule.setMaxRedeem");
-    bytes32 public constant CREATE_WITHDRAWAL_QUEUE_ROLE =
-        keccak256("RedeemModule.createWithdrawalQueue");
     bytes32 private immutable _redeemModleStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -58,14 +55,14 @@ abstract contract RedeemModule is PermissionsModule {
 
     // Mutable functions
 
-    function setMinRedeem(address asset, uint256 shares) external onlyRole(SET_MIN_REDEEM_ROLE) {
+    function setMinRedeem(address asset, uint256 shares) external onlyRole(PermissionsLibrary.SET_MIN_REDEEM_ROLE) {
         if (asset == address(0)) {
             revert("RedeemModule: zero address");
         }
         _redeemModuleStorage().minRedeem[asset] = shares;
     }
 
-    function setMaxRedeem(address asset, uint256 shares) external onlyRole(SET_MAX_REDEEM_ROLE) {
+    function setMaxRedeem(address asset, uint256 shares) external onlyRole(PermissionsLibrary.SET_MAX_REDEEM_ROLE) {
         if (asset == address(0)) {
             revert("RedeemModule: zero address");
         }
@@ -86,8 +83,7 @@ abstract contract RedeemModule is PermissionsModule {
         if ($.redeemQueues.contains(asset)) {
             revert("RedeemModule: queue already exists");
         }
-        address queue =
-            Clones.cloneDeterministic($.redeemQueueImplementation, bytes32(bytes20(asset)));
+        address queue = Clones.cloneDeterministic($.redeemQueueImplementation, bytes32(bytes20(asset)));
         RedeemQueue(payable(queue)).initialize(asset, address(this));
         $.redeemQueues.set(asset, queue);
     }

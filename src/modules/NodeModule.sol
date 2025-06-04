@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../libraries/PermissionsLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 import "./PermissionsModule.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -26,14 +27,6 @@ abstract contract NodeModule is PermissionsModule {
         mapping(address asset => mapping(address childModule => Flows)) flows;
         EnumerableSet.AddressSet childModules;
     }
-
-    bytes32 public constant SET_PARENT_MODULE_ROLE = keccak256("NODE_MODULE:SET_PARENT_MODULE_ROLE");
-    bytes32 public constant CONNECT_CHILD_NODE_ROLE =
-        keccak256("NODE_MODULE:CONNECT_CHILD_NODE_ROLE");
-    bytes32 public constant PULL_LIQUIDITY_ROLE = keccak256("NODE_MODULE:PULL_LIQUIDITY_ROLE");
-    bytes32 public constant PUSH_LIQUIDITY_ROLE = keccak256("NODE_MODULE:PUSH_LIQUIDITY_ROLE");
-    bytes32 public constant SET_CORRECTIONS_ROLE = keccak256("NODE_MODULE:SET_CORRECTIONS_ROLE");
-    bytes32 public constant SET_LIMITS_ROLE = keccak256("NODE_MODULE:SET_LIMITS_ROLE");
 
     bytes32 private immutable _nodeModuleStorageSlot;
 
@@ -69,10 +62,7 @@ abstract contract NodeModule is PermissionsModule {
 
         int256 balance = int256(flows.outflow) - int256(flows.inflow) + flows.correction;
 
-        if (
-            flows.limit == type(int256).max
-                || balance < 0 && flows.limit > type(int256).max + balance
-        ) {
+        if (flows.limit == type(int256).max || balance < 0 && flows.limit > type(int256).max + balance) {
             return type(uint256).max;
         }
         int256 limit = flows.limit - balance;
@@ -87,7 +77,7 @@ abstract contract NodeModule is PermissionsModule {
     function setParentModule(address parentModule_)
         external
         virtual
-        onlyRole(SET_PARENT_MODULE_ROLE)
+        onlyRole(PermissionsLibrary.SET_PARENT_MODULE_ROLE)
     {
         NodeModuleStorage storage $ = _nodeModuleStorage();
         if (parentModule_ == address(0)) {
@@ -99,7 +89,7 @@ abstract contract NodeModule is PermissionsModule {
         $.parentModule = parentModule_;
     }
 
-    function connectChildNode(address node) external onlyRole(CONNECT_CHILD_NODE_ROLE) {
+    function connectChildNode(address node) external onlyRole(PermissionsLibrary.CONNECT_CHILD_NODE_ROLE) {
         if (NodeModule(payable(node)).parentModule() != address(this)) {
             revert("NodeModule: child module not set to this parent");
         }
@@ -111,7 +101,7 @@ abstract contract NodeModule is PermissionsModule {
 
     function pushLiquidity(address childModule, address asset, uint256 assets)
         external
-        onlyRole(PUSH_LIQUIDITY_ROLE)
+        onlyRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE)
     {
         NodeModuleStorage storage $ = _nodeModuleStorage();
         if (!$.childModules.contains(childModule)) {
@@ -128,7 +118,7 @@ abstract contract NodeModule is PermissionsModule {
 
     function pullLiquidity(address childModule, address asset, uint256 assets)
         external
-        onlyRole(PULL_LIQUIDITY_ROLE)
+        onlyRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE)
     {
         NodeModuleStorage storage $ = _nodeModuleStorage();
         if (!$.childModules.contains(childModule)) {
@@ -140,10 +130,7 @@ abstract contract NodeModule is PermissionsModule {
 
     function transferLiquidity(address asset, uint256 assets) external {
         address caller = _msgSender();
-        require(
-            caller == _nodeModuleStorage().parentModule,
-            "NodeModule: only parent module can transfer liquidity"
-        );
+        require(caller == _nodeModuleStorage().parentModule, "NodeModule: only parent module can transfer liquidity");
         if (assets == 0) {
             revert("NodeModule: assets must be greater than zero");
         }
@@ -155,7 +142,7 @@ abstract contract NodeModule is PermissionsModule {
 
     function setCorrections(SetValue[] calldata corrections)
         external
-        onlyRole(SET_CORRECTIONS_ROLE)
+        onlyRole(PermissionsLibrary.SET_CORRECTIONS_ROLE)
     {
         NodeModuleStorage storage $ = _nodeModuleStorage();
         for (uint256 i = 0; i < corrections.length; i++) {
@@ -170,7 +157,7 @@ abstract contract NodeModule is PermissionsModule {
         }
     }
 
-    function setLimits(SetValue[] calldata corrections) external onlyRole(SET_LIMITS_ROLE) {
+    function setLimits(SetValue[] calldata corrections) external onlyRole(PermissionsLibrary.SET_LIMITS_ROLE) {
         NodeModuleStorage storage $ = _nodeModuleStorage();
         for (uint256 i = 0; i < corrections.length; i++) {
             SetValue calldata param = corrections[i];

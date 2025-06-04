@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SharesManagerFlagLibrary.sol";
 import "../modules/DepositModule.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
@@ -9,7 +10,6 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 abstract contract SharesManager {
     using SharesManagerFlagLibrary for uint256;
 
-    bytes32 public constant SET_FLAGS_ROLE = keccak256("SHARES_MANAGER:SET_FLAGS_ROLE");
     address payable public immutable vault;
 
     uint256 public flags;
@@ -22,11 +22,7 @@ abstract contract SharesManager {
 
     // View functions
 
-    function isDepositAllowed(address account, bytes32[] calldata proof)
-        public
-        view
-        returns (bool)
-    {
+    function isDepositAllowed(address account, bytes32[] calldata proof) public view returns (bool) {
         if (flags.hasMintPause()) {
             return false;
         }
@@ -35,9 +31,7 @@ abstract contract SharesManager {
         }
         if (
             flags.hasMerkleWhitelist()
-                && !MerkleProof.verify(
-                    proof, whitelistMerkleRoot, keccak256(bytes.concat(keccak256(abi.encode(account))))
-                )
+                && !MerkleProof.verify(proof, whitelistMerkleRoot, keccak256(bytes.concat(keccak256(abi.encode(account)))))
         ) {
             return false;
         }
@@ -59,7 +53,7 @@ abstract contract SharesManager {
 
     function setFlags(uint256 flags_) external {
         require(
-            IAccessControl(vault).hasRole(SET_FLAGS_ROLE, msg.sender),
+            IAccessControl(vault).hasRole(PermissionsLibrary.SET_FLAGS_ROLE, msg.sender),
             "SharesManager: Caller is not authorized to set flags"
         );
         flags = flags_;
@@ -67,7 +61,7 @@ abstract contract SharesManager {
 
     function setSharesSoftLimit(uint256 sharesSoftLimit_) external {
         require(
-            IAccessControl(vault).hasRole(SET_FLAGS_ROLE, msg.sender),
+            IAccessControl(vault).hasRole(PermissionsLibrary.SET_FLAGS_ROLE, msg.sender),
             "SharesManager: Caller is not authorized to set shares soft limit"
         );
         sharesSoftLimit = sharesSoftLimit_;

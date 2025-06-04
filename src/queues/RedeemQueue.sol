@@ -24,8 +24,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
             revert("RedeemQueue: limit underflow");
         }
         if (
-            shares > RedeemModule(payable(vault_)).maxRedeem(asset_)
-                || shares > vault_.sharesManager().sharesOf(caller)
+            shares > RedeemModule(payable(vault_)).maxRedeem(asset_) || shares > vault_.sharesManager().sharesOf(caller)
         ) {
             revert("RedeemQueue: limit overflow");
         }
@@ -54,11 +53,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
         TransferLibrary.sendAssets(asset, account, assets);
     }
 
-    function claimableAssetsOf(address account, uint256 epoch)
-        public
-        view
-        returns (uint256 assets)
-    {
+    function claimableAssetsOf(address account, uint256 epoch) public view returns (uint256 assets) {
         uint256 pulledAssets = pulledAssetsAt[epoch];
         uint256 requested = requestOf[account][epoch];
         if (requested == 0) {

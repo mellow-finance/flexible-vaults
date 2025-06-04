@@ -4,8 +4,7 @@ pragma solidity 0.8.25;
 import "../libraries/SlotLibrary.sol";
 import "../permissions/BaseVerifier.sol";
 import "./BaseModule.sol";
-import
-    "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 
 abstract contract PermissionsModule is BaseModule, AccessControlEnumerableUpgradeable {
     struct PermissionsModuleStorage {
@@ -26,10 +25,7 @@ abstract contract PermissionsModule is BaseModule, AccessControlEnumerableUpgrad
 
     // Internal functions
 
-    function __PermissionsModule_init(address verifier_, address admin_)
-        internal
-        onlyInitializing
-    {
+    function __PermissionsModule_init(address verifier_, address admin_) internal onlyInitializing {
         if (verifier_ == address(0)) {
             revert("PermissionsModule: zero guard address");
         }
@@ -40,11 +36,7 @@ abstract contract PermissionsModule is BaseModule, AccessControlEnumerableUpgrad
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
     }
 
-    function _permissionsModuleStorage()
-        private
-        view
-        returns (PermissionsModuleStorage storage $)
-    {
+    function _permissionsModuleStorage() private view returns (PermissionsModuleStorage storage $) {
         bytes32 slot = _permissionsModuleStorageSlot;
         assembly {
             $.slot := slot

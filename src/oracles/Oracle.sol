@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 import "../modules/SharesModule.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
@@ -44,16 +45,6 @@ contract Oracle is ContextUpgradeable {
         uint224 price;
     }
 
-    bytes32 public constant REPORT_PRICES_ROLE = keccak256("ORACLE:REPORT_PRICES_ROLE");
-    bytes32 public constant SET_MAX_ABSOLUTE_DEVIATION_ROLE =
-        keccak256("ORACLE:SET_MAX_ABSOLUTE_DEVIATION_ROLE");
-    bytes32 public constant SET_MAX_RELATIVE_DEVIATION_ROLE =
-        keccak256("ORACLE:SET_MAX_RELATIVE_DEVIATION_ROLE");
-    bytes32 public constant SET_TIMEOUT_ROLE = keccak256("ORACLE:SET_TIMEOUT_ROLE");
-    bytes32 public constant SET_DEPOSIT_SECURE_T_ROLE =
-        keccak256("ORACLE:SET_DEPOSIT_SECURE_T_ROLE");
-    bytes32 public constant SET_REDEEM_SECURE_T_ROLE = keccak256("ORACLE:SET_REDEEM_SECURE_T_ROLE");
-    bytes32 public constant UNLOCK_ROLE = keccak256("ORACLE:UNLOCK_ROLE");
     bytes32 private immutable _oracleStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -63,10 +54,7 @@ contract Oracle is ContextUpgradeable {
     // View functions
 
     modifier onlyRole(bytes32 role) {
-        require(
-            IAccessControl(address(_oracleStorage().vault)).hasRole(role, _msgSender()),
-            "Oracle: forbidden"
-        );
+        require(IAccessControl(address(_oracleStorage().vault)).hasRole(role, _msgSender()), "Oracle: forbidden");
         _;
     }
 
@@ -94,11 +82,7 @@ contract Oracle is ContextUpgradeable {
         return _oracleStorage().redeemSecureT;
     }
 
-    function depositPriceReportAt(address asset, uint32 index)
-        public
-        view
-        returns (Checkpoints.Checkpoint224 memory)
-    {
+    function depositPriceReportAt(address asset, uint32 index) public view returns (Checkpoints.Checkpoint224 memory) {
         return _oracleStorage().depositPriceReports[asset].at(index);
     }
 
@@ -106,11 +90,7 @@ contract Oracle is ContextUpgradeable {
         return _oracleStorage().depositPriceReports[asset].length();
     }
 
-    function redeemPriceReportAt(address asset, uint32 index)
-        public
-        view
-        returns (Checkpoints.Checkpoint224 memory)
-    {
+    function redeemPriceReportAt(address asset, uint32 index) public view returns (Checkpoints.Checkpoint224 memory) {
         return _oracleStorage().redeemPriceReports[asset].at(index);
     }
 
@@ -122,19 +102,11 @@ contract Oracle is ContextUpgradeable {
         return _oracleStorage().isLocked;
     }
 
-    function getLatestDepositPrice(address asset)
-        public
-        view
-        returns (bool exists, uint224 priceD18)
-    {
+    function getLatestDepositPrice(address asset) public view returns (bool exists, uint224 priceD18) {
         (exists,, priceD18) = _oracleStorage().depositPriceReports[asset].latestCheckpoint();
     }
 
-    function getDepositEpochPrice(address asset, uint256 epoch)
-        public
-        view
-        returns (bool exists, uint224 priceD18)
-    {
+    function getDepositEpochPrice(address asset, uint256 epoch) public view returns (bool exists, uint224 priceD18) {
         OracleStorage storage $ = _oracleStorage();
         if ($.isLocked) {
             return (false, 0);
@@ -147,19 +119,11 @@ contract Oracle is ContextUpgradeable {
         exists = priceD18 != 0;
     }
 
-    function getLatestRedeemPrice(address asset)
-        public
-        view
-        returns (bool exists, uint224 priceD18)
-    {
+    function getLatestRedeemPrice(address asset) public view returns (bool exists, uint224 priceD18) {
         (exists,, priceD18) = _oracleStorage().redeemPriceReports[asset].latestCheckpoint();
     }
 
-    function getRedeemEpochPrice(address asset, uint256 epoch)
-        public
-        view
-        returns (bool exists, uint224 priceD18)
-    {
+    function getRedeemEpochPrice(address asset, uint256 epoch) public view returns (bool exists, uint224 priceD18) {
         OracleStorage storage $ = _oracleStorage();
         if ($.isLocked) {
             return (false, 0);
@@ -174,7 +138,7 @@ contract Oracle is ContextUpgradeable {
 
     // Mutable functions
 
-    function reportPrices(Report[] calldata reports) external onlyRole(REPORT_PRICES_ROLE) {
+    function reportPrices(Report[] calldata reports) external onlyRole(PermissionsLibrary.REPORT_PRICES_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         Stack memory stack = Stack({
             vault: $.vault,
@@ -206,11 +170,11 @@ contract Oracle is ContextUpgradeable {
         uint64 maxRelativeDeviationD18_,
         uint224 suspiciousAbsoluteDeviation_,
         uint64 suspiciousRelativeDeviationD18_
-    ) external onlyRole(SET_MAX_ABSOLUTE_DEVIATION_ROLE) {
+    ) external onlyRole(PermissionsLibrary.SET_MAX_ABSOLUTE_DEVIATION_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         if (
-            maxAbsoluteDeviation_ == 0 || maxRelativeDeviationD18_ == 0
-                || suspiciousAbsoluteDeviation_ == 0 || suspiciousRelativeDeviationD18_ == 0
+            maxAbsoluteDeviation_ == 0 || maxRelativeDeviationD18_ == 0 || suspiciousAbsoluteDeviation_ == 0
+                || suspiciousRelativeDeviationD18_ == 0
         ) {
             revert("Oracle: deviations cannot be zero");
         }
@@ -226,25 +190,25 @@ contract Oracle is ContextUpgradeable {
         $.suspiciousRelativeDeviationD18 = suspiciousRelativeDeviationD18_;
     }
 
-    function setTimeout(uint32 timeout_) external onlyRole(SET_TIMEOUT_ROLE) {
+    function setTimeout(uint32 timeout_) external onlyRole(PermissionsLibrary.SET_TIMEOUT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         $.timeout = timeout_;
     }
 
     function setDepositSecureT(uint32 depositSecureT_)
         external
-        onlyRole(SET_DEPOSIT_SECURE_T_ROLE)
+        onlyRole(PermissionsLibrary.SET_DEPOSIT_SECURE_T_ROLE)
     {
         OracleStorage storage $ = _oracleStorage();
         $.depositSecureT = depositSecureT_;
     }
 
-    function setRedeemSecureT(uint32 redeemSecureT_) external onlyRole(SET_REDEEM_SECURE_T_ROLE) {
+    function setRedeemSecureT(uint32 redeemSecureT_) external onlyRole(PermissionsLibrary.SET_REDEEM_SECURE_T_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         $.redeemSecureT = redeemSecureT_;
     }
 
-    function unlock() external onlyRole(UNLOCK_ROLE) {
+    function unlock() external onlyRole(PermissionsLibrary.UNLOCK_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         $.isLocked = false;
     }
@@ -281,8 +245,7 @@ contract Oracle is ContextUpgradeable {
             if (prevTimestamp + $.timeout >= $.timestamp) {
                 revert("Oracle: too early to report");
             }
-            uint224 absoluteDeviation =
-                $.price > prevPrice ? $.price - prevPrice : prevPrice - $.price;
+            uint224 absoluteDeviation = $.price > prevPrice ? $.price - prevPrice : prevPrice - $.price;
             if (absoluteDeviation > $.maxAbsoluteDeviation) {
                 revert("Oracle: absolute deviation too high");
             }

@@ -18,13 +18,10 @@ contract OmniVault is PermissionsModule, CallModule, SharesModule, DepositModule
         _disableInitializers();
     }
 
-    function initialize(
-        address guard_,
-        address admin_,
-        address sharesManager_,
-        address oracle_,
-        uint256 epochDuration_
-    ) external initializer {
+    function initialize(address guard_, address admin_, address sharesManager_, address oracle_, uint256 epochDuration_)
+        external
+        initializer
+    {
         __PermissionsModule_init(guard_, admin_);
         __SharesModule_init(sharesManager_, oracle_, epochDuration_);
     }
