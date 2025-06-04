@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 import "../permissions/BaseVerifier.sol";
 import "./BaseModule.sol";
@@ -33,7 +34,7 @@ abstract contract PermissionsModule is BaseModule, AccessControlEnumerableUpgrad
             revert("PermissionsModule: zero admin address");
         }
         _permissionsModuleStorage().verifier = verifier_;
-        _grantRole(DEFAULT_ADMIN_ROLE, admin_);
+        _grantRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE, admin_);
     }
 
     function _permissionsModuleStorage() private view returns (PermissionsModuleStorage storage $) {
