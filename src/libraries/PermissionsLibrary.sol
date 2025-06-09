@@ -27,8 +27,12 @@ library PermissionsLibrary {
     bytes32 public constant SET_REDEEM_SECURE_T_ROLE = keccak256("ORACLE:SET_REDEEM_SECURE_T_ROLE");
     bytes32 public constant UNLOCK_ROLE = keccak256("ORACLE:UNLOCK_ROLE");
 
-    bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("BASE_VERIFIER:SET_MERKLE_ROOT_ROLE");
-    bytes32 public constant CALL_ROLE = keccak256("BASE_VERIFIER:CALL_ROLE");
+    bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("VERIFIER:SET_MERKLE_ROOT_ROLE");
+    bytes32 public constant CALL_ROLE = keccak256("VERIFIER:CALL_ROLE");
+    bytes32 public constant ADD_ALLOWED_CALLS_ROLE = keccak256("VERIFIER:ADD_ALLOWED_CALLS_ROLE");
+    bytes32 public constant REMOVE_ALLOWED_CALLS_ROLE = keccak256("VERIFIER:REMOVE_ALLOWED_CALLS_ROLE");
 
     bytes32 public constant SET_FLAGS_ROLE = keccak256("SHARES_MANAGER:SET_FLAGS_ROLE");
+
+    bytes32 public constant ADD_SUVAULT_ROLE = keccak256("FACTORY_MODULE:ADD_SUVAULT_ROLE");
 }

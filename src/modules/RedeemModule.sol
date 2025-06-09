@@ -2,7 +2,7 @@
 pragma solidity 0.8.25;
 
 import "../queues/RedeemQueue.sol";
-import "./PermissionsModule.sol";
+import "./ACLPermissionsModule.sol";
 
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/TransferLibrary.sol";
@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
-abstract contract RedeemModule is PermissionsModule {
+abstract contract RedeemModule is ACLPermissionsModule {
     using SafeERC20 for IERC20;
     using EnumerableMap for EnumerableMap.AddressToAddressMap;
 

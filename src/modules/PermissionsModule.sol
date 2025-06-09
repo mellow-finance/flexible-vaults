@@ -3,11 +3,12 @@ pragma solidity 0.8.25;
 
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
-import "../permissions/BaseVerifier.sol";
-import "./BaseModule.sol";
-import "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
+import "../permissions/Verifier.sol";
 
-abstract contract PermissionsModule is BaseModule, AccessControlEnumerableUpgradeable {
+import "./ACLPermissionsModule.sol";
+import "./BaseModule.sol";
+
+abstract contract PermissionsModule is BaseModule, ACLPermissionsModule {
     struct PermissionsModuleStorage {
         address verifier;
     }
@@ -20,21 +21,18 @@ abstract contract PermissionsModule is BaseModule, AccessControlEnumerableUpgrad
 
     // View functions
 
-    function verifier() public view returns (BaseVerifier) {
-        return BaseVerifier(_permissionsModuleStorage().verifier);
+    function verifier() public view returns (Verifier) {
+        return Verifier(_permissionsModuleStorage().verifier);
     }
 
     // Internal functions
 
-    function __PermissionsModule_init(address verifier_, address admin_) internal onlyInitializing {
+    function __PermissionsModule_init(address admin_, address verifier_) internal onlyInitializing {
         if (verifier_ == address(0)) {
             revert("PermissionsModule: zero guard address");
         }
-        if (admin_ == address(0)) {
-            revert("PermissionsModule: zero admin address");
-        }
         _permissionsModuleStorage().verifier = verifier_;
-        _grantRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE, admin_);
+        __ACLPermissionsModule_init(admin_);
     }
 
     function _permissionsModuleStorage() private view returns (PermissionsModuleStorage storage $) {

@@ -3,7 +3,7 @@ pragma solidity 0.8.25;
 
 import "./SharesManager.sol";
 
-contract SharesManagerBase is SharesManager {
+contract BasicSharesManager is SharesManager {
     using SharesManagerFlagLibrary for uint256;
 
     // TODO:

@@ -9,7 +9,7 @@ contract MulticallStrategy is Ownable {
         address where;
         uint256 value;
         bytes data;
-        BaseVerifier.VerificationPayload verificationPayload;
+        Verifier.VerificationPayload verificationPayload;
     }
 
     address public immutable vault;

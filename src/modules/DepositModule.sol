@@ -5,12 +5,12 @@ import "../queues/DepositQueue.sol";
 import "../queues/Queue.sol";
 
 import "../hooks/RedirectionDepositHook.sol";
-import "./PermissionsModule.sol";
+import "./ACLPermissionsModule.sol";
 
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
-abstract contract DepositModule is PermissionsModule {
+abstract contract DepositModule is ACLPermissionsModule {
     using EnumerableMap for EnumerableMap.AddressToAddressMap;
 
     struct DepositModuleStorage {

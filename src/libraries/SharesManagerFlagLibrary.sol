@@ -6,7 +6,7 @@ library SharesManagerFlagLibrary {
         return (mask & 0x1) != 0;
     }
 
-    function hasWithdrawalQueues(uint256 mask) internal pure returns (bool) {
+    function hasRedeemQueues(uint256 mask) internal pure returns (bool) {
         return (mask & 0x2) != 0;
     }
 
@@ -50,7 +50,7 @@ library SharesManagerFlagLibrary {
         return value ? (mask | 0x1) : (mask & ~uint256(0x1));
     }
 
-    function setHasWithdrawalQueues(uint256 mask, bool value) internal pure returns (uint256) {
+    function setHasRedeemQueues(uint256 mask, bool value) internal pure returns (uint256) {
         return value ? (mask | 0x2) : (mask & ~uint256(0x2));
     }
 

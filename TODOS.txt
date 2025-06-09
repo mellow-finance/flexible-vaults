@@ -32,6 +32,11 @@ Configurations
 2. Crosschain
 3. Base
 
+Strategies
+1. Restaking strategy
+2. Leverage strategy
+3. Crosschain
+
 Tests
 Symbiotic
 EigenLayer

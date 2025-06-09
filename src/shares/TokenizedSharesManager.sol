@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "./SharesManager.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
-contract SharesManagerERC20 is SharesManager, ERC20Upgradeable {
+contract TokenizedSharesManager is SharesManager, ERC20Upgradeable {
     function activeSharesOf(address account) public view override returns (uint256) {
         return _ERC20Storage()._balances[account];
     }
