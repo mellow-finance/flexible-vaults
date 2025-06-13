@@ -9,9 +9,8 @@ library PermissionsLibrary {
     bytes32 public constant SET_DEPOSIT_HOOK_ROLE = keccak256("DEPOSIT_MODULE:SET_DEPOSIT_HOOK_ROLE");
     bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE = keccak256("DEPOSIT_MODULE:CREATE_DEPOSIT_QUEUE_ROLE");
 
-    bytes32 public constant SET_MIN_REDEEM_ROLE = keccak256("REDEEM_MODULE.SET_MIN_REDEEM_ROLE");
-    bytes32 public constant SET_MAX_REDEEM_ROLE = keccak256("REDEEM_MODULE.SET_MAX_REDEEM_ROLE");
-    bytes32 public constant CREATE_WITHDRAWAL_QUEUE_ROLE = keccak256("REDEEM_MODULE.CREATE_WITHDRAWAL_QUEUE_ROLE");
+    bytes32 public constant SET_REDEEM_HOOK_ROLE = keccak256("REDEEM_MODULE.SET_REDEEM_HOOK_ROLE");
+    bytes32 public constant CREATE_REDEEM_QUEUE_ROLE = keccak256("CREATE_REDEEM_QUEUE_ROLE.SET_REDEEM_HOOK_ROLE");
 
     bytes32 public constant SEND_REPORT_ROLE = keccak256("ORACLE:SEND_REPORT_ROLE");
     bytes32 public constant ACCEPT_REPORT_ROLE = keccak256("ORACLE:ACCEPT_REPORT_ROLE");
@@ -26,5 +25,7 @@ library PermissionsLibrary {
 
     bytes32 public constant SET_FLAGS_ROLE = keccak256("SHARES_MANAGER:SET_FLAGS_ROLE");
 
-    bytes32 public constant ADD_SUVAULT_ROLE = keccak256("FACTORY_MODULE:ADD_SUVAULT_ROLE");
+    bytes32 public constant CREATE_SUBVAULT_ROLE = keccak256("SUBVAULT_MODULE:CREATE_SUBVAULT_ROLE");
+    bytes32 public constant DISCONNECT_SUBVAULT_ROLE = keccak256("SUBVAULT_MODULE:DISCONNECT_SUBVAULT_ROLE");
+    bytes32 public constant RECONNECT_SUBVAULT_ROLE = keccak256("SUBVAULT_MODULE:RECONNECT_SUBVAULT_ROLE");
 }

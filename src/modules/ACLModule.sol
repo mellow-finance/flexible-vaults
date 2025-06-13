@@ -10,8 +10,15 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 abstract contract ACLModule is BaseModule, AccessControlEnumerableUpgradeable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
+    enum FundamentalRole {
+        ADMIN,
+        PROXY_OWNER,
+        SUBVAULT_ADMIN
+    }
+
     struct ACLModuleStorage {
         EnumerableSet.Bytes32Set supportedRoles;
+        mapping(address account => uint256) fundamentalRoles;
     }
 
     bytes32 private immutable _aclModuleStorageSlot;
@@ -21,6 +28,10 @@ abstract contract ACLModule is BaseModule, AccessControlEnumerableUpgradeable {
     }
 
     // View functions
+
+    function requireFundamentalRole(address account, FundamentalRole role) public view returns (bool) {
+        return _aclModuleStorage().fundamentalRoles[account] & (1 << uint256(role)) != 0;
+    }
 
     function supportedRoles() public view returns (uint256) {
         return _aclModuleStorage().supportedRoles.length();
@@ -34,20 +45,55 @@ abstract contract ACLModule is BaseModule, AccessControlEnumerableUpgradeable {
         return _aclModuleStorage().supportedRoles.contains(role);
     }
 
+    // Mutable functions
+
+    function grantFundamentalRole(address account, FundamentalRole role)
+        external
+        onlyRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE)
+    {
+        _grantFundamentalRole(account, role);
+    }
+
+    function revokeFundamentalRole(address account, FundamentalRole role)
+        external
+        onlyRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE)
+    {
+        _revokeFundamentalRole(account, role);
+    }
+
     // Internal functions
+
     function __ACLModule_init(address admin_) internal onlyInitializing {
         if (admin_ == address(0)) {
             revert("ACLModule: zero admin address");
         }
+        _grantFundamentalRole(admin_, FundamentalRole.ADMIN);
         _grantRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE, admin_);
     }
 
+    function _grantFundamentalRole(address account, FundamentalRole role) internal virtual {
+        if (account == address(0)) {
+            revert("ACLModule: zero account address");
+        }
+        _aclModuleStorage().fundamentalRoles[account] |= (1 << uint256(role));
+    }
+
     function _grantRole(bytes32 role, address account) internal virtual override returns (bool) {
+        if (role == DEFAULT_ADMIN_ROLE) {
+            requireFundamentalRole(account, FundamentalRole.ADMIN);
+        }
         if (super._grantRole(role, account)) {
             _aclModuleStorage().supportedRoles.add(role);
             return true;
         }
         return false;
+    }
+
+    function _revokeFundamentalRole(address account, FundamentalRole role) internal virtual {
+        if (account == address(0)) {
+            revert("ACLModule: zero account address");
+        }
+        _aclModuleStorage().fundamentalRoles[account] &= ~(1 << uint256(role));
     }
 
     function _revokeRole(bytes32 role, address account) internal virtual override returns (bool) {

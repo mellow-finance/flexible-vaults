@@ -32,6 +32,10 @@ contract Factory is OwnableUpgradeable {
         return _factoryStorage().entities.at(index);
     }
 
+    function isEntity(address entity) external view returns (bool) {
+        return _factoryStorage().entities.contains(entity);
+    }
+
     function implementations() external view returns (uint256) {
         return _factoryStorage().implementation.length();
     }

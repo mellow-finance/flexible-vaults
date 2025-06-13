@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
@@ -10,7 +10,7 @@ import "../libraries/TransferLibrary.sol";
 import "../modules/RedeemModule.sol";
 import "./Queue.sol";
 
-contract RedeemQueue is Queue, ReentrancyGuard {
+contract RedeemQueue is Queue, ReentrancyGuardUpgradeable {
     using EnumerableMap for EnumerableMap.UintToUintMap;
     using Checkpoints for Checkpoints.Trace208;
 
@@ -78,6 +78,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
     receive() external payable {}
 
     function initialize(bytes calldata data) external initializer {
+        __ReentrancyGuard_init();
         (address asset_, address sharesModule_) = abi.decode(data, (address, address));
         __Queue_init(asset_, sharesModule_);
     }
@@ -110,7 +111,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
         callerRequests.set(timestamp, pendingShares + shares);
     }
 
-    function claim(address account, uint256[] calldata timestamps) public returns (uint256 assets) {
+    function claim(address account, uint256[] calldata timestamps) external nonReentrant returns (uint256 assets) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[account];
         (bool doesExist, uint48 latestReportTimestamp,) = $.prices.latestCheckpoint();
@@ -142,7 +143,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
     }
 
     /// @dev permissionless function
-    function handleReports(uint256 reports) public returns (uint256 counter) {
+    function handleReports(uint256 reports) external nonReentrant returns (uint256 counter) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         uint256 iterator_ = $.outflowDemandIterator;
         uint256 length = $.outflowDemand.length;
@@ -151,12 +152,14 @@ contract RedeemQueue is Queue, ReentrancyGuard {
         }
         reports = Math.min(reports, length - iterator_);
 
-        uint256 availableAssets = RedeemModule(payable(vault())).availablePullAssets(asset());
+        RedeemModule vault_ = RedeemModule(payable(vault()));
+        address asset_ = asset();
+        uint256 liquidAssets = vault_.getLiquidAssets(asset_);
         uint256 demand = 0;
         Pair memory pair;
         for (uint256 i = 0; i < reports; i++) {
             pair = $.outflowDemand[iterator_ + i];
-            if (demand + pair.assets > availableAssets) {
+            if (demand + pair.assets > liquidAssets) {
                 break;
             }
             demand += pair.assets;
@@ -165,7 +168,7 @@ contract RedeemQueue is Queue, ReentrancyGuard {
 
         if (counter > 0) {
             if (demand > 0) {
-                RedeemModule(payable(vault())).pullAssets(asset(), demand);
+                vault_.callRedeemHook(asset_, demand);
             }
             $.outflowDemandIterator += counter;
         }

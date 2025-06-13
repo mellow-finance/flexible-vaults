@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
@@ -10,7 +10,7 @@ import "../libraries/TransferLibrary.sol";
 import "../modules/DepositModule.sol";
 import "./Queue.sol";
 
-contract DepositQueue is Queue, ReentrancyGuard {
+contract DepositQueue is Queue, ReentrancyGuardUpgradeable {
     using FenwickTreeLibrary for FenwickTreeLibrary.Tree;
     using Checkpoints for Checkpoints.Trace208;
 
@@ -50,6 +50,7 @@ contract DepositQueue is Queue, ReentrancyGuard {
     // Mutable functions
 
     function initialize(bytes calldata data) external initializer {
+        __ReentrancyGuard_init();
         (address asset_, address sharesModule_) = abi.decode(data, (address, address));
         __Queue_init(asset_, sharesModule_);
         _depositQueueStorage().requests.initialize(16);
@@ -65,7 +66,7 @@ contract DepositQueue is Queue, ReentrancyGuard {
         }
         DepositQueueStorage storage $ = _depositQueueStorage();
         if ($.requestOf[caller]._value != 0) {
-            if (!claim(caller)) {
+            if (!_claim(caller)) {
                 revert("DepositQueue: pending request");
             }
         }
@@ -108,7 +109,13 @@ contract DepositQueue is Queue, ReentrancyGuard {
         TransferLibrary.sendAssets(asset_, caller, assets);
     }
 
-    function claim(address account) public returns (bool) {
+    function claim(address account) external nonReentrant returns (bool) {
+        return _claim(account);
+    }
+
+    // Internal functions
+
+    function _claim(address account) internal returns (bool) {
         DepositQueueStorage storage $ = _depositQueueStorage();
         Checkpoints.Checkpoint208 memory request = $.requestOf[account];
         uint256 priceD18 = $.prices.lowerLookup(request._key);
@@ -122,8 +129,6 @@ contract DepositQueue is Queue, ReentrancyGuard {
         }
         return true;
     }
-
-    // Internal functions
 
     function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal override {
         SharesModule vault_ = vault();

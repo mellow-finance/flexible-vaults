@@ -2,6 +2,7 @@
 pragma solidity 0.8.25;
 
 import "../modules/SharesModule.sol";
+import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 abstract contract Queue is ContextUpgradeable {
     using Checkpoints for Checkpoints.Trace208;

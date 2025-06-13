@@ -2,5 +2,5 @@
 pragma solidity 0.8.25;
 
 contract DepositHook {
-    function onDeposit(address asset, uint256 assets) external {}
+    function afterDeposit(address asset, uint256 assets) external {}
 }

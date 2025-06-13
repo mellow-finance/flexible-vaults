@@ -23,10 +23,7 @@ contract Vault is ACLModule, SubvaultModule, DepositModule, RedeemModule {
         RedeemModule(name_, version_, redeemQueueFactory_)
     {}
 
-    function initialize(address admin_, address sharesManager_, address oracle_, uint256 epochDuration_)
-        external
-        initializer
-    {
+    function initialize(bytes calldata initParams) external initializer {
         // __ACLModule_init(admin_);
         // __DepositModule_init();
         // __RedeemModule_init();

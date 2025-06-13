@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
+import "../factories/Factory.sol";
 import "../hooks/DepositHook.sol";
 import "../queues/DepositQueue.sol";
-import "../queues/Queue.sol";
 import "./ACLModule.sol";
-import "@openzeppelin/contracts/proxy/Clones.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 abstract contract DepositModule is SharesModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -14,8 +14,8 @@ abstract contract DepositModule is SharesModule, ACLModule {
     struct DepositModuleStorage {
         address defaultHook;
         mapping(address queue => address) customHooks;
-        EnumerableSet.AddressSet assets;
         mapping(address asset => EnumerableSet.AddressSet) queues;
+        EnumerableSet.AddressSet assets;
     }
 
     bytes32 private immutable _depositModuleStorageSlot;
@@ -26,9 +26,21 @@ abstract contract DepositModule is SharesModule, ACLModule {
         depositQueueFactory = depositQueueFactory_;
     }
 
-    // View functions:
+    // View functions
 
-    function getDepositQueues(address asset) public view override(SharesModule) returns (address[] memory queues) {
+    function depositAssets() public view returns (uint256) {
+        return _depositModuleStorage().assets.length();
+    }
+
+    function depositAssetAt(uint256 index) public view returns (address) {
+        return _depositModuleStorage().assets.at(index);
+    }
+
+    function isDepositAsset(address asset) public view returns (bool) {
+        return _depositModuleStorage().assets.contains(asset);
+    }
+
+    function getDepositQueues(address asset) public view override returns (address[] memory queues) {
         return _depositModuleStorage().queues[asset].values();
     }
 
@@ -75,33 +87,31 @@ abstract contract DepositModule is SharesModule, ACLModule {
         if (!queues.contains(caller)) {
             revert("DepositModule: caller is not a queue");
         }
-        address hook = getDepositHook(caller);
-        if (hook == address(0)) {
-            revert("DepositModule: no hook set");
-        }
-        Address.functionDelegateCall(hook, abi.encodeCall(DepositHook.onDeposit, (asset, assets)));
+        Address.functionDelegateCall(getDepositHook(caller), abi.encodeCall(DepositHook.afterDeposit, (asset, assets)));
     }
 
-    function createDepositQueue(address asset, uint256 version, bytes32 salt)
+    function createDepositQueue(uint256 version, address owner, address asset, bytes32 salt)
         external
         onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
     {
-        if (asset == address(0)) {
-            revert("DepositModule: zero address");
+        if (asset == address(0) || !Oracle(depositOracle()).isSupportedAsset(asset)) {
+            revert("DepositModule: unsupported asset");
         }
+        requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
+        address queue = Factory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this)), salt);
         DepositModuleStorage storage $ = _depositModuleStorage();
-        address queue = Factory(DEPOSIT_QUEUE_FACTORY).create(version, owner, abi.encode(asset, address(this)), salt);
-        $.queues.add(queue);
+        $.queues[asset].add(queue);
+        $.assets.add(asset);
     }
 
     // Internal functions
 
-    function __DepositModule_init(address beacon_, address defaultHook_) internal onlyInitializing {
+    function __DepositModule_init(bytes calldata initParams) internal onlyInitializing {
+        address defaultHook_ = abi.decode(initParams, (address));
         DepositModuleStorage storage $ = _depositModuleStorage();
-        if (beacon_ == address(0) || defaultHook_ == address(0)) {
+        if (defaultHook_ == address(0)) {
             revert("DepositModule: zero address");
         }
-        // $.beacon = beacon_;
         $.defaultHook = defaultHook_;
     }
 
