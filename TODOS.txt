@@ -1,36 +1,16 @@
 ShareManager hooks:
-1. onMint
-2. onBurn
-3. onTransfer
+onMint
+onBurn
+onTransfer
 
-DepositModule:
-per block per token limits for instant deposit module (?)
-queue versions
-onDepositFee
+DepositModule / RedeemModule:
+limits per block per token?
 
-RedeemModule:
-queue verisions
-onRedeemFee
-
-NodeModule hooks:
-1. onMint distribution
-2. beforeBurn pull (view function?)
-
-Proxy:
-1. Force update (?)
-
-Factories:
-1. per Configuration?
+VaultConfigurator
 
 Hooks
-splitter hook?
-transfer on deposit
-default hook
-
-Configurations
-1. Nodes
-2. Crosschain
-3. Base
+splitter hook to subvaults
+all other hooks
 
 Strategies
 1. Restaking strategy
