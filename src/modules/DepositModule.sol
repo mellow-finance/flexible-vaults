@@ -1,126 +1,114 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../hooks/DepositHook.sol";
 import "../queues/DepositQueue.sol";
 import "../queues/Queue.sol";
-
-import "../hooks/RedirectionDepositHook.sol";
-import "./ACLPermissionsModule.sol";
-
+import "./ACLModule.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-abstract contract DepositModule is ACLPermissionsModule {
-    using EnumerableMap for EnumerableMap.AddressToAddressMap;
+abstract contract DepositModule is SharesModule, ACLModule {
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     struct DepositModuleStorage {
-        uint256 verisions;
-        mapping(uint256 version => address implementation) implementations;
-        mapping(uint256 index => address queue) depositQueues;
-        address defaultDepositHook;
-        mapping(address asset => address hook) hooks;
-        mapping(address => uint256) minDeposit;
-        mapping(address => uint256) maxDeposit;
+        address defaultHook;
+        mapping(address queue => address) customHooks;
+        EnumerableSet.AddressSet assets;
+        mapping(address asset => EnumerableSet.AddressSet) queues;
     }
 
     bytes32 private immutable _depositModuleStorageSlot;
+    address public immutable depositQueueFactory;
 
-    constructor(string memory name_, uint256 version_) {
+    constructor(string memory name_, uint256 version_, address depositQueueFactory_) {
         _depositModuleStorageSlot = SlotLibrary.getSlot("DepositModule", name_, version_);
+        depositQueueFactory = depositQueueFactory_;
     }
 
     // View functions:
 
-    function depositQueueImplementation(uint256 version) public view returns (address) {
-        return _depositModuleStorage().implementations[version];
+    function getDepositQueues(address asset) public view override(SharesModule) returns (address[] memory queues) {
+        return _depositModuleStorage().queues[asset].values();
     }
 
-    function depositQueueVersions() public view returns (uint256) {
-        return _depositModuleStorage().verisions;
-    }
-
-    function maxDeposit(address asset) public view returns (uint256) {
-        return _depositModuleStorage().maxDeposit[asset];
-    }
-
-    function minDeposit(address asset) public view returns (uint256) {
-        return _depositModuleStorage().minDeposit[asset];
-    }
-
-    function defaultDepositHook() external view returns (address) {
-        return _depositModuleStorage().defaultDepositHook;
-    }
-
-    function depositHook(address asset) external view returns (address) {
+    function claimableSharesOf(address account) public view returns (uint256 shares) {
         DepositModuleStorage storage $ = _depositModuleStorage();
-        address hook = $.hooks[asset];
+        EnumerableSet.AddressSet storage assets = $.assets;
+        uint256 assetsCount = assets.length();
+        for (uint256 i = 0; i < assetsCount; i++) {
+            address asset = assets.at(i);
+            EnumerableSet.AddressSet storage queues = $.queues[asset];
+            uint256 queuesCount = queues.length();
+            for (uint256 j = 0; j < queuesCount; j++) {
+                shares += DepositQueue(queues.at(j)).claimableOf(account);
+            }
+        }
+        return shares;
+    }
+
+    function getDepositHook(address queue) public view returns (address hook) {
+        DepositModuleStorage storage $ = _depositModuleStorage();
+        hook = $.customHooks[queue];
         if (hook == address(0)) {
-            hook = $.defaultDepositHook;
+            hook = $.defaultHook;
         }
         return hook;
     }
 
-    function claimableSharesOf(address account) public view returns (uint256 shares) {
-        // EnumerableMap.AddressToAddressMap storage queues = _depositModuleStorage().depositQueues;
-        // uint256 n = queues.length();
-        // for (uint256 i = 0; i < n; i++) {
-        //     (, address queue) = queues.at(i);
-        //     shares += DepositQueue(queue).claimableOf(account);
-        // }
-    }
-
     // Mutable functions
 
-    function setMaxDeposit(address asset, uint256 amount) external onlyRole(PermissionsLibrary.SET_MIN_DEPOSIT_ROLE) {
-        if (asset == address(0)) {
+    function setCustomDepositHook(address queue, address hook)
+        external
+        onlyRole(PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE)
+    {
+        if (queue == address(0) || hook == address(0)) {
             revert("DepositModule: zero address");
         }
-        _depositModuleStorage().maxDeposit[asset] = amount;
+        _depositModuleStorage().customHooks[queue] = hook;
     }
 
-    function setMinDeposit(address asset, uint256 amount) external onlyRole(PermissionsLibrary.SET_MAX_DEPOSIT_ROLE) {
-        if (asset == address(0)) {
-            revert("DepositModule: zero address");
+    function callDepositHook(address asset, uint256 assets) external {
+        address caller = _msgSender();
+        DepositModuleStorage storage $ = _depositModuleStorage();
+        EnumerableSet.AddressSet storage queues = $.queues[asset];
+        if (!queues.contains(caller)) {
+            revert("DepositModule: caller is not a queue");
         }
-        _depositModuleStorage().minDeposit[asset] = amount;
-    }
-
-    function setDepositHook(address asset, address hook) external onlyRole(PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE) {
-        if (asset == address(0) || hook == address(0)) {
-            revert("DepositModule: zero address");
+        address hook = getDepositHook(caller);
+        if (hook == address(0)) {
+            revert("DepositModule: no hook set");
         }
-        _depositModuleStorage().hooks[asset] = hook;
+        Address.functionDelegateCall(hook, abi.encodeCall(DepositHook.onDeposit, (asset, assets)));
     }
 
-    function createDepositQueue(address asset) external onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE) {
+    function createDepositQueue(address asset, uint256 version, bytes32 salt)
+        external
+        onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
+    {
         if (asset == address(0)) {
             revert("DepositModule: zero address");
         }
         DepositModuleStorage storage $ = _depositModuleStorage();
-        // if ($.depositQueues.contains(asset)) {
-        //     revert("DepositModule: queue already exists");
-        // }
-        // address queue =
-        //     // Clones.cloneDeterministic($.depositQueueImplementation, bytes32(bytes20(asset)));
-        // DepositQueue(queue).initialize(asset, address(this));
-        // $.depositQueues.set(asset, address(queue));
+        address queue = Factory(DEPOSIT_QUEUE_FACTORY).create(version, owner, abi.encode(asset, address(this)), salt);
+        $.queues.add(queue);
     }
 
     // Internal functions
+
+    function __DepositModule_init(address beacon_, address defaultHook_) internal onlyInitializing {
+        DepositModuleStorage storage $ = _depositModuleStorage();
+        if (beacon_ == address(0) || defaultHook_ == address(0)) {
+            revert("DepositModule: zero address");
+        }
+        // $.beacon = beacon_;
+        $.defaultHook = defaultHook_;
+    }
 
     function _depositModuleStorage() internal view returns (DepositModuleStorage storage $) {
         bytes32 slot = _depositModuleStorageSlot;
         assembly {
             $.slot := slot
         }
-    }
-
-    function __DepositModule_init(address depositQueueImplementation_) internal onlyInitializing {
-        if (depositQueueImplementation_ == address(0)) {
-            revert("DepositModule: zero address");
-        }
-        DepositModuleStorage storage $ = _depositModuleStorage();
-        // $.depositQueueImplementation = depositQueueImplementation_;
-        // $.defaultDepositHook = address(new RedirectionDepositHook(address(this)));
     }
 }

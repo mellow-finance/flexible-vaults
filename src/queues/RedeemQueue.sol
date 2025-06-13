@@ -1,89 +1,221 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
+import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
+
+import "../libraries/TransferLibrary.sol";
 import "../modules/RedeemModule.sol";
 import "./Queue.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract RedeemQueue is Queue, ReentrancyGuard {
-    using SafeERC20 for IERC20;
+    using EnumerableMap for EnumerableMap.UintToUintMap;
+    using Checkpoints for Checkpoints.Trace208;
 
-    mapping(address account => mapping(uint256 epoch => uint256 shares)) public requestOf;
-    mapping(uint256 epoch => uint256 assets) public pulledAssetsAt;
+    struct Request {
+        uint256 timestamp;
+        uint256 shares;
+        bool isClaimable;
+        uint256 assets;
+    }
 
-    function initialize(address asset_, address sharesModule_) external initializer {
+    struct Pair {
+        uint256 assets;
+        uint256 shares;
+    }
+
+    struct RedeemQueueStorage {
+        uint256 handledIndices;
+        uint256 outflowDemandIterator;
+        mapping(address account => EnumerableMap.UintToUintMap) requestsOf;
+        mapping(uint256 index => uint256 cumulativeShares) prefixSum;
+        Pair[] outflowDemand;
+        Checkpoints.Trace208 prices;
+    }
+
+    bytes32 private immutable _redeemQueueStorageSlot;
+
+    constructor(string memory name_, uint256 version_) Queue(name_, version_) {
+        _redeemQueueStorageSlot = SlotLibrary.getSlot("RedeemQueue", name_, version_);
+    }
+
+    // View functions
+
+    function requestsOf(address account, uint256 offset, uint256 limit)
+        public
+        view
+        returns (Request[] memory requests)
+    {
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+        EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[account];
+        uint256 length = callerRequests.length();
+        if (length <= offset) {
+            return new Request[](0);
+        }
+        limit = Math.min(length - offset, limit);
+        requests = new Request[](limit);
+        uint256 outflowDemandIterator = $.outflowDemandIterator;
+        (, uint48 latestEligibleTimestamp,) = $.prices.latestCheckpoint();
+        Pair memory pair;
+        for (uint256 i = 0; i < limit; i++) {
+            (uint256 timestamp, uint256 shares) = callerRequests.at(i + offset);
+            requests[i].timestamp = timestamp;
+            requests[i].shares = shares;
+            if (timestamp > latestEligibleTimestamp) {
+                continue;
+            }
+            uint256 index = $.prices.lowerLookup(uint48(timestamp));
+            pair = $.outflowDemand[index];
+            requests[i].assets = Math.mulDiv(shares, pair.assets, pair.shares);
+            requests[i].isClaimable = index < outflowDemandIterator;
+        }
+    }
+
+    // Mutable functions
+
+    receive() external payable {}
+
+    function initialize(bytes calldata data) external initializer {
+        (address asset_, address sharesModule_) = abi.decode(data, (address, address));
         __Queue_init(asset_, sharesModule_);
     }
 
-    function request(uint256 shares) external nonReentrant {
-        address caller = msg.sender;
-        SharesModule vault_ = vault;
-        address asset_ = asset;
-        if (shares == 0 || shares < RedeemModule(payable(vault_)).minRedeem(asset_)) {
-            revert("RedeemQueue: limit underflow");
+    function redeem(uint256 shares) external nonReentrant {
+        if (shares == 0) {
+            revert("RedeemQueue: zero shares");
         }
-        if (
-            shares > RedeemModule(payable(vault_)).maxRedeem(asset_) || shares > vault_.sharesManager().sharesOf(caller)
-        ) {
-            revert("RedeemQueue: limit overflow");
+        address caller = _msgSender();
+        SharesManager sharesManager_ = sharesManager();
+        sharesManager_.pullShares(caller, shares);
+
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+
+        uint256 timestamp = block.timestamp;
+        uint256 index;
+        Checkpoints.Trace208 storage timestamps = _timestamps();
+        uint208 latestTimestamp = timestamps.latest();
+        if (latestTimestamp < timestamp) {
+            index = timestamps.length();
+            timestamps.push(uint48(timestamp), uint208(index));
+            $.prefixSum[index] = shares + $.prefixSum[index - 1];
+        } else {
+            index = timestamps.length() - 1;
+            $.prefixSum[index] += shares;
         }
-        vault_.sharesManager().pullShares(caller, shares);
-        uint256 epoch = vault_.currentEpoch();
-        requestOf[caller][epoch] += shares;
-        demandAt[epoch] += shares;
+
+        EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[caller];
+        (, uint256 pendingShares) = callerRequests.tryGet(timestamp);
+        callerRequests.set(timestamp, pendingShares + shares);
     }
 
-    function claim(address account, uint256 epoch) public returns (uint256 assets) {
-        uint256 pulledAssets = pulledAssetsAt[epoch];
-        uint256 requested = requestOf[account][epoch];
-        if (requested == 0) {
-            revert("RedeemQueue: no request");
-        }
-        if (pulledAssets == 0) {
-            revert("RedeemQueue: epoch not processed");
-        }
-        assets = Math.mulDiv(pulledAssets, requested, demandAt[epoch]);
-        demandAt[epoch] -= requested;
-        delete requestOf[account][epoch];
-        if (assets == 0) {
+    function claim(address account, uint256[] calldata timestamps) public returns (uint256 assets) {
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+        EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[account];
+        (bool doesExist, uint48 latestReportTimestamp,) = $.prices.latestCheckpoint();
+        if (!doesExist) {
             return 0;
         }
-        pulledAssetsAt[epoch] -= assets;
-        TransferLibrary.sendAssets(asset, account, assets);
-    }
 
-    function claimableAssetsOf(address account, uint256 epoch) public view returns (uint256 assets) {
-        uint256 pulledAssets = pulledAssetsAt[epoch];
-        uint256 requested = requestOf[account][epoch];
-        if (requested == 0) {
-            return 0;
-        }
-        if (pulledAssets == 0) {
-            return 0;
-        }
-        assets = Math.mulDiv(pulledAssets, requested, demandAt[epoch]);
-    }
-
-    function _handleEpoch(uint256 epoch) internal override returns (bool) {
-        address asset_ = asset;
-        SharesModule vault_ = vault;
-        (bool hasReport, uint256 priceD18) = vault_.oracle().getRedeemEpochPrice(asset_, epoch);
-        if (!hasReport) {
-            return false;
-        }
-        uint256 demand = demandAt[epoch];
-        if (demand != 0) {
-            uint256 assets = Math.mulDiv(demand, priceD18, 1 ether);
-            if (IERC20(asset_).balanceOf(address(vault_)) < assets) {
-                return false;
+        for (uint256 i = 0; i < timestamps.length; i++) {
+            uint256 timestamp = timestamps[i];
+            if (timestamp > latestReportTimestamp) {
+                continue;
             }
-            uint256 balance = IERC20(asset_).balanceOf(address(vault_));
-            RedeemModule(payable(vault_)).pull(asset_, assets);
-            pulledAssetsAt[epoch] = IERC20(asset_).balanceOf(address(vault_)) - balance;
+            (bool hasRequest, uint256 shares) = callerRequests.tryGet(timestamp);
+            if (!hasRequest || shares == 0) {
+                continue;
+            }
+            uint256 index = $.prices.lowerLookup(uint48(timestamp));
+            Pair storage pair = $.outflowDemand[index];
+
+            uint256 assets_ = Math.mulDiv(shares, pair.assets, pair.shares);
+            assets += assets_;
+            pair.assets -= assets_;
+            pair.shares -= shares;
+
+            callerRequests.remove(timestamp);
         }
-        return true;
+
+        TransferLibrary.sendAssets(asset(), account, assets);
     }
 
-    receive() external payable {}
+    /// @dev permissionless function
+    function handleReports(uint256 reports) public returns (uint256 counter) {
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+        uint256 iterator_ = $.outflowDemandIterator;
+        uint256 length = $.outflowDemand.length;
+        if (iterator_ >= length || reports == 0) {
+            return 0;
+        }
+        reports = Math.min(reports, length - iterator_);
+
+        uint256 availableAssets = RedeemModule(payable(vault())).availablePullAssets(asset());
+        uint256 demand = 0;
+        Pair memory pair;
+        for (uint256 i = 0; i < reports; i++) {
+            pair = $.outflowDemand[iterator_ + i];
+            if (demand + pair.assets > availableAssets) {
+                break;
+            }
+            demand += pair.assets;
+            counter++;
+        }
+
+        if (counter > 0) {
+            if (demand > 0) {
+                RedeemModule(payable(vault())).pullAssets(asset(), demand);
+            }
+            $.outflowDemandIterator += counter;
+        }
+    }
+
+    // Internal functions
+
+    function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal override {
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+
+        Checkpoints.Trace208 storage timestamps = _timestamps();
+        (bool exists, uint48 latestTimestamp, uint208 latestIndex) = timestamps.latestCheckpoint();
+        if (!exists) {
+            return;
+        }
+
+        uint256 latestEligibleIndex;
+        if (latestTimestamp <= latestEligibleTimestamp) {
+            latestEligibleIndex = latestIndex;
+        } else {
+            latestEligibleIndex = uint256(timestamps.upperLookupRecent(latestEligibleTimestamp));
+            if (latestEligibleIndex == 0) {
+                return;
+            }
+            latestEligibleIndex--;
+        }
+
+        uint256 handledIndices_ = $.handledIndices;
+        if (latestEligibleIndex < handledIndices_) {
+            return;
+        }
+
+        uint256 shares = $.prefixSum[latestEligibleIndex] - handledIndices_ == 0 ? 0 : $.prefixSum[handledIndices_ - 1];
+        $.handledIndices = latestEligibleIndex + 1;
+
+        if (shares == 0) {
+            return;
+        }
+
+        uint256 index = $.prices.length();
+        $.prices.push(latestEligibleTimestamp, uint208(index));
+        $.outflowDemand.push(Pair(Math.mulDiv(shares, priceD18, 1 ether), shares));
+
+        sharesManager().burnShares(address(this), shares);
+    }
+
+    function _redeemQueueStorage() internal view returns (RedeemQueueStorage storage $) {
+        bytes32 slot = _redeemQueueStorageSlot;
+        assembly {
+            $.slot := slot
+        }
+    }
 }

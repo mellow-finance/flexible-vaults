@@ -7,42 +7,37 @@ import "../modules/SharesModule.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 contract Oracle is ContextUpgradeable {
     using Checkpoints for Checkpoints.Trace224;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
-    struct OracleStorage {
-        SharesModule vault;
-        uint224 maxAbsoluteDeviation;
+    struct SecurityParams {
+        uint208 maxAbsoluteDeviation;
+        uint208 suspiciousAbsoluteDeviation;
         uint64 maxRelativeDeviationD18;
-        uint224 suspiciousAbsoluteDeviation;
         uint64 suspiciousRelativeDeviationD18;
         uint32 timeout;
-        uint32 depositSecureT;
-        uint32 redeemSecureT;
-        bool isLocked;
-        mapping(address asset => Checkpoints.Trace224) depositPriceReports;
-        mapping(address asset => Checkpoints.Trace224) redeemPriceReports;
+        uint32 secureInterval;
     }
 
     struct Report {
         address asset;
-        uint224 depositPriceD18; // assets * price = shares
-        uint224 redeemPriceD18; // shares * price = assets
+        uint208 priceD18;
     }
 
-    struct Stack {
-        SharesModule vault;
-        uint224 maxAbsoluteDeviation;
-        uint64 maxRelativeDeviationD18;
-        uint224 suspiciousAbsoluteDeviation;
-        uint64 suspiciousRelativeDeviationD18;
+    struct DetailedReport {
+        uint208 priceD18;
         uint32 timestamp;
-        uint32 timeout;
-        uint32 depositSecureT;
-        uint32 redeemSecureT;
-        bool isLocked;
-        uint224 price;
+        bool isSuspicious;
+    }
+
+    struct OracleStorage {
+        SharesModule vault;
+        SecurityParams securityParams;
+        EnumerableSet.AddressSet supportedAssets;
+        mapping(address asset => DetailedReport) reports;
     }
 
     bytes32 private immutable _oracleStorageSlot;
@@ -58,209 +53,126 @@ contract Oracle is ContextUpgradeable {
         _;
     }
 
-    function vault() public view returns (SharesModule) {
-        return _oracleStorage().vault;
-    }
-
-    function timeout() public view returns (uint32) {
-        return _oracleStorage().timeout;
-    }
-
-    function maxAbsoluteDeviation() public view returns (uint224) {
-        return _oracleStorage().maxAbsoluteDeviation;
-    }
-
-    function maxRelativeDeviationD18() public view returns (uint256) {
-        return _oracleStorage().maxRelativeDeviationD18;
-    }
-
-    function depositSecureT() public view returns (uint32) {
-        return _oracleStorage().depositSecureT;
-    }
-
-    function redeemSecureT() public view returns (uint32) {
-        return _oracleStorage().redeemSecureT;
-    }
-
-    function depositPriceReportAt(address asset, uint32 index) public view returns (Checkpoints.Checkpoint224 memory) {
-        return _oracleStorage().depositPriceReports[asset].at(index);
-    }
-
-    function depositPriceReportsLength(address asset) public view returns (uint256) {
-        return _oracleStorage().depositPriceReports[asset].length();
-    }
-
-    function redeemPriceReportAt(address asset, uint32 index) public view returns (Checkpoints.Checkpoint224 memory) {
-        return _oracleStorage().redeemPriceReports[asset].at(index);
-    }
-
-    function redeemPriceReportsLength(address asset) public view returns (uint256) {
-        return _oracleStorage().redeemPriceReports[asset].length();
-    }
-
-    function isLocked() public view returns (bool) {
-        return _oracleStorage().isLocked;
-    }
-
-    function getLatestDepositPrice(address asset) public view returns (bool exists, uint224 priceD18) {
-        (exists,, priceD18) = _oracleStorage().depositPriceReports[asset].latestCheckpoint();
-    }
-
-    function getDepositEpochPrice(address asset, uint256 epoch) public view returns (bool exists, uint224 priceD18) {
-        OracleStorage storage $ = _oracleStorage();
-        if ($.isLocked) {
-            return (false, 0);
-        }
-        uint256 timestamp = SharesModule($.vault).endTimestampOf(epoch) + $.depositSecureT;
-        if (timestamp > type(uint32).max) {
-            return (false, 0);
-        }
-        priceD18 = $.depositPriceReports[asset].lowerLookup(uint32(timestamp));
-        exists = priceD18 != 0;
-    }
-
-    function getLatestRedeemPrice(address asset) public view returns (bool exists, uint224 priceD18) {
-        (exists,, priceD18) = _oracleStorage().redeemPriceReports[asset].latestCheckpoint();
-    }
-
-    function getRedeemEpochPrice(address asset, uint256 epoch) public view returns (bool exists, uint224 priceD18) {
-        OracleStorage storage $ = _oracleStorage();
-        if ($.isLocked) {
-            return (false, 0);
-        }
-        uint256 timestamp = SharesModule($.vault).endTimestampOf(epoch) + $.redeemSecureT;
-        if (timestamp > type(uint32).max) {
-            return (false, 0);
-        }
-        priceD18 = $.redeemPriceReports[asset].lowerLookup(uint32(timestamp));
-        exists = priceD18 != 0;
-    }
-
     // Mutable functions
 
-    function reportPrices(Report[] calldata reports) external onlyRole(PermissionsLibrary.REPORT_PRICES_ROLE) {
+    function sendReport(Report[] calldata reports) external onlyRole(PermissionsLibrary.SEND_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
-        Stack memory stack = Stack({
-            vault: $.vault,
-            maxAbsoluteDeviation: $.maxAbsoluteDeviation,
-            maxRelativeDeviationD18: $.maxRelativeDeviationD18,
-            suspiciousAbsoluteDeviation: $.suspiciousAbsoluteDeviation,
-            suspiciousRelativeDeviationD18: $.suspiciousRelativeDeviationD18,
-            timestamp: uint32(block.timestamp),
-            timeout: $.timeout,
-            depositSecureT: $.depositSecureT,
-            redeemSecureT: $.redeemSecureT,
-            isLocked: $.isLocked,
-            price: 0
-        });
+        SecurityParams memory securityParams = _oracleStorage().securityParams;
+        uint48 secureTimestamp = uint48(block.timestamp - securityParams.secureInterval);
         for (uint256 i = 0; i < reports.length; i++) {
-            Report calldata report = reports[i];
-            stack.price = report.depositPriceD18;
-            _handleReport($.depositPriceReports[report.asset], stack);
-            stack.price = report.redeemPriceD18;
-            _handleReport($.redeemPriceReports[report.asset], stack);
-        }
-        if (stack.isLocked) {
-            $.isLocked = true;
+            if (!$.supportedAssets.contains(reports[i].asset)) {
+                revert("Oracle: unsupported asset");
+            }
+            if (_handleReport(securityParams, reports[i].priceD18, $.reports[reports[i].asset])) {
+                _handleReport(reports[i].asset, reports[i].priceD18, secureTimestamp);
+            }
         }
     }
 
-    function setDeviations(
-        uint224 maxAbsoluteDeviation_,
-        uint64 maxRelativeDeviationD18_,
-        uint224 suspiciousAbsoluteDeviation_,
-        uint64 suspiciousRelativeDeviationD18_
-    ) external onlyRole(PermissionsLibrary.SET_MAX_ABSOLUTE_DEVIATION_ROLE) {
+    function acceptReport(address asset, uint48 timestamp) external onlyRole(PermissionsLibrary.ACCEPT_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
-        if (
-            maxAbsoluteDeviation_ == 0 || maxRelativeDeviationD18_ == 0 || suspiciousAbsoluteDeviation_ == 0
-                || suspiciousRelativeDeviationD18_ == 0
-        ) {
-            revert("Oracle: deviations cannot be zero");
+        DetailedReport storage report_ = $.reports[asset];
+        if (!report_.isSuspicious) {
+            revert("Oracle: report is not suspicious");
         }
-        if (
-            maxAbsoluteDeviation_ <= suspiciousAbsoluteDeviation_
-                || maxRelativeDeviationD18_ <= suspiciousRelativeDeviationD18_
-        ) {
-            revert("Oracle: max deviation cannot be less than suspicious deviation");
+        if (report_.timestamp != timestamp) {
+            revert("Oracle: report timestamp mismatch");
         }
-        $.maxAbsoluteDeviation = maxAbsoluteDeviation_;
-        $.maxRelativeDeviationD18 = maxRelativeDeviationD18_;
-        $.suspiciousAbsoluteDeviation = suspiciousAbsoluteDeviation_;
-        $.suspiciousRelativeDeviationD18 = suspiciousRelativeDeviationD18_;
+        report_.isSuspicious = false;
+        _handleReport(asset, report_.priceD18, timestamp - $.securityParams.secureInterval);
     }
 
-    function setTimeout(uint32 timeout_) external onlyRole(PermissionsLibrary.SET_TIMEOUT_ROLE) {
-        OracleStorage storage $ = _oracleStorage();
-        $.timeout = timeout_;
-    }
-
-    function setDepositSecureT(uint32 depositSecureT_)
+    function setSecurityParams(SecurityParams calldata securityParams)
         external
-        onlyRole(PermissionsLibrary.SET_DEPOSIT_SECURE_T_ROLE)
+        onlyRole(PermissionsLibrary.SET_SECURITY_PARAMS_ROLE)
     {
         OracleStorage storage $ = _oracleStorage();
-        $.depositSecureT = depositSecureT_;
+        if (securityParams.maxAbsoluteDeviation == 0 || securityParams.suspiciousAbsoluteDeviation == 0) {
+            revert("Oracle: zero absolute deviation");
+        }
+        if (securityParams.maxRelativeDeviationD18 == 0 || securityParams.suspiciousRelativeDeviationD18 == 0) {
+            revert("Oracle: zero relative deviation");
+        }
+        if (securityParams.timeout == 0 || securityParams.secureInterval == 0) {
+            revert("Oracle: zero timeout or secure interval");
+        }
+        $.securityParams = securityParams;
     }
 
-    function setRedeemSecureT(uint32 redeemSecureT_) external onlyRole(PermissionsLibrary.SET_REDEEM_SECURE_T_ROLE) {
+    function addSupportedAssets(address[] calldata assets)
+        external
+        onlyRole(PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE)
+    {
         OracleStorage storage $ = _oracleStorage();
-        $.redeemSecureT = redeemSecureT_;
+        for (uint256 i = 0; i < assets.length; i++) {
+            if (!$.supportedAssets.add(assets[i])) {
+                revert("Oracle: asset already supported");
+            }
+        }
     }
 
-    function unlock() external onlyRole(PermissionsLibrary.UNLOCK_ROLE) {
+    function removeSupportedAssets(address[] calldata assets)
+        external
+        onlyRole(PermissionsLibrary.REMOVE_SUPPORTED_ASSETS_ROLE)
+    {
         OracleStorage storage $ = _oracleStorage();
-        $.isLocked = false;
+        for (uint256 i = 0; i < assets.length; i++) {
+            if (!$.supportedAssets.remove(assets[i])) {
+                revert("Oracle: asset not supported");
+            }
+        }
     }
 
     // Internal functions
 
-    function __Oracle_init(
-        SharesModule vault_,
-        uint224 maxAbsoluteDeviation_,
-        uint64 maxRelativeDeviationD18_,
-        uint224 suspiciousAbsoluteDeviation_,
-        uint64 suspiciousRelativeDeviationD18_,
-        uint32 timeout_,
-        uint32 depositSecureT_,
-        uint32 redeemSecureT_
-    ) internal onlyInitializing {
-        OracleStorage storage $ = _oracleStorage();
-        $.vault = vault_;
-        $.maxAbsoluteDeviation = maxAbsoluteDeviation_;
-        $.maxRelativeDeviationD18 = maxRelativeDeviationD18_;
-        $.suspiciousAbsoluteDeviation = suspiciousAbsoluteDeviation_;
-        $.suspiciousRelativeDeviationD18 = suspiciousRelativeDeviationD18_;
-        $.timeout = timeout_;
-        $.depositSecureT = depositSecureT_;
-        $.redeemSecureT = redeemSecureT_;
+    function __Oracle_init(bytes calldata initParams) internal onlyInitializing {}
+
+    function _handleReport(SecurityParams memory securityParams, uint208 priceD18, DetailedReport storage report)
+        internal
+        returns (bool)
+    {
+        if (priceD18 == 0) {
+            revert("Oracle: zero price");
+        }
+        uint256 reportTimestamp = report.timestamp;
+        if (reportTimestamp == 0) {
+            // first report
+            report.priceD18 = priceD18;
+            report.timestamp = uint32(block.timestamp);
+            report.isSuspicious = true;
+            return false;
+        }
+        if (securityParams.timeout + reportTimestamp > block.timestamp) {
+            revert("Oracle: too early to report");
+        }
+
+        uint256 reportPriceD18 = report.priceD18;
+
+        bool isSuspicious = false;
+        uint256 absoluteDeviation = priceD18 > reportPriceD18 ? priceD18 - reportPriceD18 : reportPriceD18 - priceD18;
+        if (absoluteDeviation > securityParams.maxAbsoluteDeviation) {
+            revert("Oracle: absolute deviation too high");
+        }
+        if (absoluteDeviation > securityParams.suspiciousAbsoluteDeviation) {
+            isSuspicious = true;
+        }
+
+        uint256 relativeDeviationD18 = (absoluteDeviation * 1 ether) / reportPriceD18;
+        if (relativeDeviationD18 > securityParams.maxRelativeDeviationD18) {
+            revert("Oracle: relative deviation too high");
+        }
+        if (relativeDeviationD18 > securityParams.suspiciousRelativeDeviationD18) {
+            isSuspicious = true;
+        }
+
+        report.priceD18 = priceD18;
+        report.timestamp = uint32(block.timestamp);
+        report.isSuspicious = isSuspicious;
+        return !isSuspicious;
     }
 
-    function _handleReport(Checkpoints.Trace224 storage reports, Stack memory $) internal {
-        if ($.price == 0) {
-            return;
-        }
-        (bool exists, uint32 prevTimestamp, uint224 prevPrice) = reports.latestCheckpoint();
-        if (exists) {
-            if (prevTimestamp + $.timeout >= $.timestamp) {
-                revert("Oracle: too early to report");
-            }
-            uint224 absoluteDeviation = $.price > prevPrice ? $.price - prevPrice : prevPrice - $.price;
-            if (absoluteDeviation > $.maxAbsoluteDeviation) {
-                revert("Oracle: absolute deviation too high");
-            }
-            uint256 relativeDeviation = Math.mulDiv(absoluteDeviation, 1 ether, prevPrice);
-            if (relativeDeviation > $.maxRelativeDeviationD18) {
-                revert("Oracle: relative deviation too high");
-            }
-            if (
-                absoluteDeviation > $.suspiciousAbsoluteDeviation
-                    || relativeDeviation > $.suspiciousRelativeDeviationD18
-            ) {
-                $.isLocked = true;
-            }
-        }
-        reports.push($.timestamp, $.price);
+    function _handleReport(address asset, uint208 priceD18, uint48 timestamp) internal {
+        // TODO: implement
     }
 
     function _oracleStorage() internal view returns (OracleStorage storage $) {

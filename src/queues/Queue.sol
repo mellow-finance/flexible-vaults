@@ -1,44 +1,72 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../libraries/TransferLibrary.sol";
 import "../modules/SharesModule.sol";
 
-abstract contract Queue is Initializable {
-    using SafeERC20 for IERC20;
+abstract contract Queue is ContextUpgradeable {
+    using Checkpoints for Checkpoints.Trace208;
 
-    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-    address public asset;
-    SharesModule public vault;
+    struct QueueStorage {
+        address asset;
+        address vault;
+        Checkpoints.Trace208 timestamps;
+    }
 
-    uint256 public epochIterator = 1;
-    mapping(uint256 epoch => uint256) public demandAt;
+    bytes32 private immutable _queueStorageSlot;
 
-    function __Queue_init(address asset_, address sharesModule_) internal onlyInitializing {
-        if (asset_ == address(0) || sharesModule_ == address(0)) {
+    constructor(string memory name_, uint256 version_) {
+        _disableInitializers();
+        _queueStorageSlot = SlotLibrary.getSlot("Queue", name_, version_);
+    }
+
+    // View functions
+
+    function vault() public view returns (SharesModule) {
+        return SharesModule(payable(_queueStorage().vault));
+    }
+
+    function sharesManager() public view returns (SharesManager) {
+        return SharesManager(vault().sharesManager());
+    }
+
+    function asset() public view returns (address) {
+        return _queueStorage().asset;
+    }
+
+    // Mutable functions
+
+    function handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) external {
+        if (_msgSender() != address(vault())) {
+            revert("Queue: forbidden");
+        }
+        if (priceD18 == 0 || latestEligibleTimestamp >= block.timestamp) {
+            revert("Queue: inalid report");
+        }
+        _handleReport(priceD18, latestEligibleTimestamp);
+    }
+
+    // Internal functions
+
+    function __Queue_init(address asset_, address vault_) internal onlyInitializing {
+        if (asset_ == address(0) || vault_ == address(0)) {
             revert("Queue: zero address");
         }
-        asset = asset_;
-        vault = SharesModule(payable(sharesModule_));
+        QueueStorage storage $ = _queueStorage();
+        $.asset = asset_;
+        $.vault = vault_;
+        $.timestamps.push(uint48(block.timestamp), uint208(0));
     }
 
-    function handleEpochs(uint256 limit) public returns (uint256 counter) {
-        uint256 epochIterator_ = epochIterator;
-        while (counter < limit && _handleEpoch(epochIterator_ + counter)) {
-            unchecked {
-                counter++;
-            }
+    function _timestamps() internal view returns (Checkpoints.Trace208 storage) {
+        return _queueStorage().timestamps;
+    }
+
+    function _queueStorage() private view returns (QueueStorage storage qs) {
+        bytes32 slot = _queueStorageSlot;
+        assembly {
+            qs.slot := slot
         }
-        if (counter > 0) {
-            unchecked {
-                epochIterator = epochIterator_ + counter;
-            }
-        }
     }
 
-    function handleEpoch() public returns (bool) {
-        return _handleEpoch(epochIterator);
-    }
-
-    function _handleEpoch(uint256 epoch) internal virtual returns (bool);
+    function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal virtual;
 }

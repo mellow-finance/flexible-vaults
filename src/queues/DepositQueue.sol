@@ -1,132 +1,178 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../hooks/DepositHook.sol";
-import "../modules/DepositModule.sol";
-import "./Queue.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
+
+import "../libraries/FenwickTreeLibrary.sol";
+import "../libraries/TransferLibrary.sol";
+import "../modules/DepositModule.sol";
+import "./Queue.sol";
 
 contract DepositQueue is Queue, ReentrancyGuard {
-    using SafeERC20 for IERC20;
+    using FenwickTreeLibrary for FenwickTreeLibrary.Tree;
+    using Checkpoints for Checkpoints.Trace208;
 
-    mapping(address account => uint256 assets) public requestOf;
-    mapping(address account => uint256 epoch) public requestEpochOf;
-    mapping(uint256 epoch => uint256 priceD18) public conversionPriceAt;
+    struct DepositQueueStorage {
+        uint256 handledIndices;
+        mapping(address account => Checkpoints.Checkpoint208) requestOf;
+        FenwickTreeLibrary.Tree requests;
+        Checkpoints.Trace208 prices;
+    }
 
-    constructor() {
-        _disableInitializers();
+    bytes32 private immutable _depositQueueStorageSlot;
+
+    constructor(string memory name_, uint256 version_) Queue(name_, version_) {
+        _depositQueueStorageSlot = SlotLibrary.getSlot("DepositQueue", name_, version_);
     }
 
     // View functions
 
     function claimableOf(address account) public view returns (uint256) {
-        uint256 epoch = requestEpochOf[account];
-        if (epoch == 0) {
+        DepositQueueStorage storage $ = _depositQueueStorage();
+        Checkpoints.Checkpoint208 memory request = $.requestOf[account];
+        if (request._key == 0) {
             return 0;
         }
-        uint256 priceD18 = conversionPriceAt[epoch];
+        uint256 priceD18 = $.prices.lowerLookup(request._key);
         if (priceD18 == 0) {
-            bool hasReport;
-            (hasReport, priceD18) = vault.oracle().getDepositEpochPrice(asset, epoch);
-            if (!hasReport) {
-                return 0;
-            }
+            return 0;
         }
-        return Math.mulDiv(requestOf[account], priceD18, 1 ether);
+        return Math.mulDiv(request._value, priceD18, 1 ether);
+    }
+
+    function requestOf(address account) public view returns (uint256 timestamp, uint256 assets) {
+        Checkpoints.Checkpoint208 memory request = _depositQueueStorage().requestOf[account];
+        return (request._key, request._value);
     }
 
     // Mutable functions
 
-    function initialize(address asset_, address sharesModule_) external initializer {
+    function initialize(bytes calldata data) external initializer {
+        (address asset_, address sharesModule_) = abi.decode(data, (address, address));
         __Queue_init(asset_, sharesModule_);
+        _depositQueueStorage().requests.initialize(16);
     }
 
-    function request(uint256 assets, bytes32[] calldata proof) external payable nonReentrant {
-        address caller = msg.sender;
-        SharesModule vault_ = vault;
-        if (!vault_.sharesManager().isDepositAllowed(caller, proof)) {
+    function deposit(uint208 assets, bytes32[] calldata merkleProof) external payable nonReentrant {
+        if (assets == 0) {
+            revert("DepositQueue: zero assets");
+        }
+        address caller = _msgSender();
+        if (!sharesManager().isDepositAllowed(caller, merkleProof)) {
             revert("DepositQueue: deposit not allowed");
         }
-        uint256 epoch = requestEpochOf[caller];
-        if (epoch != 0) {
-            if (claim(caller) == 0 && requestEpochOf[caller] != 0) {
+        DepositQueueStorage storage $ = _depositQueueStorage();
+        if ($.requestOf[caller]._value != 0) {
+            if (!claim(caller)) {
                 revert("DepositQueue: pending request");
             }
         }
-        address asset_ = asset;
-        if (assets == 0 || assets < DepositModule(payable(vault_)).minDeposit(asset_)) {
-            revert("DepositQueue: limit underflow");
-        }
-        if (assets > DepositModule(payable(vault_)).maxDeposit(asset_)) {
-            revert("DepositQueue: limit overflow");
-        }
+
+        address asset_ = asset();
         TransferLibrary.receiveAssets(asset_, caller, assets);
-        epoch = vault.currentEpoch();
-        demandAt[epoch] += assets;
-        requestOf[caller] = assets;
-        requestEpochOf[caller] = epoch;
+        uint256 timestamp = block.timestamp;
+        uint256 index;
+        Checkpoints.Trace208 storage timestamps = _timestamps();
+        uint208 latestTimestamp = timestamps.latest();
+        if (latestTimestamp < timestamp) {
+            index = timestamps.length();
+            timestamps.push(uint48(timestamp), uint208(index));
+            if ($.requests.length() == index) {
+                $.requests.extend();
+            }
+        } else {
+            index = timestamps.length() - 1;
+        }
+
+        $.requests.modify(index, int256(uint256(assets)));
+        $.requestOf[caller] = Checkpoints.Checkpoint208(uint48(timestamp), uint208(assets));
     }
 
-    function cancelRequest() external nonReentrant {
-        address caller = msg.sender;
-        uint256 epoch = requestEpochOf[caller];
-        if (epoch == 0) {
+    function cancelDepositRequest() external nonReentrant {
+        address caller = _msgSender();
+        DepositQueueStorage storage $ = _depositQueueStorage();
+        Checkpoints.Checkpoint208 memory request = $.requestOf[caller];
+        uint256 assets = request._value;
+        if (assets == 0) {
             revert("DepositQueue: no pending request");
         }
-        address asset_ = asset;
-        (bool hasReport,) = vault.oracle().getDepositEpochPrice(asset_, epoch);
-        if (hasReport) {
-            revert("DepositQueue: request already claimable");
+        address asset_ = asset();
+        (bool exists, uint48 timestamp,) = $.prices.latestCheckpoint();
+        if (exists && timestamp >= request._key) {
+            revert("DepositQueue: request already processed");
         }
 
-        uint256 assets = requestOf[caller];
-        demandAt[epoch] -= assets;
-        delete requestOf[caller];
-        delete requestEpochOf[caller];
+        delete $.requestOf[caller];
         TransferLibrary.sendAssets(asset_, caller, assets);
     }
 
-    function claim(address account) public nonReentrant returns (uint256 shares) {
-        uint256 epoch = requestEpochOf[account];
-        uint256 priceD18 = conversionPriceAt[epoch];
-        if (priceD18 == 0 && _handleEpoch(epoch)) {
-            revert("DepositQueue: not claimable yet");
-        }
+    function claim(address account) public returns (bool) {
+        DepositQueueStorage storage $ = _depositQueueStorage();
+        Checkpoints.Checkpoint208 memory request = $.requestOf[account];
+        uint256 priceD18 = $.prices.lowerLookup(request._key);
         if (priceD18 == 0) {
-            priceD18 = conversionPriceAt[epoch];
+            return false;
         }
-        uint256 assets = requestOf[account];
-        shares = Math.mulDiv(assets, priceD18, 1 ether);
-        delete requestOf[account];
-        delete requestEpochOf[account];
+        uint256 shares = Math.mulDiv(request._value, priceD18, 1 ether);
+        delete $.requestOf[account];
         if (shares != 0) {
-            vault.sharesManager().mintAllocatedShares(account, shares);
+            sharesManager().mintAllocatedShares(account, shares);
         }
+        return true;
     }
 
     // Internal functions
 
-    function _handleEpoch(uint256 epoch) internal override returns (bool) {
-        SharesModule vault_ = vault;
-        address asset_ = asset;
-        (bool hasReport, uint256 priceD18) = vault_.oracle().getDepositEpochPrice(asset_, epoch);
-        if (!hasReport) {
-            return false;
+    function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal override {
+        SharesModule vault_ = vault();
+        address asset_ = asset();
+
+        DepositQueueStorage storage $ = _depositQueueStorage();
+        Checkpoints.Trace208 storage timestamps = _timestamps();
+        (bool exists, uint48 latestTimestamp, uint208 latestIndex) = timestamps.latestCheckpoint();
+        if (!exists) {
+            return;
         }
-        if (priceD18 == 0) {
-            revert("DepositQueue: zero price");
+        uint256 latestEligibleIndex;
+        if (latestTimestamp <= latestEligibleTimestamp) {
+            latestEligibleIndex = latestIndex;
+        } else {
+            latestEligibleIndex = uint256(timestamps.upperLookupRecent(latestEligibleTimestamp));
+            if (latestEligibleIndex == 0) {
+                return;
+            }
+            latestEligibleIndex--;
         }
-        uint256 demand = demandAt[epoch];
-        if (demand != 0) {
-            uint256 shares = Math.mulDiv(demand, priceD18, 1 ether);
-            address hook = DepositModule(payable(vault_)).depositHook(asset);
-            Address.functionDelegateCall(hook, abi.encodeCall(DepositHook.hook, (asset, demand)));
-            vault_.sharesManager().allocateShares(shares);
-            conversionPriceAt[epoch] = priceD18;
-            delete demandAt[epoch];
+
+        if (latestEligibleIndex < $.handledIndices) {
+            return;
         }
-        return true;
+
+        uint256 assets = uint256($.requests.get($.handledIndices, latestEligibleIndex));
+        $.prices.push(latestEligibleTimestamp, priceD18);
+        $.handledIndices = latestEligibleIndex + 1;
+
+        if (assets == 0) {
+            return;
+        }
+
+        TransferLibrary.sendAssets(asset_, address(vault_), assets);
+
+        uint256 shares = Math.mulDiv(assets, priceD18, 1 ether);
+        if (shares == 0) {
+            return;
+        }
+
+        sharesManager().allocateShares(shares);
+        DepositModule(payable(vault_)).callDepositHook(asset_, assets);
+    }
+
+    function _depositQueueStorage() internal view returns (DepositQueueStorage storage dqs) {
+        bytes32 slot = _depositQueueStorageSlot;
+        assembly {
+            dqs.slot := slot
+        }
     }
 }

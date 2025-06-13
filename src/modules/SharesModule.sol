@@ -3,17 +3,16 @@ pragma solidity 0.8.25;
 
 import "../libraries/SlotLibrary.sol";
 import "../oracles/Oracle.sol";
-import "../shares/SharesManager.sol";
 
+import "../queues/Queue.sol";
+import "../shares/SharesManager.sol";
 import "./BaseModule.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 abstract contract SharesModule is BaseModule {
     struct SharesModuleStorage {
         address sharesManager;
-        address oracle;
-        uint256 epochDuration;
-        uint256 initTimestamp;
+        address depositOracle;
+        address redeemOracle;
     }
 
     bytes32 private immutable _sharesModuleStorageSlot;
@@ -22,47 +21,56 @@ abstract contract SharesModule is BaseModule {
         _sharesModuleStorageSlot = SlotLibrary.getSlot("SharesModule", name_, version_);
     }
 
+    // View functions
+
     function sharesManager() public view returns (SharesManager) {
         return SharesManager(_sharesModuleStorage().sharesManager);
     }
 
-    function oracle() public view returns (Oracle) {
-        return Oracle(_sharesModuleStorage().oracle);
+    function depositOracle() public view returns (Oracle) {
+        return Oracle(_sharesModuleStorage().depositOracle);
     }
 
-    function epochDuration() public view returns (uint256) {
-        return _sharesModuleStorage().epochDuration;
+    function redeemOracle() public view returns (Oracle) {
+        return Oracle(_sharesModuleStorage().redeemOracle);
     }
 
-    function initTimestamp() public view returns (uint256) {
-        return _sharesModuleStorage().initTimestamp;
+    function getDepositQueues(address /* asset */ ) public view virtual returns (address[] memory);
+
+    function getRedeemQueues(address /* asset */ ) public view virtual returns (address[] memory);
+
+    // Mutable functions
+
+    function handleReport(address asset, uint208 priceD18, uint48 latestEligibleTimestamp) external {
+        address caller = _msgSender();
+        SharesModuleStorage memory $ = _sharesModuleStorage();
+        address depositOracle_ = $.depositOracle;
+        address redeemOracle_ = $.redeemOracle;
+        if (caller != redeemOracle_ && caller != depositOracle_) {
+            revert("SharesModule: forbidden");
+        }
+        address[] memory queues = caller == depositOracle_ ? getDepositQueues(asset) : getRedeemQueues(asset);
+        for (uint256 i = 0; i < queues.length; i++) {
+            Queue(queues[i]).handleReport(priceD18, latestEligibleTimestamp);
+        }
     }
 
-    function currentEpoch() public view returns (uint256) {
-        SharesModuleStorage storage $ = _sharesModuleStorage();
-        return (block.timestamp - $.initTimestamp) / $.epochDuration + 1;
-    }
+    // Internal functions
 
-    function endTimestampOf(uint256 epoch) public view returns (uint256) {
-        SharesModuleStorage storage $ = _sharesModuleStorage();
-        return $.initTimestamp + epoch * $.epochDuration;
-    }
-
-    function __SharesModule_init(address sharesManager_, address oracle_, uint256 epochDuration_)
+    function __SharesModule_init(address sharesManager_, address depositOracle_, address redeemOracle_)
         internal
         onlyInitializing
     {
-        if (sharesManager_ == address(0) || oracle_ == address(0)) {
+        if (sharesManager_ == address(0)) {
             revert("SharesModule: zero address");
-        }
-        if (epochDuration_ == 0) {
-            revert("SharesModule: zero duration");
         }
         SharesModuleStorage storage $ = _sharesModuleStorage();
         $.sharesManager = sharesManager_;
-        $.oracle = oracle_;
-        $.epochDuration = epochDuration_;
-        $.initTimestamp = block.timestamp;
+        if (depositOracle_ != address(0) && depositOracle_ == redeemOracle_) {
+            revert("SharesModule: deposit and redeem oracles must be different");
+        }
+        $.depositOracle = depositOracle_;
+        $.redeemOracle = redeemOracle_;
     }
 
     function _sharesModuleStorage() internal view returns (SharesModuleStorage storage $) {

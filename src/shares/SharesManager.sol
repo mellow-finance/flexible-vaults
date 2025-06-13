@@ -22,7 +22,7 @@ abstract contract SharesManager {
 
     // View functions
 
-    function isDepositAllowed(address account, bytes32[] calldata proof) public view returns (bool) {
+    function isDepositAllowed(address account, bytes32[] calldata merkleProof) public view returns (bool) {
         if (flags.hasMintPause()) {
             return false;
         }
@@ -31,7 +31,9 @@ abstract contract SharesManager {
         }
         if (
             flags.hasMerkleWhitelist()
-                && !MerkleProof.verify(proof, whitelistMerkleRoot, keccak256(bytes.concat(keccak256(abi.encode(account)))))
+                && !MerkleProof.verify(
+                    merkleProof, whitelistMerkleRoot, keccak256(bytes.concat(keccak256(abi.encode(account))))
+                )
         ) {
             return false;
         }
