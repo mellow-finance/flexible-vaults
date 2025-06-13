@@ -6,6 +6,9 @@ onTransfer
 DepositModule / RedeemModule:
 limits per block per token?
 
+SubvaultModule:
+limits
+
 VaultConfigurator
 
 Hooks
