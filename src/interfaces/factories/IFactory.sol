@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: BUSL-1.1
+pragma solidity 0.8.25;
+
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
+interface IFactory {
+    struct FactoryStorage {
+        EnumerableSet.AddressSet entities;
+        EnumerableSet.AddressSet implementation;
+        EnumerableSet.AddressSet proposals;
+        mapping(uint256 version => bool) isBlacklisted;
+    }
+
+    // View functions
+
+    function entities() external view returns (uint256);
+    function entityAt(uint256 index) external view returns (address);
+    function isEntity(address entity) external view returns (bool);
+    function implementations() external view returns (uint256);
+    function implementationAt(uint256 index) external view returns (address);
+    function proposals() external view returns (uint256);
+    function proposalAt(uint256 index) external view returns (address);
+    function isBlacklisted(uint256 version) external view returns (bool);
+
+    // Mutable functions
+    function initialize(address owner_) external;
+    function setBlacklistStatus(uint256 version, bool flag) external;
+    function proposeImplementation(address implementation) external;
+    function acceptProposedImplementation(address implementation) external;
+    function create(uint256 version, address owner, bytes calldata initParams, bytes32 salt)
+        external
+        returns (address instance);
+}

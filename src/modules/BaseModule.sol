@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import "../interfaces/modules/IBaseModule.sol";
 
-abstract contract BaseModule is ContextUpgradeable {
+abstract contract BaseModule is IBaseModule, ContextUpgradeable {
     constructor() {
         _disableInitializers();
     }

@@ -1,90 +1,60 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+
 import "./SharesManager.sol";
 
 contract BasicSharesManager is SharesManager {
     using SharesManagerFlagLibrary for uint256;
 
-    // TODO:
-    // 1. add permissions
-    // 2. add deallocation && burnDeallocatedShares
+    bytes32 private constant ERC20StorageLocation = 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00;
 
-    mapping(address => uint256) private _sharesOf;
-    uint256 public totalShares;
+    // View functions
+
+    function activeShares() public view override returns (uint256) {
+        return _getERC20Storage()._totalSupply;
+    }
 
     function activeSharesOf(address account) public view override returns (uint256) {
-        return _sharesOf[account];
+        return _getERC20Storage()._balances[account];
     }
 
-    function mintShares(address to, uint256 amount) external override {
-        if (flags.hasMintPause()) {
-            revert("SharesManagerBase: minting is paused");
+    // Internal functions
+
+    function _mintShares(address account, uint256 value) internal override {
+        if (account == address(0)) {
+            revert IERC20Errors.ERC20InvalidReceiver(address(0));
         }
-        if (to == address(0)) {
-            revert("SharesManagerBase: zero address");
-        }
-        totalShares += amount;
+        updateChecks(address(0), account, value);
+        ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
+        $._totalSupply += value;
         unchecked {
-            _sharesOf[to] += amount;
+            $._balances[account] += value;
         }
-        emit SharesMinted(to, amount);
+        emit IERC20.Transfer(address(0), account, value);
     }
 
-    function allocateShares(uint256 amount) external override {
-        // only deposit queue
-        if (flags.hasMintPause()) {
-            revert("SharesManagerBase: minting is paused");
+    function _burnShares(address account, uint256 value) internal override {
+        if (account == address(0)) {
+            revert IERC20Errors.ERC20InvalidSender(address(0));
         }
-        totalShares += amount;
-    }
-
-    function mintAllocatedShares(address to, uint256 amount) external override {
-        // only deposit queue?
-        if (flags.hasMintPause()) {
-            revert("SharesManagerBase: minting is paused");
-        }
-        if (to == address(0)) {
-            revert("SharesManagerBase: zero address");
+        updateChecks(account, address(0), value);
+        ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
+        uint256 balance = $._balances[account];
+        if (balance < value) {
+            revert IERC20Errors.ERC20InsufficientBalance(account, balance, value);
         }
         unchecked {
-            _sharesOf[to] += amount;
+            $._balances[account] = balance - value;
+            $._totalSupply -= value;
         }
-        emit SharesMinted(to, amount);
+        emit IERC20.Transfer(account, address(0), value);
     }
 
-    function pullShares(address from, uint256 amount) external override {
-        // TODO: only redeemQueue
-        if (flags.hasBurnPause()) {
-            revert("SharesManagerBase: burning is paused");
+    function _getERC20Storage() private pure returns (ERC20Upgradeable.ERC20Storage storage $) {
+        assembly {
+            $.slot := ERC20StorageLocation
         }
-        if (from == address(0)) {
-            revert("SharesManagerBase: zero address");
-        }
-        if (_sharesOf[from] < amount) {
-            revert("SharesManagerBase: insufficient shares");
-        }
-        unchecked {
-            _sharesOf[from] -= amount;
-        }
-        totalShares -= amount;
-    }
-
-    function burnShares(address from, uint256 amount) external override {
-        if (flags.hasBurnPause()) {
-            revert("SharesManagerBase: burning is paused");
-        }
-        // from == msg.sender || from == redeemQueue
-        if (from == address(0)) {
-            revert("SharesManagerBase: zero address");
-        }
-        if (_sharesOf[from] < amount) {
-            revert("SharesManagerBase: insufficient shares");
-        }
-        unchecked {
-            _sharesOf[from] -= amount;
-        }
-        totalShares -= amount;
-        emit SharesBurned(from, amount);
     }
 }

@@ -1,25 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../interfaces/modules/IACLModule.sol";
+
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
+
 import "./BaseModule.sol";
-import "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-abstract contract ACLModule is BaseModule, AccessControlEnumerableUpgradeable {
+abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUpgradeable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
-
-    enum FundamentalRole {
-        ADMIN,
-        PROXY_OWNER,
-        SUBVAULT_ADMIN
-    }
-
-    struct ACLModuleStorage {
-        EnumerableSet.Bytes32Set supportedRoles;
-        mapping(address account => uint256) fundamentalRoles;
-    }
 
     bytes32 private immutable _aclModuleStorageSlot;
 

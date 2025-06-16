@@ -1,10 +1,6 @@
-ShareManager hooks:
-onMint
-onBurn
-onTransfer
-
 DepositModule / RedeemModule:
 limits per block per token?
+min/max assets 
 
 SubvaultModule:
 limits

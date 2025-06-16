@@ -1,20 +1,16 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../libraries/SlotLibrary.sol";
-import "../oracles/Oracle.sol";
+import "../interfaces/modules/ISharesModule.sol";
+import "../interfaces/oracles/IOracle.sol";
+import "../interfaces/queues/IQueue.sol";
+import "../interfaces/shares/ISharesManager.sol";
 
-import "../queues/Queue.sol";
-import "../shares/SharesManager.sol";
+import "../libraries/SlotLibrary.sol";
+
 import "./BaseModule.sol";
 
-abstract contract SharesModule is BaseModule {
-    struct SharesModuleStorage {
-        address sharesManager;
-        address depositOracle;
-        address redeemOracle;
-    }
-
+abstract contract SharesModule is ISharesModule, BaseModule {
     bytes32 private immutable _sharesModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -23,16 +19,16 @@ abstract contract SharesModule is BaseModule {
 
     // View functions
 
-    function sharesManager() public view returns (SharesManager) {
-        return SharesManager(_sharesModuleStorage().sharesManager);
+    function sharesManager() public view returns (ISharesManager) {
+        return ISharesManager(_sharesModuleStorage().sharesManager);
     }
 
-    function depositOracle() public view returns (Oracle) {
-        return Oracle(_sharesModuleStorage().depositOracle);
+    function depositOracle() public view returns (IOracle) {
+        return IOracle(_sharesModuleStorage().depositOracle);
     }
 
-    function redeemOracle() public view returns (Oracle) {
-        return Oracle(_sharesModuleStorage().redeemOracle);
+    function redeemOracle() public view returns (IOracle) {
+        return IOracle(_sharesModuleStorage().redeemOracle);
     }
 
     function getDepositQueues(address /* asset */ ) public view virtual returns (address[] memory);
@@ -51,7 +47,7 @@ abstract contract SharesModule is BaseModule {
         }
         address[] memory queues = caller == depositOracle_ ? getDepositQueues(asset) : getRedeemQueues(asset);
         for (uint256 i = 0; i < queues.length; i++) {
-            Queue(queues[i]).handleReport(priceD18, latestEligibleTimestamp);
+            IQueue(queues[i]).handleReport(priceD18, latestEligibleTimestamp);
         }
     }
 

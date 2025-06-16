@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../modules/CallModule.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+
+import "../modules/CallModule.sol";
 
 contract MulticallStrategy is Ownable {
     struct Call {
         address where;
         uint256 value;
         bytes data;
-        Verifier.VerificationPayload verificationPayload;
+        IVerifier.VerificationPayload verificationPayload;
     }
 
     address public immutable vault;

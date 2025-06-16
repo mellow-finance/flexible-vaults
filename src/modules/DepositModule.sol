@@ -1,22 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "../interfaces/modules/IDepositModule.sol";
 
-import "../factories/Factory.sol";
-import "../hooks/DepositHook.sol";
-import "../queues/DepositQueue.sol";
 import "./ACLModule.sol";
+import "./SharesModule.sol";
 
-abstract contract DepositModule is SharesModule, ACLModule {
+import "../libraries/SlotLibrary.sol";
+
+abstract contract DepositModule is IDepositModule, SharesModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
-
-    struct DepositModuleStorage {
-        address defaultHook;
-        mapping(address queue => address) customHooks;
-        mapping(address asset => EnumerableSet.AddressSet) queues;
-        EnumerableSet.AddressSet assets;
-    }
 
     bytes32 private immutable _depositModuleStorageSlot;
     address public immutable depositQueueFactory;
@@ -40,7 +33,11 @@ abstract contract DepositModule is SharesModule, ACLModule {
         return _depositModuleStorage().assets.contains(asset);
     }
 
-    function getDepositQueues(address asset) public view override returns (address[] memory queues) {
+    function hasDepositQueue(address queue) public view returns (bool) {
+        return _depositModuleStorage().queues[IQueue(queue).asset()].contains(queue);
+    }
+
+    function getDepositQueues(address asset) public view virtual override returns (address[] memory queues) {
         return _depositModuleStorage().queues[asset].values();
     }
 
@@ -53,7 +50,7 @@ abstract contract DepositModule is SharesModule, ACLModule {
             EnumerableSet.AddressSet storage queues = $.queues[asset];
             uint256 queuesCount = queues.length();
             for (uint256 j = 0; j < queuesCount; j++) {
-                shares += DepositQueue(queues.at(j)).claimableOf(account);
+                shares += IDepositQueue(queues.at(j)).claimableOf(account);
             }
         }
         return shares;
@@ -87,18 +84,18 @@ abstract contract DepositModule is SharesModule, ACLModule {
         if (!queues.contains(caller)) {
             revert("DepositModule: caller is not a queue");
         }
-        Address.functionDelegateCall(getDepositHook(caller), abi.encodeCall(DepositHook.afterDeposit, (asset, assets)));
+        Address.functionDelegateCall(getDepositHook(caller), abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
     }
 
     function createDepositQueue(uint256 version, address owner, address asset, bytes32 salt)
         external
         onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
     {
-        if (asset == address(0) || !Oracle(depositOracle()).isSupportedAsset(asset)) {
+        if (asset == address(0) || !IOracle(depositOracle()).isSupportedAsset(asset)) {
             revert("DepositModule: unsupported asset");
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
-        address queue = Factory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this)), salt);
+        address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this)), salt);
         DepositModuleStorage storage $ = _depositModuleStorage();
         $.queues[asset].add(queue);
         $.assets.add(asset);

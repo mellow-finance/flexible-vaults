@@ -1,43 +1,13 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../interfaces/oracles/IOracle.sol";
+
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
-import "../modules/SharesModule.sol";
-import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts/access/IAccessControl.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-contract Oracle is ContextUpgradeable, ReentrancyGuardUpgradeable {
+contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
-
-    struct SecurityParams {
-        uint208 maxAbsoluteDeviation;
-        uint208 suspiciousAbsoluteDeviation;
-        uint64 maxRelativeDeviationD18;
-        uint64 suspiciousRelativeDeviationD18;
-        uint32 timeout;
-        uint32 secureInterval;
-    }
-
-    struct Report {
-        address asset;
-        uint208 priceD18;
-    }
-
-    struct DetailedReport {
-        uint208 priceD18;
-        uint32 timestamp;
-        bool isSuspicious;
-    }
-
-    struct OracleStorage {
-        SharesModule vault;
-        SecurityParams securityParams;
-        EnumerableSet.AddressSet supportedAssets;
-        mapping(address asset => DetailedReport) reports;
-    }
 
     bytes32 private immutable _oracleStorageSlot;
 
@@ -52,7 +22,7 @@ contract Oracle is ContextUpgradeable, ReentrancyGuardUpgradeable {
         _;
     }
 
-    function vault() public view returns (SharesModule) {
+    function vault() public view returns (ISharesModule) {
         return _oracleStorage().vault;
     }
 
@@ -82,7 +52,7 @@ contract Oracle is ContextUpgradeable, ReentrancyGuardUpgradeable {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = _oracleStorage().securityParams;
         uint48 secureTimestamp = uint48(block.timestamp - securityParams_.secureInterval);
-        SharesModule vault_ = vault();
+        ISharesModule vault_ = vault();
         for (uint256 i = 0; i < reports.length; i++) {
             if (!$.supportedAssets.contains(reports[i].asset)) {
                 revert("Oracle: unsupported asset");
@@ -166,7 +136,7 @@ contract Oracle is ContextUpgradeable, ReentrancyGuardUpgradeable {
             revert("Oracle: zero timeout or secure interval");
         }
         OracleStorage storage $ = _oracleStorage();
-        $.vault = SharesModule(payable(vault_));
+        $.vault = ISharesModule(vault_);
         $.securityParams = securityParams_;
         for (uint256 i = 0; i < assets_.length; i++) {
             if (assets_[i] == address(0)) {

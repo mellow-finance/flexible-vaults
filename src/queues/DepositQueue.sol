@@ -1,25 +1,17 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
-import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
+import "../interfaces/modules/ISharesModule.sol";
+import "../interfaces/queues/IDepositQueue.sol";
 
 import "../libraries/FenwickTreeLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 import "../modules/DepositModule.sol";
 import "./Queue.sol";
 
-contract DepositQueue is Queue, ReentrancyGuardUpgradeable {
+contract DepositQueue is IDepositQueue, Queue {
     using FenwickTreeLibrary for FenwickTreeLibrary.Tree;
     using Checkpoints for Checkpoints.Trace208;
-
-    struct DepositQueueStorage {
-        uint256 handledIndices;
-        mapping(address account => Checkpoints.Checkpoint208) requestOf;
-        FenwickTreeLibrary.Tree requests;
-        Checkpoints.Trace208 prices;
-    }
 
     bytes32 private immutable _depositQueueStorageSlot;
 
@@ -61,7 +53,7 @@ contract DepositQueue is Queue, ReentrancyGuardUpgradeable {
             revert("DepositQueue: zero assets");
         }
         address caller = _msgSender();
-        if (!sharesManager().isDepositAllowed(caller, merkleProof)) {
+        if (!ISharesManager(sharesManager()).isDepositorWhitelisted(caller, merkleProof)) {
             revert("DepositQueue: deposit not allowed");
         }
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -125,13 +117,13 @@ contract DepositQueue is Queue, ReentrancyGuardUpgradeable {
         uint256 shares = Math.mulDiv(request._value, priceD18, 1 ether);
         delete $.requestOf[account];
         if (shares != 0) {
-            sharesManager().mintAllocatedShares(account, shares);
+            ISharesManager(sharesManager()).mintAllocatedShares(account, shares);
         }
         return true;
     }
 
     function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal override {
-        SharesModule vault_ = vault();
+        DepositModule vault_ = DepositModule(payable(vault()));
         address asset_ = asset();
 
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -170,7 +162,7 @@ contract DepositQueue is Queue, ReentrancyGuardUpgradeable {
             return;
         }
 
-        sharesManager().allocateShares(shares);
+        ISharesManager(sharesManager()).allocateShares(shares);
         DepositModule(payable(vault_)).callDepositHook(asset_, assets);
     }
 

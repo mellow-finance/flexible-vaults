@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../modules/SharesModule.sol";
-import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
+import "../interfaces/modules/ISharesModule.sol";
+import "../interfaces/queues/IQueue.sol";
 
-abstract contract Queue is ContextUpgradeable {
+import "../libraries/SlotLibrary.sol";
+
+abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeable {
     using Checkpoints for Checkpoints.Trace208;
-
-    struct QueueStorage {
-        address asset;
-        address vault;
-        Checkpoints.Trace208 timestamps;
-    }
 
     bytes32 private immutable _queueStorageSlot;
 
@@ -22,12 +18,12 @@ abstract contract Queue is ContextUpgradeable {
 
     // View functions
 
-    function vault() public view returns (SharesModule) {
-        return SharesModule(payable(_queueStorage().vault));
+    function vault() public view returns (address) {
+        return _queueStorage().vault;
     }
 
-    function sharesManager() public view returns (SharesManager) {
-        return SharesManager(vault().sharesManager());
+    function sharesManager() public view returns (address) {
+        return address(ISharesModule(vault()).sharesManager());
     }
 
     function asset() public view returns (address) {
@@ -37,7 +33,7 @@ abstract contract Queue is ContextUpgradeable {
     // Mutable functions
 
     function handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) external {
-        if (_msgSender() != address(vault())) {
+        if (_msgSender() != vault()) {
             revert("Queue: forbidden");
         }
         if (priceD18 == 0 || latestEligibleTimestamp >= block.timestamp) {

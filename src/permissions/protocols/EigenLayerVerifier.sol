@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../CustomVerifier.sol";
+import "../../interfaces/permissions/ICustomVerifier.sol";
 
-contract EigenLayerVerifier is CustomVerifier {
+contract EigenLayerVerifier is ICustomVerifier {
     address public immutable delegationManager;
     address public immutable strategyManager;
     address public immutable rewardsCoordinator;

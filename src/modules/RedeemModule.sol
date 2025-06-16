@@ -1,23 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-
-import "../factories/Factory.sol";
-import "../hooks/RedeemHook.sol";
+import "../interfaces/modules/IRedeemModule.sol";
 import "../libraries/PermissionsLibrary.sol";
-import "../queues/RedeemQueue.sol";
+import "../libraries/TransferLibrary.sol";
+
 import "./ACLModule.sol";
+import "./SharesModule.sol";
 
-abstract contract RedeemModule is SharesModule, ACLModule {
+abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
-
-    struct RedeemModuleStorage {
-        address defaultHook;
-        mapping(address queue => address) customHooks;
-        mapping(address asset => EnumerableSet.AddressSet) queues;
-        EnumerableSet.AddressSet assets;
-    }
 
     bytes32 private immutable _redeemModuleStorageSlot;
     address public immutable redeemQueueFactory;
@@ -41,7 +33,11 @@ abstract contract RedeemModule is SharesModule, ACLModule {
         return _redeemModuleStorage().assets.contains(asset);
     }
 
-    function getRedeemQueues(address asset) public view override returns (address[] memory queues) {
+    function hasRedeemQueue(address queue) public view returns (bool) {
+        return _redeemModuleStorage().queues[IQueue(queue).asset()].contains(queue);
+    }
+
+    function getRedeemQueues(address asset) public view virtual override returns (address[] memory queues) {
         return _redeemModuleStorage().queues[asset].values();
     }
 
@@ -61,7 +57,7 @@ abstract contract RedeemModule is SharesModule, ACLModule {
         if (!queues.contains(caller)) {
             revert("RedeemModule: caller is not a queue");
         }
-        return RedeemHook(getRedeemHook(caller)).getLiquidAssets(asset);
+        return IRedeemHook(getRedeemHook(caller)).getLiquidAssets(asset);
     }
 
     // Mutable functions
@@ -83,7 +79,7 @@ abstract contract RedeemModule is SharesModule, ACLModule {
         if (!queues.contains(caller)) {
             revert("RedeemModule: caller is not a queue");
         }
-        Address.functionDelegateCall(getRedeemHook(caller), abi.encodeCall(RedeemHook.beforeRedeem, (asset, assets)));
+        Address.functionDelegateCall(getRedeemHook(caller), abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
         TransferLibrary.sendAssets(asset, caller, assets);
     }
 
@@ -91,11 +87,11 @@ abstract contract RedeemModule is SharesModule, ACLModule {
         external
         onlyRole(PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE)
     {
-        if (asset == address(0) || !Oracle(redeemOracle()).isSupportedAsset(asset)) {
+        if (asset == address(0) || !IOracle(redeemOracle()).isSupportedAsset(asset)) {
             revert("RedeemModule: unsupported asset");
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
-        address queue = Factory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this)), salt);
+        address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this)), salt);
         RedeemModuleStorage storage $ = _redeemModuleStorage();
         $.queues[asset].add(queue);
         $.assets.add(asset);

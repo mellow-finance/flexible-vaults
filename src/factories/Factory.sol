@@ -1,25 +1,18 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "../interfaces/factories/IFactory.sol";
 
-contract Factory is OwnableUpgradeable {
+import "../libraries/SlotLibrary.sol";
+
+contract Factory is IFactory, OwnableUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
-
-    struct FactoryStorage {
-        EnumerableSet.AddressSet entities;
-        EnumerableSet.AddressSet implementation;
-        EnumerableSet.AddressSet proposals;
-        mapping(uint256 version => bool) isBlacklisted;
-    }
 
     bytes32 private immutable _factoryStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
         _disableInitializers();
-        _factoryStorageSlot = keccak256(abi.encodePacked("Factory", name_, version_));
+        _factoryStorageSlot = SlotLibrary.getSlot("Factory", name_, version_);
     }
 
     // View functions

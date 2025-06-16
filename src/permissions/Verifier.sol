@@ -1,44 +1,13 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../interfaces/permissions/IVerifier.sol";
+
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
-import "./CustomVerifier.sol";
-import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
-import "@openzeppelin/contracts/access/IAccessControl.sol";
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-contract Verifier is ContextUpgradeable {
+contract Verifier is IVerifier, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
-
-    struct Call {
-        address who;
-        address where;
-        bytes4 selector;
-    }
-
-    struct VerifierStorage {
-        IAccessControl vault;
-        bytes32 merkleRoot;
-        EnumerableSet.Bytes32Set hashedAllowedCalls;
-        mapping(bytes32 => Call) allowedCalls;
-    }
-
-    enum VerficationType {
-        VERIFIER_ACL,
-        VAULT_ACL,
-        VERIFIER
-    }
-
-    struct VerificationPayload {
-        // leaf:
-        VerficationType verificationType;
-        address verifier; // verifier == address(vault) if it is ACL, else - separate verifier contract
-        bytes verificationData;
-        // merkle proof:
-        bytes32[] proof;
-    }
 
     bytes32 private immutable _verifierStorageSlot;
 
@@ -128,7 +97,7 @@ contract Verifier is ContextUpgradeable {
             bytes32 requiredRole = abi.decode(verificationPayload.verificationData, (bytes32));
             return vault().hasRole(requiredRole, who);
         } else {
-            return CustomVerifier(verificationPayload.verifier).verifyCall(
+            return ICustomVerifier(verificationPayload.verifier).verifyCall(
                 who, where, value, callData, verificationPayload.verificationData
             );
         }

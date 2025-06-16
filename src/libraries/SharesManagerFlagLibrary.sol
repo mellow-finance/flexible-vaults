@@ -22,71 +22,23 @@ library SharesManagerFlagLibrary {
         return (mask & 0x10) != 0;
     }
 
-    function hasTargetedLockup(uint256 mask) internal pure returns (bool) {
+    function hasWhitelist(uint256 mask) internal pure returns (bool) {
         return (mask & 0x20) != 0;
     }
 
-    function hasGlobalLockup(uint256 mask) internal pure returns (bool) {
+    function hasBlacklist(uint256 mask) internal pure returns (bool) {
         return (mask & 0x40) != 0;
     }
 
-    function hasMappingWhitelist(uint256 mask) internal pure returns (bool) {
+    function hasTransferWhitelist(uint256 mask) internal pure returns (bool) {
         return (mask & 0x80) != 0;
     }
 
-    function hasMerkleWhitelist(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x100) != 0;
+    function getGlobalLockup(uint256 mask) internal pure returns (uint32) {
+        return uint32(mask >> 8);
     }
 
-    function hasBlackList(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x200) != 0;
-    }
-
-    function getLockupPeriod(uint256 mask) internal pure returns (uint32) {
-        return uint32((mask >> 10) & type(uint32).max);
-    }
-
-    function setHasDepositQueues(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x1) : (mask & ~uint256(0x1));
-    }
-
-    function setHasRedeemQueues(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x2) : (mask & ~uint256(0x2));
-    }
-
-    function setHasMintPause(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x4) : (mask & ~uint256(0x4));
-    }
-
-    function setHasBurnPause(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x8) : (mask & ~uint256(0x8));
-    }
-
-    function setHasTransferPause(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x10) : (mask & ~uint256(0x10));
-    }
-
-    function setHasTargetedLockup(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x20) : (mask & ~uint256(0x20));
-    }
-
-    function setHasGlobalLockup(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x40) : (mask & ~uint256(0x40));
-    }
-
-    function setHasMappingWhitelist(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x80) : (mask & ~uint256(0x80));
-    }
-
-    function setHasMerkleWhitelist(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x100) : (mask & ~uint256(0x100));
-    }
-
-    function setHasBlackList(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x200) : (mask & ~uint256(0x200));
-    }
-
-    function setLockupPeriod(uint256 mask, uint32 period) internal pure returns (uint256) {
-        return (mask & ~uint256(0xFFFFFFFF << 10)) | (uint256(period) << 10);
+    function getTargetedLockup(uint256 mask) internal pure returns (uint32) {
+        return uint32(mask >> 40);
     }
 }

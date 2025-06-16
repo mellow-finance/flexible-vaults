@@ -1,18 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../interfaces/modules/IVerifierModule.sol";
+
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
-import "../permissions/Verifier.sol";
 
 import "./ACLModule.sol";
 import "./BaseModule.sol";
 
-abstract contract VerifierModule is BaseModule, ACLModule {
-    struct VerifierModuleStorage {
-        address verifier;
-    }
-
+abstract contract VerifierModule is IVerifierModule, BaseModule, ACLModule {
     bytes32 private immutable _verifierModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_) ACLModule(name_, version_) {
@@ -21,8 +18,8 @@ abstract contract VerifierModule is BaseModule, ACLModule {
 
     // View functions
 
-    function verifier() public view returns (Verifier) {
-        return Verifier(_verifierModuleStorage().verifier);
+    function verifier() public view returns (IVerifier) {
+        return IVerifier(_verifierModuleStorage().verifier);
     }
 
     // Internal functions

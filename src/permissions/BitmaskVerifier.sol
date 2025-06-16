@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./CustomVerifier.sol";
+import "../interfaces/permissions/ICustomVerifier.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
-contract BitmaskVerifier is CustomVerifier {
+contract BitmaskVerifier is ICustomVerifier {
     function calculateHash(bytes calldata bitmask, bytes memory data) public pure returns (bytes32) {
         bytes32 hash_;
         for (uint256 i = 0; i < data.length; i++) {
@@ -22,7 +22,7 @@ contract BitmaskVerifier is CustomVerifier {
         uint256 value,
         bytes calldata callData,
         bytes calldata verificationData
-    ) public pure override returns (bool) {
+    ) public pure returns (bool) {
         bytes32 verificationHash_;
         bytes calldata bitmask;
         assembly {

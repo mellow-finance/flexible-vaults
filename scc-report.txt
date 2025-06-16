@@ -1,42 +1,43 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 31      2310      376       103     1831        317           402.24
+Solidity                                 32      2215      379        95     1741        325           427.40
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-src/factories/Factory.sol                         116       22         4       90          5             5.56
+src/factories/Factory.sol                         109       22         4       83          5             6.02
 src/hooks/CompositeHook.sol                         4        1         1        2          0             0.00
-src/hooks/DepositHook.sol                           6        1         1        4          0             0.00
+src/hooks/RatiosDepositHook.sol                     8        2         1        5          0             0.00
 src/hooks/RedeemHook.sol                            8        2         1        5          0             0.00
 src/libraries/FenwickTreeLibrary.sol               80        9         8       63         14            22.22
-src/libraries/PermissionsLibrary.sol               31        7         1       23          0             0.00
-~src/libraries/SharesManagerFlagLibrary.sol        92       22         1       69         10            14.49
+src/libraries/MerkleHashingLibrary.sol             12        2         1        9          0             0.00
+src/libraries/PermissionsLibrary.sol               34        7         1       26          0             0.00
+~src/libraries/SharesManagerFlagLibrary.sol        44       10         1       33          8            24.24
 src/libraries/SlotLibrary.sol                      22        1         1       20          0             0.00
 src/libraries/TransferLibrary.sol                  27        5         1       21          8            38.10
-src/modules/ACLModule.sol                         115       21         4       90         15            16.67
+src/modules/ACLModule.sol                         105       21         4       80         15            18.75
 src/modules/BaseModule.sol                         14        4         2        8          0             0.00
-src/modules/CallModule.sol                         21        4         2       15          1             6.67
-src/modules/DepositModule.sol                     124       20         4      100         16            16.00
-src/modules/RedeemModule.sol                      121       20         4       97         15            15.46
-src/modules/SharesModule.sol                       82       16         4       62         13            20.97
-src/modules/SubvaultModule.sol                     73       15         4       54          2             3.70
-src/modules/VerifierModule.sol                     44       10         3       31          3             9.68
-src/oracles/Oracle.sol                            226       27         4      195         51            26.15
+src/modules/CallModule.sol                         20        4         2       14          0             0.00
+src/modules/DepositModule.sol                     121       21         4       96         16            16.67
+src/modules/RedeemModule.sol                      117       20         4       93         15            16.13
+src/modules/RootVaultModule.sol                    96       19         6       71          4             5.63
+src/modules/SharesModule.sol                       78       16         4       58         13            22.41
+src/modules/SubvaultModule.sol                     23        6         1       16          1             6.25
+src/modules/VerifierModule.sol                     41       10         3       28          3            10.71
+src/oracles/Oracle.sol                            196       24         4      168         51            30.36
 src/permissions/BitmaskVerifier.sol                44        3         1       40          8            20.00
-src/permissions/CustomVerifier.sol                 12        1         1       10          0             0.00
-src/permissions/Verifier.sol                      194       28         6      160         26            16.25
+src/permissions/Verifier.sol                      163       25         4      134         26            19.40
 ~rmissions/protocols/EigenLayerVerifier.sol        46        5         9       32         12            37.50
-src/queues/DepositQueue.sol                       183       28         4      151         35            23.18
-src/queues/Queue.sol                               73       16         4       53         11            20.75
-src/queues/RedeemQueue.sol                        224       35         5      184         32            17.39
-src/shares/BasicSharesManager.sol                  90       10         8       72         20            27.78
-src/shares/SharesManager.sol                       91       21         5       65          7            10.77
-src/shares/TokenizedSharesManager.sol              64        9         2       53          8            15.09
-src/strategies/MulticallStrategy.sol               37        7         2       28          5            17.86
-src/vaults/Subvault.sol                            14        3         1       10          0             0.00
-src/vaults/Vault.sol                               32        3         5       24          0             0.00
+src/queues/DepositQueue.sol                       175       27         4      144         35            24.31
+src/queues/Queue.sol                               69       16         4       49         11            22.45
+src/queues/RedeemQueue.sol                        211       33         5      173         33            19.08
+src/shares/BasicSharesManager.sol                  60       11         3       46          9            19.57
+src/shares/SharesManager.sol                      158       27         4      127         32            25.20
+src/shares/TokenizedSharesManager.sol              35       10         3       22          1             4.55
+src/strategies/MulticallStrategy.sol               38        8         2       28          5            17.86
+src/vaults/RootVault.sol                           40        4         1       35          0             0.00
+src/vaults/Subvault.sol                            17        4         1       12          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    31      2310      376       103     1831        317           402.24
+Total                                    32      2215      379        95     1741        325           427.40
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 80041 bytes, 0.080 megabytes (SI)
+Processed 77488 bytes, 0.077 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 

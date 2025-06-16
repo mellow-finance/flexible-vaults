@@ -1,39 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
-import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
+import "../interfaces/queues/IRedeemQueue.sol";
 
 import "../libraries/TransferLibrary.sol";
-import "../modules/RedeemModule.sol";
+
 import "./Queue.sol";
 
-contract RedeemQueue is Queue, ReentrancyGuardUpgradeable {
+contract RedeemQueue is IRedeemQueue, Queue {
     using EnumerableMap for EnumerableMap.UintToUintMap;
     using Checkpoints for Checkpoints.Trace208;
-
-    struct Request {
-        uint256 timestamp;
-        uint256 shares;
-        bool isClaimable;
-        uint256 assets;
-    }
-
-    struct Pair {
-        uint256 assets;
-        uint256 shares;
-    }
-
-    struct RedeemQueueStorage {
-        uint256 handledIndices;
-        uint256 outflowDemandIterator;
-        mapping(address account => EnumerableMap.UintToUintMap) requestsOf;
-        mapping(uint256 index => uint256 cumulativeShares) prefixSum;
-        Pair[] outflowDemand;
-        Checkpoints.Trace208 prices;
-    }
 
     bytes32 private immutable _redeemQueueStorageSlot;
 
@@ -42,6 +18,16 @@ contract RedeemQueue is Queue, ReentrancyGuardUpgradeable {
     }
 
     // View functions
+
+    function getDemand() public view returns (uint256 assets, uint256 shares) {
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+        uint256 iterator_ = $.outflowDemandIterator;
+        if (iterator_ >= $.outflowDemand.length) {
+            return (0, 0);
+        }
+        Pair storage pair = $.outflowDemand[iterator_];
+        return (pair.assets, pair.shares);
+    }
 
     function requestsOf(address account, uint256 offset, uint256 limit)
         public
@@ -88,8 +74,7 @@ contract RedeemQueue is Queue, ReentrancyGuardUpgradeable {
             revert("RedeemQueue: zero shares");
         }
         address caller = _msgSender();
-        SharesManager sharesManager_ = sharesManager();
-        sharesManager_.pullShares(caller, shares);
+        ISharesManager(sharesManager()).burn(caller, shares);
 
         RedeemQueueStorage storage $ = _redeemQueueStorage();
 
@@ -152,7 +137,7 @@ contract RedeemQueue is Queue, ReentrancyGuardUpgradeable {
         }
         reports = Math.min(reports, length - iterator_);
 
-        RedeemModule vault_ = RedeemModule(payable(vault()));
+        IRedeemModule vault_ = IRedeemModule(payable(vault()));
         address asset_ = asset();
         uint256 liquidAssets = vault_.getLiquidAssets(asset_);
         uint256 demand = 0;
@@ -169,6 +154,7 @@ contract RedeemQueue is Queue, ReentrancyGuardUpgradeable {
         if (counter > 0) {
             if (demand > 0) {
                 vault_.callRedeemHook(asset_, demand);
+                $.fullDemand -= demand;
             }
             $.outflowDemandIterator += counter;
         }
@@ -210,9 +196,10 @@ contract RedeemQueue is Queue, ReentrancyGuardUpgradeable {
 
         uint256 index = $.prices.length();
         $.prices.push(latestEligibleTimestamp, uint208(index));
-        $.outflowDemand.push(Pair(Math.mulDiv(shares, priceD18, 1 ether), shares));
-
-        sharesManager().burnShares(address(this), shares);
+        uint256 assets_ = Math.mulDiv(shares, priceD18, 1 ether);
+        $.outflowDemand.push(Pair(assets_, shares));
+        $.fullDemand += assets_;
+        ISharesManager(sharesManager()).burn(address(this), shares);
     }
 
     function _redeemQueueStorage() internal view returns (RedeemQueueStorage storage $) {
