@@ -6,7 +6,7 @@ import "../interfaces/queues/IDepositQueue.sol";
 
 import "../libraries/FenwickTreeLibrary.sol";
 import "../libraries/TransferLibrary.sol";
-import "../modules/DepositModule.sol";
+
 import "./Queue.sol";
 
 contract DepositQueue is IDepositQueue, Queue {
@@ -123,7 +123,7 @@ contract DepositQueue is IDepositQueue, Queue {
     }
 
     function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal override {
-        DepositModule vault_ = DepositModule(payable(vault()));
+        IDepositModule vault_ = IDepositModule(vault());
         address asset_ = asset();
 
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -156,14 +156,15 @@ contract DepositQueue is IDepositQueue, Queue {
         }
 
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
-
-        uint256 shares = Math.mulDiv(assets, priceD18, 1 ether);
-        if (shares == 0) {
-            return;
+        address hook = vault_.getDepositHook(asset_);
+        if (hook != address(0)) {
+            IDepositHook(hook).afterDeposit(address(vault_), asset_, assets);
         }
 
-        ISharesManager(sharesManager()).allocateShares(shares);
-        DepositModule(payable(vault_)).callDepositHook(asset_, assets);
+        uint256 shares = Math.mulDiv(assets, priceD18, 1 ether);
+        if (shares > 0) {
+            ISharesManager(sharesManager()).allocateShares(shares);
+        }
     }
 
     function _depositQueueStorage() internal view returns (DepositQueueStorage storage dqs) {

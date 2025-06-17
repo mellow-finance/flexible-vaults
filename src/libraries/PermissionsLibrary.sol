@@ -32,4 +32,5 @@ library PermissionsLibrary {
     bytes32 public constant PULL_LIQUIDITY_ROLE = keccak256("ROOTVAULT_MODULE:PULL_LIQUIDITY_ROLE");
     bytes32 public constant PUSH_LIQUIDITY_ROLE = keccak256("ROOTVAULT_MODULE:PUSH_LIQUIDITY_ROLE");
     bytes32 public constant APPLY_CORRECTION_ROLE = keccak256("ROOTVAULT_MODULE:APPLY_CORRECTION_ROLE");
+    bytes32 public constant SET_SUBVAULT_LIMIT_ROLE = keccak256("ROOTVAULT_MODULE:SET_SUBVAULT_LIMIT_ROLE");
 }

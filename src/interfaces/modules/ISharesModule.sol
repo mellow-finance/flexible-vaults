@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../hooks/IDepositHook.sol";
 import "../oracles/IOracle.sol";
 import "../queues/IQueue.sol";
 import "../shares/ISharesManager.sol";

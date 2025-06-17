@@ -30,16 +30,27 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
         return _rootVaultStorage().subvaults.at(index);
     }
 
-    function isSubvault(address subvault) public view returns (bool) {
+    function hasSubvault(address subvault) public view returns (bool) {
         return _rootVaultStorage().subvaults.contains(subvault);
     }
 
-    function convertToShares(address asset, uint256 value) public view returns (uint256) {
+    function convertToShares(address asset, uint256 value) public view returns (uint256 shares) {
         uint256 priceD18 = ISharesModule(address(this)).depositOracle().getReport(asset).priceD18;
         if (priceD18 == 0) {
             return 0;
         }
-        return Math.mulDiv(value, priceD18, 1 ether);
+        shares = Math.mulDiv(value, priceD18, 1 ether);
+        if (shares > uint256(type(int256).max)) {
+            revert("SubvaultModule: value exceeds int256 limit");
+        }
+        return shares;
+    }
+
+    function getSubvaultState(address subvault) public view returns (int256 limit, int256 balance) {
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
+        require($.subvaults.contains(subvault), "SubvaultModule: not a valid subvault");
+        limit = $.limits[subvault];
+        balance = $.balances[subvault];
     }
 
     // Mutable functions
@@ -91,12 +102,21 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
         }
 
         int256 increment = int256(convertToShares(asset, value));
-        if ($.balances[subvault] + increment > int256($.limits[subvault])) {
+        if ($.balances[subvault] + increment > $.limits[subvault]) {
             revert("SubvaultModule: exceeds subvault limit");
         }
 
         $.balances[subvault] += increment;
         TransferLibrary.sendAssets(asset, subvault, value);
+    }
+
+    function setSubvaultLimit(address subvault, int256 limit)
+        external
+        onlyRole(PermissionsLibrary.SET_SUBVAULT_LIMIT_ROLE)
+    {
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
+        require($.subvaults.contains(subvault), "SubvaultModule: not a valid subvault");
+        $.limits[subvault] = limit;
     }
 
     function applyCorrection(address subvault, int256 correction)

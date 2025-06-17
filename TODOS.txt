@@ -6,10 +6,10 @@ OrderedDepositQueue
 InstantWithDelayDepositQueue
 OrderedRedeemQueue
 
-SubvaultModule:
-limits
-
 VaultConfigurator
+
+Oracle:
+Fees
 
 Hooks
 splitter hook to subvaults

@@ -77,16 +77,6 @@ abstract contract DepositModule is IDepositModule, SharesModule, ACLModule {
         _depositModuleStorage().customHooks[queue] = hook;
     }
 
-    function callDepositHook(address asset, uint256 assets) external {
-        address caller = _msgSender();
-        DepositModuleStorage storage $ = _depositModuleStorage();
-        EnumerableSet.AddressSet storage queues = $.queues[asset];
-        if (!queues.contains(caller)) {
-            revert("DepositModule: caller is not a queue");
-        }
-        Address.functionDelegateCall(getDepositHook(caller), abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
-    }
-
     function createDepositQueue(uint256 version, address owner, address asset, bytes32 salt)
         external
         onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
