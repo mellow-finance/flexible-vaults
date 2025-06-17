@@ -10,6 +10,8 @@ contract BasicSharesManager is SharesManager {
 
     bytes32 private constant ERC20StorageLocation = 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00;
 
+    constructor(string memory name_, uint256 version_) SharesManager(name_, version_) {}
+
     // View functions
 
     function activeShares() public view override returns (uint256) {
@@ -18,6 +20,12 @@ contract BasicSharesManager is SharesManager {
 
     function activeSharesOf(address account) public view override returns (uint256) {
         return _getERC20Storage()._balances[account];
+    }
+
+    // Mutable functions
+
+    function initialize(bytes calldata data) external initializer {
+        __SharesManager_init(data);
     }
 
     // Internal functions

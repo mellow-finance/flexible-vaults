@@ -8,6 +8,8 @@ import "./SharesManager.sol";
 contract TokenizedSharesManager is SharesManager, ERC20Upgradeable {
     using SharesManagerFlagLibrary for uint256;
 
+    constructor(string memory name_, uint256 version_) SharesManager(name_, version_) {}
+
     // View functions
 
     function activeSharesOf(address account) public view override returns (uint256) {
@@ -16,6 +18,12 @@ contract TokenizedSharesManager is SharesManager, ERC20Upgradeable {
 
     function activeShares() public view override returns (uint256) {
         return totalSupply();
+    }
+
+    // Mutable functions
+
+    function initialize(bytes calldata data) external initializer {
+        __SharesManager_init(data);
     }
 
     // Internal functions

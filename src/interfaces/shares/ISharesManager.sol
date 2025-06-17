@@ -10,11 +10,20 @@ import "../modules/IRedeemModule.sol";
 import "../modules/ISharesModule.sol";
 
 interface ISharesManager {
+    struct SharesManagerStorage {
+        address vault;
+        uint256 flags;
+        uint256 allocatedShares;
+        uint256 sharesLimit;
+        bytes32 whitelistMerkleRoot;
+        mapping(address account => AccountInfo) accounts;
+    }
+
     struct AccountInfo {
         bool canDeposit;
         bool canTransfer;
         bool isBlacklisted;
-        uint40 lockedUntil;
+        uint32 lockedUntil;
     }
 
     function vault() external view returns (address);
