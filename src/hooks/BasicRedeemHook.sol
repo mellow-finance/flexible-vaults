@@ -32,8 +32,8 @@ contract BasicRedeemHook is IRedeemHook {
     }
 
     function getLiquidAssets(address asset) public view virtual returns (uint256 assets) {
-        assets = IERC20(asset).balanceOf(address(this));
-        IRootVaultModule vault = IRootVaultModule(address(this));
+        assets = IERC20(asset).balanceOf(msg.sender);
+        IRootVaultModule vault = IRootVaultModule(msg.sender);
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);

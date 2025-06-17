@@ -101,7 +101,7 @@ contract DepositQueue is IDepositQueue, Queue {
         TransferLibrary.sendAssets(asset_, caller, assets);
     }
 
-    function claim(address account) external nonReentrant returns (bool) {
+    function claim(address account) external returns (bool) {
         return _claim(account);
     }
 

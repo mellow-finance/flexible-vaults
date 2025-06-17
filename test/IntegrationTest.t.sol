@@ -107,9 +107,11 @@ contract Integration is Test {
         vault.grantFundamentalRole(vaultProxyAdmin, IACLModule.FundamentalRole.PROXY_OWNER);
         vault.grantFundamentalRole(vaultAdmin, IACLModule.FundamentalRole.SUBVAULT_ADMIN);
 
-        bytes32[20] memory roles = [
+        bytes32[22] memory roles = [
             PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE,
             PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE,
+            PermissionsLibrary.SET_REDEEM_HOOK_ROLE,
+            PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE,
             PermissionsLibrary.SEND_REPORT_ROLE,
             PermissionsLibrary.ACCEPT_REPORT_ROLE,
             PermissionsLibrary.SET_SECURITY_PARAMS_ROLE,
@@ -137,9 +139,14 @@ contract Integration is Test {
             address depositQueueImplementation = address(new DepositQueue("Mellow", 1));
             depositQueueFactory.proposeImplementation(depositQueueImplementation);
             depositQueueFactory.acceptProposedImplementation(depositQueueImplementation);
+
+            address redeemQueueImplementation = address(new RedeemQueue("Mellow", 1));
+            redeemQueueFactory.proposeImplementation(redeemQueueImplementation);
+            redeemQueueFactory.acceptProposedImplementation(redeemQueueImplementation);
         }
 
         vault.createDepositQueue(0, vaultProxyAdmin, address(asset), bytes32(0));
+        vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), bytes32(0));
         vm.stopPrank();
 
         vm.startPrank(user);
@@ -169,5 +176,33 @@ contract Integration is Test {
 
         console2.log(sharesManager.activeSharesOf(user));
         console2.log(sharesManager.claimableSharesOf(user));
+
+        vm.startPrank(user);
+        {
+            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).redeem(1 ether);
+        }
+        vm.stopPrank();
+
+        skip(1 hours);
+
+        vm.startPrank(vaultAdmin);
+        {
+            IOracle.Report[] memory report = new IOracle.Report[](1);
+            report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
+            redeemOracle.sendReport(report);
+            redeemOracle.acceptReport(address(asset), uint32(block.timestamp));
+        }
+        vm.stopPrank();
+        vm.startPrank(user);
+        {
+            uint256[] memory timestamps = new uint256[](1);
+            timestamps[0] = block.timestamp - 1 hours;
+
+            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).handleReports(1);
+            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).claim(user, timestamps);
+        }
+        vm.stopPrank();
+
+        console2.log(asset.balanceOf(address(vault)), asset.balanceOf(user));
     }
 }

@@ -96,8 +96,9 @@ contract RedeemQueue is IRedeemQueue, Queue {
         callerRequests.set(timestamp, pendingShares + shares);
     }
 
-    function claim(address account, uint256[] calldata timestamps) external nonReentrant returns (uint256 assets) {
+    function claim(address receiver, uint256[] calldata timestamps) external nonReentrant returns (uint256 assets) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
+        address account = _msgSender();
         EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[account];
         (bool doesExist, uint48 latestReportTimestamp,) = $.prices.latestCheckpoint();
         if (!doesExist) {
@@ -124,7 +125,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             callerRequests.remove(timestamp);
         }
 
-        TransferLibrary.sendAssets(asset(), account, assets);
+        TransferLibrary.sendAssets(asset(), receiver, assets);
     }
 
     /// @dev permissionless function
@@ -187,7 +188,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
             return;
         }
 
-        uint256 shares = $.prefixSum[latestEligibleIndex] - handledIndices_ == 0 ? 0 : $.prefixSum[handledIndices_ - 1];
+        uint256 shares =
+            $.prefixSum[latestEligibleIndex] - (handledIndices_ == 0 ? 0 : $.prefixSum[handledIndices_ - 1]);
         $.handledIndices = latestEligibleIndex + 1;
 
         if (shares == 0) {
@@ -199,7 +201,6 @@ contract RedeemQueue is IRedeemQueue, Queue {
         uint256 assets_ = Math.mulDiv(shares, priceD18, 1 ether);
         $.outflowDemand.push(Pair(assets_, shares));
         $.fullDemand += assets_;
-        ISharesManager(sharesManager()).burn(address(this), shares);
     }
 
     function _redeemQueueStorage() internal view returns (RedeemQueueStorage storage $) {
