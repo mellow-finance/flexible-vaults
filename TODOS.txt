@@ -2,6 +2,10 @@ DepositModule / RedeemModule:
 limits per block per token?
 min/max assets 
 
+OrderedDepositQueue
+InstantWithDelayDepositQueue
+OrderedRedeemQueue
+
 SubvaultModule:
 limits
 

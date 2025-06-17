@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/modules/ISubvaultModule.sol";
+import "../interfaces/modules/IRootVaultModule.sol";
 
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
@@ -11,7 +11,7 @@ import "./ACLModule.sol";
 
 import "./SubvaultModule.sol";
 
-abstract contract RootVaultModule is ISubvaultModule, ACLModule {
+abstract contract RootVaultModule is IRootVaultModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     bytes32 private immutable _subvaultModuleStorageSlot;
@@ -25,15 +25,15 @@ abstract contract RootVaultModule is ISubvaultModule, ACLModule {
     // View functions
 
     function subvaults() public view returns (uint256) {
-        return _subvaultStorage().subvaults.length();
+        return _rootVaultStorage().subvaults.length();
     }
 
     function subvaultAt(uint256 index) public view returns (address) {
-        return _subvaultStorage().subvaults.at(index);
+        return _rootVaultStorage().subvaults.at(index);
     }
 
     function isSubvault(address subvault) public view returns (bool) {
-        return _subvaultStorage().subvaults.contains(subvault);
+        return _rootVaultStorage().subvaults.contains(subvault);
     }
 
     // Mutable functions
@@ -46,18 +46,18 @@ abstract contract RootVaultModule is ISubvaultModule, ACLModule {
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         requireFundamentalRole(subvaultAdmin, FundamentalRole.SUBVAULT_ADMIN);
         subvault = IFactory(subvaultFactory).create(version, owner, abi.encode(subvaultAdmin, verifier), salt);
-        SubvaultModuleStorage storage $ = _subvaultStorage();
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
         $.subvaults.add(subvault);
     }
 
     function disconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.DISCONNECT_SUBVAULT_ROLE) {
-        SubvaultModuleStorage storage $ = _subvaultStorage();
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
         require($.subvaults.contains(subvault), "SubvaultModule: subvault not found");
         $.subvaults.remove(subvault);
     }
 
     function reconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.RECONNECT_SUBVAULT_ROLE) {
-        SubvaultModuleStorage storage $ = _subvaultStorage();
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
         require(!$.subvaults.contains(subvault), "SubvaultModule: subvault already connected");
         require(IFactory(subvaultFactory).isEntity(subvault), "SubvaultModule: not a valid subvault");
         $.subvaults.add(subvault);
@@ -70,7 +70,7 @@ abstract contract RootVaultModule is ISubvaultModule, ACLModule {
         if (!isSubvault(subvault)) {
             revert("SubvaultModule: not a valid subvault");
         }
-        SubvaultModule(subvault).pullAssets(asset, address(this), value);
+        SubvaultModule(payable(subvault)).pullAssets(asset, address(this), value);
         // TODO: limits
     }
 
@@ -87,7 +87,7 @@ abstract contract RootVaultModule is ISubvaultModule, ACLModule {
 
     // Internal functions
 
-    function _subvaultStorage() private view returns (SubvaultModuleStorage storage $) {
+    function _rootVaultStorage() private view returns (RootVaultModuleStorage storage $) {
         bytes32 slot = _subvaultModuleStorageSlot;
         assembly {
             $.slot := slot

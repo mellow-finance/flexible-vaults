@@ -2,30 +2,17 @@
 pragma solidity 0.8.25;
 
 import "../factories/IFactory.sol";
-import "./IACLModule.sol";
 
-interface ISubvaultModule is IACLModule {
+interface ISubvaultModule {
     struct SubvaultModuleStorage {
-        EnumerableSet.AddressSet subvaults;
+        address rootVault;
     }
 
     // View functions
 
-    function subvaultFactory() external view returns (address);
-
-    function subvaults() external view returns (uint256);
-
-    function subvaultAt(uint256 index) external view returns (address);
-
-    function isSubvault(address subvault) external view returns (bool);
+    function rootVault() external view returns (address);
 
     // Mutable functions
 
-    function createSubvault(uint256 version, address owner, address subvaultAdmin, address verifier, bytes32 salt)
-        external
-        returns (address subvault);
-
-    function disconnectSubvault(address subvault) external;
-
-    function reconnectSubvault(address subvault) external;
+    function pullAssets(address asset, address to, uint256 value) external;
 }
