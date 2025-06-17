@@ -194,10 +194,10 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
 
     // Internal functions
 
-    function __SharesManager_init(bytes calldata data) internal onlyInitializing {
-        __Context_init();
-        (address vault_, uint256 flags_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_) =
-            abi.decode(data, (address, uint256, bytes32, uint256));
+    function __SharesManager_init(address vault_, uint256 flags_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_)
+        internal
+        onlyInitializing
+    {
         require(vault_ != address(0), "SharesManager: vault cannot be zero address");
         SharesManagerStorage storage $ = _sharesManagerStorage();
         $.vault = vault_;

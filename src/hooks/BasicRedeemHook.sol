@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/hooks/IRedeemHook.sol";
 import "../interfaces/modules/IRootVaultModule.sol";
 
-contract BasicRedeemHook {
+contract BasicRedeemHook is IRedeemHook {
     function beforeRedeem(address asset, uint256 assets) public virtual {
         uint256 liquid = IERC20(asset).balanceOf(address(this));
         if (liquid >= assets) {

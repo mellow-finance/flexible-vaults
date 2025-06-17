@@ -55,22 +55,28 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
 
     // Mutable functions
 
-    function createSubvault(uint256 version, address owner, address subvaultAdmin, address verifier, bytes32 salt)
-        external
-        onlyRole(PermissionsLibrary.CREATE_SUBVAULT_ROLE)
-        returns (address subvault)
-    {
+    function createSubvault(
+        uint256 version,
+        address owner,
+        address subvaultAdmin,
+        address verifier,
+        bytes32 salt,
+        int256 limit
+    ) external onlyRole(PermissionsLibrary.CREATE_SUBVAULT_ROLE) returns (address subvault) {
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         requireFundamentalRole(subvaultAdmin, FundamentalRole.SUBVAULT_ADMIN);
         subvault = IFactory(subvaultFactory).create(version, owner, abi.encode(subvaultAdmin, verifier), salt);
         RootVaultModuleStorage storage $ = _rootVaultStorage();
         $.subvaults.add(subvault);
+        $.limits[subvault] = limit;
     }
 
     function disconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.DISCONNECT_SUBVAULT_ROLE) {
         RootVaultModuleStorage storage $ = _rootVaultStorage();
         require($.subvaults.contains(subvault), "SubvaultModule: subvault not found");
         $.subvaults.remove(subvault);
+        delete $.balances[subvault];
+        delete $.limits[subvault];
     }
 
     function reconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.RECONNECT_SUBVAULT_ROLE) {

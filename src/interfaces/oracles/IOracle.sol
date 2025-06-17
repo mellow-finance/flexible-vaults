@@ -47,7 +47,7 @@ interface IOracle {
 
     function sendReport(Report[] calldata reports) external;
 
-    function acceptReport(address asset, uint48 timestamp) external;
+    function acceptReport(address asset, uint32 timestamp) external;
 
     function setSecurityParams(SecurityParams calldata securityParams_) external;
 

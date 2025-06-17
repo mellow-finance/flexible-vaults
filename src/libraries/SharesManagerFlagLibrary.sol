@@ -6,12 +6,24 @@ library SharesManagerFlagLibrary {
         return (mask & 0x1) != 0;
     }
 
+    function setHasDepositQueues(uint256 mask, bool value) internal pure returns (uint256) {
+        return value ? (mask | 0x1) : (mask & ~uint256(0x1));
+    }
+
     function hasRedeemQueues(uint256 mask) internal pure returns (bool) {
         return (mask & 0x2) != 0;
     }
 
+    function setHasRedeemQueues(uint256 mask, bool value) internal pure returns (uint256) {
+        return value ? (mask | 0x2) : (mask & ~uint256(0x2));
+    }
+
     function hasMintPause(uint256 mask) internal pure returns (bool) {
         return (mask & 0x4) != 0;
+    }
+
+    function setHasMintPause(uint256 mask, bool value) internal pure returns (uint256) {
+        return value ? (mask | 0x4) : (mask & ~uint256(0x4));
     }
 
     function hasBurnPause(uint256 mask) internal pure returns (bool) {

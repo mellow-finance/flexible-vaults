@@ -92,7 +92,7 @@ contract Factory is IFactory, OwnableUpgradeable {
         salt = keccak256(abi.encodePacked(version, owner, initParams, salt, $.entities.length()));
         instance = address(
             new TransparentUpgradeableProxy{salt: salt}(
-                implementation, owner, abi.encodeWithSignature("initialize(bytes memory)", initParams)
+                implementation, owner, abi.encodeWithSignature("initialize(bytes)", initParams)
             )
         );
         $.entities.add(instance);

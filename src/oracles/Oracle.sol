@@ -48,6 +48,10 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
 
     // Mutable functions
 
+    function initialize(bytes calldata initParams) external initializer {
+        __Oracle_init(initParams);
+    }
+
     function sendReport(Report[] calldata reports) external onlyRole(PermissionsLibrary.SEND_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = _oracleStorage().securityParams;
@@ -63,7 +67,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         }
     }
 
-    function acceptReport(address asset, uint48 timestamp) external onlyRole(PermissionsLibrary.ACCEPT_REPORT_ROLE) {
+    function acceptReport(address asset, uint32 timestamp) external onlyRole(PermissionsLibrary.ACCEPT_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         DetailedReport storage report_ = $.reports[asset];
         if (!report_.isSuspicious) {

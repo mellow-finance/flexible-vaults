@@ -3,9 +3,12 @@ pragma solidity 0.8.25;
 
 import "forge-std/Test.sol";
 
+import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+
 import "../src/factories/Factory.sol";
 
 import "../src/hooks/BasicDepositHook.sol";
+import "../src/hooks/BasicRedeemHook.sol";
 import "../src/hooks/CompositeDepositHook.sol";
 import "../src/hooks/LidoStakingHook.sol";
 
@@ -43,3 +46,5 @@ import "../src/strategies/MulticallStrategy.sol";
 
 import "../src/vaults/RootVault.sol";
 import "../src/vaults/Subvault.sol";
+
+import "./mocks/MockERC20.sol";

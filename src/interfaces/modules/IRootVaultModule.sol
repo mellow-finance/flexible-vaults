@@ -29,9 +29,14 @@ interface IRootVaultModule is IACLModule {
 
     // Mutable functions
 
-    function createSubvault(uint256 version, address owner, address subvaultAdmin, address verifier, bytes32 salt)
-        external
-        returns (address subvault);
+    function createSubvault(
+        uint256 version,
+        address owner,
+        address subvaultAdmin,
+        address verifier,
+        bytes32 salt,
+        int256 limit
+    ) external returns (address subvault);
 
     function disconnectSubvault(address subvault) external;
 
