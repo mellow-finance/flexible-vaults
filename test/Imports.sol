@@ -42,7 +42,7 @@ import "../src/shares/BasicSharesManager.sol";
 import "../src/shares/SharesManager.sol";
 import "../src/shares/TokenizedSharesManager.sol";
 
-import "../src/strategies/MulticallStrategy.sol";
+import "../src/strategies/SymbioticStrategy.sol";
 
 import "../src/vaults/RootVault.sol";
 import "../src/vaults/Subvault.sol";

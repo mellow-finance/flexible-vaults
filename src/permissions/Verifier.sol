@@ -105,7 +105,8 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     // Mutable functions
 
-    function initialize(address vault_, bytes32 merkleRoot_) external initializer {
+    function initialize(bytes calldata initParams) external initializer {
+        (address vault_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
         require(vault_ != address(0), "Verifier: zero vault address");
         _verifierStorage().vault = IAccessControl(vault_);
         if (merkleRoot_ != bytes32(0)) {

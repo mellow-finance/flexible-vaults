@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../factories/IFactoryEntity.sol";
 import "../modules/ISharesModule.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-interface IOracle {
+interface IOracle is IFactoryEntity {
     struct SecurityParams {
         uint208 maxAbsoluteDeviation;
         uint208 suspiciousAbsoluteDeviation;

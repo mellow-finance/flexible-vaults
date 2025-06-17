@@ -60,9 +60,7 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
 
     function getLiquidAssets(address asset) public view returns (uint256) {
         address caller = _msgSender();
-        RedeemModuleStorage storage $ = _redeemModuleStorage();
-        EnumerableSet.AddressSet storage queues = $.queues[asset];
-        if (!queues.contains(caller)) {
+        if (!_redeemModuleStorage().queues[asset].contains(caller)) {
             revert("RedeemModule: caller is not a queue");
         }
         return IRedeemHook(getRedeemHook(caller)).getLiquidAssets(asset);
@@ -82,16 +80,14 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
 
     function callRedeemHook(address asset, uint256 assets) external {
         address caller = _msgSender();
-        RedeemModuleStorage storage $ = _redeemModuleStorage();
-        EnumerableSet.AddressSet storage queues = $.queues[asset];
-        if (!queues.contains(caller)) {
+        if (!_redeemModuleStorage().queues[asset].contains(caller)) {
             revert("RedeemModule: caller is not a queue");
         }
         Address.functionDelegateCall(getRedeemHook(caller), abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
         TransferLibrary.sendAssets(asset, caller, assets);
     }
 
-    function createRedeemQueue(uint256 version, address owner, address asset, bytes32 salt)
+    function createRedeemQueue(uint256 version, address owner, address asset)
         external
         onlyRole(PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE)
     {
@@ -99,7 +95,7 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
             revert("RedeemModule: unsupported asset");
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
-        address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this)), salt);
+        address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this)));
         RedeemModuleStorage storage $ = _redeemModuleStorage();
         $.queues[asset].add(queue);
         $.assets.add(asset);

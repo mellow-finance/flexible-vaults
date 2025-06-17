@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../interfaces/factories/IFactoryEntity.sol";
 import "../modules/CallModule.sol";
 import "../modules/SubvaultModule.sol";
 import "../modules/VerifierModule.sol";
 
-contract Subvault is CallModule, SubvaultModule {
+contract Subvault is IFactoryEntity, CallModule, SubvaultModule {
     constructor(string memory name_, uint256 version_)
         VerifierModule(name_, version_)
         SubvaultModule(name_, version_)

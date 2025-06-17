@@ -69,7 +69,7 @@ interface IVerifier {
 
     // Mutable functions
 
-    function initialize(address vault_, bytes32 merkleRoot_) external;
+    function initialize(bytes calldata initParams) external;
 
     function setMerkleRoot(bytes32 merkleRoot_) external;
 

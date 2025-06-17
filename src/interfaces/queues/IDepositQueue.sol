@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 import "../../libraries/FenwickTreeLibrary.sol";
-
+import "../factories/IFactoryEntity.sol";
 import "../modules/IDepositModule.sol";
 import "./IQueue.sol";
 
-interface IDepositQueue is IQueue {
+interface IDepositQueue is IQueue, IFactoryEntity {
     struct DepositQueueStorage {
         uint256 handledIndices;
         mapping(address account => Checkpoints.Checkpoint208) requestOf;

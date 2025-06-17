@@ -44,5 +44,5 @@ interface IDepositModule {
 
     function setCustomDepositHook(address queue, address hook) external;
 
-    function createDepositQueue(uint256 version, address owner, address asset, bytes32 salt) external;
+    function createDepositQueue(uint256 version, address owner, address asset) external;
 }

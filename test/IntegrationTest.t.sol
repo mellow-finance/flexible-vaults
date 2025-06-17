@@ -15,6 +15,7 @@ contract Integration is Test {
     Factory subvaultFactory;
     Factory depositQueueFactory;
     Factory redeemQueueFactory;
+    Factory verifierFactory;
 
     RootVault rootVaultImplementation;
     TokenizedSharesManager sharesManagerImplementation;
@@ -24,6 +25,11 @@ contract Integration is Test {
 
     function testRootVault() external {
         factoryImplementation = new Factory("Mellow", 1);
+
+        verifierFactory = Factory(
+            address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
+        );
+        verifierFactory.initialize(vaultAdmin);
 
         subvaultFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
@@ -143,10 +149,14 @@ contract Integration is Test {
             address redeemQueueImplementation = address(new RedeemQueue("Mellow", 1));
             redeemQueueFactory.proposeImplementation(redeemQueueImplementation);
             redeemQueueFactory.acceptProposedImplementation(redeemQueueImplementation);
+
+            address verifierImplementation = address(new Verifier("Mellow", 1));
+            verifierFactory.proposeImplementation(verifierImplementation);
+            verifierFactory.acceptProposedImplementation(verifierImplementation);
         }
 
-        vault.createDepositQueue(0, vaultProxyAdmin, address(asset), bytes32(0));
-        vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), bytes32(0));
+        vault.createDepositQueue(0, vaultProxyAdmin, address(asset));
+        vault.createRedeemQueue(0, vaultProxyAdmin, address(asset));
         vm.stopPrank();
 
         vm.startPrank(user);
@@ -161,6 +171,19 @@ contract Integration is Test {
         skip(2 hours);
 
         vm.startPrank(vaultAdmin);
+
+        {
+            vault.createSubvault(
+                IRootVaultModule.CreateSubvaultParams({
+                    version: 0,
+                    owner: vaultProxyAdmin,
+                    verifier: address(0),
+                    subvaultAdmin: vaultAdmin,
+                    limit: int256(100 ether)
+                })
+            );
+        }
+
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});

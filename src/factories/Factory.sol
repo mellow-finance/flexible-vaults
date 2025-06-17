@@ -77,10 +77,32 @@ contract Factory is IFactory, OwnableUpgradeable {
         $.implementation.add(implementation);
     }
 
-    function create(uint256 version, address owner, bytes calldata initParams, bytes32 salt)
+    function computeAddress(uint256 version, address owner, bytes calldata initParams)
         external
+        view
         returns (address instance)
     {
+        FactoryStorage storage $ = _factoryStorage();
+        if (version >= $.implementation.length()) {
+            return address(0);
+        }
+        if ($.isBlacklisted[version]) {
+            return address(0);
+        }
+        address implementation = $.implementation.at(version);
+        bytes32 salt = keccak256(abi.encodePacked(version, owner, initParams, $.entities.length()));
+        return Create2.computeAddress(
+            salt,
+            keccak256(
+                abi.encodePacked(
+                    type(TransparentUpgradeableProxy).creationCode,
+                    abi.encode(implementation, owner, abi.encodeCall(IFactoryEntity.initialize, (initParams)))
+                )
+            )
+        );
+    }
+
+    function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance) {
         FactoryStorage storage $ = _factoryStorage();
         if (version >= $.implementation.length()) {
             revert("Factory: version out of bounds");
@@ -89,10 +111,10 @@ contract Factory is IFactory, OwnableUpgradeable {
             revert("Factory: version is blacklisted");
         }
         address implementation = $.implementation.at(version);
-        salt = keccak256(abi.encodePacked(version, owner, initParams, salt, $.entities.length()));
+        bytes32 salt = keccak256(abi.encodePacked(version, owner, initParams, $.entities.length()));
         instance = address(
             new TransparentUpgradeableProxy{salt: salt}(
-                implementation, owner, abi.encodeWithSignature("initialize(bytes)", initParams)
+                implementation, owner, abi.encodeCall(IFactoryEntity.initialize, (initParams))
             )
         );
         $.entities.add(instance);

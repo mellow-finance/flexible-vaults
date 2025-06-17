@@ -6,10 +6,11 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
+import "../factories/IFactoryEntity.sol";
 import "../modules/IRedeemModule.sol";
 import "./IQueue.sol";
 
-interface IRedeemQueue is IQueue {
+interface IRedeemQueue is IQueue, IFactoryEntity {
     struct Request {
         uint256 timestamp;
         uint256 shares;

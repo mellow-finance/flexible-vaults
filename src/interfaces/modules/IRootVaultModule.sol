@@ -13,6 +13,14 @@ interface IRootVaultModule is IACLModule {
         mapping(address subvault => int256) limits;
     }
 
+    struct CreateSubvaultParams {
+        uint256 version;
+        address owner;
+        address subvaultAdmin;
+        address verifier;
+        int256 limit;
+    }
+
     // View functions
 
     function subvaultFactory() external view returns (address);
@@ -29,14 +37,7 @@ interface IRootVaultModule is IACLModule {
 
     // Mutable functions
 
-    function createSubvault(
-        uint256 version,
-        address owner,
-        address subvaultAdmin,
-        address verifier,
-        bytes32 salt,
-        int256 limit
-    ) external returns (address subvault);
+    function createSubvault(CreateSubvaultParams calldata initParams) external returns (address subvault);
 
     function disconnectSubvault(address subvault) external;
 

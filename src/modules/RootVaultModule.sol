@@ -20,7 +20,7 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
         subvaultFactory = subvaultFactory_;
     }
 
-    // View functions
+    // View functionss
 
     function subvaults() public view returns (uint256) {
         return _rootVaultStorage().subvaults.length();
@@ -55,20 +55,19 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
 
     // Mutable functions
 
-    function createSubvault(
-        uint256 version,
-        address owner,
-        address subvaultAdmin,
-        address verifier,
-        bytes32 salt,
-        int256 limit
-    ) external onlyRole(PermissionsLibrary.CREATE_SUBVAULT_ROLE) returns (address subvault) {
-        requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
-        requireFundamentalRole(subvaultAdmin, FundamentalRole.SUBVAULT_ADMIN);
-        subvault = IFactory(subvaultFactory).create(version, owner, abi.encode(subvaultAdmin, verifier), salt);
+    function createSubvault(CreateSubvaultParams calldata initParams)
+        external
+        onlyRole(PermissionsLibrary.CREATE_SUBVAULT_ROLE)
+        returns (address subvault)
+    {
+        requireFundamentalRole(initParams.owner, FundamentalRole.PROXY_OWNER);
+        requireFundamentalRole(initParams.subvaultAdmin, FundamentalRole.SUBVAULT_ADMIN);
+        subvault = IFactory(subvaultFactory).create(
+            initParams.version, initParams.owner, abi.encode(initParams.subvaultAdmin, initParams.verifier)
+        );
         RootVaultModuleStorage storage $ = _rootVaultStorage();
         $.subvaults.add(subvault);
-        $.limits[subvault] = limit;
+        $.limits[subvault] = initParams.limit;
     }
 
     function disconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.DISCONNECT_SUBVAULT_ROLE) {

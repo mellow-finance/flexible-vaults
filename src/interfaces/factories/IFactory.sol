@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "./IFactoryEntity.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 interface IFactory {
@@ -29,7 +31,9 @@ interface IFactory {
     function setBlacklistStatus(uint256 version, bool flag) external;
     function proposeImplementation(address implementation) external;
     function acceptProposedImplementation(address implementation) external;
-    function create(uint256 version, address owner, bytes calldata initParams, bytes32 salt)
+    function computeAddress(uint256 version, address owner, bytes calldata initParams)
         external
+        view
         returns (address instance);
+    function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance);
 }
