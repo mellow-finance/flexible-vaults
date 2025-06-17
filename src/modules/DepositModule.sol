@@ -37,6 +37,14 @@ abstract contract DepositModule is IDepositModule, SharesModule, ACLModule {
         return _depositModuleStorage().queues[IQueue(queue).asset()].contains(queue);
     }
 
+    function depositQueues(address asset) public view returns (uint256) {
+        return _depositModuleStorage().queues[asset].length();
+    }
+
+    function depositQueueAt(address asset, uint256 index) public view returns (address) {
+        return _depositModuleStorage().queues[asset].at(index);
+    }
+
     function getDepositQueues(address asset) public view virtual override returns (address[] memory queues) {
         return _depositModuleStorage().queues[asset].values();
     }

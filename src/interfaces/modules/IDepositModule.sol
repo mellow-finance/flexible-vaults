@@ -30,6 +30,10 @@ interface IDepositModule {
 
     function hasDepositQueue(address queue) external view returns (bool);
 
+    function depositQueues(address asset) external view returns (uint256);
+
+    function depositQueueAt(address asset, uint256 index) external view returns (address);
+
     function claimableSharesOf(address account) external view returns (uint256 shares);
 
     function getDepositHook(address queue) external view returns (address hook);

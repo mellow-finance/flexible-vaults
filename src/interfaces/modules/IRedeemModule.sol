@@ -29,6 +29,10 @@ interface IRedeemModule {
 
     function hasRedeemQueue(address queue) external view returns (bool);
 
+    function redeemQueues(address asset) external view returns (uint256);
+
+    function redeemQueueAt(address asset, uint256 index) external view returns (address);
+
     function getRedeemHook(address queue) external view returns (address hook);
 
     function getLiquidAssets(address asset) external view returns (uint256);

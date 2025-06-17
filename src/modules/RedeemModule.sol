@@ -37,6 +37,14 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
         return _redeemModuleStorage().queues[IQueue(queue).asset()].contains(queue);
     }
 
+    function redeemQueues(address asset) public view returns (uint256) {
+        return _redeemModuleStorage().queues[asset].length();
+    }
+
+    function redeemQueueAt(address asset, uint256 index) public view returns (address) {
+        return _redeemModuleStorage().queues[asset].at(index);
+    }
+
     function getRedeemQueues(address asset) public view virtual override returns (address[] memory queues) {
         return _redeemModuleStorage().queues[asset].values();
     }
