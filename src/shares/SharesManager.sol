@@ -111,6 +111,10 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
 
     // Mutable functions
 
+    function claimShares(address account) public {
+        IDepositModule(vault()).claimShares(account);
+    }
+
     function setAccountInfo(address account, AccountInfo memory info)
         external
         onlyRole(PermissionsLibrary.SET_ACCOUNT_INFO_ROLE)

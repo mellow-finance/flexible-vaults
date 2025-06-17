@@ -40,6 +40,8 @@ interface IDepositModule {
 
     // Mutable functions
 
+    function claimShares(address account) external;
+
     function setCustomDepositHook(address queue, address hook) external;
 
     function createDepositQueue(uint256 version, address owner, address asset, bytes32 salt) external;

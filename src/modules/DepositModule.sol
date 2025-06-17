@@ -75,6 +75,20 @@ abstract contract DepositModule is IDepositModule, SharesModule, ACLModule {
 
     // Mutable functions
 
+    function claimShares(address account) public {
+        DepositModuleStorage storage $ = _depositModuleStorage();
+        EnumerableSet.AddressSet storage assets = $.assets;
+        uint256 assetsCount = assets.length();
+        for (uint256 i = 0; i < assetsCount; i++) {
+            address asset = assets.at(i);
+            EnumerableSet.AddressSet storage queues = $.queues[asset];
+            uint256 queuesCount = queues.length();
+            for (uint256 j = 0; j < queuesCount; j++) {
+                IDepositQueue(queues.at(j)).claim(account);
+            }
+        }
+    }
+
     function setCustomDepositHook(address queue, address hook)
         external
         onlyRole(PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE)
