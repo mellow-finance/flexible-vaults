@@ -9,8 +9,6 @@ import "../libraries/TransferLibrary.sol";
 
 import "./ACLModule.sol";
 
-import "./SubvaultModule.sol";
-
 abstract contract RootVaultModule is IRootVaultModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
@@ -34,6 +32,14 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
 
     function isSubvault(address subvault) public view returns (bool) {
         return _rootVaultStorage().subvaults.contains(subvault);
+    }
+
+    function convertToShares(address asset, uint256 value) public view returns (uint256) {
+        uint256 priceD18 = ISharesModule(address(this)).depositOracle().getReport(asset).priceD18;
+        if (priceD18 == 0) {
+            return 0;
+        }
+        return Math.mulDiv(value, priceD18, 1 ether);
     }
 
     // Mutable functions
@@ -67,22 +73,39 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
         external
         onlyRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE)
     {
-        if (!isSubvault(subvault)) {
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
+        if (!$.subvaults.contains(subvault)) {
             revert("SubvaultModule: not a valid subvault");
         }
-        SubvaultModule(payable(subvault)).pullAssets(asset, address(this), value);
-        // TODO: limits
+        ISubvaultModule(subvault).pullAssets(asset, address(this), value);
+        $.balances[subvault] -= int256(convertToShares(asset, value));
     }
 
     function pushAssets(address subvault, address asset, uint256 value)
         external
         onlyRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE)
     {
-        if (!isSubvault(subvault)) {
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
+        if (!$.subvaults.contains(subvault)) {
             revert("SubvaultModule: not a valid subvault");
         }
+
+        int256 increment = int256(convertToShares(asset, value));
+        if ($.balances[subvault] + increment > int256($.limits[subvault])) {
+            revert("SubvaultModule: exceeds subvault limit");
+        }
+
+        $.balances[subvault] += increment;
         TransferLibrary.sendAssets(asset, subvault, value);
-        // TODO: limits
+    }
+
+    function applyCorrection(address subvault, int256 correction)
+        external
+        onlyRole(PermissionsLibrary.APPLY_CORRECTION_ROLE)
+    {
+        RootVaultModuleStorage storage $ = _rootVaultStorage();
+        require($.subvaults.contains(subvault), "SubvaultModule: not a valid subvault");
+        $.balances[subvault] += correction;
     }
 
     // Internal functions

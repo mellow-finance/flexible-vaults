@@ -3,10 +3,14 @@ pragma solidity 0.8.25;
 
 import "../factories/IFactory.sol";
 import "./IACLModule.sol";
+import "./ISharesModule.sol";
+import "./ISubvaultModule.sol";
 
 interface IRootVaultModule is IACLModule {
     struct RootVaultModuleStorage {
         EnumerableSet.AddressSet subvaults;
+        mapping(address subvault => int256) balances;
+        mapping(address subvault => uint256) limits;
     }
 
     // View functions
