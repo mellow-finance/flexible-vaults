@@ -83,7 +83,7 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
         if (!_redeemModuleStorage().queues[asset].contains(caller)) {
             revert("RedeemModule: caller is not a queue");
         }
-        Address.functionCall(getRedeemHook(caller), abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
+        IRedeemHook(getRedeemHook(caller)).beforeRedeem(asset, assets);
         TransferLibrary.sendAssets(asset, caller, assets);
     }
 
@@ -107,7 +107,7 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
         address defaultHook_ = abi.decode(initParams, (address));
         RedeemModuleStorage storage $ = _redeemModuleStorage();
         if (defaultHook_ == address(0)) {
-            revert("RedeemModule: zero address");
+            revert("RedeemModule: zero default hook address");
         }
         $.defaultHook = defaultHook_;
     }

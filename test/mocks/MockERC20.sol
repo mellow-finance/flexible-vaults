@@ -13,4 +13,6 @@ contract MockERC20 is ERC20 {
     function burn(address to, uint256 value) external {
         _burn(to, value);
     }
+
+    function test() internal pure {}
 }
