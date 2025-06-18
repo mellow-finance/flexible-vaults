@@ -63,7 +63,9 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
         requireFundamentalRole(initParams.owner, FundamentalRole.PROXY_OWNER);
         requireFundamentalRole(initParams.subvaultAdmin, FundamentalRole.SUBVAULT_ADMIN);
         subvault = IFactory(subvaultFactory).create(
-            initParams.version, initParams.owner, abi.encode(initParams.subvaultAdmin, initParams.verifier)
+            initParams.version,
+            initParams.owner,
+            abi.encode(initParams.subvaultAdmin, initParams.verifier, address(this))
         );
         RootVaultModuleStorage storage $ = _rootVaultStorage();
         $.subvaults.add(subvault);

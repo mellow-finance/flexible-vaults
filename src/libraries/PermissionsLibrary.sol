@@ -17,6 +17,7 @@ library PermissionsLibrary {
     bytes32 public constant REMOVE_SUPPORTED_ASSETS_ROLE = keccak256("ORACLE:REMOVE_SUPPORTED_ASSETS_ROLE");
 
     bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("VERIFIER:SET_MERKLE_ROOT_ROLE");
+    bytes32 public constant SET_SECONDARY_ACL_ROLE = keccak256("VERIFIER:SET_SECONDARY_ACL_ROLE");
     bytes32 public constant CALL_ROLE = keccak256("VERIFIER:CALL_ROLE");
     bytes32 public constant ADD_ALLOWED_CALLS_ROLE = keccak256("VERIFIER:ADD_ALLOWED_CALLS_ROLE");
     bytes32 public constant REMOVE_ALLOWED_CALLS_ROLE = keccak256("VERIFIER:REMOVE_ALLOWED_CALLS_ROLE");

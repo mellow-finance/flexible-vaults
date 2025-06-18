@@ -83,7 +83,7 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
         if (!_redeemModuleStorage().queues[asset].contains(caller)) {
             revert("RedeemModule: caller is not a queue");
         }
-        Address.functionDelegateCall(getRedeemHook(caller), abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
+        Address.functionCall(getRedeemHook(caller), abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
         TransferLibrary.sendAssets(asset, caller, assets);
     }
 

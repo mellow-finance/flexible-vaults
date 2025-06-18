@@ -113,7 +113,7 @@ contract Integration is Test {
         vault.grantFundamentalRole(vaultProxyAdmin, IACLModule.FundamentalRole.PROXY_OWNER);
         vault.grantFundamentalRole(vaultAdmin, IACLModule.FundamentalRole.SUBVAULT_ADMIN);
 
-        bytes32[22] memory roles = [
+        bytes32[23] memory roles = [
             PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE,
             PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE,
             PermissionsLibrary.SET_REDEEM_HOOK_ROLE,
@@ -124,6 +124,7 @@ contract Integration is Test {
             PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE,
             PermissionsLibrary.REMOVE_SUPPORTED_ASSETS_ROLE,
             PermissionsLibrary.SET_MERKLE_ROOT_ROLE,
+            PermissionsLibrary.SET_SECONDARY_ACL_ROLE,
             PermissionsLibrary.CALL_ROLE,
             PermissionsLibrary.ADD_ALLOWED_CALLS_ROLE,
             PermissionsLibrary.REMOVE_ALLOWED_CALLS_ROLE,
@@ -153,6 +154,10 @@ contract Integration is Test {
             address verifierImplementation = address(new Verifier("Mellow", 1));
             verifierFactory.proposeImplementation(verifierImplementation);
             verifierFactory.acceptProposedImplementation(verifierImplementation);
+
+            address subvaultImplementation = address(new Subvault("Mellow", 1));
+            subvaultFactory.proposeImplementation(subvaultImplementation);
+            subvaultFactory.acceptProposedImplementation(subvaultImplementation);
         }
 
         vault.createDepositQueue(0, vaultProxyAdmin, address(asset));
@@ -173,15 +178,23 @@ contract Integration is Test {
         vm.startPrank(vaultAdmin);
 
         {
-            vault.createSubvault(
+            Verifier verifier =
+                Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
+            address subvault = vault.createSubvault(
                 IRootVaultModule.CreateSubvaultParams({
                     version: 0,
                     owner: vaultProxyAdmin,
-                    verifier: address(0),
                     subvaultAdmin: vaultAdmin,
+                    verifier: address(verifier),
                     limit: int256(100 ether)
                 })
             );
+            verifier.setSecondaryACL(subvault);
+
+            address depositHook = vault.getDepositHook(address(0));
+            vault.grantRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE, depositHook);
+            address redeemHook = vault.getRedeemHook(address(0));
+            vault.grantRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE, redeemHook);
         }
 
         {

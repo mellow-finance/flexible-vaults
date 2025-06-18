@@ -16,7 +16,8 @@ interface IVerifier {
     }
 
     struct VerifierStorage {
-        IAccessControl vault;
+        address primaryACL;
+        address secondaryACL;
         bytes32 merkleRoot;
         EnumerableSet.Bytes32Set hashedAllowedCalls;
         mapping(bytes32 => Call) allowedCalls;
@@ -24,7 +25,8 @@ interface IVerifier {
 
     enum VerficationType {
         VERIFIER_ACL,
-        VAULT_ACL,
+        PRIMARY_ACL,
+        SECONDARY_ACL,
         VERIFIER
     }
 
@@ -39,7 +41,9 @@ interface IVerifier {
 
     // View functions
 
-    function vault() external view returns (IAccessControl);
+    function primaryACL() external view returns (IAccessControl);
+
+    function secondaryACL() external view returns (IAccessControl);
 
     function merkleRoot() external view returns (bytes32);
 

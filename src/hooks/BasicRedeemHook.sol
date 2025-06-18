@@ -8,12 +8,12 @@ import "../interfaces/modules/IRootVaultModule.sol";
 
 contract BasicRedeemHook is IRedeemHook {
     function beforeRedeem(address asset, uint256 assets) public virtual {
-        uint256 liquid = IERC20(asset).balanceOf(address(this));
+        IRootVaultModule vault = IRootVaultModule(msg.sender);
+        uint256 liquid = IERC20(asset).balanceOf(address(vault));
         if (liquid >= assets) {
             return;
         }
         uint256 required = assets - liquid;
-        IRootVaultModule vault = IRootVaultModule(address(this));
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
@@ -22,18 +22,18 @@ contract BasicRedeemHook is IRedeemHook {
                 continue;
             }
             if (balance >= required) {
-                IRootVaultModule(address(this)).pullAssets(subvault, asset, required);
+                vault.pullAssets(subvault, asset, required);
                 break;
             } else {
-                IRootVaultModule(address(this)).pullAssets(subvault, asset, balance);
+                vault.pullAssets(subvault, asset, balance);
                 required -= balance;
             }
         }
     }
 
     function getLiquidAssets(address asset) public view virtual returns (uint256 assets) {
-        assets = IERC20(asset).balanceOf(msg.sender);
         IRootVaultModule vault = IRootVaultModule(msg.sender);
+        assets = IERC20(asset).balanceOf(address(vault));
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);

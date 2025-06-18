@@ -12,7 +12,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
     bytes32 private immutable _verifierStorageSlot;
 
     modifier onlyRole(bytes32 role) {
-        require(vault().hasRole(role, _msgSender()), "Verifier: caller does not have the required role");
+        require(primaryACL().hasRole(role, _msgSender()), "Verifier: caller does not have the required role");
         _;
     }
 
@@ -23,8 +23,12 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     // View functions
 
-    function vault() public view returns (IAccessControl) {
-        return _verifierStorage().vault;
+    function primaryACL() public view returns (IAccessControl) {
+        return IAccessControl(_verifierStorage().primaryACL);
+    }
+
+    function secondaryACL() public view returns (IAccessControl) {
+        return IAccessControl(_verifierStorage().secondaryACL);
     }
 
     function merkleRoot() public view returns (bytes32) {
@@ -70,7 +74,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
         bytes calldata callData,
         VerificationPayload calldata verificationPayload
     ) public view virtual returns (bool) {
-        if (!vault().hasRole(PermissionsLibrary.CALL_ROLE, who)) {
+        if (!primaryACL().hasRole(PermissionsLibrary.CALL_ROLE, who)) {
             return false;
         }
 
@@ -93,9 +97,16 @@ contract Verifier is IVerifier, ContextUpgradeable {
             return false;
         }
 
-        if (verificationPayload.verificationType == VerficationType.VAULT_ACL) {
+        if (verificationPayload.verificationType == VerficationType.PRIMARY_ACL) {
             bytes32 requiredRole = abi.decode(verificationPayload.verificationData, (bytes32));
-            return vault().hasRole(requiredRole, who);
+            return primaryACL().hasRole(requiredRole, who);
+        } else if (verificationPayload.verificationType == VerficationType.SECONDARY_ACL) {
+            IAccessControl secondaryACL_ = secondaryACL();
+            if (address(secondaryACL_) == address(0)) {
+                return false;
+            }
+            bytes32 requiredRole = abi.decode(verificationPayload.verificationData, (bytes32));
+            return secondaryACL_.hasRole(requiredRole, who);
         } else {
             return ICustomVerifier(verificationPayload.verifier).verifyCall(
                 who, where, value, callData, verificationPayload.verificationData
@@ -106,12 +117,17 @@ contract Verifier is IVerifier, ContextUpgradeable {
     // Mutable functions
 
     function initialize(bytes calldata initParams) external initializer {
-        (address vault_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
-        require(vault_ != address(0), "Verifier: zero vault address");
-        _verifierStorage().vault = IAccessControl(vault_);
+        (address primaryACL_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
+        require(primaryACL_ != address(0), "Verifier: zero primary ACL address");
+        _verifierStorage().primaryACL = primaryACL_;
         if (merkleRoot_ != bytes32(0)) {
             _verifierStorage().merkleRoot = merkleRoot_;
         }
+    }
+
+    function setSecondaryACL(address secondaryACL_) external onlyRole(PermissionsLibrary.SET_SECONDARY_ACL_ROLE) {
+        require(secondaryACL_ != address(0), "Verifier: zero secondary ACL address");
+        _verifierStorage().secondaryACL = secondaryACL_;
     }
 
     function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(PermissionsLibrary.SET_MERKLE_ROOT_ROLE) {
