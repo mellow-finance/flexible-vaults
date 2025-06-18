@@ -17,7 +17,8 @@ interface IACLModule is IAccessControlEnumerable {
         mapping(address account => uint256) fundamentalRoles;
     }
 
-    function requireFundamentalRole(address account, FundamentalRole role) external view returns (bool);
+    function hasFundamentalRole(address account, FundamentalRole role) external view returns (bool);
+    function requireFundamentalRole(address account, FundamentalRole role) external view;
     function supportedRoles() external view returns (uint256);
     function supportedRoleAt(uint256 index) external view returns (bytes32);
     function isSupportedRole(bytes32 role) external view returns (bool);

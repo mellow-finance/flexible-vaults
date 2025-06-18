@@ -19,8 +19,14 @@ abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUp
 
     // View functions
 
-    function requireFundamentalRole(address account, FundamentalRole role) public view returns (bool) {
+    function hasFundamentalRole(address account, FundamentalRole role) public view returns (bool) {
         return _aclModuleStorage().fundamentalRoles[account] & (1 << uint256(role)) != 0;
+    }
+
+    function requireFundamentalRole(address account, FundamentalRole role) public view {
+        if (!hasFundamentalRole(account, role)) {
+            revert("ACLModule: account does not have the required fundamental role");
+        }
     }
 
     function supportedRoles() public view returns (uint256) {
