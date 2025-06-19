@@ -46,6 +46,32 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         return $.reports[asset];
     }
 
+    function validatePrice(uint256 priceD18, uint256 prevPriceD18)
+        public
+        view
+        returns (bool isValid, bool isSuspicious)
+    {
+        if (prevPriceD18 == 0) {
+            return (priceD18 == 0, true);
+        }
+        SecurityParams memory securityParams_ = _oracleStorage().securityParams;
+        uint256 absoluteDeviation = priceD18 > prevPriceD18 ? priceD18 - prevPriceD18 : prevPriceD18 - priceD18;
+        uint256 relativeDeviationD18 = Math.mulDiv(absoluteDeviation, 1 ether, prevPriceD18);
+        if (
+            absoluteDeviation > securityParams_.maxAbsoluteDeviation
+                || relativeDeviationD18 > securityParams_.maxRelativeDeviationD18
+        ) {
+            return (false, true);
+        }
+        if (
+            absoluteDeviation > securityParams_.suspiciousAbsoluteDeviation
+                || relativeDeviationD18 > securityParams_.suspiciousRelativeDeviationD18
+        ) {
+            return (true, true);
+        }
+        return (true, false);
+    }
+
     // Mutable functions
 
     function initialize(bytes calldata initParams) external initializer {
@@ -154,37 +180,13 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         internal
         returns (bool)
     {
-        if (priceD18 == 0) {
-            revert("Oracle: zero price");
-        }
-        uint256 reportTimestamp = report.timestamp;
-        if (reportTimestamp == 0) {
-            report.priceD18 = priceD18;
-            report.timestamp = uint32(block.timestamp);
-            report.isSuspicious = true;
-            return false;
-        }
-        if (securityParams_.timeout + reportTimestamp > block.timestamp) {
+        if (securityParams_.timeout + report.timestamp > block.timestamp) {
             revert("Oracle: too early to report");
         }
-
-        uint256 reportPriceD18 = report.priceD18;
-        bool isSuspicious = false;
-        uint256 absoluteDeviation = priceD18 > reportPriceD18 ? priceD18 - reportPriceD18 : reportPriceD18 - priceD18;
-        uint256 relativeDeviationD18 = (absoluteDeviation * 1 ether) / reportPriceD18;
-        if (
-            absoluteDeviation > securityParams_.maxAbsoluteDeviation
-                || relativeDeviationD18 > securityParams_.maxRelativeDeviationD18
-        ) {
-            revert("Oracle: price deviation too high");
+        (bool isValid, bool isSuspicious) = validatePrice(priceD18, report.priceD18);
+        if (!isValid) {
+            revert("Oracle: invalid price");
         }
-        if (
-            absoluteDeviation > securityParams_.suspiciousAbsoluteDeviation
-                || relativeDeviationD18 > securityParams_.suspiciousRelativeDeviationD18
-        ) {
-            isSuspicious = true;
-        }
-
         report.priceD18 = priceD18;
         report.timestamp = uint32(block.timestamp);
         report.isSuspicious = isSuspicious;

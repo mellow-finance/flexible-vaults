@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../factories/IFactoryEntity.sol";
-import "../modules/ISharesModule.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
+
+import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
+import "../factories/IFactoryEntity.sol";
+import "../modules/ISharesModule.sol";
 
 interface IOracle is IFactoryEntity {
     struct SecurityParams {
@@ -45,6 +48,11 @@ interface IOracle is IFactoryEntity {
     function isSupportedAsset(address asset) external view returns (bool);
 
     function getReport(address asset) external view returns (DetailedReport memory);
+
+    function validatePrice(uint256 priceD18, uint256 prevPriceD18)
+        external
+        view
+        returns (bool isValid, bool isSuspicious);
 
     function sendReport(Report[] calldata reports) external;
 
