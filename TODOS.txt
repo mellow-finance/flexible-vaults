@@ -2,9 +2,7 @@ DepositModule / RedeemModule:
 limits per block per token?
 min/max assets 
 
-OrderedDepositQueue
 InstantWithDelayDepositQueue
-OrderedRedeemQueue
 
 VaultConfigurator
 
@@ -12,7 +10,6 @@ Oracle:
 Fees
 
 Hooks
-splitter hook to subvaults
 all other hooks
 
 Strategies
