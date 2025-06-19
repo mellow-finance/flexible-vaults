@@ -16,7 +16,7 @@ abstract contract SignatureQueue is
 
     bytes32 private immutable _signatureQueueStorageSlot;
     bytes32 public constant ORDER_TYPEHASH = keccak256(
-        "Order(uint256 orderId,address asset,address caller,address recipient,uint256 ordered,uint256 requested,uint256 deadline,uint256 nonce)"
+        "Order(uint256 orderId,address queue,address asset,address caller,address recipient,uint256 ordered,uint256 requested,uint256 deadline,uint256 nonce)"
     );
 
     constructor(string memory name_, uint256 version_) {
@@ -58,6 +58,7 @@ abstract contract SignatureQueue is
                 abi.encode(
                     ORDER_TYPEHASH,
                     order.orderId,
+                    order.queue,
                     order.asset,
                     order.caller,
                     order.recipient,
@@ -73,6 +74,9 @@ abstract contract SignatureQueue is
     function validateOrder(Order calldata order, IConsensus.Signature[] calldata signatures) public view {
         if (order.deadline < block.timestamp) {
             revert("SignatureQueue: order expired");
+        }
+        if (order.queue != address(this)) {
+            revert("SignatureQueue: invalid queue");
         }
         if (order.ordered == 0) {
             revert("SignatureQueue: zero ordered value");

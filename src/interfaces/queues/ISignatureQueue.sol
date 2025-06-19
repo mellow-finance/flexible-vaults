@@ -26,6 +26,7 @@ interface ISignatureQueue is IQueue, IFactoryEntity {
 
     struct Order {
         uint256 orderId;
+        address queue;
         address asset;
         address caller;
         address recipient;
