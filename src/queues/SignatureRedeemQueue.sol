@@ -5,14 +5,14 @@ import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import "../interfaces/modules/IDepositModule.sol";
+import "../interfaces/modules/IRedeemModule.sol";
 import "../interfaces/modules/ISharesModule.sol";
 import "../interfaces/permissions/IConsensus.sol";
 
 import "../libraries/SlotLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 
-contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable, ContextUpgradeable {
+contract SignatureRedeemQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     enum SignatureType {
@@ -20,7 +20,7 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
         EIP1271
     }
 
-    struct SignatureDepositQueueStorage {
+    struct SignatureRedeemQueueStorage {
         address consensus;
         address vault;
         address asset;
@@ -28,45 +28,45 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
         mapping(address account => uint256 nonce) nonces;
     }
 
-    struct DepositOrder {
+    struct RedeemOrder {
         uint256 orderId;
         address asset;
         address caller;
         address recipient;
         uint256 value;
-        uint256 shares;
+        uint256 assets;
         uint256 deadline;
         uint256 nonce;
     }
 
-    bytes32 private immutable _signatureDepositQueueStorageSlot;
+    bytes32 private immutable _signatureRedeemQueueStorageSlot;
     bytes32 public constant ORDER_TYPEHASH = keccak256(
-        "DepositOrder(uint256 orderId,address asset,address caller,address recipient,uint256 value,uint256 shares,uint256 deadline,uint256 nonce)"
+        "RedeemOrder(uint256 orderId,address asset,address caller,address recipient,uint256 value,uint256 assets,uint256 deadline,uint256 nonce)"
     );
 
     constructor(string memory name_, uint256 version_) {
         _disableInitializers();
-        _signatureDepositQueueStorageSlot = SlotLibrary.getSlot("SignatureDepositQueue", name_, version_);
+        _signatureRedeemQueueStorageSlot = SlotLibrary.getSlot("SignatureRedeemQueue", name_, version_);
     }
 
     // View functions
 
     function sharesModule() public view returns (ISharesModule) {
-        SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
+        SignatureRedeemQueueStorage storage $ = _signatureRedeemQueueStorage();
         return ISharesModule($.vault);
     }
 
     function asset() public view returns (address) {
-        SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
+        SignatureRedeemQueueStorage storage $ = _signatureRedeemQueueStorage();
         return $.asset;
     }
 
     function vault() public view returns (address) {
-        SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
+        SignatureRedeemQueueStorage storage $ = _signatureRedeemQueueStorage();
         return $.vault;
     }
 
-    function hashOrder(DepositOrder calldata order) public view returns (bytes32) {
+    function hashOrder(RedeemOrder calldata order) public view returns (bytes32) {
         return _hashTypedDataV4(
             keccak256(
                 abi.encode(
@@ -76,7 +76,7 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
                     order.caller,
                     order.recipient,
                     order.value,
-                    order.shares,
+                    order.assets,
                     order.deadline,
                     order.nonce
                 )
@@ -85,55 +85,55 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
     }
 
     function consensus() public view returns (IConsensus) {
-        SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
+        SignatureRedeemQueueStorage storage $ = _signatureRedeemQueueStorage();
         return IConsensus($.consensus);
     }
 
     function nonces(address account) public view returns (uint256) {
-        SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
+        SignatureRedeemQueueStorage storage $ = _signatureRedeemQueueStorage();
         return $.nonces[account];
     }
 
     function isWhitelisted(address account) public view returns (bool) {
-        SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
+        SignatureRedeemQueueStorage storage $ = _signatureRedeemQueueStorage();
         return $.whitelist.contains(account);
     }
 
-    function validateOrder(DepositOrder calldata order, IConsensus.Signature[] calldata signatures) public view {
+    function validateOrder(RedeemOrder calldata order, IConsensus.Signature[] calldata signatures) public view {
         if (order.deadline < block.timestamp) {
-            revert("SignatureDepositQueue: order expired");
+            revert("SignatureRedeemQueue: order expired");
         }
         if (order.value == 0) {
-            revert("SignatureDepositQueue: zero value");
+            revert("SignatureRedeemQueue: zero value");
         }
-        if (order.shares == 0) {
-            revert("SignatureDepositQueue: zero shares");
+        if (order.assets == 0) {
+            revert("SignatureRedeemQueue: zero assets");
         }
         if (order.asset != asset()) {
-            revert("SignatureDepositQueue: invalid asset");
+            revert("SignatureRedeemQueue: invalid asset");
         }
         if (order.caller != _msgSender()) {
-            revert("SignatureDepositQueue: invalid caller");
+            revert("SignatureRedeemQueue: invalid caller");
         }
         if (order.nonce != nonces(order.caller)) {
-            revert("SignatureDepositQueue: invalid nonce");
+            revert("SignatureRedeemQueue: invalid nonce");
         }
         if (!isWhitelisted(order.caller)) {
-            revert("SignatureDepositQueue: recipient not whitelisted");
+            revert("SignatureRedeemQueue: recipient not whitelisted");
         }
 
         consensus().requireValidSignatures(hashOrder(order), signatures);
 
-        IOracle depositOracle = sharesModule().depositOracle();
-        if (address(depositOracle) != address(0)) {
-            uint256 priceD18 = Math.mulDiv(order.shares, 1 ether, order.value);
+        IOracle redeemOracle = sharesModule().redeemOracle();
+        if (address(redeemOracle) != address(0)) {
+            uint256 priceD18 = Math.mulDiv(order.assets, 1 ether, order.value);
             (bool isValid, bool isSuspicious) =
-                depositOracle.validatePrice(priceD18, depositOracle.getReport(order.asset).priceD18);
+                redeemOracle.validatePrice(priceD18, redeemOracle.getReport(order.asset).priceD18);
             if (!isValid) {
-                revert("SignatureDepositQueue: invalid price");
+                revert("SignatureRedeemQueue: invalid price");
             }
             if (isSuspicious) {
-                revert("SignatureDepositQueue: suspicious price");
+                revert("SignatureRedeemQueue: suspicious price");
             }
         }
     }
@@ -146,30 +146,26 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
         __EIP712_init(name_, version_);
     }
 
-    function deposit(DepositOrder calldata order, IConsensus.Signature[] calldata signatures)
+    function redeem(RedeemOrder calldata order, IConsensus.Signature[] calldata signatures)
         external
         payable
         nonReentrant
     {
         validateOrder(order, signatures);
-        _signatureDepositQueueStorage().nonces[order.caller]++;
-        TransferLibrary.receiveAssets(order.asset, order.caller, order.value);
-
-        IDepositModule vault_ = IDepositModule(vault());
-
-        TransferLibrary.sendAssets(order.asset, address(vault_), order.value);
-        address hook = vault_.getDepositHook(order.asset);
-        if (hook != address(0)) {
-            IDepositHook(hook).afterDeposit(address(vault_), order.asset, order.value);
+        IRedeemModule vault_ = IRedeemModule(vault());
+        if (vault_.getLiquidAssets(order.asset) < order.assets) {
+            revert("SignatureRedeemQueue: insufficient liquid assets");
         }
-
-        sharesModule().sharesManager().mint(order.recipient, order.shares);
+        _signatureRedeemQueueStorage().nonces[order.caller]++;
+        sharesModule().sharesManager().burn(order.recipient, order.value);
+        vault_.callRedeemHook(order.asset, order.assets);
+        TransferLibrary.sendAssets(order.asset, order.recipient, order.assets);
     }
 
     // Internal functions
 
-    function _signatureDepositQueueStorage() internal view returns (SignatureDepositQueueStorage storage dqs) {
-        bytes32 slot = _signatureDepositQueueStorageSlot;
+    function _signatureRedeemQueueStorage() internal view returns (SignatureRedeemQueueStorage storage dqs) {
+        bytes32 slot = _signatureRedeemQueueStorageSlot;
         assembly {
             dqs.slot := slot
         }
