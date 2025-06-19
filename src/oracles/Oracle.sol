@@ -52,7 +52,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         returns (bool isValid, bool isSuspicious)
     {
         if (prevPriceD18 == 0) {
-            return (priceD18 == 0, true);
+            return (true, true);
         }
         SecurityParams memory securityParams_ = _oracleStorage().securityParams;
         uint256 absoluteDeviation = priceD18 > prevPriceD18 ? priceD18 - prevPriceD18 : prevPriceD18 - priceD18;
@@ -180,7 +180,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         internal
         returns (bool)
     {
-        if (securityParams_.timeout + report.timestamp > block.timestamp) {
+        if (report.timestamp != 0 && securityParams_.timeout + report.timestamp > block.timestamp) {
             revert("Oracle: too early to report");
         }
         (bool isValid, bool isSuspicious) = validatePrice(priceD18, report.priceD18);

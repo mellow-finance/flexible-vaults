@@ -16,8 +16,6 @@ interface IQueue {
 
     function vault() external view returns (address);
 
-    function sharesManager() external view returns (address);
-
     function asset() external view returns (address);
 
     // Mutable functions

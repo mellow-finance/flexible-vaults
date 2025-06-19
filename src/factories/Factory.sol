@@ -11,8 +11,8 @@ contract Factory is IFactory, OwnableUpgradeable {
     bytes32 private immutable _factoryStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
-        _disableInitializers();
         _factoryStorageSlot = SlotLibrary.getSlot("Factory", name_, version_);
+        _disableInitializers();
     }
 
     // View functions

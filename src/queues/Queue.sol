@@ -12,8 +12,8 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
     bytes32 private immutable _queueStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
-        _disableInitializers();
         _queueStorageSlot = SlotLibrary.getSlot("Queue", name_, version_);
+        _disableInitializers();
     }
 
     // View functions
