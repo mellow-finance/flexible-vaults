@@ -81,7 +81,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     function sendReport(Report[] calldata reports) external onlyRole(PermissionsLibrary.SEND_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = _oracleStorage().securityParams;
-        uint48 secureTimestamp = uint48(block.timestamp - securityParams_.secureInterval);
+        uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
         ISharesModule vault_ = vault();
         for (uint256 i = 0; i < reports.length; i++) {
             if (!$.supportedAssets.contains(reports[i].asset)) {
@@ -176,7 +176,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         }
     }
 
-    function _handleReport(SecurityParams memory securityParams_, uint208 priceD18, DetailedReport storage report)
+    function _handleReport(SecurityParams memory securityParams_, uint224 priceD18, DetailedReport storage report)
         internal
         returns (bool)
     {

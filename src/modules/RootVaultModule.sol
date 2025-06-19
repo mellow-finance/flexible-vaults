@@ -80,11 +80,16 @@ abstract contract RootVaultModule is IRootVaultModule, ACLModule {
         delete $.limits[subvault];
     }
 
-    function reconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.RECONNECT_SUBVAULT_ROLE) {
+    function reconnectSubvault(address subvault, int256 balance, int256 limit)
+        external
+        onlyRole(PermissionsLibrary.RECONNECT_SUBVAULT_ROLE)
+    {
         RootVaultModuleStorage storage $ = _rootVaultStorage();
         require(!$.subvaults.contains(subvault), "SubvaultModule: subvault already connected");
         require(IFactory(subvaultFactory).isEntity(subvault), "SubvaultModule: not a valid subvault");
         $.subvaults.add(subvault);
+        $.balances[subvault] = balance;
+        $.limits[subvault] = limit;
     }
 
     function pullAssets(address subvault, address asset, uint256 value)

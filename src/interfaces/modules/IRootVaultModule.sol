@@ -41,7 +41,7 @@ interface IRootVaultModule is IACLModule {
 
     function disconnectSubvault(address subvault) external;
 
-    function reconnectSubvault(address subvault) external;
+    function reconnectSubvault(address subvault, int256 balance, int256 limit) external;
 
     function applyCorrection(address subvault, int256 correction) external;
 

@@ -9,7 +9,7 @@ interface IQueue {
     struct QueueStorage {
         address asset;
         address vault;
-        Checkpoints.Trace208 timestamps;
+        Checkpoints.Trace224 timestamps;
     }
 
     // View functions
@@ -22,5 +22,5 @@ interface IQueue {
 
     // Mutable functions
 
-    function handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) external;
+    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external;
 }

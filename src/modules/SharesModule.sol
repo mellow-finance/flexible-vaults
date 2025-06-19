@@ -37,7 +37,7 @@ abstract contract SharesModule is ISharesModule, BaseModule {
 
     // Mutable functions
 
-    function handleReport(address asset, uint208 priceD18, uint48 latestEligibleTimestamp) external {
+    function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external {
         address caller = _msgSender();
         SharesModuleStorage memory $ = _sharesModuleStorage();
         address depositOracle_ = $.depositOracle;

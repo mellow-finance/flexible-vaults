@@ -9,7 +9,7 @@ import "./Queue.sol";
 
 contract RedeemQueue is IRedeemQueue, Queue {
     using EnumerableMap for EnumerableMap.UintToUintMap;
-    using Checkpoints for Checkpoints.Trace208;
+    using Checkpoints for Checkpoints.Trace224;
 
     bytes32 private immutable _redeemQueueStorageSlot;
 
@@ -43,7 +43,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         limit = Math.min(length - offset, limit);
         requests = new Request[](limit);
         uint256 outflowDemandIterator = $.outflowDemandIterator;
-        (, uint48 latestEligibleTimestamp,) = $.prices.latestCheckpoint();
+        (, uint32 latestEligibleTimestamp,) = $.prices.latestCheckpoint();
         Pair memory pair;
         for (uint256 i = 0; i < limit; i++) {
             (uint256 timestamp, uint256 shares) = callerRequests.at(i + offset);
@@ -52,7 +52,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             if (timestamp > latestEligibleTimestamp) {
                 continue;
             }
-            uint256 index = $.prices.lowerLookup(uint48(timestamp));
+            uint256 index = $.prices.lowerLookup(uint32(timestamp));
             pair = $.outflowDemand[index];
             requests[i].assets = Math.mulDiv(shares, pair.assets, pair.shares);
             requests[i].isClaimable = index < outflowDemandIterator;
@@ -78,13 +78,13 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
         RedeemQueueStorage storage $ = _redeemQueueStorage();
 
-        uint256 timestamp = block.timestamp;
+        uint32 timestamp = uint32(block.timestamp);
         uint256 index;
-        Checkpoints.Trace208 storage timestamps = _timestamps();
-        uint208 latestTimestamp = timestamps.latest();
+        Checkpoints.Trace224 storage timestamps = _timestamps();
+        (, uint32 latestTimestamp,) = timestamps.latestCheckpoint();
         if (latestTimestamp < timestamp) {
             index = timestamps.length();
-            timestamps.push(uint48(timestamp), uint208(index));
+            timestamps.push(timestamp, uint224(index));
             $.prefixSum[index] = shares + $.prefixSum[index - 1];
         } else {
             index = timestamps.length() - 1;
@@ -100,7 +100,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         address account = _msgSender();
         EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[account];
-        (bool doesExist, uint48 latestReportTimestamp,) = $.prices.latestCheckpoint();
+        (bool doesExist, uint32 latestReportTimestamp,) = $.prices.latestCheckpoint();
         if (!doesExist) {
             return 0;
         }
@@ -114,7 +114,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             if (!hasRequest || shares == 0) {
                 continue;
             }
-            uint256 index = $.prices.lowerLookup(uint48(timestamp));
+            uint256 index = $.prices.lowerLookup(uint32(timestamp));
             Pair storage pair = $.outflowDemand[index];
 
             uint256 assets_ = Math.mulDiv(shares, pair.assets, pair.shares);
@@ -138,7 +138,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
         reports = Math.min(reports, length - iterator_);
 
-        IRedeemModule vault_ = IRedeemModule(payable(vault()));
+        IRedeemModule vault_ = IRedeemModule(vault());
         address asset_ = asset();
         uint256 liquidAssets = vault_.getLiquidAssets(asset_);
         uint256 demand = 0;
@@ -163,11 +163,11 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     // Internal functions
 
-    function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal override {
+    function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
 
-        Checkpoints.Trace208 storage timestamps = _timestamps();
-        (bool exists, uint48 latestTimestamp, uint208 latestIndex) = timestamps.latestCheckpoint();
+        Checkpoints.Trace224 storage timestamps = _timestamps();
+        (bool exists, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
         if (!exists) {
             return;
         }
@@ -197,7 +197,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
 
         uint256 index = $.prices.length();
-        $.prices.push(latestEligibleTimestamp, uint208(index));
+        $.prices.push(latestEligibleTimestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, priceD18, 1 ether);
         $.outflowDemand.push(Pair(assets_, shares));
         $.fullDemand += assets_;

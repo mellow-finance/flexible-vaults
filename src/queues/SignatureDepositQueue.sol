@@ -2,11 +2,10 @@
 pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
+import "../interfaces/modules/IDepositModule.sol";
 import "../interfaces/modules/ISharesModule.sol";
 import "../interfaces/permissions/IConsensus.sol";
 
@@ -60,6 +59,11 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
     function asset() public view returns (address) {
         SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
         return $.asset;
+    }
+
+    function vault() public view returns (address) {
+        SignatureDepositQueueStorage storage $ = _signatureDepositQueueStorage();
+        return $.vault;
     }
 
     function hashOrder(Order calldata order) public view returns (bytes32) {
@@ -122,8 +126,9 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
 
         IOracle depositOracle = sharesModule().depositOracle();
         if (address(depositOracle) != address(0)) {
+            uint256 priceD18 = Math.mulDiv(order.shares, 1 ether, order.value);
             (bool isValid, bool isSuspicious) =
-                depositOracle.validatePrice(order.value, depositOracle.getReport(order.asset).priceD18);
+                depositOracle.validatePrice(priceD18, depositOracle.getReport(order.asset).priceD18);
             if (!isValid) {
                 revert("SignatureDepositQueue: invalid price");
             }
@@ -145,6 +150,15 @@ contract SignatureDepositQueue is EIP712Upgradeable, ReentrancyGuardUpgradeable,
         validateOrder(order, signatures);
         _signatureDepositQueueStorage().nonces[order.caller]++;
         TransferLibrary.receiveAssets(order.asset, order.caller, order.value);
+
+        IDepositModule vault_ = IDepositModule(vault());
+
+        TransferLibrary.sendAssets(order.asset, address(vault_), order.value);
+        address hook = vault_.getDepositHook(order.asset);
+        if (hook != address(0)) {
+            IDepositHook(hook).afterDeposit(address(vault_), order.asset, order.value);
+        }
+
         sharesModule().sharesManager().mint(order.recipient, order.shares);
     }
 

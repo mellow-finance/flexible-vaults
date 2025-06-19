@@ -7,7 +7,7 @@ import "../interfaces/queues/IQueue.sol";
 import "../libraries/SlotLibrary.sol";
 
 abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeable {
-    using Checkpoints for Checkpoints.Trace208;
+    using Checkpoints for Checkpoints.Trace224;
 
     bytes32 private immutable _queueStorageSlot;
 
@@ -32,7 +32,7 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
 
     // Mutable functions
 
-    function handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) external {
+    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external {
         if (_msgSender() != vault()) {
             revert("Queue: forbidden");
         }
@@ -51,10 +51,10 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
         QueueStorage storage $ = _queueStorage();
         $.asset = asset_;
         $.vault = vault_;
-        $.timestamps.push(uint48(block.timestamp), uint208(0));
+        $.timestamps.push(uint32(block.timestamp), uint224(0));
     }
 
-    function _timestamps() internal view returns (Checkpoints.Trace208 storage) {
+    function _timestamps() internal view returns (Checkpoints.Trace224 storage) {
         return _queueStorage().timestamps;
     }
 
@@ -65,5 +65,5 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
         }
     }
 
-    function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal virtual;
+    function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal virtual;
 }

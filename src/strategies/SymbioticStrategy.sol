@@ -25,9 +25,10 @@ contract SymbioticStrategy is Ownable {
         IVerifier.VerificationPayload[2] calldata verificationPayload
     ) external onlyOwner {
         address asset = ISymbioticVault(symbioticVault).collateral();
-        ICallModule(subvault).call(
+        bytes memory approveReponse = ICallModule(subvault).call(
             asset, 0, abi.encodeCall(IERC20.approve, (symbioticVault, assets)), verificationPayload[0]
         );
+        require(abi.decode(approveReponse, (bool)), "SymbioticStrategy: approve failed");
         ICallModule(subvault).call(
             symbioticVault, 0, abi.encodeCall(ISymbioticVault.deposit, (subvault, assets)), verificationPayload[1]
         );

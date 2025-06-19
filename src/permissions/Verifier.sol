@@ -107,10 +107,12 @@ contract Verifier is IVerifier, ContextUpgradeable {
             }
             bytes32 requiredRole = abi.decode(verificationPayload.verificationData, (bytes32));
             return secondaryACL_.hasRole(requiredRole, who);
-        } else {
+        } else if (verificationPayload.verificationType == VerficationType.VERIFIER) {
             return ICustomVerifier(verificationPayload.verifier).verifyCall(
                 who, where, value, callData, verificationPayload.verificationData
             );
+        } else {
+            return false;
         }
     }
 

@@ -169,7 +169,7 @@ contract Integration is Test {
             address depositQueue = vault.getDepositQueues(address(asset))[0];
             asset.mint(user, 1 ether);
             asset.approve(depositQueue, 1 ether);
-            IDepositQueue(depositQueue).deposit(1 ether, new bytes32[](0));
+            IDepositQueue(depositQueue).deposit(1 ether, address(0), new bytes32[](0));
         }
         vm.stopPrank();
 

@@ -13,9 +13,9 @@ import "./IQueue.sol";
 interface IDepositQueue is IQueue, IFactoryEntity {
     struct DepositQueueStorage {
         uint256 handledIndices;
-        mapping(address account => Checkpoints.Checkpoint208) requestOf;
+        mapping(address account => Checkpoints.Checkpoint224) requestOf;
         FenwickTreeLibrary.Tree requests;
-        Checkpoints.Trace208 prices;
+        Checkpoints.Trace224 prices;
     }
 
     // View functions
@@ -28,7 +28,7 @@ interface IDepositQueue is IQueue, IFactoryEntity {
 
     function initialize(bytes calldata data) external;
 
-    function deposit(uint208 assets, bytes32[] calldata merkleProof) external payable;
+    function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable;
 
     function cancelDepositRequest() external;
 

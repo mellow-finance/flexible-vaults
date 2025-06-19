@@ -24,9 +24,10 @@ contract LidoStakingHook is BasicDepositHook {
         weth = weth_;
     }
 
+    // TODO: fix this
     function afterDeposit(address vault, address asset, uint256 assets) public override {
         if (asset != wsteth) {
-            uint256 balance = IERC20(wsteth).balanceOf(address(this));
+            uint256 balance = IERC20(wsteth).balanceOf(vault);
             if (asset == steth) {
                 IERC20(steth).safeIncreaseAllowance(wsteth, assets);
                 IWSTETH(wsteth).wrap(assets);
@@ -38,7 +39,7 @@ contract LidoStakingHook is BasicDepositHook {
                 }
                 Address.sendValue(payable(wsteth), assets);
             }
-            assets = IERC20(wsteth).balanceOf(address(this)) - balance;
+            assets = IERC20(wsteth).balanceOf(vault) - balance;
         }
         super.afterDeposit(vault, wsteth, assets);
     }

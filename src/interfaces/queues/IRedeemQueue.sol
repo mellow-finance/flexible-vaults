@@ -30,7 +30,7 @@ interface IRedeemQueue is IQueue, IFactoryEntity {
         mapping(address account => EnumerableMap.UintToUintMap) requestsOf;
         mapping(uint256 index => uint256 cumulativeShares) prefixSum;
         Pair[] outflowDemand;
-        Checkpoints.Trace208 prices;
+        Checkpoints.Trace224 prices;
     }
 
     // View functions

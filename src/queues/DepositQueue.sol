@@ -11,7 +11,7 @@ import "./Queue.sol";
 
 contract DepositQueue is IDepositQueue, Queue {
     using FenwickTreeLibrary for FenwickTreeLibrary.Tree;
-    using Checkpoints for Checkpoints.Trace208;
+    using Checkpoints for Checkpoints.Trace224;
 
     bytes32 private immutable _depositQueueStorageSlot;
 
@@ -23,7 +23,7 @@ contract DepositQueue is IDepositQueue, Queue {
 
     function claimableOf(address account) public view returns (uint256) {
         DepositQueueStorage storage $ = _depositQueueStorage();
-        Checkpoints.Checkpoint208 memory request = $.requestOf[account];
+        Checkpoints.Checkpoint224 memory request = $.requestOf[account];
         if (request._key == 0) {
             return 0;
         }
@@ -35,7 +35,7 @@ contract DepositQueue is IDepositQueue, Queue {
     }
 
     function requestOf(address account) public view returns (uint256 timestamp, uint256 assets) {
-        Checkpoints.Checkpoint208 memory request = _depositQueueStorage().requestOf[account];
+        Checkpoints.Checkpoint224 memory request = _depositQueueStorage().requestOf[account];
         return (request._key, request._value);
     }
 
@@ -48,7 +48,11 @@ contract DepositQueue is IDepositQueue, Queue {
         _depositQueueStorage().requests.initialize(16);
     }
 
-    function deposit(uint208 assets, bytes32[] calldata merkleProof) external payable nonReentrant {
+    /*
+        TODO: add refcode
+        TODO: check limits right here
+    */
+    function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable nonReentrant {
         if (assets == 0) {
             revert("DepositQueue: zero assets");
         }
@@ -65,13 +69,13 @@ contract DepositQueue is IDepositQueue, Queue {
 
         address asset_ = asset();
         TransferLibrary.receiveAssets(asset_, caller, assets);
-        uint256 timestamp = block.timestamp;
+        uint32 timestamp = uint32(block.timestamp);
         uint256 index;
-        Checkpoints.Trace208 storage timestamps = _timestamps();
-        uint208 latestTimestamp = timestamps.latest();
+        Checkpoints.Trace224 storage timestamps = _timestamps();
+        (, uint32 latestTimestamp,) = timestamps.latestCheckpoint();
         if (latestTimestamp < timestamp) {
             index = timestamps.length();
-            timestamps.push(uint48(timestamp), uint208(index));
+            timestamps.push(timestamp, uint224(index));
             if ($.requests.length() == index) {
                 $.requests.extend();
             }
@@ -80,19 +84,19 @@ contract DepositQueue is IDepositQueue, Queue {
         }
 
         $.requests.modify(index, int256(uint256(assets)));
-        $.requestOf[caller] = Checkpoints.Checkpoint208(uint48(timestamp), uint208(assets));
+        $.requestOf[caller] = Checkpoints.Checkpoint224(timestamp, assets);
     }
 
     function cancelDepositRequest() external nonReentrant {
         address caller = _msgSender();
         DepositQueueStorage storage $ = _depositQueueStorage();
-        Checkpoints.Checkpoint208 memory request = $.requestOf[caller];
+        Checkpoints.Checkpoint224 memory request = $.requestOf[caller];
         uint256 assets = request._value;
         if (assets == 0) {
             revert("DepositQueue: no pending request");
         }
         address asset_ = asset();
-        (bool exists, uint48 timestamp,) = $.prices.latestCheckpoint();
+        (bool exists, uint32 timestamp,) = $.prices.latestCheckpoint();
         if (exists && timestamp >= request._key) {
             revert("DepositQueue: request already processed");
         }
@@ -109,7 +113,7 @@ contract DepositQueue is IDepositQueue, Queue {
 
     function _claim(address account) internal returns (bool) {
         DepositQueueStorage storage $ = _depositQueueStorage();
-        Checkpoints.Checkpoint208 memory request = $.requestOf[account];
+        Checkpoints.Checkpoint224 memory request = $.requestOf[account];
         uint256 priceD18 = $.prices.lowerLookup(request._key);
         if (priceD18 == 0) {
             return false;
@@ -122,13 +126,13 @@ contract DepositQueue is IDepositQueue, Queue {
         return true;
     }
 
-    function _handleReport(uint208 priceD18, uint48 latestEligibleTimestamp) internal override {
+    function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {
         IDepositModule vault_ = IDepositModule(vault());
         address asset_ = asset();
 
         DepositQueueStorage storage $ = _depositQueueStorage();
-        Checkpoints.Trace208 storage timestamps = _timestamps();
-        (bool exists, uint48 latestTimestamp, uint208 latestIndex) = timestamps.latestCheckpoint();
+        Checkpoints.Trace224 storage timestamps = _timestamps();
+        (bool exists, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
         if (!exists) {
             return;
         }

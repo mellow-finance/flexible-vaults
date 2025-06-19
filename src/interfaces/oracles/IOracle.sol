@@ -13,8 +13,8 @@ import "../modules/ISharesModule.sol";
 
 interface IOracle is IFactoryEntity {
     struct SecurityParams {
-        uint208 maxAbsoluteDeviation;
-        uint208 suspiciousAbsoluteDeviation;
+        uint224 maxAbsoluteDeviation;
+        uint224 suspiciousAbsoluteDeviation;
         uint64 maxRelativeDeviationD18;
         uint64 suspiciousRelativeDeviationD18;
         uint32 timeout;
@@ -23,11 +23,11 @@ interface IOracle is IFactoryEntity {
 
     struct Report {
         address asset;
-        uint208 priceD18;
+        uint224 priceD18;
     }
 
     struct DetailedReport {
-        uint208 priceD18;
+        uint224 priceD18;
         uint32 timestamp;
         bool isSuspicious;
     }
