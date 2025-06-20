@@ -6,6 +6,7 @@ import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../factories/IFactoryEntity.sol";
+import "../modules/IRootVaultModule.sol";
 import "../modules/ISharesModule.sol";
 import "../permissions/IConsensus.sol";
 import "./IQueue.sol";
@@ -20,7 +21,6 @@ interface ISignatureQueue is IQueue, IFactoryEntity {
         address consensus;
         address vault;
         address asset;
-        EnumerableSet.AddressSet whitelist;
         mapping(address account => uint256 nonce) nonces;
     }
 
@@ -50,8 +50,7 @@ interface ISignatureQueue is IQueue, IFactoryEntity {
 
     function nonces(address account) external view returns (uint256);
 
-    function isWhitelisted(address account) external view returns (bool);
-
     function hashOrder(Order calldata order) external view returns (bytes32);
+
     function validateOrder(Order calldata order, IConsensus.Signature[] calldata signatures) external view;
 }

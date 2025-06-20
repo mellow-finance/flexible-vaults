@@ -87,7 +87,7 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
         TransferLibrary.sendAssets(asset, caller, assets);
     }
 
-    function createRedeemQueue(uint256 version, address owner, address asset)
+    function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data)
         external
         onlyRole(PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE)
     {
@@ -95,7 +95,8 @@ abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
             revert("RedeemModule: unsupported asset");
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
-        address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this)));
+        address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
+        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
         RedeemModuleStorage storage $ = _redeemModuleStorage();
         $.queues[asset].add(queue);
         $.assets.add(asset);

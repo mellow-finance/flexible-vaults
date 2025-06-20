@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "../../libraries/FenwickTreeLibrary.sol";
 import "../factories/IFactoryEntity.sol";
 import "../modules/IDepositModule.sol";
+import "../modules/IRootVaultModule.sol";
 import "./IQueue.sol";
 
 interface IDepositQueue is IQueue, IFactoryEntity {

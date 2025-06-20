@@ -65,7 +65,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     function initialize(bytes calldata data) external initializer {
         __ReentrancyGuard_init();
-        (address asset_, address sharesModule_) = abi.decode(data, (address, address));
+        (address asset_, address sharesModule_,) = abi.decode(data, (address, address, bytes));
         __Queue_init(asset_, sharesModule_);
     }
 
@@ -155,6 +155,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         if (counter > 0) {
             if (demand > 0) {
                 vault_.callRedeemHook(asset_, demand);
+                IRootVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, -int256(uint256(demand)));
                 $.fullDemand -= demand;
             }
             $.outflowDemandIterator += counter;

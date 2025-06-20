@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
 import "../factories/IFactoryEntity.sol";
 import "../modules/IRedeemModule.sol";
+import "../modules/IRootVaultModule.sol";
 import "./IQueue.sol";
 
 interface IRedeemQueue is IQueue, IFactoryEntity {

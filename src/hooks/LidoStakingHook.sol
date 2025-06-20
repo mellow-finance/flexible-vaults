@@ -24,7 +24,6 @@ contract LidoStakingHook is BasicDepositHook {
         weth = weth_;
     }
 
-    // TODO: fix this
     function afterDeposit(address vault, address asset, uint256 assets) public override {
         if (asset != wsteth) {
             uint256 balance = IERC20(wsteth).balanceOf(vault);

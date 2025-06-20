@@ -32,15 +32,22 @@ import "../src/modules/VerifierModule.sol";
 import "../src/oracles/Oracle.sol";
 
 import "../src/permissions/BitmaskVerifier.sol";
+
+import "../src/permissions/Consensus.sol";
 import "../src/permissions/Verifier.sol";
 
 import "../src/queues/DepositQueue.sol";
 import "../src/queues/Queue.sol";
 import "../src/queues/RedeemQueue.sol";
+import "../src/queues/SignatureDepositQueue.sol";
+import "../src/queues/SignatureQueue.sol";
+import "../src/queues/SignatureRedeemQueue.sol";
 
-import "../src/shares/BasicSharesManager.sol";
-import "../src/shares/SharesManager.sol";
-import "../src/shares/TokenizedSharesManager.sol";
+import "../src/managers/BasicSharesManager.sol";
+
+import "../src/managers/RiskManager.sol";
+import "../src/managers/SharesManager.sol";
+import "../src/managers/TokenizedSharesManager.sol";
 
 import "../src/strategies/SymbioticStrategy.sol";
 

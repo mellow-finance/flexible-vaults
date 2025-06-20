@@ -2,23 +2,16 @@
 pragma solidity 0.8.25;
 
 import "../factories/IFactory.sol";
+
+import "../managers/IRiskManager.sol";
 import "./IACLModule.sol";
 import "./ISharesModule.sol";
 import "./ISubvaultModule.sol";
 
 interface IRootVaultModule is IACLModule {
     struct RootVaultModuleStorage {
+        address riskManager;
         EnumerableSet.AddressSet subvaults;
-        mapping(address subvault => int256) balances;
-        mapping(address subvault => int256) limits;
-    }
-
-    struct CreateSubvaultParams {
-        uint256 version;
-        address owner;
-        address subvaultAdmin;
-        address verifier;
-        int256 limit;
     }
 
     // View functions
@@ -31,23 +24,19 @@ interface IRootVaultModule is IACLModule {
 
     function hasSubvault(address subvault) external view returns (bool);
 
-    function getSubvaultState(address subvault) external view returns (int256 limit, int256 balance);
-
-    function convertToShares(address asset, uint256 assets) external view returns (uint256 shares);
+    function riskManager() external view returns (IRiskManager);
 
     // Mutable functions
 
-    function createSubvault(CreateSubvaultParams calldata initParams) external returns (address subvault);
+    function createSubvault(uint256 version, address owner, address subvaultAdmin, address verifier)
+        external
+        returns (address subvault);
 
     function disconnectSubvault(address subvault) external;
 
-    function reconnectSubvault(address subvault, int256 balance, int256 limit) external;
-
-    function applyCorrection(address subvault, int256 correction) external;
+    function reconnectSubvault(address subvault) external;
 
     function pushAssets(address subvault, address asset, uint256 value) external;
 
     function pullAssets(address subvault, address asset, uint256 value) external;
-
-    function setSubvaultLimit(address subvault, int256 limit) external;
 }

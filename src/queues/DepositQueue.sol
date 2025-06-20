@@ -43,14 +43,13 @@ contract DepositQueue is IDepositQueue, Queue {
 
     function initialize(bytes calldata data) external initializer {
         __ReentrancyGuard_init();
-        (address asset_, address sharesModule_) = abi.decode(data, (address, address));
+        (address asset_, address sharesModule_,) = abi.decode(data, (address, address, bytes));
         __Queue_init(asset_, sharesModule_);
         _depositQueueStorage().requests.initialize(16);
     }
 
     /*
         TODO: add refcode
-        TODO: check limits right here
     */
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable nonReentrant {
         if (assets == 0) {
@@ -83,8 +82,10 @@ contract DepositQueue is IDepositQueue, Queue {
             index = timestamps.length() - 1;
         }
 
+        IRootVaultModule(vault()).riskManager().modifyPendingAssets(asset_, int256(uint256(assets)));
         $.requests.modify(index, int256(uint256(assets)));
         $.requestOf[caller] = Checkpoints.Checkpoint224(timestamp, assets);
+        emit DepositRequested(caller, referral, assets, timestamp);
     }
 
     function cancelDepositRequest() external nonReentrant {
@@ -103,6 +104,7 @@ contract DepositQueue is IDepositQueue, Queue {
 
         delete $.requestOf[caller];
         TransferLibrary.sendAssets(asset_, caller, assets);
+        IRootVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
     }
 
     function claim(address account) external returns (bool) {
@@ -160,6 +162,7 @@ contract DepositQueue is IDepositQueue, Queue {
         }
 
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
+        IRootVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, int256(uint256(assets)));
         address hook = vault_.getDepositHook(asset_);
         if (hook != address(0)) {
             IDepositHook(hook).afterDeposit(address(vault_), asset_, assets);
@@ -177,4 +180,6 @@ contract DepositQueue is IDepositQueue, Queue {
             dqs.slot := slot
         }
     }
+
+    event DepositRequested(address indexed account, address indexed referral, uint224 assets, uint32 timestamp);
 }

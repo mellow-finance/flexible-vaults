@@ -43,5 +43,5 @@ interface IRedeemModule {
 
     function callRedeemHook(address asset, uint256 assets) external;
 
-    function createRedeemQueue(uint256 version, address owner, address asset) external;
+    function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data) external;
 }

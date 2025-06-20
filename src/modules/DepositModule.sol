@@ -99,7 +99,7 @@ abstract contract DepositModule is IDepositModule, SharesModule, ACLModule {
         _depositModuleStorage().customHooks[queue] = hook;
     }
 
-    function createDepositQueue(uint256 version, address owner, address asset)
+    function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data)
         external
         onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
     {
@@ -107,7 +107,9 @@ abstract contract DepositModule is IDepositModule, SharesModule, ACLModule {
             revert("DepositModule: unsupported asset");
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
-        address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this)));
+        address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
+        _grantRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE, queue);
+        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
         DepositModuleStorage storage $ = _depositModuleStorage();
         $.queues[asset].add(queue);
         $.assets.add(asset);

@@ -2,9 +2,10 @@
 pragma solidity 0.8.25;
 
 import "../hooks/IDepositHook.sol";
+
+import "../managers/ISharesManager.sol";
 import "../oracles/IOracle.sol";
 import "../queues/IQueue.sol";
-import "../shares/ISharesManager.sol";
 import "./IBaseModule.sol";
 
 interface ISharesModule is IBaseModule {

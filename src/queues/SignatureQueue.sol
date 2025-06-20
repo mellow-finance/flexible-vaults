@@ -26,6 +26,14 @@ abstract contract SignatureQueue is
 
     // View functions
 
+    function claimableOf(address /* account */ ) public view virtual returns (uint256) {
+        return 0;
+    }
+
+    function claim(address /* account */ ) external virtual returns (uint256) {
+        return 0;
+    }
+
     function sharesModule() public view returns (ISharesModule) {
         return ISharesModule(_signatureQueueStorage().vault);
     }
@@ -46,10 +54,6 @@ abstract contract SignatureQueue is
 
     function nonces(address account) public view returns (uint256) {
         return _signatureQueueStorage().nonces[account];
-    }
-
-    function isWhitelisted(address account) public view returns (bool) {
-        return _signatureQueueStorage().whitelist.contains(account);
     }
 
     function hashOrder(Order calldata order) public view returns (bytes32) {
@@ -93,9 +97,6 @@ abstract contract SignatureQueue is
         if (order.nonce != nonces(order.caller)) {
             revert("SignatureQueue: invalid nonce");
         }
-        if (!isWhitelisted(order.caller)) {
-            revert("SignatureQueue: recipient not whitelisted");
-        }
 
         consensus().requireValidSignatures(hashOrder(order), signatures);
 
@@ -115,10 +116,17 @@ abstract contract SignatureQueue is
 
     // Mutable functions
 
-    function initialize(bytes calldata data) external initializer {
-        (string memory name_, string memory version_) = abi.decode(data, (string, string));
+    function initialize(bytes calldata initData) external initializer {
+        SignatureQueueStorage storage $ = _signatureQueueStorage();
+        bytes memory data;
+        ($.asset, $.vault, data) = abi.decode(initData, (address, address, bytes));
+        (address consensus_, string memory name_, string memory version_) = abi.decode(data, (address, string, string));
+        if (consensus_ == address(0)) {
+            revert("SignatureQueue: consensus address cannot be zero");
+        }
         __ReentrancyGuard_init();
         __EIP712_init(name_, version_);
+        $.consensus = consensus_;
     }
 
     function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external {}

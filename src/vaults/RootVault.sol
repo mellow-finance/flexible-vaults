@@ -19,9 +19,9 @@ contract RootVault is RootVaultModule, DepositModule, RedeemModule {
     )
         ACLModule(name_, version_)
         SharesModule(name_, version_)
-        RootVaultModule(name_, version_, subvaultFactory_)
         DepositModule(name_, version_, depositQueueFactory_)
         RedeemModule(name_, version_, redeemQueueFactory_)
+        RootVaultModule(name_, version_, subvaultFactory_)
     {}
 
     function initialize(
@@ -30,11 +30,13 @@ contract RootVault is RootVaultModule, DepositModule, RedeemModule {
         bytes calldata redeemModuleParams_,
         address sharesManager_,
         address depositOracle_,
-        address redeemOracle_
+        address redeemOracle_,
+        address riskManager_
     ) external initializer {
         __ACLModule_init(admin_);
         __SharesModule_init(sharesManager_, depositOracle_, redeemOracle_);
         __DepositModule_init(depositModuleParams_);
         __RedeemModule_init(redeemModuleParams_);
+        __RootVaultModule_init(riskManager_);
     }
 }
