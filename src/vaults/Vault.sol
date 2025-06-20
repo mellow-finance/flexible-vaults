@@ -6,10 +6,10 @@ import "../modules/BaseModule.sol";
 import "../modules/DepositModule.sol";
 import "../modules/RedeemModule.sol";
 
-import "../modules/RootVaultModule.sol";
 import "../modules/SharesModule.sol";
+import "../modules/VaultModule.sol";
 
-contract RootVault is RootVaultModule, DepositModule, RedeemModule {
+contract Vault is VaultModule, DepositModule, RedeemModule {
     constructor(
         string memory name_,
         uint256 version_,
@@ -21,7 +21,7 @@ contract RootVault is RootVaultModule, DepositModule, RedeemModule {
         SharesModule(name_, version_)
         DepositModule(name_, version_, depositQueueFactory_)
         RedeemModule(name_, version_, redeemQueueFactory_)
-        RootVaultModule(name_, version_, subvaultFactory_)
+        VaultModule(name_, version_, subvaultFactory_)
     {}
 
     function initialize(
@@ -37,6 +37,6 @@ contract RootVault is RootVaultModule, DepositModule, RedeemModule {
         __SharesModule_init(sharesManager_, depositOracle_, redeemOracle_);
         __DepositModule_init(depositModuleParams_);
         __RedeemModule_init(redeemModuleParams_);
-        __RootVaultModule_init(riskManager_);
+        __VaultModule_init(riskManager_);
     }
 }

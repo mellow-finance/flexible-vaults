@@ -8,8 +8,8 @@ import "./IACLModule.sol";
 import "./ISharesModule.sol";
 import "./ISubvaultModule.sol";
 
-interface IRootVaultModule is IACLModule {
-    struct RootVaultModuleStorage {
+interface IVaultModule is IACLModule {
+    struct VaultModuleStorage {
         address riskManager;
         EnumerableSet.AddressSet subvaults;
     }

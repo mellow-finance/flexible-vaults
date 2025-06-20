@@ -23,6 +23,6 @@ contract SignatureRedeemQueue is SignatureQueue {
         sharesModule().sharesManager().burn(order.recipient, order.requested);
         vault_.callRedeemHook(order.asset, order.requested);
         TransferLibrary.sendAssets(order.asset, order.recipient, order.requested);
-        IRootVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, -int256(order.requested));
+        IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, -int256(order.requested));
     }
 }

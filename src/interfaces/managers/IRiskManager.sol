@@ -4,8 +4,9 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 
 import "../factories/IFactoryEntity.sol";
-import "../modules/IRootVaultModule.sol";
+
 import "../modules/ISharesModule.sol";
+import "../modules/IVaultModule.sol";
 
 interface IRiskManager is IFactoryEntity {
     struct State {

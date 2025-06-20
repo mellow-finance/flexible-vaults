@@ -19,7 +19,7 @@ contract Integration is Test {
     Factory redeemQueueFactory;
     Factory verifierFactory;
 
-    RootVault rootVaultImplementation;
+    Vault vaultImplementation;
     TokenizedSharesManager sharesManagerImplementation;
     Oracle oracleImplementation;
 
@@ -53,15 +53,13 @@ contract Integration is Test {
         );
         riskManagerFactory.initialize(vaultAdmin);
 
-        rootVaultImplementation = new RootVault(
-            "Mellow", 1, address(subvaultFactory), address(depositQueueFactory), address(redeemQueueFactory)
-        );
+        vaultImplementation =
+            new Vault("Mellow", 1, address(subvaultFactory), address(depositQueueFactory), address(redeemQueueFactory));
         sharesManagerImplementation = new TokenizedSharesManager("Mellow", 1);
         oracleImplementation = new Oracle("Mellow", 1);
 
-        RootVault vault = RootVault(
-            payable(new TransparentUpgradeableProxy(address(rootVaultImplementation), vaultProxyAdmin, new bytes(0)))
-        );
+        Vault vault =
+            Vault(payable(new TransparentUpgradeableProxy(address(vaultImplementation), vaultProxyAdmin, new bytes(0))));
 
         vm.startPrank(vaultAdmin);
         {

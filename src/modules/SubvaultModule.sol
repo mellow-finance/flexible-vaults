@@ -15,19 +15,19 @@ abstract contract SubvaultModule is ISubvaultModule, BaseModule {
         _subvaultModuleStorageSlot = SlotLibrary.getSlot("Subvault", name_, version_);
     }
 
-    function rootVault() public view returns (address) {
-        return _subvaultModuleStorage().rootVault;
+    function vault() public view returns (address) {
+        return _subvaultModuleStorage().vault;
     }
 
     function pullAssets(address asset, address to, uint256 value) external {
-        require(_msgSender() == rootVault(), "SubvaultModule: only root vault can pull liquidity");
+        require(_msgSender() == vault(), "SubvaultModule: only root vault can pull liquidity");
         TransferLibrary.sendAssets(asset, to, value);
     }
 
     // Internal functions
 
-    function __SubvaultModule_init(address rootVault_) internal onlyInitializing {
-        _subvaultModuleStorage().rootVault = rootVault_;
+    function __SubvaultModule_init(address vault_) internal onlyInitializing {
+        _subvaultModuleStorage().vault = vault_;
     }
 
     function _subvaultModuleStorage() internal view returns (SubvaultModuleStorage storage $) {

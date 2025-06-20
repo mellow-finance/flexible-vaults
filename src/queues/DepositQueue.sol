@@ -82,7 +82,7 @@ contract DepositQueue is IDepositQueue, Queue {
             index = timestamps.length() - 1;
         }
 
-        IRootVaultModule(vault()).riskManager().modifyPendingAssets(asset_, int256(uint256(assets)));
+        IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, int256(uint256(assets)));
         $.requests.modify(index, int256(uint256(assets)));
         $.requestOf[caller] = Checkpoints.Checkpoint224(timestamp, assets);
         emit DepositRequested(caller, referral, assets, timestamp);
@@ -104,7 +104,7 @@ contract DepositQueue is IDepositQueue, Queue {
 
         delete $.requestOf[caller];
         TransferLibrary.sendAssets(asset_, caller, assets);
-        IRootVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
+        IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
     }
 
     function claim(address account) external returns (bool) {
@@ -162,7 +162,7 @@ contract DepositQueue is IDepositQueue, Queue {
         }
 
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
-        IRootVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, int256(uint256(assets)));
+        IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, int256(uint256(assets)));
         address hook = vault_.getDepositHook(asset_);
         if (hook != address(0)) {
             IDepositHook(hook).afterDeposit(address(vault_), asset_, assets);

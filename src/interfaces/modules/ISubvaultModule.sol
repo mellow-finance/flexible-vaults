@@ -5,12 +5,12 @@ import "../factories/IFactory.sol";
 
 interface ISubvaultModule {
     struct SubvaultModuleStorage {
-        address rootVault;
+        address vault;
     }
 
     // View functions
 
-    function rootVault() external view returns (address);
+    function vault() external view returns (address);
 
     // Mutable functions
 

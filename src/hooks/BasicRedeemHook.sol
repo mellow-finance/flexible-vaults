@@ -4,11 +4,11 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/hooks/IRedeemHook.sol";
-import "../interfaces/modules/IRootVaultModule.sol";
+import "../interfaces/modules/IVaultModule.sol";
 
 contract BasicRedeemHook is IRedeemHook {
     function beforeRedeem(address asset, uint256 assets) public virtual {
-        IRootVaultModule vault = IRootVaultModule(msg.sender);
+        IVaultModule vault = IVaultModule(msg.sender);
         uint256 liquid = IERC20(asset).balanceOf(address(vault));
         if (liquid >= assets) {
             return;
@@ -32,7 +32,7 @@ contract BasicRedeemHook is IRedeemHook {
     }
 
     function getLiquidAssets(address asset) public view virtual returns (uint256 assets) {
-        IRootVaultModule vault = IRootVaultModule(msg.sender);
+        IVaultModule vault = IVaultModule(msg.sender);
         assets = IERC20(asset).balanceOf(address(vault));
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {

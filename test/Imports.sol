@@ -24,9 +24,10 @@ import "../src/modules/BaseModule.sol";
 import "../src/modules/CallModule.sol";
 import "../src/modules/DepositModule.sol";
 import "../src/modules/RedeemModule.sol";
-import "../src/modules/RootVaultModule.sol";
+
 import "../src/modules/SharesModule.sol";
 import "../src/modules/SubvaultModule.sol";
+import "../src/modules/VaultModule.sol";
 import "../src/modules/VerifierModule.sol";
 
 import "../src/oracles/Oracle.sol";
@@ -51,7 +52,7 @@ import "../src/managers/TokenizedSharesManager.sol";
 
 import "../src/strategies/SymbioticStrategy.sol";
 
-import "../src/vaults/RootVault.sol";
 import "../src/vaults/Subvault.sol";
+import "../src/vaults/Vault.sol";
 
 import "./mocks/MockERC20.sol";

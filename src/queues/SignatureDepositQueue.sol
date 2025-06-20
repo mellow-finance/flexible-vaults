@@ -23,7 +23,7 @@ contract SignatureDepositQueue is SignatureQueue {
         if (hook != address(0)) {
             IDepositHook(hook).afterDeposit(address(vault_), order.asset, order.requested);
         }
-        IRootVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, int256(order.ordered));
+        IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, int256(order.ordered));
         sharesModule().sharesManager().mint(order.recipient, order.requested);
     }
 }

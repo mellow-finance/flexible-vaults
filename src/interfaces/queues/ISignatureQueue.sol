@@ -6,8 +6,9 @@ import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../factories/IFactoryEntity.sol";
-import "../modules/IRootVaultModule.sol";
+
 import "../modules/ISharesModule.sol";
+import "../modules/IVaultModule.sol";
 import "../permissions/IConsensus.sol";
 import "./IQueue.sol";
 

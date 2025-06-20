@@ -84,7 +84,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         onlyRole(PermissionsLibrary.SET_SUBVAULT_LIMIT_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        if (!IRootVaultModule($.vault).hasSubvault(subvault)) {
+        if (!IVaultModule($.vault).hasSubvault(subvault)) {
             revert("RiskManager: not a valid subvault");
         }
         $.subvaultStates[subvault].limit = limit;
@@ -125,7 +125,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         onlyRole(PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        if (!IRootVaultModule($.vault).hasSubvault(subvault)) {
+        if (!IVaultModule($.vault).hasSubvault(subvault)) {
             revert("RiskManager: not a valid subvault");
         }
         State storage state = $.subvaultStates[subvault];
