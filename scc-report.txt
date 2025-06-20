@@ -1,28 +1,28 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 38      3007      493       138     2376        422           543.29
+Solidity                                 38      3054      498       113     2443        436           562.91
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       23         4      104          7             6.73
-src/hooks/BasicDepositHook.sol                     38        3        26        9          0             0.00
+src/hooks/BasicDepositHook.sol                     31        3         1       27          5            18.52
 src/hooks/BasicRedeemHook.sol                      43        4         1       38          7            18.42
 src/hooks/CompositeDepositHook.sol                 37        5         1       31          6            19.35
 src/hooks/LidoStakingHook.sol                      45        8         1       36         11            30.56
 src/libraries/FenwickTreeLibrary.sol               80        9         8       63         14            22.22
 src/libraries/MerkleHashingLibrary.sol             12        2         1        9          0             0.00
-src/libraries/PermissionsLibrary.sol               40        8         1       31          0             0.00
+src/libraries/PermissionsLibrary.sol               39        8         1       30          0             0.00
 ~src/libraries/SharesManagerFlagLibrary.sol        56       13         1       42          8            19.05
 src/libraries/SlotLibrary.sol                      22        1         1       20          0             0.00
 src/libraries/TransferLibrary.sol                  27        5         1       21          8            38.10
 src/managers/BasicSharesManager.sol                70       14         4       52          9            17.31
-src/managers/RiskManager.sol                      108       16         4       88         13            14.77
+src/managers/RiskManager.sol                      147       19         4      124         21            16.94
 src/managers/SharesManager.sol                    223       35         4      184         34            18.48
 src/managers/TokenizedSharesManager.sol            58       13         4       41          5            12.20
 src/modules/ACLModule.sol                         111       22         4       85         16            18.82
 src/modules/BaseModule.sol                         14        4         2        8          0             0.00
 src/modules/CallModule.sol                         20        4         2       14          0             0.00
-src/modules/DepositModule.sol                     133       23         4      106         17            16.04
-src/modules/RedeemModule.sol                      121       22         4       95         15            15.79
+src/modules/DepositModule.sol                     135       23         4      108         17            15.74
+src/modules/RedeemModule.sol                      122       22         4       96         15            15.62
 src/modules/RootVaultModule.sol                    96       20         4       72          2             2.78
 src/modules/SharesModule.sol                       78       16         4       58         13            22.41
 src/modules/SubvaultModule.sol                     39       10         2       27          2             7.41
@@ -32,18 +32,18 @@ src/permissions/BitmaskVerifier.sol                44        3         1       4
 src/permissions/Consensus.sol                     117       19         4       94         22            23.40
 src/permissions/Verifier.sol                      182       27         4      151         35            23.18
 ~rmissions/protocols/EigenLayerVerifier.sol        46        5         9       32         12            37.50
-src/queues/DepositQueue.sol                       182       27         7      148         36            24.32
+src/queues/DepositQueue.sol                       185       28         7      150         36            24.00
 src/queues/Queue.sol                               69       16         4       49         11            22.45
 src/queues/RedeemQueue.sol                        213       33         5      175         33            18.86
 src/queues/SignatureDepositQueue.sol               29        6         1       22          2             9.09
-src/queues/SignatureQueue.sol                     134       23         4      107         20            18.69
+src/queues/SignatureQueue.sol                     142       24         4      114         21            18.42
 src/queues/SignatureRedeemQueue.sol                28        6         1       21          1             4.76
 src/strategies/SymbioticStrategy.sol               58        7         1       50          0             0.00
-src/vaults/RootVault.sol                           40        4         1       35          0             0.00
+src/vaults/RootVault.sol                           42        4         1       37          0             0.00
 src/vaults/Subvault.sol                            20        3         1       16          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    38      3007      493       138     2376        422           543.29
+Total                                    38      3054      498       113     2443        436           562.91
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 108146 bytes, 0.108 megabytes (SI)
+Processed 110148 bytes, 0.110 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 

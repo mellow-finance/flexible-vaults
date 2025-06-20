@@ -6,6 +6,9 @@ InstantWithDelayDepositQueue
 
 VaultConfigurator
 
+SharesManagerFlagsLibary:
+add setters
+
 Oracle:
 Fees
 
