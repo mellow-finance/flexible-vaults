@@ -4,13 +4,11 @@ pragma solidity 0.8.25;
 library PermissionsLibrary {
     bytes32 public constant DEFAULT_ADMIN_ROLE = 0x00;
 
-    bytes32 public constant SET_DEPOSIT_HOOK_ROLE = keccak256("DEPOSIT_MODULE:SET_DEPOSIT_HOOK_ROLE");
-    bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE = keccak256("DEPOSIT_MODULE:CREATE_DEPOSIT_QUEUE_ROLE");
+    bytes32 public constant SET_CUSTOM_HOOK_ROLE = keccak256("SHARE_MODULE:SET_CUSTOM_HOOK_ROLE");
+    bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE = keccak256("SHARE_MODULE:CREATE_DEPOSIT_QUEUE_ROLE");
+    bytes32 public constant CREATE_REDEEM_QUEUE_ROLE = keccak256("SHARE_MODULE.CREATE_REDEEM_QUEUE_ROLE");
 
-    bytes32 public constant SET_REDEEM_HOOK_ROLE = keccak256("REDEEM_MODULE.SET_REDEEM_HOOK_ROLE");
-    bytes32 public constant CREATE_REDEEM_QUEUE_ROLE = keccak256("REDEEM_MODULE.CREATE_REDEEM_QUEUE_ROLE");
-
-    bytes32 public constant SEND_REPORT_ROLE = keccak256("ORACLE:SEND_REPORT_ROLE");
+    bytes32 public constant SUBMIT_REPORT_ROLE = keccak256("ORACLE:SUBMIT_REPORT_ROLE");
     bytes32 public constant ACCEPT_REPORT_ROLE = keccak256("ORACLE:ACCEPT_REPORT_ROLE");
     bytes32 public constant SET_SECURITY_PARAMS_ROLE = keccak256("ORACLE:SET_SECURITY_PARAMS_ROLE");
     bytes32 public constant ADD_SUPPORTED_ASSETS_ROLE = keccak256("ORACLE:ADD_SUPPORTED_ASSETS_ROLE");
@@ -22,8 +20,8 @@ library PermissionsLibrary {
     bytes32 public constant ADD_ALLOWED_CALLS_ROLE = keccak256("VERIFIER:ADD_ALLOWED_CALLS_ROLE");
     bytes32 public constant REMOVE_ALLOWED_CALLS_ROLE = keccak256("VERIFIER:REMOVE_ALLOWED_CALLS_ROLE");
 
-    bytes32 public constant SET_FLAGS_ROLE = keccak256("SHARES_MANAGER:SET_FLAGS_ROLE");
-    bytes32 public constant SET_ACCOUNT_INFO_ROLE = keccak256("SHARES_MANAGER:SET_ACCOUNT_INFO_ROLE");
+    bytes32 public constant SET_FLAGS_ROLE = keccak256("SHARE_MANAGER:SET_FLAGS_ROLE");
+    bytes32 public constant SET_ACCOUNT_INFO_ROLE = keccak256("SHARE_MANAGER:SET_ACCOUNT_INFO_ROLE");
 
     bytes32 public constant CREATE_SUBVAULT_ROLE = keccak256("VAULT_MODULE:CREATE_SUBVAULT_ROLE");
     bytes32 public constant DISCONNECT_SUBVAULT_ROLE = keccak256("VAULT_MODULE:DISCONNECT_SUBVAULT_ROLE");

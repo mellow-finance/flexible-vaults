@@ -149,7 +149,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
     }
 
-    function setCustomHook(address queue, address hook) external onlyRole(PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE) {
+    function setCustomHook(address queue, address hook) external onlyRole(PermissionsLibrary.SET_CUSTOM_HOOK_ROLE) {
         if (queue == address(0) || hook == address(0)) {
             revert("ShareModule: zero address");
         }

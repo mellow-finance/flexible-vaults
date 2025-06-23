@@ -43,14 +43,11 @@ contract DepositQueue is IDepositQueue, Queue {
 
     function initialize(bytes calldata data) external initializer {
         __ReentrancyGuard_init();
-        (address asset_, address sharesModule_,) = abi.decode(data, (address, address, bytes));
-        __Queue_init(asset_, sharesModule_);
+        (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
+        __Queue_init(asset_, shareModule_);
         _depositQueueStorage().requests.initialize(16);
     }
 
-    /*
-        TODO: add refcode
-    */
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable nonReentrant {
         if (assets == 0) {
             revert("DepositQueue: zero assets");

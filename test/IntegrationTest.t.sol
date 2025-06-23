@@ -104,11 +104,6 @@ contract Integration is Test {
         FeeManager feeManager = FeeManager(
             address(new TransparentUpgradeableProxy(address(feeManagerImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        // address feeRecipient_,
-        // uint24 depositFeeD6_,
-        // uint24 redeemFeeD6_,
-        // uint24 performanceFeeD6_,
-        // uint24 protocolFeeD6_
         feeManager.initialize(
             abi.encode(
                 vaultAdmin,
@@ -151,26 +146,28 @@ contract Integration is Test {
             RiskManager(riskManagerFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), int256(100 ether))));
 
         vault.initialize(
-            vaultAdmin,
-            address(shareManager),
-            address(feeManager),
-            address(riskManager),
-            address(depositOracle),
-            address(redeemOracle),
-            address(new BasicDepositHook()),
-            address(new BasicRedeemHook()) // redeem module params
+            abi.encode(
+                vaultAdmin,
+                address(shareManager),
+                address(feeManager),
+                address(riskManager),
+                address(depositOracle),
+                address(redeemOracle),
+                address(new BasicDepositHook()),
+                address(new BasicRedeemHook()),
+                new Vault.RoleHolder[](0)
+            ) // redeem module params
         );
 
         vm.startPrank(vaultAdmin);
-        vault.grantFundamentalRole(vaultProxyAdmin, IACLModule.FundamentalRole.PROXY_OWNER);
-        vault.grantFundamentalRole(vaultAdmin, IACLModule.FundamentalRole.SUBVAULT_ADMIN);
+        vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
+        vault.grantFundamentalRole(IACLModule.FundamentalRole.SUBVAULT_ADMIN, vaultAdmin);
 
-        bytes32[26] memory roles = [
-            PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE,
+        bytes32[25] memory roles = [
+            PermissionsLibrary.SET_CUSTOM_HOOK_ROLE,
             PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE,
-            PermissionsLibrary.SET_REDEEM_HOOK_ROLE,
             PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE,
-            PermissionsLibrary.SEND_REPORT_ROLE,
+            PermissionsLibrary.SUBMIT_REPORT_ROLE,
             PermissionsLibrary.ACCEPT_REPORT_ROLE,
             PermissionsLibrary.SET_SECURITY_PARAMS_ROLE,
             PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE,
@@ -219,7 +216,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.sendReport(report);
+            depositOracle.submitReport(report);
             depositOracle.acceptReport(address(asset), uint32(block.timestamp));
             skip(1 days);
         }
@@ -244,7 +241,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.sendReport(report);
+            depositOracle.submitReport(report);
         }
         vm.stopPrank();
         vm.startPrank(user);
@@ -266,7 +263,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            redeemOracle.sendReport(report);
+            redeemOracle.submitReport(report);
             redeemOracle.acceptReport(address(asset), uint32(block.timestamp));
         }
         vm.stopPrank();

@@ -31,10 +31,10 @@ contract BitmaskVerifier is ICustomVerifier {
             bitmask.offset := add(temp, 0x20)
             bitmask.length := calldataload(temp)
         }
-        bytes memory fullData = abi.encode(who, where, value, callData);
-        if (fullData.length != bitmask.length) {
+        if (callData.length + 0x60 != bitmask.length) {
             return false;
         }
+        bytes memory fullData = abi.encode(who, where, value, callData);
         bytes32 hash_ = calculateHash(bitmask, fullData);
         if (hash_ != verificationHash_) {
             return false;

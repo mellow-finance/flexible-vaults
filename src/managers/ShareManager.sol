@@ -122,6 +122,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         bitmask = bitmask.setHasTransferPause(f.hasTransferPause).setHasWhitelist(f.hasWhitelist);
         bitmask = bitmask.setHasBlacklist(f.hasBlacklist).setHasTransferWhitelist(f.hasTransferWhitelist);
         bitmask = bitmask.setGlobalLockup(f.globalLockup).setTargetedLockup(f.targetedLockup);
+        _shareManagerStorage().flags = bitmask;
     }
 
     function allocateShares(uint256 value) external onlyQueue {

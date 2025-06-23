@@ -43,18 +43,18 @@ abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUp
 
     // Mutable functions
 
-    function grantFundamentalRole(address account, FundamentalRole role)
+    function grantFundamentalRole(FundamentalRole role, address account)
         external
         onlyRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE)
     {
-        _grantFundamentalRole(account, role);
+        _grantFundamentalRole(role, account);
     }
 
-    function revokeFundamentalRole(address account, FundamentalRole role)
+    function revokeFundamentalRole(FundamentalRole role, address account)
         external
         onlyRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE)
     {
-        _revokeFundamentalRole(account, role);
+        _revokeFundamentalRole(role, account);
     }
 
     // Internal functions
@@ -63,11 +63,11 @@ abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUp
         if (admin_ == address(0)) {
             revert("ACLModule: zero admin address");
         }
-        _grantFundamentalRole(admin_, FundamentalRole.ADMIN);
+        _grantFundamentalRole(FundamentalRole.ADMIN, admin_);
         _grantRole(PermissionsLibrary.DEFAULT_ADMIN_ROLE, admin_);
     }
 
-    function _grantFundamentalRole(address account, FundamentalRole role) internal virtual {
+    function _grantFundamentalRole(FundamentalRole role, address account) internal virtual {
         if (account == address(0)) {
             revert("ACLModule: zero account address");
         }
@@ -85,7 +85,7 @@ abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUp
         return false;
     }
 
-    function _revokeFundamentalRole(address account, FundamentalRole role) internal virtual {
+    function _revokeFundamentalRole(FundamentalRole role, address account) internal virtual {
         if (account == address(0)) {
             revert("ACLModule: zero account address");
         }

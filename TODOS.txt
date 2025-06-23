@@ -1,16 +1,15 @@
-DepositModule / RedeemModule:
-limits per block per token?
-min/max assets 
+Queues:
+1. min/max assets per action
+2. limits per token per block
+3. InstantWithDelayDepositQueue
 
-InstantWithDelayDepositQueue
+Oracles:
+1. better UX
 
-VaultConfigurator
-
-ShareManagerFlagsLibary:
-add setters
-
-Hooks
-all other hooks
+Protocol verifiers:
+1. ERC20
+2. EigenLayer
+3. Symbiotic
 
 Strategies
 1. Restaking strategy

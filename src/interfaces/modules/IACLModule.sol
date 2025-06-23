@@ -25,6 +25,6 @@ interface IACLModule is IAccessControlEnumerable {
 
     // Mutable functions
 
-    function grantFundamentalRole(address account, FundamentalRole role) external;
-    function revokeFundamentalRole(address account, FundamentalRole role) external;
+    function grantFundamentalRole(FundamentalRole role, address account) external;
+    function revokeFundamentalRole(FundamentalRole role, address account) external;
 }

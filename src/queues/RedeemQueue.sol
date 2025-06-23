@@ -65,8 +65,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     function initialize(bytes calldata data) external initializer {
         __ReentrancyGuard_init();
-        (address asset_, address sharesModule_,) = abi.decode(data, (address, address, bytes));
-        __Queue_init(asset_, sharesModule_);
+        (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
+        __Queue_init(asset_, shareModule_);
     }
 
     function redeem(uint256 shares) external nonReentrant {
