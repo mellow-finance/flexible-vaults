@@ -133,13 +133,20 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
     }
 
-    function callRedeemHook(address asset_, uint256 assets) external {
-        address caller = _msgSender();
-        if (!_shareModuleStorage().queues[asset_].contains(caller)) {
+    function callHook(uint256 assets) external {
+        address queue = _msgSender();
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        address asset = IQueue(queue).asset();
+        if (!_shareModuleStorage().queues[asset].contains(queue)) {
             revert("RedeemModule: caller is not a queue");
         }
-        IRedeemHook(getHook(caller)).beforeRedeem(asset_, assets);
-        TransferLibrary.sendAssets(asset_, caller, assets);
+        address hook = getHook(queue);
+        if ($.isDepositQueue[queue]) {
+            Address.functionDelegateCall(hook, abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
+        } else {
+            Address.functionDelegateCall(hook, abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
+            TransferLibrary.sendAssets(asset, queue, assets);
+        }
     }
 
     function setCustomHook(address queue, address hook) external onlyRole(PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE) {
@@ -191,22 +198,24 @@ abstract contract ShareModule is IShareModule, ACLModule {
             revert("ShareModule: forbidden");
         }
 
-        bool isDepositQueue_ = caller == depositOracle_;
+        bool isDepositOracle = caller == depositOracle_;
         EnumerableSet.AddressSet storage queues = _shareModuleStorage().queues[asset];
         uint256 length = queues.length();
         for (uint256 i = 0; i < length; i++) {
             address queue = queues.at(i);
-            if (isDepositQueue_ == $.isDepositQueue[queue]) {
+            if (isDepositOracle == $.isDepositQueue[queue]) {
                 IQueue(queue).handleReport(priceD18, latestEligibleTimestamp);
             }
         }
-        IFeeManager feeManager_ = feeManager();
-        uint256 fees = feeManager_.calculateProtocolFee(address(this), shareManager().totalShares())
-            + feeManager_.calculatePerformanceFee(address(this), asset, priceD18);
-        if (fees > 0) {
-            shareManager().mint(feeManager_.feeRecipient(), fees);
+        if (isDepositOracle) {
+            IFeeManager feeManager_ = feeManager();
+            uint256 fees = feeManager_.calculateProtocolFee(address(this), shareManager().totalShares())
+                + feeManager_.calculatePerformanceFee(address(this), asset, priceD18);
+            if (fees > 0) {
+                shareManager().mint(feeManager_.feeRecipient(), fees);
+            }
+            feeManager_.updateState(asset, priceD18);
         }
-        feeManager_.updateState(asset, priceD18);
     }
 
     // Internal functions

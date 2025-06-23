@@ -2,5 +2,5 @@
 pragma solidity 0.8.25;
 
 interface IDepositHook {
-    function afterDeposit(address vault, address asset, uint256 assets) external;
+    function afterDeposit(address asset, uint256 assets) external;
 }

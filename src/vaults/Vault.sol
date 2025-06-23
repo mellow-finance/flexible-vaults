@@ -2,7 +2,6 @@
 pragma solidity 0.8.25;
 
 import "../modules/ACLModule.sol";
-import "../modules/BaseModule.sol";
 import "../modules/ShareModule.sol";
 import "../modules/VaultModule.sol";
 
@@ -10,9 +9,9 @@ contract Vault is VaultModule, ShareModule {
     constructor(
         string memory name_,
         uint256 version_,
-        address subvaultFactory_,
         address depositQueueFactory_,
-        address redeemQueueFactory_
+        address redeemQueueFactory_,
+        address subvaultFactory_
     )
         ACLModule(name_, version_)
         ShareModule(name_, version_, depositQueueFactory_, redeemQueueFactory_)
@@ -22,7 +21,7 @@ contract Vault is VaultModule, ShareModule {
     function initialize(
         address admin_,
         address shareManager_,
-        address feesManager_,
+        address feeManager_,
         address riskManager_,
         address depositOracle_,
         address redeemOracle_,
@@ -31,7 +30,7 @@ contract Vault is VaultModule, ShareModule {
     ) external initializer {
         __ACLModule_init(admin_);
         __ShareModule_init(
-            shareManager_, feesManager_, depositOracle_, redeemOracle_, defaultDepositHook_, defaultRedeemHook_
+            shareManager_, feeManager_, depositOracle_, redeemOracle_, defaultDepositHook_, defaultRedeemHook_
         );
         __VaultModule_init(riskManager_);
     }

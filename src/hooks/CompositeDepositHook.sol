@@ -18,8 +18,8 @@ contract CompositeDepositHook is IDepositHook {
         hook3 = hook3_;
     }
 
-    function afterDeposit(address vault, address asset, uint256 assets) public virtual {
-        bytes memory data = abi.encodeCall(IDepositHook.afterDeposit, (vault, asset, assets));
+    function afterDeposit(address asset, uint256 assets) public virtual {
+        bytes memory data = abi.encodeCall(IDepositHook.afterDeposit, (asset, assets));
         Address.functionDelegateCall(hook0, data);
         if (hook1 == address(0)) {
             return;

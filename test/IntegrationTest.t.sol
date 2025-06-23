@@ -55,7 +55,7 @@ contract Integration is Test {
         riskManagerFactory.initialize(vaultAdmin);
 
         vaultImplementation =
-            new Vault("Mellow", 1, address(subvaultFactory), address(depositQueueFactory), address(redeemQueueFactory));
+            new Vault("Mellow", 1, address(depositQueueFactory), address(redeemQueueFactory), address(subvaultFactory));
         shareManagerImplementation = new TokenizedShareManager("Mellow", 1);
         feeManagerImplementation = new FeeManager("Mellow", 1);
         oracleImplementation = new Oracle("Mellow", 1);
@@ -203,6 +203,8 @@ contract Integration is Test {
         for (uint256 i = 0; i < roles.length; i++) {
             vault.grantRole(roles[i], vaultAdmin);
         }
+        vault.grantRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE, address(vault));
+        vault.grantRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE, address(vault));
 
         Consensus consensusImplementation = new Consensus("Consensus", 1);
         Consensus consensus = Consensus(
@@ -234,10 +236,6 @@ contract Integration is Test {
                 Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
             address subvault = vault.createSubvault(0, vaultProxyAdmin, vaultAdmin, address(verifier));
             verifier.setSecondaryACL(subvault);
-            address depositHook = vault.defaultDepositHook();
-            vault.grantRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE, depositHook);
-            address redeemHook = vault.defaultRedeemHook();
-            vault.grantRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE, redeemHook);
         }
         vm.stopPrank();
         vm.startPrank(user);

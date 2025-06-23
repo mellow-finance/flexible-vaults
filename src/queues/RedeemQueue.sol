@@ -79,9 +79,9 @@ contract RedeemQueue is IRedeemQueue, Queue {
         shareManager_.burn(caller, shares);
         {
             IFeeManager feeManager = IShareModule(vault()).feeManager();
-            uint256 fee = feeManager.calculateRedeemFee(shares);
-            if (fee > 0) {
-                shareManager_.mint(feeManager.feeRecipient(), fee);
+            uint256 fees = feeManager.calculateRedeemFee(shares);
+            if (fees > 0) {
+                shareManager_.mint(feeManager.feeRecipient(), fees);
             }
         }
 
@@ -162,9 +162,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
         if (counter > 0) {
             if (demand > 0) {
-                address asset_ = asset();
-                vault_.callRedeemHook(asset_, demand);
-                IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, -int256(uint256(demand)));
+                vault_.callHook(demand);
+                IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset(), -int256(uint256(demand)));
                 $.fullDemand -= demand;
             }
             $.outflowDemandIterator += counter;

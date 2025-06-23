@@ -13,6 +13,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
 
     constructor(string memory name_, uint256 version_) {
         _oracleStorageSlot = SlotLibrary.getSlot("Oracle", name_, version_);
+        _disableInitializers();
     }
 
     // View functions

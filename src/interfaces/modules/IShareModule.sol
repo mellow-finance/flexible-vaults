@@ -72,7 +72,7 @@ interface IShareModule is IBaseModule {
 
     function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data) external;
 
-    function callRedeemHook(address asset, uint256 assets) external;
+    function callHook(uint256 assets) external;
 
     function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data) external;
 

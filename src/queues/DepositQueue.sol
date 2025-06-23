@@ -130,34 +130,35 @@ contract DepositQueue is IDepositQueue, Queue {
 
     function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {
         IShareModule vault_ = IShareModule(vault());
-        address asset_ = asset();
 
         DepositQueueStorage storage $ = _depositQueueStorage();
         Checkpoints.Trace224 storage timestamps = _timestamps();
-        (bool exists, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
-        if (!exists) {
-            return;
-        }
         uint256 latestEligibleIndex;
-        if (latestTimestamp <= latestEligibleTimestamp) {
-            latestEligibleIndex = latestIndex;
-        } else {
-            latestEligibleIndex = uint256(timestamps.upperLookupRecent(latestEligibleTimestamp));
-            if (latestEligibleIndex == 0) {
+        {
+            (bool exists, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
+            if (!exists) {
                 return;
             }
-            latestEligibleIndex--;
-        }
+            if (latestTimestamp <= latestEligibleTimestamp) {
+                latestEligibleIndex = latestIndex;
+            } else {
+                latestEligibleIndex = uint256(timestamps.upperLookupRecent(latestEligibleTimestamp));
+                if (latestEligibleIndex == 0) {
+                    return;
+                }
+                latestEligibleIndex--;
+            }
 
-        if (latestEligibleIndex < $.handledIndices) {
-            return;
+            if (latestEligibleIndex < $.handledIndices) {
+                return;
+            }
         }
         uint256 assets = uint256($.requests.get($.handledIndices, latestEligibleIndex));
         $.handledIndices = latestEligibleIndex + 1;
 
         IFeeManager feeManager = IShareModule(address(vault_)).feeManager();
         uint224 feePriceD18 = uint224(feeManager.calculateDepositFee(priceD18));
-        priceD18 -= feePriceD18;
+        uint224 reducedPriceD18 = priceD18 - feePriceD18;
         $.prices.push(latestEligibleTimestamp, priceD18);
 
         if (assets == 0) {
@@ -165,22 +166,21 @@ contract DepositQueue is IDepositQueue, Queue {
         }
 
         {
-            uint256 shares = Math.mulDiv(assets, priceD18, 1 ether);
+            IShareManager shareManager_ = IShareModule(address(vault_)).shareManager();
+            uint256 shares = Math.mulDiv(assets, reducedPriceD18, 1 ether);
             if (shares > 0) {
-                IShareManager(shareManager()).allocateShares(shares);
+                shareManager_.allocateShares(shares);
             }
-            uint256 feeShares = Math.mulDiv(assets, feePriceD18, 1 ether);
-            if (feeShares > 0) {
-                IShareManager(shareManager()).mint(feeManager.feeRecipient(), feeShares);
+            uint256 fees = Math.mulDiv(assets, priceD18, 1 ether) - shares;
+            if (fees > 0) {
+                shareManager_.mint(feeManager.feeRecipient(), fees);
             }
         }
 
+        address asset_ = asset();
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, int256(uint256(assets)));
-        address hook = vault_.getHook(address(this));
-        if (hook != address(0)) {
-            IDepositHook(hook).afterDeposit(address(vault_), asset_, assets);
-        }
+        vault_.callHook(assets);
     }
 
     function _depositQueueStorage() internal view returns (DepositQueueStorage storage dqs) {

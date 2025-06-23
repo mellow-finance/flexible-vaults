@@ -7,8 +7,17 @@ import "../interfaces/hooks/IRedeemHook.sol";
 import "../interfaces/modules/IVaultModule.sol";
 
 contract BasicRedeemHook is IRedeemHook {
+    address private immutable _this;
+
+    constructor() {
+        _this = address(this);
+    }
+
     function beforeRedeem(address asset, uint256 assets) public virtual {
-        IVaultModule vault = IVaultModule(msg.sender);
+        IVaultModule vault = IVaultModule(address(this));
+        if (address(vault) == _this) {
+            revert("BasicRedeemHook: delegate call only");
+        }
         uint256 liquid = IERC20(asset).balanceOf(address(vault));
         if (liquid >= assets) {
             return;
