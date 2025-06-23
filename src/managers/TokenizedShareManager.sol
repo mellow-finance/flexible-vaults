@@ -23,16 +23,10 @@ contract TokenizedShareManager is ShareManager, ERC20Upgradeable {
     // Mutable functions
 
     function initialize(bytes calldata data) external initializer {
-        (
-            address vault_,
-            uint256 flags_,
-            bytes32 whitelistMerkleRoot_,
-            uint256 sharesLimit_,
-            string memory name_,
-            string memory symbol_
-        ) = abi.decode(data, (address, uint256, bytes32, uint256, string, string));
+        (address vault_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_, string memory name_, string memory symbol_)
+        = abi.decode(data, (address, bytes32, uint256, string, string));
         __ERC20_init(name_, symbol_);
-        __ShareManager_init(vault_, flags_, whitelistMerkleRoot_, sharesLimit_);
+        __ShareManager_init(vault_, whitelistMerkleRoot_, sharesLimit_);
     }
 
     // Internal functions

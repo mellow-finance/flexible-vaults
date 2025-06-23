@@ -98,14 +98,7 @@ contract Integration is Test {
         );
 
         shareManager.initialize(
-            abi.encode(
-                vault,
-                uint256(0).setHasDepositQueues(true).setHasRedeemQueues(true),
-                bytes32(0),
-                100 ether,
-                string("VaultERC20Name"),
-                string("VaultERC20Symbol")
-            )
+            abi.encode(vault, bytes32(0), 100 ether, string("VaultERC20Name"), string("VaultERC20Symbol"))
         );
 
         FeeManager feeManager = FeeManager(

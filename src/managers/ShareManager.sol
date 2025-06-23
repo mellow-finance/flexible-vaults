@@ -55,11 +55,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     function claimableSharesOf(address account) public view returns (uint256) {
-        ShareManagerStorage storage $ = _shareManagerStorage();
-        if (!$.flags.hasDepositQueues()) {
-            return 0;
-        }
-        return IShareModule($.vault).claimableSharesOf(account);
+        return IShareModule(_shareManagerStorage().vault).claimableSharesOf(account);
     }
 
     function activeSharesOf(address account) public view virtual returns (uint256);
@@ -78,8 +74,16 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         return _shareManagerStorage().allocatedShares;
     }
 
-    function flags() public view returns (uint256) {
-        return _shareManagerStorage().flags;
+    function flags() public view returns (Flags memory f) {
+        uint256 bitmask = _shareManagerStorage().flags;
+        f.hasMintPause = bitmask.hasMintPause();
+        f.hasBurnPause = bitmask.hasBurnPause();
+        f.hasTransferPause = bitmask.hasTransferPause();
+        f.hasWhitelist = bitmask.hasWhitelist();
+        f.hasBlacklist = bitmask.hasBlacklist();
+        f.hasTransferWhitelist = bitmask.hasTransferWhitelist();
+        f.globalLockup = bitmask.getGlobalLockup();
+        f.targetedLockup = bitmask.getTargetedLockup();
     }
 
     function whitelistMerkleRoot() public view returns (bytes32) {
@@ -113,8 +117,11 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         _shareManagerStorage().accounts[account] = info;
     }
 
-    function setFlags(uint256 flags_) external onlyRole(PermissionsLibrary.SET_FLAGS_ROLE) {
-        _shareManagerStorage().flags = flags_;
+    function setFlags(Flags calldata f) external onlyRole(PermissionsLibrary.SET_FLAGS_ROLE) {
+        uint256 bitmask = uint256(0).setHasMintPause(f.hasMintPause).setHasBurnPause(f.hasBurnPause);
+        bitmask = bitmask.setHasTransferPause(f.hasTransferPause).setHasWhitelist(f.hasWhitelist);
+        bitmask = bitmask.setHasBlacklist(f.hasBlacklist).setHasTransferWhitelist(f.hasTransferWhitelist);
+        bitmask = bitmask.setGlobalLockup(f.globalLockup).setTargetedLockup(f.targetedLockup);
     }
 
     function allocateShares(uint256 value) external onlyQueue {
@@ -193,14 +200,13 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
 
     // Internal functions
 
-    function __ShareManager_init(address vault_, uint256 flags_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_)
+    function __ShareManager_init(address vault_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_)
         internal
         onlyInitializing
     {
         require(vault_ != address(0), "ShareManager: vault cannot be zero address");
         ShareManagerStorage storage $ = _shareManagerStorage();
         $.vault = vault_;
-        $.flags = flags_;
         $.whitelistMerkleRoot = whitelistMerkleRoot_;
         $.sharesLimit = sharesLimit_;
     }

@@ -24,26 +24,26 @@ interface IShareManager {
         uint32 lockedUntil;
     }
 
+    struct Flags {
+        bool hasMintPause;
+        bool hasBurnPause;
+        bool hasTransferPause;
+        bool hasWhitelist;
+        bool hasBlacklist;
+        bool hasTransferWhitelist;
+        uint32 globalLockup;
+        uint32 targetedLockup;
+    }
+
     function vault() external view returns (address);
 
     function allocatedShares() external view returns (uint256);
 
-    function flags() external view returns (uint256);
+    function flags() external view returns (Flags memory);
 
     function whitelistMerkleRoot() external view returns (bytes32);
 
     function sharesLimit() external view returns (uint256);
-
-    // function accounts(address account)
-    //     external
-    //     view
-    //     returns (
-    //         bool isSubjectToLockup,
-    //         bool isWhitelisted,
-    //         bool isAllowedTransferRecipient,
-    //         bool isBlacklisted,
-    //         uint32 lockedUntil
-    //     );
 
     function isDepositorWhitelisted(address account, bytes32[] calldata merkleProof) external view returns (bool);
 
@@ -57,7 +57,7 @@ interface IShareManager {
 
     function totalShares() external view returns (uint256);
 
-    function setFlags(uint256 flags_) external;
+    function setFlags(Flags calldata flags) external;
 
     function allocateShares(uint256 shares) external;
 
