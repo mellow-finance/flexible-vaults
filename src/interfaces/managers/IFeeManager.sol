@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: BUSL-1.1
+pragma solidity 0.8.25;
+
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
+
+interface IFeeManager {
+    struct FeeManagerStorage {
+        address feeRecipient;
+        uint24 depositFeeD6;
+        uint24 redeemFeeD6;
+        uint24 performanceFeeD6;
+        uint24 protocolFeeD6;
+        mapping(address vault => uint256) timestamps;
+        mapping(address vault => uint256) maxPriceD18;
+        mapping(address vault => address) baseAsset;
+    }
+
+    function feeRecipient() external view returns (address);
+    function depositFeeD6() external view returns (uint24);
+    function redeemFeeD6() external view returns (uint24);
+    function performanceFeeD6() external view returns (uint24);
+    function protocolFeeD6() external view returns (uint24);
+    function timestamps(address vault) external view returns (uint256);
+    function maxPriceD18(address vault) external view returns (uint256);
+    function baseAsset(address vault) external view returns (address);
+
+    function calculateDepositFee(uint256 amount) external view returns (uint256);
+    function calculateRedeemFee(uint256 amount) external view returns (uint256);
+    function calculatePerformanceFee(address vault, address asset, uint256 priceD18) external view returns (uint256);
+    function calculateProtocolFee(address vault, uint256 totalShares) external view returns (uint256 shares);
+
+    // Mutable functions
+    function setFeeRecipient(address feeRecipient_) external;
+    function setDepositFeeD6(uint24 depositFeeD6_) external;
+    function setRedeemFeeD6(uint24 redeemFeeD6_) external;
+    function setPerformanceFeeD6(uint24 performanceFeeD6_) external;
+    function setProtocolFeeD6(uint24 protocolFeeD6_) external;
+    function setBaseAsset(address vault, address baseAsset_) external;
+    function updateState(address asset, uint256 priceD18) external;
+    function initialize(bytes calldata data) external;
+}

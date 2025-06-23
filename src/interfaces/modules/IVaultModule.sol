@@ -5,7 +5,7 @@ import "../factories/IFactory.sol";
 
 import "../managers/IRiskManager.sol";
 import "./IACLModule.sol";
-import "./ISharesModule.sol";
+import "./IShareModule.sol";
 import "./ISubvaultModule.sol";
 
 interface IVaultModule is IACLModule {

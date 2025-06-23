@@ -7,7 +7,7 @@ import "../factories/IFactory.sol";
 import "../hooks/IRedeemHook.sol";
 import "../queues/IRedeemQueue.sol";
 import "./IACLModule.sol";
-import "./ISharesModule.sol";
+import "./IShareModule.sol";
 
 interface IRedeemModule {
     struct RedeemModuleStorage {

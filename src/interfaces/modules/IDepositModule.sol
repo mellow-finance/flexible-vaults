@@ -8,7 +8,7 @@ import "../factories/IFactory.sol";
 import "../hooks/IDepositHook.sol";
 import "../queues/IDepositQueue.sol";
 import "./IACLModule.sol";
-import "./ISharesModule.sol";
+import "./IShareModule.sol";
 
 interface IDepositModule {
     struct DepositModuleStorage {

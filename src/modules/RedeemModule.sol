@@ -6,9 +6,9 @@ import "../libraries/PermissionsLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 
 import "./ACLModule.sol";
-import "./SharesModule.sol";
+import "./ShareModule.sol";
 
-abstract contract RedeemModule is IRedeemModule, SharesModule, ACLModule {
+abstract contract RedeemModule is IRedeemModule, ShareModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     bytes32 private immutable _redeemModuleStorageSlot;

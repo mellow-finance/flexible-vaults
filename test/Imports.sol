@@ -15,7 +15,7 @@ import "../src/hooks/LidoStakingHook.sol";
 import "../src/libraries/FenwickTreeLibrary.sol";
 import "../src/libraries/MerkleHashingLibrary.sol";
 import "../src/libraries/PermissionsLibrary.sol";
-import "../src/libraries/SharesManagerFlagLibrary.sol";
+import "../src/libraries/ShareManagerFlagLibrary.sol";
 import "../src/libraries/SlotLibrary.sol";
 import "../src/libraries/TransferLibrary.sol";
 
@@ -24,8 +24,7 @@ import "../src/modules/BaseModule.sol";
 import "../src/modules/CallModule.sol";
 import "../src/modules/DepositModule.sol";
 import "../src/modules/RedeemModule.sol";
-
-import "../src/modules/SharesModule.sol";
+import "../src/modules/ShareModule.sol";
 import "../src/modules/SubvaultModule.sol";
 import "../src/modules/VaultModule.sol";
 import "../src/modules/VerifierModule.sol";
@@ -44,11 +43,12 @@ import "../src/queues/SignatureDepositQueue.sol";
 import "../src/queues/SignatureQueue.sol";
 import "../src/queues/SignatureRedeemQueue.sol";
 
-import "../src/managers/BasicSharesManager.sol";
+import "../src/managers/BasicShareManager.sol";
 
+import "../src/managers/FeeManager.sol";
 import "../src/managers/RiskManager.sol";
-import "../src/managers/SharesManager.sol";
-import "../src/managers/TokenizedSharesManager.sol";
+import "../src/managers/ShareManager.sol";
+import "../src/managers/TokenizedShareManager.sol";
 
 import "../src/strategies/SymbioticStrategy.sol";
 

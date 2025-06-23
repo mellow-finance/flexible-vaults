@@ -8,7 +8,7 @@ contract SignatureRedeemQueue is SignatureQueue {
     constructor(string memory name_, uint256 version_) SignatureQueue(name_, version_) {}
 
     function oracle() public view override returns (IOracle) {
-        return ISharesModule(_signatureQueueStorage().vault).redeemOracle();
+        return IShareModule(_signatureQueueStorage().vault).redeemOracle();
     }
 
     function redeem(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
@@ -20,7 +20,7 @@ contract SignatureRedeemQueue is SignatureQueue {
             revert("SignatureRedeemQueue: insufficient liquid assets");
         }
 
-        sharesModule().sharesManager().burn(order.recipient, order.requested);
+        shareModule().shareManager().burn(order.recipient, order.requested);
         vault_.callRedeemHook(order.asset, order.requested);
         TransferLibrary.sendAssets(order.asset, order.recipient, order.requested);
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, -int256(order.requested));

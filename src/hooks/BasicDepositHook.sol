@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "../interfaces/hooks/IDepositHook.sol";
 import "../interfaces/modules/IDepositModule.sol";
 
-import "../interfaces/modules/ISharesModule.sol";
+import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/modules/IVaultModule.sol";
 
 contract BasicDepositHook is IDepositHook {

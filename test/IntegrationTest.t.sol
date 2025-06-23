@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "./Imports.sol";
 
 contract Integration is Test {
-    using SharesManagerFlagLibrary for uint256;
+    using ShareManagerFlagLibrary for uint256;
 
     address public vaultProxyAdmin = vm.createWallet("vaultProxyAdmin").addr;
     Vm.Wallet public vaultAdminWallet = vm.createWallet("vaultAdmin");
@@ -20,12 +20,13 @@ contract Integration is Test {
     Factory verifierFactory;
 
     Vault vaultImplementation;
-    TokenizedSharesManager sharesManagerImplementation;
+    TokenizedShareManager shareManagerImplementation;
+    FeeManager feeManagerImplementation;
     Oracle oracleImplementation;
 
     MockERC20 asset = new MockERC20();
 
-    function testRootVault() external {
+    function testVault() external {
         factoryImplementation = new Factory("Mellow", 1);
 
         verifierFactory = Factory(
@@ -55,7 +56,8 @@ contract Integration is Test {
 
         vaultImplementation =
             new Vault("Mellow", 1, address(subvaultFactory), address(depositQueueFactory), address(redeemQueueFactory));
-        sharesManagerImplementation = new TokenizedSharesManager("Mellow", 1);
+        shareManagerImplementation = new TokenizedShareManager("Mellow", 1);
+        feeManagerImplementation = new FeeManager("Mellow", 1);
         oracleImplementation = new Oracle("Mellow", 1);
 
         Vault vault =
@@ -91,20 +93,37 @@ contract Integration is Test {
         }
         vm.stopPrank();
 
-        TokenizedSharesManager sharesManager = TokenizedSharesManager(
-            address(
-                new TransparentUpgradeableProxy(address(sharesManagerImplementation), vaultProxyAdmin, new bytes(0))
-            )
+        TokenizedShareManager shareManager = TokenizedShareManager(
+            address(new TransparentUpgradeableProxy(address(shareManagerImplementation), vaultProxyAdmin, new bytes(0)))
         );
 
-        sharesManager.initialize(
+        shareManager.initialize(
             abi.encode(
                 vault,
                 uint256(0).setHasDepositQueues(true).setHasRedeemQueues(true),
                 bytes32(0),
                 100 ether,
-                string("RootVaultERC20Name"),
-                string("RootVaultERC20Symbol")
+                string("VaultERC20Name"),
+                string("VaultERC20Symbol")
+            )
+        );
+
+        FeeManager feeManager = FeeManager(
+            address(new TransparentUpgradeableProxy(address(feeManagerImplementation), vaultProxyAdmin, new bytes(0)))
+        );
+        // address feeRecipient_,
+        // uint24 depositFeeD6_,
+        // uint24 redeemFeeD6_,
+        // uint24 performanceFeeD6_,
+        // uint24 protocolFeeD6_
+        feeManager.initialize(
+            abi.encode(
+                vaultAdmin,
+                vaultAdmin, // feeRecipient
+                1e4, // depositFeeD6
+                0, // redeemFeeD6
+                0, // performanceFeeD6
+                0 // protocolFeeD6
             )
         );
 
@@ -140,12 +159,13 @@ contract Integration is Test {
 
         vault.initialize(
             vaultAdmin,
-            abi.encode(new BasicDepositHook()),
-            abi.encode(new BasicRedeemHook()), // redeem module params
-            address(sharesManager),
+            address(shareManager),
+            address(feeManager),
+            address(riskManager),
             address(depositOracle),
             address(redeemOracle),
-            address(riskManager)
+            abi.encode(new BasicDepositHook()),
+            abi.encode(new BasicRedeemHook()) // redeem module params
         );
 
         vm.startPrank(vaultAdmin);
@@ -238,16 +258,16 @@ contract Integration is Test {
         vm.stopPrank();
         vm.startPrank(user);
 
-        console2.log(sharesManager.activeSharesOf(user));
-        console2.log(sharesManager.claimableSharesOf(user));
+        console2.log(shareManager.activeSharesOf(user));
+        console2.log(shareManager.claimableSharesOf(user));
 
         IDepositQueue(vault.getDepositQueues(address(asset))[0]).claim(user);
 
-        console2.log(sharesManager.activeSharesOf(user));
-        console2.log(sharesManager.claimableSharesOf(user));
+        console2.log(shareManager.activeSharesOf(user));
+        console2.log(shareManager.claimableSharesOf(user));
 
         {
-            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).redeem(1 ether);
+            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).redeem(1 ether * (1e6 - 1e4) / 1e6);
         }
         vm.stopPrank();
 
@@ -297,6 +317,7 @@ contract Integration is Test {
 
             vm.startPrank(user);
 
+            deal(address(asset), user, 1 ether);
             asset.approve(address(q), 1 ether);
 
             IConsensus.Signature[] memory signatures = new IConsensus.Signature[](1);
@@ -307,7 +328,7 @@ contract Integration is Test {
             vm.stopPrank();
         }
 
-        console2.log(sharesManager.activeSharesOf(user), asset.balanceOf(user));
+        console2.log(shareManager.activeSharesOf(user), asset.balanceOf(user));
 
         {
             SignatureRedeemQueue q = SignatureRedeemQueue(vault.redeemQueueAt(address(asset), 1));
@@ -333,6 +354,6 @@ contract Integration is Test {
 
             vm.stopPrank();
         }
-        console2.log(sharesManager.activeSharesOf(user), asset.balanceOf(user));
+        console2.log(shareManager.activeSharesOf(user), asset.balanceOf(user));
     }
 }

@@ -3,20 +3,25 @@ pragma solidity 0.8.25;
 
 import "../hooks/IDepositHook.sol";
 
-import "../managers/ISharesManager.sol";
+import "../managers/IFeeManager.sol";
+import "../managers/IShareManager.sol";
 import "../oracles/IOracle.sol";
 import "../queues/IQueue.sol";
 import "./IBaseModule.sol";
 
-interface ISharesModule is IBaseModule {
-    struct SharesModuleStorage {
-        address sharesManager;
+interface IShareModule is IBaseModule {
+    struct ShareModuleStorage {
+        address shareManager;
+        address feeManager;
         address depositOracle;
         address redeemOracle;
     }
+
     // View functions
 
-    function sharesManager() external view returns (ISharesManager);
+    function shareManager() external view returns (IShareManager);
+
+    function feeManager() external view returns (IFeeManager);
 
     function depositOracle() external view returns (IOracle);
 

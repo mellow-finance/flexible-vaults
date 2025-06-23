@@ -3,14 +3,14 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
-import "./SharesManager.sol";
+import "./ShareManager.sol";
 
-contract BasicSharesManager is SharesManager {
-    using SharesManagerFlagLibrary for uint256;
+contract BasicShareManager is ShareManager {
+    using ShareManagerFlagLibrary for uint256;
 
     bytes32 private constant ERC20StorageLocation = 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00;
 
-    constructor(string memory name_, uint256 version_) SharesManager(name_, version_) {}
+    constructor(string memory name_, uint256 version_) ShareManager(name_, version_) {}
 
     // View functions
 
@@ -27,7 +27,7 @@ contract BasicSharesManager is SharesManager {
     function initialize(bytes calldata data) external initializer {
         (address vault_, uint256 flags_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_) =
             abi.decode(data, (address, uint256, bytes32, uint256));
-        __SharesManager_init(vault_, flags_, whitelistMerkleRoot_, sharesLimit_);
+        __ShareManager_init(vault_, flags_, whitelistMerkleRoot_, sharesLimit_);
     }
 
     // Internal functions

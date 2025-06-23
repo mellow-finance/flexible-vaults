@@ -34,8 +34,8 @@ abstract contract SignatureQueue is
         return 0;
     }
 
-    function sharesModule() public view returns (ISharesModule) {
-        return ISharesModule(_signatureQueueStorage().vault);
+    function shareModule() public view returns (IShareModule) {
+        return IShareModule(_signatureQueueStorage().vault);
     }
 
     function asset() public view returns (address) {

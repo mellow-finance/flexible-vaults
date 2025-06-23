@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/modules/ISharesModule.sol";
+import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/queues/IDepositQueue.sol";
 
 import "../libraries/FenwickTreeLibrary.sol";
@@ -56,7 +56,7 @@ contract DepositQueue is IDepositQueue, Queue {
             revert("DepositQueue: zero assets");
         }
         address caller = _msgSender();
-        if (!ISharesManager(sharesManager()).isDepositorWhitelisted(caller, merkleProof)) {
+        if (!IShareManager(shareManager()).isDepositorWhitelisted(caller, merkleProof)) {
             revert("DepositQueue: deposit not allowed");
         }
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -123,7 +123,7 @@ contract DepositQueue is IDepositQueue, Queue {
         uint256 shares = Math.mulDiv(request._value, priceD18, 1 ether);
         delete $.requestOf[account];
         if (shares != 0) {
-            ISharesManager(sharesManager()).mintAllocatedShares(account, shares);
+            IShareManager(shareManager()).mintAllocatedShares(account, shares);
         }
         return true;
     }
@@ -152,13 +152,27 @@ contract DepositQueue is IDepositQueue, Queue {
         if (latestEligibleIndex < $.handledIndices) {
             return;
         }
-
         uint256 assets = uint256($.requests.get($.handledIndices, latestEligibleIndex));
-        $.prices.push(latestEligibleTimestamp, priceD18);
         $.handledIndices = latestEligibleIndex + 1;
+
+        IFeeManager feeManager = IShareModule(address(vault_)).feeManager();
+        uint224 feePriceD18 = uint224(feeManager.calculateDepositFee(priceD18));
+        priceD18 -= feePriceD18;
+        $.prices.push(latestEligibleTimestamp, priceD18);
 
         if (assets == 0) {
             return;
+        }
+
+        {
+            uint256 shares = Math.mulDiv(assets, priceD18, 1 ether);
+            if (shares > 0) {
+                IShareManager(shareManager()).allocateShares(shares);
+            }
+            uint256 feeShares = Math.mulDiv(assets, feePriceD18, 1 ether);
+            if (feeShares > 0) {
+                IShareManager(shareManager()).mint(feeManager.feeRecipient(), feeShares);
+            }
         }
 
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
@@ -166,11 +180,6 @@ contract DepositQueue is IDepositQueue, Queue {
         address hook = vault_.getDepositHook(asset_);
         if (hook != address(0)) {
             IDepositHook(hook).afterDeposit(address(vault_), asset_, assets);
-        }
-
-        uint256 shares = Math.mulDiv(assets, priceD18, 1 ether);
-        if (shares > 0) {
-            ISharesManager(sharesManager()).allocateShares(shares);
         }
     }
 
@@ -183,3 +192,5 @@ contract DepositQueue is IDepositQueue, Queue {
 
     event DepositRequested(address indexed account, address indexed referral, uint224 assets, uint32 timestamp);
 }
+
+import "forge-std/console2.sol";

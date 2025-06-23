@@ -5,7 +5,7 @@ import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 
 import "../factories/IFactoryEntity.sol";
 
-import "../modules/ISharesModule.sol";
+import "../modules/IShareModule.sol";
 import "../modules/IVaultModule.sol";
 
 interface IRiskManager is IFactoryEntity {

@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/managers/ISharesManager.sol";
+import "../interfaces/managers/IShareManager.sol";
 
 import "../libraries/MerkleHashingLibrary.sol";
 import "../libraries/PermissionsLibrary.sol";
-import "../libraries/SharesManagerFlagLibrary.sol";
+import "../libraries/ShareManagerFlagLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
-abstract contract SharesManager is ISharesManager, ContextUpgradeable {
-    using SharesManagerFlagLibrary for uint256;
+abstract contract ShareManager is IShareManager, ContextUpgradeable {
+    using ShareManagerFlagLibrary for uint256;
 
-    bytes32 private immutable _sharesManagerStorageSlot;
+    bytes32 private immutable _shareManagerStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
-        _sharesManagerStorageSlot = SlotLibrary.getSlot("SharesManager", name_, version_);
+        _shareManagerStorageSlot = SlotLibrary.getSlot("ShareManager", name_, version_);
         _disableInitializers();
     }
 
@@ -22,30 +22,30 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
 
     modifier onlyDepositQueue() {
         require(
-            IDepositModule(_sharesManagerStorage().vault).hasDepositQueue(_msgSender()),
-            "SharesManager: caller is not a deposit queue"
+            IDepositModule(_shareManagerStorage().vault).hasDepositQueue(_msgSender()),
+            "ShareManager: caller is not a deposit queue"
         );
         _;
     }
 
     modifier onlyRedeemQueue() {
         require(
-            IRedeemModule(_sharesManagerStorage().vault).hasRedeemQueue(_msgSender()),
-            "SharesManager: caller is not a redeem queue"
+            IRedeemModule(_shareManagerStorage().vault).hasRedeemQueue(_msgSender()),
+            "ShareManager: caller is not a redeem queue"
         );
         _;
     }
 
     modifier onlyRole(bytes32 role) {
         require(
-            IACLModule(_sharesManagerStorage().vault).hasRole(role, _msgSender()),
-            "SharesManager: caller does not have the required role"
+            IACLModule(_shareManagerStorage().vault).hasRole(role, _msgSender()),
+            "ShareManager: caller does not have the required role"
         );
         _;
     }
 
     function isDepositorWhitelisted(address account, bytes32[] calldata merkleProof) public view returns (bool) {
-        SharesManagerStorage storage $ = _sharesManagerStorage();
+        ShareManagerStorage storage $ = _shareManagerStorage();
         if ($.flags.hasWhitelist() && !$.accounts[account].canDeposit) {
             return false;
         }
@@ -64,7 +64,7 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
     }
 
     function claimableSharesOf(address account) public view returns (uint256) {
-        SharesManagerStorage storage $ = _sharesManagerStorage();
+        ShareManagerStorage storage $ = _shareManagerStorage();
         if (!$.flags.hasDepositQueues()) {
             return 0;
         }
@@ -76,27 +76,27 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
     function activeShares() public view virtual returns (uint256);
 
     function totalShares() public view returns (uint256) {
-        return _sharesManagerStorage().allocatedShares + activeShares();
+        return _shareManagerStorage().allocatedShares + activeShares();
     }
 
     function vault() public view returns (address) {
-        return _sharesManagerStorage().vault;
+        return _shareManagerStorage().vault;
     }
 
     function allocatedShares() public view returns (uint256) {
-        return _sharesManagerStorage().allocatedShares;
+        return _shareManagerStorage().allocatedShares;
     }
 
     function flags() public view returns (uint256) {
-        return _sharesManagerStorage().flags;
+        return _shareManagerStorage().flags;
     }
 
     function whitelistMerkleRoot() public view returns (bytes32) {
-        return _sharesManagerStorage().whitelistMerkleRoot;
+        return _shareManagerStorage().whitelistMerkleRoot;
     }
 
     function sharesLimit() public view returns (uint256) {
-        return _sharesManagerStorage().sharesLimit;
+        return _shareManagerStorage().sharesLimit;
     }
 
     function accounts(address account)
@@ -104,7 +104,7 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
         view
         returns (bool canDeposit, bool canTransfer, bool isBlacklisted, uint232 lockedUntil)
     {
-        SharesManagerStorage storage $ = _sharesManagerStorage();
+        ShareManagerStorage storage $ = _shareManagerStorage();
         AccountInfo memory info = $.accounts[account];
         return (info.canDeposit, info.canTransfer, info.isBlacklisted, info.lockedUntil);
     }
@@ -119,25 +119,29 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
         external
         onlyRole(PermissionsLibrary.SET_ACCOUNT_INFO_ROLE)
     {
-        _sharesManagerStorage().accounts[account] = info;
+        _shareManagerStorage().accounts[account] = info;
     }
 
     function setFlags(uint256 flags_) external onlyRole(PermissionsLibrary.SET_FLAGS_ROLE) {
-        _sharesManagerStorage().flags = flags_;
+        _shareManagerStorage().flags = flags_;
     }
 
     function allocateShares(uint256 value) external onlyDepositQueue {
-        _sharesManagerStorage().allocatedShares += value;
+        _shareManagerStorage().allocatedShares += value;
     }
 
     function mintAllocatedShares(address account, uint256 value) external {
-        _sharesManagerStorage().allocatedShares -= value;
+        ShareManagerStorage storage $ = _shareManagerStorage();
+        if (value > $.allocatedShares) {
+            revert("ShareManager: insufficient allocated shares");
+        }
+        $.allocatedShares -= value;
         mint(account, value);
     }
 
     function mint(address account, uint256 value) public onlyDepositQueue {
         _mintShares(account, value);
-        SharesManagerStorage storage $ = _sharesManagerStorage();
+        ShareManagerStorage storage $ = _shareManagerStorage();
         uint32 targetLockup = $.flags.getTargetedLockup();
         if (targetLockup != 0) {
             $.accounts[account].lockedUntil = uint32(block.timestamp) + targetLockup;
@@ -149,48 +153,48 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
     }
 
     function updateChecks(address from, address to, uint256 value) public view {
-        SharesManagerStorage storage $ = _sharesManagerStorage();
+        ShareManagerStorage storage $ = _shareManagerStorage();
         uint256 flags_ = $.flags;
         AccountInfo memory info;
         if (from != address(0)) {
             info = $.accounts[from];
             if (block.timestamp < flags_.getGlobalLockup()) {
-                revert("SharesManager: global lockup is active");
+                revert("ShareManager: global lockup is active");
             }
             if (block.timestamp < info.lockedUntil) {
-                revert("SharesManager: targeted lockup is active");
+                revert("ShareManager: targeted lockup is active");
             }
             if (flags_.hasBlacklist() && info.isBlacklisted) {
-                revert("SharesManager: sender is blacklisted");
+                revert("ShareManager: sender is blacklisted");
             }
             if (to != address(0)) {
                 if (flags_.hasTransferPause()) {
-                    revert("SharesManager: transfers are paused");
+                    revert("ShareManager: transfers are paused");
                 }
                 if (flags_.hasTransferWhitelist()) {
                     if (info.canTransfer || !$.accounts[to].canTransfer) {
-                        revert("SharesManager: transfer is not whitelisted");
+                        revert("ShareManager: transfer is not whitelisted");
                     }
                 }
             } else {
                 if (flags_.hasBurnPause()) {
-                    revert("SharesManager: burning is paused");
+                    revert("ShareManager: burning is paused");
                 }
             }
         } else {
             if (flags_.hasMintPause()) {
-                revert("SharesManager: minting is paused");
+                revert("ShareManager: minting is paused");
             }
             if (totalShares() + value > $.sharesLimit) {
-                revert("SharesManager: shares limit exceeded");
+                revert("ShareManager: shares limit exceeded");
             }
             if (to != address(0)) {
                 info = $.accounts[to];
                 if (flags_.hasWhitelist() && !info.canDeposit) {
-                    revert("SharesManager: recipient is not whitelisted");
+                    revert("ShareManager: recipient is not whitelisted");
                 }
                 if (flags_.hasBlacklist() && info.isBlacklisted) {
-                    revert("SharesManager: recipient is blacklisted");
+                    revert("ShareManager: recipient is blacklisted");
                 }
             }
         }
@@ -198,20 +202,20 @@ abstract contract SharesManager is ISharesManager, ContextUpgradeable {
 
     // Internal functions
 
-    function __SharesManager_init(address vault_, uint256 flags_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_)
+    function __ShareManager_init(address vault_, uint256 flags_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_)
         internal
         onlyInitializing
     {
-        require(vault_ != address(0), "SharesManager: vault cannot be zero address");
-        SharesManagerStorage storage $ = _sharesManagerStorage();
+        require(vault_ != address(0), "ShareManager: vault cannot be zero address");
+        ShareManagerStorage storage $ = _shareManagerStorage();
         $.vault = vault_;
         $.flags = flags_;
         $.whitelistMerkleRoot = whitelistMerkleRoot_;
         $.sharesLimit = sharesLimit_;
     }
 
-    function _sharesManagerStorage() private view returns (SharesManagerStorage storage $) {
-        bytes32 slot = _sharesManagerStorageSlot;
+    function _shareManagerStorage() private view returns (ShareManagerStorage storage $) {
+        bytes32 slot = _shareManagerStorageSlot;
         assembly {
             $.slot := slot
         }

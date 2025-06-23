@@ -7,10 +7,10 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "../modules/IACLModule.sol";
 import "../modules/IDepositModule.sol";
 import "../modules/IRedeemModule.sol";
-import "../modules/ISharesModule.sol";
+import "../modules/IShareModule.sol";
 
-interface ISharesManager {
-    struct SharesManagerStorage {
+interface IShareManager {
+    struct ShareManagerStorage {
         address vault;
         uint256 flags;
         uint256 allocatedShares;

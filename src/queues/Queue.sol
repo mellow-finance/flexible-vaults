@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/modules/ISharesModule.sol";
+import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/queues/IQueue.sol";
 
 import "../libraries/SlotLibrary.sol";
@@ -22,8 +22,8 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
         return _queueStorage().vault;
     }
 
-    function sharesManager() public view returns (address) {
-        return address(ISharesModule(vault()).sharesManager());
+    function shareManager() public view returns (address) {
+        return address(IShareModule(vault()).shareManager());
     }
 
     function asset() public view returns (address) {

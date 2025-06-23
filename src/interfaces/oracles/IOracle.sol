@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../factories/IFactoryEntity.sol";
-import "../modules/ISharesModule.sol";
+import "../modules/IShareModule.sol";
 
 interface IOracle is IFactoryEntity {
     struct SecurityParams {
@@ -33,13 +33,13 @@ interface IOracle is IFactoryEntity {
     }
 
     struct OracleStorage {
-        ISharesModule vault;
+        IShareModule vault;
         SecurityParams securityParams;
         EnumerableSet.AddressSet supportedAssets;
         mapping(address asset => DetailedReport) reports;
     }
 
-    function vault() external view returns (ISharesModule);
+    function vault() external view returns (IShareModule);
 
     function securityParams() external view returns (SecurityParams memory);
 

@@ -6,7 +6,7 @@ InstantWithDelayDepositQueue
 
 VaultConfigurator
 
-SharesManagerFlagsLibary:
+ShareManagerFlagsLibary:
 add setters
 
 Oracle:

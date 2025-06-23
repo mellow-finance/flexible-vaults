@@ -8,7 +8,7 @@ contract SignatureDepositQueue is SignatureQueue {
     constructor(string memory name_, uint256 version_) SignatureQueue(name_, version_) {}
 
     function oracle() public view override returns (IOracle) {
-        return ISharesModule(_signatureQueueStorage().vault).depositOracle();
+        return IShareModule(_signatureQueueStorage().vault).depositOracle();
     }
 
     function deposit(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
@@ -24,6 +24,6 @@ contract SignatureDepositQueue is SignatureQueue {
             IDepositHook(hook).afterDeposit(address(vault_), order.asset, order.requested);
         }
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, int256(order.ordered));
-        sharesModule().sharesManager().mint(order.recipient, order.requested);
+        shareModule().shareManager().mint(order.recipient, order.requested);
     }
 }

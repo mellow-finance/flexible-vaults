@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-library SharesManagerFlagLibrary {
+library ShareManagerFlagLibrary {
     function hasDepositQueues(uint256 mask) internal pure returns (bool) {
         return (mask & 0x1) != 0;
     }

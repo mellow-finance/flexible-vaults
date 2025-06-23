@@ -4,11 +4,11 @@ pragma solidity 0.8.25;
 import "../interfaces/modules/IDepositModule.sol";
 
 import "./ACLModule.sol";
-import "./SharesModule.sol";
+import "./ShareModule.sol";
 
 import "../libraries/SlotLibrary.sol";
 
-abstract contract DepositModule is IDepositModule, SharesModule, ACLModule {
+abstract contract DepositModule is IDepositModule, ShareModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     bytes32 private immutable _depositModuleStorageSlot;

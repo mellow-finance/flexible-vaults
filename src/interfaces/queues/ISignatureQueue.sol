@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../factories/IFactoryEntity.sol";
 
-import "../modules/ISharesModule.sol";
+import "../modules/IShareModule.sol";
 import "../modules/IVaultModule.sol";
 import "../permissions/IConsensus.sol";
 import "./IQueue.sol";
@@ -39,7 +39,7 @@ interface ISignatureQueue is IQueue, IFactoryEntity {
 
     function ORDER_TYPEHASH() external view returns (bytes32);
 
-    function sharesModule() external view returns (ISharesModule);
+    function shareModule() external view returns (IShareModule);
 
     function asset() external view returns (address);
 

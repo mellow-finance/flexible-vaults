@@ -74,7 +74,16 @@ contract RedeemQueue is IRedeemQueue, Queue {
             revert("RedeemQueue: zero shares");
         }
         address caller = _msgSender();
-        ISharesManager(sharesManager()).burn(caller, shares);
+
+        IShareManager shareManager_ = IShareManager(shareManager());
+        shareManager_.burn(caller, shares);
+        {
+            IFeeManager feeManager = IShareModule(vault()).feeManager();
+            uint256 fee = feeManager.calculateRedeemFee(shares);
+            if (fee > 0) {
+                shareManager_.mint(feeManager.feeRecipient(), fee);
+            }
+        }
 
         RedeemQueueStorage storage $ = _redeemQueueStorage();
 

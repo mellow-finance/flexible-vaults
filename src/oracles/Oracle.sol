@@ -22,7 +22,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         _;
     }
 
-    function vault() public view returns (ISharesModule) {
+    function vault() public view returns (IShareModule) {
         return _oracleStorage().vault;
     }
 
@@ -82,7 +82,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = _oracleStorage().securityParams;
         uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
-        ISharesModule vault_ = vault();
+        IShareModule vault_ = vault();
         for (uint256 i = 0; i < reports.length; i++) {
             if (!$.supportedAssets.contains(reports[i].asset)) {
                 revert("Oracle: unsupported asset");
@@ -166,7 +166,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             revert("Oracle: zero timeout or secure interval");
         }
         OracleStorage storage $ = _oracleStorage();
-        $.vault = ISharesModule(vault_);
+        $.vault = IShareModule(vault_);
         $.securityParams = securityParams_;
         for (uint256 i = 0; i < assets_.length; i++) {
             if (assets_[i] == address(0)) {
