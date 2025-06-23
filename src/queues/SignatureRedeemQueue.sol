@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/modules/IRedeemModule.sol";
 import "./SignatureQueue.sol";
 
 contract SignatureRedeemQueue is SignatureQueue {
@@ -14,9 +13,9 @@ contract SignatureRedeemQueue is SignatureQueue {
     function redeem(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
         validateOrder(order, signatures);
         _signatureQueueStorage().nonces[order.caller]++;
-        IRedeemModule vault_ = IRedeemModule(vault());
+        IShareModule vault_ = IShareModule(vault());
 
-        if (vault_.getLiquidAssets(order.asset) < order.requested) {
+        if (vault_.getLiquidAssets() < order.requested) {
             revert("SignatureRedeemQueue: insufficient liquid assets");
         }
 

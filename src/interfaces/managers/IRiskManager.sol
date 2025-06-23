@@ -5,8 +5,10 @@ import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 
 import "../factories/IFactoryEntity.sol";
 
+import "../modules/IACLModule.sol";
 import "../modules/IShareModule.sol";
 import "../modules/IVaultModule.sol";
+import "../oracles/IOracle.sol";
 
 interface IRiskManager is IFactoryEntity {
     struct State {

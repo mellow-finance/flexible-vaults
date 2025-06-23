@@ -3,7 +3,6 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "../interfaces/modules/IDepositModule.sol";
 import "../interfaces/tokens/IWETH.sol";
 import "../interfaces/tokens/IWSTETH.sol";
 

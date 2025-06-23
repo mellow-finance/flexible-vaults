@@ -5,8 +5,6 @@ import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 import "../modules/IACLModule.sol";
-import "../modules/IDepositModule.sol";
-import "../modules/IRedeemModule.sol";
 import "../modules/IShareModule.sol";
 
 interface IShareManager {

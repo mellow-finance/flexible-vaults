@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/modules/IDepositModule.sol";
 import "./SignatureQueue.sol";
 
 contract SignatureDepositQueue is SignatureQueue {
@@ -16,10 +15,10 @@ contract SignatureDepositQueue is SignatureQueue {
         _signatureQueueStorage().nonces[order.caller]++;
         TransferLibrary.receiveAssets(order.asset, order.caller, order.ordered);
 
-        IDepositModule vault_ = IDepositModule(vault());
+        IShareModule vault_ = IShareModule(vault());
 
         TransferLibrary.sendAssets(order.asset, address(vault_), order.requested);
-        address hook = vault_.getDepositHook(order.asset);
+        address hook = vault_.getHook(address(this));
         if (hook != address(0)) {
             IDepositHook(hook).afterDeposit(address(vault_), order.asset, order.requested);
         }

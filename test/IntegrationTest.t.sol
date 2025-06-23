@@ -120,8 +120,8 @@ contract Integration is Test {
             abi.encode(
                 vaultAdmin,
                 vaultAdmin, // feeRecipient
-                1e4, // depositFeeD6
-                0, // redeemFeeD6
+                0, // depositFeeD6
+                1e4, // redeemFeeD6
                 0, // performanceFeeD6
                 0 // protocolFeeD6
             )
@@ -164,8 +164,8 @@ contract Integration is Test {
             address(riskManager),
             address(depositOracle),
             address(redeemOracle),
-            abi.encode(new BasicDepositHook()),
-            abi.encode(new BasicRedeemHook()) // redeem module params
+            address(new BasicDepositHook()),
+            address(new BasicRedeemHook()) // redeem module params
         );
 
         vm.startPrank(vaultAdmin);
@@ -212,10 +212,10 @@ contract Integration is Test {
         consensus.addSigner(vaultAdmin, 1, IConsensus.SignatureType.EIP712);
 
         vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
         vault.createDepositQueue(
             1, vaultProxyAdmin, address(asset), abi.encode(address(consensus), string("x"), string("y"))
         );
-        vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
         vault.createRedeemQueue(
             1, vaultProxyAdmin, address(asset), abi.encode(address(consensus), string("x"), string("y"))
         );
@@ -234,15 +234,15 @@ contract Integration is Test {
                 Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
             address subvault = vault.createSubvault(0, vaultProxyAdmin, vaultAdmin, address(verifier));
             verifier.setSecondaryACL(subvault);
-            address depositHook = vault.getDepositHook(address(0));
+            address depositHook = vault.defaultDepositHook();
             vault.grantRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE, depositHook);
-            address redeemHook = vault.getRedeemHook(address(0));
+            address redeemHook = vault.defaultRedeemHook();
             vault.grantRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE, redeemHook);
         }
         vm.stopPrank();
         vm.startPrank(user);
         {
-            address depositQueue = vault.getDepositQueues(address(asset))[0];
+            address depositQueue = vault.queueAt(address(asset), 0);
             asset.mint(user, 1 ether);
             asset.approve(depositQueue, 1 ether);
             IDepositQueue(depositQueue).deposit(1 ether, address(0), new bytes32[](0));
@@ -261,14 +261,12 @@ contract Integration is Test {
         console2.log(shareManager.activeSharesOf(user));
         console2.log(shareManager.claimableSharesOf(user));
 
-        IDepositQueue(vault.getDepositQueues(address(asset))[0]).claim(user);
+        IDepositQueue(vault.queueAt(address(asset), 0)).claim(user);
 
         console2.log(shareManager.activeSharesOf(user));
         console2.log(shareManager.claimableSharesOf(user));
 
-        {
-            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).redeem(1 ether * (1e6 - 1e4) / 1e6);
-        }
+        IRedeemQueue(vault.queueAt(address(asset), 1)).redeem(1 ether * (1e6 - 2e4 + uint256(1e4) / 365) / 1e6);
         vm.stopPrank();
 
         skip(1 days);
@@ -289,19 +287,17 @@ contract Integration is Test {
             uint256[] memory timestamps = new uint256[](1);
             timestamps[0] = block.timestamp - 2 days;
 
-            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).handleReports(1);
-            IRedeemQueue(vault.redeemQueueAt(address(asset), 0)).claim(user, timestamps);
+            IRedeemQueue(vault.queueAt(address(asset), 1)).handleReports(1);
+            IRedeemQueue(vault.queueAt(address(asset), 1)).claim(user, timestamps);
         }
         vm.stopPrank();
 
         console2.log(
-            asset.balanceOf(address(vault)),
-            asset.balanceOf(user),
-            asset.balanceOf(vault.redeemQueueAt(address(asset), 0))
+            asset.balanceOf(address(vault)), asset.balanceOf(user), asset.balanceOf(vault.queueAt(address(asset), 1))
         );
 
         {
-            SignatureDepositQueue q = SignatureDepositQueue(vault.depositQueueAt(address(asset), 1));
+            SignatureDepositQueue q = SignatureDepositQueue(vault.queueAt(address(asset), 2));
             ISignatureQueue.Order memory order = ISignatureQueue.Order({
                 orderId: 0,
                 queue: address(q),
@@ -331,7 +327,7 @@ contract Integration is Test {
         console2.log(shareManager.activeSharesOf(user), asset.balanceOf(user));
 
         {
-            SignatureRedeemQueue q = SignatureRedeemQueue(vault.redeemQueueAt(address(asset), 1));
+            SignatureRedeemQueue q = SignatureRedeemQueue(vault.queueAt(address(asset), 3));
             ISignatureQueue.Order memory order = ISignatureQueue.Order({
                 orderId: 0,
                 queue: address(q),

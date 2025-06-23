@@ -1,20 +1,25 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/managers/IShareManager.sol";
 import "../interfaces/modules/IShareModule.sol";
-import "../interfaces/oracles/IOracle.sol";
-import "../interfaces/queues/IQueue.sol";
 
 import "../libraries/SlotLibrary.sol";
+import "../libraries/TransferLibrary.sol";
 
-import "./BaseModule.sol";
+import "./ACLModule.sol";
 
-abstract contract ShareModule is IShareModule, BaseModule {
+abstract contract ShareModule is IShareModule, ACLModule {
+    using EnumerableSet for EnumerableSet.AddressSet;
+
     bytes32 private immutable _shareModuleStorageSlot;
 
-    constructor(string memory name_, uint256 version_) {
+    IFactory public immutable override depositQueueFactory;
+    IFactory public immutable override redeemQueueFactory;
+
+    constructor(string memory name_, uint256 version_, address depositQueueFactory_, address redeemQueueFactory_) {
         _shareModuleStorageSlot = SlotLibrary.getSlot("ShareModule", name_, version_);
+        depositQueueFactory = IFactory(depositQueueFactory_);
+        redeemQueueFactory = IFactory(redeemQueueFactory_);
     }
 
     // View functions
@@ -35,23 +40,165 @@ abstract contract ShareModule is IShareModule, BaseModule {
         return IOracle(_shareModuleStorage().redeemOracle);
     }
 
-    function getDepositQueues(address /* asset */ ) public view virtual returns (address[] memory);
+    function hasQueue(address queue) public view returns (bool) {
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        return $.queues[IQueue(queue).asset()].contains(queue);
+    }
 
-    function getRedeemQueues(address /* asset */ ) public view virtual returns (address[] memory);
+    function getAssetCount() public view returns (uint256) {
+        return _shareModuleStorage().assets.length();
+    }
+
+    function assetAt(uint256 index) public view returns (address) {
+        return _shareModuleStorage().assets.at(index);
+    }
+
+    function hasAsset(address asset) public view returns (bool) {
+        return _shareModuleStorage().assets.contains(asset);
+    }
+
+    function queueAt(address asset, uint256 index) public view returns (address) {
+        return _shareModuleStorage().queues[asset].at(index);
+    }
+
+    function getQueueCount(address asset) public view returns (uint256) {
+        return _shareModuleStorage().queues[asset].length();
+    }
+
+    function isDepositQueue(address queue) public view returns (bool) {
+        return _shareModuleStorage().isDepositQueue[queue];
+    }
+
+    function defaultDepositHook() public view returns (address) {
+        return _shareModuleStorage().defaultDepositHook;
+    }
+
+    function defaultRedeemHook() public view returns (address) {
+        return _shareModuleStorage().defaultRedeemHook;
+    }
+
+    function claimableSharesOf(address account) public view returns (uint256 shares) {
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        EnumerableSet.AddressSet storage assets = $.assets;
+        uint256 assetsCount = assets.length();
+        for (uint256 i = 0; i < assetsCount; i++) {
+            address asset = assets.at(i);
+            EnumerableSet.AddressSet storage queues = $.queues[asset];
+            uint256 queuesCount = queues.length();
+            for (uint256 j = 0; j < queuesCount; j++) {
+                address queue = queues.at(j);
+                if ($.isDepositQueue[queue]) {
+                    shares += IDepositQueue(queue).claimableOf(account);
+                }
+            }
+        }
+        return shares;
+    }
+
+    function getHook(address queue) public view returns (address hook) {
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        hook = $.customHooks[queue];
+        if (hook == address(0)) {
+            hook = $.isDepositQueue[queue] ? $.defaultDepositHook : $.defaultRedeemHook;
+        }
+        return hook;
+    }
+
+    function getLiquidAssets() public view returns (uint256) {
+        address queue = _msgSender();
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        address asset = IQueue(queue).asset();
+        if (!$.queues[asset].contains(queue) || $.isDepositQueue[queue]) {
+            revert("ShareModule: caller is not a redeem queue");
+        }
+        return IRedeemHook(getHook(queue)).getLiquidAssets(asset);
+    }
 
     // Mutable functions
 
+    function claimShares(address account) public {
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        EnumerableSet.AddressSet storage assets = $.assets;
+        uint256 assetsCount = assets.length();
+        for (uint256 i = 0; i < assetsCount; i++) {
+            address asset = assets.at(i);
+            EnumerableSet.AddressSet storage queues = $.queues[asset];
+            uint256 queuesCount = queues.length();
+            for (uint256 j = 0; j < queuesCount; j++) {
+                address queue = queues.at(j);
+                if ($.isDepositQueue[queue]) {
+                    IDepositQueue(queue).claim(account);
+                }
+            }
+        }
+    }
+
+    function callRedeemHook(address asset_, uint256 assets) external {
+        address caller = _msgSender();
+        if (!_shareModuleStorage().queues[asset_].contains(caller)) {
+            revert("RedeemModule: caller is not a queue");
+        }
+        IRedeemHook(getHook(caller)).beforeRedeem(asset_, assets);
+        TransferLibrary.sendAssets(asset_, caller, assets);
+    }
+
+    function setCustomHook(address queue, address hook) external onlyRole(PermissionsLibrary.SET_DEPOSIT_HOOK_ROLE) {
+        if (queue == address(0) || hook == address(0)) {
+            revert("ShareModule: zero address");
+        }
+        _shareModuleStorage().customHooks[queue] = hook;
+    }
+
+    function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data)
+        external
+        onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
+    {
+        if (asset == address(0) || !IOracle(depositOracle()).isSupportedAsset(asset)) {
+            revert("DepositModule: unsupported asset");
+        }
+        requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
+        address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
+        _grantRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE, queue);
+        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        $.queues[asset].add(queue);
+        $.isDepositQueue[queue] = true;
+        $.assets.add(asset);
+    }
+
+    function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data)
+        external
+        onlyRole(PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE)
+    {
+        if (asset == address(0) || !IOracle(redeemOracle()).isSupportedAsset(asset)) {
+            revert("RedeemModule: unsupported asset");
+        }
+        requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
+        address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
+        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        $.queues[asset].add(queue);
+        $.isDepositQueue[queue] = false;
+        $.assets.add(asset);
+    }
+
     function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external {
         address caller = _msgSender();
-        ShareModuleStorage memory $ = _shareModuleStorage();
+        ShareModuleStorage storage $ = _shareModuleStorage();
         address depositOracle_ = $.depositOracle;
         address redeemOracle_ = $.redeemOracle;
         if (caller != redeemOracle_ && caller != depositOracle_) {
             revert("ShareModule: forbidden");
         }
-        address[] memory queues = caller == depositOracle_ ? getDepositQueues(asset) : getRedeemQueues(asset);
-        for (uint256 i = 0; i < queues.length; i++) {
-            IQueue(queues[i]).handleReport(priceD18, latestEligibleTimestamp);
+
+        bool isDepositQueue_ = caller == depositOracle_;
+        EnumerableSet.AddressSet storage queues = _shareModuleStorage().queues[asset];
+        uint256 length = queues.length();
+        for (uint256 i = 0; i < length; i++) {
+            address queue = queues.at(i);
+            if (isDepositQueue_ == $.isDepositQueue[queue]) {
+                IQueue(queue).handleReport(priceD18, latestEligibleTimestamp);
+            }
         }
         IFeeManager feeManager_ = feeManager();
         uint256 fees = feeManager_.calculateProtocolFee(address(this), shareManager().totalShares())
@@ -68,22 +215,28 @@ abstract contract ShareModule is IShareModule, BaseModule {
         address shareManager_,
         address feeManager_,
         address depositOracle_,
-        address redeemOracle_
+        address redeemOracle_,
+        address defaultDepositHook_,
+        address defaultRedeemHook_
     ) internal onlyInitializing {
         if (
             shareManager_ == address(0) || feeManager_ == address(0) || depositOracle_ == address(0)
-                || redeemOracle_ == address(0)
+                || redeemOracle_ == address(0) || defaultDepositHook_ == address(0) || defaultRedeemHook_ == address(0)
         ) {
             revert("ShareModule: zero address");
+        }
+        if (depositOracle_ == redeemOracle_) {
+            revert("ShareModule: same oracles");
         }
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.shareManager = shareManager_;
         $.feeManager = feeManager_;
-        if (depositOracle_ == redeemOracle_) {
-            revert("ShareModule: same oracles");
-        }
         $.depositOracle = depositOracle_;
         $.redeemOracle = redeemOracle_;
+        $.depositOracle = depositOracle_;
+        $.redeemOracle = redeemOracle_;
+        $.defaultDepositHook = defaultDepositHook_;
+        $.defaultRedeemHook = defaultRedeemHook_;
     }
 
     function _shareModuleStorage() internal view returns (ShareModuleStorage storage $) {

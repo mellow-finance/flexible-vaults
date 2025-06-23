@@ -129,7 +129,7 @@ contract DepositQueue is IDepositQueue, Queue {
     }
 
     function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {
-        IDepositModule vault_ = IDepositModule(vault());
+        IShareModule vault_ = IShareModule(vault());
         address asset_ = asset();
 
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -177,7 +177,7 @@ contract DepositQueue is IDepositQueue, Queue {
 
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, int256(uint256(assets)));
-        address hook = vault_.getDepositHook(asset_);
+        address hook = vault_.getHook(address(this));
         if (hook != address(0)) {
             IDepositHook(hook).afterDeposit(address(vault_), asset_, assets);
         }

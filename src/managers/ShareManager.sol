@@ -20,18 +20,9 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
 
     // View functions
 
-    modifier onlyDepositQueue() {
+    modifier onlyQueue() {
         require(
-            IDepositModule(_shareManagerStorage().vault).hasDepositQueue(_msgSender()),
-            "ShareManager: caller is not a deposit queue"
-        );
-        _;
-    }
-
-    modifier onlyRedeemQueue() {
-        require(
-            IRedeemModule(_shareManagerStorage().vault).hasRedeemQueue(_msgSender()),
-            "ShareManager: caller is not a redeem queue"
+            IShareModule(_shareManagerStorage().vault).hasQueue(_msgSender()), "ShareManager: caller is not a queue"
         );
         _;
     }
@@ -68,7 +59,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         if (!$.flags.hasDepositQueues()) {
             return 0;
         }
-        return IDepositModule($.vault).claimableSharesOf(account);
+        return IShareModule($.vault).claimableSharesOf(account);
     }
 
     function activeSharesOf(address account) public view virtual returns (uint256);
@@ -112,7 +103,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     // Mutable functions
 
     function claimShares(address account) public {
-        IDepositModule(vault()).claimShares(account);
+        IShareModule(vault()).claimShares(account);
     }
 
     function setAccountInfo(address account, AccountInfo memory info)
@@ -126,7 +117,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         _shareManagerStorage().flags = flags_;
     }
 
-    function allocateShares(uint256 value) external onlyDepositQueue {
+    function allocateShares(uint256 value) external onlyQueue {
         _shareManagerStorage().allocatedShares += value;
     }
 
@@ -139,7 +130,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         mint(account, value);
     }
 
-    function mint(address account, uint256 value) public onlyDepositQueue {
+    function mint(address account, uint256 value) public onlyQueue {
         _mintShares(account, value);
         ShareManagerStorage storage $ = _shareManagerStorage();
         uint32 targetLockup = $.flags.getTargetedLockup();
@@ -148,7 +139,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         }
     }
 
-    function burn(address account, uint256 value) public onlyRedeemQueue {
+    function burn(address account, uint256 value) public onlyQueue {
         _burnShares(account, value);
     }
 

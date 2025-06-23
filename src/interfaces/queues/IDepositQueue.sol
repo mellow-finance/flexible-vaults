@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 import "../../libraries/FenwickTreeLibrary.sol";
 import "../factories/IFactoryEntity.sol";
-import "../modules/IDepositModule.sol";
 import "../modules/IVaultModule.sol";
 import "./IQueue.sol";
 

@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
 import "../factories/IFactoryEntity.sol";
-import "../modules/IRedeemModule.sol";
 import "../modules/IVaultModule.sol";
 import "./IQueue.sol";
 

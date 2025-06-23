@@ -22,8 +22,6 @@ import "../src/libraries/TransferLibrary.sol";
 import "../src/modules/ACLModule.sol";
 import "../src/modules/BaseModule.sol";
 import "../src/modules/CallModule.sol";
-import "../src/modules/DepositModule.sol";
-import "../src/modules/RedeemModule.sol";
 import "../src/modules/ShareModule.sol";
 import "../src/modules/SubvaultModule.sol";
 import "../src/modules/VaultModule.sol";

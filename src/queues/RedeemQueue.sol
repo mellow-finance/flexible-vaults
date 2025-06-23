@@ -147,9 +147,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
         reports = Math.min(reports, length - iterator_);
 
-        IRedeemModule vault_ = IRedeemModule(vault());
-        address asset_ = asset();
-        uint256 liquidAssets = vault_.getLiquidAssets(asset_);
+        IShareModule vault_ = IShareModule(vault());
+        uint256 liquidAssets = vault_.getLiquidAssets();
         uint256 demand = 0;
         Pair memory pair;
         for (uint256 i = 0; i < reports; i++) {
@@ -163,6 +162,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
         if (counter > 0) {
             if (demand > 0) {
+                address asset_ = asset();
                 vault_.callRedeemHook(asset_, demand);
                 IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, -int256(uint256(demand)));
                 $.fullDemand -= demand;
