@@ -4,12 +4,7 @@ Queues:
 3. InstantWithDelayDepositQueue
 
 Oracles:
-1. better UX
-
-Protocol verifiers:
-1. ERC20
-2. EigenLayer
-3. Symbiotic
+1. better UX for 
 
 Strategies
 1. Restaking strategy
