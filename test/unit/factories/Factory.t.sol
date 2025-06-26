@@ -1,0 +1,141 @@
+// SPDX-License-Identifier: BUSL-1.1
+pragma solidity 0.8.25;
+
+import "../../Imports.sol";
+
+contract Mock {
+    address public admin;
+    uint256 public version;
+    string public name;
+
+    function initialize(bytes calldata data) external {
+        (admin, version, name) = abi.decode(data, (address, uint256, string));
+    }
+}
+
+contract Unit is Test {
+    address admin = vm.createWallet("admin").addr;
+    address proxyAdmin = vm.createWallet("proxyAdmin").addr;
+
+    function testCreate() external {
+        uint256 version = 1;
+
+        Factory factory = createFactory("Factory", version, admin);
+
+        require(factory.owner() == admin, "wrong admin");
+        require(factory.entities() == 0, "entities is not empty");
+        require(factory.implementations() == 0, "implementations is not empty");
+        require(factory.proposals() == 0, "proposals is not empty");
+
+        vm.expectRevert();
+        factory.entityAt(0);
+
+        require(!factory.isEntity(address(0)), "address(0) is an entity");
+
+        vm.expectRevert();
+        factory.implementationAt(0);
+
+        vm.expectRevert();
+        factory.proposalAt(0);
+
+        require(!factory.isBlacklisted(version), "version is blacklisted");
+    }
+
+    function testProposeAndAcceptImplementation() external {
+        Factory factory = createFactory("Factory", 1, admin);
+        address adminContract = vm.createWallet("adminFactory").addr;
+
+        address newImplementation = address(new Mock());
+
+        factory.proposeImplementation(newImplementation);
+        require(factory.proposalAt(0) == newImplementation, "mismatch proposal implementation");
+
+        vm.expectRevert("Factory: proposal already exists");
+        factory.proposeImplementation(newImplementation);
+
+        vm.prank(admin);
+        factory.acceptProposedImplementation(newImplementation);
+
+        vm.expectRevert("panic: array out-of-bounds access (0x32)");
+        factory.proposalAt(0);
+
+        vm.expectRevert("Factory: entity already exists");
+        factory.proposeImplementation(newImplementation);
+
+        vm.prank(admin);
+        vm.expectRevert("Factory: proposal does not exist");
+        factory.acceptProposedImplementation(newImplementation);
+
+        require(factory.implementationAt(0) == newImplementation, "mismatch accepted implementation");
+    }
+
+    function testBlackList() external {
+        Factory factory = createFactory("Factory", 1, admin);
+
+        address newFactoryImplementation = address(new Factory("FactoryNew", 1));
+        pushImplementation(factory, newFactoryImplementation);
+
+        vm.prank(admin);
+        factory.setBlacklistStatus(0, true);
+        require(factory.isBlacklisted(0), "version was not blacklisted");
+
+        vm.prank(admin);
+        vm.expectRevert("Factory: version out of bounds");
+        factory.setBlacklistStatus(1, true);
+    }
+
+    function testCreateEntity() external {
+        address ownerContract = vm.createWallet("ownerFactory").addr;
+        address adminContract = vm.createWallet("adminFactory").addr;
+        Factory factory = createFactory("Factory", 1, admin);
+        bytes memory callData = abi.encode(address(adminContract), 0, "MockContract");
+
+        {
+            address newImplementation = address(new Mock());
+            pushImplementation(factory, newImplementation);
+
+            require(
+                address(0) == factory.computeAddress(1, ownerContract, callData),
+                "non-zero address for invalid implementation version"
+            );
+
+            vm.expectRevert("Factory: version out of bounds");
+            factory.create(1, ownerContract, callData);
+
+            address expectedAddress = factory.computeAddress(0, ownerContract, callData);
+            address factAddress = factory.create(0, ownerContract, callData);
+
+            require(expectedAddress == factAddress, "mismatch compute address");
+        }
+        {
+            address newImplementation = address(new Mock());
+            pushImplementation(factory, newImplementation);
+            vm.prank(admin);
+            factory.setBlacklistStatus(0, true);
+            require(factory.isBlacklisted(0), "version was not blacklisted");
+
+            require(
+                address(0) == factory.computeAddress(0, ownerContract, callData),
+                "non-zero address for invalid implementation version"
+            );
+
+            vm.expectRevert("Factory: version is blacklisted");
+            factory.create(0, ownerContract, callData);
+        }
+    }
+
+    /// ------------------------------------------ HELPER FUNCTIONS -------------------------------------------------
+
+    function createFactory(string memory name, uint256 version, address admin) internal returns (Factory factory) {
+        Factory factoryImplementation = new Factory(name, version);
+        factory =
+            Factory(address(new TransparentUpgradeableProxy(address(factoryImplementation), proxyAdmin, new bytes(0))));
+        factory.initialize(admin);
+    }
+
+    function pushImplementation(Factory factory, address newImplementation) internal {
+        factory.proposeImplementation(newImplementation);
+        vm.prank(factory.owner());
+        factory.acceptProposedImplementation(newImplementation);
+    }
+}
