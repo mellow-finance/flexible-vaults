@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 interface IFactory {
     struct FactoryStorage {
         EnumerableSet.AddressSet entities;
-        EnumerableSet.AddressSet implementation;
+        EnumerableSet.AddressSet implementations;
         EnumerableSet.AddressSet proposals;
         mapping(uint256 version => bool) isBlacklisted;
     }

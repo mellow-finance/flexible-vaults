@@ -30,11 +30,11 @@ contract Factory is IFactory, OwnableUpgradeable {
     }
 
     function implementations() external view returns (uint256) {
-        return _factoryStorage().implementation.length();
+        return _factoryStorage().implementations.length();
     }
 
     function implementationAt(uint256 index) external view returns (address) {
-        return _factoryStorage().implementation.at(index);
+        return _factoryStorage().implementations.at(index);
     }
 
     function proposals() external view returns (uint256) {
@@ -57,7 +57,7 @@ contract Factory is IFactory, OwnableUpgradeable {
 
     function setBlacklistStatus(uint256 version, bool flag) external onlyOwner {
         FactoryStorage storage $ = _factoryStorage();
-        if (version >= $.implementation.length()) {
+        if (version >= $.implementations.length()) {
             revert("Factory: version out of bounds");
         }
         $.isBlacklisted[version] = flag;
@@ -65,7 +65,7 @@ contract Factory is IFactory, OwnableUpgradeable {
 
     function proposeImplementation(address implementation) external {
         FactoryStorage storage $ = _factoryStorage();
-        require(!$.entities.contains(implementation), "Factory: entity already exists");
+        require(!$.implementations.contains(implementation), "Factory: entity already exists");
         require(!$.proposals.contains(implementation), "Factory: proposal already exists");
         $.proposals.add(implementation);
     }
@@ -74,7 +74,7 @@ contract Factory is IFactory, OwnableUpgradeable {
         FactoryStorage storage $ = _factoryStorage();
         require($.proposals.contains(implementation), "Factory: proposal does not exist");
         $.proposals.remove(implementation);
-        $.implementation.add(implementation);
+        $.implementations.add(implementation);
     }
 
     function computeAddress(uint256 version, address owner, bytes calldata initParams)
@@ -83,13 +83,13 @@ contract Factory is IFactory, OwnableUpgradeable {
         returns (address instance)
     {
         FactoryStorage storage $ = _factoryStorage();
-        if (version >= $.implementation.length()) {
+        if (version >= $.implementations.length()) {
             return address(0);
         }
         if ($.isBlacklisted[version]) {
             return address(0);
         }
-        address implementation = $.implementation.at(version);
+        address implementation = $.implementations.at(version);
         bytes32 salt = keccak256(abi.encodePacked(version, owner, initParams, $.entities.length()));
         return Create2.computeAddress(
             salt,
@@ -104,13 +104,13 @@ contract Factory is IFactory, OwnableUpgradeable {
 
     function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance) {
         FactoryStorage storage $ = _factoryStorage();
-        if (version >= $.implementation.length()) {
+        if (version >= $.implementations.length()) {
             revert("Factory: version out of bounds");
         }
         if ($.isBlacklisted[version]) {
             revert("Factory: version is blacklisted");
         }
-        address implementation = $.implementation.at(version);
+        address implementation = $.implementations.at(version);
         bytes32 salt = keccak256(abi.encodePacked(version, owner, initParams, $.entities.length()));
         instance = address(
             new TransparentUpgradeableProxy{salt: salt}(
