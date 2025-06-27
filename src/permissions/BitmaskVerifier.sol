@@ -5,24 +5,26 @@ import "../interfaces/permissions/ICustomVerifier.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
 contract BitmaskVerifier is ICustomVerifier {
-    function calculateHash(bytes calldata bitmask, bytes memory data) public pure returns (bytes32) {
+    function calculateHash(bytes calldata bitmask, address who, address where, uint256 value, bytes calldata data)
+        public
+        pure
+        returns (bytes32)
+    {
         bytes32 hash_;
+        hash_ = keccak256(bytes.concat(hash_, bytes32(bitmask[0:32]) & bytes32(bytes20(who))));
+        hash_ = keccak256(bytes.concat(hash_, bytes32(bitmask[32:64]) & bytes32(bytes20(where))));
+        hash_ = keccak256(bytes.concat(hash_, bytes32(bitmask[64:96]) & bytes32(value)));
         for (uint256 i = 0; i < data.length; i++) {
-            if (bitmask[i] == 0) {
-                continue;
-            }
-            hash_ = keccak256(abi.encodePacked(hash_, (data[i] & bitmask[i])));
+            hash_ = keccak256(bytes.concat(hash_, (data[i] & bitmask[i + 96])));
         }
         return hash_;
     }
 
-    function verifyCall(
-        address who,
-        address where,
-        uint256 value,
-        bytes calldata callData,
-        bytes calldata verificationData
-    ) public pure returns (bool) {
+    function verifyCall(address who, address where, uint256 value, bytes calldata data, bytes calldata verificationData)
+        public
+        pure
+        returns (bool)
+    {
         bytes32 verificationHash_;
         bytes calldata bitmask;
         assembly {
@@ -31,11 +33,10 @@ contract BitmaskVerifier is ICustomVerifier {
             bitmask.offset := add(temp, 0x20)
             bitmask.length := calldataload(temp)
         }
-        if (callData.length + 0x60 != bitmask.length) {
+        if (data.length + 0x60 != bitmask.length) {
             return false;
         }
-        bytes memory fullData = abi.encode(who, where, value, callData);
-        bytes32 hash_ = calculateHash(bitmask, fullData);
+        bytes32 hash_ = calculateHash(bitmask, who, where, value, data);
         if (hash_ != verificationHash_) {
             return false;
         }
