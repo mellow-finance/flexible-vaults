@@ -13,7 +13,7 @@ contract Mock {
     }
 }
 
-contract Unit is Test {
+contract FactoryTest is Test {
     address admin = vm.createWallet("admin").addr;
     address proxyAdmin = vm.createWallet("proxyAdmin").addr;
 
