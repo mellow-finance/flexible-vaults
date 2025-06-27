@@ -13,7 +13,7 @@ abstract contract VerifierModule is IVerifierModule, BaseModule, ACLModule {
     bytes32 private immutable _verifierModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_) ACLModule(name_, version_) {
-        _verifierModuleStorageSlot = SlotLibrary.getSlot("Verifier", name_, version_);
+        _verifierModuleStorageSlot = SlotLibrary.getSlot("VerifierModule", name_, version_);
     }
 
     // View functions

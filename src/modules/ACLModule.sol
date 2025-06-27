@@ -6,15 +6,14 @@ import "../interfaces/modules/IACLModule.sol";
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
+import "../permissions/MellowACL.sol";
 import "./BaseModule.sol";
 
-abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUpgradeable {
-    using EnumerableSet for EnumerableSet.Bytes32Set;
-
+abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
     bytes32 private immutable _aclModuleStorageSlot;
 
-    constructor(string memory name_, uint256 version_) {
-        _aclModuleStorageSlot = SlotLibrary.getSlot("ACL", name_, version_);
+    constructor(string memory name_, uint256 version_) MellowACL(name_, version_) {
+        _aclModuleStorageSlot = SlotLibrary.getSlot("ACLModule", name_, version_);
     }
 
     // View functions
@@ -27,18 +26,6 @@ abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUp
         if (!hasFundamentalRole(account, role)) {
             revert("ACLModule: account does not have the required fundamental role");
         }
-    }
-
-    function supportedRoles() public view returns (uint256) {
-        return _aclModuleStorage().supportedRoles.length();
-    }
-
-    function supportedRoleAt(uint256 index) public view returns (bytes32) {
-        return _aclModuleStorage().supportedRoles.at(index);
-    }
-
-    function isSupportedRole(bytes32 role) public view returns (bool) {
-        return _aclModuleStorage().supportedRoles.contains(role);
     }
 
     // Mutable functions
@@ -78,11 +65,7 @@ abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUp
         if (role == DEFAULT_ADMIN_ROLE) {
             requireFundamentalRole(account, FundamentalRole.ADMIN);
         }
-        if (super._grantRole(role, account)) {
-            _aclModuleStorage().supportedRoles.add(role);
-            return true;
-        }
-        return false;
+        return super._grantRole(role, account);
     }
 
     function _revokeFundamentalRole(FundamentalRole role, address account) internal virtual {
@@ -90,16 +73,6 @@ abstract contract ACLModule is IACLModule, BaseModule, AccessControlEnumerableUp
             revert("ACLModule: zero account address");
         }
         _aclModuleStorage().fundamentalRoles[account] &= ~(1 << uint256(role));
-    }
-
-    function _revokeRole(bytes32 role, address account) internal virtual override returns (bool) {
-        if (super._revokeRole(role, account)) {
-            if (getRoleMemberCount(role) == 0) {
-                _aclModuleStorage().supportedRoles.remove(role);
-            }
-            return true;
-        }
-        return false;
     }
 
     function _aclModuleStorage() private view returns (ACLModuleStorage storage $) {
