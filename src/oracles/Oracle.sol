@@ -52,7 +52,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         if (!$.supportedAssets.contains(asset)) {
             return (false, false);
         }
-        return _validatePrice(priceD18, _oracleStorage().reports[asset]);
+        return _validatePrice(priceD18, $.reports[asset]);
     }
 
     // Mutable functions
@@ -63,7 +63,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
 
     function submitReports(Report[] calldata reports) external onlyRole(PermissionsLibrary.SUBMIT_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
-        SecurityParams memory securityParams_ = _oracleStorage().securityParams;
+        SecurityParams memory securityParams_ = $.securityParams;
         uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
         IShareModule vault_ = vault();
         for (uint256 i = 0; i < reports.length; i++) {
