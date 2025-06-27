@@ -12,7 +12,7 @@ abstract contract SubvaultModule is ISubvaultModule, BaseModule {
     bytes32 private immutable _subvaultModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
-        _subvaultModuleStorageSlot = SlotLibrary.getSlot("Subvault", name_, version_);
+        _subvaultModuleStorageSlot = SlotLibrary.getSlot("SubvaultModule", name_, version_);
     }
 
     function vault() public view returns (address) {

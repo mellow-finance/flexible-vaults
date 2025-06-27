@@ -16,7 +16,7 @@ abstract contract VaultModule is IVaultModule, ACLModule {
     address public immutable subvaultFactory;
 
     constructor(string memory name_, uint256 version_, address subvaultFactory_) {
-        _subvaultModuleStorageSlot = SlotLibrary.getSlot("Subvault", name_, version_);
+        _subvaultModuleStorageSlot = SlotLibrary.getSlot("VaultModule", name_, version_);
         subvaultFactory = subvaultFactory_;
     }
 

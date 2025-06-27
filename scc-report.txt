@@ -1,7 +1,7 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 41      3903      619       114     3170        598           588.41
+Solidity                                 42      3634      557       112     2965        598           670.58
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       23         4      104          7             6.73
 src/hooks/BasicDepositHook.sol                     37        4         1       32          7            21.88
@@ -20,7 +20,7 @@ src/managers/FeeManager.sol                       167       29         5      13
 src/managers/RiskManager.sol                      147       19         4      124         21            16.94
 src/managers/ShareManager.sol                     225       34         4      187         34            18.18
 src/managers/TokenizedShareManager.sol             52       13         4       35          5            14.29
-src/modules/ACLModule.sol                         111       22         4       85         16            18.82
+src/modules/ACLModule.sol                          84       17         4       63         11            17.46
 src/modules/BaseModule.sol                         14        4         2        8          0             0.00
 src/modules/CallModule.sol                         20        4         2       14          0             0.00
 src/modules/ShareModule.sol                       257       35         4      218         49            22.48
@@ -30,10 +30,11 @@ src/modules/VerifierModule.sol                     41       10         3       2
 src/oracles/Oracle.sol                            203       24         4      175         52            29.71
 src/permissions/BitmaskVerifier.sol                44        3         1       40          8            20.00
 src/permissions/Consensus.sol                     117       19         4       94         22            23.40
+src/permissions/MellowACL.sol                      53       11         1       41          6            14.63
 src/permissions/Verifier.sol                      182       27         4      151         35            23.18
-~rc/permissions/protocols/ERC20Verifier.sol       131       26         4      101         25            24.75
-~rmissions/protocols/EigenLayerVerifier.sol       279       36         4      239         76            31.80
-~ermissions/protocols/SymbioticVerifier.sol       206       34         4      168         45            26.79
+~rc/permissions/protocols/ERC20Verifier.sol        64        8         3       53         27            50.94
+~rmissions/protocols/EigenLayerVerifier.sol       151       10         3      138         73            52.90
+~ermissions/protocols/SymbioticVerifier.sol       106       10         3       93         45            48.39
 src/queues/DepositQueue.sol                       193       29         4      160         35            21.88
 src/queues/Queue.sol                               69       16         4       49         11            22.45
 src/queues/RedeemQueue.sol                        221       34         5      182         34            18.68
@@ -45,8 +46,8 @@ src/vaults/Subvault.sol                            19        3         1       1
 src/vaults/Vault.sol                               58        5         1       52          3             5.77
 src/vaults/VaultConfigurator.sol                  102       13         3       86          1             1.16
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    41      3903      619       114     3170        598           588.41
+Total                                    42      3634      557       112     2965        598           670.58
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 145304 bytes, 0.145 megabytes (SI)
+Processed 133920 bytes, 0.134 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
