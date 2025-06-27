@@ -104,7 +104,7 @@ abstract contract SignatureQueue is
 
         if (address(oracle_) != address(0)) {
             uint256 priceD18 = Math.mulDiv(order.requested, 1 ether, order.ordered);
-            (bool isValid, bool isSuspicious) = oracle_.validatePrice(priceD18, oracle_.getReport(order.asset).priceD18);
+            (bool isValid, bool isSuspicious) = oracle_.validatePrice(priceD18, order.asset);
             if (!isValid) {
                 revert("SignatureQueue: invalid price");
             }

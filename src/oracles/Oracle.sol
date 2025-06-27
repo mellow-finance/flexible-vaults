@@ -47,30 +47,12 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         return $.reports[asset];
     }
 
-    function validatePrice(uint256 priceD18, uint256 prevPriceD18)
-        public
-        view
-        returns (bool isValid, bool isSuspicious)
-    {
-        if (prevPriceD18 == 0) {
-            return (true, true);
+    function validatePrice(uint256 priceD18, address asset) public view returns (bool isValid, bool isSuspicious) {
+        OracleStorage storage $ = _oracleStorage();
+        if (!$.supportedAssets.contains(asset)) {
+            return (false, false);
         }
-        SecurityParams memory securityParams_ = _oracleStorage().securityParams;
-        uint256 absoluteDeviation = priceD18 > prevPriceD18 ? priceD18 - prevPriceD18 : prevPriceD18 - priceD18;
-        uint256 relativeDeviationD18 = Math.mulDiv(absoluteDeviation, 1 ether, prevPriceD18);
-        if (
-            absoluteDeviation > securityParams_.maxAbsoluteDeviation
-                || relativeDeviationD18 > securityParams_.maxRelativeDeviationD18
-        ) {
-            return (false, true);
-        }
-        if (
-            absoluteDeviation > securityParams_.suspiciousAbsoluteDeviation
-                || relativeDeviationD18 > securityParams_.suspiciousRelativeDeviationD18
-        ) {
-            return (true, true);
-        }
-        return (true, false);
+        return _validatePrice(priceD18, _oracleStorage().reports[asset]);
     }
 
     // Mutable functions
@@ -184,7 +166,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         if (report.timestamp != 0 && securityParams_.timeout + report.timestamp > block.timestamp) {
             revert("Oracle: too early to report");
         }
-        (bool isValid, bool isSuspicious) = validatePrice(priceD18, report.priceD18);
+        (bool isValid, bool isSuspicious) = _validatePrice(priceD18, report);
         if (!isValid) {
             revert("Oracle: invalid price");
         }
@@ -192,6 +174,36 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         report.timestamp = uint32(block.timestamp);
         report.isSuspicious = isSuspicious;
         return !isSuspicious;
+    }
+
+    function _validatePrice(uint256 priceD18, DetailedReport storage report)
+        private
+        view
+        returns (bool isValid, bool isSuspicious)
+    {
+        uint256 prevPriceD18 = report.priceD18;
+        if (prevPriceD18 == 0) {
+            return (true, true);
+        }
+        SecurityParams memory securityParams_ = _oracleStorage().securityParams;
+        uint256 absoluteDeviation = priceD18 > prevPriceD18 ? priceD18 - prevPriceD18 : prevPriceD18 - priceD18;
+        uint256 relativeDeviationD18 = Math.mulDiv(absoluteDeviation, 1 ether, prevPriceD18);
+        if (
+            absoluteDeviation > securityParams_.maxAbsoluteDeviation
+                || relativeDeviationD18 > securityParams_.maxRelativeDeviationD18
+        ) {
+            return (false, false);
+        }
+        if (report.isSuspicious) {
+            return (true, true);
+        }
+        if (
+            absoluteDeviation > securityParams_.suspiciousAbsoluteDeviation
+                || relativeDeviationD18 > securityParams_.suspiciousRelativeDeviationD18
+        ) {
+            return (true, true);
+        }
+        return (true, false);
     }
 
     function _oracleStorage() internal view returns (OracleStorage storage $) {
