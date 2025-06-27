@@ -216,7 +216,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.submitReport(report);
+            depositOracle.submitReports(report);
             depositOracle.acceptReport(address(asset), uint32(block.timestamp));
             skip(1 days);
         }
@@ -241,7 +241,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.submitReport(report);
+            depositOracle.submitReports(report);
         }
         vm.stopPrank();
         vm.startPrank(user);
@@ -263,7 +263,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            redeemOracle.submitReport(report);
+            redeemOracle.submitReports(report);
             redeemOracle.acceptReport(address(asset), uint32(block.timestamp));
         }
         vm.stopPrank();

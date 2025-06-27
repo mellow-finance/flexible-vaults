@@ -51,7 +51,7 @@ interface IOracle is IFactoryEntity {
 
     function validatePrice(uint256 priceD18, address asset) external view returns (bool isValid, bool isSuspicious);
 
-    function submitReport(Report[] calldata reports) external;
+    function submitReports(Report[] calldata reports) external;
 
     function acceptReport(address asset, uint32 timestamp) external;
 

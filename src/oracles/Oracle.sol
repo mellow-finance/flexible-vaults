@@ -61,7 +61,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         __Oracle_init(initParams);
     }
 
-    function submitReport(Report[] calldata reports) external onlyRole(PermissionsLibrary.SUBMIT_REPORT_ROLE) {
+    function submitReports(Report[] calldata reports) external onlyRole(PermissionsLibrary.SUBMIT_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = _oracleStorage().securityParams;
         uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
