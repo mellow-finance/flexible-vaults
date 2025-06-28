@@ -16,8 +16,7 @@ interface IShareModule is IBaseModule {
     struct ShareModuleStorage {
         address shareManager;
         address feeManager;
-        address depositOracle;
-        address redeemOracle;
+        address oracle;
         address defaultDepositHook;
         address defaultRedeemHook;
         mapping(address queue => address) customHooks;
@@ -32,9 +31,7 @@ interface IShareModule is IBaseModule {
 
     function feeManager() external view returns (IFeeManager);
 
-    function depositOracle() external view returns (IOracle);
-
-    function redeemOracle() external view returns (IOracle);
+    function oracle() external view returns (IOracle);
 
     function depositQueueFactory() external view returns (IFactory);
 

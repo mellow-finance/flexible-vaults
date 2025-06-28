@@ -27,7 +27,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     function convertToShares(address asset, int256 value) public view returns (int256 shares) {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        IOracle oracle = IShareModule($.vault).depositOracle();
+        IOracle oracle = IShareModule($.vault).oracle();
         IOracle.DetailedReport memory report = oracle.getReport(asset);
         if (report.isSuspicious || report.priceD18 == 0) {
             revert("RiskManager: report is suspicious or has zero price");
@@ -45,7 +45,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         if (shares <= 0) {
             return 0;
         }
-        IOracle oracle = IShareModule($.vault).depositOracle();
+        IOracle oracle = IShareModule($.vault).oracle();
         IOracle.DetailedReport memory report = oracle.getReport(asset);
         if (report.isSuspicious || report.priceD18 == 0) {
             return 0;
@@ -61,7 +61,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         if (shares <= 0) {
             return 0;
         }
-        IOracle oracle = IShareModule($.vault).depositOracle();
+        IOracle oracle = IShareModule($.vault).oracle();
         IOracle.DetailedReport memory report = oracle.getReport(asset);
         if (report.isSuspicious || report.priceD18 == 0) {
             return 0;

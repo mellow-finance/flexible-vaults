@@ -34,19 +34,13 @@ abstract contract SignatureQueue is
         return 0;
     }
 
-    function shareModule() public view returns (IShareModule) {
-        return IShareModule(_signatureQueueStorage().vault);
+    function vault() public view returns (address) {
+        return _signatureQueueStorage().vault;
     }
 
     function asset() public view returns (address) {
         return _signatureQueueStorage().asset;
     }
-
-    function vault() public view returns (address) {
-        return _signatureQueueStorage().vault;
-    }
-
-    function oracle() public view virtual returns (IOracle);
 
     function consensus() public view returns (IConsensus) {
         return IConsensus(_signatureQueueStorage().consensus);
@@ -100,16 +94,18 @@ abstract contract SignatureQueue is
 
         consensus().requireValidSignatures(hashOrder(order), signatures);
 
-        IOracle oracle_ = oracle();
-
+        IShareModule shareModule_ = IShareModule(vault());
+        IOracle oracle_ = shareModule_.oracle();
         if (address(oracle_) != address(0)) {
-            uint256 priceD18 = Math.mulDiv(order.requested, 1 ether, order.ordered);
-            (bool isValid, bool isSuspicious) = oracle_.validatePrice(priceD18, order.asset);
-            if (!isValid) {
-                revert("SignatureQueue: invalid price");
+            uint256 priceD18;
+            if (shareModule_.isDepositQueue(address(this))) {
+                priceD18 = Math.mulDiv(order.requested, 1 ether, order.ordered);
+            } else {
+                priceD18 = Math.mulDiv(order.ordered, 1 ether, order.requested, Math.Rounding.Ceil);
             }
-            if (isSuspicious) {
-                revert("SignatureQueue: suspicious price");
+            (bool isValid, bool isSuspicious) = oracle_.validatePrice(priceD18, order.asset);
+            if (!isValid || isSuspicious) {
+                revert("SignatureQueue: invalid conversion price");
             }
         }
     }

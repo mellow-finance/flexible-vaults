@@ -115,11 +115,7 @@ contract Integration is Test {
             )
         );
 
-        Oracle depositOracle = Oracle(
-            address(new TransparentUpgradeableProxy(address(oracleImplementation), vaultProxyAdmin, new bytes(0)))
-        );
-
-        Oracle redeemOracle = Oracle(
+        Oracle oracle = Oracle(
             address(new TransparentUpgradeableProxy(address(oracleImplementation), vaultProxyAdmin, new bytes(0)))
         );
 
@@ -138,8 +134,7 @@ contract Integration is Test {
                 }),
                 assets
             );
-            depositOracle.initialize(oracleInitParams);
-            redeemOracle.initialize(oracleInitParams);
+            oracle.initialize(oracleInitParams);
         }
 
         RiskManager riskManager =
@@ -151,8 +146,7 @@ contract Integration is Test {
                 address(shareManager),
                 address(feeManager),
                 address(riskManager),
-                address(depositOracle),
-                address(redeemOracle),
+                address(oracle),
                 address(new BasicDepositHook()),
                 address(new BasicRedeemHook()),
                 new Vault.RoleHolder[](0)
@@ -216,8 +210,8 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.submitReports(report);
-            depositOracle.acceptReport(address(asset), uint32(block.timestamp));
+            oracle.submitReports(report);
+            oracle.acceptReport(address(asset), uint32(block.timestamp));
             skip(1 days);
         }
 
@@ -241,7 +235,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.submitReports(report);
+            oracle.submitReports(report);
         }
         vm.stopPrank();
         vm.startPrank(user);
@@ -263,8 +257,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            redeemOracle.submitReports(report);
-            redeemOracle.acceptReport(address(asset), uint32(block.timestamp));
+            oracle.submitReports(report);
         }
         vm.stopPrank();
 

@@ -39,14 +39,6 @@ interface ISignatureQueue is IQueue, IFactoryEntity {
 
     function ORDER_TYPEHASH() external view returns (bytes32);
 
-    function shareModule() external view returns (IShareModule);
-
-    function asset() external view returns (address);
-
-    function vault() external view returns (address);
-
-    function oracle() external view returns (IOracle);
-
     function consensus() external view returns (IConsensus);
 
     function nonces(address account) external view returns (uint256);
