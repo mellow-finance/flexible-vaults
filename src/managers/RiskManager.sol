@@ -23,6 +23,26 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         _;
     }
 
+    modifier onlyVaultOrRole(bytes32 role) {
+        address caller = _msgSender();
+        address vault_ = vault();
+        require(
+            caller == vault_ || IACLModule(vault_).hasRole(role, caller),
+            "RiskManager: caller does not have the required role"
+        );
+        _;
+    }
+
+    modifier onlyQueueOrRole(bytes32 role) {
+        address caller = _msgSender();
+        address vault_ = vault();
+        require(
+            IShareModule(vault_).hasQueue(caller) || IACLModule(vault_).hasRole(role, caller),
+            "RiskManager: caller does not have the required role"
+        );
+        _;
+    }
+
     function requireValidSubvault(address vault_, address subvault) public view {
         if (!IVaultModule(vault_).hasSubvault(subvault)) {
             revert("RiskManager: not a valid subvault");
@@ -115,7 +135,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     function modifyPendingAssets(address asset, int256 change)
         external
-        onlyRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE)
+        onlyQueueOrRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
         uint256 pendingAssetsBefore = $.pendingAssets[asset];
@@ -133,7 +153,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     function modifyVaultBalance(address asset, int256 change)
         external
-        onlyRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE)
+        onlyQueueOrRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE)
     {
         int256 shares = convertToShares(asset, change);
         RiskManagerStorage storage $ = _riskManagerStorage();
@@ -145,7 +165,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     function modifySubvaultBalance(address subvault, address asset, int256 change)
         external
-        onlyRole(PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE)
+        onlyVaultOrRole(PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
         requireValidSubvault($.vault, subvault);

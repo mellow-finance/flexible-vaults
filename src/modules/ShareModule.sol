@@ -161,8 +161,6 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
-        _grantRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE, queue);
-        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.queues[asset].add(queue);
         $.isDepositQueue[queue] = true;
@@ -178,7 +176,6 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
-        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.queues[asset].add(queue);
         $.isDepositQueue[queue] = false;

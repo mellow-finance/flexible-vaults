@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/queues/IDepositQueue.sol";
 
 import "../libraries/FenwickTreeLibrary.sol";

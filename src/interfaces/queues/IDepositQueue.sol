@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 import "../../libraries/FenwickTreeLibrary.sol";
 import "../factories/IFactoryEntity.sol";
+
+import "../managers/IRiskManager.sol";
+import "../modules/IShareModule.sol";
 import "../modules/IVaultModule.sol";
 import "./IQueue.sol";
 
