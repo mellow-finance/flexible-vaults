@@ -2,6 +2,7 @@
 pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../factories/IFactoryEntity.sol";
 
@@ -14,6 +15,7 @@ interface IRiskManager is IFactoryEntity {
     struct State {
         int256 balance;
         int256 limit;
+        EnumerableSet.AddressSet allowedAssets;
     }
 
     struct RiskManagerStorage {
@@ -33,11 +35,13 @@ interface IRiskManager is IFactoryEntity {
 
     function setSubvaultLimit(address subvault, int256 limit) external;
 
+    function addSubvaultAllowedAssets(address subvault, address[] calldata assets) external;
+
+    function removeSubvaultAllowedAssets(address subvault, address[] calldata assets) external;
+
     function modifyPendingAssets(address asset, int256 change) external;
 
     function convertToShares(address asset, int256 assets) external view returns (int256 shares);
-
-    function maxDeposit(address asset) external view returns (uint256 limit);
 
     function maxDeposit(address subvault, address asset) external view returns (uint256 limit);
 }

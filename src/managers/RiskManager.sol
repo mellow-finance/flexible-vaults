@@ -7,10 +7,7 @@ import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
 contract RiskManager is IRiskManager, ContextUpgradeable {
-    modifier onlyRole(bytes32 role) {
-        require(IACLModule(vault()).hasRole(role, _msgSender()), "RiskManager: caller does not have the required role");
-        _;
-    }
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     bytes32 private immutable _riskManagerStorageSlot;
 
@@ -21,14 +18,18 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     // View functions
 
+    modifier onlyRole(bytes32 role) {
+        require(IACLModule(vault()).hasRole(role, _msgSender()), "RiskManager: caller does not have the required role");
+        _;
+    }
+
     function vault() public view returns (address) {
         return _riskManagerStorage().vault;
     }
 
     function convertToShares(address asset, int256 value) public view returns (int256 shares) {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        IOracle oracle = IShareModule($.vault).oracle();
-        IOracle.DetailedReport memory report = oracle.getReport(asset);
+        IOracle.DetailedReport memory report = IShareModule($.vault).oracle().getReport(asset);
         if (report.isSuspicious || report.priceD18 == 0) {
             revert("RiskManager: report is suspicious or has zero price");
         }
@@ -38,25 +39,12 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         }
     }
 
-    function maxDeposit(address asset) public view returns (uint256 limit) {
-        RiskManagerStorage storage $ = _riskManagerStorage();
-        State storage state = $.vaultState;
-        int256 shares = state.limit - state.balance - $.pendingBalance;
-        if (shares <= 0) {
-            return 0;
-        }
-        IOracle oracle = IShareModule($.vault).oracle();
-        IOracle.DetailedReport memory report = oracle.getReport(asset);
-        if (report.isSuspicious || report.priceD18 == 0) {
-            return 0;
-        }
-        uint256 priceD18 = report.priceD18;
-        return Math.mulDiv(uint256(shares), 1 ether, priceD18);
-    }
-
     function maxDeposit(address subvault, address asset) public view returns (uint256 limit) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         State storage state = $.subvaultStates[subvault];
+        if (!state.allowedAssets.contains(asset)) {
+            return 0;
+        }
         int256 shares = state.limit - state.balance;
         if (shares <= 0) {
             return 0;
@@ -88,6 +76,38 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
             revert("RiskManager: not a valid subvault");
         }
         $.subvaultStates[subvault].limit = limit;
+    }
+
+    function addSubvaultAllowedAssets(address subvault, address[] calldata assets)
+        external
+        onlyRole(PermissionsLibrary.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE)
+    {
+        RiskManagerStorage storage $ = _riskManagerStorage();
+        if (!IVaultModule($.vault).hasSubvault(subvault)) {
+            revert("RiskManager: not a valid subvault");
+        }
+        EnumerableSet.AddressSet storage assets_ = $.subvaultStates[subvault].allowedAssets;
+        for (uint256 i = 0; i < assets.length; i++) {
+            if (!assets_.add(assets[i])) {
+                revert("RiskManager: asset already allowed in subvault");
+            }
+        }
+    }
+
+    function removeSubvaultAllowedAssets(address subvault, address[] calldata assets)
+        external
+        onlyRole(PermissionsLibrary.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE)
+    {
+        RiskManagerStorage storage $ = _riskManagerStorage();
+        if (!IVaultModule($.vault).hasSubvault(subvault)) {
+            revert("RiskManager: not a valid subvault");
+        }
+        EnumerableSet.AddressSet storage assets_ = $.subvaultStates[subvault].allowedAssets;
+        for (uint256 i = 0; i < assets.length; i++) {
+            if (!assets_.remove(assets[i])) {
+                revert("RiskManager: asset not allowed in subvault");
+            }
+        }
     }
 
     function setVaultLimit(int256 limit) external onlyRole(PermissionsLibrary.SET_VAULT_LIMIT_ROLE) {
