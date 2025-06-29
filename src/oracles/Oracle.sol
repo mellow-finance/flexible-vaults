@@ -66,11 +66,13 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         SecurityParams memory securityParams_ = $.securityParams;
         uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
         IShareModule vault_ = vault();
+        EnumerableSet.AddressSet storage supportedAssets_ = $.supportedAssets;
+        mapping(address asset => DetailedReport) storage reports_ = $.reports;
         for (uint256 i = 0; i < reports.length; i++) {
-            if (!$.supportedAssets.contains(reports[i].asset)) {
-                revert("Oracle: unsupported asset");
+            if (!supportedAssets_.contains(reports[i].asset)) {
+                revert("Oracle: asset not supported");
             }
-            if (_handleReport(securityParams_, reports[i].priceD18, $.reports[reports[i].asset])) {
+            if (_handleReport(securityParams_, reports[i].priceD18, reports_[reports[i].asset])) {
                 vault_.handleReport(reports[i].asset, reports[i].priceD18, secureTimestamp);
             }
         }
@@ -110,9 +112,9 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         external
         onlyRole(PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE)
     {
-        OracleStorage storage $ = _oracleStorage();
+        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
         for (uint256 i = 0; i < assets.length; i++) {
-            if (!$.supportedAssets.add(assets[i])) {
+            if (!asset_.add(assets[i])) {
                 revert("Oracle: asset already supported");
             }
         }
@@ -122,9 +124,9 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         external
         onlyRole(PermissionsLibrary.REMOVE_SUPPORTED_ASSETS_ROLE)
     {
-        OracleStorage storage $ = _oracleStorage();
+        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
         for (uint256 i = 0; i < assets.length; i++) {
-            if (!$.supportedAssets.remove(assets[i])) {
+            if (!asset_.remove(assets[i])) {
                 revert("Oracle: asset not supported");
             }
         }
