@@ -3,11 +3,20 @@ pragma solidity 0.8.25;
 
 import "../interfaces/managers/IRiskManager.sol";
 
-import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
 contract RiskManager is IRiskManager, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
+
+    bytes32 public constant SET_VAULT_LIMIT_ROLE = keccak256("manager.RiskManager.SET_VAULT_LIMIT_ROLE");
+    bytes32 public constant SET_SUBVAULT_LIMIT_ROLE = keccak256("manager.RiskManager.SET_SUBVAULT_LIMIT_ROLE");
+    bytes32 public constant ADD_SUBVAULT_ALLOWED_ASSETS_ROLE =
+        keccak256("manager.RiskManager.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE");
+    bytes32 public constant REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE =
+        keccak256("manager.RiskManager.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE");
+    bytes32 public constant MODIFY_PENDING_ASSETS_ROLE = keccak256("manager.RiskManager.MODIFY_PENDING_ASSETS_ROLE");
+    bytes32 public constant MODIFY_VAULT_BALANCE_ROLE = keccak256("manager.RiskManager.MODIFY_VAULT_BALANCE_ROLE");
+    bytes32 public constant MODIFY_SUBVAULT_BALANCE_ROLE = keccak256("manager.RiskManager.MODIFY_SUBVAULT_BALANCE_ROLE");
 
     bytes32 private immutable _riskManagerStorageSlot;
 
@@ -92,10 +101,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         $.vaultState.limit = vaultLimit_;
     }
 
-    function setSubvaultLimit(address subvault, int256 limit)
-        external
-        onlyRole(PermissionsLibrary.SET_SUBVAULT_LIMIT_ROLE)
-    {
+    function setSubvaultLimit(address subvault, int256 limit) external onlyRole(SET_SUBVAULT_LIMIT_ROLE) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         requireValidSubvault($.vault, subvault);
         $.subvaultStates[subvault].limit = limit;
@@ -103,7 +109,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     function addSubvaultAllowedAssets(address subvault, address[] calldata assets)
         external
-        onlyRole(PermissionsLibrary.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE)
+        onlyRole(ADD_SUBVAULT_ALLOWED_ASSETS_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
         requireValidSubvault($.vault, subvault);
@@ -117,7 +123,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     function removeSubvaultAllowedAssets(address subvault, address[] calldata assets)
         external
-        onlyRole(PermissionsLibrary.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE)
+        onlyRole(REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
         requireValidSubvault($.vault, subvault);
@@ -129,14 +135,11 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         }
     }
 
-    function setVaultLimit(int256 limit) external onlyRole(PermissionsLibrary.SET_VAULT_LIMIT_ROLE) {
+    function setVaultLimit(int256 limit) external onlyRole(SET_VAULT_LIMIT_ROLE) {
         _riskManagerStorage().vaultState.limit = limit;
     }
 
-    function modifyPendingAssets(address asset, int256 change)
-        external
-        onlyQueueOrRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE)
-    {
+    function modifyPendingAssets(address asset, int256 change) external onlyQueueOrRole(MODIFY_PENDING_ASSETS_ROLE) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         uint256 pendingAssetsBefore = $.pendingAssets[asset];
         uint256 pendingAssetsAfter = uint256(int256(pendingAssetsBefore) + change);
@@ -151,10 +154,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         }
     }
 
-    function modifyVaultBalance(address asset, int256 change)
-        external
-        onlyQueueOrRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE)
-    {
+    function modifyVaultBalance(address asset, int256 change) external onlyQueueOrRole(MODIFY_VAULT_BALANCE_ROLE) {
         int256 shares = convertToShares(asset, change);
         RiskManagerStorage storage $ = _riskManagerStorage();
         if (shares > 0 && $.vaultState.balance + $.pendingBalance + shares > $.vaultState.limit) {
@@ -165,7 +165,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     function modifySubvaultBalance(address subvault, address asset, int256 change)
         external
-        onlyVaultOrRole(PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE)
+        onlyVaultOrRole(MODIFY_SUBVAULT_BALANCE_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
         requireValidSubvault($.vault, subvault);

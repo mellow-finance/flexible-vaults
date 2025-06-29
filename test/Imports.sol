@@ -15,7 +15,6 @@ import "../src/hooks/LidoDepositHook.sol";
 import "../src/hooks/RedirectingDepositHook.sol";
 
 import "../src/libraries/FenwickTreeLibrary.sol";
-import "../src/libraries/PermissionsLibrary.sol";
 import "../src/libraries/ShareManagerFlagLibrary.sol";
 import "../src/libraries/SlotLibrary.sol";
 import "../src/libraries/TransferLibrary.sol";

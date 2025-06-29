@@ -15,11 +15,13 @@ contract LidoDepositHook is IDepositHook {
     address public immutable wsteth;
     address public immutable steth;
     address public immutable weth;
+    address public immutable nextHook;
 
-    constructor(address wsteth_, address weth_) {
+    constructor(address wsteth_, address weth_, address nextHook_) {
         wsteth = wsteth_;
         steth = IWSTETH(wsteth_).stETH();
         weth = weth_;
+        nextHook = nextHook_;
     }
 
     function afterDeposit(address asset, uint256 assets) public override {
@@ -37,6 +39,9 @@ contract LidoDepositHook is IDepositHook {
                 Address.sendValue(payable(wsteth), assets);
             }
             assets = IERC20(wsteth).balanceOf(address(this)) - balance;
+        }
+        if (nextHook != address(0)) {
+            IDepositHook(nextHook).afterDeposit(wsteth, assets);
         }
     }
 }

@@ -3,7 +3,6 @@ pragma solidity 0.8.25;
 
 import "../interfaces/modules/IVerifierModule.sol";
 
-import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
 import "./ACLModule.sol";

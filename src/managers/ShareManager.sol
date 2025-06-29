@@ -3,13 +3,15 @@ pragma solidity 0.8.25;
 
 import "../interfaces/managers/IShareManager.sol";
 
-import "../libraries/PermissionsLibrary.sol";
 import "../libraries/ShareManagerFlagLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
 abstract contract ShareManager is IShareManager, ContextUpgradeable {
     using ShareManagerFlagLibrary for uint256;
 
+    bytes32 public constant SET_FLAGS_ROLE = keccak256("managers.ShareManager.SHARE_MANAGER:SET_FLAGS_ROLE");
+    bytes32 public constant SET_ACCOUNT_INFO_ROLE =
+        keccak256("managers.ShareManager.SHARE_MANAGER:SET_ACCOUNT_INFO_ROLE");
     bytes32 private immutable _shareManagerStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -111,14 +113,11 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         IShareModule(vault()).claimShares(account);
     }
 
-    function setAccountInfo(address account, AccountInfo memory info)
-        external
-        onlyRole(PermissionsLibrary.SET_ACCOUNT_INFO_ROLE)
-    {
+    function setAccountInfo(address account, AccountInfo memory info) external onlyRole(SET_ACCOUNT_INFO_ROLE) {
         _shareManagerStorage().accounts[account] = info;
     }
 
-    function setFlags(Flags calldata f) external onlyRole(PermissionsLibrary.SET_FLAGS_ROLE) {
+    function setFlags(Flags calldata f) external onlyRole(SET_FLAGS_ROLE) {
         uint256 bitmask = uint256(0).setHasMintPause(f.hasMintPause).setHasBurnPause(f.hasBurnPause);
         bitmask = bitmask.setHasTransferPause(f.hasTransferPause).setHasWhitelist(f.hasWhitelist);
         bitmask = bitmask.setHasBlacklist(f.hasBlacklist).setHasTransferWhitelist(f.hasTransferWhitelist);

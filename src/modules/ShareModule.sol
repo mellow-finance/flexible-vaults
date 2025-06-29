@@ -11,6 +11,10 @@ import "./ACLModule.sol";
 abstract contract ShareModule is IShareModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    bytes32 public constant SET_CUSTOM_HOOK_ROLE = keccak256("modules.ShareModule.SET_CUSTOM_HOOK_ROLE");
+    bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_DEPOSIT_QUEUE_ROLE");
+    bytes32 public constant CREATE_REDEEM_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_REDEEM_QUEUE_ROLE");
+
     bytes32 private immutable _shareModuleStorageSlot;
 
     IFactory public immutable override depositQueueFactory;
@@ -145,7 +149,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
     }
 
-    function setCustomHook(address queue, address hook) external onlyRole(PermissionsLibrary.SET_CUSTOM_HOOK_ROLE) {
+    function setCustomHook(address queue, address hook) external onlyRole(SET_CUSTOM_HOOK_ROLE) {
         if (queue == address(0) || hook == address(0)) {
             revert("ShareModule: zero address");
         }
@@ -154,7 +158,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
 
     function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data)
         external
-        onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
+        onlyRole(CREATE_DEPOSIT_QUEUE_ROLE)
     {
         if (asset == address(0) || !IOracle(oracle()).isSupportedAsset(asset)) {
             revert("DepositModule: unsupported asset");
@@ -169,7 +173,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
 
     function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data)
         external
-        onlyRole(PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE)
+        onlyRole(CREATE_REDEEM_QUEUE_ROLE)
     {
         if (asset == address(0) || !IOracle(oracle()).isSupportedAsset(asset)) {
             revert("RedeemModule: unsupported asset");

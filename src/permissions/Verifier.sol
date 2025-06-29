@@ -3,12 +3,16 @@ pragma solidity 0.8.25;
 
 import "../interfaces/permissions/IVerifier.sol";
 
-import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
 contract Verifier is IVerifier, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
+    bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("permissions.Verifier.SET_MERKLE_ROOT_ROLE");
+    bytes32 public constant SET_SECONDARY_ACL_ROLE = keccak256("permissions.Verifier.SET_SECONDARY_ACL_ROLE");
+    bytes32 public constant CALL_ROLE = keccak256("permissions.Verifier.CALL_ROLE");
+    bytes32 public constant ADD_ALLOWED_CALLS_ROLE = keccak256("permissions.Verifier.ADD_ALLOWED_CALLS_ROLE");
+    bytes32 public constant REMOVE_ALLOWED_CALLS_ROLE = keccak256("permissions.Verifier.REMOVE_ALLOWED_CALLS_ROLE");
     bytes32 private immutable _verifierStorageSlot;
 
     modifier onlyRole(bytes32 role) {
@@ -74,7 +78,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
         bytes calldata callData,
         VerificationPayload calldata verificationPayload
     ) public view virtual returns (bool) {
-        if (!primaryACL().hasRole(PermissionsLibrary.CALL_ROLE, who)) {
+        if (!primaryACL().hasRole(CALL_ROLE, who)) {
             return false;
         }
 
@@ -127,19 +131,19 @@ contract Verifier is IVerifier, ContextUpgradeable {
         }
     }
 
-    function setSecondaryACL(address secondaryACL_) external onlyRole(PermissionsLibrary.SET_SECONDARY_ACL_ROLE) {
+    function setSecondaryACL(address secondaryACL_) external onlyRole(SET_SECONDARY_ACL_ROLE) {
         require(secondaryACL_ != address(0), "Verifier: zero secondary ACL address");
         _verifierStorage().secondaryACL = secondaryACL_;
     }
 
-    function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(PermissionsLibrary.SET_MERKLE_ROOT_ROLE) {
+    function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(SET_MERKLE_ROOT_ROLE) {
         require(merkleRoot_ != bytes32(0), "Verifier: zero merkle root");
         _verifierStorage().merkleRoot = merkleRoot_;
     }
 
     function addAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
         external
-        onlyRole(PermissionsLibrary.ADD_ALLOWED_CALLS_ROLE)
+        onlyRole(ADD_ALLOWED_CALLS_ROLE)
     {
         uint256 n = callers.length;
         if (n != targets.length || n != selectors.length) {
@@ -156,7 +160,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     function removeAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
         external
-        onlyRole(PermissionsLibrary.REMOVE_ALLOWED_CALLS_ROLE)
+        onlyRole(REMOVE_ALLOWED_CALLS_ROLE)
     {
         uint256 n = callers.length;
         if (n != targets.length || n != selectors.length) {

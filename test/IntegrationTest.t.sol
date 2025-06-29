@@ -153,44 +153,45 @@ contract Integration is Test {
             ) // redeem module params
         );
 
+        Verifier verifier = Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
         vm.startPrank(vaultAdmin);
         vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
         vault.grantFundamentalRole(IACLModule.FundamentalRole.SUBVAULT_ADMIN, vaultAdmin);
 
         bytes32[27] memory roles = [
-            PermissionsLibrary.SET_CUSTOM_HOOK_ROLE,
-            PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE,
-            PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE,
-            PermissionsLibrary.SUBMIT_REPORT_ROLE,
-            PermissionsLibrary.ACCEPT_REPORT_ROLE,
-            PermissionsLibrary.SET_SECURITY_PARAMS_ROLE,
-            PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE,
-            PermissionsLibrary.REMOVE_SUPPORTED_ASSETS_ROLE,
-            PermissionsLibrary.SET_MERKLE_ROOT_ROLE,
-            PermissionsLibrary.SET_SECONDARY_ACL_ROLE,
-            PermissionsLibrary.CALL_ROLE,
-            PermissionsLibrary.ADD_ALLOWED_CALLS_ROLE,
-            PermissionsLibrary.REMOVE_ALLOWED_CALLS_ROLE,
-            PermissionsLibrary.SET_FLAGS_ROLE,
-            PermissionsLibrary.SET_ACCOUNT_INFO_ROLE,
-            PermissionsLibrary.CREATE_SUBVAULT_ROLE,
-            PermissionsLibrary.DISCONNECT_SUBVAULT_ROLE,
-            PermissionsLibrary.RECONNECT_SUBVAULT_ROLE,
-            PermissionsLibrary.PULL_LIQUIDITY_ROLE,
-            PermissionsLibrary.PUSH_LIQUIDITY_ROLE,
-            PermissionsLibrary.SET_VAULT_LIMIT_ROLE,
-            PermissionsLibrary.SET_SUBVAULT_LIMIT_ROLE,
-            PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE,
-            PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE,
-            PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE,
-            PermissionsLibrary.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE,
-            PermissionsLibrary.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE
+            vault.SET_CUSTOM_HOOK_ROLE(),
+            vault.CREATE_DEPOSIT_QUEUE_ROLE(),
+            vault.CREATE_REDEEM_QUEUE_ROLE(),
+            oracle.SUBMIT_REPORT_ROLE(),
+            oracle.ACCEPT_REPORT_ROLE(),
+            oracle.SET_SECURITY_PARAMS_ROLE(),
+            oracle.ADD_SUPPORTED_ASSETS_ROLE(),
+            oracle.REMOVE_SUPPORTED_ASSETS_ROLE(),
+            verifier.SET_MERKLE_ROOT_ROLE(),
+            verifier.SET_SECONDARY_ACL_ROLE(),
+            verifier.CALL_ROLE(),
+            verifier.ADD_ALLOWED_CALLS_ROLE(),
+            verifier.REMOVE_ALLOWED_CALLS_ROLE(),
+            shareManager.SET_FLAGS_ROLE(),
+            shareManager.SET_ACCOUNT_INFO_ROLE(),
+            vault.CREATE_SUBVAULT_ROLE(),
+            vault.DISCONNECT_SUBVAULT_ROLE(),
+            vault.RECONNECT_SUBVAULT_ROLE(),
+            vault.PULL_LIQUIDITY_ROLE(),
+            vault.PUSH_LIQUIDITY_ROLE(),
+            riskManager.SET_VAULT_LIMIT_ROLE(),
+            riskManager.SET_SUBVAULT_LIMIT_ROLE(),
+            riskManager.MODIFY_PENDING_ASSETS_ROLE(),
+            riskManager.MODIFY_VAULT_BALANCE_ROLE(),
+            riskManager.MODIFY_SUBVAULT_BALANCE_ROLE(),
+            riskManager.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE(),
+            riskManager.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE()
         ];
         for (uint256 i = 0; i < roles.length; i++) {
             vault.grantRole(roles[i], vaultAdmin);
         }
-        vault.grantRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE, address(vault));
-        vault.grantRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE, address(vault));
+        vault.grantRole(vault.PUSH_LIQUIDITY_ROLE(), address(vault));
+        vault.grantRole(vault.PULL_LIQUIDITY_ROLE(), address(vault));
 
         Consensus consensusImplementation = new Consensus("Consensus", 1);
         Consensus consensus = Consensus(
@@ -218,8 +219,6 @@ contract Integration is Test {
         }
 
         {
-            Verifier verifier =
-                Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
             address subvault = vault.createSubvault(0, vaultProxyAdmin, vaultAdmin, address(verifier));
             verifier.setSecondaryACL(subvault);
             address[] memory assets = new address[](1);
