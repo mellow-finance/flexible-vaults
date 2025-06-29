@@ -23,6 +23,12 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         _;
     }
 
+    function requireValidSubvault(address vault, address subvault) public view {
+        if (!IVaultModule(vault).hasSubvault(subvault)) {
+            revert("RiskManager: not a valid subvault");
+        }
+    }
+
     function vault() public view returns (address) {
         return _riskManagerStorage().vault;
     }
@@ -42,15 +48,14 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
     function maxDeposit(address subvault, address asset) public view returns (uint256 limit) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         State storage state = $.subvaultStates[subvault];
-        if (!state.allowedAssets.contains(asset)) {
+        if (!$.allowedAssets[subvault].contains(asset)) {
             return 0;
         }
         int256 shares = state.limit - state.balance;
         if (shares <= 0) {
             return 0;
         }
-        IOracle oracle = IShareModule($.vault).oracle();
-        IOracle.DetailedReport memory report = oracle.getReport(asset);
+        IOracle.DetailedReport memory report = IShareModule($.vault).oracle().getReport(asset);
         if (report.isSuspicious || report.priceD18 == 0) {
             return 0;
         }
@@ -72,9 +77,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         onlyRole(PermissionsLibrary.SET_SUBVAULT_LIMIT_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        if (!IVaultModule($.vault).hasSubvault(subvault)) {
-            revert("RiskManager: not a valid subvault");
-        }
+        requireValidSubvault($.vault, subvault);
         $.subvaultStates[subvault].limit = limit;
     }
 
@@ -83,10 +86,8 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         onlyRole(PermissionsLibrary.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        if (!IVaultModule($.vault).hasSubvault(subvault)) {
-            revert("RiskManager: not a valid subvault");
-        }
-        EnumerableSet.AddressSet storage assets_ = $.subvaultStates[subvault].allowedAssets;
+        requireValidSubvault($.vault, subvault);
+        EnumerableSet.AddressSet storage assets_ = $.allowedAssets[subvault];
         for (uint256 i = 0; i < assets.length; i++) {
             if (!assets_.add(assets[i])) {
                 revert("RiskManager: asset already allowed in subvault");
@@ -99,10 +100,8 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         onlyRole(PermissionsLibrary.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        if (!IVaultModule($.vault).hasSubvault(subvault)) {
-            revert("RiskManager: not a valid subvault");
-        }
-        EnumerableSet.AddressSet storage assets_ = $.subvaultStates[subvault].allowedAssets;
+        requireValidSubvault($.vault, subvault);
+        EnumerableSet.AddressSet storage assets_ = $.allowedAssets[subvault];
         for (uint256 i = 0; i < assets.length; i++) {
             if (!assets_.remove(assets[i])) {
                 revert("RiskManager: asset not allowed in subvault");
@@ -149,8 +148,9 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         onlyRole(PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        if (!IVaultModule($.vault).hasSubvault(subvault)) {
-            revert("RiskManager: not a valid subvault");
+        requireValidSubvault($.vault, subvault);
+        if (!$.allowedAssets[subvault].contains(asset)) {
+            revert("RiskManager: asset not allowed in subvault");
         }
         State storage state = $.subvaultStates[subvault];
         int256 shares = convertToShares(asset, change);

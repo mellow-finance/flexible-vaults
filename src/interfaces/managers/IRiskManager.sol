@@ -15,7 +15,6 @@ interface IRiskManager is IFactoryEntity {
     struct State {
         int256 balance;
         int256 limit;
-        EnumerableSet.AddressSet allowedAssets;
     }
 
     struct RiskManagerStorage {
@@ -25,6 +24,7 @@ interface IRiskManager is IFactoryEntity {
         mapping(address queue => uint256) pendingAssets;
         mapping(address queue => uint256) pendingShares;
         mapping(address subvault => State) subvaultStates;
+        mapping(address subvault => EnumerableSet.AddressSet) allowedAssets;
     }
 
     function modifyVaultBalance(address asset, int256 delta) external;
