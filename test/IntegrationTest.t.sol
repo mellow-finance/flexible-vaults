@@ -147,7 +147,7 @@ contract Integration is Test {
                 address(feeManager),
                 address(riskManager),
                 address(oracle),
-                address(new BasicDepositHook()),
+                address(new RedirectingDepositHook()),
                 address(new BasicRedeemHook()),
                 new Vault.RoleHolder[](0)
             ) // redeem module params
@@ -157,7 +157,7 @@ contract Integration is Test {
         vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
         vault.grantFundamentalRole(IACLModule.FundamentalRole.SUBVAULT_ADMIN, vaultAdmin);
 
-        bytes32[25] memory roles = [
+        bytes32[27] memory roles = [
             PermissionsLibrary.SET_CUSTOM_HOOK_ROLE,
             PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE,
             PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE,
@@ -182,7 +182,9 @@ contract Integration is Test {
             PermissionsLibrary.SET_SUBVAULT_LIMIT_ROLE,
             PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE,
             PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE,
-            PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE
+            PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE,
+            PermissionsLibrary.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE,
+            PermissionsLibrary.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE
         ];
         for (uint256 i = 0; i < roles.length; i++) {
             vault.grantRole(roles[i], vaultAdmin);
@@ -220,6 +222,10 @@ contract Integration is Test {
                 Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
             address subvault = vault.createSubvault(0, vaultProxyAdmin, vaultAdmin, address(verifier));
             verifier.setSecondaryACL(subvault);
+            address[] memory assets = new address[](1);
+            assets[0] = address(asset);
+            riskManager.addSubvaultAllowedAssets(subvault, assets);
+            riskManager.setSubvaultLimit(subvault, 100 ether);
         }
         vm.stopPrank();
         vm.startPrank(user);
