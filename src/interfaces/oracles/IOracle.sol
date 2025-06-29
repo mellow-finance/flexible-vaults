@@ -52,7 +52,9 @@ interface IOracle is IFactoryEntity {
 
     function securityParams() external view returns (SecurityParams memory);
 
-    function supportedAssets() external view returns (address[] memory);
+    function supportedAssets() external view returns (uint256);
+
+    function supportedAssetAt(uint256 index) external view returns (address);
 
     function isSupportedAsset(address asset) external view returns (bool);
 

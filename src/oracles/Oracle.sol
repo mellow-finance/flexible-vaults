@@ -31,8 +31,12 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         return _oracleStorage().securityParams;
     }
 
-    function supportedAssets() public view returns (address[] memory) {
-        return _oracleStorage().supportedAssets.values();
+    function supportedAssets() public view returns (uint256) {
+        return _oracleStorage().supportedAssets.length();
+    }
+
+    function supportedAssetAt(uint256 index) public view returns (address) {
+        return _oracleStorage().supportedAssets.at(index);
     }
 
     function isSupportedAsset(address asset) public view returns (bool) {
@@ -95,39 +99,21 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         external
         onlyRole(PermissionsLibrary.SET_SECURITY_PARAMS_ROLE)
     {
-        OracleStorage storage $ = _oracleStorage();
-        if (
-            securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0
-                || securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0
-                || securityParams_.timeout == 0 || securityParams_.secureInterval == 0
-        ) {
-            revert ZeroValue();
-        }
-        $.securityParams = securityParams_;
+        _setSecurityParams(securityParams_);
     }
 
     function addSupportedAssets(address[] calldata assets)
         external
         onlyRole(PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE)
     {
-        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
-        for (uint256 i = 0; i < assets.length; i++) {
-            if (!asset_.add(assets[i])) {
-                revert AlreadySupportedAsset(assets[i]);
-            }
-        }
+        _addSupportedAssets(assets);
     }
 
     function removeSupportedAssets(address[] calldata assets)
         external
         onlyRole(PermissionsLibrary.REMOVE_SUPPORTED_ASSETS_ROLE)
     {
-        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
-        for (uint256 i = 0; i < assets.length; i++) {
-            if (!asset_.remove(assets[i])) {
-                revert UnsupportedAsset(assets[i]);
-            }
-        }
+        _removeSupportedAssets(assets);
     }
 
     // Internal functions
@@ -136,23 +122,10 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         __ReentrancyGuard_init();
         (address vault_, SecurityParams memory securityParams_, address[] memory assets_) =
             abi.decode(initParams, (address, SecurityParams, address[]));
-        if (
-            vault_ == address(0) || securityParams_.maxAbsoluteDeviation == 0
-                || securityParams_.suspiciousAbsoluteDeviation == 0 || securityParams_.maxRelativeDeviationD18 == 0
-                || securityParams_.suspiciousRelativeDeviationD18 == 0 || securityParams_.timeout == 0
-                || securityParams_.secureInterval == 0
-        ) {
-            revert ZeroValue();
-        }
         OracleStorage storage $ = _oracleStorage();
         $.vault = IShareModule(vault_);
-        $.securityParams = securityParams_;
-        for (uint256 i = 0; i < assets_.length; i++) {
-            if (assets_[i] == address(0)) {
-                revert ZeroValue();
-            }
-            $.supportedAssets.add(assets_[i]);
-        }
+        _setSecurityParams(securityParams_);
+        _addSupportedAssets(assets_);
     }
 
     function _handleReport(SecurityParams memory securityParams_, uint224 priceD18, DetailedReport storage report)
@@ -200,6 +173,36 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             return (true, true);
         }
         return (true, false);
+    }
+
+    function _setSecurityParams(SecurityParams memory securityParams_) private {
+        OracleStorage storage $ = _oracleStorage();
+        if (
+            securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0
+                || securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0
+                || securityParams_.timeout == 0 || securityParams_.secureInterval == 0
+        ) {
+            revert ZeroValue();
+        }
+        $.securityParams = securityParams_;
+    }
+
+    function _addSupportedAssets(address[] memory assets) private {
+        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
+        for (uint256 i = 0; i < assets.length; i++) {
+            if (!asset_.add(assets[i])) {
+                revert AlreadySupportedAsset(assets[i]);
+            }
+        }
+    }
+
+    function _removeSupportedAssets(address[] calldata assets) private {
+        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
+        for (uint256 i = 0; i < assets.length; i++) {
+            if (!asset_.remove(assets[i])) {
+                revert UnsupportedAsset(assets[i]);
+            }
+        }
     }
 
     function _oracleStorage() internal view returns (OracleStorage storage $) {
