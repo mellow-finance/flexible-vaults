@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.so
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-interface IFactory {
+interface IFactory is IFactoryEntity {
     struct FactoryStorage {
         EnumerableSet.AddressSet entities;
         EnumerableSet.AddressSet implementations;
@@ -27,7 +27,6 @@ interface IFactory {
     function isBlacklisted(uint256 version) external view returns (bool);
 
     // Mutable functions
-    function initialize(address owner_) external;
     function setBlacklistStatus(uint256 version, bool flag) external;
     function proposeImplementation(address implementation) external;
     function acceptProposedImplementation(address implementation) external;

@@ -51,7 +51,8 @@ contract Factory is IFactory, OwnableUpgradeable {
 
     // Mutable functions
 
-    function initialize(address owner_) external initializer {
+    function initialize(bytes calldata data) external initializer {
+        address owner_ = abi.decode(data, (address));
         __Ownable_init(owner_);
     }
 

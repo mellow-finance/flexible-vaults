@@ -23,8 +23,8 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         _;
     }
 
-    function requireValidSubvault(address vault, address subvault) public view {
-        if (!IVaultModule(vault).hasSubvault(subvault)) {
+    function requireValidSubvault(address vault_, address subvault) public view {
+        if (!IVaultModule(vault_).hasSubvault(subvault)) {
             revert("RiskManager: not a valid subvault");
         }
     }

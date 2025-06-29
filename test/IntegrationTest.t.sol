@@ -32,27 +32,27 @@ contract Integration is Test {
         verifierFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        verifierFactory.initialize(vaultAdmin);
+        verifierFactory.initialize(abi.encode(vaultAdmin));
 
         subvaultFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        subvaultFactory.initialize(vaultAdmin);
+        subvaultFactory.initialize(abi.encode(vaultAdmin));
 
         depositQueueFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        depositQueueFactory.initialize(vaultAdmin);
+        depositQueueFactory.initialize(abi.encode(vaultAdmin));
 
         redeemQueueFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        redeemQueueFactory.initialize(vaultAdmin);
+        redeemQueueFactory.initialize(abi.encode(vaultAdmin));
 
         riskManagerFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        riskManagerFactory.initialize(vaultAdmin);
+        riskManagerFactory.initialize(abi.encode(vaultAdmin));
 
         vaultImplementation =
             new Vault("Mellow", 1, address(depositQueueFactory), address(redeemQueueFactory), address(subvaultFactory));
