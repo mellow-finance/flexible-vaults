@@ -20,7 +20,9 @@ abstract contract SubvaultModule is ISubvaultModule, BaseModule {
     }
 
     function pullAssets(address asset, address to, uint256 value) external {
-        require(_msgSender() == vault(), "SubvaultModule: only root vault can pull liquidity");
+        if (_msgSender() != vault()) {
+            revert NotVault();
+        }
         TransferLibrary.sendAssets(asset, to, value);
     }
 

@@ -13,6 +13,8 @@ import "../queues/IRedeemQueue.sol";
 import "./IBaseModule.sol";
 
 interface IShareModule is IBaseModule {
+    error UnsupportedAsset(address asset);
+
     struct ShareModuleStorage {
         address shareManager;
         address feeManager;

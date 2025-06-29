@@ -71,7 +71,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     function redeem(uint256 shares) external nonReentrant {
         if (shares == 0) {
-            revert("RedeemQueue: zero shares");
+            revert ValueZero();
         }
         address caller = _msgSender();
 

@@ -4,6 +4,8 @@ pragma solidity 0.8.25;
 import "./SignatureQueue.sol";
 
 contract SignatureRedeemQueue is SignatureQueue {
+    error InsufficientAssets(uint256 requested, uint256 available);
+
     constructor(string memory name_, uint256 version_) SignatureQueue(name_, version_) {}
 
     function redeem(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
@@ -11,8 +13,8 @@ contract SignatureRedeemQueue is SignatureQueue {
         _signatureQueueStorage().nonces[order.caller]++;
         IShareModule vault_ = IShareModule(vault());
 
-        if (vault_.getLiquidAssets() < order.requested) {
-            revert("SignatureRedeemQueue: insufficient liquid assets");
+        if (order.requested > vault_.getLiquidAssets()) {
+            revert InsufficientAssets(order.requested, vault_.getLiquidAssets());
         }
 
         vault_.shareManager().burn(order.recipient, order.requested);

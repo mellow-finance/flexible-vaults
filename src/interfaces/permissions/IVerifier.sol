@@ -9,6 +9,13 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./ICustomVerifier.sol";
 
 interface IVerifier {
+    error Forbidden();
+    error VerificationFailed();
+    error ValueZero();
+    error InvalidLength();
+    error CallAlreadyAllowed(address who, address where, bytes4 selector);
+    error CallNotFound(address who, address where, bytes4 selector);
+
     struct Call {
         address who;
         address where;

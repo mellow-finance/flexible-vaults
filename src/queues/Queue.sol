@@ -34,10 +34,10 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
 
     function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external {
         if (_msgSender() != vault()) {
-            revert("Queue: forbidden");
+            revert Forbidden();
         }
         if (priceD18 == 0 || latestEligibleTimestamp >= block.timestamp) {
-            revert("Queue: inalid report");
+            revert InvalidReport();
         }
         _handleReport(priceD18, latestEligibleTimestamp);
     }
@@ -46,7 +46,7 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
 
     function __Queue_init(address asset_, address vault_) internal onlyInitializing {
         if (asset_ == address(0) || vault_ == address(0)) {
-            revert("Queue: zero address");
+            revert ValueZero();
         }
         QueueStorage storage $ = _queueStorage();
         $.asset = asset_;

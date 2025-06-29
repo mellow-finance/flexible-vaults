@@ -49,16 +49,16 @@ contract DepositQueue is IDepositQueue, Queue {
 
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable nonReentrant {
         if (assets == 0) {
-            revert("DepositQueue: zero assets");
+            revert ValueZero();
         }
         address caller = _msgSender();
         if (!IShareManager(shareManager()).isDepositorWhitelisted(caller, merkleProof)) {
-            revert("DepositQueue: deposit not allowed");
+            revert DepositNotAllowed();
         }
         DepositQueueStorage storage $ = _depositQueueStorage();
         if ($.requestOf[caller]._value != 0) {
             if (!_claim(caller)) {
-                revert("DepositQueue: pending request");
+                revert PendingRequestExists();
             }
         }
 
@@ -90,12 +90,12 @@ contract DepositQueue is IDepositQueue, Queue {
         Checkpoints.Checkpoint224 memory request = $.requestOf[caller];
         uint256 assets = request._value;
         if (assets == 0) {
-            revert("DepositQueue: no pending request");
+            revert NoPendingRequest();
         }
         address asset_ = asset();
         (bool exists, uint32 timestamp,) = $.prices.latestCheckpoint();
         if (exists && timestamp >= request._key) {
-            revert("DepositQueue: request already processed");
+            revert ClaimableRequestExists();
         }
 
         delete $.requestOf[caller];
@@ -190,5 +190,3 @@ contract DepositQueue is IDepositQueue, Queue {
 
     event DepositRequested(address indexed account, address indexed referral, uint224 assets, uint32 timestamp);
 }
-
-import "forge-std/console2.sol";

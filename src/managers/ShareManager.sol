@@ -120,10 +120,16 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     function allocateShares(uint256 value) external onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
         _shareManagerStorage().allocatedShares += value;
     }
 
     function mintAllocatedShares(address account, uint256 value) external {
+        if (value == 0) {
+            revert ZeroValue();
+        }
         ShareManagerStorage storage $ = _shareManagerStorage();
         if (value > $.allocatedShares) {
             revert InsufficientAllocatedShares(value, $.allocatedShares);
@@ -133,6 +139,9 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     function mint(address account, uint256 value) public onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
         _mintShares(account, value);
         ShareManagerStorage storage $ = _shareManagerStorage();
         uint32 targetLockup = $.flags.getTargetedLockup();
@@ -142,10 +151,13 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     function burn(address account, uint256 value) public onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
         _burnShares(account, value);
     }
 
-    function updateChecks(address from, address to, uint256 value) public view {
+    function updateChecks(address from, address to) public view {
         ShareManagerStorage storage $ = _shareManagerStorage();
         uint256 flags_ = $.flags;
         AccountInfo memory info;
@@ -166,7 +178,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                 }
                 if (flags_.hasTransferWhitelist()) {
                     if (info.canTransfer || !$.accounts[to].canTransfer) {
-                        revert("ShareManager: transfer is not whitelisted");
+                        revert TransferNotAllowed(from, to);
                     }
                 }
             } else {
@@ -181,10 +193,10 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
             if (to != address(0)) {
                 info = $.accounts[to];
                 if (flags_.hasWhitelist() && !info.canDeposit) {
-                    revert("ShareManager: recipient is not whitelisted");
+                    revert NotWhitelisted(to);
                 }
                 if (flags_.hasBlacklist() && info.isBlacklisted) {
-                    revert("ShareManager: recipient is blacklisted");
+                    revert Blacklisted(to);
                 }
             }
         }
@@ -193,7 +205,9 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     // Internal functions
 
     function __ShareManager_init(address vault_, bytes32 whitelistMerkleRoot_) internal onlyInitializing {
-        require(vault_ != address(0), "ShareManager: vault cannot be zero address");
+        if (vault_ == address(0)) {
+            revert ZeroValue();
+        }
         ShareManagerStorage storage $ = _shareManagerStorage();
         $.vault = vault_;
         $.whitelistMerkleRoot = whitelistMerkleRoot_;

@@ -5,6 +5,9 @@ import "../permissions/IMellowACL.sol";
 import "./IBaseModule.sol";
 
 interface IACLModule is IMellowACL {
+    error Forbidden();
+    error ZeroAddress();
+
     enum FundamentalRole {
         ADMIN,
         PROXY_OWNER,

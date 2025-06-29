@@ -12,6 +12,13 @@ import "../modules/IVaultModule.sol";
 import "../oracles/IOracle.sol";
 
 interface IRiskManager is IFactoryEntity {
+    error Forbidden();
+    error InvalidReport();
+    error AlreadyAllowedAsset(address asset);
+    error NotAllowedAsset(address asset);
+    error LimitExceeded(int256 newValue, int256 maxValue);
+    error NotSubvault(address subvault);
+
     struct State {
         int256 balance;
         int256 limit;
@@ -21,8 +28,8 @@ interface IRiskManager is IFactoryEntity {
         address vault;
         State vaultState;
         int256 pendingBalance;
-        mapping(address queue => uint256) pendingAssets;
-        mapping(address queue => uint256) pendingShares;
+        mapping(address asset => uint256) pendingAssets;
+        mapping(address asset => uint256) pendingShares;
         mapping(address subvault => State) subvaultStates;
         mapping(address subvault => EnumerableSet.AddressSet) allowedAssets;
     }
@@ -35,9 +42,9 @@ interface IRiskManager is IFactoryEntity {
 
     function setSubvaultLimit(address subvault, int256 limit) external;
 
-    function addSubvaultAllowedAssets(address subvault, address[] calldata assets) external;
+    function allowSubvaultAssets(address subvault, address[] calldata assets) external;
 
-    function removeSubvaultAllowedAssets(address subvault, address[] calldata assets) external;
+    function disallowSubvaultAssets(address subvault, address[] calldata assets) external;
 
     function modifyPendingAssets(address asset, int256 change) external;
 

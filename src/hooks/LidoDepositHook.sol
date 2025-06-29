@@ -10,6 +10,8 @@ import "../interfaces/tokens/IWSTETH.sol";
 import "../libraries/TransferLibrary.sol";
 
 contract LidoDepositHook is IDepositHook {
+    error UnsupportedAsset(address asset);
+
     using SafeERC20 for IERC20;
 
     address public immutable wsteth;
@@ -34,7 +36,7 @@ contract LidoDepositHook is IDepositHook {
                 if (asset == weth) {
                     IWETH(weth).withdraw(assets);
                 } else if (asset != TransferLibrary.ETH) {
-                    revert("LidoStakingHook: unsupported asset");
+                    revert UnsupportedAsset(asset);
                 }
                 Address.sendValue(payable(wsteth), assets);
             }

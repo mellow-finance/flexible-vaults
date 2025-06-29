@@ -16,7 +16,9 @@ contract Verifier is IVerifier, ContextUpgradeable {
     bytes32 private immutable _verifierStorageSlot;
 
     modifier onlyRole(bytes32 role) {
-        require(primaryACL().hasRole(role, _msgSender()), "Verifier: caller does not have the required role");
+        if (!primaryACL().hasRole(role, _msgSender())) {
+            revert Forbidden();
+        }
         _;
     }
 
@@ -67,7 +69,9 @@ contract Verifier is IVerifier, ContextUpgradeable {
         bytes calldata data,
         VerificationPayload calldata verificationPayload
     ) external view {
-        require(getVerificationResult(who, where, value, data, verificationPayload), "Verifier: verification failed");
+        if (!getVerificationResult(who, where, value, data, verificationPayload)) {
+            revert VerificationFailed();
+        }
     }
 
     function getVerificationResult(
@@ -123,7 +127,9 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     function initialize(bytes calldata initParams) external initializer {
         (address primaryACL_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
-        require(primaryACL_ != address(0), "Verifier: zero primary ACL address");
+        if (primaryACL_ == address(0)) {
+            revert ValueZero();
+        }
         _verifierStorage().primaryACL = primaryACL_;
         if (merkleRoot_ != bytes32(0)) {
             _verifierStorage().merkleRoot = merkleRoot_;
@@ -131,12 +137,16 @@ contract Verifier is IVerifier, ContextUpgradeable {
     }
 
     function setSecondaryACL(address secondaryACL_) external onlyRole(SET_SECONDARY_ACL_ROLE) {
-        require(secondaryACL_ != address(0), "Verifier: zero secondary ACL address");
+        if (secondaryACL_ == address(0)) {
+            revert ValueZero();
+        }
         _verifierStorage().secondaryACL = secondaryACL_;
     }
 
     function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(SET_MERKLE_ROOT_ROLE) {
-        require(merkleRoot_ != bytes32(0), "Verifier: zero merkle root");
+        if (merkleRoot_ == bytes32(0)) {
+            revert ValueZero();
+        }
         _verifierStorage().merkleRoot = merkleRoot_;
     }
 
@@ -146,13 +156,13 @@ contract Verifier is IVerifier, ContextUpgradeable {
     {
         uint256 n = callers.length;
         if (n != targets.length || n != selectors.length) {
-            revert("Verifier: arrays length mismatch");
+            revert InvalidLength();
         }
         EnumerableSet.Bytes32Set storage hashedAllowedCalls_ = _verifierStorage().hashedAllowedCalls;
         for (uint256 i = 0; i < n; i++) {
             bytes32 hash_ = hashCall(callers[i], targets[i], selectors[i]);
             if (!hashedAllowedCalls_.add(hash_)) {
-                revert("Verifier: call already allowed");
+                revert CallAlreadyAllowed(callers[i], targets[i], selectors[i]);
             }
         }
     }
@@ -163,13 +173,13 @@ contract Verifier is IVerifier, ContextUpgradeable {
     {
         uint256 n = callers.length;
         if (n != targets.length || n != selectors.length) {
-            revert("Verifier: arrays length mismatch");
+            revert InvalidLength();
         }
         EnumerableSet.Bytes32Set storage hashedAllowedCalls_ = _verifierStorage().hashedAllowedCalls;
         for (uint256 i = 0; i < n; i++) {
             bytes32 hash_ = hashCall(callers[i], targets[i], selectors[i]);
             if (!hashedAllowedCalls_.remove(hash_)) {
-                revert("Verifier: call not allowed");
+                revert CallNotFound(callers[i], targets[i], selectors[i]);
             }
         }
     }

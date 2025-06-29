@@ -109,7 +109,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         ShareModuleStorage storage $ = _shareModuleStorage();
         address asset = IQueue(queue).asset();
         if (!$.queues[asset].contains(queue) || $.isDepositQueue[queue]) {
-            revert("ShareModule: caller is not a redeem queue");
+            revert Forbidden();
         }
         return IRedeemHook(getHook(queue)).getLiquidAssets(asset);
     }
@@ -138,7 +138,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         ShareModuleStorage storage $ = _shareModuleStorage();
         address asset = IQueue(queue).asset();
         if (!_shareModuleStorage().queues[asset].contains(queue)) {
-            revert("RedeemModule: caller is not a queue");
+            revert Forbidden();
         }
         address hook = getHook(queue);
         if ($.isDepositQueue[queue]) {
@@ -151,7 +151,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
 
     function setCustomHook(address queue, address hook) external onlyRole(SET_CUSTOM_HOOK_ROLE) {
         if (queue == address(0) || hook == address(0)) {
-            revert("ShareModule: zero address");
+            revert ZeroAddress();
         }
         _shareModuleStorage().customHooks[queue] = hook;
     }
@@ -160,8 +160,8 @@ abstract contract ShareModule is IShareModule, ACLModule {
         external
         onlyRole(CREATE_DEPOSIT_QUEUE_ROLE)
     {
-        if (asset == address(0) || !IOracle(oracle()).isSupportedAsset(asset)) {
-            revert("DepositModule: unsupported asset");
+        if (!IOracle(oracle()).isSupportedAsset(asset)) {
+            revert UnsupportedAsset(asset);
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
@@ -175,8 +175,8 @@ abstract contract ShareModule is IShareModule, ACLModule {
         external
         onlyRole(CREATE_REDEEM_QUEUE_ROLE)
     {
-        if (asset == address(0) || !IOracle(oracle()).isSupportedAsset(asset)) {
-            revert("RedeemModule: unsupported asset");
+        if (!IOracle(oracle()).isSupportedAsset(asset)) {
+            revert UnsupportedAsset(asset);
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
@@ -225,7 +225,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
             shareManager_ == address(0) || feeManager_ == address(0) || oracle_ == address(0)
                 || defaultDepositHook_ == address(0) || defaultRedeemHook_ == address(0)
         ) {
-            revert("ShareModule: zero address");
+            revert ZeroAddress();
         }
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.shareManager = shareManager_;

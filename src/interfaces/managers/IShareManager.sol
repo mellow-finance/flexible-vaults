@@ -17,6 +17,9 @@ interface IShareManager {
     error MintPaused();
     error BurnPaused();
     error LimitExceeded(uint256 value, uint256 limit);
+    error NotWhitelisted(address account);
+    error TransferNotAllowed(address from, address to);
+    error ZeroValue();
 
     struct ShareManagerStorage {
         address vault;

@@ -35,7 +35,7 @@ contract BasicShareManager is ShareManager {
         if (account == address(0)) {
             revert IERC20Errors.ERC20InvalidReceiver(address(0));
         }
-        updateChecks(address(0), account, value);
+        updateChecks(address(0), account);
         ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
         $._totalSupply += value;
         unchecked {
@@ -48,7 +48,7 @@ contract BasicShareManager is ShareManager {
         if (account == address(0)) {
             revert IERC20Errors.ERC20InvalidSender(address(0));
         }
-        updateChecks(account, address(0), value);
+        updateChecks(account, address(0));
         ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
         uint256 balance = $._balances[account];
         if (balance < value) {

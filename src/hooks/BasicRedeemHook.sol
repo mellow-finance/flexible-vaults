@@ -1,23 +1,13 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
 import "../interfaces/hooks/IRedeemHook.sol";
 import "../interfaces/modules/IVaultModule.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract BasicRedeemHook is IRedeemHook {
-    address private immutable _this;
-
-    constructor() {
-        _this = address(this);
-    }
-
     function beforeRedeem(address asset, uint256 assets) public virtual {
         IVaultModule vault = IVaultModule(address(this));
-        if (address(vault) == _this) {
-            revert("BasicRedeemHook: delegate call only");
-        }
         uint256 liquid = IERC20(asset).balanceOf(address(vault));
         if (liquid >= assets) {
             return;

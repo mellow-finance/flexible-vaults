@@ -8,6 +8,10 @@ pragma solidity 0.8.25;
         ru: http://e-maxx.ru/algo/fenwick_tree
 */
 library FenwickTreeLibrary {
+    error ZeroSize();
+    error SizeNotPowerOfTwo();
+    error IndexOutOfBounds();
+
     struct Tree {
         uint256 size;
         mapping(uint256 index => int256) array;
@@ -15,10 +19,10 @@ library FenwickTreeLibrary {
 
     function initialize(Tree storage tree, uint256 size) internal {
         if (size == 0) {
-            revert("FenwickTreeLibrary: size must be greater than zero");
+            revert ZeroSize();
         }
         if ((size & (size - 1)) != 0) {
-            revert("FenwickTreeLibrary: size must be a power of two");
+            revert SizeNotPowerOfTwo();
         }
         tree.size = size;
     }
@@ -37,7 +41,7 @@ library FenwickTreeLibrary {
     function modify(Tree storage tree, uint256 index, int256 value) internal {
         uint256 size = tree.size;
         if (index >= size) {
-            revert("FenwickTreeLibrary: index out of bounds");
+            revert IndexOutOfBounds();
         }
         if (value == 0) {
             return;

@@ -6,14 +6,18 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 import "../../libraries/FenwickTreeLibrary.sol";
-import "../factories/IFactoryEntity.sol";
 
 import "../managers/IRiskManager.sol";
 import "../modules/IShareModule.sol";
 import "../modules/IVaultModule.sol";
 import "./IQueue.sol";
 
-interface IDepositQueue is IQueue, IFactoryEntity {
+interface IDepositQueue is IQueue {
+    error DepositNotAllowed();
+    error PendingRequestExists();
+    error NoPendingRequest();
+    error ClaimableRequestExists();
+
     struct DepositQueueStorage {
         uint256 handledIndices;
         mapping(address account => Checkpoints.Checkpoint224) requestOf;
@@ -28,8 +32,6 @@ interface IDepositQueue is IQueue, IFactoryEntity {
     function requestOf(address account) external view returns (uint256 timestamp, uint256 assets);
 
     // Mutable functions
-
-    function initialize(bytes calldata data) external;
 
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable;
 

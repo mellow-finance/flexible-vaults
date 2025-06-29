@@ -6,17 +6,8 @@ import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/modules/IVaultModule.sol";
 
 contract RedirectingDepositHook is IDepositHook {
-    address private immutable _this;
-
-    constructor() {
-        _this = address(this);
-    }
-
     function afterDeposit(address asset, uint256 assets) public virtual {
         IVaultModule vault = IVaultModule(address(this));
-        if (address(vault) == _this) {
-            revert("BasicDepositHook: delegate call only");
-        }
         IRiskManager riskManager = vault.riskManager();
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {

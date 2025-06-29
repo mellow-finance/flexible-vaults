@@ -59,14 +59,20 @@ abstract contract VaultModule is IVaultModule, ACLModule {
 
     function disconnectSubvault(address subvault) external onlyRole(DISCONNECT_SUBVAULT_ROLE) {
         VaultModuleStorage storage $ = _vaultStorage();
-        require($.subvaults.contains(subvault), "SubvaultModule: subvault not found");
+        if (!$.subvaults.contains(subvault)) {
+            revert NotConnected(subvault);
+        }
         $.subvaults.remove(subvault);
     }
 
     function reconnectSubvault(address subvault) external onlyRole(RECONNECT_SUBVAULT_ROLE) {
         VaultModuleStorage storage $ = _vaultStorage();
-        require(!$.subvaults.contains(subvault), "SubvaultModule: subvault already connected");
-        require(IFactory(subvaultFactory).isEntity(subvault), "SubvaultModule: not a valid subvault");
+        if (!IFactory(subvaultFactory).isEntity(subvault)) {
+            revert NotEntity(subvault);
+        }
+        if ($.subvaults.contains(subvault)) {
+            revert AlreadyConnected(subvault);
+        }
         $.subvaults.add(subvault);
     }
 

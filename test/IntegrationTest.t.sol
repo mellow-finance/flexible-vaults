@@ -182,8 +182,8 @@ contract Integration is Test {
             riskManager.MODIFY_PENDING_ASSETS_ROLE(),
             riskManager.MODIFY_VAULT_BALANCE_ROLE(),
             riskManager.MODIFY_SUBVAULT_BALANCE_ROLE(),
-            riskManager.ADD_SUBVAULT_ALLOWED_ASSETS_ROLE(),
-            riskManager.REMOVE_SUBVAULT_ALLOWED_ASSETS_ROLE()
+            riskManager.ALLOW_SUBVAULT_ASSETS_ROLE(),
+            riskManager.DISALLOW_SUBVAULT_ASSETS_ROLE()
         ];
         for (uint256 i = 0; i < roles.length; i++) {
             vault.grantRole(roles[i], vaultAdmin);
@@ -221,7 +221,7 @@ contract Integration is Test {
             verifier.setSecondaryACL(subvault);
             address[] memory assets = new address[](1);
             assets[0] = address(asset);
-            riskManager.addSubvaultAllowedAssets(subvault, assets);
+            riskManager.allowSubvaultAssets(subvault, assets);
             riskManager.setSubvaultLimit(subvault, 100 ether);
         }
         vm.stopPrank();

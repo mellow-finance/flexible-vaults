@@ -16,6 +16,8 @@ interface ISymbioticVault {
 }
 
 contract SymbioticStrategy is Ownable {
+    error ApproveCallFailed();
+
     constructor(address owner) Ownable(owner) {}
 
     function deposit(
@@ -28,7 +30,9 @@ contract SymbioticStrategy is Ownable {
         bytes memory approveReponse = ICallModule(subvault).call(
             asset, 0, abi.encodeCall(IERC20.approve, (symbioticVault, assets)), verificationPayload[0]
         );
-        require(abi.decode(approveReponse, (bool)), "SymbioticStrategy: approve failed");
+        if (!abi.decode(approveReponse, (bool))) {
+            revert ApproveCallFailed();
+        }
         ICallModule(subvault).call(
             symbioticVault, 0, abi.encodeCall(ISymbioticVault.deposit, (subvault, assets)), verificationPayload[1]
         );

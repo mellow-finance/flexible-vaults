@@ -8,6 +8,12 @@ import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 interface IFactory is IFactoryEntity {
+    error OutOfBounds(uint256 index);
+    error BlacklistedVersion(uint256 version);
+    error ImplementationAlreadyAccepted(address implementation);
+    error ImplementationAlreadyProposed(address implementation);
+    error ImplementationNotProposed(address implementation);
+
     struct FactoryStorage {
         EnumerableSet.AddressSet entities;
         EnumerableSet.AddressSet implementations;

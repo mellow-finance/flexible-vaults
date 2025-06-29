@@ -9,6 +9,8 @@ import "../../interfaces/permissions/ICustomVerifier.sol";
 import "../MellowACL.sol";
 
 contract EigenLayerVerifier is ICustomVerifier, MellowACL {
+    error ValueZero();
+
     bytes32 public constant ASSET_ROLE = keccak256("EIGEN_LAYER_VERIFIER:ASSET_ROLE");
     bytes32 public constant CALLER_ROLE = keccak256("EIGEN_LAYER_VERIFIER:CALLER_ROLE");
     bytes32 public constant MELLOW_VAULT_ROLE = keccak256("EIGEN_LAYER_VERIFIER:MELLOW_VAULT_ROLE");
@@ -138,11 +140,11 @@ contract EigenLayerVerifier is ICustomVerifier, MellowACL {
         (address admin, address[] memory holders, bytes32[] memory roles) =
             abi.decode(data, (address, address[], bytes32[]));
         if (admin == address(0)) {
-            revert("EigenLayerVerifier: admin address cannot be zero");
+            revert ValueZero();
         }
         for (uint256 i = 0; i < holders.length; i++) {
             if (holders[i] == address(0) || roles[i] == bytes32(0)) {
-                revert("EigenLayerVerifier: holders and roles cannot be zero");
+                revert ValueZero();
             }
             _grantRole(roles[i], holders[i]);
         }

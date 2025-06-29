@@ -71,25 +71,22 @@ abstract contract SignatureQueue is
 
     function validateOrder(Order calldata order, IConsensus.Signature[] calldata signatures) public view {
         if (order.deadline < block.timestamp) {
-            revert("SignatureQueue: order expired");
+            revert OrderExpired(order.deadline);
         }
         if (order.queue != address(this)) {
-            revert("SignatureQueue: invalid queue");
+            revert InvalidQueue(order.queue);
         }
-        if (order.ordered == 0) {
-            revert("SignatureQueue: zero ordered value");
-        }
-        if (order.requested == 0) {
-            revert("SignatureQueue: zero requested value");
+        if (order.ordered == 0 || order.requested == 0) {
+            revert ValueZero();
         }
         if (order.asset != asset()) {
-            revert("SignatureQueue: invalid asset");
+            revert InvalidAsset(order.asset);
         }
         if (order.caller != _msgSender()) {
-            revert("SignatureQueue: invalid caller");
+            revert InvalidCaller(order.caller);
         }
         if (order.nonce != nonces(order.caller)) {
-            revert("SignatureQueue: invalid nonce");
+            revert InvalidNonce(order.caller, order.nonce);
         }
 
         consensus().requireValidSignatures(hashOrder(order), signatures);
@@ -105,7 +102,7 @@ abstract contract SignatureQueue is
             }
             (bool isValid, bool isSuspicious) = oracle_.validatePrice(priceD18, order.asset);
             if (!isValid || isSuspicious) {
-                revert("SignatureQueue: invalid conversion price");
+                revert InvalidPrice();
             }
         }
     }
@@ -118,7 +115,7 @@ abstract contract SignatureQueue is
         ($.asset, $.vault, data) = abi.decode(initData, (address, address, bytes));
         (address consensus_, string memory name_, string memory version_) = abi.decode(data, (address, string, string));
         if (consensus_ == address(0)) {
-            revert("SignatureQueue: consensus address cannot be zero");
+            revert ValueZero();
         }
         __ReentrancyGuard_init();
         __EIP712_init(name_, version_);

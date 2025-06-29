@@ -25,7 +25,7 @@ abstract contract VerifierModule is IVerifierModule, BaseModule, ACLModule {
 
     function __VerifierModule_init(address admin_, address verifier_) internal onlyInitializing {
         if (verifier_ == address(0)) {
-            revert("VerifierModule: zero guard address");
+            revert ZeroAddress();
         }
         _verifierModuleStorage().verifier = verifier_;
         __ACLModule_init(admin_);

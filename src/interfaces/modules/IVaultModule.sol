@@ -9,6 +9,10 @@ import "./IShareModule.sol";
 import "./ISubvaultModule.sol";
 
 interface IVaultModule is IACLModule {
+    error AlreadyConnected(address subvault);
+    error NotConnected(address subvault);
+    error NotEntity(address subvault);
+
     struct VaultModuleStorage {
         address riskManager;
         EnumerableSet.AddressSet subvaults;

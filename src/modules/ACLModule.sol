@@ -23,7 +23,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     function requireFundamentalRole(address account, FundamentalRole role) public view {
         if (!hasFundamentalRole(account, role)) {
-            revert("ACLModule: account does not have the required fundamental role");
+            revert Forbidden();
         }
     }
 
@@ -41,7 +41,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     function __ACLModule_init(address admin_) internal onlyInitializing {
         if (admin_ == address(0)) {
-            revert("ACLModule: zero admin address");
+            revert ZeroAddress();
         }
         _grantFundamentalRole(FundamentalRole.ADMIN, admin_);
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
@@ -49,7 +49,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     function _grantFundamentalRole(FundamentalRole role, address account) internal virtual {
         if (account == address(0)) {
-            revert("ACLModule: zero account address");
+            revert ZeroAddress();
         }
         _aclModuleStorage().fundamentalRoles[account] |= (1 << uint256(role));
     }
@@ -63,7 +63,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     function _revokeFundamentalRole(FundamentalRole role, address account) internal virtual {
         if (account == address(0)) {
-            revert("ACLModule: zero account address");
+            revert ZeroAddress();
         }
         _aclModuleStorage().fundamentalRoles[account] &= ~(1 << uint256(role));
     }

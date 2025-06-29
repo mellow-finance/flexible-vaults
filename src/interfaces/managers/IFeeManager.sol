@@ -5,6 +5,13 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
 interface IFeeManager {
+    error ZeroAddress();
+    error InvalidDepositFee(uint256 fee);
+    error InvalidRedeemFee(uint256 fee);
+    error InvalidPerformanceFee(uint256 fee);
+    error InvalidProtocolFee(uint256 fee);
+    error BaseAssetAlreadSet(address vault, address baseAsset);
+
     struct FeeManagerStorage {
         address feeRecipient;
         uint24 depositFeeD6;
@@ -32,10 +39,8 @@ interface IFeeManager {
 
     // Mutable functions
     function setFeeRecipient(address feeRecipient_) external;
-    function setDepositFeeD6(uint24 depositFeeD6_) external;
-    function setRedeemFeeD6(uint24 redeemFeeD6_) external;
-    function setPerformanceFeeD6(uint24 performanceFeeD6_) external;
-    function setProtocolFeeD6(uint24 protocolFeeD6_) external;
+    function setFees(uint24 depositFeeD6_, uint24 redeemFeeD6_, uint24 performanceFeeD6_, uint24 protocolFeeD6_)
+        external;
     function setBaseAsset(address vault, address baseAsset_) external;
     function updateState(address asset, uint256 priceD18) external;
     function initialize(bytes calldata data) external;
