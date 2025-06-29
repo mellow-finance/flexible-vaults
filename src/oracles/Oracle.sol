@@ -42,7 +42,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     function getReport(address asset) public view returns (DetailedReport memory) {
         OracleStorage storage $ = _oracleStorage();
         if (!$.supportedAssets.contains(asset)) {
-            revert("Oracle: unsupported asset");
+            revert UnsupportedAsset(asset);
         }
         return $.reports[asset];
     }
@@ -70,7 +70,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         mapping(address asset => DetailedReport) storage reports_ = $.reports;
         for (uint256 i = 0; i < reports.length; i++) {
             if (!supportedAssets_.contains(reports[i].asset)) {
-                revert("Oracle: asset not supported");
+                revert UnsupportedAsset(reports[i].asset);
             }
             if (_handleReport(securityParams_, reports[i].priceD18, reports_[reports[i].asset])) {
                 vault_.handleReport(reports[i].asset, reports[i].priceD18, secureTimestamp);
@@ -82,10 +82,10 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         OracleStorage storage $ = _oracleStorage();
         DetailedReport storage report_ = $.reports[asset];
         if (!report_.isSuspicious) {
-            revert("Oracle: report is not suspicious");
+            revert NonSuspiciousReport(asset, timestamp);
         }
         if (report_.timestamp != timestamp) {
-            revert("Oracle: report timestamp mismatch");
+            revert InvalidTimestamp(timestamp, report_.timestamp);
         }
         report_.isSuspicious = false;
         vault().handleReport(asset, report_.priceD18, timestamp - $.securityParams.secureInterval);
@@ -96,14 +96,12 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         onlyRole(PermissionsLibrary.SET_SECURITY_PARAMS_ROLE)
     {
         OracleStorage storage $ = _oracleStorage();
-        if (securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0) {
-            revert("Oracle: zero absolute deviation");
-        }
-        if (securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0) {
-            revert("Oracle: zero relative deviation");
-        }
-        if (securityParams_.timeout == 0 || securityParams_.secureInterval == 0) {
-            revert("Oracle: zero timeout or secure interval");
+        if (
+            securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0
+                || securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0
+                || securityParams_.timeout == 0 || securityParams_.secureInterval == 0
+        ) {
+            revert ZeroValue();
         }
         $.securityParams = securityParams_;
     }
@@ -115,7 +113,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
         for (uint256 i = 0; i < assets.length; i++) {
             if (!asset_.add(assets[i])) {
-                revert("Oracle: asset already supported");
+                revert AlreadySupportedAsset(assets[i]);
             }
         }
     }
@@ -127,7 +125,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
         for (uint256 i = 0; i < assets.length; i++) {
             if (!asset_.remove(assets[i])) {
-                revert("Oracle: asset not supported");
+                revert UnsupportedAsset(assets[i]);
             }
         }
     }
@@ -138,24 +136,20 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         __ReentrancyGuard_init();
         (address vault_, SecurityParams memory securityParams_, address[] memory assets_) =
             abi.decode(initParams, (address, SecurityParams, address[]));
-        if (vault_ == address(0)) {
-            revert("Oracle: zero vault address");
-        }
-        if (securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0) {
-            revert("Oracle: zero absolute deviation");
-        }
-        if (securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0) {
-            revert("Oracle: zero relative deviation");
-        }
-        if (securityParams_.timeout == 0 || securityParams_.secureInterval == 0) {
-            revert("Oracle: zero timeout or secure interval");
+        if (
+            vault_ == address(0) || securityParams_.maxAbsoluteDeviation == 0
+                || securityParams_.suspiciousAbsoluteDeviation == 0 || securityParams_.maxRelativeDeviationD18 == 0
+                || securityParams_.suspiciousRelativeDeviationD18 == 0 || securityParams_.timeout == 0
+                || securityParams_.secureInterval == 0
+        ) {
+            revert ZeroValue();
         }
         OracleStorage storage $ = _oracleStorage();
         $.vault = IShareModule(vault_);
         $.securityParams = securityParams_;
         for (uint256 i = 0; i < assets_.length; i++) {
             if (assets_[i] == address(0)) {
-                revert("Oracle: zero asset address");
+                revert ZeroValue();
             }
             $.supportedAssets.add(assets_[i]);
         }
@@ -166,11 +160,11 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         returns (bool)
     {
         if (report.timestamp != 0 && securityParams_.timeout + report.timestamp > block.timestamp) {
-            revert("Oracle: too early to report");
+            revert TooEarly(block.timestamp, securityParams_.timeout + report.timestamp);
         }
         (bool isValid, bool isSuspicious) = _validatePrice(priceD18, report);
         if (!isValid) {
-            revert("Oracle: invalid price");
+            revert InvalidPrice(priceD18);
         }
         report.priceD18 = priceD18;
         report.timestamp = uint32(block.timestamp);

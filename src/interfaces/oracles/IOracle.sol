@@ -12,6 +12,14 @@ import "../factories/IFactoryEntity.sol";
 import "../modules/IShareModule.sol";
 
 interface IOracle is IFactoryEntity {
+    error UnsupportedAsset(address asset);
+    error AlreadySupportedAsset(address asset);
+    error NonSuspiciousReport(address asset, uint256 timestamp);
+    error InvalidTimestamp(uint256 timestamp, uint256 expectedTimestamp);
+    error ZeroValue();
+    error TooEarly(uint256 timestamp, uint256 minTimestamp);
+    error InvalidPrice(uint256 priceD18);
+
     struct SecurityParams {
         uint224 maxAbsoluteDeviation;
         uint224 suspiciousAbsoluteDeviation;
