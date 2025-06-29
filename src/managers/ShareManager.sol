@@ -3,7 +3,6 @@ pragma solidity 0.8.25;
 
 import "../interfaces/managers/IShareManager.sol";
 
-import "../libraries/MerkleHashingLibrary.sol";
 import "../libraries/PermissionsLibrary.sol";
 import "../libraries/ShareManagerFlagLibrary.sol";
 import "../libraries/SlotLibrary.sol";
@@ -43,7 +42,9 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         bytes32 whitelistMerkleRoot_ = $.whitelistMerkleRoot;
         if (
             whitelistMerkleRoot_ != bytes32(0)
-                && !MerkleProof.verify(merkleProof, whitelistMerkleRoot_, MerkleHashingLibrary.hash(account))
+                && !MerkleProof.verify(
+                    merkleProof, whitelistMerkleRoot_, keccak256(bytes.concat(keccak256(abi.encode(account))))
+                )
         ) {
             return false;
         }
