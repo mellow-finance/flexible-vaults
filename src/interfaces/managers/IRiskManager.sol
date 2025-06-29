@@ -20,8 +20,8 @@ interface IRiskManager is IFactoryEntity {
         address vault;
         State vaultState;
         int256 pendingBalance;
-        mapping(address asset => int256) pendingAssets;
-        mapping(address asset => int256) pendingShares;
+        mapping(address queue => uint256) pendingAssets;
+        mapping(address queue => uint256) pendingShares;
         mapping(address subvault => State) subvaultStates;
     }
 

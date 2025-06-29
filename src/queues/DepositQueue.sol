@@ -176,7 +176,9 @@ contract DepositQueue is IDepositQueue, Queue {
 
         address asset_ = asset();
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
-        IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, int256(uint256(assets)));
+        IRiskManager riskManager = IVaultModule(address(vault_)).riskManager();
+        riskManager.modifyPendingAssets(asset_, -int256(uint256(assets)));
+        riskManager.modifyVaultBalance(asset_, int256(uint256(assets)));
         vault_.callHook(assets);
     }
 

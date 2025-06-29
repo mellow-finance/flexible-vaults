@@ -99,9 +99,13 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         onlyRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE)
     {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        int256 sharesChange = convertToShares(asset, change);
-        $.pendingAssets[asset] += change;
-        $.pendingShares[asset] += sharesChange;
+        uint256 pendingAssetsBefore = $.pendingAssets[asset];
+        uint256 pendingAssetsAfter = uint256(int256(pendingAssetsBefore) + change);
+        uint256 pendingSharesBefore = $.pendingShares[asset];
+        uint256 pendingSharesAfter = uint256(convertToShares(asset, int256(pendingAssetsAfter)));
+        $.pendingAssets[asset] = pendingAssetsAfter;
+        $.pendingShares[asset] = pendingSharesAfter;
+        int256 sharesChange = int256(pendingSharesAfter) - int256(pendingSharesBefore);
         $.pendingBalance += sharesChange;
         if (sharesChange > 0 && $.vaultState.balance + $.pendingBalance > $.vaultState.limit) {
             revert("RiskManager: root vault limit exceeded");

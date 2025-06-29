@@ -21,6 +21,7 @@ interface IOracle is IFactoryEntity {
         uint32 secureInterval;
     }
 
+    /// @dev shares = price18 * assets / 1e18 
     struct Report {
         address asset;
         uint224 priceD18;
