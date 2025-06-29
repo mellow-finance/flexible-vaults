@@ -25,9 +25,8 @@ contract BasicShareManager is ShareManager {
     // Mutable functions
 
     function initialize(bytes calldata data) external initializer {
-        (address vault_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_) =
-            abi.decode(data, (address, bytes32, uint256));
-        __ShareManager_init(vault_, whitelistMerkleRoot_, sharesLimit_);
+        (address vault_, bytes32 whitelistMerkleRoot_) = abi.decode(data, (address, bytes32));
+        __ShareManager_init(vault_, whitelistMerkleRoot_);
     }
 
     // Internal functions

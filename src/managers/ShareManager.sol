@@ -9,9 +9,8 @@ import "../libraries/SlotLibrary.sol";
 abstract contract ShareManager is IShareManager, ContextUpgradeable {
     using ShareManagerFlagLibrary for uint256;
 
-    bytes32 public constant SET_FLAGS_ROLE = keccak256("managers.ShareManager.SHARE_MANAGER:SET_FLAGS_ROLE");
-    bytes32 public constant SET_ACCOUNT_INFO_ROLE =
-        keccak256("managers.ShareManager.SHARE_MANAGER:SET_ACCOUNT_INFO_ROLE");
+    bytes32 public constant SET_FLAGS_ROLE = keccak256("managers.ShareManager.SET_FLAGS_ROLE");
+    bytes32 public constant SET_ACCOUNT_INFO_ROLE = keccak256("managers.ShareManager.SET_ACCOUNT_INFO_ROLE");
     bytes32 private immutable _shareManagerStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -22,17 +21,16 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     // View functions
 
     modifier onlyQueue() {
-        require(
-            IShareModule(_shareManagerStorage().vault).hasQueue(_msgSender()), "ShareManager: caller is not a queue"
-        );
+        if (!IShareModule(_shareManagerStorage().vault).hasQueue(_msgSender())) {
+            revert Forbidden();
+        }
         _;
     }
 
     modifier onlyRole(bytes32 role) {
-        require(
-            IACLModule(_shareManagerStorage().vault).hasRole(role, _msgSender()),
-            "ShareManager: caller does not have the required role"
-        );
+        if (!IACLModule(_shareManagerStorage().vault).hasRole(role, _msgSender())) {
+            revert Forbidden();
+        }
         _;
     }
 
@@ -93,10 +91,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         return _shareManagerStorage().whitelistMerkleRoot;
     }
 
-    function sharesLimit() public view returns (uint256) {
-        return _shareManagerStorage().sharesLimit;
-    }
-
     function accounts(address account)
         public
         view
@@ -132,7 +126,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     function mintAllocatedShares(address account, uint256 value) external {
         ShareManagerStorage storage $ = _shareManagerStorage();
         if (value > $.allocatedShares) {
-            revert("ShareManager: insufficient allocated shares");
+            revert InsufficientAllocatedShares(value, $.allocatedShares);
         }
         $.allocatedShares -= value;
         mint(account, value);
@@ -158,17 +152,17 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         if (from != address(0)) {
             info = $.accounts[from];
             if (block.timestamp < flags_.getGlobalLockup()) {
-                revert("ShareManager: global lockup is active");
+                revert GlobalLockupNotExpired(block.timestamp, flags_.getGlobalLockup());
             }
             if (block.timestamp < info.lockedUntil) {
-                revert("ShareManager: targeted lockup is active");
+                revert TargetedLockupNotExpired(block.timestamp, info.lockedUntil);
             }
             if (flags_.hasBlacklist() && info.isBlacklisted) {
-                revert("ShareManager: sender is blacklisted");
+                revert Blacklisted(from);
             }
             if (to != address(0)) {
                 if (flags_.hasTransferPause()) {
-                    revert("ShareManager: transfers are paused");
+                    revert TransferPaused();
                 }
                 if (flags_.hasTransferWhitelist()) {
                     if (info.canTransfer || !$.accounts[to].canTransfer) {
@@ -177,15 +171,12 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                 }
             } else {
                 if (flags_.hasBurnPause()) {
-                    revert("ShareManager: burning is paused");
+                    revert BurnPaused();
                 }
             }
         } else {
             if (flags_.hasMintPause()) {
-                revert("ShareManager: minting is paused");
-            }
-            if (totalShares() + value > $.sharesLimit) {
-                revert("ShareManager: shares limit exceeded");
+                revert MintPaused();
             }
             if (to != address(0)) {
                 info = $.accounts[to];
@@ -201,15 +192,11 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
 
     // Internal functions
 
-    function __ShareManager_init(address vault_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_)
-        internal
-        onlyInitializing
-    {
+    function __ShareManager_init(address vault_, bytes32 whitelistMerkleRoot_) internal onlyInitializing {
         require(vault_ != address(0), "ShareManager: vault cannot be zero address");
         ShareManagerStorage storage $ = _shareManagerStorage();
         $.vault = vault_;
         $.whitelistMerkleRoot = whitelistMerkleRoot_;
-        $.sharesLimit = sharesLimit_;
     }
 
     function _shareManagerStorage() private view returns (ShareManagerStorage storage $) {

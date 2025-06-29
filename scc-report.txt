@@ -1,7 +1,7 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 40      3569      551       111     2907        582           660.52
+Solidity                                 40      3567      551       111     2905        582           660.92
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         132       23         4      105          7             6.67
 src/hooks/BasicDepositHook.sol                      8        2         1        5          0             0.00
@@ -27,9 +27,9 @@ src/modules/VaultModule.sol                        95       21         4       7
 src/modules/VerifierModule.sol                     40       10         3       27          3            11.11
 src/oracles/Oracle.sol                            209       29         4      176         37            21.02
 src/permissions/BitmaskVerifier.sol                45        3         1       41          6            14.63
-src/permissions/Consensus.sol                     117       19         4       94         22            23.40
+src/permissions/Consensus.sol                     116       19         4       93         22            23.66
 src/permissions/MellowACL.sol                      53       11         1       41          6            14.63
-src/permissions/Verifier.sol                      186       27         4      155         35            22.58
+src/permissions/Verifier.sol                      185       27         4      154         35            22.73
 ~rc/permissions/protocols/ERC20Verifier.sol        64        8         3       53         27            50.94
 ~rmissions/protocols/EigenLayerVerifier.sol       151       10         3      138         73            52.90
 ~ermissions/protocols/SymbioticVerifier.sol       106       10         3       93         45            48.39
@@ -44,8 +44,8 @@ src/vaults/Subvault.sol                            19        3         1       1
 src/vaults/Vault.sol                               53        5         1       47          3             6.38
 src/vaults/VaultConfigurator.sol                   91       13         3       75          1             1.33
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    40      3569      551       111     2907        582           660.52
+Total                                    40      3567      551       111     2905        582           660.92
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 132483 bytes, 0.132 megabytes (SI)
+Processed 132315 bytes, 0.132 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 

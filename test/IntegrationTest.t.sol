@@ -97,9 +97,7 @@ contract Integration is Test {
             address(new TransparentUpgradeableProxy(address(shareManagerImplementation), vaultProxyAdmin, new bytes(0)))
         );
 
-        shareManager.initialize(
-            abi.encode(vault, bytes32(0), 100 ether, string("VaultERC20Name"), string("VaultERC20Symbol"))
-        );
+        shareManager.initialize(abi.encode(vault, bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol")));
 
         FeeManager feeManager = FeeManager(
             address(new TransparentUpgradeableProxy(address(feeManagerImplementation), vaultProxyAdmin, new bytes(0)))

@@ -62,7 +62,6 @@ contract Consensus is IConsensus, OwnableUpgradeable {
 
     function signerAt(uint256 index) external view returns (address signer, SignatureType signatureType) {
         ConsensusStorage storage $ = _consensusStorage();
-        require(index < $.signers.length(), "Consensus: index out of bounds");
         uint256 signatureTypeValue;
         (signer, signatureTypeValue) = $.signers.at(index);
         signatureType = SignatureType(signatureTypeValue);

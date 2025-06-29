@@ -52,7 +52,6 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     function allowedCallAt(uint256 index) public view returns (Call memory) {
         VerifierStorage storage $ = _verifierStorage();
-        require(index < $.hashedAllowedCalls.length(), "Verifier: index out of bounds");
         bytes32 key = $.hashedAllowedCalls.at(index);
         return _verifierStorage().allowedCalls[key];
     }
