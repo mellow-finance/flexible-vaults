@@ -19,10 +19,10 @@ abstract contract ShareModule is IShareModule, ACLModule {
     bytes32 public constant SET_QUEUE_LIMIT_ROLE = keccak256("modules.ShareModule.SET_QUEUE_LIMIT_ROLE");
     bytes32 public constant REMOVE_QUEUE_ROLE = keccak256("modules.ShareModule.REMOVE_QUEUE_ROLE");
 
-    bytes32 private immutable _shareModuleStorageSlot;
-
     IFactory public immutable depositQueueFactory;
     IFactory public immutable redeemQueueFactory;
+
+    bytes32 private immutable _shareModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_, address depositQueueFactory_, address redeemQueueFactory_) {
         _shareModuleStorageSlot = SlotLibrary.getSlot("ShareModule", name_, version_);
@@ -158,9 +158,13 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
         address hook = getHook(queue);
         if ($.isDepositQueue[queue]) {
-            Address.functionDelegateCall(hook, abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
+            if (hook == address(0)) {
+                Address.functionDelegateCall(hook, abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
+            }
         } else {
-            Address.functionDelegateCall(hook, abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
+            if (hook != address(0)) {
+                Address.functionDelegateCall(hook, abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
+            }
             TransferLibrary.sendAssets(asset, queue, assets);
         }
     }
@@ -283,10 +287,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         address defaultDepositHook_,
         address defaultRedeemHook_
     ) internal onlyInitializing {
-        if (
-            shareManager_ == address(0) || feeManager_ == address(0) || oracle_ == address(0)
-                || defaultDepositHook_ == address(0) || defaultRedeemHook_ == address(0)
-        ) {
+        if (shareManager_ == address(0) || feeManager_ == address(0) || oracle_ == address(0)) {
             revert ZeroAddress();
         }
         ShareModuleStorage storage $ = _shareModuleStorage();

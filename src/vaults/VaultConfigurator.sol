@@ -60,7 +60,7 @@ contract VaultConfigurator {
         return _vaults.length();
     }
 
-    function hasEntity(address vault) external view returns (bool) {
+    function isEntity(address vault) external view returns (bool) {
         return _vaults.contains(vault);
     }
 

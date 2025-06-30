@@ -16,10 +16,11 @@ abstract contract VaultModule is IVaultModule, ACLModule {
     bytes32 public constant RECONNECT_SUBVAULT_ROLE = keccak256("modules.VaultModule.RECONNECT_SUBVAULT_ROLE");
     bytes32 public constant PULL_LIQUIDITY_ROLE = keccak256("modules.VaultModule.PULL_LIQUIDITY_ROLE");
     bytes32 public constant PUSH_LIQUIDITY_ROLE = keccak256("modules.VaultModule.PUSH_LIQUIDITY_ROLE");
-    bytes32 private immutable _subvaultModuleStorageSlot;
 
     address public immutable subvaultFactory;
     address public immutable verifierFactory;
+
+    bytes32 private immutable _subvaultModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_, address subvaultFactory_, address verifierFactory_) {
         _subvaultModuleStorageSlot = SlotLibrary.getSlot("VaultModule", name_, version_);
