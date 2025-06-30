@@ -10,6 +10,7 @@ interface IQueue is IFactoryEntity {
     error ValueZero();
     error Forbidden();
     error InvalidReport();
+    error QueuePaused();
 
     struct QueueStorage {
         address asset;
@@ -22,6 +23,8 @@ interface IQueue is IFactoryEntity {
     function vault() external view returns (address);
 
     function asset() external view returns (address);
+
+    function canBeRemoved() external view returns (bool);
 
     // Mutable functions
 

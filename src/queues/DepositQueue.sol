@@ -38,6 +38,10 @@ contract DepositQueue is IDepositQueue, Queue {
         return (request._key, request._value);
     }
 
+    function canBeRemoved() external view returns (bool) {
+        return _depositQueueStorage().handledIndices == _timestamps().length();
+    }
+
     // Mutable functions
 
     function initialize(bytes calldata data) external initializer {
@@ -52,7 +56,11 @@ contract DepositQueue is IDepositQueue, Queue {
             revert ValueZero();
         }
         address caller = _msgSender();
-        if (!IShareManager(shareManager()).isDepositorWhitelisted(caller, merkleProof)) {
+        address vault_ = vault();
+        if (IShareModule(vault_).isPausedQueue(address(this))) {
+            revert QueuePaused();
+        }
+        if (!IShareManager(IShareModule(vault_).shareManager()).isDepositorWhitelisted(caller, merkleProof)) {
             revert DepositNotAllowed();
         }
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -78,7 +86,7 @@ contract DepositQueue is IDepositQueue, Queue {
             index = timestamps.length() - 1;
         }
 
-        IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, int256(uint256(assets)));
+        IVaultModule(vault_).riskManager().modifyPendingAssets(asset_, int256(uint256(assets)));
         $.requests.modify(index, int256(uint256(assets)));
         $.requestOf[caller] = Checkpoints.Checkpoint224(timestamp, assets);
         emit DepositRequested(caller, referral, assets, timestamp);

@@ -14,6 +14,8 @@ import "./IBaseModule.sol";
 
 interface IShareModule is IBaseModule {
     error UnsupportedAsset(address asset);
+    error QueueLimitReached();
+    error ValueZero();
 
     struct ShareModuleStorage {
         address shareManager;
@@ -21,10 +23,11 @@ interface IShareModule is IBaseModule {
         address oracle;
         address defaultDepositHook;
         address defaultRedeemHook;
-        uint256 queueLimit;
         uint256 queueCount;
+        uint256 queueLimit;
         mapping(address queue => address) customHooks;
         mapping(address queue => bool) isDepositQueue;
+        mapping(address queue => bool) isPausedQueue;
         mapping(address asset => EnumerableSet.AddressSet) queues;
         EnumerableSet.AddressSet assets;
     }
@@ -67,7 +70,7 @@ interface IShareModule is IBaseModule {
 
     function queueLimit() external view returns (uint256);
 
-    function queueCount() external view returns (uint256);
+    function isPausedQueue(address queue) external view returns (bool);
 
     // Mutable functions
 
@@ -77,13 +80,17 @@ interface IShareModule is IBaseModule {
 
     function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data) external;
 
-    function callHook(uint256 assets) external;
-
     function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data) external;
 
-    function sunsetQueue(address queue) external;
+    function removeQueue(address queue) external;
 
-    function setQueueLimit() external view returns (uint256);
+    function setQueueLimit(uint256 limit) external;
+
+    function pauseQueue(address queue) external;
+
+    function unpauseQueue(address queue) external;
+
+    function callHook(uint256 assets) external;
 
     function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external;
 }

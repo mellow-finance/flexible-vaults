@@ -59,6 +59,10 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
     }
 
+    function canBeRemoved() external view returns (bool) {
+        return _redeemQueueStorage().handledIndices == _timestamps().length();
+    }
+
     // Mutable functions
 
     receive() external payable {}
@@ -75,10 +79,14 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
         address caller = _msgSender();
 
-        IShareManager shareManager_ = IShareManager(shareManager());
+        address vault_ = vault();
+        if (IShareModule(vault_).isPausedQueue(address(this))) {
+            revert QueuePaused();
+        }
+        IShareManager shareManager_ = IShareManager(IShareModule(vault_).shareManager());
         shareManager_.burn(caller, shares);
         {
-            IFeeManager feeManager = IShareModule(vault()).feeManager();
+            IFeeManager feeManager = IShareModule(vault_).feeManager();
             uint256 fees = feeManager.calculateRedeemFee(shares);
             if (fees > 0) {
                 shareManager_.mint(feeManager.feeRecipient(), fees);
