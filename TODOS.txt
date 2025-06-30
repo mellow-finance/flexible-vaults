@@ -1,11 +1,3 @@
-Queues:
-1. min/max assets per action
-2. limits per token per block
-3. InstantWithDelayDepositQueue
-
-Oracles:
-1. better UX for 
-
 Strategies
 1. Restaking strategy
 2. Leverage strategy
