@@ -93,7 +93,7 @@ contract DepositQueue is IDepositQueue, Queue {
             revert NoPendingRequest();
         }
         address asset_ = asset();
-        (bool exists, uint32 timestamp,) = $.prices.latestCheckpoint();
+        (bool exists, uint32 timestamp, uint256 index) = $.prices.latestCheckpoint();
         if (exists && timestamp >= request._key) {
             revert ClaimableRequestExists();
         }
@@ -101,6 +101,7 @@ contract DepositQueue is IDepositQueue, Queue {
         delete $.requestOf[caller];
         TransferLibrary.sendAssets(asset_, caller, assets);
         IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
+        $.requests.modify(index, -int256(assets));
     }
 
     function claim(address account) external returns (bool) {

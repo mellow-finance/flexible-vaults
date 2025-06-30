@@ -7,11 +7,13 @@ import "../managers/IRiskManager.sol";
 import "./IACLModule.sol";
 import "./IShareModule.sol";
 import "./ISubvaultModule.sol";
+import "./IVerifierModule.sol";
 
 interface IVaultModule is IACLModule {
     error AlreadyConnected(address subvault);
     error NotConnected(address subvault);
     error NotEntity(address subvault);
+    error InvalidSubvault(address subvault);
 
     struct VaultModuleStorage {
         address riskManager;
@@ -32,9 +34,7 @@ interface IVaultModule is IACLModule {
 
     // Mutable functions
 
-    function createSubvault(uint256 version, address owner, address subvaultAdmin, address verifier)
-        external
-        returns (address subvault);
+    function createSubvault(uint256 version, address owner, address verifier) external returns (address subvault);
 
     function disconnectSubvault(address subvault) external;
 

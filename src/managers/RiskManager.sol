@@ -5,6 +5,9 @@ import "../interfaces/managers/IRiskManager.sol";
 
 import "../libraries/SlotLibrary.sol";
 
+/*
+    TODO: add pauses for deposit / redeem queues
+*/
 contract RiskManager is IRiskManager, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
 

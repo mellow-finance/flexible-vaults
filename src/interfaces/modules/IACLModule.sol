@@ -10,16 +10,15 @@ interface IACLModule is IMellowACL {
 
     enum FundamentalRole {
         ADMIN,
-        PROXY_OWNER,
-        SUBVAULT_ADMIN
+        PROXY_OWNER
     }
 
     struct ACLModuleStorage {
         mapping(address account => uint256) fundamentalRoles;
     }
 
-    function hasFundamentalRole(address account, FundamentalRole role) external view returns (bool);
-    function requireFundamentalRole(address account, FundamentalRole role) external view;
+    function hasFundamentalRole(FundamentalRole role, address account) external view returns (bool);
+    function requireFundamentalRole(FundamentalRole role, address account) external view;
 
     // Mutable functions
 

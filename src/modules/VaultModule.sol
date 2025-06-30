@@ -19,10 +19,12 @@ abstract contract VaultModule is IVaultModule, ACLModule {
     bytes32 private immutable _subvaultModuleStorageSlot;
 
     address public immutable subvaultFactory;
+    address public immutable verifierFactory;
 
-    constructor(string memory name_, uint256 version_, address subvaultFactory_) {
+    constructor(string memory name_, uint256 version_, address subvaultFactory_, address verifierFactory_) {
         _subvaultModuleStorageSlot = SlotLibrary.getSlot("VaultModule", name_, version_);
         subvaultFactory = subvaultFactory_;
+        verifierFactory = verifierFactory_;
     }
 
     // View functionss
@@ -45,24 +47,27 @@ abstract contract VaultModule is IVaultModule, ACLModule {
 
     // Mutable functions
 
-    function createSubvault(uint256 version, address owner, address subvaultAdmin, address verifier)
+    function createSubvault(uint256 version, address owner, address verifier)
         external
         onlyRole(CREATE_SUBVAULT_ROLE)
         returns (address subvault)
     {
-        requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
-        requireFundamentalRole(subvaultAdmin, FundamentalRole.SUBVAULT_ADMIN);
-        subvault = IFactory(subvaultFactory).create(version, owner, abi.encode(subvaultAdmin, verifier, address(this)));
-        VaultModuleStorage storage $ = _vaultStorage();
-        $.subvaults.add(subvault);
+        requireFundamentalRole(FundamentalRole.PROXY_OWNER, owner);
+        if (!IFactory(verifierFactory).isEntity(verifier)) {
+            revert NotEntity(verifier);
+        }
+        if (address(IVerifier(verifier).vault()) != address(this)) {
+            revert Forbidden();
+        }
+        subvault = IFactory(subvaultFactory).create(version, owner, abi.encode(verifier, address(this)));
+        _vaultStorage().subvaults.add(subvault);
     }
 
     function disconnectSubvault(address subvault) external onlyRole(DISCONNECT_SUBVAULT_ROLE) {
         VaultModuleStorage storage $ = _vaultStorage();
-        if (!$.subvaults.contains(subvault)) {
+        if (!$.subvaults.remove(subvault)) {
             revert NotConnected(subvault);
         }
-        $.subvaults.remove(subvault);
     }
 
     function reconnectSubvault(address subvault) external onlyRole(RECONNECT_SUBVAULT_ROLE) {
@@ -70,10 +75,19 @@ abstract contract VaultModule is IVaultModule, ACLModule {
         if (!IFactory(subvaultFactory).isEntity(subvault)) {
             revert NotEntity(subvault);
         }
-        if ($.subvaults.contains(subvault)) {
+        if (ISubvaultModule(subvault).vault() != address(this)) {
+            revert InvalidSubvault(subvault);
+        }
+        IVerifier verifier = IVerifierModule(subvault).verifier();
+        if (!IFactory(verifierFactory).isEntity(address(verifier))) {
+            revert NotEntity(address(verifier));
+        }
+        if (address(verifier.vault()) != address(this)) {
+            revert Forbidden();
+        }
+        if ($.subvaults.add(subvault)) {
             revert AlreadyConnected(subvault);
         }
-        $.subvaults.add(subvault);
     }
 
     function pullAssets(address subvault, address asset, uint256 value) external onlyRole(PULL_LIQUIDITY_ROLE) {

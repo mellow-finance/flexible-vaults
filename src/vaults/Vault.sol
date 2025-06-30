@@ -19,11 +19,12 @@ contract Vault is IFactoryEntity, VaultModule, ShareModule {
         uint256 version_,
         address depositQueueFactory_,
         address redeemQueueFactory_,
-        address subvaultFactory_
+        address subvaultFactory_,
+        address verifierFactory_
     )
         ACLModule(name_, version_)
         ShareModule(name_, version_, depositQueueFactory_, redeemQueueFactory_)
-        VaultModule(name_, version_, subvaultFactory_)
+        VaultModule(name_, version_, subvaultFactory_, verifierFactory_)
     {}
 
     function initialize(bytes calldata initParams) external initializer {

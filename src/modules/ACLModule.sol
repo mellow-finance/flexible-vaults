@@ -17,12 +17,12 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     // View functions
 
-    function hasFundamentalRole(address account, FundamentalRole role) public view returns (bool) {
+    function hasFundamentalRole(FundamentalRole role, address account) public view returns (bool) {
         return _aclModuleStorage().fundamentalRoles[account] & (1 << uint256(role)) != 0;
     }
 
-    function requireFundamentalRole(address account, FundamentalRole role) public view {
-        if (!hasFundamentalRole(account, role)) {
+    function requireFundamentalRole(FundamentalRole role, address account) public view {
+        if (!hasFundamentalRole(role, account)) {
             revert Forbidden();
         }
     }
@@ -56,7 +56,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     function _grantRole(bytes32 role, address account) internal virtual override returns (bool) {
         if (role == DEFAULT_ADMIN_ROLE) {
-            requireFundamentalRole(account, FundamentalRole.ADMIN);
+            requireFundamentalRole(FundamentalRole.ADMIN, account);
         }
         return super._grantRole(role, account);
     }

@@ -12,7 +12,10 @@ abstract contract MellowACL is IMellowACL, AccessControlEnumerableUpgradeable {
 
     constructor(string memory name_, uint256 version_) {
         _mellowACLStorageSlot = SlotLibrary.getSlot("MellowACL", name_, version_);
+        _disableInitializers();
     }
+
+    // View functions
 
     function supportedRoles() external view returns (uint256) {
         return _mellowACLStorage().supportedRoles.length();
@@ -25,6 +28,8 @@ abstract contract MellowACL is IMellowACL, AccessControlEnumerableUpgradeable {
     function hasSupportedRole(bytes32 role) external view returns (bool) {
         return _mellowACLStorage().supportedRoles.contains(role);
     }
+
+    // Internal functions
 
     function _grantRole(bytes32 role, address account) internal virtual override returns (bool) {
         if (super._grantRole(role, account)) {

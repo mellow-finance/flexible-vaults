@@ -11,12 +11,12 @@ import "../MellowACL.sol";
 contract EigenLayerVerifier is ICustomVerifier, MellowACL {
     error ValueZero();
 
-    bytes32 public constant ASSET_ROLE = keccak256("EIGEN_LAYER_VERIFIER:ASSET_ROLE");
-    bytes32 public constant CALLER_ROLE = keccak256("EIGEN_LAYER_VERIFIER:CALLER_ROLE");
-    bytes32 public constant MELLOW_VAULT_ROLE = keccak256("EIGEN_LAYER_VERIFIER:MELLOW_VAULT_ROLE");
-    bytes32 public constant OPERATOR_ROLE = keccak256("EIGEN_LAYER_VERIFIER:OPERATOR_ROLE");
-    bytes32 public constant RECEIVER_ROLE = keccak256("EIGEN_LAYER_VERIFIER:RECEIVER_ROLE");
-    bytes32 public constant STRATEGY_ROLE = keccak256("EIGEN_LAYER_VERIFIER:STRATEGY_ROLE");
+    bytes32 public constant ASSET_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.ASSET_ROLE");
+    bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.CALLER_ROLE");
+    bytes32 public constant MELLOW_VAULT_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.MELLOW_VAULT_ROLE");
+    bytes32 public constant OPERATOR_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.OPERATOR_ROLE");
+    bytes32 public constant RECEIVER_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.RECEIVER_ROLE");
+    bytes32 public constant STRATEGY_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.STRATEGY_ROLE");
 
     IDelegationManager public immutable delegationManager;
     IStrategyManager public immutable strategyManager;

@@ -13,34 +13,39 @@ interface IVerifier {
     error VerificationFailed();
     error ValueZero();
     error InvalidLength();
-    error CallAlreadyAllowed(address who, address where, bytes4 selector);
-    error CallNotFound(address who, address where, bytes4 selector);
+    error CompactCallAlreadyAllowed(address who, address where, bytes4 selector);
+    error CompactCallNotFound(address who, address where, bytes4 selector);
 
-    struct Call {
+    struct CompactCall {
         address who;
         address where;
         bytes4 selector;
     }
 
+    struct ExtendedCall {
+        address who;
+        address where;
+        uint256 value;
+        bytes data;
+    }
+
     struct VerifierStorage {
-        address primaryACL;
-        address secondaryACL;
+        address vault;
         bytes32 merkleRoot;
-        EnumerableSet.Bytes32Set hashedAllowedCalls;
-        mapping(bytes32 => Call) allowedCalls;
+        EnumerableSet.Bytes32Set compactCallHashes;
+        mapping(bytes32 => CompactCall) compactCalls;
     }
 
     enum VerficationType {
-        VERIFIER_ACL,
-        PRIMARY_ACL,
-        SECONDARY_ACL,
-        VERIFIER
+        ONCHAIN_COMPACT,
+        MERKLE_COMPACT,
+        MERKLE_EXTENDED,
+        CUSTOM_VERIFIER
     }
 
     struct VerificationPayload {
         // leaf:
         VerficationType verificationType;
-        address verifier; // verifier == address(vault) if it is ACL, else - separate verifier contract
         bytes verificationData;
         // merkle proof:
         bytes32[] proof;
@@ -48,19 +53,17 @@ interface IVerifier {
 
     // View functions
 
-    function primaryACL() external view returns (IAccessControl);
-
-    function secondaryACL() external view returns (IAccessControl);
+    function vault() external view returns (IAccessControl);
 
     function merkleRoot() external view returns (bytes32);
 
-    function isAllowedCall(address who, address where, bytes calldata data) external view returns (bool);
+    // function isAllowedCall(address who, address where, bytes calldata data) external view returns (bool);
 
-    function allowedCalls() external view returns (uint256);
+    // function allowedCalls() external view returns (uint256);
 
-    function allowedCallAt(uint256 index) external view returns (Call memory);
+    // function allowedCallAt(uint256 index) external view returns (Call memory);
 
-    function hashCall(address who, address where, bytes4 selector) external pure returns (bytes32);
+    // function hashCall(address who, address where, bytes4 selector) external pure returns (bytes32);
 
     function verifyCall(
         address who,
@@ -84,9 +87,9 @@ interface IVerifier {
 
     function setMerkleRoot(bytes32 merkleRoot_) external;
 
-    function addAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
-        external;
+    // function addAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
+    //     external;
 
-    function removeAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
-        external;
+    // function removeAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
+    //     external;
 }
