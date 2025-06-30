@@ -18,7 +18,6 @@ import "../src/libraries/FenwickTreeLibrary.sol";
 import "../src/libraries/ShareManagerFlagLibrary.sol";
 import "../src/libraries/SlotLibrary.sol";
 import "../src/libraries/TransferLibrary.sol";
-import "../src/libraries/VerifierLibrary.sol";
 
 import "../src/modules/ACLModule.sol";
 import "../src/modules/BaseModule.sol";

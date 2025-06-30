@@ -13,6 +13,8 @@ contract ERC20Mock is ERC20 {
     function burn(address from, uint256 amount) external {
         _burn(from, amount);
     }
+
+    function test() external {}
 }
 
 contract TransferWrapper {
@@ -25,6 +27,8 @@ contract TransferWrapper {
     function receiveAssets(address asset, address from, uint256 amount) external payable {
         asset.receiveAssets(from, amount);
     }
+
+    function test() external {}
 }
 
 contract TransferLibraryTest is Test {
@@ -62,7 +66,7 @@ contract TransferLibraryTest is Test {
 
     function testReceiveETHWrongAmount() public {
         vm.prank(user);
-        vm.expectRevert("TransferLibrary: value mismatch");
+        vm.expectRevert(TransferLibrary.InvalidValue.selector);
         wrapper.receiveAssets{value: 0.1 ether}(TransferLibrary.ETH, user, 1 ether);
     }
 }

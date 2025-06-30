@@ -31,6 +31,8 @@ contract FenwickWrapper {
     function get(uint256 from, uint256 to) external view returns (int256) {
         return tree.get(from, to);
     }
+
+    function test() external {}
 }
 
 contract Unit is Test {
@@ -39,10 +41,10 @@ contract Unit is Test {
     function testInitialize() public {
         FenwickWrapper fenwick = new FenwickWrapper();
 
-        vm.expectRevert("FenwickTreeLibrary: size must be greater than zero");
+        vm.expectRevert(FenwickTreeLibrary.ZeroSize.selector);
         fenwick.init(0);
 
-        vm.expectRevert("FenwickTreeLibrary: size must be a power of two");
+        vm.expectRevert(FenwickTreeLibrary.SizeNotPowerOfTwo.selector);
         fenwick.init(3);
 
         fenwick.init(2);
@@ -89,7 +91,7 @@ contract Unit is Test {
         }
         require(sum == fenwick.get(startIndex, endIndex), "invalid sum in range");
 
-        vm.expectRevert("FenwickTreeLibrary: index out of bounds");
+        vm.expectRevert(FenwickTreeLibrary.IndexOutOfBounds.selector);
         fenwick.modify(length, 1);
 
         // no revert, just early exit

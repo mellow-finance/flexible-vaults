@@ -24,6 +24,8 @@ contract EIP1271Mock is IERC1271 {
         }
         return bytes4(0);
     }
+
+    function test() external {}
 }
 
 contract ConsensusTest is Test {
@@ -66,7 +68,8 @@ contract ConsensusTest is Test {
         Consensus consensus = _createConsensus();
 
         vm.prank(admin);
-        vm.expectRevert("Consensus: zero address");
+
+        vm.expectRevert(IConsensus.ZeroAddress.selector);
         consensus.addSigner(address(0), 1, IConsensus.SignatureType.EIP712);
     }
 
@@ -88,7 +91,7 @@ contract ConsensusTest is Test {
         vm.startPrank(admin);
         consensus.addSigner(signer1, 1, IConsensus.SignatureType.EIP712);
 
-        vm.expectRevert("Consensus: signer already exists");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.SignerAlreadyExists.selector, signer1));
         consensus.addSigner(signer1, 1, IConsensus.SignatureType.EIP712);
     }
 
@@ -107,7 +110,7 @@ contract ConsensusTest is Test {
         assert(consensus.isSigner(signer2));
         assertEq(consensus.signers(), 1);
 
-        vm.expectRevert("Consensus: zero address");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.SignerNotFound.selector, address(0)));
         consensus.removeSigner(address(0), 1);
     }
 
@@ -117,7 +120,7 @@ contract ConsensusTest is Test {
         vm.startPrank(admin);
         consensus.addSigner(signer2, 1, IConsensus.SignatureType.EIP1271);
 
-        vm.expectRevert("Consensus: signer does not exist");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.SignerNotFound.selector, signer1));
         consensus.removeSigner(signer1, 0);
     }
 
@@ -126,26 +129,26 @@ contract ConsensusTest is Test {
 
         vm.startPrank(admin);
 
-        vm.expectRevert("Consensus: threshold exceeds number of signers");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidThreshold.selector, 2));
         consensus.addSigner(signer1, 2, IConsensus.SignatureType.EIP712);
 
         consensus.addSigner(signer1, 1, IConsensus.SignatureType.EIP712);
 
-        vm.expectRevert("Consensus: threshold must be greater than zero");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidThreshold.selector, 0));
         consensus.removeSigner(signer1, 0);
 
-        vm.expectRevert("Consensus: threshold must be greater than zero");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidThreshold.selector, 0));
         consensus.setThreshold(0);
 
-        vm.expectRevert("Consensus: threshold exceeds number of signers");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidThreshold.selector, 2));
         consensus.setThreshold(2);
 
-        vm.expectRevert("Consensus: threshold must be greater than zero");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidThreshold.selector, 0));
         consensus.addSigner(signer2, 0, IConsensus.SignatureType.EIP1271);
 
         consensus.addSigner(signer2, 2, IConsensus.SignatureType.EIP1271);
 
-        vm.expectRevert("Consensus: threshold exceeds number of signers");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidThreshold.selector, 2));
         consensus.removeSigner(signer1, 2);
 
         consensus.removeSigner(signer1, 1);
@@ -169,12 +172,12 @@ contract ConsensusTest is Test {
         Consensus consensus = _createConsensus();
 
         vm.startPrank(admin);
-        vm.expectRevert("Consensus: index out of bounds");
+        vm.expectRevert("panic: array out-of-bounds access (0x32)");
         consensus.signerAt(0);
 
         consensus.addSigner(signer1, 1, IConsensus.SignatureType.EIP712);
 
-        vm.expectRevert("Consensus: index out of bounds");
+        vm.expectRevert("panic: array out-of-bounds access (0x32)");
         consensus.signerAt(1);
     }
 
@@ -242,7 +245,7 @@ contract ConsensusTest is Test {
 
         assertFalse(consensus.checkSignatures(dummyHash, signatures));
 
-        vm.expectRevert("Consensus: invalid signatures");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, dummyHash, signatures));
         consensus.requireValidSignatures(dummyHash, signatures);
     }
 
@@ -283,7 +286,7 @@ contract ConsensusTest is Test {
 
         assertFalse(consensus.checkSignatures(txHash, signatures));
 
-        vm.expectRevert("Consensus: invalid signatures");
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, txHash, signatures));
         consensus.requireValidSignatures(txHash, signatures);
     }
 }

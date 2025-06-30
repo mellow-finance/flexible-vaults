@@ -11,6 +11,8 @@ contract Mock {
     function initialize(bytes calldata data) external {
         (admin, version, name) = abi.decode(data, (address, uint256, string));
     }
+
+    function test() external {}
 }
 
 contract FactoryTest is Test {
@@ -50,7 +52,7 @@ contract FactoryTest is Test {
         factory.proposeImplementation(newImplementation);
         require(factory.proposalAt(0) == newImplementation, "mismatch proposal implementation");
 
-        vm.expectRevert("Factory: proposal already exists");
+        vm.expectRevert(abi.encodeWithSelector(IFactory.ImplementationAlreadyProposed.selector, newImplementation));
         factory.proposeImplementation(newImplementation);
 
         vm.prank(admin);
@@ -59,11 +61,11 @@ contract FactoryTest is Test {
         vm.expectRevert("panic: array out-of-bounds access (0x32)");
         factory.proposalAt(0);
 
-        vm.expectRevert("Factory: entity already exists");
+        vm.expectRevert(abi.encodeWithSelector(IFactory.ImplementationAlreadyAccepted.selector, newImplementation));
         factory.proposeImplementation(newImplementation);
 
         vm.prank(admin);
-        vm.expectRevert("Factory: proposal does not exist");
+        vm.expectRevert(abi.encodeWithSelector(IFactory.ImplementationNotProposed.selector, newImplementation));
         factory.acceptProposedImplementation(newImplementation);
 
         require(factory.implementationAt(0) == newImplementation, "mismatch accepted implementation");
@@ -80,7 +82,7 @@ contract FactoryTest is Test {
         require(factory.isBlacklisted(0), "version was not blacklisted");
 
         vm.prank(admin);
-        vm.expectRevert("Factory: version out of bounds");
+        vm.expectRevert("OutOfBounds(1)");
         factory.setBlacklistStatus(1, true);
     }
 
@@ -99,7 +101,7 @@ contract FactoryTest is Test {
                 "non-zero address for invalid implementation version"
             );
 
-            vm.expectRevert("Factory: version out of bounds");
+            vm.expectRevert("OutOfBounds(1)");
             factory.create(1, ownerContract, callData);
 
             address expectedAddress = factory.computeAddress(0, ownerContract, callData);
@@ -119,7 +121,7 @@ contract FactoryTest is Test {
                 "non-zero address for invalid implementation version"
             );
 
-            vm.expectRevert("Factory: version is blacklisted");
+            vm.expectRevert("BlacklistedVersion(0)");
             factory.create(0, ownerContract, callData);
         }
     }
@@ -130,7 +132,7 @@ contract FactoryTest is Test {
         Factory factoryImplementation = new Factory(name, version);
         factory =
             Factory(address(new TransparentUpgradeableProxy(address(factoryImplementation), proxyAdmin, new bytes(0))));
-        factory.initialize(admin);
+        factory.initialize(abi.encode(admin));
     }
 
     function pushImplementation(Factory factory, address newImplementation) internal {
