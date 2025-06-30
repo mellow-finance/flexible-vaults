@@ -5,13 +5,12 @@ import "../interfaces/modules/IVerifierModule.sol";
 
 import "../libraries/SlotLibrary.sol";
 
-import "./ACLModule.sol";
 import "./BaseModule.sol";
 
-abstract contract VerifierModule is IVerifierModule, BaseModule, ACLModule {
+abstract contract VerifierModule is IVerifierModule, BaseModule {
     bytes32 private immutable _verifierModuleStorageSlot;
 
-    constructor(string memory name_, uint256 version_) ACLModule(name_, version_) {
+    constructor(string memory name_, uint256 version_) {
         _verifierModuleStorageSlot = SlotLibrary.getSlot("VerifierModule", name_, version_);
     }
 
@@ -23,12 +22,11 @@ abstract contract VerifierModule is IVerifierModule, BaseModule, ACLModule {
 
     // Internal functions
 
-    function __VerifierModule_init(address admin_, address verifier_) internal onlyInitializing {
+    function __VerifierModule_init(address verifier_) internal onlyInitializing {
         if (verifier_ == address(0)) {
             revert ZeroAddress();
         }
         _verifierModuleStorage().verifier = verifier_;
-        __ACLModule_init(admin_);
     }
 
     function _verifierModuleStorage() private view returns (VerifierModuleStorage storage $) {

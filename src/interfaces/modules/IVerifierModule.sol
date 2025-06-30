@@ -2,10 +2,11 @@
 pragma solidity 0.8.25;
 
 import "../permissions/IVerifier.sol";
-import "./IACLModule.sol";
 import "./IBaseModule.sol";
 
-interface IVerifierModule is IBaseModule, IACLModule {
+interface IVerifierModule is IBaseModule {
+    error ZeroAddress();
+
     struct VerifierModuleStorage {
         address verifier;
     }

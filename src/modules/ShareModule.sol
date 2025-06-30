@@ -8,6 +8,9 @@ import "../libraries/TransferLibrary.sol";
 
 import "./ACLModule.sol";
 
+/*
+    TODO: add sunset functionality for queues
+*/
 abstract contract ShareModule is IShareModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
@@ -77,6 +80,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         return _shareModuleStorage().defaultRedeemHook;
     }
 
+    /// @dev TODO: add onchain cheks to prevent OOG
     function claimableSharesOf(address account) public view returns (uint256 shares) {
         ShareModuleStorage storage $ = _shareModuleStorage();
         EnumerableSet.AddressSet storage assets = $.assets;
@@ -163,7 +167,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         if (!IOracle(oracle()).isSupportedAsset(asset)) {
             revert UnsupportedAsset(asset);
         }
-        requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
+        requireFundamentalRole(FundamentalRole.PROXY_OWNER, owner);
         address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.queues[asset].add(queue);
@@ -178,7 +182,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         if (!IOracle(oracle()).isSupportedAsset(asset)) {
             revert UnsupportedAsset(asset);
         }
-        requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
+        requireFundamentalRole(FundamentalRole.PROXY_OWNER, owner);
         address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.queues[asset].add(queue);
@@ -190,7 +194,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         address caller = _msgSender();
         ShareModuleStorage storage $ = _shareModuleStorage();
         if (caller != $.oracle) {
-            revert("ShareModule: forbidden");
+            revert Forbidden();
         }
         EnumerableSet.AddressSet storage queues = _shareModuleStorage().queues[asset];
         uint256 length = queues.length();
@@ -233,6 +237,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         $.oracle = oracle_;
         $.defaultDepositHook = defaultDepositHook_;
         $.defaultRedeemHook = defaultRedeemHook_;
+        $.queueLimit = 16;
     }
 
     function _shareModuleStorage() internal view returns (ShareModuleStorage storage $) {

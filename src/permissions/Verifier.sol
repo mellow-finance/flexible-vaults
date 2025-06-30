@@ -9,14 +9,13 @@ contract Verifier is IVerifier, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("permissions.Verifier.SET_MERKLE_ROOT_ROLE");
-    bytes32 public constant SET_SECONDARY_ACL_ROLE = keccak256("permissions.Verifier.SET_SECONDARY_ACL_ROLE");
     bytes32 public constant CALL_ROLE = keccak256("permissions.Verifier.CALL_ROLE");
-    bytes32 public constant ADD_ALLOWED_CALLS_ROLE = keccak256("permissions.Verifier.ADD_ALLOWED_CALLS_ROLE");
-    bytes32 public constant REMOVE_ALLOWED_CALLS_ROLE = keccak256("permissions.Verifier.REMOVE_ALLOWED_CALLS_ROLE");
+    bytes32 public constant ALLOW_CALL_ROLE = keccak256("permissions.Verifier.ALLOW_CALL_ROLE");
+    bytes32 public constant DISALLOW_CALL_ROLE = keccak256("permissions.Verifier.DISALLOW_CALL_ROLE");
     bytes32 private immutable _verifierStorageSlot;
 
     modifier onlyRole(bytes32 role) {
-        if (!primaryACL().hasRole(role, _msgSender())) {
+        if (!vault().hasRole(role, _msgSender())) {
             revert Forbidden();
         }
         _;
@@ -29,37 +28,35 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     // View functions
 
-    function primaryACL() public view returns (IAccessControl) {
-        return IAccessControl(_verifierStorage().primaryACL);
-    }
-
-    function secondaryACL() public view returns (IAccessControl) {
-        return IAccessControl(_verifierStorage().secondaryACL);
+    function vault() public view returns (IAccessControl) {
+        return IAccessControl(_verifierStorage().vault);
     }
 
     function merkleRoot() public view returns (bytes32) {
         return _verifierStorage().merkleRoot;
     }
 
-    function isAllowedCall(address who, address where, bytes calldata data) public view returns (bool) {
-        if (data.length < 4) {
-            return false;
-        }
-        return _verifierStorage().hashedAllowedCalls.contains(hashCall(who, where, bytes4(data[:4])));
-    }
-
     function allowedCalls() public view returns (uint256) {
-        return _verifierStorage().hashedAllowedCalls.length();
+        return _verifierStorage().compactCallHashes.length();
     }
 
-    function allowedCallAt(uint256 index) public view returns (Call memory) {
+    function allowedCallAt(uint256 index) public view returns (CompactCall memory) {
         VerifierStorage storage $ = _verifierStorage();
-        bytes32 key = $.hashedAllowedCalls.at(index);
-        return _verifierStorage().allowedCalls[key];
+        bytes32 hash_ = $.compactCallHashes.at(index);
+        return $.compactCalls[hash_];
     }
 
-    function hashCall(address who, address where, bytes4 selector) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(who, where, selector));
+    function isAllowedCall(address who, address where, bytes calldata callData) public view returns (bool) {
+        return callData.length >= 4
+            && _verifierStorage().compactCallHashes.contains(hashCall(CompactCall(who, where, bytes4(callData[:4]))));
+    }
+
+    function hashCall(CompactCall memory call) public pure returns (bytes32) {
+        return keccak256(abi.encode(call.who, call.where, call.selector));
+    }
+
+    function hashCall(ExtendedCall memory call) public pure returns (bytes32) {
+        return keccak256(abi.encode(call.who, call.where, call.value, call.data));
     }
 
     function verifyCall(
@@ -81,43 +78,33 @@ contract Verifier is IVerifier, ContextUpgradeable {
         bytes calldata callData,
         VerificationPayload calldata verificationPayload
     ) public view virtual returns (bool) {
-        if (!primaryACL().hasRole(CALL_ROLE, who)) {
+        if (!vault().hasRole(CALL_ROLE, who)) {
             return false;
         }
 
-        if (verificationPayload.verificationType == VerficationType.VERIFIER_ACL) {
+        if (verificationPayload.verificationType == VerficationType.ONCHAIN_COMPACT) {
             return isAllowedCall(who, where, callData);
         }
 
+        bytes calldata verificationData = verificationPayload.verificationData;
         bytes32 leaf = keccak256(
-            bytes.concat(
-                keccak256(
-                    abi.encode(
-                        verificationPayload.verificationType,
-                        verificationPayload.verifier,
-                        keccak256(verificationPayload.verificationData)
-                    )
-                )
-            )
+            bytes.concat(keccak256(abi.encode(verificationPayload.verificationType, keccak256(verificationData))))
         );
         if (!MerkleProof.verify(verificationPayload.proof, merkleRoot(), leaf)) {
             return false;
         }
 
-        if (verificationPayload.verificationType == VerficationType.PRIMARY_ACL) {
-            bytes32 requiredRole = abi.decode(verificationPayload.verificationData, (bytes32));
-            return primaryACL().hasRole(requiredRole, who);
-        } else if (verificationPayload.verificationType == VerficationType.SECONDARY_ACL) {
-            IAccessControl secondaryACL_ = secondaryACL();
-            if (address(secondaryACL_) == address(0)) {
-                return false;
+        if (verificationPayload.verificationType == VerficationType.MERKLE_EXTENDED) {
+            return hashCall(ExtendedCall(who, where, value, callData)) == bytes32(verificationData);
+        } else if (verificationPayload.verificationType == VerficationType.MERKLE_COMPACT) {
+            return callData.length >= 4
+                && hashCall(CompactCall(who, where, bytes4(callData[:4]))) == bytes32(verificationData);
+        } else if (verificationPayload.verificationType == VerficationType.CUSTOM_VERIFIER) {
+            address verifier;
+            assembly {
+                verifier := calldataload(verificationData.offset)
             }
-            bytes32 requiredRole = abi.decode(verificationPayload.verificationData, (bytes32));
-            return secondaryACL_.hasRole(requiredRole, who);
-        } else if (verificationPayload.verificationType == VerficationType.VERIFIER) {
-            return ICustomVerifier(verificationPayload.verifier).verifyCall(
-                who, where, value, callData, verificationPayload.verificationData
-            );
+            return ICustomVerifier(verifier).verifyCall(who, where, value, callData, verificationData[0x20:]);
         } else {
             return false;
         }
@@ -126,21 +113,14 @@ contract Verifier is IVerifier, ContextUpgradeable {
     // Mutable functions
 
     function initialize(bytes calldata initParams) external initializer {
-        (address primaryACL_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
-        if (primaryACL_ == address(0)) {
+        (address vault_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
+        if (vault_ == address(0)) {
             revert ValueZero();
         }
-        _verifierStorage().primaryACL = primaryACL_;
+        _verifierStorage().vault = vault_;
         if (merkleRoot_ != bytes32(0)) {
             _verifierStorage().merkleRoot = merkleRoot_;
         }
-    }
-
-    function setSecondaryACL(address secondaryACL_) external onlyRole(SET_SECONDARY_ACL_ROLE) {
-        if (secondaryACL_ == address(0)) {
-            revert ValueZero();
-        }
-        _verifierStorage().secondaryACL = secondaryACL_;
     }
 
     function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(SET_MERKLE_ROOT_ROLE) {
@@ -150,36 +130,30 @@ contract Verifier is IVerifier, ContextUpgradeable {
         _verifierStorage().merkleRoot = merkleRoot_;
     }
 
-    function addAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
-        external
-        onlyRole(ADD_ALLOWED_CALLS_ROLE)
-    {
-        uint256 n = callers.length;
-        if (n != targets.length || n != selectors.length) {
-            revert InvalidLength();
-        }
-        EnumerableSet.Bytes32Set storage hashedAllowedCalls_ = _verifierStorage().hashedAllowedCalls;
-        for (uint256 i = 0; i < n; i++) {
-            bytes32 hash_ = hashCall(callers[i], targets[i], selectors[i]);
-            if (!hashedAllowedCalls_.add(hash_)) {
-                revert CallAlreadyAllowed(callers[i], targets[i], selectors[i]);
+    function allowCalls(CompactCall[] calldata compactCalls) external onlyRole(ALLOW_CALL_ROLE) {
+        VerifierStorage storage $ = _verifierStorage();
+        mapping(bytes32 => CompactCall) storage compactCalls_ = $.compactCalls;
+        EnumerableSet.Bytes32Set storage compactCallHashes_ = $.compactCallHashes;
+        for (uint256 i = 0; i < compactCalls.length; i++) {
+            bytes32 hash_ = hashCall(compactCalls[i]);
+            if (compactCallHashes_.add(hash_)) {
+                compactCalls_[hash_] = compactCalls[i];
+            } else {
+                revert CompactCallAlreadyAllowed(compactCalls[i].who, compactCalls[i].where, compactCalls[i].selector);
             }
         }
     }
 
-    function removeAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
-        external
-        onlyRole(REMOVE_ALLOWED_CALLS_ROLE)
-    {
-        uint256 n = callers.length;
-        if (n != targets.length || n != selectors.length) {
-            revert InvalidLength();
-        }
-        EnumerableSet.Bytes32Set storage hashedAllowedCalls_ = _verifierStorage().hashedAllowedCalls;
-        for (uint256 i = 0; i < n; i++) {
-            bytes32 hash_ = hashCall(callers[i], targets[i], selectors[i]);
-            if (!hashedAllowedCalls_.remove(hash_)) {
-                revert CallNotFound(callers[i], targets[i], selectors[i]);
+    function disallowCalls(CompactCall[] calldata compactCalls) external onlyRole(DISALLOW_CALL_ROLE) {
+        VerifierStorage storage $ = _verifierStorage();
+        mapping(bytes32 => CompactCall) storage compactCalls_ = $.compactCalls;
+        EnumerableSet.Bytes32Set storage compactCallHashes_ = $.compactCallHashes;
+        for (uint256 i = 0; i < compactCalls.length; i++) {
+            bytes32 hash_ = hashCall(compactCalls[i]);
+            if (compactCallHashes_.remove(hash_)) {
+                compactCalls_[hash_] = compactCalls[i];
+            } else {
+                revert CompactCallNotFound(compactCalls[i].who, compactCalls[i].where, compactCalls[i].selector);
             }
         }
     }

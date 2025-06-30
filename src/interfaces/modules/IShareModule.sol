@@ -21,6 +21,8 @@ interface IShareModule is IBaseModule {
         address oracle;
         address defaultDepositHook;
         address defaultRedeemHook;
+        uint256 queueLimit;
+        uint256 queueCount;
         mapping(address queue => address) customHooks;
         mapping(address queue => bool) isDepositQueue;
         mapping(address asset => EnumerableSet.AddressSet) queues;
@@ -63,6 +65,10 @@ interface IShareModule is IBaseModule {
 
     function defaultRedeemHook() external view returns (address);
 
+    function queueLimit() external view returns (uint256);
+
+    function queueCount() external view returns (uint256);
+
     // Mutable functions
 
     function claimShares(address account) external;
@@ -74,6 +80,10 @@ interface IShareModule is IBaseModule {
     function callHook(uint256 assets) external;
 
     function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data) external;
+
+    function sunsetQueue(address queue) external;
+
+    function setQueueLimit() external view returns (uint256);
 
     function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external;
 }

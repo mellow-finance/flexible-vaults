@@ -9,9 +9,9 @@ import "../MellowACL.sol";
 contract ERC20Verifier is ICustomVerifier, MellowACL {
     error ValueZero();
 
-    bytes32 public constant ASSET_ROLE = keccak256("ERC20_VERIFIER:ASSET_ROLE");
-    bytes32 public constant CALLER_ROLE = keccak256("ERC20_VERIFIER:CALLER_ROLE");
-    bytes32 public constant RECIPIENT_ROLE = keccak256("ERC20_VERIFIER:RECIPIENT_ROLE");
+    bytes32 public constant ASSET_ROLE = keccak256("permissions.protocols.ERC20Verifier.ASSET_ROLE");
+    bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.ERC20Verifier.CALLER_ROLE");
+    bytes32 public constant RECIPIENT_ROLE = keccak256("permissions.protocols.ERC20Verifier.RECIPIENT_ROLE");
 
     constructor(string memory name_, uint256 version_) MellowACL(name_, version_) {
         _disableInitializers();

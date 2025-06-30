@@ -54,8 +54,14 @@ contract Integration is Test {
         );
         riskManagerFactory.initialize(abi.encode(vaultAdmin));
 
-        vaultImplementation =
-            new Vault("Mellow", 1, address(depositQueueFactory), address(redeemQueueFactory), address(subvaultFactory));
+        vaultImplementation = new Vault(
+            "Mellow",
+            1,
+            address(depositQueueFactory),
+            address(redeemQueueFactory),
+            address(subvaultFactory),
+            address(verifierFactory)
+        );
         shareManagerImplementation = new TokenizedShareManager("Mellow", 1);
         feeManagerImplementation = new FeeManager("Mellow", 1);
         oracleImplementation = new Oracle("Mellow", 1);
@@ -154,9 +160,8 @@ contract Integration is Test {
         Verifier verifier = Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
         vm.startPrank(vaultAdmin);
         vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
-        vault.grantFundamentalRole(IACLModule.FundamentalRole.SUBVAULT_ADMIN, vaultAdmin);
 
-        bytes32[27] memory roles = [
+        bytes32[24] memory roles = [
             vault.SET_CUSTOM_HOOK_ROLE(),
             vault.CREATE_DEPOSIT_QUEUE_ROLE(),
             vault.CREATE_REDEEM_QUEUE_ROLE(),
@@ -166,10 +171,9 @@ contract Integration is Test {
             oracle.ADD_SUPPORTED_ASSETS_ROLE(),
             oracle.REMOVE_SUPPORTED_ASSETS_ROLE(),
             verifier.SET_MERKLE_ROOT_ROLE(),
-            verifier.SET_SECONDARY_ACL_ROLE(),
             verifier.CALL_ROLE(),
-            verifier.ADD_ALLOWED_CALLS_ROLE(),
-            verifier.REMOVE_ALLOWED_CALLS_ROLE(),
+            // verifier.ADD_ALLOWED_CALLS_ROLE(),
+            // verifier.REMOVE_ALLOWED_CALLS_ROLE(),
             shareManager.SET_FLAGS_ROLE(),
             shareManager.SET_ACCOUNT_INFO_ROLE(),
             vault.CREATE_SUBVAULT_ROLE(),
@@ -217,8 +221,7 @@ contract Integration is Test {
         }
 
         {
-            address subvault = vault.createSubvault(0, vaultProxyAdmin, vaultAdmin, address(verifier));
-            verifier.setSecondaryACL(subvault);
+            address subvault = vault.createSubvault(0, vaultProxyAdmin, address(verifier));
             address[] memory assets = new address[](1);
             assets[0] = address(asset);
             riskManager.allowSubvaultAssets(subvault, assets);
