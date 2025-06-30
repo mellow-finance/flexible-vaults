@@ -107,6 +107,10 @@ abstract contract SignatureQueue is
         }
     }
 
+    function canBeRemoved() external pure returns (bool) {
+        return true;
+    }
+
     // Mutable functions
 
     function initialize(bytes calldata initData) external initializer {
