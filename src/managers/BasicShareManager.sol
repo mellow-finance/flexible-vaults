@@ -25,9 +25,8 @@ contract BasicShareManager is ShareManager {
     // Mutable functions
 
     function initialize(bytes calldata data) external initializer {
-        (address vault_, bytes32 whitelistMerkleRoot_, uint256 sharesLimit_) =
-            abi.decode(data, (address, bytes32, uint256));
-        __ShareManager_init(vault_, whitelistMerkleRoot_, sharesLimit_);
+        (address vault_, bytes32 whitelistMerkleRoot_) = abi.decode(data, (address, bytes32));
+        __ShareManager_init(vault_, whitelistMerkleRoot_);
     }
 
     // Internal functions
@@ -36,7 +35,7 @@ contract BasicShareManager is ShareManager {
         if (account == address(0)) {
             revert IERC20Errors.ERC20InvalidReceiver(address(0));
         }
-        updateChecks(address(0), account, value);
+        updateChecks(address(0), account);
         ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
         $._totalSupply += value;
         unchecked {
@@ -49,7 +48,7 @@ contract BasicShareManager is ShareManager {
         if (account == address(0)) {
             revert IERC20Errors.ERC20InvalidSender(address(0));
         }
-        updateChecks(account, address(0), value);
+        updateChecks(account, address(0));
         ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
         uint256 balance = $._balances[account];
         if (balance < value) {

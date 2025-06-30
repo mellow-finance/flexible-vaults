@@ -32,27 +32,27 @@ contract Integration is Test {
         verifierFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        verifierFactory.initialize(vaultAdmin);
+        verifierFactory.initialize(abi.encode(vaultAdmin));
 
         subvaultFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        subvaultFactory.initialize(vaultAdmin);
+        subvaultFactory.initialize(abi.encode(vaultAdmin));
 
         depositQueueFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        depositQueueFactory.initialize(vaultAdmin);
+        depositQueueFactory.initialize(abi.encode(vaultAdmin));
 
         redeemQueueFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        redeemQueueFactory.initialize(vaultAdmin);
+        redeemQueueFactory.initialize(abi.encode(vaultAdmin));
 
         riskManagerFactory = Factory(
             address(new TransparentUpgradeableProxy(address(factoryImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        riskManagerFactory.initialize(vaultAdmin);
+        riskManagerFactory.initialize(abi.encode(vaultAdmin));
 
         vaultImplementation =
             new Vault("Mellow", 1, address(depositQueueFactory), address(redeemQueueFactory), address(subvaultFactory));
@@ -97,9 +97,7 @@ contract Integration is Test {
             address(new TransparentUpgradeableProxy(address(shareManagerImplementation), vaultProxyAdmin, new bytes(0)))
         );
 
-        shareManager.initialize(
-            abi.encode(vault, bytes32(0), 100 ether, string("VaultERC20Name"), string("VaultERC20Symbol"))
-        );
+        shareManager.initialize(abi.encode(vault, bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol")));
 
         FeeManager feeManager = FeeManager(
             address(new TransparentUpgradeableProxy(address(feeManagerImplementation), vaultProxyAdmin, new bytes(0)))
@@ -115,11 +113,7 @@ contract Integration is Test {
             )
         );
 
-        Oracle depositOracle = Oracle(
-            address(new TransparentUpgradeableProxy(address(oracleImplementation), vaultProxyAdmin, new bytes(0)))
-        );
-
-        Oracle redeemOracle = Oracle(
+        Oracle oracle = Oracle(
             address(new TransparentUpgradeableProxy(address(oracleImplementation), vaultProxyAdmin, new bytes(0)))
         );
 
@@ -138,8 +132,7 @@ contract Integration is Test {
                 }),
                 assets
             );
-            depositOracle.initialize(oracleInitParams);
-            redeemOracle.initialize(oracleInitParams);
+            oracle.initialize(oracleInitParams);
         }
 
         RiskManager riskManager =
@@ -151,50 +144,52 @@ contract Integration is Test {
                 address(shareManager),
                 address(feeManager),
                 address(riskManager),
-                address(depositOracle),
-                address(redeemOracle),
-                address(new BasicDepositHook()),
+                address(oracle),
+                address(new RedirectingDepositHook()),
                 address(new BasicRedeemHook()),
                 new Vault.RoleHolder[](0)
             ) // redeem module params
         );
 
+        Verifier verifier = Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
         vm.startPrank(vaultAdmin);
         vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
         vault.grantFundamentalRole(IACLModule.FundamentalRole.SUBVAULT_ADMIN, vaultAdmin);
 
-        bytes32[25] memory roles = [
-            PermissionsLibrary.SET_CUSTOM_HOOK_ROLE,
-            PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE,
-            PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE,
-            PermissionsLibrary.SUBMIT_REPORT_ROLE,
-            PermissionsLibrary.ACCEPT_REPORT_ROLE,
-            PermissionsLibrary.SET_SECURITY_PARAMS_ROLE,
-            PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE,
-            PermissionsLibrary.REMOVE_SUPPORTED_ASSETS_ROLE,
-            PermissionsLibrary.SET_MERKLE_ROOT_ROLE,
-            PermissionsLibrary.SET_SECONDARY_ACL_ROLE,
-            PermissionsLibrary.CALL_ROLE,
-            PermissionsLibrary.ADD_ALLOWED_CALLS_ROLE,
-            PermissionsLibrary.REMOVE_ALLOWED_CALLS_ROLE,
-            PermissionsLibrary.SET_FLAGS_ROLE,
-            PermissionsLibrary.SET_ACCOUNT_INFO_ROLE,
-            PermissionsLibrary.CREATE_SUBVAULT_ROLE,
-            PermissionsLibrary.DISCONNECT_SUBVAULT_ROLE,
-            PermissionsLibrary.RECONNECT_SUBVAULT_ROLE,
-            PermissionsLibrary.PULL_LIQUIDITY_ROLE,
-            PermissionsLibrary.PUSH_LIQUIDITY_ROLE,
-            PermissionsLibrary.SET_VAULT_LIMIT_ROLE,
-            PermissionsLibrary.SET_SUBVAULT_LIMIT_ROLE,
-            PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE,
-            PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE,
-            PermissionsLibrary.MODIFY_SUBVAULT_BALANCE_ROLE
+        bytes32[27] memory roles = [
+            vault.SET_CUSTOM_HOOK_ROLE(),
+            vault.CREATE_DEPOSIT_QUEUE_ROLE(),
+            vault.CREATE_REDEEM_QUEUE_ROLE(),
+            oracle.SUBMIT_REPORT_ROLE(),
+            oracle.ACCEPT_REPORT_ROLE(),
+            oracle.SET_SECURITY_PARAMS_ROLE(),
+            oracle.ADD_SUPPORTED_ASSETS_ROLE(),
+            oracle.REMOVE_SUPPORTED_ASSETS_ROLE(),
+            verifier.SET_MERKLE_ROOT_ROLE(),
+            verifier.SET_SECONDARY_ACL_ROLE(),
+            verifier.CALL_ROLE(),
+            verifier.ADD_ALLOWED_CALLS_ROLE(),
+            verifier.REMOVE_ALLOWED_CALLS_ROLE(),
+            shareManager.SET_FLAGS_ROLE(),
+            shareManager.SET_ACCOUNT_INFO_ROLE(),
+            vault.CREATE_SUBVAULT_ROLE(),
+            vault.DISCONNECT_SUBVAULT_ROLE(),
+            vault.RECONNECT_SUBVAULT_ROLE(),
+            vault.PULL_LIQUIDITY_ROLE(),
+            vault.PUSH_LIQUIDITY_ROLE(),
+            riskManager.SET_VAULT_LIMIT_ROLE(),
+            riskManager.SET_SUBVAULT_LIMIT_ROLE(),
+            riskManager.MODIFY_PENDING_ASSETS_ROLE(),
+            riskManager.MODIFY_VAULT_BALANCE_ROLE(),
+            riskManager.MODIFY_SUBVAULT_BALANCE_ROLE(),
+            riskManager.ALLOW_SUBVAULT_ASSETS_ROLE(),
+            riskManager.DISALLOW_SUBVAULT_ASSETS_ROLE()
         ];
         for (uint256 i = 0; i < roles.length; i++) {
             vault.grantRole(roles[i], vaultAdmin);
         }
-        vault.grantRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE, address(vault));
-        vault.grantRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE, address(vault));
+        vault.grantRole(vault.PUSH_LIQUIDITY_ROLE(), address(vault));
+        vault.grantRole(vault.PULL_LIQUIDITY_ROLE(), address(vault));
 
         Consensus consensusImplementation = new Consensus("Consensus", 1);
         Consensus consensus = Consensus(
@@ -216,16 +211,18 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.submitReport(report);
-            depositOracle.acceptReport(address(asset), uint32(block.timestamp));
+            oracle.submitReports(report);
+            oracle.acceptReport(address(asset), uint32(block.timestamp));
             skip(1 days);
         }
 
         {
-            Verifier verifier =
-                Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
             address subvault = vault.createSubvault(0, vaultProxyAdmin, vaultAdmin, address(verifier));
             verifier.setSecondaryACL(subvault);
+            address[] memory assets = new address[](1);
+            assets[0] = address(asset);
+            riskManager.allowSubvaultAssets(subvault, assets);
+            riskManager.setSubvaultLimit(subvault, 100 ether);
         }
         vm.stopPrank();
         vm.startPrank(user);
@@ -241,7 +238,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            depositOracle.submitReport(report);
+            oracle.submitReports(report);
         }
         vm.stopPrank();
         vm.startPrank(user);
@@ -263,8 +260,7 @@ contract Integration is Test {
         {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
-            redeemOracle.submitReport(report);
-            redeemOracle.acceptReport(address(asset), uint32(block.timestamp));
+            oracle.submitReports(report);
         }
         vm.stopPrank();
 

@@ -32,18 +32,13 @@ contract Vault is IFactoryEntity, VaultModule, ShareModule {
             address shareManager_,
             address feeManager_,
             address riskManager_,
-            address depositOracle_,
-            address redeemOracle_,
+            address oracle_,
             address defaultDepositHook_,
             address defaultRedeemHook_,
             RoleHolder[] memory roleHolders
-        ) = abi.decode(
-            initParams, (address, address, address, address, address, address, address, address, RoleHolder[])
-        );
+        ) = abi.decode(initParams, (address, address, address, address, address, address, address, RoleHolder[]));
         __ACLModule_init(admin_);
-        __ShareModule_init(
-            shareManager_, feeManager_, depositOracle_, redeemOracle_, defaultDepositHook_, defaultRedeemHook_
-        );
+        __ShareModule_init(shareManager_, feeManager_, oracle_, defaultDepositHook_, defaultRedeemHook_);
         __VaultModule_init(riskManager_);
         RoleHolder memory roleHolder;
         for (uint256 i = 0; i < roleHolders.length; i++) {

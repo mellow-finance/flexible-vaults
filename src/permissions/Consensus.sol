@@ -48,7 +48,7 @@ contract Consensus is IConsensus, OwnableUpgradeable {
 
     function requireValidSignatures(bytes32 orderHash, Signature[] calldata signatures) external view {
         if (!checkSignatures(orderHash, signatures)) {
-            revert("Consensus: invalid signatures");
+            revert InvalidSignatures(orderHash, signatures);
         }
     }
 
@@ -62,7 +62,6 @@ contract Consensus is IConsensus, OwnableUpgradeable {
 
     function signerAt(uint256 index) external view returns (address signer, SignatureType signatureType) {
         ConsensusStorage storage $ = _consensusStorage();
-        require(index < $.signers.length(), "Consensus: index out of bounds");
         uint256 signatureTypeValue;
         (signer, signatureTypeValue) = $.signers.at(index);
         signatureType = SignatureType(signatureTypeValue);
@@ -81,27 +80,34 @@ contract Consensus is IConsensus, OwnableUpgradeable {
 
     function setThreshold(uint256 threshold_) external onlyOwner {
         ConsensusStorage storage $ = _consensusStorage();
-        require(threshold_ > 0, "Consensus: threshold must be greater than zero");
-        require(threshold_ <= $.signers.length(), "Consensus: threshold exceeds number of signers");
+        if (threshold_ == 0 || threshold_ > $.signers.length()) {
+            revert InvalidThreshold(threshold_);
+        }
         $.threshold = threshold_;
     }
 
     function addSigner(address signer, uint256 threshold_, SignatureType signatureType) external onlyOwner {
         ConsensusStorage storage $ = _consensusStorage();
-        require(signer != address(0), "Consensus: zero address");
-        require(signatureType <= type(SignatureType).max, "Consensus: invalid signature type");
-        require($.signers.set(signer, uint256(signatureType)), "Consensus: signer already exists");
-        require(threshold_ > 0, "Consensus: threshold must be greater than zero");
-        require(threshold_ <= $.signers.length(), "Consensus: threshold exceeds number of signers");
+        if (signer == address(0)) {
+            revert ZeroAddress();
+        }
+        if (!$.signers.set(signer, uint256(signatureType))) {
+            revert SignerAlreadyExists(signer);
+        }
+        if (threshold_ == 0 || threshold_ > $.signers.length()) {
+            revert InvalidThreshold(threshold_);
+        }
         $.threshold = threshold_;
     }
 
     function removeSigner(address signer, uint256 threshold_) external onlyOwner {
         ConsensusStorage storage $ = _consensusStorage();
-        require(signer != address(0), "Consensus: zero address");
-        require($.signers.remove(signer), "Consensus: signer does not exist");
-        require(threshold_ > 0, "Consensus: threshold must be greater than zero");
-        require(threshold_ <= $.signers.length(), "Consensus: threshold exceeds number of signers");
+        if (!$.signers.remove(signer)) {
+            revert SignerNotFound(signer);
+        }
+        if (threshold_ == 0 || threshold_ > $.signers.length()) {
+            revert InvalidThreshold(threshold_);
+        }
         $.threshold = threshold_;
     }
 

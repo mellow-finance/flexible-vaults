@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/queues/IDepositQueue.sol";
 
 import "../libraries/FenwickTreeLibrary.sol";
@@ -50,16 +49,16 @@ contract DepositQueue is IDepositQueue, Queue {
 
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable nonReentrant {
         if (assets == 0) {
-            revert("DepositQueue: zero assets");
+            revert ValueZero();
         }
         address caller = _msgSender();
         if (!IShareManager(shareManager()).isDepositorWhitelisted(caller, merkleProof)) {
-            revert("DepositQueue: deposit not allowed");
+            revert DepositNotAllowed();
         }
         DepositQueueStorage storage $ = _depositQueueStorage();
         if ($.requestOf[caller]._value != 0) {
             if (!_claim(caller)) {
-                revert("DepositQueue: pending request");
+                revert PendingRequestExists();
             }
         }
 
@@ -91,12 +90,12 @@ contract DepositQueue is IDepositQueue, Queue {
         Checkpoints.Checkpoint224 memory request = $.requestOf[caller];
         uint256 assets = request._value;
         if (assets == 0) {
-            revert("DepositQueue: no pending request");
+            revert NoPendingRequest();
         }
         address asset_ = asset();
         (bool exists, uint32 timestamp,) = $.prices.latestCheckpoint();
         if (exists && timestamp >= request._key) {
-            revert("DepositQueue: request already processed");
+            revert ClaimableRequestExists();
         }
 
         delete $.requestOf[caller];
@@ -176,7 +175,9 @@ contract DepositQueue is IDepositQueue, Queue {
 
         address asset_ = asset();
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
-        IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset_, int256(uint256(assets)));
+        IRiskManager riskManager = IVaultModule(address(vault_)).riskManager();
+        riskManager.modifyPendingAssets(asset_, -int256(uint256(assets)));
+        riskManager.modifyVaultBalance(asset_, int256(uint256(assets)));
         vault_.callHook(assets);
     }
 
@@ -189,5 +190,3 @@ contract DepositQueue is IDepositQueue, Queue {
 
     event DepositRequested(address indexed account, address indexed referral, uint224 assets, uint32 timestamp);
 }
-
-import "forge-std/console2.sol";

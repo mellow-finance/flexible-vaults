@@ -51,28 +51,35 @@ contract Factory is IFactory, OwnableUpgradeable {
 
     // Mutable functions
 
-    function initialize(address owner_) external initializer {
+    function initialize(bytes calldata data) external initializer {
+        address owner_ = abi.decode(data, (address));
         __Ownable_init(owner_);
     }
 
     function setBlacklistStatus(uint256 version, bool flag) external onlyOwner {
         FactoryStorage storage $ = _factoryStorage();
         if (version >= $.implementations.length()) {
-            revert("Factory: version out of bounds");
+            revert OutOfBounds(version);
         }
         $.isBlacklisted[version] = flag;
     }
 
     function proposeImplementation(address implementation) external {
         FactoryStorage storage $ = _factoryStorage();
-        require(!$.implementations.contains(implementation), "Factory: entity already exists");
-        require(!$.proposals.contains(implementation), "Factory: proposal already exists");
+        if ($.implementations.contains(implementation)) {
+            revert ImplementationAlreadyAccepted(implementation);
+        }
+        if ($.proposals.contains(implementation)) {
+            revert ImplementationAlreadyProposed(implementation);
+        }
         $.proposals.add(implementation);
     }
 
     function acceptProposedImplementation(address implementation) external onlyOwner {
         FactoryStorage storage $ = _factoryStorage();
-        require($.proposals.contains(implementation), "Factory: proposal does not exist");
+        if (!$.proposals.contains(implementation)) {
+            revert ImplementationNotProposed(implementation);
+        }
         $.proposals.remove(implementation);
         $.implementations.add(implementation);
     }
@@ -105,10 +112,10 @@ contract Factory is IFactory, OwnableUpgradeable {
     function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance) {
         FactoryStorage storage $ = _factoryStorage();
         if (version >= $.implementations.length()) {
-            revert("Factory: version out of bounds");
+            revert OutOfBounds(version);
         }
         if ($.isBlacklisted[version]) {
-            revert("Factory: version is blacklisted");
+            revert BlacklistedVersion(version);
         }
         address implementation = $.implementations.at(version);
         bytes32 salt = keccak256(abi.encodePacked(version, owner, initParams, $.entities.length()));

@@ -12,6 +12,14 @@ import "../factories/IFactoryEntity.sol";
 import "../modules/IShareModule.sol";
 
 interface IOracle is IFactoryEntity {
+    error UnsupportedAsset(address asset);
+    error AlreadySupportedAsset(address asset);
+    error NonSuspiciousReport(address asset, uint256 timestamp);
+    error InvalidTimestamp(uint256 timestamp, uint256 expectedTimestamp);
+    error ZeroValue();
+    error TooEarly(uint256 timestamp, uint256 minTimestamp);
+    error InvalidPrice(uint256 priceD18);
+
     struct SecurityParams {
         uint224 maxAbsoluteDeviation;
         uint224 suspiciousAbsoluteDeviation;
@@ -21,6 +29,7 @@ interface IOracle is IFactoryEntity {
         uint32 secureInterval;
     }
 
+    /// @dev shares = price18 * assets / 1e18
     struct Report {
         address asset;
         uint224 priceD18;
@@ -43,18 +52,17 @@ interface IOracle is IFactoryEntity {
 
     function securityParams() external view returns (SecurityParams memory);
 
-    function supportedAssets() external view returns (address[] memory);
+    function supportedAssets() external view returns (uint256);
+
+    function supportedAssetAt(uint256 index) external view returns (address);
 
     function isSupportedAsset(address asset) external view returns (bool);
 
     function getReport(address asset) external view returns (DetailedReport memory);
 
-    function validatePrice(uint256 priceD18, uint256 prevPriceD18)
-        external
-        view
-        returns (bool isValid, bool isSuspicious);
+    function validatePrice(uint256 priceD18, address asset) external view returns (bool isValid, bool isSuspicious);
 
-    function submitReport(Report[] calldata reports) external;
+    function submitReports(Report[] calldata reports) external;
 
     function acceptReport(address asset, uint32 timestamp) external;
 

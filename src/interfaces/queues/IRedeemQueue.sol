@@ -6,11 +6,10 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
-import "../factories/IFactoryEntity.sol";
 import "../modules/IVaultModule.sol";
 import "./IQueue.sol";
 
-interface IRedeemQueue is IQueue, IFactoryEntity {
+interface IRedeemQueue is IQueue {
     struct Request {
         uint256 timestamp;
         uint256 shares;
@@ -41,8 +40,6 @@ interface IRedeemQueue is IQueue, IFactoryEntity {
         returns (Request[] memory requests);
 
     // Mutable functions
-
-    function initialize(bytes calldata data) external;
 
     function redeem(uint256 shares) external;
 

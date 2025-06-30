@@ -19,7 +19,7 @@ contract Unit is Test {
         );
 
         bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, abi.encode(who, where, value, callData)),
+            verifier.calculateHash(bitmask, who, where, value, callData),
             bitmask // bitmask
         );
 

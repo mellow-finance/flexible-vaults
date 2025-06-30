@@ -12,7 +12,15 @@ import "../modules/IVaultModule.sol";
 import "../permissions/IConsensus.sol";
 import "./IQueue.sol";
 
-interface ISignatureQueue is IQueue, IFactoryEntity {
+interface ISignatureQueue is IFactoryEntity {
+    error ValueZero();
+    error OrderExpired(uint256 deadline);
+    error InvalidCaller(address caller);
+    error InvalidQueue(address queue);
+    error InvalidAsset(address queue);
+    error InvalidNonce(address account, uint256 nonce);
+    error InvalidPrice();
+
     enum SignatureType {
         EIP712,
         EIP1271
@@ -37,15 +45,9 @@ interface ISignatureQueue is IQueue, IFactoryEntity {
         uint256 nonce;
     }
 
+    // View functions
+
     function ORDER_TYPEHASH() external view returns (bytes32);
-
-    function shareModule() external view returns (IShareModule);
-
-    function asset() external view returns (address);
-
-    function vault() external view returns (address);
-
-    function oracle() external view returns (IOracle);
 
     function consensus() external view returns (IConsensus);
 
@@ -54,4 +56,12 @@ interface ISignatureQueue is IQueue, IFactoryEntity {
     function hashOrder(Order calldata order) external view returns (bytes32);
 
     function validateOrder(Order calldata order, IConsensus.Signature[] calldata signatures) external view;
+
+    function vault() external view returns (address);
+
+    function asset() external view returns (address);
+
+    // Mutable functions
+
+    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external;
 }

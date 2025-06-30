@@ -81,36 +81,23 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
     // Mutable functions
 
     function setFeeRecipient(address feeRecipient_) external onlyOwner {
-        require(feeRecipient_ != address(0), "FeeManager: zero address");
-        _feeManagerStorage().feeRecipient = feeRecipient_;
+        _setFeeRecipient(feeRecipient_);
     }
 
-    function setDepositFeeD6(uint24 depositFeeD6_) external onlyOwner {
-        require(depositFeeD6_ <= 1e6, "FeeManager: invalid deposit fee");
-        _feeManagerStorage().depositFeeD6 = depositFeeD6_;
-    }
-
-    function setRedeemFeeD6(uint24 redeemFeeD6_) external onlyOwner {
-        require(redeemFeeD6_ <= 1e6, "FeeManager: invalid redeem fee");
-        _feeManagerStorage().redeemFeeD6 = redeemFeeD6_;
-    }
-
-    function setPerformanceFeeD6(uint24 performanceFeeD6_) external onlyOwner {
-        require(performanceFeeD6_ <= 1e6, "FeeManager: invalid performance fee");
-        _feeManagerStorage().performanceFeeD6 = performanceFeeD6_;
-    }
-
-    function setProtocolFeeD6(uint24 protocolFeeD6_) external onlyOwner {
-        require(protocolFeeD6_ <= 1e6, "FeeManager: invalid protocol fee");
-        _feeManagerStorage().protocolFeeD6 = protocolFeeD6_;
+    function setFees(uint24 depositFeeD6_, uint24 redeemFeeD6_, uint24 performanceFeeD6_, uint24 protocolFeeD6_)
+        external
+        onlyOwner
+    {
+        _setFees(depositFeeD6_, redeemFeeD6_, performanceFeeD6_, protocolFeeD6_);
     }
 
     function setBaseAsset(address vault, address baseAsset_) external onlyOwner {
-        require(vault != address(0), "FeeManager: zero vault address");
-        require(baseAsset_ != address(0), "FeeManager: zero base asset address");
+        if (vault == address(0) || baseAsset_ == address(0)) {
+            revert ZeroAddress();
+        }
         FeeManagerStorage storage $ = _feeManagerStorage();
         if ($.baseAsset[vault] != address(0)) {
-            revert("FeeManager: base asset already set for vault");
+            revert BaseAssetAlreadSet(vault, $.baseAsset[vault]);
         }
         $.baseAsset[vault] = baseAsset_;
     }
@@ -127,7 +114,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         $.timestamps[vault] = block.timestamp;
     }
 
-    function initialize(bytes calldata data) external initializer {
+    function initialize(bytes calldata data) external virtual initializer {
         (
             address owner_,
             address feeRecipient_,
@@ -136,22 +123,37 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
             uint24 performanceFeeD6_,
             uint24 protocolFeeD6_
         ) = abi.decode(data, (address, address, uint24, uint24, uint24, uint24));
-        __FeeManager_init(owner_, feeRecipient_, depositFeeD6_, redeemFeeD6_, performanceFeeD6_, protocolFeeD6_);
+        __Ownable_init(owner_);
+        _setFeeRecipient(feeRecipient_);
+        _setFees(depositFeeD6_, redeemFeeD6_, performanceFeeD6_, protocolFeeD6_);
     }
 
     // Internal functions
 
-    function __FeeManager_init(
-        address owner_,
-        address feeRecipient_,
-        uint24 depositFeeD6_,
-        uint24 redeemFeeD6_,
-        uint24 performanceFeeD6_,
-        uint24 protocolFeeD6_
-    ) internal onlyInitializing {
-        __Ownable_init(owner_);
+    function _setFeeRecipient(address feeRecipient_) internal {
+        if (feeRecipient_ == address(0)) {
+            revert ZeroAddress();
+        }
         FeeManagerStorage storage $ = _feeManagerStorage();
         $.feeRecipient = feeRecipient_;
+    }
+
+    function _setFees(uint24 depositFeeD6_, uint24 redeemFeeD6_, uint24 performanceFeeD6_, uint24 protocolFeeD6_)
+        internal
+    {
+        if (depositFeeD6_ > 1e6) {
+            revert InvalidDepositFee(depositFeeD6_);
+        }
+        if (redeemFeeD6_ > 1e6) {
+            revert InvalidRedeemFee(redeemFeeD6_);
+        }
+        if (performanceFeeD6_ > 1e6) {
+            revert InvalidPerformanceFee(performanceFeeD6_);
+        }
+        if (protocolFeeD6_ > 1e6) {
+            revert InvalidProtocolFee(protocolFeeD6_);
+        }
+        FeeManagerStorage storage $ = _feeManagerStorage();
         $.depositFeeD6 = depositFeeD6_;
         $.redeemFeeD6 = redeemFeeD6_;
         $.performanceFeeD6 = performanceFeeD6_;

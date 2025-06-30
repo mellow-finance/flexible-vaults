@@ -9,6 +9,8 @@ import "../../interfaces/permissions/ICustomVerifier.sol";
 import "../MellowACL.sol";
 
 contract SymbioticVerifier is ICustomVerifier, MellowACL {
+    error ValueZero();
+
     bytes32 public constant ASSET_ROLE = keccak256("SYMBIOTIC_VERIFIER:ASSET_ROLE");
     bytes32 public constant CALLER_ROLE = keccak256("SYMBIOTIC_VERIFIER:CALLER_ROLE");
     bytes32 public constant MELLOW_VAULT_ROLE = keccak256("SYMBIOTIC_VERIFIER:MELLOW_VAULT_ROLE");
@@ -93,12 +95,12 @@ contract SymbioticVerifier is ICustomVerifier, MellowACL {
         (address admin, address[] memory holder, bytes32[] memory roles) =
             abi.decode(data, (address, address[], bytes32[]));
         if (admin == address(0)) {
-            revert("SymbioticVerifier: admin address cannot be zero");
+            revert ValueZero();
         }
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         for (uint256 i = 0; i < holder.length; i++) {
             if (holder[i] == address(0) || roles[i] == bytes32(0)) {
-                revert("SymbioticVerifier: holders and roles cannot be zero");
+                revert ValueZero();
             }
             _grantRole(roles[i], holder[i]);
         }

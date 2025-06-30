@@ -11,6 +11,10 @@ import "./ACLModule.sol";
 abstract contract ShareModule is IShareModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    bytes32 public constant SET_CUSTOM_HOOK_ROLE = keccak256("modules.ShareModule.SET_CUSTOM_HOOK_ROLE");
+    bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_DEPOSIT_QUEUE_ROLE");
+    bytes32 public constant CREATE_REDEEM_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_REDEEM_QUEUE_ROLE");
+
     bytes32 private immutable _shareModuleStorageSlot;
 
     IFactory public immutable override depositQueueFactory;
@@ -32,12 +36,8 @@ abstract contract ShareModule is IShareModule, ACLModule {
         return IFeeManager(_shareModuleStorage().feeManager);
     }
 
-    function depositOracle() public view returns (IOracle) {
-        return IOracle(_shareModuleStorage().depositOracle);
-    }
-
-    function redeemOracle() public view returns (IOracle) {
-        return IOracle(_shareModuleStorage().redeemOracle);
+    function oracle() public view returns (IOracle) {
+        return IOracle(_shareModuleStorage().oracle);
     }
 
     function hasQueue(address queue) public view returns (bool) {
@@ -109,7 +109,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         ShareModuleStorage storage $ = _shareModuleStorage();
         address asset = IQueue(queue).asset();
         if (!$.queues[asset].contains(queue) || $.isDepositQueue[queue]) {
-            revert("ShareModule: caller is not a redeem queue");
+            revert Forbidden();
         }
         return IRedeemHook(getHook(queue)).getLiquidAssets(asset);
     }
@@ -138,7 +138,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         ShareModuleStorage storage $ = _shareModuleStorage();
         address asset = IQueue(queue).asset();
         if (!_shareModuleStorage().queues[asset].contains(queue)) {
-            revert("RedeemModule: caller is not a queue");
+            revert Forbidden();
         }
         address hook = getHook(queue);
         if ($.isDepositQueue[queue]) {
@@ -149,24 +149,22 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
     }
 
-    function setCustomHook(address queue, address hook) external onlyRole(PermissionsLibrary.SET_CUSTOM_HOOK_ROLE) {
+    function setCustomHook(address queue, address hook) external onlyRole(SET_CUSTOM_HOOK_ROLE) {
         if (queue == address(0) || hook == address(0)) {
-            revert("ShareModule: zero address");
+            revert ZeroAddress();
         }
         _shareModuleStorage().customHooks[queue] = hook;
     }
 
     function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data)
         external
-        onlyRole(PermissionsLibrary.CREATE_DEPOSIT_QUEUE_ROLE)
+        onlyRole(CREATE_DEPOSIT_QUEUE_ROLE)
     {
-        if (asset == address(0) || !IOracle(depositOracle()).isSupportedAsset(asset)) {
-            revert("DepositModule: unsupported asset");
+        if (!IOracle(oracle()).isSupportedAsset(asset)) {
+            revert UnsupportedAsset(asset);
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
-        _grantRole(PermissionsLibrary.MODIFY_PENDING_ASSETS_ROLE, queue);
-        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.queues[asset].add(queue);
         $.isDepositQueue[queue] = true;
@@ -175,14 +173,13 @@ abstract contract ShareModule is IShareModule, ACLModule {
 
     function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data)
         external
-        onlyRole(PermissionsLibrary.CREATE_REDEEM_QUEUE_ROLE)
+        onlyRole(CREATE_REDEEM_QUEUE_ROLE)
     {
-        if (asset == address(0) || !IOracle(redeemOracle()).isSupportedAsset(asset)) {
-            revert("RedeemModule: unsupported asset");
+        if (!IOracle(oracle()).isSupportedAsset(asset)) {
+            revert UnsupportedAsset(asset);
         }
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
         address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
-        _grantRole(PermissionsLibrary.MODIFY_VAULT_BALANCE_ROLE, queue);
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.queues[asset].add(queue);
         $.isDepositQueue[queue] = false;
@@ -192,30 +189,27 @@ abstract contract ShareModule is IShareModule, ACLModule {
     function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external {
         address caller = _msgSender();
         ShareModuleStorage storage $ = _shareModuleStorage();
-        address depositOracle_ = $.depositOracle;
-        address redeemOracle_ = $.redeemOracle;
-        if (caller != redeemOracle_ && caller != depositOracle_) {
+        if (caller != $.oracle) {
             revert("ShareModule: forbidden");
         }
-
-        bool isDepositOracle = caller == depositOracle_;
         EnumerableSet.AddressSet storage queues = _shareModuleStorage().queues[asset];
         uint256 length = queues.length();
         for (uint256 i = 0; i < length; i++) {
             address queue = queues.at(i);
-            if (isDepositOracle == $.isDepositQueue[queue]) {
+            if ($.isDepositQueue[queue]) {
                 IQueue(queue).handleReport(priceD18, latestEligibleTimestamp);
+            } else {
+                IQueue(queue).handleReport(1e36 / priceD18, latestEligibleTimestamp);
             }
         }
-        if (isDepositOracle) {
-            IFeeManager feeManager_ = feeManager();
-            uint256 fees = feeManager_.calculateProtocolFee(address(this), shareManager().totalShares())
-                + feeManager_.calculatePerformanceFee(address(this), asset, priceD18);
-            if (fees > 0) {
-                shareManager().mint(feeManager_.feeRecipient(), fees);
-            }
-            feeManager_.updateState(asset, priceD18);
+
+        IFeeManager feeManager_ = feeManager();
+        uint256 fees = feeManager_.calculateProtocolFee(address(this), shareManager().totalShares())
+            + feeManager_.calculatePerformanceFee(address(this), asset, priceD18);
+        if (fees > 0) {
+            shareManager().mint(feeManager_.feeRecipient(), fees);
         }
+        feeManager_.updateState(asset, priceD18);
     }
 
     // Internal functions
@@ -223,27 +217,20 @@ abstract contract ShareModule is IShareModule, ACLModule {
     function __ShareModule_init(
         address shareManager_,
         address feeManager_,
-        address depositOracle_,
-        address redeemOracle_,
+        address oracle_,
         address defaultDepositHook_,
         address defaultRedeemHook_
     ) internal onlyInitializing {
         if (
-            shareManager_ == address(0) || feeManager_ == address(0) || depositOracle_ == address(0)
-                || redeemOracle_ == address(0) || defaultDepositHook_ == address(0) || defaultRedeemHook_ == address(0)
+            shareManager_ == address(0) || feeManager_ == address(0) || oracle_ == address(0)
+                || defaultDepositHook_ == address(0) || defaultRedeemHook_ == address(0)
         ) {
-            revert("ShareModule: zero address");
-        }
-        if (depositOracle_ == redeemOracle_) {
-            revert("ShareModule: same oracles");
+            revert ZeroAddress();
         }
         ShareModuleStorage storage $ = _shareModuleStorage();
         $.shareManager = shareManager_;
         $.feeManager = feeManager_;
-        $.depositOracle = depositOracle_;
-        $.redeemOracle = redeemOracle_;
-        $.depositOracle = depositOracle_;
-        $.redeemOracle = redeemOracle_;
+        $.oracle = oracle_;
         $.defaultDepositHook = defaultDepositHook_;
         $.defaultRedeemHook = defaultRedeemHook_;
     }

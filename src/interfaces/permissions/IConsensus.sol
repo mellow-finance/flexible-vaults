@@ -7,6 +7,12 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
 interface IConsensus {
+    error InvalidSignatures(bytes32 orderHash, Signature[] signatures);
+    error InvalidThreshold(uint256 threshold);
+    error SignerAlreadyExists(address signer);
+    error SignerNotFound(address signer);
+    error ZeroAddress();
+
     enum SignatureType {
         EIP712,
         EIP1271

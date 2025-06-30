@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/utils/Address.sol";
-
 import "../interfaces/hooks/IDepositHook.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 contract CompositeDepositHook is IDepositHook {
     address public immutable hook0;

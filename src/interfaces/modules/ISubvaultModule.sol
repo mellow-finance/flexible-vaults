@@ -4,6 +4,8 @@ pragma solidity 0.8.25;
 import "../factories/IFactory.sol";
 
 interface ISubvaultModule {
+    error NotVault();
+
     struct SubvaultModuleStorage {
         address vault;
     }

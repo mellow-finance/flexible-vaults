@@ -20,10 +20,8 @@ contract VaultConfigurator {
         bytes feeManagerParams;
         uint256 riskManagerVersion;
         bytes riskManagerParams;
-        uint256 depositOracleVersion;
-        bytes depositOracleParams;
-        uint256 redeemOracleVersion;
-        bytes redeemOracleParams;
+        uint256 oracleVersion;
+        bytes oracleParams;
         address defaultDepositHook;
         address defaultRedeemHook;
         Vault.RoleHolder[] roleHolders;
@@ -70,28 +68,19 @@ contract VaultConfigurator {
 
     function create(InitParams calldata params)
         external
-        returns (
-            address shareManager,
-            address feeManager,
-            address riskManager,
-            address depositOracle,
-            address redeemOracle,
-            address vault
-        )
+        returns (address shareManager, address feeManager, address riskManager, address oracle, address vault)
     {
         shareManager =
             shareManagerFactory.create(params.shareManagerVersion, params.proxyAdmin, params.shareManagerParams);
         feeManager = feeManagerFactory.create(params.feeManagerVersion, params.proxyAdmin, params.feeManagerParams);
         riskManager = riskManagerFactory.create(params.riskManagerVersion, params.proxyAdmin, params.riskManagerParams);
-        depositOracle = oracleFactory.create(params.depositOracleVersion, params.proxyAdmin, params.depositOracleParams);
-        redeemOracle = oracleFactory.create(params.redeemOracleVersion, params.proxyAdmin, params.redeemOracleParams);
+        oracle = oracleFactory.create(params.oracleVersion, params.proxyAdmin, params.oracleParams);
         bytes memory initParams = abi.encode(
             params.vaultAdmin,
             shareManager,
             feeManager,
             riskManager,
-            depositOracle,
-            redeemOracle,
+            oracle,
             params.defaultDepositHook,
             params.defaultRedeemHook,
             params.roleHolders

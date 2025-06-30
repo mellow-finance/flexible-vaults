@@ -3,24 +3,27 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import "../interfaces/hooks/IDepositHook.sol";
 import "../interfaces/tokens/IWETH.sol";
 import "../interfaces/tokens/IWSTETH.sol";
 
 import "../libraries/TransferLibrary.sol";
 
-import "./BasicDepositHook.sol";
+contract LidoDepositHook is IDepositHook {
+    error UnsupportedAsset(address asset);
 
-contract LidoStakingHook is BasicDepositHook {
     using SafeERC20 for IERC20;
 
     address public immutable wsteth;
     address public immutable steth;
     address public immutable weth;
+    address public immutable nextHook;
 
-    constructor(address wsteth_, address weth_) {
+    constructor(address wsteth_, address weth_, address nextHook_) {
         wsteth = wsteth_;
         steth = IWSTETH(wsteth_).stETH();
         weth = weth_;
+        nextHook = nextHook_;
     }
 
     function afterDeposit(address asset, uint256 assets) public override {
@@ -33,12 +36,14 @@ contract LidoStakingHook is BasicDepositHook {
                 if (asset == weth) {
                     IWETH(weth).withdraw(assets);
                 } else if (asset != TransferLibrary.ETH) {
-                    revert("LidoStakingHook: unsupported asset");
+                    revert UnsupportedAsset(asset);
                 }
                 Address.sendValue(payable(wsteth), assets);
             }
             assets = IERC20(wsteth).balanceOf(address(this)) - balance;
         }
-        super.afterDeposit(wsteth, assets);
+        if (nextHook != address(0)) {
+            IDepositHook(nextHook).afterDeposit(wsteth, assets);
+        }
     }
 }

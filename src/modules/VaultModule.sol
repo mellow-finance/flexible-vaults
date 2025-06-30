@@ -3,7 +3,6 @@ pragma solidity 0.8.25;
 
 import "../interfaces/modules/IVaultModule.sol";
 
-import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 
@@ -12,7 +11,13 @@ import "./ACLModule.sol";
 abstract contract VaultModule is IVaultModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    bytes32 public constant CREATE_SUBVAULT_ROLE = keccak256("modules.VaultModule.CREATE_SUBVAULT_ROLE");
+    bytes32 public constant DISCONNECT_SUBVAULT_ROLE = keccak256("modules.VaultModule.DISCONNECT_SUBVAULT_ROLE");
+    bytes32 public constant RECONNECT_SUBVAULT_ROLE = keccak256("modules.VaultModule.RECONNECT_SUBVAULT_ROLE");
+    bytes32 public constant PULL_LIQUIDITY_ROLE = keccak256("modules.VaultModule.PULL_LIQUIDITY_ROLE");
+    bytes32 public constant PUSH_LIQUIDITY_ROLE = keccak256("modules.VaultModule.PUSH_LIQUIDITY_ROLE");
     bytes32 private immutable _subvaultModuleStorageSlot;
+
     address public immutable subvaultFactory;
 
     constructor(string memory name_, uint256 version_, address subvaultFactory_) {
@@ -42,7 +47,7 @@ abstract contract VaultModule is IVaultModule, ACLModule {
 
     function createSubvault(uint256 version, address owner, address subvaultAdmin, address verifier)
         external
-        onlyRole(PermissionsLibrary.CREATE_SUBVAULT_ROLE)
+        onlyRole(CREATE_SUBVAULT_ROLE)
         returns (address subvault)
     {
         requireFundamentalRole(owner, FundamentalRole.PROXY_OWNER);
@@ -52,31 +57,31 @@ abstract contract VaultModule is IVaultModule, ACLModule {
         $.subvaults.add(subvault);
     }
 
-    function disconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.DISCONNECT_SUBVAULT_ROLE) {
+    function disconnectSubvault(address subvault) external onlyRole(DISCONNECT_SUBVAULT_ROLE) {
         VaultModuleStorage storage $ = _vaultStorage();
-        require($.subvaults.contains(subvault), "SubvaultModule: subvault not found");
+        if (!$.subvaults.contains(subvault)) {
+            revert NotConnected(subvault);
+        }
         $.subvaults.remove(subvault);
     }
 
-    function reconnectSubvault(address subvault) external onlyRole(PermissionsLibrary.RECONNECT_SUBVAULT_ROLE) {
+    function reconnectSubvault(address subvault) external onlyRole(RECONNECT_SUBVAULT_ROLE) {
         VaultModuleStorage storage $ = _vaultStorage();
-        require(!$.subvaults.contains(subvault), "SubvaultModule: subvault already connected");
-        require(IFactory(subvaultFactory).isEntity(subvault), "SubvaultModule: not a valid subvault");
+        if (!IFactory(subvaultFactory).isEntity(subvault)) {
+            revert NotEntity(subvault);
+        }
+        if ($.subvaults.contains(subvault)) {
+            revert AlreadyConnected(subvault);
+        }
         $.subvaults.add(subvault);
     }
 
-    function pullAssets(address subvault, address asset, uint256 value)
-        external
-        onlyRole(PermissionsLibrary.PULL_LIQUIDITY_ROLE)
-    {
+    function pullAssets(address subvault, address asset, uint256 value) external onlyRole(PULL_LIQUIDITY_ROLE) {
         riskManager().modifySubvaultBalance(subvault, asset, -int256(value));
         ISubvaultModule(subvault).pullAssets(asset, address(this), value);
     }
 
-    function pushAssets(address subvault, address asset, uint256 value)
-        external
-        onlyRole(PermissionsLibrary.PUSH_LIQUIDITY_ROLE)
-    {
+    function pushAssets(address subvault, address asset, uint256 value) external onlyRole(PUSH_LIQUIDITY_ROLE) {
         riskManager().modifySubvaultBalance(subvault, asset, int256(value));
         TransferLibrary.sendAssets(asset, subvault, value);
     }

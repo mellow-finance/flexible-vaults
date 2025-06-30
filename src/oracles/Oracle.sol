@@ -3,12 +3,16 @@ pragma solidity 0.8.25;
 
 import "../interfaces/oracles/IOracle.sol";
 
-import "../libraries/PermissionsLibrary.sol";
 import "../libraries/SlotLibrary.sol";
 
 contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    bytes32 public constant SUBMIT_REPORT_ROLE = keccak256("oracle.Oracle.UBMIT_REPORT_ROLE");
+    bytes32 public constant ACCEPT_REPORT_ROLE = keccak256("oracle.Oracle.ACCEPT_REPORT_ROLE");
+    bytes32 public constant SET_SECURITY_PARAMS_ROLE = keccak256("oracle.Oracle.SET_SECURITY_PARAMS_ROLE");
+    bytes32 public constant ADD_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.ADD_SUPPORTED_ASSETS_ROLE");
+    bytes32 public constant REMOVE_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.REMOVE_SUPPORTED_ASSETS_ROLE");
     bytes32 private immutable _oracleStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
@@ -31,8 +35,12 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         return _oracleStorage().securityParams;
     }
 
-    function supportedAssets() public view returns (address[] memory) {
-        return _oracleStorage().supportedAssets.values();
+    function supportedAssets() public view returns (uint256) {
+        return _oracleStorage().supportedAssets.length();
+    }
+
+    function supportedAssetAt(uint256 index) public view returns (address) {
+        return _oracleStorage().supportedAssets.at(index);
     }
 
     function isSupportedAsset(address asset) public view returns (bool) {
@@ -42,16 +50,102 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     function getReport(address asset) public view returns (DetailedReport memory) {
         OracleStorage storage $ = _oracleStorage();
         if (!$.supportedAssets.contains(asset)) {
-            revert("Oracle: unsupported asset");
+            revert UnsupportedAsset(asset);
         }
         return $.reports[asset];
     }
 
-    function validatePrice(uint256 priceD18, uint256 prevPriceD18)
-        public
+    function validatePrice(uint256 priceD18, address asset) public view returns (bool isValid, bool isSuspicious) {
+        OracleStorage storage $ = _oracleStorage();
+        if (!$.supportedAssets.contains(asset)) {
+            return (false, false);
+        }
+        return _validatePrice(priceD18, $.reports[asset]);
+    }
+
+    // Mutable functions
+
+    function initialize(bytes calldata initParams) external initializer {
+        __Oracle_init(initParams);
+    }
+
+    function submitReports(Report[] calldata reports) external onlyRole(SUBMIT_REPORT_ROLE) {
+        OracleStorage storage $ = _oracleStorage();
+        SecurityParams memory securityParams_ = $.securityParams;
+        uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
+        IShareModule vault_ = vault();
+        EnumerableSet.AddressSet storage supportedAssets_ = $.supportedAssets;
+        mapping(address asset => DetailedReport) storage reports_ = $.reports;
+        for (uint256 i = 0; i < reports.length; i++) {
+            if (!supportedAssets_.contains(reports[i].asset)) {
+                revert UnsupportedAsset(reports[i].asset);
+            }
+            if (_handleReport(securityParams_, reports[i].priceD18, reports_[reports[i].asset])) {
+                vault_.handleReport(reports[i].asset, reports[i].priceD18, secureTimestamp);
+            }
+        }
+    }
+
+    function acceptReport(address asset, uint32 timestamp) external onlyRole(ACCEPT_REPORT_ROLE) {
+        OracleStorage storage $ = _oracleStorage();
+        DetailedReport storage report_ = $.reports[asset];
+        if (!report_.isSuspicious) {
+            revert NonSuspiciousReport(asset, timestamp);
+        }
+        if (report_.timestamp != timestamp) {
+            revert InvalidTimestamp(timestamp, report_.timestamp);
+        }
+        report_.isSuspicious = false;
+        vault().handleReport(asset, report_.priceD18, timestamp - $.securityParams.secureInterval);
+    }
+
+    function setSecurityParams(SecurityParams calldata securityParams_) external onlyRole(SET_SECURITY_PARAMS_ROLE) {
+        _setSecurityParams(securityParams_);
+    }
+
+    function addSupportedAssets(address[] calldata assets) external onlyRole(ADD_SUPPORTED_ASSETS_ROLE) {
+        _addSupportedAssets(assets);
+    }
+
+    function removeSupportedAssets(address[] calldata assets) external onlyRole(REMOVE_SUPPORTED_ASSETS_ROLE) {
+        _removeSupportedAssets(assets);
+    }
+
+    // Internal functions
+
+    function __Oracle_init(bytes calldata initParams) internal onlyInitializing {
+        __ReentrancyGuard_init();
+        (address vault_, SecurityParams memory securityParams_, address[] memory assets_) =
+            abi.decode(initParams, (address, SecurityParams, address[]));
+        OracleStorage storage $ = _oracleStorage();
+        $.vault = IShareModule(vault_);
+        _setSecurityParams(securityParams_);
+        _addSupportedAssets(assets_);
+    }
+
+    function _handleReport(SecurityParams memory securityParams_, uint224 priceD18, DetailedReport storage report)
+        internal
+        returns (bool)
+    {
+        if (report.timestamp != 0 && securityParams_.timeout + report.timestamp > block.timestamp) {
+            revert TooEarly(block.timestamp, securityParams_.timeout + report.timestamp);
+        }
+        (bool isValid, bool isSuspicious) = _validatePrice(priceD18, report);
+        if (!isValid) {
+            revert InvalidPrice(priceD18);
+        }
+        report.priceD18 = priceD18;
+        report.timestamp = uint32(block.timestamp);
+        report.isSuspicious = isSuspicious;
+        return !isSuspicious;
+    }
+
+    function _validatePrice(uint256 priceD18, DetailedReport storage report)
+        private
         view
         returns (bool isValid, bool isSuspicious)
     {
+        uint256 prevPriceD18 = report.priceD18;
         if (prevPriceD18 == 0) {
             return (true, true);
         }
@@ -62,7 +156,10 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             absoluteDeviation > securityParams_.maxAbsoluteDeviation
                 || relativeDeviationD18 > securityParams_.maxRelativeDeviationD18
         ) {
-            return (false, true);
+            return (false, false);
+        }
+        if (report.isSuspicious) {
+            return (true, true);
         }
         if (
             absoluteDeviation > securityParams_.suspiciousAbsoluteDeviation
@@ -73,125 +170,34 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         return (true, false);
     }
 
-    // Mutable functions
-
-    function initialize(bytes calldata initParams) external initializer {
-        __Oracle_init(initParams);
-    }
-
-    function submitReport(Report[] calldata reports) external onlyRole(PermissionsLibrary.SUBMIT_REPORT_ROLE) {
+    function _setSecurityParams(SecurityParams memory securityParams_) private {
         OracleStorage storage $ = _oracleStorage();
-        SecurityParams memory securityParams_ = _oracleStorage().securityParams;
-        uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
-        IShareModule vault_ = vault();
-        for (uint256 i = 0; i < reports.length; i++) {
-            if (!$.supportedAssets.contains(reports[i].asset)) {
-                revert("Oracle: unsupported asset");
-            }
-            if (_handleReport(securityParams_, reports[i].priceD18, $.reports[reports[i].asset])) {
-                vault_.handleReport(reports[i].asset, reports[i].priceD18, secureTimestamp);
-            }
-        }
-    }
-
-    function acceptReport(address asset, uint32 timestamp) external onlyRole(PermissionsLibrary.ACCEPT_REPORT_ROLE) {
-        OracleStorage storage $ = _oracleStorage();
-        DetailedReport storage report_ = $.reports[asset];
-        if (!report_.isSuspicious) {
-            revert("Oracle: report is not suspicious");
-        }
-        if (report_.timestamp != timestamp) {
-            revert("Oracle: report timestamp mismatch");
-        }
-        report_.isSuspicious = false;
-        vault().handleReport(asset, report_.priceD18, timestamp - $.securityParams.secureInterval);
-    }
-
-    function setSecurityParams(SecurityParams calldata securityParams_)
-        external
-        onlyRole(PermissionsLibrary.SET_SECURITY_PARAMS_ROLE)
-    {
-        OracleStorage storage $ = _oracleStorage();
-        if (securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0) {
-            revert("Oracle: zero absolute deviation");
-        }
-        if (securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0) {
-            revert("Oracle: zero relative deviation");
-        }
-        if (securityParams_.timeout == 0 || securityParams_.secureInterval == 0) {
-            revert("Oracle: zero timeout or secure interval");
+        if (
+            securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0
+                || securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0
+                || securityParams_.timeout == 0 || securityParams_.secureInterval == 0
+        ) {
+            revert ZeroValue();
         }
         $.securityParams = securityParams_;
     }
 
-    function addSupportedAssets(address[] calldata assets)
-        external
-        onlyRole(PermissionsLibrary.ADD_SUPPORTED_ASSETS_ROLE)
-    {
-        OracleStorage storage $ = _oracleStorage();
+    function _addSupportedAssets(address[] memory assets) private {
+        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
         for (uint256 i = 0; i < assets.length; i++) {
-            if (!$.supportedAssets.add(assets[i])) {
-                revert("Oracle: asset already supported");
+            if (!asset_.add(assets[i])) {
+                revert AlreadySupportedAsset(assets[i]);
             }
         }
     }
 
-    function removeSupportedAssets(address[] calldata assets)
-        external
-        onlyRole(PermissionsLibrary.REMOVE_SUPPORTED_ASSETS_ROLE)
-    {
-        OracleStorage storage $ = _oracleStorage();
+    function _removeSupportedAssets(address[] calldata assets) private {
+        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
         for (uint256 i = 0; i < assets.length; i++) {
-            if (!$.supportedAssets.remove(assets[i])) {
-                revert("Oracle: asset not supported");
+            if (!asset_.remove(assets[i])) {
+                revert UnsupportedAsset(assets[i]);
             }
         }
-    }
-
-    // Internal functions
-
-    function __Oracle_init(bytes calldata initParams) internal onlyInitializing {
-        __ReentrancyGuard_init();
-        (address vault_, SecurityParams memory securityParams_, address[] memory assets_) =
-            abi.decode(initParams, (address, SecurityParams, address[]));
-        if (vault_ == address(0)) {
-            revert("Oracle: zero vault address");
-        }
-        if (securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0) {
-            revert("Oracle: zero absolute deviation");
-        }
-        if (securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0) {
-            revert("Oracle: zero relative deviation");
-        }
-        if (securityParams_.timeout == 0 || securityParams_.secureInterval == 0) {
-            revert("Oracle: zero timeout or secure interval");
-        }
-        OracleStorage storage $ = _oracleStorage();
-        $.vault = IShareModule(vault_);
-        $.securityParams = securityParams_;
-        for (uint256 i = 0; i < assets_.length; i++) {
-            if (assets_[i] == address(0)) {
-                revert("Oracle: zero asset address");
-            }
-            $.supportedAssets.add(assets_[i]);
-        }
-    }
-
-    function _handleReport(SecurityParams memory securityParams_, uint224 priceD18, DetailedReport storage report)
-        internal
-        returns (bool)
-    {
-        if (report.timestamp != 0 && securityParams_.timeout + report.timestamp > block.timestamp) {
-            revert("Oracle: too early to report");
-        }
-        (bool isValid, bool isSuspicious) = validatePrice(priceD18, report.priceD18);
-        if (!isValid) {
-            revert("Oracle: invalid price");
-        }
-        report.priceD18 = priceD18;
-        report.timestamp = uint32(block.timestamp);
-        report.isSuspicious = isSuspicious;
-        return !isSuspicious;
     }
 
     function _oracleStorage() internal view returns (OracleStorage storage $) {

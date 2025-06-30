@@ -8,11 +8,23 @@ import "../modules/IACLModule.sol";
 import "../modules/IShareModule.sol";
 
 interface IShareManager {
+    error Forbidden();
+    error InsufficientAllocatedShares(uint256 value, uint256 allocated);
+    error GlobalLockupNotExpired(uint256 timestamp, uint32 globalLockup);
+    error TargetedLockupNotExpired(uint256 timestamp, uint32 targetedLockup);
+    error Blacklisted(address account);
+    error TransferPaused();
+    error MintPaused();
+    error BurnPaused();
+    error LimitExceeded(uint256 value, uint256 limit);
+    error NotWhitelisted(address account);
+    error TransferNotAllowed(address from, address to);
+    error ZeroValue();
+
     struct ShareManagerStorage {
         address vault;
         uint256 flags;
         uint256 allocatedShares;
-        uint256 sharesLimit;
         bytes32 whitelistMerkleRoot;
         mapping(address account => AccountInfo) accounts;
     }
@@ -42,8 +54,6 @@ interface IShareManager {
     function flags() external view returns (Flags memory);
 
     function whitelistMerkleRoot() external view returns (bytes32);
-
-    function sharesLimit() external view returns (uint256);
 
     function isDepositorWhitelisted(address account, bytes32[] calldata merkleProof) external view returns (bool);
 
