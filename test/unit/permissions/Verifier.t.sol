@@ -195,7 +195,7 @@ contract VerifierTest is Test {
         compactCalls[0] = IVerifier.CompactCall({who: CALL_ROLE_ADDRESS, where: target1, selector: bytes4(callData1)});
 
         IVerifier.VerificationPayload memory verificationPayload = IVerifier.VerificationPayload({
-            verificationType: IVerifier.VerficationType.ONCHAIN_COMPACT,
+            verificationType: IVerifier.VerificationType.ONCHAIN_COMPACT,
             verificationData: new bytes(0),
             proof: new bytes32[](0)
         });
@@ -221,7 +221,7 @@ contract VerifierTest is Test {
         Verifier verifier = createVerifier("Verifier", 1, admin);
 
         IVerifier.VerificationPayload memory verificationPayload = IVerifier.VerificationPayload({
-            verificationType: IVerifier.VerficationType.MERKLE_EXTENDED,
+            verificationType: IVerifier.VerificationType.MERKLE_EXTENDED,
             verificationData: abi.encodePacked(
                 verifier.hashCall(
                     IVerifier.ExtendedCall({who: CALL_ROLE_ADDRESS, where: target1, value: 0, data: callData1})
@@ -246,7 +246,7 @@ contract VerifierTest is Test {
         bytes memory validCalldata2 = abi.encodeWithSelector(validSelector, keccak256("data2"));
 
         IVerifier.VerificationPayload memory verificationPayload = IVerifier.VerificationPayload({
-            verificationType: IVerifier.VerficationType.MERKLE_COMPACT,
+            verificationType: IVerifier.VerificationType.MERKLE_COMPACT,
             verificationData: abi.encodePacked(
                 verifier.hashCall(IVerifier.CompactCall({who: CALL_ROLE_ADDRESS, where: target1, selector: validSelector}))
             ),
@@ -270,7 +270,7 @@ contract VerifierTest is Test {
         MockCustomVerifier customVerifier = new MockCustomVerifier();
 
         IVerifier.VerificationPayload memory verificationPayload = IVerifier.VerificationPayload({
-            verificationType: IVerifier.VerficationType.CUSTOM_VERIFIER,
+            verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
             verificationData: abi.encode(customVerifier, true),
             proof: proof
         });
@@ -288,7 +288,7 @@ contract VerifierTest is Test {
         MockCustomVerifier customVerifier = new MockCustomVerifier();
 
         IVerifier.VerificationPayload memory verificationPayload = IVerifier.VerificationPayload({
-            verificationType: IVerifier.VerficationType.CUSTOM_VERIFIER,
+            verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
             verificationData: abi.encode(customVerifier, false),
             proof: proof
         });
