@@ -161,7 +161,7 @@ contract Integration is Test {
         vm.startPrank(vaultAdmin);
         vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
 
-        bytes32[24] memory roles = [
+        bytes32[27] memory roles = [
             vault.SET_CUSTOM_HOOK_ROLE(),
             vault.CREATE_DEPOSIT_QUEUE_ROLE(),
             vault.CREATE_REDEEM_QUEUE_ROLE(),
@@ -172,8 +172,9 @@ contract Integration is Test {
             oracle.REMOVE_SUPPORTED_ASSETS_ROLE(),
             verifier.SET_MERKLE_ROOT_ROLE(),
             verifier.CALL_ROLE(),
-            // verifier.ADD_ALLOWED_CALLS_ROLE(),
-            // verifier.REMOVE_ALLOWED_CALLS_ROLE(),
+            verifier.ALLOW_CALL_ROLE(),
+            verifier.DISALLOW_CALL_ROLE(),
+            vault.SET_QUEUE_LIMIT_ROLE(),
             shareManager.SET_FLAGS_ROLE(),
             shareManager.SET_ACCOUNT_INFO_ROLE(),
             vault.CREATE_SUBVAULT_ROLE(),
@@ -202,6 +203,7 @@ contract Integration is Test {
         consensus.initialize(vaultAdmin);
         consensus.addSigner(vaultAdmin, 1, IConsensus.SignatureType.EIP712);
 
+        vault.setQueueLimit(4);
         vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
         vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
         vault.createDepositQueue(

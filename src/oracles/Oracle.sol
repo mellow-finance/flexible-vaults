@@ -13,6 +13,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     bytes32 public constant SET_SECURITY_PARAMS_ROLE = keccak256("oracle.Oracle.SET_SECURITY_PARAMS_ROLE");
     bytes32 public constant ADD_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.ADD_SUPPORTED_ASSETS_ROLE");
     bytes32 public constant REMOVE_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.REMOVE_SUPPORTED_ASSETS_ROLE");
+
     bytes32 private immutable _oracleStorageSlot;
 
     constructor(string memory name_, uint256 version_) {

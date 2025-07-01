@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 library TransferLibrary {
-    error InvalidValue();
-
     using SafeERC20 for IERC20;
+
+    error InvalidValue();
 
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 

@@ -11,6 +11,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
 
     bytes32 public constant SET_FLAGS_ROLE = keccak256("managers.ShareManager.SET_FLAGS_ROLE");
     bytes32 public constant SET_ACCOUNT_INFO_ROLE = keccak256("managers.ShareManager.SET_ACCOUNT_INFO_ROLE");
+
     bytes32 private immutable _shareManagerStorageSlot;
 
     constructor(string memory name_, uint256 version_) {

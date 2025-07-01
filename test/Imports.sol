@@ -7,10 +7,7 @@ import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.so
 
 import "../src/factories/Factory.sol";
 
-import "../src/hooks/BasicDepositHook.sol";
-
 import "../src/hooks/BasicRedeemHook.sol";
-import "../src/hooks/CompositeDepositHook.sol";
 import "../src/hooks/LidoDepositHook.sol";
 import "../src/hooks/RedirectingDepositHook.sol";
 

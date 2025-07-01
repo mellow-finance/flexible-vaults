@@ -1,10 +1,9 @@
-Queues:
-1. min/max assets per action
-2. limits per token per block
-3. InstantWithDelayDepositQueue
+All contracts:
+1. events
+2. docs
 
-Oracles:
-1. better UX for 
+VaultConfigurator:
+1. full initialization with subvaults & verifiers
 
 Strategies
 1. Restaking strategy
@@ -12,12 +11,9 @@ Strategies
 3. Crosschain
 
 Tests
-Symbiotic
-EigenLayer
-Lending
-Leverage
-Crosschain
-CEXes
-mellow-alm-toolkit
-Gearbox
-rstETH
+1. unit tests
+2. Symbiotic, EigenLayer
+3. Lending, Leverage
+4. Crosschain
+5. CEXes
+6. mellow-alm-toolkit

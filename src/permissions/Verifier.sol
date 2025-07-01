@@ -12,6 +12,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
     bytes32 public constant CALL_ROLE = keccak256("permissions.Verifier.CALL_ROLE");
     bytes32 public constant ALLOW_CALL_ROLE = keccak256("permissions.Verifier.ALLOW_CALL_ROLE");
     bytes32 public constant DISALLOW_CALL_ROLE = keccak256("permissions.Verifier.DISALLOW_CALL_ROLE");
+
     bytes32 private immutable _verifierStorageSlot;
 
     modifier onlyRole(bytes32 role) {

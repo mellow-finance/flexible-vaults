@@ -14,10 +14,11 @@ abstract contract SignatureQueue is
 {
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    bytes32 private immutable _signatureQueueStorageSlot;
     bytes32 public constant ORDER_TYPEHASH = keccak256(
         "Order(uint256 orderId,address queue,address asset,address caller,address recipient,uint256 ordered,uint256 requested,uint256 deadline,uint256 nonce)"
     );
+
+    bytes32 private immutable _signatureQueueStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
         _signatureQueueStorageSlot = SlotLibrary.getSlot("SignatureQueue", name_, version_);
