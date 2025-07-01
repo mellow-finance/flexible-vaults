@@ -83,7 +83,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
             return false;
         }
 
-        if (verificationPayload.verificationType == VerficationType.ONCHAIN_COMPACT) {
+        if (verificationPayload.verificationType == VerificationType.ONCHAIN_COMPACT) {
             return isAllowedCall(who, where, callData);
         }
 
@@ -95,12 +95,12 @@ contract Verifier is IVerifier, ContextUpgradeable {
             return false;
         }
 
-        if (verificationPayload.verificationType == VerficationType.MERKLE_EXTENDED) {
+        if (verificationPayload.verificationType == VerificationType.MERKLE_EXTENDED) {
             return hashCall(ExtendedCall(who, where, value, callData)) == bytes32(verificationData);
-        } else if (verificationPayload.verificationType == VerficationType.MERKLE_COMPACT) {
+        } else if (verificationPayload.verificationType == VerificationType.MERKLE_COMPACT) {
             return callData.length >= 4
                 && hashCall(CompactCall(who, where, bytes4(callData[:4]))) == bytes32(verificationData);
-        } else if (verificationPayload.verificationType == VerficationType.CUSTOM_VERIFIER) {
+        } else if (verificationPayload.verificationType == VerificationType.CUSTOM_VERIFIER) {
             address verifier;
             assembly {
                 verifier := calldataload(verificationData.offset)
