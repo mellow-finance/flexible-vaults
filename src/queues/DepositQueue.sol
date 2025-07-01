@@ -20,6 +20,7 @@ contract DepositQueue is IDepositQueue, Queue {
 
     // View functions
 
+    /// @inheritdoc IDepositQueue
     function claimableOf(address account) public view returns (uint256) {
         DepositQueueStorage storage $ = _depositQueueStorage();
         Checkpoints.Checkpoint224 memory request = $.requestOf[account];
@@ -33,24 +34,29 @@ contract DepositQueue is IDepositQueue, Queue {
         return Math.mulDiv(request._value, priceD18, 1 ether);
     }
 
+    /// @inheritdoc IDepositQueue
     function requestOf(address account) public view returns (uint256 timestamp, uint256 assets) {
         Checkpoints.Checkpoint224 memory request = _depositQueueStorage().requestOf[account];
         return (request._key, request._value);
     }
 
+    /// @inheritdoc IQueue
     function canBeRemoved() external view returns (bool) {
         return _depositQueueStorage().handledIndices == _timestamps().length();
     }
 
     // Mutable functions
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
         __ReentrancyGuard_init();
         (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
         __Queue_init(asset_, shareModule_);
         _depositQueueStorage().requests.initialize(16);
+        emit Initialized(data);
     }
 
+    /// @inheritdoc IDepositQueue
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable nonReentrant {
         if (assets == 0) {
             revert ValueZero();
@@ -92,6 +98,7 @@ contract DepositQueue is IDepositQueue, Queue {
         emit DepositRequested(caller, referral, assets, timestamp);
     }
 
+    /// @inheritdoc IDepositQueue
     function cancelDepositRequest() external nonReentrant {
         address caller = _msgSender();
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -110,8 +117,10 @@ contract DepositQueue is IDepositQueue, Queue {
         TransferLibrary.sendAssets(asset_, caller, assets);
         IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
         $.requests.modify(index, -int256(assets));
+        emit DepositRequestCanceled(caller, assets, request._key);
     }
 
+    /// @inheritdoc IDepositQueue
     function claim(address account) external returns (bool) {
         return _claim(account);
     }
@@ -128,8 +137,9 @@ contract DepositQueue is IDepositQueue, Queue {
         uint256 shares = Math.mulDiv(request._value, priceD18, 1 ether);
         delete $.requestOf[account];
         if (shares != 0) {
-            IShareManager(shareManager()).mintAllocatedShares(account, shares);
+            IShareModule(vault()).shareManager().mintAllocatedShares(account, shares);
         }
+        emit DepositRequestClaimed(account, shares, request._key);
         return true;
     }
 
@@ -196,6 +206,4 @@ contract DepositQueue is IDepositQueue, Queue {
             dqs.slot := slot
         }
     }
-
-    event DepositRequested(address indexed account, address indexed referral, uint224 assets, uint32 timestamp);
 }

@@ -19,6 +19,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     // View functions
 
+    /// @inheritdoc IRedeemQueue
     function getDemand() public view returns (uint256 assets, uint256 shares) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         uint256 iterator_ = $.outflowDemandIterator;
@@ -29,6 +30,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         return (pair.assets, pair.shares);
     }
 
+    /// @inheritdoc IRedeemQueue
     function requestsOf(address account, uint256 offset, uint256 limit)
         public
         view
@@ -59,6 +61,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
     }
 
+    /// @inheritdoc IQueue
     function canBeRemoved() external view returns (bool) {
         return _redeemQueueStorage().handledIndices == _timestamps().length();
     }
@@ -67,12 +70,15 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     receive() external payable {}
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
         __ReentrancyGuard_init();
         (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
         __Queue_init(asset_, shareModule_);
+        emit Initialized(data);
     }
 
+    /// @inheritdoc IRedeemQueue
     function redeem(uint256 shares) external nonReentrant {
         if (shares == 0) {
             revert ValueZero();
@@ -111,8 +117,10 @@ contract RedeemQueue is IRedeemQueue, Queue {
         EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[caller];
         (, uint256 pendingShares) = callerRequests.tryGet(timestamp);
         callerRequests.set(timestamp, pendingShares + shares);
+        emit RedeemRequested(caller, shares, timestamp);
     }
 
+    /// @inheritdoc IRedeemQueue
     function claim(address receiver, uint256[] calldata timestamps) external nonReentrant returns (uint256 assets) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         address account = _msgSender();
@@ -143,9 +151,10 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
 
         TransferLibrary.sendAssets(asset(), receiver, assets);
+        emit RedeemRequestClaimed(account, receiver, assets, timestamps);
     }
 
-    /// @dev permissionless function
+    /// @inheritdoc IRedeemQueue
     function handleReports(uint256 reports) external nonReentrant returns (uint256 counter) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         uint256 iterator_ = $.outflowDemandIterator;
@@ -175,6 +184,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 $.fullDemand -= demand;
             }
             $.outflowDemandIterator += counter;
+            emit RedeemRequestsHandled(counter, demand);
         }
     }
 

@@ -15,15 +15,23 @@ abstract contract SubvaultModule is ISubvaultModule, BaseModule {
         _subvaultModuleStorageSlot = SlotLibrary.getSlot("SubvaultModule", name_, version_);
     }
 
+    // View functions
+
+    /// @inheritdoc ISubvaultModule
     function vault() public view returns (address) {
         return _subvaultModuleStorage().vault;
     }
 
-    function pullAssets(address asset, address to, uint256 value) external {
-        if (_msgSender() != vault()) {
+    // Mutable functions
+
+    /// @inheritdoc ISubvaultModule
+    function pullAssets(address asset, uint256 value) external nonReentrant {
+        address caller = _msgSender();
+        if (caller != vault()) {
             revert NotVault();
         }
-        TransferLibrary.sendAssets(asset, to, value);
+        TransferLibrary.sendAssets(asset, caller, value);
+        emit AssetsPulled(asset, caller, value);
     }
 
     // Internal functions

@@ -18,20 +18,19 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
 
     // View functions
 
+    /// @inheritdoc IQueue
     function vault() public view returns (address) {
         return _queueStorage().vault;
     }
 
-    function shareManager() public view returns (address) {
-        return address(IShareModule(vault()).shareManager());
-    }
-
+    /// @inheritdoc IQueue
     function asset() public view returns (address) {
         return _queueStorage().asset;
     }
 
     // Mutable functions
 
+    /// @inheritdoc IQueue
     function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external {
         if (_msgSender() != vault()) {
             revert Forbidden();
@@ -40,6 +39,7 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
             revert InvalidReport();
         }
         _handleReport(priceD18, latestEligibleTimestamp);
+        emit ReportHandled(priceD18, latestEligibleTimestamp);
     }
 
     // Internal functions

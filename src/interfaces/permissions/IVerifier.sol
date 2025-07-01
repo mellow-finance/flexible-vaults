@@ -6,9 +6,10 @@ import "@openzeppelin/contracts/access/IAccessControl.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
+import "../factories/IFactoryEntity.sol";
 import "./ICustomVerifier.sol";
 
-interface IVerifier {
+interface IVerifier is IFactoryEntity {
     error Forbidden();
     error VerificationFailed();
     error ValueZero();
@@ -53,18 +54,18 @@ interface IVerifier {
 
     // View functions
 
+    function SET_MERKLE_ROOT_ROLE() external view returns (bytes32);
+    function CALL_ROLE() external view returns (bytes32);
+    function ALLOW_CALL_ROLE() external view returns (bytes32);
+    function DISALLOW_CALL_ROLE() external view returns (bytes32);
+
     function vault() external view returns (IAccessControl);
-
     function merkleRoot() external view returns (bytes32);
-
-    // function isAllowedCall(address who, address where, bytes calldata data) external view returns (bool);
-
-    // function allowedCalls() external view returns (uint256);
-
-    // function allowedCallAt(uint256 index) external view returns (Call memory);
-
-    // function hashCall(address who, address where, bytes4 selector) external pure returns (bytes32);
-
+    function allowedCalls() external view returns (uint256);
+    function allowedCallAt(uint256 index) external view returns (CompactCall memory);
+    function isAllowedCall(address who, address where, bytes calldata callData) external view returns (bool);
+    function hashCall(CompactCall memory call) external pure returns (bytes32);
+    function hashCall(ExtendedCall memory call) external pure returns (bytes32);
     function verifyCall(
         address who,
         address where,
@@ -72,7 +73,6 @@ interface IVerifier {
         bytes calldata data,
         VerificationPayload calldata verificationPayload
     ) external view;
-
     function getVerificationResult(
         address who,
         address where,
@@ -83,13 +83,7 @@ interface IVerifier {
 
     // Mutable functions
 
-    function initialize(bytes calldata initParams) external;
-
     function setMerkleRoot(bytes32 merkleRoot_) external;
-
-    // function addAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
-    //     external;
-
-    // function removeAllowedCalls(address[] calldata callers, address[] calldata targets, bytes4[] calldata selectors)
-    //     external;
+    function allowCalls(CompactCall[] calldata compactCalls) external;
+    function disallowCalls(CompactCall[] calldata compactCalls) external;
 }

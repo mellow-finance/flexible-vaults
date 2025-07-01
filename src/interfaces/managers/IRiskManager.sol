@@ -34,6 +34,23 @@ interface IRiskManager is IFactoryEntity {
         mapping(address subvault => EnumerableSet.AddressSet) allowedAssets;
     }
 
+    // View functions
+
+    function requireValidSubvault(address vault_, address subvault) external view;
+    function vault() external view returns (address);
+    function vaultState() external view returns (State memory);
+    function pendingBalance() external view returns (int256);
+    function pendingAssets(address asset) external view returns (uint256);
+    function pendingShares(address asset) external view returns (uint256);
+    function subvaultState(address subvault) external view returns (State memory);
+    function allowedAssets(address subvault) external view returns (uint256);
+    function allowedAssetAt(address subvault, uint256 index) external view returns (address);
+    function isAllowedAsset(address subvault, address asset) external view returns (bool);
+    function convertToShares(address asset, int256 value) external view returns (int256 shares);
+    function maxDeposit(address subvault, address asset) external view returns (uint256 limit);
+
+    // Mutable functions
+
     function modifyVaultBalance(address asset, int256 delta) external;
 
     function modifySubvaultBalance(address subvault, address asset, int256 delta) external;
@@ -48,7 +65,22 @@ interface IRiskManager is IFactoryEntity {
 
     function modifyPendingAssets(address asset, int256 change) external;
 
-    function convertToShares(address asset, int256 assets) external view returns (int256 shares);
+    // Events
 
-    function maxDeposit(address subvault, address asset) external view returns (uint256 limit);
+    event SetSubvaultLimit(address indexed subvault, int256 limit);
+    event SetVaultLimit(int256 limit);
+    event AllowSubvaultAssets(address indexed subvault, address[] assets);
+    event DisallowSubvaultAssets(address indexed subvault, address[] assets);
+    event ModifyPendingAssets(
+        address indexed asset, int256 change, uint256 pendingAssetsAfter, uint256 pendingSharesAfter
+    );
+    event ModifyVaultBalance(address indexed asset, int256 change, int256 newBalance);
+    event ModifySubvaultBalance(address indexed subvault, address indexed asset, int256 change, int256 newBalance);
+    event ModifySubvaultAssets(
+        address indexed subvault,
+        address indexed asset,
+        int256 change,
+        uint256 pendingAssetsAfter,
+        uint256 pendingSharesAfter
+    );
 }

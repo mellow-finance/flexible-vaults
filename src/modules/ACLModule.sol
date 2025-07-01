@@ -17,10 +17,12 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     // View functions
 
+    /// @inheritdoc IACLModule
     function hasFundamentalRole(FundamentalRole role, address account) public view returns (bool) {
         return _aclModuleStorage().fundamentalRoles[account] & (1 << uint256(role)) != 0;
     }
 
+    /// @inheritdoc IACLModule
     function requireFundamentalRole(FundamentalRole role, address account) public view {
         if (!hasFundamentalRole(role, account)) {
             revert Forbidden();
@@ -29,10 +31,12 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
 
     // Mutable functions
 
+    /// @inheritdoc IACLModule
     function grantFundamentalRole(FundamentalRole role, address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _grantFundamentalRole(role, account);
     }
 
+    /// @inheritdoc IACLModule
     function revokeFundamentalRole(FundamentalRole role, address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _revokeFundamentalRole(role, account);
     }
@@ -52,6 +56,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
             revert ZeroAddress();
         }
         _aclModuleStorage().fundamentalRoles[account] |= (1 << uint256(role));
+        emit FundamentalRoleGranted(role, account);
     }
 
     function _grantRole(bytes32 role, address account) internal virtual override returns (bool) {
@@ -66,6 +71,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
             revert ZeroAddress();
         }
         _aclModuleStorage().fundamentalRoles[account] &= ~(1 << uint256(role));
+        emit FundamentalRoleRevoked(role, account);
     }
 
     function _aclModuleStorage() private view returns (ACLModuleStorage storage $) {

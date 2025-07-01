@@ -11,76 +11,92 @@ import "./ACLModule.sol";
 abstract contract VaultModule is IVaultModule, ACLModule {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    /// @inheritdoc IVaultModule
     bytes32 public constant CREATE_SUBVAULT_ROLE = keccak256("modules.VaultModule.CREATE_SUBVAULT_ROLE");
+    /// @inheritdoc IVaultModule
     bytes32 public constant DISCONNECT_SUBVAULT_ROLE = keccak256("modules.VaultModule.DISCONNECT_SUBVAULT_ROLE");
+    /// @inheritdoc IVaultModule
     bytes32 public constant RECONNECT_SUBVAULT_ROLE = keccak256("modules.VaultModule.RECONNECT_SUBVAULT_ROLE");
+    /// @inheritdoc IVaultModule
     bytes32 public constant PULL_LIQUIDITY_ROLE = keccak256("modules.VaultModule.PULL_LIQUIDITY_ROLE");
+    /// @inheritdoc IVaultModule
     bytes32 public constant PUSH_LIQUIDITY_ROLE = keccak256("modules.VaultModule.PUSH_LIQUIDITY_ROLE");
 
-    address public immutable subvaultFactory;
-    address public immutable verifierFactory;
+    /// @inheritdoc IVaultModule
+    IFactory public immutable subvaultFactory;
+    /// @inheritdoc IVaultModule
+    IFactory public immutable verifierFactory;
 
     bytes32 private immutable _subvaultModuleStorageSlot;
 
     constructor(string memory name_, uint256 version_, address subvaultFactory_, address verifierFactory_) {
         _subvaultModuleStorageSlot = SlotLibrary.getSlot("VaultModule", name_, version_);
-        subvaultFactory = subvaultFactory_;
-        verifierFactory = verifierFactory_;
+        subvaultFactory = IFactory(subvaultFactory_);
+        verifierFactory = IFactory(verifierFactory_);
     }
 
     // View functionss
 
+    /// @inheritdoc IVaultModule
     function subvaults() public view returns (uint256) {
         return _vaultStorage().subvaults.length();
     }
 
+    /// @inheritdoc IVaultModule
     function subvaultAt(uint256 index) public view returns (address) {
         return _vaultStorage().subvaults.at(index);
     }
 
+    /// @inheritdoc IVaultModule
     function hasSubvault(address subvault) public view returns (bool) {
         return _vaultStorage().subvaults.contains(subvault);
     }
 
+    /// @inheritdoc IVaultModule
     function riskManager() public view returns (IRiskManager) {
         return IRiskManager(_vaultStorage().riskManager);
     }
 
     // Mutable functions
 
+    /// @inheritdoc IVaultModule
     function createSubvault(uint256 version, address owner, address verifier)
         external
         onlyRole(CREATE_SUBVAULT_ROLE)
         returns (address subvault)
     {
         requireFundamentalRole(FundamentalRole.PROXY_OWNER, owner);
-        if (!IFactory(verifierFactory).isEntity(verifier)) {
+        if (!verifierFactory.isEntity(verifier)) {
             revert NotEntity(verifier);
         }
         if (address(IVerifier(verifier).vault()) != address(this)) {
             revert Forbidden();
         }
-        subvault = IFactory(subvaultFactory).create(version, owner, abi.encode(verifier, address(this)));
+        subvault = subvaultFactory.create(version, owner, abi.encode(verifier, address(this)));
         _vaultStorage().subvaults.add(subvault);
+        emit SubvaultCreated(subvault, version, owner, verifier);
     }
 
+    /// @inheritdoc IVaultModule
     function disconnectSubvault(address subvault) external onlyRole(DISCONNECT_SUBVAULT_ROLE) {
         VaultModuleStorage storage $ = _vaultStorage();
         if (!$.subvaults.remove(subvault)) {
             revert NotConnected(subvault);
         }
+        emit SubvaultDisconnected(subvault);
     }
 
+    /// @inheritdoc IVaultModule
     function reconnectSubvault(address subvault) external onlyRole(RECONNECT_SUBVAULT_ROLE) {
         VaultModuleStorage storage $ = _vaultStorage();
-        if (!IFactory(subvaultFactory).isEntity(subvault)) {
+        if (!subvaultFactory.isEntity(subvault)) {
             revert NotEntity(subvault);
         }
         if (ISubvaultModule(subvault).vault() != address(this)) {
             revert InvalidSubvault(subvault);
         }
         IVerifier verifier = IVerifierModule(subvault).verifier();
-        if (!IFactory(verifierFactory).isEntity(address(verifier))) {
+        if (!verifierFactory.isEntity(address(verifier))) {
             revert NotEntity(address(verifier));
         }
         if (address(verifier.vault()) != address(this)) {
@@ -89,16 +105,29 @@ abstract contract VaultModule is IVaultModule, ACLModule {
         if ($.subvaults.add(subvault)) {
             revert AlreadyConnected(subvault);
         }
+        emit SubvaultReconnected(subvault, address(verifier));
     }
 
-    function pullAssets(address subvault, address asset, uint256 value) external onlyRole(PULL_LIQUIDITY_ROLE) {
+    /// @inheritdoc IVaultModule
+    function pullAssets(address subvault, address asset, uint256 value)
+        external
+        nonReentrant
+        onlyRole(PULL_LIQUIDITY_ROLE)
+    {
         riskManager().modifySubvaultBalance(subvault, asset, -int256(value));
-        ISubvaultModule(subvault).pullAssets(asset, address(this), value);
+        ISubvaultModule(subvault).pullAssets(asset, value);
+        emit AssetsPulled(asset, subvault, value);
     }
 
-    function pushAssets(address subvault, address asset, uint256 value) external onlyRole(PUSH_LIQUIDITY_ROLE) {
+    /// @inheritdoc IVaultModule
+    function pushAssets(address subvault, address asset, uint256 value)
+        external
+        nonReentrant
+        onlyRole(PUSH_LIQUIDITY_ROLE)
+    {
         riskManager().modifySubvaultBalance(subvault, asset, int256(value));
         TransferLibrary.sendAssets(asset, subvault, value);
+        emit AssetsPushed(asset, subvault, value);
     }
 
     // Internal functions

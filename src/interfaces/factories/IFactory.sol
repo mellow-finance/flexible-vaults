@@ -41,4 +41,10 @@ interface IFactory is IFactoryEntity {
         view
         returns (address instance);
     function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance);
+
+    // events
+    event SetBlacklistStatus(uint256 version, bool flag);
+    event ProposeImplementation(address implementation);
+    event AcceptProposedImplementation(address implementation);
+    event Created(address instance, uint256 version, address owner, bytes initParams);
 }

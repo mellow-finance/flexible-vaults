@@ -35,6 +35,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         _;
     }
 
+    /// @inheritdoc IShareManager
     function isDepositorWhitelisted(address account, bytes32[] calldata merkleProof) public view returns (bool) {
         ShareManagerStorage storage $ = _shareManagerStorage();
         if ($.flags.hasWhitelist() && !$.accounts[account].canDeposit) {
@@ -52,30 +53,38 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         return true;
     }
 
+    /// @inheritdoc IShareManager
     function sharesOf(address account) public view returns (uint256) {
         return activeSharesOf(account) + claimableSharesOf(account);
     }
 
+    /// @inheritdoc IShareManager
     function claimableSharesOf(address account) public view returns (uint256) {
         return IShareModule(_shareManagerStorage().vault).claimableSharesOf(account);
     }
 
+    /// @inheritdoc IShareManager
     function activeSharesOf(address account) public view virtual returns (uint256);
 
+    /// @inheritdoc IShareManager
     function activeShares() public view virtual returns (uint256);
 
+    /// @inheritdoc IShareManager
     function totalShares() public view returns (uint256) {
         return _shareManagerStorage().allocatedShares + activeShares();
     }
 
+    /// @inheritdoc IShareManager
     function vault() public view returns (address) {
         return _shareManagerStorage().vault;
     }
 
+    /// @inheritdoc IShareManager
     function allocatedShares() public view returns (uint256) {
         return _shareManagerStorage().allocatedShares;
     }
 
+    /// @inheritdoc IShareManager
     function flags() public view returns (Flags memory f) {
         uint256 bitmask = _shareManagerStorage().flags;
         f.hasMintPause = bitmask.hasMintPause();
@@ -88,76 +97,22 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         f.targetedLockup = bitmask.getTargetedLockup();
     }
 
+    /// @inheritdoc IShareManager
     function whitelistMerkleRoot() public view returns (bytes32) {
         return _shareManagerStorage().whitelistMerkleRoot;
     }
 
+    /// @inheritdoc IShareManager
     function accounts(address account)
         public
         view
         returns (bool canDeposit, bool canTransfer, bool isBlacklisted, uint232 lockedUntil)
     {
-        ShareManagerStorage storage $ = _shareManagerStorage();
-        AccountInfo memory info = $.accounts[account];
+        AccountInfo memory info = _shareManagerStorage().accounts[account];
         return (info.canDeposit, info.canTransfer, info.isBlacklisted, info.lockedUntil);
     }
 
-    // Mutable functions
-
-    function claimShares(address account) public {
-        IShareModule(vault()).claimShares(account);
-    }
-
-    function setAccountInfo(address account, AccountInfo memory info) external onlyRole(SET_ACCOUNT_INFO_ROLE) {
-        _shareManagerStorage().accounts[account] = info;
-    }
-
-    function setFlags(Flags calldata f) external onlyRole(SET_FLAGS_ROLE) {
-        uint256 bitmask = uint256(0).setHasMintPause(f.hasMintPause).setHasBurnPause(f.hasBurnPause);
-        bitmask = bitmask.setHasTransferPause(f.hasTransferPause).setHasWhitelist(f.hasWhitelist);
-        bitmask = bitmask.setHasBlacklist(f.hasBlacklist).setHasTransferWhitelist(f.hasTransferWhitelist);
-        bitmask = bitmask.setGlobalLockup(f.globalLockup).setTargetedLockup(f.targetedLockup);
-        _shareManagerStorage().flags = bitmask;
-    }
-
-    function allocateShares(uint256 value) external onlyQueue {
-        if (value == 0) {
-            revert ZeroValue();
-        }
-        _shareManagerStorage().allocatedShares += value;
-    }
-
-    function mintAllocatedShares(address account, uint256 value) external {
-        if (value == 0) {
-            revert ZeroValue();
-        }
-        ShareManagerStorage storage $ = _shareManagerStorage();
-        if (value > $.allocatedShares) {
-            revert InsufficientAllocatedShares(value, $.allocatedShares);
-        }
-        $.allocatedShares -= value;
-        mint(account, value);
-    }
-
-    function mint(address account, uint256 value) public onlyQueue {
-        if (value == 0) {
-            revert ZeroValue();
-        }
-        _mintShares(account, value);
-        ShareManagerStorage storage $ = _shareManagerStorage();
-        uint32 targetLockup = $.flags.getTargetedLockup();
-        if (targetLockup != 0) {
-            $.accounts[account].lockedUntil = uint32(block.timestamp) + targetLockup;
-        }
-    }
-
-    function burn(address account, uint256 value) public onlyQueue {
-        if (value == 0) {
-            revert ZeroValue();
-        }
-        _burnShares(account, value);
-    }
-
+    /// @inheritdoc IShareManager
     function updateChecks(address from, address to) public view {
         ShareManagerStorage storage $ = _shareManagerStorage();
         uint256 flags_ = $.flags;
@@ -201,6 +156,75 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                 }
             }
         }
+    }
+
+    // Mutable functions
+
+    /// @inheritdoc IShareManager
+    function claimShares(address account) public {
+        IShareModule(vault()).claimShares(account);
+    }
+
+    /// @inheritdoc IShareManager
+    function setAccountInfo(address account, AccountInfo memory info) external onlyRole(SET_ACCOUNT_INFO_ROLE) {
+        _shareManagerStorage().accounts[account] = info;
+        emit SetAccountInfo(account, info);
+    }
+
+    /// @inheritdoc IShareManager
+    function setFlags(Flags calldata f) external onlyRole(SET_FLAGS_ROLE) {
+        uint256 bitmask = uint256(0).setHasMintPause(f.hasMintPause).setHasBurnPause(f.hasBurnPause);
+        bitmask = bitmask.setHasTransferPause(f.hasTransferPause).setHasWhitelist(f.hasWhitelist);
+        bitmask = bitmask.setHasBlacklist(f.hasBlacklist).setHasTransferWhitelist(f.hasTransferWhitelist);
+        bitmask = bitmask.setGlobalLockup(f.globalLockup).setTargetedLockup(f.targetedLockup);
+        _shareManagerStorage().flags = bitmask;
+        emit SetFlags(f);
+    }
+
+    /// @inheritdoc IShareManager
+    function allocateShares(uint256 value) external onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
+        _shareManagerStorage().allocatedShares += value;
+        emit AllocateShares(int256(value));
+    }
+
+    /// @inheritdoc IShareManager
+    function mintAllocatedShares(address account, uint256 value) external {
+        ShareManagerStorage storage $ = _shareManagerStorage();
+        if (value > $.allocatedShares) {
+            revert InsufficientAllocatedShares(value, $.allocatedShares);
+        }
+        $.allocatedShares -= value;
+        emit AllocateShares(-int256(value));
+        mint(account, value);
+    }
+
+    /// @inheritdoc IShareManager
+    function mint(address account, uint256 value) public onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
+        _mintShares(account, value);
+        ShareManagerStorage storage $ = _shareManagerStorage();
+        uint32 targetLockup = $.flags.getTargetedLockup();
+        if (targetLockup != 0) {
+            uint32 lockedUntil = uint32(block.timestamp) + targetLockup;
+            $.accounts[account].lockedUntil = lockedUntil;
+            emit Mint(account, value, lockedUntil);
+        } else {
+            emit Mint(account, value, 0);
+        }
+    }
+
+    /// @inheritdoc IShareManager
+    function burn(address account, uint256 value) public onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
+        _burnShares(account, value);
+        emit Burn(account, value);
     }
 
     // Internal functions
