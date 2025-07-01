@@ -36,7 +36,7 @@ interface IVerifier {
         mapping(bytes32 => CompactCall) compactCalls;
     }
 
-    enum VerficationType {
+    enum VerificationType {
         ONCHAIN_COMPACT,
         MERKLE_COMPACT,
         MERKLE_EXTENDED,
@@ -45,7 +45,7 @@ interface IVerifier {
 
     struct VerificationPayload {
         // leaf:
-        VerficationType verificationType;
+        VerificationType verificationType;
         bytes verificationData;
         // merkle proof:
         bytes32[] proof;

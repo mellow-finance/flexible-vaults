@@ -3,7 +3,7 @@ All contracts:
 2. docs
 
 VaultConfigurator:
-1. full initialization with subvaults & verifiers
+1. full initialization with subvaults 
 
 Strategies
 1. Restaking strategy
