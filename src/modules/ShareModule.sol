@@ -188,7 +188,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
         address hook = getHook(queue);
         if ($.isDepositQueue[queue]) {
-            if (hook == address(0)) {
+            if (hook != address(0)) {
                 Address.functionDelegateCall(hook, abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
             }
         } else {

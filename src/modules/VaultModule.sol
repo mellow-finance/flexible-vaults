@@ -109,22 +109,14 @@ abstract contract VaultModule is IVaultModule, ACLModule {
     }
 
     /// @inheritdoc IVaultModule
-    function pullAssets(address subvault, address asset, uint256 value)
-        external
-        nonReentrant
-        onlyRole(PULL_LIQUIDITY_ROLE)
-    {
+    function pullAssets(address subvault, address asset, uint256 value) external onlySelfOrRole(PULL_LIQUIDITY_ROLE) {
         riskManager().modifySubvaultBalance(subvault, asset, -int256(value));
         ISubvaultModule(subvault).pullAssets(asset, value);
         emit AssetsPulled(asset, subvault, value);
     }
 
     /// @inheritdoc IVaultModule
-    function pushAssets(address subvault, address asset, uint256 value)
-        external
-        nonReentrant
-        onlyRole(PUSH_LIQUIDITY_ROLE)
-    {
+    function pushAssets(address subvault, address asset, uint256 value) external onlySelfOrRole(PUSH_LIQUIDITY_ROLE) {
         riskManager().modifySubvaultBalance(subvault, asset, int256(value));
         TransferLibrary.sendAssets(asset, subvault, value);
         emit AssetsPushed(asset, subvault, value);

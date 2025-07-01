@@ -165,6 +165,12 @@ contract Integration is Test {
             vault.SET_HOOK_ROLE(),
             vault.CREATE_DEPOSIT_QUEUE_ROLE(),
             vault.CREATE_REDEEM_QUEUE_ROLE(),
+            vault.SET_QUEUE_LIMIT_ROLE(),
+            vault.CREATE_SUBVAULT_ROLE(),
+            vault.DISCONNECT_SUBVAULT_ROLE(),
+            vault.RECONNECT_SUBVAULT_ROLE(),
+            vault.PULL_LIQUIDITY_ROLE(),
+            vault.PUSH_LIQUIDITY_ROLE(),
             oracle.SUBMIT_REPORT_ROLE(),
             oracle.ACCEPT_REPORT_ROLE(),
             oracle.SET_SECURITY_PARAMS_ROLE(),
@@ -174,14 +180,8 @@ contract Integration is Test {
             verifier.CALL_ROLE(),
             verifier.ALLOW_CALL_ROLE(),
             verifier.DISALLOW_CALL_ROLE(),
-            vault.SET_QUEUE_LIMIT_ROLE(),
             shareManager.SET_FLAGS_ROLE(),
             shareManager.SET_ACCOUNT_INFO_ROLE(),
-            vault.CREATE_SUBVAULT_ROLE(),
-            vault.DISCONNECT_SUBVAULT_ROLE(),
-            vault.RECONNECT_SUBVAULT_ROLE(),
-            vault.PULL_LIQUIDITY_ROLE(),
-            vault.PUSH_LIQUIDITY_ROLE(),
             riskManager.SET_VAULT_LIMIT_ROLE(),
             riskManager.SET_SUBVAULT_LIMIT_ROLE(),
             riskManager.MODIFY_PENDING_ASSETS_ROLE(),
@@ -193,8 +193,6 @@ contract Integration is Test {
         for (uint256 i = 0; i < roles.length; i++) {
             vault.grantRole(roles[i], vaultAdmin);
         }
-        vault.grantRole(vault.PUSH_LIQUIDITY_ROLE(), address(vault));
-        vault.grantRole(vault.PULL_LIQUIDITY_ROLE(), address(vault));
 
         Consensus consensusImplementation = new Consensus("Consensus", 1);
         Consensus consensus = Consensus(
@@ -246,6 +244,9 @@ contract Integration is Test {
             oracle.submitReports(report);
         }
         vm.stopPrank();
+
+        console2.log("Subvault balance:", asset.balanceOf(subvaultFactory.entityAt(0)));
+
         vm.startPrank(user);
 
         console2.log(shareManager.activeSharesOf(user));

@@ -17,6 +17,14 @@ abstract contract MellowACL is IMellowACL, AccessControlEnumerableUpgradeable {
 
     // View functions
 
+    modifier onlySelfOrRole(bytes32 role) {
+        address caller = _msgSender();
+        if (caller != address(this) && !hasRole(role, caller)) {
+            revert AccessControlUnauthorizedAccount(caller, role);
+        }
+        _;
+    }
+
     /// @inheritdoc IMellowACL
     function supportedRoles() external view returns (uint256) {
         return _mellowACLStorage().supportedRoles.length();
