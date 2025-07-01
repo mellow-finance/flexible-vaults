@@ -162,7 +162,7 @@ contract Integration is Test {
         vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
 
         bytes32[27] memory roles = [
-            vault.SET_CUSTOM_HOOK_ROLE(),
+            vault.SET_HOOK_ROLE(),
             vault.CREATE_DEPOSIT_QUEUE_ROLE(),
             vault.CREATE_REDEEM_QUEUE_ROLE(),
             oracle.SUBMIT_REPORT_ROLE(),
@@ -200,7 +200,7 @@ contract Integration is Test {
         Consensus consensus = Consensus(
             address(new TransparentUpgradeableProxy(address(consensusImplementation), vaultProxyAdmin, new bytes(0)))
         );
-        consensus.initialize(vaultAdmin);
+        consensus.initialize(abi.encode(vaultAdmin));
         consensus.addSigner(vaultAdmin, 1, IConsensus.SignatureType.EIP712);
 
         vault.setQueueLimit(4);
