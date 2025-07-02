@@ -34,9 +34,11 @@ contract TransferWrapper {
 contract TransferLibraryTest is Test {
     TransferWrapper internal wrapper;
     ERC20Mock internal token;
+    address deployer = vm.createWallet("deployer").addr;
     address user = vm.createWallet("admin").addr;
 
     function setUp() public {
+        vm.prank(deployer);
         wrapper = new TransferWrapper();
         token = new ERC20Mock("Mock Token", "MOCK");
         token.mint(user, 100 ether);
