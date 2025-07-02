@@ -83,7 +83,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         FeeManagerStorage storage $ = _feeManagerStorage();
         uint256 previousTimestamp = $.timestamps[vault];
         uint256 timeElapsed = block.timestamp - previousTimestamp;
-        if (timeElapsed == 0 || totalShares == 0 || $.protocolFeeD6 == 0) {
+        if (timeElapsed == 0 || totalShares == 0) {
             return 0;
         }
         return Math.mulDiv(totalShares, $.protocolFeeD6 * timeElapsed, 365e6 days);
