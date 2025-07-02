@@ -40,7 +40,7 @@ contract ConsensusTest is Test {
         consensus = Consensus(
             address(new TransparentUpgradeableProxy(address(consensusImplementation), proxyAdmin, new bytes(0)))
         );
-        consensus.initialize(admin);
+        consensus.initialize(abi.encode(admin));
     }
 
     function _sign(bytes32 hash, uint256 pk) internal pure returns (bytes memory sig) {
