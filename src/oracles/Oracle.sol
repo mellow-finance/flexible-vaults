@@ -8,10 +8,15 @@ import "../libraries/SlotLibrary.sol";
 contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    /// @inheritdoc IOracle
     bytes32 public constant SUBMIT_REPORT_ROLE = keccak256("oracle.Oracle.UBMIT_REPORT_ROLE");
+    /// @inheritdoc IOracle
     bytes32 public constant ACCEPT_REPORT_ROLE = keccak256("oracle.Oracle.ACCEPT_REPORT_ROLE");
+    /// @inheritdoc IOracle
     bytes32 public constant SET_SECURITY_PARAMS_ROLE = keccak256("oracle.Oracle.SET_SECURITY_PARAMS_ROLE");
+    /// @inheritdoc IOracle
     bytes32 public constant ADD_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.ADD_SUPPORTED_ASSETS_ROLE");
+    /// @inheritdoc IOracle
     bytes32 public constant REMOVE_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.REMOVE_SUPPORTED_ASSETS_ROLE");
 
     bytes32 private immutable _oracleStorageSlot;
@@ -28,26 +33,32 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         _;
     }
 
+    /// @inheritdoc IOracle
     function vault() public view returns (IShareModule) {
         return _oracleStorage().vault;
     }
 
+    /// @inheritdoc IOracle
     function securityParams() public view returns (SecurityParams memory) {
         return _oracleStorage().securityParams;
     }
 
+    /// @inheritdoc IOracle
     function supportedAssets() public view returns (uint256) {
         return _oracleStorage().supportedAssets.length();
     }
 
+    /// @inheritdoc IOracle
     function supportedAssetAt(uint256 index) public view returns (address) {
         return _oracleStorage().supportedAssets.at(index);
     }
 
+    /// @inheritdoc IOracle
     function isSupportedAsset(address asset) public view returns (bool) {
         return _oracleStorage().supportedAssets.contains(asset);
     }
 
+    /// @inheritdoc IOracle
     function getReport(address asset) public view returns (DetailedReport memory) {
         OracleStorage storage $ = _oracleStorage();
         if (!$.supportedAssets.contains(asset)) {
@@ -56,6 +67,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         return $.reports[asset];
     }
 
+    /// @inheritdoc IOracle
     function validatePrice(uint256 priceD18, address asset) public view returns (bool isValid, bool isSuspicious) {
         OracleStorage storage $ = _oracleStorage();
         if (!$.supportedAssets.contains(asset)) {
@@ -66,10 +78,13 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
 
     // Mutable functions
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata initParams) external initializer {
         __Oracle_init(initParams);
+        emit Initialized(initParams);
     }
 
+    /// @inheritdoc IOracle
     function submitReports(Report[] calldata reports) external onlyRole(SUBMIT_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = $.securityParams;
@@ -85,8 +100,10 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
                 vault_.handleReport(reports[i].asset, reports[i].priceD18, secureTimestamp);
             }
         }
+        emit ReportsSubmitted(reports);
     }
 
+    /// @inheritdoc IOracle
     function acceptReport(address asset, uint32 timestamp) external onlyRole(ACCEPT_REPORT_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         DetailedReport storage report_ = $.reports[asset];
@@ -98,16 +115,20 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         }
         report_.isSuspicious = false;
         vault().handleReport(asset, report_.priceD18, timestamp - $.securityParams.secureInterval);
+        emit ReportAccepted(asset, report_.priceD18, timestamp);
     }
 
+    /// @inheritdoc IOracle
     function setSecurityParams(SecurityParams calldata securityParams_) external onlyRole(SET_SECURITY_PARAMS_ROLE) {
         _setSecurityParams(securityParams_);
     }
 
+    /// @inheritdoc IOracle
     function addSupportedAssets(address[] calldata assets) external onlyRole(ADD_SUPPORTED_ASSETS_ROLE) {
         _addSupportedAssets(assets);
     }
 
+    /// @inheritdoc IOracle
     function removeSupportedAssets(address[] calldata assets) external onlyRole(REMOVE_SUPPORTED_ASSETS_ROLE) {
         _removeSupportedAssets(assets);
     }
@@ -181,6 +202,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             revert ZeroValue();
         }
         $.securityParams = securityParams_;
+        emit SecurityParamsSet(securityParams_);
     }
 
     function _addSupportedAssets(address[] memory assets) private {
@@ -190,6 +212,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
                 revert AlreadySupportedAsset(assets[i]);
             }
         }
+        emit SupportedAssetsAdded(assets);
     }
 
     function _removeSupportedAssets(address[] calldata assets) private {
@@ -199,6 +222,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
                 revert UnsupportedAsset(assets[i]);
             }
         }
+        emit SupportedAssetsRemoved(assets);
     }
 
     function _oracleStorage() internal view returns (OracleStorage storage $) {

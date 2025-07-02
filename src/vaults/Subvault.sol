@@ -15,5 +15,6 @@ contract Subvault is IFactoryEntity, CallModule, SubvaultModule {
         (address verifier_, address vault_) = abi.decode(initParams, (address, address));
         __VerifierModule_init(verifier_);
         __SubvaultModule_init(vault_);
+        emit Initialized(initParams);
     }
 }

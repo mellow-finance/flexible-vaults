@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../factories/IFactoryEntity.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
-interface IFeeManager {
+interface IFeeManager is IFactoryEntity {
     error ZeroAddress();
     error InvalidDepositFee(uint256 fee);
     error InvalidRedeemFee(uint256 fee);
@@ -43,5 +44,9 @@ interface IFeeManager {
         external;
     function setBaseAsset(address vault, address baseAsset_) external;
     function updateState(address asset, uint256 priceD18) external;
-    function initialize(bytes calldata data) external;
+
+    event SetFeeRecipient(address feeRecipient);
+    event SetFees(uint24 depositFeeD6, uint24 redeemFeeD6, uint24 performanceFeeD6, uint24 protocolFeeD6);
+    event SetBaseAsset(address vault, address baseAsset);
+    event UpdateState(address vault, address asset, uint256 priceD18);
 }

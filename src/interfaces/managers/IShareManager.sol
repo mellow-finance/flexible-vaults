@@ -4,10 +4,11 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
+import "../factories/IFactoryEntity.sol";
 import "../modules/IACLModule.sol";
 import "../modules/IShareModule.sol";
 
-interface IShareManager {
+interface IShareManager is IFactoryEntity {
     error Forbidden();
     error InsufficientAllocatedShares(uint256 value, uint256 allocated);
     error GlobalLockupNotExpired(uint256 timestamp, uint32 globalLockup);
@@ -47,6 +48,8 @@ interface IShareManager {
         uint32 targetedLockup;
     }
 
+    // View functions
+
     function vault() external view returns (address);
 
     function allocatedShares() external view returns (uint256);
@@ -67,6 +70,19 @@ interface IShareManager {
 
     function totalShares() external view returns (uint256);
 
+    function accounts(address account)
+        external
+        view
+        returns (bool canDeposit, bool canTransfer, bool isBlacklisted, uint232 lockedUntil);
+
+    function updateChecks(address from, address to) external view;
+
+    // Mutable functions
+
+    function claimShares(address account) external;
+
+    function setAccountInfo(address account, AccountInfo memory info) external;
+
     function setFlags(Flags calldata flags) external;
 
     function allocateShares(uint256 shares) external;
@@ -76,4 +92,14 @@ interface IShareManager {
     function mint(address to, uint256 shares) external;
 
     function burn(address account, uint256 amount) external;
+
+    event AllocateShares(int256 value);
+
+    event Mint(address indexed account, uint256 shares, uint32 lockedUntil);
+
+    event Burn(address indexed account, uint256 shares);
+
+    event SetFlags(Flags flags);
+
+    event SetAccountInfo(address indexed account, AccountInfo info);
 }

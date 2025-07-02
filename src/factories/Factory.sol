@@ -17,73 +17,47 @@ contract Factory is IFactory, OwnableUpgradeable {
 
     // View functions
 
+    /// @inheritdoc IFactory
     function entities() external view returns (uint256) {
         return _factoryStorage().entities.length();
     }
 
+    /// @inheritdoc IFactory
     function entityAt(uint256 index) external view returns (address) {
         return _factoryStorage().entities.at(index);
     }
 
+    /// @inheritdoc IFactory
     function isEntity(address entity) external view returns (bool) {
         return _factoryStorage().entities.contains(entity);
     }
 
+    /// @inheritdoc IFactory
     function implementations() external view returns (uint256) {
         return _factoryStorage().implementations.length();
     }
 
+    /// @inheritdoc IFactory
     function implementationAt(uint256 index) external view returns (address) {
         return _factoryStorage().implementations.at(index);
     }
 
+    /// @inheritdoc IFactory
     function proposals() external view returns (uint256) {
         return _factoryStorage().proposals.length();
     }
 
+    /// @inheritdoc IFactory
     function proposalAt(uint256 index) external view returns (address) {
         return _factoryStorage().proposals.at(index);
     }
 
+    /// @inheritdoc IFactory
     function isBlacklisted(uint256 version) external view returns (bool) {
         return _factoryStorage().isBlacklisted[version];
     }
 
-    // Mutable functions
-
-    function initialize(bytes calldata data) external initializer {
-        address owner_ = abi.decode(data, (address));
-        __Ownable_init(owner_);
-    }
-
-    function setBlacklistStatus(uint256 version, bool flag) external onlyOwner {
-        FactoryStorage storage $ = _factoryStorage();
-        if (version >= $.implementations.length()) {
-            revert OutOfBounds(version);
-        }
-        $.isBlacklisted[version] = flag;
-    }
-
-    function proposeImplementation(address implementation) external {
-        FactoryStorage storage $ = _factoryStorage();
-        if ($.implementations.contains(implementation)) {
-            revert ImplementationAlreadyAccepted(implementation);
-        }
-        if ($.proposals.contains(implementation)) {
-            revert ImplementationAlreadyProposed(implementation);
-        }
-        $.proposals.add(implementation);
-    }
-
-    function acceptProposedImplementation(address implementation) external onlyOwner {
-        FactoryStorage storage $ = _factoryStorage();
-        if (!$.proposals.contains(implementation)) {
-            revert ImplementationNotProposed(implementation);
-        }
-        $.proposals.remove(implementation);
-        $.implementations.add(implementation);
-    }
-
+    /// @inheritdoc IFactory
     function computeAddress(uint256 version, address owner, bytes calldata initParams)
         external
         view
@@ -109,6 +83,50 @@ contract Factory is IFactory, OwnableUpgradeable {
         );
     }
 
+    // Mutable functions
+
+    /// @inheritdoc IFactoryEntity
+    function initialize(bytes calldata data) external initializer {
+        address owner_ = abi.decode(data, (address));
+        __Ownable_init(owner_);
+        emit Initialized(data);
+    }
+
+    /// @inheritdoc IFactory
+    function setBlacklistStatus(uint256 version, bool flag) external onlyOwner {
+        FactoryStorage storage $ = _factoryStorage();
+        if (version >= $.implementations.length()) {
+            revert OutOfBounds(version);
+        }
+        $.isBlacklisted[version] = flag;
+        emit SetBlacklistStatus(version, flag);
+    }
+
+    /// @inheritdoc IFactory
+    function proposeImplementation(address implementation) external {
+        FactoryStorage storage $ = _factoryStorage();
+        if ($.implementations.contains(implementation)) {
+            revert ImplementationAlreadyAccepted(implementation);
+        }
+        if ($.proposals.contains(implementation)) {
+            revert ImplementationAlreadyProposed(implementation);
+        }
+        $.proposals.add(implementation);
+        emit ProposeImplementation(implementation);
+    }
+
+    /// @inheritdoc IFactory
+    function acceptProposedImplementation(address implementation) external onlyOwner {
+        FactoryStorage storage $ = _factoryStorage();
+        if (!$.proposals.contains(implementation)) {
+            revert ImplementationNotProposed(implementation);
+        }
+        $.proposals.remove(implementation);
+        $.implementations.add(implementation);
+        emit AcceptProposedImplementation(implementation);
+    }
+
+    /// @inheritdoc IFactory
     function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance) {
         FactoryStorage storage $ = _factoryStorage();
         if (version >= $.implementations.length()) {
@@ -125,6 +143,7 @@ contract Factory is IFactory, OwnableUpgradeable {
             )
         );
         $.entities.add(instance);
+        emit Created(instance, version, owner, initParams);
     }
 
     // Internal functions

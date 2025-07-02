@@ -13,4 +13,7 @@ interface IMellowACL is IAccessControlEnumerable {
     function supportedRoleAt(uint256 index) external view returns (bytes32);
 
     function hasSupportedRole(bytes32 role) external view returns (bool);
+
+    event RoleAdded(bytes32 indexed role);
+    event RoleRemoved(bytes32 indexed role);
 }

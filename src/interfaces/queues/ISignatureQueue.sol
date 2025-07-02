@@ -61,7 +61,15 @@ interface ISignatureQueue is IFactoryEntity {
 
     function asset() external view returns (address);
 
-    // Mutable functions
+    function claimableOf(address account) external view returns (uint256);
 
-    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external;
+    function claim(address account) external returns (uint256);
+
+    function canBeRemoved() external pure returns (bool);
+
+    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external view;
+
+    /// Events
+
+    event OrderExecuted(Order order, IConsensus.Signature[] signatures);
 }

@@ -17,6 +17,7 @@ contract Consensus is IConsensus, OwnableUpgradeable {
 
     // View functions
 
+    /// @inheritdoc IConsensus
     function checkSignatures(bytes32 orderHash, Signature[] calldata signatures) public view returns (bool) {
         ConsensusStorage storage $ = _consensusStorage();
         if (signatures.length == 0 || signatures.length < $.threshold) {
@@ -46,20 +47,24 @@ contract Consensus is IConsensus, OwnableUpgradeable {
         return true;
     }
 
+    /// @inheritdoc IConsensus
     function requireValidSignatures(bytes32 orderHash, Signature[] calldata signatures) external view {
         if (!checkSignatures(orderHash, signatures)) {
             revert InvalidSignatures(orderHash, signatures);
         }
     }
 
+    /// @inheritdoc IConsensus
     function threshold() external view returns (uint256) {
         return _consensusStorage().threshold;
     }
 
+    /// @inheritdoc IConsensus
     function signers() external view returns (uint256) {
         return _consensusStorage().signers.length();
     }
 
+    /// @inheritdoc IConsensus
     function signerAt(uint256 index) external view returns (address signer, SignatureType signatureType) {
         ConsensusStorage storage $ = _consensusStorage();
         uint256 signatureTypeValue;
@@ -67,6 +72,7 @@ contract Consensus is IConsensus, OwnableUpgradeable {
         signatureType = SignatureType(signatureTypeValue);
     }
 
+    /// @inheritdoc IConsensus
     function isSigner(address account) external view returns (bool) {
         ConsensusStorage storage $ = _consensusStorage();
         return $.signers.contains(account);
@@ -74,18 +80,24 @@ contract Consensus is IConsensus, OwnableUpgradeable {
 
     // Mutable functions
 
-    function initialize(address owner_) external initializer {
+    /// @inheritdoc IFactoryEntity
+    function initialize(bytes calldata data) external initializer {
+        address owner_ = abi.decode(data, (address));
         __Ownable_init(owner_);
+        emit Initialized(data);
     }
 
+    /// @inheritdoc IConsensus
     function setThreshold(uint256 threshold_) external onlyOwner {
         ConsensusStorage storage $ = _consensusStorage();
         if (threshold_ == 0 || threshold_ > $.signers.length()) {
             revert InvalidThreshold(threshold_);
         }
         $.threshold = threshold_;
+        emit ThresholdSet(threshold_);
     }
 
+    /// @inheritdoc IConsensus
     function addSigner(address signer, uint256 threshold_, SignatureType signatureType) external onlyOwner {
         ConsensusStorage storage $ = _consensusStorage();
         if (signer == address(0)) {
@@ -98,8 +110,10 @@ contract Consensus is IConsensus, OwnableUpgradeable {
             revert InvalidThreshold(threshold_);
         }
         $.threshold = threshold_;
+        emit SignerAdded(signer, signatureType, threshold_);
     }
 
+    /// @inheritdoc IConsensus
     function removeSigner(address signer, uint256 threshold_) external onlyOwner {
         ConsensusStorage storage $ = _consensusStorage();
         if (!$.signers.remove(signer)) {
@@ -109,6 +123,7 @@ contract Consensus is IConsensus, OwnableUpgradeable {
             revert InvalidThreshold(threshold_);
         }
         $.threshold = threshold_;
+        emit SignerRemoved(signer, threshold_);
     }
 
     // Internal functions

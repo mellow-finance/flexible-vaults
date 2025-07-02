@@ -14,6 +14,7 @@ abstract contract SignatureQueue is
 {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    /// @inheritdoc ISignatureQueue
     bytes32 public constant ORDER_TYPEHASH = keccak256(
         "Order(uint256 orderId,address queue,address asset,address caller,address recipient,uint256 ordered,uint256 requested,uint256 deadline,uint256 nonce)"
     );
@@ -27,30 +28,37 @@ abstract contract SignatureQueue is
 
     // View functions
 
+    /// @inheritdoc ISignatureQueue
     function claimableOf(address /* account */ ) public view virtual returns (uint256) {
         return 0;
     }
 
+    /// @inheritdoc ISignatureQueue
     function claim(address /* account */ ) external virtual returns (uint256) {
         return 0;
     }
 
+    /// @inheritdoc ISignatureQueue
     function vault() public view returns (address) {
         return _signatureQueueStorage().vault;
     }
 
+    /// @inheritdoc ISignatureQueue
     function asset() public view returns (address) {
         return _signatureQueueStorage().asset;
     }
 
+    /// @inheritdoc ISignatureQueue
     function consensus() public view returns (IConsensus) {
         return IConsensus(_signatureQueueStorage().consensus);
     }
 
+    /// @inheritdoc ISignatureQueue
     function nonces(address account) public view returns (uint256) {
         return _signatureQueueStorage().nonces[account];
     }
 
+    /// @inheritdoc ISignatureQueue
     function hashOrder(Order calldata order) public view returns (bytes32) {
         return _hashTypedDataV4(
             keccak256(
@@ -70,6 +78,7 @@ abstract contract SignatureQueue is
         );
     }
 
+    /// @inheritdoc ISignatureQueue
     function validateOrder(Order calldata order, IConsensus.Signature[] calldata signatures) public view {
         if (order.deadline < block.timestamp) {
             revert OrderExpired(order.deadline);
@@ -108,12 +117,17 @@ abstract contract SignatureQueue is
         }
     }
 
+    /// @inheritdoc ISignatureQueue
     function canBeRemoved() external pure returns (bool) {
         return true;
     }
 
+    /// @inheritdoc ISignatureQueue
+    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external view {}
+
     // Mutable functions
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata initData) external initializer {
         SignatureQueueStorage storage $ = _signatureQueueStorage();
         bytes memory data;
@@ -125,9 +139,8 @@ abstract contract SignatureQueue is
         __ReentrancyGuard_init();
         __EIP712_init(name_, version_);
         $.consensus = consensus_;
+        emit Initialized(initData);
     }
-
-    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external {}
 
     // Internal functions
 

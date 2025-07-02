@@ -17,5 +17,6 @@ contract SignatureDepositQueue is SignatureQueue {
         vault_.callHook(order.requested);
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, int256(order.ordered));
         vault_.shareManager().mint(order.recipient, order.requested);
+        emit OrderExecuted(order, signatures);
     }
 }

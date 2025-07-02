@@ -24,4 +24,9 @@ interface IACLModule is IMellowACL {
 
     function grantFundamentalRole(FundamentalRole role, address account) external;
     function revokeFundamentalRole(FundamentalRole role, address account) external;
+
+    // Events
+
+    event FundamentalRoleGranted(FundamentalRole indexed role, address indexed account);
+    event FundamentalRoleRevoked(FundamentalRole indexed role, address indexed account);
 }

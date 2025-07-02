@@ -8,9 +8,13 @@ import "../libraries/SlotLibrary.sol";
 contract Verifier is IVerifier, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
+    /// @inheritdoc IVerifier
     bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("permissions.Verifier.SET_MERKLE_ROOT_ROLE");
+    /// @inheritdoc IVerifier
     bytes32 public constant CALL_ROLE = keccak256("permissions.Verifier.CALL_ROLE");
+    /// @inheritdoc IVerifier
     bytes32 public constant ALLOW_CALL_ROLE = keccak256("permissions.Verifier.ALLOW_CALL_ROLE");
+    /// @inheritdoc IVerifier
     bytes32 public constant DISALLOW_CALL_ROLE = keccak256("permissions.Verifier.DISALLOW_CALL_ROLE");
 
     bytes32 private immutable _verifierStorageSlot;
@@ -29,37 +33,45 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     // View functions
 
+    /// @inheritdoc IVerifier
     function vault() public view returns (IAccessControl) {
         return IAccessControl(_verifierStorage().vault);
     }
 
+    /// @inheritdoc IVerifier
     function merkleRoot() public view returns (bytes32) {
         return _verifierStorage().merkleRoot;
     }
 
+    /// @inheritdoc IVerifier
     function allowedCalls() public view returns (uint256) {
         return _verifierStorage().compactCallHashes.length();
     }
 
+    /// @inheritdoc IVerifier
     function allowedCallAt(uint256 index) public view returns (CompactCall memory) {
         VerifierStorage storage $ = _verifierStorage();
         bytes32 hash_ = $.compactCallHashes.at(index);
         return $.compactCalls[hash_];
     }
 
+    /// @inheritdoc IVerifier
     function isAllowedCall(address who, address where, bytes calldata callData) public view returns (bool) {
         return callData.length >= 4
             && _verifierStorage().compactCallHashes.contains(hashCall(CompactCall(who, where, bytes4(callData[:4]))));
     }
 
+    /// @inheritdoc IVerifier
     function hashCall(CompactCall memory call) public pure returns (bytes32) {
         return keccak256(abi.encode(call.who, call.where, call.selector));
     }
 
+    /// @inheritdoc IVerifier
     function hashCall(ExtendedCall memory call) public pure returns (bytes32) {
         return keccak256(abi.encode(call.who, call.where, call.value, call.data));
     }
 
+    /// @inheritdoc IVerifier
     function verifyCall(
         address who,
         address where,
@@ -72,13 +84,14 @@ contract Verifier is IVerifier, ContextUpgradeable {
         }
     }
 
+    /// @inheritdoc IVerifier
     function getVerificationResult(
         address who,
         address where,
         uint256 value,
         bytes calldata callData,
         VerificationPayload calldata verificationPayload
-    ) public view virtual returns (bool) {
+    ) public view returns (bool) {
         if (!vault().hasRole(CALL_ROLE, who)) {
             return false;
         }
@@ -113,6 +126,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
 
     // Mutable functions
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata initParams) external initializer {
         (address vault_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
         if (vault_ == address(0)) {
@@ -124,6 +138,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
         }
     }
 
+    /// @inheritdoc IVerifier
     function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(SET_MERKLE_ROOT_ROLE) {
         if (merkleRoot_ == bytes32(0)) {
             revert ValueZero();
@@ -131,6 +146,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
         _verifierStorage().merkleRoot = merkleRoot_;
     }
 
+    /// @inheritdoc IVerifier
     function allowCalls(CompactCall[] calldata compactCalls) external onlyRole(ALLOW_CALL_ROLE) {
         VerifierStorage storage $ = _verifierStorage();
         mapping(bytes32 => CompactCall) storage compactCalls_ = $.compactCalls;
@@ -145,6 +161,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
         }
     }
 
+    /// @inheritdoc IVerifier
     function disallowCalls(CompactCall[] calldata compactCalls) external onlyRole(DISALLOW_CALL_ROLE) {
         VerifierStorage storage $ = _verifierStorage();
         mapping(bytes32 => CompactCall) storage compactCalls_ = $.compactCalls;

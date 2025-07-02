@@ -15,46 +15,57 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
 
     // View functions
 
+    /// @inheritdoc IFeeManager
     function feeRecipient() public view returns (address) {
         return _feeManagerStorage().feeRecipient;
     }
 
+    /// @inheritdoc IFeeManager
     function depositFeeD6() public view returns (uint24) {
         return _feeManagerStorage().depositFeeD6;
     }
 
+    /// @inheritdoc IFeeManager
     function redeemFeeD6() public view returns (uint24) {
         return _feeManagerStorage().redeemFeeD6;
     }
 
+    /// @inheritdoc IFeeManager
     function performanceFeeD6() public view returns (uint24) {
         return _feeManagerStorage().performanceFeeD6;
     }
 
+    /// @inheritdoc IFeeManager
     function protocolFeeD6() public view returns (uint24) {
         return _feeManagerStorage().protocolFeeD6;
     }
 
+    /// @inheritdoc IFeeManager
     function timestamps(address vault) public view returns (uint256) {
         return _feeManagerStorage().timestamps[vault];
     }
 
+    /// @inheritdoc IFeeManager
     function maxPriceD18(address vault) public view returns (uint256) {
         return _feeManagerStorage().maxPriceD18[vault];
     }
 
+    /// @inheritdoc IFeeManager
     function baseAsset(address vault) public view returns (address) {
         return _feeManagerStorage().baseAsset[vault];
     }
 
+    /// @inheritdoc IFeeManager
     function calculateDepositFee(uint256 amount) public view returns (uint256) {
         return (amount * depositFeeD6()) / 1e6;
     }
 
+    /// @inheritdoc IFeeManager
     function calculateRedeemFee(uint256 amount) public view returns (uint256) {
         return (amount * redeemFeeD6()) / 1e6;
     }
 
+    /// @inheritdoc IFeeManager
     function calculatePerformanceFee(address vault, address asset, uint256 priceD18) public view returns (uint256) {
         FeeManagerStorage storage $ = _feeManagerStorage();
         if (asset != $.baseAsset[vault]) {
@@ -67,7 +78,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         return Math.mulDiv(priceD18 - maxPriceD18_, $.performanceFeeD6, 1e6);
     }
 
-    /// @dev shares
+    /// @inheritdoc IFeeManager
     function calculateProtocolFee(address vault, uint256 totalShares) public view returns (uint256 shares) {
         FeeManagerStorage storage $ = _feeManagerStorage();
         uint256 previousTimestamp = $.timestamps[vault];
@@ -80,10 +91,12 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
 
     // Mutable functions
 
+    /// @inheritdoc IFeeManager
     function setFeeRecipient(address feeRecipient_) external onlyOwner {
         _setFeeRecipient(feeRecipient_);
     }
 
+    /// @inheritdoc IFeeManager
     function setFees(uint24 depositFeeD6_, uint24 redeemFeeD6_, uint24 performanceFeeD6_, uint24 protocolFeeD6_)
         external
         onlyOwner
@@ -91,6 +104,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         _setFees(depositFeeD6_, redeemFeeD6_, performanceFeeD6_, protocolFeeD6_);
     }
 
+    /// @inheritdoc IFeeManager
     function setBaseAsset(address vault, address baseAsset_) external onlyOwner {
         if (vault == address(0) || baseAsset_ == address(0)) {
             revert ZeroAddress();
@@ -100,8 +114,10 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
             revert BaseAssetAlreadSet(vault, $.baseAsset[vault]);
         }
         $.baseAsset[vault] = baseAsset_;
+        emit SetBaseAsset(vault, baseAsset_);
     }
 
+    /// @inheritdoc IFeeManager
     function updateState(address asset, uint256 priceD18) external {
         FeeManagerStorage storage $ = _feeManagerStorage();
         address vault = _msgSender();
@@ -112,8 +128,10 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
             $.maxPriceD18[vault] = priceD18;
         }
         $.timestamps[vault] = block.timestamp;
+        emit UpdateState(vault, asset, priceD18);
     }
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external virtual initializer {
         (
             address owner_,
@@ -126,6 +144,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         __Ownable_init(owner_);
         _setFeeRecipient(feeRecipient_);
         _setFees(depositFeeD6_, redeemFeeD6_, performanceFeeD6_, protocolFeeD6_);
+        emit Initialized(data);
     }
 
     // Internal functions
@@ -136,6 +155,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         }
         FeeManagerStorage storage $ = _feeManagerStorage();
         $.feeRecipient = feeRecipient_;
+        emit SetFeeRecipient(feeRecipient_);
     }
 
     function _setFees(uint24 depositFeeD6_, uint24 redeemFeeD6_, uint24 performanceFeeD6_, uint24 protocolFeeD6_)
@@ -158,6 +178,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         $.redeemFeeD6 = redeemFeeD6_;
         $.performanceFeeD6 = performanceFeeD6_;
         $.protocolFeeD6 = protocolFeeD6_;
+        emit SetFees(depositFeeD6_, redeemFeeD6_, performanceFeeD6_, protocolFeeD6_);
     }
 
     function _feeManagerStorage() internal view returns (FeeManagerStorage storage $) {

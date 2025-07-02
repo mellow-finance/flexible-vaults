@@ -34,6 +34,14 @@ interface IShareModule is IBaseModule {
 
     // View functions
 
+    function SET_HOOK_ROLE() external view returns (bytes32);
+    function CREATE_DEPOSIT_QUEUE_ROLE() external view returns (bytes32);
+    function CREATE_REDEEM_QUEUE_ROLE() external view returns (bytes32);
+    function PAUSE_QUEUE_ROLE() external view returns (bytes32);
+    function UNPAUSE_QUEUE_ROLE() external view returns (bytes32);
+    function SET_QUEUE_LIMIT_ROLE() external view returns (bytes32);
+    function REMOVE_QUEUE_ROLE() external view returns (bytes32);
+
     function shareManager() external view returns (IShareManager);
 
     function feeManager() external view returns (IFeeManager);
@@ -58,6 +66,8 @@ interface IShareModule is IBaseModule {
 
     function getQueueCount(address asset) external view returns (uint256);
 
+    function getQueueCount() external view returns (uint256);
+
     function queueAt(address asset, uint256 index) external view returns (address);
 
     function getHook(address queue) external view returns (address hook);
@@ -77,6 +87,8 @@ interface IShareModule is IBaseModule {
     function claimShares(address account) external;
 
     function setCustomHook(address queue, address hook) external;
+    function setDefaultDepositHook(address hook) external;
+    function setDefaultRedeemHook(address hook) external;
 
     function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data) external;
 
@@ -93,4 +105,17 @@ interface IShareModule is IBaseModule {
     function callHook(uint256 assets) external;
 
     function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external;
+
+    // Events
+
+    event SharesClaimed(address indexed account);
+    event CustomHookSet(address indexed queue, address indexed hook);
+    event QueueCreated(address indexed queue, address indexed asset, bool isDepositQueue);
+    event QueueRemoved(address indexed queue, address indexed asset);
+    event HookCalled(address indexed queue, address indexed asset, uint256 assets, address hook);
+    event QueueLimitSet(uint256 limit);
+    event QueuePaused(address indexed queue);
+    event QueueUnpaused(address indexed queue);
+    event DefaultHookSet(address indexed hook, bool isDepositHook);
+    event ReportHandled(address indexed asset, uint224 priceD18, uint32 latestEligibleTimestamp, uint256 fees);
 }

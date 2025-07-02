@@ -14,16 +14,19 @@ contract BasicShareManager is ShareManager {
 
     // View functions
 
+    /// @inheritdoc IShareManager
     function activeShares() public view override returns (uint256) {
         return _getERC20Storage()._totalSupply;
     }
 
+    /// @inheritdoc IShareManager
     function activeSharesOf(address account) public view override returns (uint256) {
         return _getERC20Storage()._balances[account];
     }
 
     // Mutable functions
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
         (address vault_, bytes32 whitelistMerkleRoot_) = abi.decode(data, (address, bytes32));
         __ShareManager_init(vault_, whitelistMerkleRoot_);

@@ -16,6 +16,7 @@ abstract contract VerifierModule is IVerifierModule, BaseModule {
 
     // View functions
 
+    /// @inheritdoc IVerifierModule
     function verifier() public view returns (IVerifier) {
         return IVerifier(_verifierModuleStorage().verifier);
     }

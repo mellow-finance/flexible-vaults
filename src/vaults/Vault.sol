@@ -41,14 +41,18 @@ contract Vault is IFactoryEntity, VaultModule, ShareModule {
         __ACLModule_init(admin_);
         __ShareModule_init(shareManager_, feeManager_, oracle_, defaultDepositHook_, defaultRedeemHook_);
         __VaultModule_init(riskManager_);
-        RoleHolder memory roleHolder;
-        for (uint256 i = 0; i < roleHolders.length; i++) {
-            roleHolder = roleHolders[i];
-            if (roleHolder.isFundamental) {
-                _grantFundamentalRole(FundamentalRole(uint256(roleHolder.role)), roleHolder.holder);
-            } else {
-                _grantRole(roleHolder.role, roleHolder.holder);
+
+        {
+            RoleHolder memory roleHolder;
+            for (uint256 i = 0; i < roleHolders.length; i++) {
+                roleHolder = roleHolders[i];
+                if (roleHolder.isFundamental) {
+                    _grantFundamentalRole(FundamentalRole(uint256(roleHolder.role)), roleHolder.holder);
+                } else {
+                    _grantRole(roleHolder.role, roleHolder.holder);
+                }
             }
         }
+        emit Initialized(initParams);
     }
 }

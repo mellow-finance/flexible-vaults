@@ -16,5 +16,9 @@ interface ISubvaultModule {
 
     // Mutable functions
 
-    function pullAssets(address asset, address to, uint256 value) external;
+    function pullAssets(address asset, uint256 value) external;
+
+    // Events
+
+    event AssetsPulled(address indexed asset, address indexed to, uint256 value);
 }

@@ -51,48 +51,59 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         _;
     }
 
+    /// @inheritdoc IRiskManager
     function requireValidSubvault(address vault_, address subvault) public view {
         if (!IVaultModule(vault_).hasSubvault(subvault)) {
             revert NotSubvault(subvault);
         }
     }
 
+    /// @inheritdoc IRiskManager
     function vault() public view returns (address) {
         return _riskManagerStorage().vault;
     }
 
+    /// @inheritdoc IRiskManager
     function vaultState() public view returns (State memory) {
         return _riskManagerStorage().vaultState;
     }
 
+    /// @inheritdoc IRiskManager
     function pendingBalance() public view returns (int256) {
         return _riskManagerStorage().pendingBalance;
     }
 
+    /// @inheritdoc IRiskManager
     function pendingAssets(address asset) public view returns (uint256) {
         return _riskManagerStorage().pendingAssets[asset];
     }
 
+    /// @inheritdoc IRiskManager
     function pendingShares(address asset) public view returns (uint256) {
         return _riskManagerStorage().pendingShares[asset];
     }
 
+    /// @inheritdoc IRiskManager
     function subvaultState(address subvault) public view returns (State memory) {
         return _riskManagerStorage().subvaultStates[subvault];
     }
 
+    /// @inheritdoc IRiskManager
     function allowedAssets(address subvault) public view returns (uint256) {
         return _riskManagerStorage().allowedAssets[subvault].length();
     }
 
+    /// @inheritdoc IRiskManager
     function allowedAssetAt(address subvault, uint256 index) public view returns (address) {
         return _riskManagerStorage().allowedAssets[subvault].at(index);
     }
 
+    /// @inheritdoc IRiskManager
     function isAllowedAsset(address subvault, address asset) public view returns (bool) {
         return _riskManagerStorage().allowedAssets[subvault].contains(asset);
     }
 
+    /// @inheritdoc IRiskManager
     function convertToShares(address asset, int256 value) public view returns (int256 shares) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         IOracle.DetailedReport memory report = IShareModule($.vault).oracle().getReport(asset);
@@ -105,6 +116,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         }
     }
 
+    /// @inheritdoc IRiskManager
     function maxDeposit(address subvault, address asset) public view returns (uint256 limit) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         State storage state = $.subvaultStates[subvault];
@@ -125,19 +137,24 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     // Mutable functions
 
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
         (address vault_, int256 vaultLimit_) = abi.decode(data, (address, int256));
         RiskManagerStorage storage $ = _riskManagerStorage();
         $.vault = vault_;
         $.vaultState.limit = vaultLimit_;
+        emit Initialized(data);
     }
 
+    /// @inheritdoc IRiskManager
     function setSubvaultLimit(address subvault, int256 limit) external onlyRole(SET_SUBVAULT_LIMIT_ROLE) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         requireValidSubvault($.vault, subvault);
         $.subvaultStates[subvault].limit = limit;
+        emit SetSubvaultLimit(subvault, limit);
     }
 
+    /// @inheritdoc IRiskManager
     function allowSubvaultAssets(address subvault, address[] calldata assets)
         external
         onlyRole(ALLOW_SUBVAULT_ASSETS_ROLE)
@@ -150,8 +167,10 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
                 revert AlreadyAllowedAsset(assets[i]);
             }
         }
+        emit AllowSubvaultAssets(subvault, assets);
     }
 
+    /// @inheritdoc IRiskManager
     function disallowSubvaultAssets(address subvault, address[] calldata assets)
         external
         onlyRole(DISALLOW_SUBVAULT_ASSETS_ROLE)
@@ -164,12 +183,16 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
                 revert NotAllowedAsset(assets[i]);
             }
         }
+        emit DisallowSubvaultAssets(subvault, assets);
     }
 
+    /// @inheritdoc IRiskManager
     function setVaultLimit(int256 limit) external onlyRole(SET_VAULT_LIMIT_ROLE) {
         _riskManagerStorage().vaultState.limit = limit;
+        emit SetVaultLimit(limit);
     }
 
+    /// @inheritdoc IRiskManager
     function modifyPendingAssets(address asset, int256 change) external onlyQueueOrRole(MODIFY_PENDING_ASSETS_ROLE) {
         RiskManagerStorage storage $ = _riskManagerStorage();
         uint256 pendingAssetsBefore = $.pendingAssets[asset];
@@ -183,8 +206,10 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         $.pendingAssets[asset] = pendingAssetsAfter;
         $.pendingShares[asset] = pendingSharesAfter;
         $.pendingBalance += shares;
+        emit ModifyPendingAssets(asset, change, pendingAssetsAfter, pendingSharesAfter);
     }
 
+    /// @inheritdoc IRiskManager
     function modifyVaultBalance(address asset, int256 change) external onlyQueueOrRole(MODIFY_VAULT_BALANCE_ROLE) {
         int256 shares = convertToShares(asset, change);
         RiskManagerStorage storage $ = _riskManagerStorage();
@@ -192,8 +217,10 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
             revert LimitExceeded($.vaultState.balance + $.pendingBalance + shares, $.vaultState.limit);
         }
         $.vaultState.balance += change;
+        emit ModifyVaultBalance(asset, change, $.vaultState.balance);
     }
 
+    /// @inheritdoc IRiskManager
     function modifySubvaultBalance(address subvault, address asset, int256 change)
         external
         onlyVaultOrRole(MODIFY_SUBVAULT_BALANCE_ROLE)
@@ -209,6 +236,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
             revert LimitExceeded(state.balance + shares, state.limit);
         }
         state.balance += change;
+        emit ModifySubvaultBalance(subvault, asset, change, state.balance);
     }
 
     // Internal functions
