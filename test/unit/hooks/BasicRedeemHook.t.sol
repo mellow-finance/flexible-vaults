@@ -42,7 +42,7 @@ contract BasicRedeemHookTest is Test {
         require(vaultBalance2 == IERC20(address(asset2)).balanceOf(address(vault)));
         require(subvaultBalance1 == IERC20(address(asset1)).balanceOf(address(subvault1)));
         require(subvaultBalance2 == IERC20(address(asset2)).balanceOf(address(subvault2)));
-        return;
+
         uint256 redeemAssets1 = 0.5 ether;
         vault.beforeRedeemHookCall(address(asset1), vaultBalance1 + redeemAssets1);
         require(vaultBalance1 + redeemAssets1 == IERC20(address(asset1)).balanceOf(address(vault)));
