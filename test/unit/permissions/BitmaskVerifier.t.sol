@@ -40,7 +40,7 @@ contract BitmaskVerifierTest is Test {
             bytes32(uint256(type(uint160).max)),
             bytes32(uint256(type(uint160).max)),
             bytes32(type(uint256).max),
-            new bytes(callData.lewngth)
+            new bytes(callData.length)
         );
 
         bytes memory verificationData =
