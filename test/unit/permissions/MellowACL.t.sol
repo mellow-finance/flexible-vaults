@@ -6,6 +6,7 @@ import "../../Imports.sol";
 contract MockMellowACL is MellowACL {
     bytes32 public constant ROLE_NUMBER_ONE = keccak256("permissions.MockMellowACL.ROLE_NUMBER_ONE");
     bytes32 public constant ROLE_NUMBER_TWO = keccak256("permissions.MockMellowACL.ROLE_NUMBER_TWO");
+    bytes32 public constant ROLE_ONLY_SELF_OR_ROLE = keccak256("permissions.MockMellowACL.ROLE_ONLY_SELF_OR_ROLE");
 
     constructor(string memory name_, uint256 version_) MellowACL(name_, version_) {}
 
@@ -17,12 +18,19 @@ contract MockMellowACL is MellowACL {
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
     }
 
+    function mockOnlySelfOrRoleWrap() external {
+        mockOnlySelfOrRole();
+    }
+
+    function mockOnlySelfOrRole() public onlySelfOrRole(ROLE_ONLY_SELF_OR_ROLE) {}
+
     function test() external {}
 }
 
 contract MellowACLTest is Test {
     address ROLE_NUMBER_ONE_ADDRESS = vm.createWallet("ROLE_NUMBER_ONE").addr;
     address ROLE_NUMBER_TWO_ADDRESS = vm.createWallet("ROLE_NUMBER_TWO").addr;
+    address ROLE_ONLY_SELF_OR_ROLE_ADDRESS = vm.createWallet("ROLE_ONLY_SELF_OR_ROLE").addr;
 
     address admin = vm.createWallet("admin").addr;
     address proxyAdmin = vm.createWallet("proxyAdmin").addr;
@@ -33,6 +41,22 @@ contract MellowACLTest is Test {
         assertEq(acl.supportedRoles(), 1);
         assertEq(acl.supportedRoleAt(0), acl.DEFAULT_ADMIN_ROLE());
         assertTrue(acl.hasSupportedRole(acl.DEFAULT_ADMIN_ROLE()));
+    }
+
+    function testOnlySelfOrRole() external {
+        MockMellowACL acl = createMellowACL("MockMellowACL", 1, admin);
+        bytes32 role = acl.ROLE_ONLY_SELF_OR_ROLE();
+
+        vm.prank(admin);
+        acl.grantRole(role, ROLE_ONLY_SELF_OR_ROLE_ADDRESS);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, address(this), role)
+        );
+        acl.mockOnlySelfOrRole();
+
+        vm.prank(ROLE_ONLY_SELF_OR_ROLE_ADDRESS);
+        acl.mockOnlySelfOrRole();
     }
 
     function testGrantRole() external {
