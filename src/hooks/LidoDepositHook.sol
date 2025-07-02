@@ -43,7 +43,7 @@ contract LidoDepositHook is IDepositHook {
             assets = IERC20(wsteth).balanceOf(address(this)) - balance;
         }
         if (nextHook != address(0)) {
-            IDepositHook(nextHook).afterDeposit(wsteth, assets);
+            Address.functionDelegateCall(nextHook, abi.encodeCall(IDepositHook.afterDeposit, (wsteth, assets)));
         }
     }
 }
