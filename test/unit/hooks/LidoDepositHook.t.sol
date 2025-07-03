@@ -30,23 +30,44 @@ contract LidoDepositHookTest is Test {
         vm.prank(address(vault));
         IWSTETH(wstETH).unwrap(5 ether);
 
+        uint256 ethBalanceBefore = address(vault).balance;
         vault.lidoDepositHookCall(TransferLibrary.ETH, 1 ether);
+        require(address(vault).balance == ethBalanceBefore - 1 ether, "ETH balance should decrease by 1 ether");
 
+        uint256 wethBalanceBefore = IERC20(WETH).balanceOf(address(vault));
         vault.lidoDepositHookCall(WETH, 1 ether);
+        require(
+            IERC20(WETH).balanceOf(address(vault)) == wethBalanceBefore - 1 ether,
+            "WETH balance should decrease by 1 ether"
+        );
 
+        uint256 stETHBalanceBefore = IERC20(stETH).balanceOf(address(vault));
         vault.lidoDepositHookCall(stETH, 1 ether);
+        require(
+            IERC20(stETH).balanceOf(address(vault)) == stETHBalanceBefore - 1 ether,
+            "stETH balance should decrease by 1 ether"
+        );
 
+        uint256 wstETHBalanceBefore = IERC20(wstETH).balanceOf(address(vault));
         vault.lidoDepositHookCall(wstETH, 1 ether);
+        // do not change because the hook is disabled
+        require(IERC20(wstETH).balanceOf(address(vault)) == wstETHBalanceBefore, "wstETH balance should not change");
     }
 
     function testAfterDepositNextHook() external {
         vault.addLidoDepositHook(vault.redirectingDepositHook());
+        vault.addSubvault(subvault, MockERC20(vault.wstETH()), 0 ether);
 
-        vault.addRiskManager(0 ether);
+        vault.addRiskManager(1 ether);
         address wstETH = vault.wstETH();
 
         deal(wstETH, address(vault), 10 ether);
 
+        uint256 wstETHBalanceBefore = IERC20(wstETH).balanceOf(address(vault));
         vault.lidoDepositHookCall(wstETH, 1 ether);
+        require(
+            IERC20(wstETH).balanceOf(address(vault)) == wstETHBalanceBefore - 1 ether,
+            "wstETH balance should decrease by 1 ether"
+        );
     }
 }

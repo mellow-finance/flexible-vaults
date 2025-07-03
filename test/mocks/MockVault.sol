@@ -33,7 +33,9 @@ contract MockVault {
 
     function addSubvault(address subvault_, MockERC20 asset_, uint256 amount_) external {
         subvault.push(subvault_);
-        asset_.mint(subvault_, amount_);
+        if (amount_ > 0) {
+            asset_.mint(subvault_, amount_);
+        }
     }
 
     function addRiskManager(uint256 limit) external {
