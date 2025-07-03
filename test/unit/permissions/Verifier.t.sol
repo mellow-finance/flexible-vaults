@@ -3,21 +3,6 @@ pragma solidity 0.8.25;
 
 import "../../Imports.sol";
 
-contract MockACLModule is ACLModule {
-    constructor(string memory name_, uint256 version_) ACLModule(name_, version_) {}
-
-    function initialize(bytes calldata data) external initializer {
-        (address admin_) = abi.decode(data, (address));
-        if (admin_ == address(0)) {
-            revert();
-        }
-        __ACLModule_init(admin_);
-        _grantRole(DEFAULT_ADMIN_ROLE, admin_);
-    }
-
-    function test() external {}
-}
-
 contract MockCustomVerifier is ICustomVerifier {
     error VerificationFailed();
 
