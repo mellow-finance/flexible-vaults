@@ -1,7 +1,7 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 38      3976      573       329     3074        628           665.04
+Solidity                                 38      3985      574       329     3082        631           665.65
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         157       23        18      116         10             8.62
 src/hooks/BasicRedeemHook.sol                      42        3         1       38          7            18.42
@@ -14,7 +14,7 @@ src/libraries/TransferLibrary.sol                  31        6         1       2
 src/managers/BasicShareManager.sol                 72       14         7       51          9            17.65
 src/managers/FeeManager.sol                       190       27        21      142         25            17.61
 src/managers/RiskManager.sol                      250       33        24      193         29            15.03
-src/managers/ShareManager.sol                     251       34        23      194         43            22.16
+src/managers/ShareManager.sol                     260       35        23      202         46            22.77
 src/managers/TokenizedShareManager.sol             55       13         7       35          5            14.29
 src/modules/ACLModule.sol                          83       17         8       58         11            18.97
 src/modules/BaseModule.sol                         28        8         5       15          0             0.00
@@ -42,8 +42,8 @@ src/vaults/Subvault.sol                            20        3         1       1
 src/vaults/Vault.sol                               58        6         1       51          3             5.88
 src/vaults/VaultConfigurator.sol                   91       13         3       75          1             1.33
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    38      3976      573       329     3074        628           665.04
+Total                                    38      3985      574       329     3082        631           665.65
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 144217 bytes, 0.144 megabytes (SI)
+Processed 144465 bytes, 0.144 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
