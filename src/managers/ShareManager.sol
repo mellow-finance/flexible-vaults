@@ -28,6 +28,15 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         _;
     }
 
+    modifier onlyVaultOrQueue() {
+        address caller = _msgSender();
+        address vault_ = vault();
+        if (caller != vault_ && !IShareModule(vault_).hasQueue(caller)) {
+            revert Forbidden();
+        }
+        _;
+    }
+
     modifier onlyRole(bytes32 role) {
         if (!IACLModule(_shareManagerStorage().vault).hasRole(role, _msgSender())) {
             revert Forbidden();
@@ -202,7 +211,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     /// @inheritdoc IShareManager
-    function mint(address account, uint256 value) public onlyQueue {
+    function mint(address account, uint256 value) public onlyVaultOrQueue {
         if (value == 0) {
             revert ZeroValue();
         }

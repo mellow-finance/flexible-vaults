@@ -202,7 +202,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
 
     /// @inheritdoc IShareModule
     function setCustomHook(address queue, address hook) external onlyRole(SET_HOOK_ROLE) {
-        if (queue == address(0) || hook == address(0)) {
+        if (queue == address(0)) {
             revert ZeroAddress();
         }
         _shareModuleStorage().customHooks[queue] = hook;
