@@ -217,7 +217,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
 
     /// @inheritdoc IShareModule
     function setDefaultRedeemHook(address hook) external onlyRole(SET_HOOK_ROLE) {
-        _shareModuleStorage().defaultDepositHook = hook;
+        _shareModuleStorage().defaultRedeemHook = hook;
         emit DefaultHookSet(hook, false);
     }
 
