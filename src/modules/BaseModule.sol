@@ -24,7 +24,7 @@ abstract contract BaseModule is IBaseModule, ContextUpgradeable, ReentrancyGuard
 
     receive() external payable {}
 
-    /// Internal functions
+    // Internal functions
 
     function __BaseModule_init() internal onlyInitializing {
         __Context_init();

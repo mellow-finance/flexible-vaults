@@ -49,7 +49,7 @@ interface IRedeemQueue is IQueue {
 
     function handleReports(uint256 reports) external returns (uint256 counter);
 
-    /// Events
+    // Events
 
     event RedeemRequested(address indexed account, uint256 shares, uint256 timestamp);
     event RedeemRequestClaimed(address indexed account, address indexed receiver, uint256 assets, uint256[] timestamps);

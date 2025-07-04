@@ -39,7 +39,7 @@ interface IDepositQueue is IQueue {
 
     function claim(address account) external returns (bool);
 
-    /// Events
+    // Events
 
     event DepositRequested(address indexed account, address indexed referral, uint224 assets, uint32 timestamp);
     event DepositRequestCanceled(address indexed account, uint256 assets, uint32 timestamp);
