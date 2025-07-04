@@ -15,6 +15,11 @@ abstract contract BaseModule is IBaseModule, ContextUpgradeable, ReentrancyGuard
         return StorageSlot.getBytes32Slot(slot);
     }
 
+    /// @inheritdoc IERC721Receiver
+    function onERC721Received(address, address, uint256, bytes calldata) external pure returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
+    }
+
     // Mutable functions
 
     receive() external payable {}
