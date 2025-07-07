@@ -69,7 +69,7 @@ interface ISignatureQueue is IFactoryEntity {
 
     function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external view;
 
-    /// Events
+    // Events
 
     event OrderExecuted(Order order, IConsensus.Signature[] signatures);
 }

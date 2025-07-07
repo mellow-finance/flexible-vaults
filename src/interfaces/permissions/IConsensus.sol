@@ -54,7 +54,7 @@ interface IConsensus is IFactoryEntity {
 
     function removeSigner(address signer, uint256 threshold_) external;
 
-    /// Events
+    // Events
 
     event ThresholdSet(uint256 threshold);
     event SignerAdded(address indexed signer, SignatureType signatureType, uint256 threshold);
