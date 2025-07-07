@@ -102,7 +102,7 @@ abstract contract VaultModule is IVaultModule, ACLModule {
         if (address(verifier.vault()) != address(this)) {
             revert Forbidden();
         }
-        if ($.subvaults.add(subvault)) {
+        if (!$.subvaults.add(subvault)) {
             revert AlreadyConnected(subvault);
         }
         emit SubvaultReconnected(subvault, address(verifier));
