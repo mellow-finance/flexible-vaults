@@ -25,6 +25,13 @@ contract BaseModuleTest is Test {
         module.getStorageAt(0);
     }
 
+    function testOnERC721Received() external {
+        MockBaseModule module = createBaseModule();
+        assertEq(
+            module.onERC721Received(address(0), address(0), 0, new bytes(0)), IERC721Receiver.onERC721Received.selector
+        );
+    }
+
     function createBaseModule() internal returns (MockBaseModule module) {
         MockBaseModule moduleImplementation = new MockBaseModule();
         module = MockBaseModule(
