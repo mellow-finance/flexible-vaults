@@ -73,6 +73,17 @@ abstract contract FixtureTest is Test {
         vm.stopPrank();
     }
 
+    function defaultSecurityParams() internal pure returns (IOracle.SecurityParams memory securityParams) {
+        return IOracle.SecurityParams({
+            maxAbsoluteDeviation: 0.05 ether,
+            suspiciousAbsoluteDeviation: 0.01 ether,
+            maxRelativeDeviationD18: 0.05 ether,
+            suspiciousRelativeDeviationD18: 0.01 ether,
+            timeout: 12 hours,
+            secureInterval: 1 hours
+        });
+    }
+
     function createVault(address vaultAdmin, address vaultProxyAdmin, address[] memory assets)
         internal
         returns (Deployment memory deployment)
@@ -208,18 +219,7 @@ abstract contract FixtureTest is Test {
         );
 
         {
-            bytes memory oracleInitParams = abi.encode(
-                deployment.vault,
-                IOracle.SecurityParams({
-                    maxAbsoluteDeviation: 0.05 ether,
-                    suspiciousAbsoluteDeviation: 0.01 ether,
-                    maxRelativeDeviationD18: 0.05 ether,
-                    suspiciousRelativeDeviationD18: 0.01 ether,
-                    timeout: 12 hours,
-                    secureInterval: 1 hours
-                }),
-                assets
-            );
+            bytes memory oracleInitParams = abi.encode(deployment.vault, defaultSecurityParams(), assets);
             deployment.oracle.initialize(oracleInitParams);
         }
 
