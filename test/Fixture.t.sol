@@ -27,7 +27,7 @@ abstract contract FixtureTest is Test {
         address[] assets;
         Verifier verifier;
     }
-    
+
     function test() external {}
 
     function createShareManager(Deployment memory deployment)
