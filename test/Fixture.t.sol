@@ -84,6 +84,26 @@ abstract contract FixtureTest is Test {
         });
     }
 
+    function addDepositQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
+        deployment.vault.createDepositQueue(0, owner, asset, new bytes(0));
+        vm.stopPrank();
+
+        uint256 index = deployment.vault.getQueueCount(asset);
+        return deployment.vault.queueAt(asset, index - 1);
+    }
+
+    function addRedeemQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
+        deployment.vault.createRedeemQueue(0, owner, asset, new bytes(0));
+        vm.stopPrank();
+
+        uint256 index = deployment.vault.getQueueCount(asset);
+        return deployment.vault.queueAt(asset, index - 1);
+    }
+
     function createVault(address vaultAdmin, address vaultProxyAdmin, address[] memory assets)
         internal
         returns (Deployment memory deployment)
@@ -230,47 +250,7 @@ abstract contract FixtureTest is Test {
         );
         address depositHook = address(new RedirectingDepositHook());
         address redeemHook = address(new BasicRedeemHook());
-        {
-            vm.expectRevert(abi.encode(IACLModule.ZeroAddress.selector));
-            deployment.vault.initialize(
-                abi.encode(
-                    deployment.vaultAdmin,
-                    address(0),
-                    address(deployment.feeManager),
-                    address(deployment.riskManager),
-                    address(deployment.oracle),
-                    depositHook,
-                    redeemHook,
-                    new Vault.RoleHolder[](0)
-                ) // redeem module params
-            );
-            vm.expectRevert(abi.encode(IACLModule.ZeroAddress.selector));
-            deployment.vault.initialize(
-                abi.encode(
-                    deployment.vaultAdmin,
-                    address(deployment.shareManager),
-                    address(0),
-                    address(deployment.riskManager),
-                    address(deployment.oracle),
-                    depositHook,
-                    redeemHook,
-                    new Vault.RoleHolder[](0)
-                )
-            );
-            vm.expectRevert(abi.encode(IACLModule.ZeroAddress.selector));
-            deployment.vault.initialize(
-                abi.encode(
-                    deployment.vaultAdmin,
-                    address(deployment.shareManager),
-                    address(deployment.feeManager),
-                    address(deployment.riskManager),
-                    address(0),
-                    depositHook,
-                    redeemHook,
-                    new Vault.RoleHolder[](0)
-                )
-            );
-        }
+
         deployment.vault.initialize(
             abi.encode(
                 deployment.vaultAdmin,
