@@ -76,7 +76,7 @@ contract FeeManagerTest is FixtureTest {
         assertEq(manager.baseAsset(address(deployment.vault)), asset, "Asset should be set");
 
         vm.expectRevert(
-            abi.encodeWithSelector(IFeeManager.BaseAssetAlreadSet.selector, address(deployment.vault), asset)
+            abi.encodeWithSelector(IFeeManager.BaseAssetAlreadySet.selector, address(deployment.vault), asset)
         );
         manager.setBaseAsset(address(deployment.vault), asset);
         vm.stopPrank();
