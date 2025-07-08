@@ -73,7 +73,7 @@ abstract contract FixtureTest is Test {
         vm.stopPrank();
     }
 
-    function defaultSecurityParams() internal pure returns (IOracle.SecurityParams memory securityParams) {
+    function defaultSecurityParams() internal pure virtual returns (IOracle.SecurityParams memory securityParams) {
         return IOracle.SecurityParams({
             maxAbsoluteDeviation: 0.05 ether,
             suspiciousAbsoluteDeviation: 0.01 ether,
@@ -82,6 +82,17 @@ abstract contract FixtureTest is Test {
             timeout: 12 hours,
             secureInterval: 1 hours
         });
+    }
+
+    function defaultFeeManagerParams(Deployment memory deployment) internal pure virtual returns (bytes memory) {
+        return abi.encode(
+            deployment.vaultAdmin, // owner
+            deployment.vaultAdmin, // feeRecipient
+            0, // depositFeeD6
+            1e4, // redeemFeeD6
+            0, // performanceFeeD6
+            1e4 // protocolFeeD6
+        );
     }
 
     function addDepositQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
@@ -217,16 +228,7 @@ abstract contract FixtureTest is Test {
                 )
             )
         );
-        deployment.feeManager.initialize(
-            abi.encode(
-                deployment.vaultAdmin,
-                deployment.vaultAdmin, // feeRecipient
-                0, // depositFeeD6
-                1e4, // redeemFeeD6
-                0, // performanceFeeD6
-                1e4 // protocolFeeD6
-            )
-        );
+        deployment.feeManager.initialize(defaultFeeManagerParams(deployment));
 
         deployment.oracleImplementation = new Oracle("Mellow", 1);
 
