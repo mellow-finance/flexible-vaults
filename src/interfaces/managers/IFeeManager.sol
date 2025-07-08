@@ -11,7 +11,7 @@ interface IFeeManager is IFactoryEntity {
     error InvalidRedeemFee(uint256 fee);
     error InvalidPerformanceFee(uint256 fee);
     error InvalidProtocolFee(uint256 fee);
-    error BaseAssetAlreadSet(address vault, address baseAsset);
+    error BaseAssetAlreadySet(address vault, address baseAsset);
 
     struct FeeManagerStorage {
         address feeRecipient;
