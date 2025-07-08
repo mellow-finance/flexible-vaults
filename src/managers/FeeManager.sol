@@ -111,7 +111,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         }
         FeeManagerStorage storage $ = _feeManagerStorage();
         if ($.baseAsset[vault] != address(0)) {
-            revert BaseAssetAlreadSet(vault, $.baseAsset[vault]);
+            revert BaseAssetAlreadySet(vault, $.baseAsset[vault]);
         }
         $.baseAsset[vault] = baseAsset_;
         emit SetBaseAsset(vault, baseAsset_);
