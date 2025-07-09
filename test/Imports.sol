@@ -31,6 +31,10 @@ import "../src/permissions/BitmaskVerifier.sol";
 import "../src/permissions/Consensus.sol";
 import "../src/permissions/Verifier.sol";
 
+import "../src/permissions/protocols/ERC20Verifier.sol";
+import "../src/permissions/protocols/EigenLayerVerifier.sol";
+import "../src/permissions/protocols/SymbioticVerifier.sol";
+
 import "../src/queues/DepositQueue.sol";
 import "../src/queues/Queue.sol";
 import "../src/queues/RedeemQueue.sol";
@@ -44,8 +48,6 @@ import "../src/managers/FeeManager.sol";
 import "../src/managers/RiskManager.sol";
 import "../src/managers/ShareManager.sol";
 import "../src/managers/TokenizedShareManager.sol";
-
-import "../src/strategies/SymbioticStrategy.sol";
 
 import "../src/vaults/Subvault.sol";
 import "../src/vaults/Vault.sol";
