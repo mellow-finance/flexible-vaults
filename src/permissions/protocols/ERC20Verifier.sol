@@ -33,12 +33,12 @@ contract ERC20Verifier is ICustomVerifier, MellowACL {
         if (selector == IERC20.approve.selector || selector == IERC20.transfer.selector) {
             (address to, uint256 amount) = abi.decode(callData[4:], (address, uint256));
             if (
-                to == address(0) || (selector == IERC20.transfer.selector && amount != 0)
+                to == address(0) || (selector == IERC20.transfer.selector && amount == 0)
                     || !hasRole(RECIPIENT_ROLE, to)
             ) {
                 return false;
             }
-            if (keccak256(abi.encodeWithSelector(selector, to, value)) != keccak256(callData)) {
+            if (keccak256(abi.encodeWithSelector(selector, to, amount)) != keccak256(callData)) {
                 return false;
             }
         } else {
