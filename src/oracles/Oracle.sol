@@ -216,11 +216,14 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     function _removeSupportedAssets(address[] calldata assets) private {
-        EnumerableSet.AddressSet storage asset_ = _oracleStorage().supportedAssets;
+        OracleStorage storage $ = _oracleStorage();
+        EnumerableSet.AddressSet storage asset_ = $.supportedAssets;
+        mapping(address => DetailedReport) storage reports_ = $.reports;
         for (uint256 i = 0; i < assets.length; i++) {
             if (!asset_.remove(assets[i])) {
                 revert UnsupportedAsset(assets[i]);
             }
+            delete reports_[assets[i]];
         }
         emit SupportedAssetsRemoved(assets);
     }
