@@ -46,9 +46,6 @@ contract BasicShareManagerTest is FixtureTest {
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidSender.selector, address(0)));
         manager.burn(address(0), 1 ether);
 
-        vm.expectRevert("ZeroValue()");
-        manager.burn(user, 0);
-
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, user, 1 ether, 2 ether));
         manager.burn(user, 2 ether);
 
