@@ -46,6 +46,17 @@ contract OracleTest is FixtureTest {
         vm.expectRevert(abi.encodeWithSelector(IOracle.AlreadySupportedAsset.selector, assets[0]));
         oracle.addSupportedAssets(assets);
 
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            uint224 price = 1e18;
+            reports[0] = IOracle.Report({asset: assets[0], priceD18: price});
+
+            oracle.submitReports(reports);
+            oracle.acceptReport(assets[0], uint32(block.timestamp));
+
+            IOracle.DetailedReport memory report = oracle.getReport(assets[0]);
+            assertTrue(report.priceD18 == price, "Report price mismatch");
+        }
         oracle.removeSupportedAssets(assets);
 
         assertEq(oracle.supportedAssets(), 0, "Assets length mismatch");
@@ -62,6 +73,9 @@ contract OracleTest is FixtureTest {
             assertEq(oracle.supportedAssetAt(index), assets[index], "Asset mismatch");
             assertTrue(oracle.isSupportedAsset(assets[index]), "Asset not supported");
         }
+
+        IOracle.DetailedReport memory report = oracle.getReport(assets[0]);
+        assertTrue(report.priceD18 == 0, "Report should be removed");
     }
 
     function testSecurityParams() external {
