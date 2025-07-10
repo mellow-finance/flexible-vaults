@@ -157,6 +157,4 @@ abstract contract BaseIntegrationTest is Test {
 
         vm.stopPrank();
     }
-
-    function test() external {}
 }

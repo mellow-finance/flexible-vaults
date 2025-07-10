@@ -25,7 +25,6 @@ contract VaultConfigurator {
         address defaultRedeemHook;
         uint256 queueLimit;
         Vault.RoleHolder[] roleHolders;
-        bytes32 salt;
     }
 
     IFactory public immutable shareManagerFactory;

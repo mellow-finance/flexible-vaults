@@ -189,8 +189,7 @@ contract VaultConfiguratorTest is Test {
             defaultDepositHook: address(0),
             defaultRedeemHook: address(0),
             queueLimit: 10,
-            roleHolders: roleHolders,
-            salt: bytes32(0)
+            roleHolders: roleHolders
         });
     }
 }

@@ -53,7 +53,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         holders[4] = Vault.RoleHolder(true, bytes32(uint256(IACLModule.FundamentalRole.PROXY_OWNER)), $.vaultProxyAdmin);
         holders[5] = Vault.RoleHolder(false, vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
 
-        (address shareManager, address feeManager, address riskManager, address oracle, address vault) = $
+        (address shareManager, address feeManager, address riskManager, address oracle, address vault_) = $
             .vaultConfigurator
             .create(
             VaultConfigurator.InitParams({
@@ -70,14 +70,20 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
                 oracleParams: abi.encode(securityParams, assets),
                 defaultDepositHook: address(0),
                 defaultRedeemHook: address(0),
-                queueLimit: 0,
-                roleHolders: holders,
-                salt: bytes32(0)
+                queueLimit: 16,
+                roleHolders: holders
             })
         );
+        Vault vault = Vault(payable(vault_));
 
-        assertTrue($.vaultConfigurator.isEntity(vault));
+        assertTrue($.vaultConfigurator.isEntity(vault_));
         assertEq($.vaultConfigurator.entities(), 1);
-        assertEq($.vaultConfigurator.entityAt(0), vault);
+        assertEq($.vaultConfigurator.entityAt(0), vault_);
+
+        vm.startPrank($.vaultAdmin);
+        vault.createDepositQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
+        vault.createRedeemQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
+
+        vm.stopPrank();
     }
 }
