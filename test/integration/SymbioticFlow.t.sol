@@ -7,6 +7,8 @@ import "./BaseIntegrationTest.sol";
 interface ISymbioticStorageVault {
     function setDepositWhitelist(bool status) external;
     function setDepositLimit(uint256 limit) external;
+    function currentEpoch() external view returns (uint256);
+    function activeBalanceOf(address user) external view returns (uint256);
 }
 
 contract SymbioticIntegrationTest is BaseIntegrationTest {
@@ -36,7 +38,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             suspiciousRelativeDeviationD18: 0.005 ether, // 0.05% abs
             timeout: 20 hours,
             depositSecureInterval: 1 hours,
-            redeemSecureInterval: 1 hours
+            redeemSecureInterval: 14 days
         });
 
         address[] memory assets = new address[](1);
@@ -99,7 +101,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         }
         SymbioticVerifier symbioticVerifier;
         {
-            address[] memory holders = new address[](3);
+            address[] memory holders = new address[](2);
             bytes32[] memory roles = new bytes32[](holders.length);
 
             SymbioticVerifier symbioticVerifierImplementation =
@@ -108,11 +110,8 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             holders[0] = $.curator;
             roles[0] = symbioticVerifierImplementation.CALLER_ROLE();
 
-            holders[1] = address(vault);
-            roles[1] = symbioticVerifierImplementation.MELLOW_VAULT_ROLE();
-
-            holders[2] = SYMBIOTIC_VAULT;
-            roles[2] = symbioticVerifierImplementation.SYMBIOTIC_VAULT_ROLE();
+            holders[1] = SYMBIOTIC_VAULT;
+            roles[1] = symbioticVerifierImplementation.SYMBIOTIC_VAULT_ROLE();
             symbioticVerifier = SymbioticVerifier(
                 $.protocolVerifierFactory.create(0, $.vaultProxyAdmin, abi.encode($.vaultAdmin, holders, roles))
             );
@@ -161,6 +160,8 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             assets[0] = ASSET;
             vault.riskManager().setSubvaultLimit(subvault, int256(100 ether));
             vault.riskManager().allowSubvaultAssets(subvault, assets);
+
+            symbioticVerifier.grantRole(symbioticVerifier.MELLOW_VAULT_ROLE(), subvault);
         }
         vm.stopPrank();
 
@@ -190,6 +191,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         assertEq(vault.shareManager().sharesOf($.user), 1 ether);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
         vm.startPrank($.curator);
         {
@@ -203,7 +205,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             subvault.call(
                 SYMBIOTIC_VAULT,
                 0,
-                abi.encodeCall(ISymbioticVault.deposit, (address(vault), 1 ether)),
+                abi.encodeCall(ISymbioticVault.deposit, (address(subvault), 1 ether)),
                 verificationPayloads[0] // symbioticVerifier payload
             );
         }
@@ -213,14 +215,91 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
 
+        uint256 userRedeemTimestamp = block.timestamp;
         vm.startPrank($.user);
         {
-            DepositQueue queue = DepositQueue(payable(vault.queueAt(ASSET, 0)));
-            uint224 amount = 1 ether;
-            deal(ASSET, $.user, amount);
-            IERC20(ASSET).approve(address(queue), type(uint256).max);
-            queue.deposit(amount, address(0), new bytes32[](0));
+            RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
+            uint224 shares = uint224(vault.shareManager().sharesOf($.user));
+            queue.redeem(shares);
         }
         vm.stopPrank();
+
+        assertEq(vault.shareManager().sharesOf($.user), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
+
+        vm.startPrank($.curator);
+        uint256 currentEpoch = ISymbioticStorageVault(SYMBIOTIC_VAULT).currentEpoch();
+        {
+            Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
+            uint256 balance = ISymbioticStorageVault(SYMBIOTIC_VAULT).activeBalanceOf(address(subvault));
+            subvault.call(
+                SYMBIOTIC_VAULT,
+                0,
+                abi.encodeCall(ISymbioticVault.withdraw, (address(subvault), balance)),
+                verificationPayloads[0]
+            );
+        }
+        vm.stopPrank();
+
+        {
+            IOracle.SecurityParams memory securityParmas = Oracle(oracle).securityParams();
+            skip(Math.max(securityParmas.redeemSecureInterval, securityParmas.timeout) + 1);
+        }
+
+        vm.startPrank($.curator);
+        {
+            Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
+            bytes memory response = subvault.call(
+                SYMBIOTIC_VAULT,
+                0,
+                abi.encodeCall(ISymbioticVault.claim, (address(subvault), currentEpoch + 1)),
+                verificationPayloads[0]
+            );
+            assertEq(abi.decode(response, (uint256)), 1 ether);
+        }
+        vm.stopPrank();
+
+        assertEq(vault.shareManager().sharesOf($.user), 0);
+        assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf($.user), 0);
+
+        vm.startPrank($.vaultAdmin);
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
+            Oracle(oracle).submitReports(reports);
+        }
+        vm.stopPrank();
+
+        assertEq(vault.shareManager().sharesOf($.user), 0);
+        assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf($.user), 0);
+
+        RedeemQueue(payable(vault.queueAt(ASSET, 1))).handleReports(1);
+
+        assertEq(vault.shareManager().sharesOf($.user), 0);
+        assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
+        assertEq(IERC20(ASSET).balanceOf($.user), 0);
+
+        vm.startPrank($.user);
+        {
+            uint256[] memory timestamps = new uint256[](1);
+            timestamps[0] = userRedeemTimestamp;
+            RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps);
+        }
+        vm.stopPrank();
+
+        assertEq(vault.shareManager().sharesOf($.user), 0);
+        assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
+        assertEq(IERC20(ASSET).balanceOf($.user), 1 ether);
     }
 }
