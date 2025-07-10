@@ -280,6 +280,20 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
+        vm.startPrank($.user);
+        {
+            uint256[] memory timestamps = new uint256[](1);
+            timestamps[0] = userRedeemTimestamp;
+            RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps);
+        }
+        vm.stopPrank();
+
+        assertEq(vault.shareManager().sharesOf($.user), 0);
+        assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf($.user), 0);
+
         RedeemQueue(payable(vault.queueAt(ASSET, 1))).handleReports(1);
 
         assertEq(vault.shareManager().sharesOf($.user), 0);

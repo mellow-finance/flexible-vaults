@@ -130,6 +130,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             return 0;
         }
 
+        uint256 outflowDemandIterator_ = $.outflowDemandIterator;
         for (uint256 i = 0; i < timestamps.length; i++) {
             uint256 timestamp = timestamps[i];
             if (timestamp > latestReportTimestamp) {
@@ -140,6 +141,9 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 continue;
             }
             uint256 index = $.prices.lowerLookup(uint32(timestamp));
+            if (index >= outflowDemandIterator_) {
+                continue;
+            }
             Pair storage pair = $.outflowDemand[index];
 
             uint256 assets_ = Math.mulDiv(shares, pair.assets, pair.shares);
