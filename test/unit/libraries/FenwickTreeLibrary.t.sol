@@ -116,4 +116,40 @@ contract Unit is Test {
             require(fenwick.get(index) == 0, "element value mismatch");
         }
     }
+
+    function testDiff() public {
+        FenwickWrapper left = new FenwickWrapper();
+        FenwickWrapper right = new FenwickWrapper();
+        uint256 size = 2 ** 6;
+
+        /// @dev both trees are initialized with the same size and values
+        left.init(size);
+        right.init(size);
+
+        require(left.length() == right.length(), "length mismatch");
+        require(getDifferentElements(left, right) == 0, "diff index mismatch");
+
+        for (uint256 index = size - 1; index > 0; index--) {
+            /// @dev change values in both trees
+            left.modify(index, int256(index + 1));
+            right.modify(index, int256(index + 2));
+            /// @dev check that count of different elements is correct
+            assertEq(getDifferentElements(left, right), size - index, "diff index mismatch");
+        }
+    }
+
+    function getDifferentElements(FenwickWrapper left, FenwickWrapper right)
+        internal
+        view
+        returns (uint256 elemCount)
+    {
+        if (left.length() != right.length()) {
+            revert FenwickTreeLibrary.IndexOutOfBounds();
+        }
+        for (uint256 index = 0; index < left.length(); index++) {
+            if (left.get(index) != right.get(index)) {
+                elemCount++;
+            }
+        }
+    }
 }

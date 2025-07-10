@@ -125,6 +125,9 @@ abstract contract VaultModule is IVaultModule, ACLModule {
     // Internal functions
 
     function __VaultModule_init(address riskManager_) internal onlyInitializing {
+        if (riskManager_ == address(0)) {
+            revert ZeroAddress();
+        }
         _vaultStorage().riskManager = riskManager_;
     }
 

@@ -27,6 +27,17 @@ contract ShareManagerTest is FixtureTest {
         assertEq(manager.whitelistMerkleRoot(), merkleRoot, "MerkleRoot mismatch");
     }
 
+    function testSetVault() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+
+        vm.expectRevert(abi.encodeWithSelector(IShareManager.ZeroValue.selector));
+        manager.setVault(address(0));
+
+        vm.expectRevert(abi.encodeWithSelector(Initializable.InvalidInitialization.selector));
+        manager.setVault(vm.createWallet("randomVault").addr);
+    }
+
     function testMintBurn() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         ShareManager manager = deployment.shareManager;

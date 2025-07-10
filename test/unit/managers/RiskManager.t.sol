@@ -47,6 +47,17 @@ contract RiskManagerTest is FixtureTest {
         }
     }
 
+    function testSetVault() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+
+        vm.expectRevert(abi.encodeWithSelector(IRiskManager.ZeroValue.selector));
+        manager.setVault(address(0));
+
+        vm.expectRevert(abi.encodeWithSelector(Initializable.InvalidInitialization.selector));
+        manager.setVault(vm.createWallet("randomVault").addr);
+    }
+
     function testAllowAssets() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         RiskManager manager = deployment.riskManager;
