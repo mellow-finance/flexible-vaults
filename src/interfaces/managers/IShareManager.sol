@@ -93,6 +93,8 @@ interface IShareManager is IFactoryEntity {
 
     function burn(address account, uint256 amount) external;
 
+    function setVault(address vault_) external;
+
     event AllocateShares(int256 value);
 
     event Mint(address indexed account, uint256 shares, uint32 lockedUntil);
@@ -102,4 +104,6 @@ interface IShareManager is IFactoryEntity {
     event SetFlags(Flags flags);
 
     event SetAccountInfo(address indexed account, AccountInfo info);
+
+    event SetVault(address indexed vault);
 }

@@ -10,7 +10,6 @@ contract VaultConfigurator {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     struct InitParams {
-        string name;
         uint256 version;
         address proxyAdmin;
         address vaultAdmin;
@@ -24,6 +23,7 @@ contract VaultConfigurator {
         bytes oracleParams;
         address defaultDepositHook;
         address defaultRedeemHook;
+        uint256 queueLimit;
         Vault.RoleHolder[] roleHolders;
         bytes32 salt;
     }
@@ -83,9 +83,13 @@ contract VaultConfigurator {
             oracle,
             params.defaultDepositHook,
             params.defaultRedeemHook,
+            params.queueLimit,
             params.roleHolders
         );
         vault = IFactory(vaultFactory).create(params.version, params.proxyAdmin, initParams);
+        IShareManager(shareManager).setVault(vault);
+        IRiskManager(riskManager).setVault(vault);
+        IOracle(oracle).setVault(vault);
         _vaults.add(vault);
     }
 }

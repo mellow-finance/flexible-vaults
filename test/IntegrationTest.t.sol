@@ -103,7 +103,8 @@ contract Integration is Test {
             address(new TransparentUpgradeableProxy(address(shareManagerImplementation), vaultProxyAdmin, new bytes(0)))
         );
 
-        shareManager.initialize(abi.encode(vault, bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol")));
+        shareManager.initialize(abi.encode(bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol")));
+        shareManager.setVault(address(vault));
 
         FeeManager feeManager = FeeManager(
             address(new TransparentUpgradeableProxy(address(feeManagerImplementation), vaultProxyAdmin, new bytes(0)))
@@ -122,12 +123,12 @@ contract Integration is Test {
         Oracle oracle = Oracle(
             address(new TransparentUpgradeableProxy(address(oracleImplementation), vaultProxyAdmin, new bytes(0)))
         );
+        oracle.setVault(address(vault));
 
         {
             address[] memory assets = new address[](1);
             assets[0] = address(asset);
             bytes memory oracleInitParams = abi.encode(
-                vault,
                 IOracle.SecurityParams({
                     maxAbsoluteDeviation: 0.05 ether,
                     suspiciousAbsoluteDeviation: 0.01 ether,
@@ -142,7 +143,9 @@ contract Integration is Test {
         }
 
         RiskManager riskManager =
-            RiskManager(riskManagerFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), int256(100 ether))));
+            RiskManager(riskManagerFactory.create(0, vaultProxyAdmin, abi.encode(int256(100 ether))));
+
+        riskManager.setVault(address(vault));
 
         vault.initialize(
             abi.encode(
@@ -153,6 +156,7 @@ contract Integration is Test {
                 address(oracle),
                 address(new RedirectingDepositHook()),
                 address(new BasicRedeemHook()),
+                0,
                 new Vault.RoleHolder[](0)
             ) // redeem module params
         );
@@ -171,7 +175,7 @@ contract Integration is Test {
             vault.RECONNECT_SUBVAULT_ROLE(),
             vault.PULL_LIQUIDITY_ROLE(),
             vault.PUSH_LIQUIDITY_ROLE(),
-            oracle.SUBMIT_REPORT_ROLE(),
+            oracle.SUBMIT_REPORTS_ROLE(),
             oracle.ACCEPT_REPORT_ROLE(),
             oracle.SET_SECURITY_PARAMS_ROLE(),
             oracle.ADD_SUPPORTED_ASSETS_ROLE(),

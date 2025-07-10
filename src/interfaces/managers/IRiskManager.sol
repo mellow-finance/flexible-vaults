@@ -18,6 +18,7 @@ interface IRiskManager is IFactoryEntity {
     error NotAllowedAsset(address asset);
     error LimitExceeded(int256 newValue, int256 maxValue);
     error NotSubvault(address subvault);
+    error ZeroValue();
 
     struct State {
         int256 balance;
@@ -65,6 +66,8 @@ interface IRiskManager is IFactoryEntity {
 
     function modifyPendingAssets(address asset, int256 change) external;
 
+    function setVault(address vault_) external;
+
     // Events
 
     event SetSubvaultLimit(address indexed subvault, int256 limit);
@@ -83,4 +86,6 @@ interface IRiskManager is IFactoryEntity {
         uint256 pendingAssetsAfter,
         uint256 pendingSharesAfter
     );
+
+    event SetVault(address indexed vault);
 }

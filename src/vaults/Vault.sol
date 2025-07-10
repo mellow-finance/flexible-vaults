@@ -28,28 +28,35 @@ contract Vault is IFactoryEntity, VaultModule, ShareModule {
     {}
 
     function initialize(bytes calldata initParams) external initializer {
-        (
-            address admin_,
-            address shareManager_,
-            address feeManager_,
-            address riskManager_,
-            address oracle_,
-            address defaultDepositHook_,
-            address defaultRedeemHook_,
-            RoleHolder[] memory roleHolders
-        ) = abi.decode(initParams, (address, address, address, address, address, address, address, RoleHolder[]));
-        __ACLModule_init(admin_);
-        __ShareModule_init(shareManager_, feeManager_, oracle_, defaultDepositHook_, defaultRedeemHook_);
-        __VaultModule_init(riskManager_);
-
         {
-            RoleHolder memory roleHolder;
-            for (uint256 i = 0; i < roleHolders.length; i++) {
-                roleHolder = roleHolders[i];
-                if (roleHolder.isFundamental) {
-                    _grantFundamentalRole(FundamentalRole(uint256(roleHolder.role)), roleHolder.holder);
-                } else {
-                    _grantRole(roleHolder.role, roleHolder.holder);
+            (
+                address admin_,
+                address shareManager_,
+                address feeManager_,
+                address riskManager_,
+                address oracle_,
+                address defaultDepositHook_,
+                address defaultRedeemHook_,
+                uint256 queueLimit_,
+                RoleHolder[] memory roleHolders
+            ) = abi.decode(
+                initParams, (address, address, address, address, address, address, address, uint256, RoleHolder[])
+            );
+            __ACLModule_init(admin_);
+            __ShareModule_init(
+                shareManager_, feeManager_, oracle_, defaultDepositHook_, defaultRedeemHook_, queueLimit_
+            );
+            __VaultModule_init(riskManager_);
+
+            {
+                RoleHolder memory roleHolder;
+                for (uint256 i = 0; i < roleHolders.length; i++) {
+                    roleHolder = roleHolders[i];
+                    if (roleHolder.isFundamental) {
+                        _grantFundamentalRole(FundamentalRole(uint256(roleHolder.role)), roleHolder.holder);
+                    } else {
+                        _grantRole(roleHolder.role, roleHolder.holder);
+                    }
                 }
             }
         }

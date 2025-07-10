@@ -344,7 +344,8 @@ abstract contract ShareModule is IShareModule, ACLModule {
         address feeManager_,
         address oracle_,
         address defaultDepositHook_,
-        address defaultRedeemHook_
+        address defaultRedeemHook_,
+        uint256 queueLimit_
     ) internal onlyInitializing {
         if (shareManager_ == address(0) || feeManager_ == address(0) || oracle_ == address(0)) {
             revert ZeroAddress();
@@ -355,6 +356,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         $.oracle = oracle_;
         $.defaultDepositHook = defaultDepositHook_;
         $.defaultRedeemHook = defaultRedeemHook_;
+        $.queueLimit = queueLimit_;
     }
 
     function _shareModuleStorage() internal view returns (ShareModuleStorage storage $) {

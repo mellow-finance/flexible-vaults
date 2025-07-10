@@ -170,6 +170,11 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     // Mutable functions
 
     /// @inheritdoc IShareManager
+    function setVault(address vault) external {
+        _setVault(vault);
+    }
+
+    /// @inheritdoc IShareManager
     function claimShares(address account) public {
         IShareModule(vault()).claimShares(account);
     }
@@ -238,13 +243,20 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
 
     // Internal functions
 
-    function __ShareManager_init(address vault_, bytes32 whitelistMerkleRoot_) internal onlyInitializing {
+    function _setVault(address vault_) internal {
         if (vault_ == address(0)) {
             revert ZeroValue();
         }
         ShareManagerStorage storage $ = _shareManagerStorage();
+        if ($.vault != address(0)) {
+            revert InvalidInitialization();
+        }
         $.vault = vault_;
-        $.whitelistMerkleRoot = whitelistMerkleRoot_;
+        emit SetVault(vault_);
+    }
+
+    function __ShareManager_init(bytes32 whitelistMerkleRoot_) internal onlyInitializing {
+        _shareManagerStorage().whitelistMerkleRoot = whitelistMerkleRoot_;
     }
 
     function _shareManagerStorage() private view returns (ShareManagerStorage storage $) {

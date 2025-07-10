@@ -51,6 +51,7 @@ import "../src/managers/TokenizedShareManager.sol";
 
 import "../src/vaults/Subvault.sol";
 import "../src/vaults/Vault.sol";
+import "../src/vaults/VaultConfigurator.sol";
 
 import "./mocks/MockACLModule.sol";
 import "./mocks/MockERC20.sol";

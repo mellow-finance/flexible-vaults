@@ -1,9 +1,5 @@
 All contracts:
-1. events
-2. docs
-
-VaultConfigurator:
-1. full initialization with subvaults 
+1. docs
 
 Strategies
 1. Restaking strategy

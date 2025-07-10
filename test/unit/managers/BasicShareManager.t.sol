@@ -74,7 +74,8 @@ contract BasicShareManagerTest is FixtureTest {
         );
         vm.startPrank(deployment.vaultAdmin);
         {
-            shareManager.initialize(abi.encode(address(deployment.vault), bytes32(0)));
+            shareManager.initialize(abi.encode(bytes32(0)));
+            shareManager.setVault(address(deployment.vault));
         }
         vm.stopPrank();
     }

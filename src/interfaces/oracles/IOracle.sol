@@ -48,7 +48,7 @@ interface IOracle is IFactoryEntity {
         mapping(address asset => DetailedReport) reports;
     }
 
-    function SUBMIT_REPORT_ROLE() external view returns (bytes32);
+    function SUBMIT_REPORTS_ROLE() external view returns (bytes32);
     function ACCEPT_REPORT_ROLE() external view returns (bytes32);
     function SET_SECURITY_PARAMS_ROLE() external view returns (bytes32);
     function ADD_SUPPORTED_ASSETS_ROLE() external view returns (bytes32);
@@ -66,12 +66,14 @@ interface IOracle is IFactoryEntity {
     function setSecurityParams(SecurityParams calldata securityParams_) external;
     function addSupportedAssets(address[] calldata assets) external;
     function removeSupportedAssets(address[] calldata assets) external;
+    function setVault(address vault_) external;
 
     // Events
 
     event ReportsSubmitted(Report[] reports);
-    event ReportAccepted(address indexed asset, uint224 priceD18, uint32 timestamp);
+    event ReportAccepted(address indexed asset, uint224 indexed priceD18, uint32 indexed timestamp);
     event SecurityParamsSet(SecurityParams securityParams);
     event SupportedAssetsAdded(address[] assets);
     event SupportedAssetsRemoved(address[] assets);
+    event SetVault(address indexed vault);
 }

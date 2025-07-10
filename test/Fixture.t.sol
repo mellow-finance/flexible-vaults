@@ -45,9 +45,8 @@ abstract contract FixtureTest is Test {
         );
         vm.startPrank(deployment.vaultAdmin);
         {
-            shareManager.initialize(
-                abi.encode(address(deployment.vault), bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol"))
-            );
+            shareManager.initialize(abi.encode(bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol")));
+            shareManager.setVault(address(deployment.vault));
         }
         vm.stopPrank();
     }
@@ -241,15 +240,15 @@ abstract contract FixtureTest is Test {
         );
 
         {
-            bytes memory oracleInitParams = abi.encode(deployment.vault, defaultSecurityParams(), assets);
+            bytes memory oracleInitParams = abi.encode(defaultSecurityParams(), assets);
             deployment.oracle.initialize(oracleInitParams);
+            deployment.oracle.setVault(address(deployment.vault));
         }
 
         deployment.riskManager = RiskManager(
-            deployment.riskManagerFactory.create(
-                0, deployment.vaultProxyAdmin, abi.encode(address(deployment.vault), int256(100 ether))
-            )
+            deployment.riskManagerFactory.create(0, deployment.vaultProxyAdmin, abi.encode(int256(100 ether)))
         );
+        deployment.riskManager.setVault(address(deployment.vault));
         address depositHook = address(new RedirectingDepositHook());
         address redeemHook = address(new BasicRedeemHook());
 
@@ -262,6 +261,7 @@ abstract contract FixtureTest is Test {
                 address(deployment.oracle),
                 depositHook,
                 redeemHook,
+                0,
                 new Vault.RoleHolder[](0)
             )
         );
@@ -288,7 +288,7 @@ abstract contract FixtureTest is Test {
             deployment.vault.RECONNECT_SUBVAULT_ROLE(),
             deployment.vault.PULL_LIQUIDITY_ROLE(),
             deployment.vault.PUSH_LIQUIDITY_ROLE(),
-            deployment.oracle.SUBMIT_REPORT_ROLE(),
+            deployment.oracle.SUBMIT_REPORTS_ROLE(),
             deployment.oracle.ACCEPT_REPORT_ROLE(),
             deployment.oracle.SET_SECURITY_PARAMS_ROLE(),
             deployment.oracle.ADD_SUPPORTED_ASSETS_ROLE(),

@@ -436,9 +436,10 @@ contract ShareManagerTest is FixtureTest {
             )
         );
         vm.startPrank(deployment.vaultAdmin);
+        shareManager.initialize(abi.encode(merkleRoot));
         vm.expectRevert(abi.encodeWithSelector(IShareManager.ZeroValue.selector));
-        shareManager.initialize(abi.encode(address(0), merkleRoot));
-        shareManager.initialize(abi.encode(address(deployment.vault), merkleRoot));
+        shareManager.setVault(address(0));
+        shareManager.setVault(address(deployment.vault));
         vm.stopPrank();
     }
 }

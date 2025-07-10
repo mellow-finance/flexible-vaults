@@ -45,9 +45,8 @@ contract ShareModuleTest is FixtureTest {
         );
         vm.startPrank(deployment.vaultAdmin);
         {
-            shareManager.initialize(
-                abi.encode(address(deployment.vault), bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol"))
-            );
+            shareManager.initialize(abi.encode(bytes32(0), string("VaultERC20Name"), string("VaultERC20Symbol")));
+            shareManager.setVault(address(deployment.vault));
         }
         vm.stopPrank();
     }

@@ -92,7 +92,8 @@ contract EigenLayerVerifierTest is Test {
 
     /// @notice Tests that `verifyCall` ignores the verificationData parameter.
     function testVerifyCallIgnoresVerificationData(uint256 random) public view {
-        bytes memory callData = abi.encodeWithSelector(IStrategyManager.depositIntoStrategy.selector, strategy, asset, 1000);
+        bytes memory callData =
+            abi.encodeWithSelector(IStrategyManager.depositIntoStrategy.selector, strategy, asset, 1000);
         bytes memory verificationData = abi.encode(bytes32(random), "some", "dummy", "data");
         bool result1 = verifier.verifyCall(caller, address(strategyManager), 0, callData, "");
         bool result2 = verifier.verifyCall(caller, address(strategyManager), 0, callData, verificationData);

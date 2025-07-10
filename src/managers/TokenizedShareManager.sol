@@ -26,10 +26,10 @@ contract TokenizedShareManager is ShareManager, ERC20Upgradeable {
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        (address vault_, bytes32 whitelistMerkleRoot_, string memory name_, string memory symbol_) =
-            abi.decode(data, (address, bytes32, string, string));
+        (bytes32 whitelistMerkleRoot_, string memory name_, string memory symbol_) =
+            abi.decode(data, (bytes32, string, string));
         __ERC20_init(name_, symbol_);
-        __ShareManager_init(vault_, whitelistMerkleRoot_);
+        __ShareManager_init(whitelistMerkleRoot_);
     }
 
     // Internal functions

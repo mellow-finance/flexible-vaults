@@ -9,7 +9,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     /// @inheritdoc IOracle
-    bytes32 public constant SUBMIT_REPORT_ROLE = keccak256("oracle.Oracle.UBMIT_REPORT_ROLE");
+    bytes32 public constant SUBMIT_REPORTS_ROLE = keccak256("oracle.Oracle.SUBMIT_REPORTS_ROLE");
     /// @inheritdoc IOracle
     bytes32 public constant ACCEPT_REPORT_ROLE = keccak256("oracle.Oracle.ACCEPT_REPORT_ROLE");
     /// @inheritdoc IOracle
@@ -85,7 +85,20 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IOracle
-    function submitReports(Report[] calldata reports) external onlyRole(SUBMIT_REPORT_ROLE) {
+    function setVault(address vault_) external {
+        if (vault_ == address(0)) {
+            revert ZeroValue();
+        }
+        OracleStorage storage $ = _oracleStorage();
+        if (address($.vault) != address(0)) {
+            revert InvalidInitialization();
+        }
+        $.vault = IShareModule(vault_);
+        emit SetVault(vault_);
+    }
+
+    /// @inheritdoc IOracle
+    function submitReports(Report[] calldata reports) external onlyRole(SUBMIT_REPORTS_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = $.securityParams;
         uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
@@ -137,10 +150,9 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
 
     function __Oracle_init(bytes calldata initParams) internal onlyInitializing {
         __ReentrancyGuard_init();
-        (address vault_, SecurityParams memory securityParams_, address[] memory assets_) =
-            abi.decode(initParams, (address, SecurityParams, address[]));
+        (SecurityParams memory securityParams_, address[] memory assets_) =
+            abi.decode(initParams, (SecurityParams, address[]));
         OracleStorage storage $ = _oracleStorage();
-        $.vault = IShareModule(vault_);
         _setSecurityParams(securityParams_);
         _addSupportedAssets(assets_);
     }

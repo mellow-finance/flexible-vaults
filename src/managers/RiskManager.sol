@@ -139,11 +139,21 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        (address vault_, int256 vaultLimit_) = abi.decode(data, (address, int256));
-        RiskManagerStorage storage $ = _riskManagerStorage();
-        $.vault = vault_;
-        $.vaultState.limit = vaultLimit_;
+        int256 vaultLimit_ = abi.decode(data, (int256));
+        _riskManagerStorage().vaultState.limit = vaultLimit_;
         emit Initialized(data);
+    }
+
+    function setVault(address vault_) external {
+        if (vault_ == address(0)) {
+            revert ZeroValue();
+        }
+        RiskManagerStorage storage $ = _riskManagerStorage();
+        if ($.vault != address(0)) {
+            revert InvalidInitialization();
+        }
+        $.vault = vault_;
+        emit SetVault(vault_);
     }
 
     /// @inheritdoc IRiskManager
