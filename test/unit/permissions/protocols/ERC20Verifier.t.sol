@@ -133,7 +133,7 @@ contract ERC20VerifierTest is Test {
      * ERC20 transfer function verification tests
      */
 
-    /// @notice Tests that the verifier correctly verifies a valid call to `transfer` with zero amount.
+    /// @notice Tests that the verifier correctly verifies a valid call to `transfer` with non-zero amount.
     function testVerifyCallTransfer(uint256 amount) public view {
         vm.assume(amount > 0);
         bytes memory callData = abi.encodeWithSelector(IERC20.transfer.selector, recipient, amount);
