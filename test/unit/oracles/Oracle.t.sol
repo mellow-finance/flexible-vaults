@@ -26,6 +26,17 @@ contract OracleTest is FixtureTest {
         }
     }
 
+    function testSetVault() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        Oracle oracle = deployment.oracle;
+
+        vm.expectRevert(abi.encodeWithSelector(IOracle.ZeroValue.selector));
+        oracle.setVault(address(0));
+
+        vm.expectRevert(abi.encodeWithSelector(Initializable.InvalidInitialization.selector));
+        oracle.setVault(vm.createWallet("randomVault").addr);
+    }
+
     function testAddAndRemoveSupportedAsset() external {
         address[] memory assets = new address[](5);
         for (uint256 index = 0; index < assets.length; index++) {
