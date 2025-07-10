@@ -104,10 +104,36 @@ abstract contract FixtureTest is Test {
         return deployment.vault.queueAt(asset, index - 1);
     }
 
+    function addSignatureDepositQueue(Deployment memory deployment, address owner, address asset, address consensus)
+        internal
+        returns (address)
+    {
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
+        deployment.vault.createDepositQueue(1, owner, asset, abi.encode(address(consensus), "MockSignatureQueue", "0"));
+        vm.stopPrank();
+
+        uint256 index = deployment.vault.getQueueCount(asset);
+        return deployment.vault.queueAt(asset, index - 1);
+    }
+
     function addRedeemQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
         deployment.vault.createRedeemQueue(0, owner, asset, new bytes(0));
+        vm.stopPrank();
+
+        uint256 index = deployment.vault.getQueueCount(asset);
+        return deployment.vault.queueAt(asset, index - 1);
+    }
+
+    function addSignatureRedeemQueue(Deployment memory deployment, address owner, address asset, address consensus)
+        internal
+        returns (address)
+    {
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
+        deployment.vault.createRedeemQueue(1, owner, asset, abi.encode(address(consensus), "MockSignatureQueue", "0"));
         vm.stopPrank();
 
         uint256 index = deployment.vault.getQueueCount(asset);
