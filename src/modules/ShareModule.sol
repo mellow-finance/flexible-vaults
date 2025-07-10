@@ -310,7 +310,12 @@ abstract contract ShareModule is IShareModule, ACLModule {
     }
 
     /// @inheritdoc IShareModule
-    function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external nonReentrant {
+    function handleReport(
+        address asset,
+        uint224 priceD18,
+        uint32 latestEligibleDepositTimestamp,
+        uint32 latestEligibleRedeemTimestamp
+    ) external nonReentrant {
         address caller = _msgSender();
         ShareModuleStorage storage $ = _shareModuleStorage();
         if (caller != $.oracle) {
@@ -321,9 +326,9 @@ abstract contract ShareModule is IShareModule, ACLModule {
         for (uint256 i = 0; i < length; i++) {
             address queue = queues.at(i);
             if ($.isDepositQueue[queue]) {
-                IQueue(queue).handleReport(priceD18, latestEligibleTimestamp);
+                IQueue(queue).handleReport(priceD18, latestEligibleDepositTimestamp);
             } else {
-                IQueue(queue).handleReport(1e36 / priceD18, latestEligibleTimestamp);
+                IQueue(queue).handleReport(1e36 / priceD18, latestEligibleRedeemTimestamp);
             }
         }
 
@@ -334,7 +339,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
             shareManager().mint(feeManager_.feeRecipient(), fees);
         }
         feeManager_.updateState(asset, priceD18);
-        emit ReportHandled(asset, priceD18, latestEligibleTimestamp, fees);
+        emit ReportHandled(asset, priceD18, latestEligibleDepositTimestamp, latestEligibleRedeemTimestamp, fees);
     }
 
     // Internal functions

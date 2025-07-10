@@ -101,7 +101,8 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     function submitReports(Report[] calldata reports) external onlyRole(SUBMIT_REPORTS_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = $.securityParams;
-        uint32 secureTimestamp = uint32(block.timestamp - securityParams_.secureInterval);
+        uint32 depositSecureTimestamp = uint32(block.timestamp - securityParams_.depositSecureInterval);
+        uint32 redeemSecureTimestamp = uint32(block.timestamp - securityParams_.redeemSecureInterval);
         IShareModule vault_ = vault();
         EnumerableSet.AddressSet storage supportedAssets_ = $.supportedAssets;
         mapping(address asset => DetailedReport) storage reports_ = $.reports;
@@ -110,7 +111,9 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
                 revert UnsupportedAsset(reports[i].asset);
             }
             if (_handleReport(securityParams_, reports[i].priceD18, reports_[reports[i].asset])) {
-                vault_.handleReport(reports[i].asset, reports[i].priceD18, secureTimestamp);
+                vault_.handleReport(
+                    reports[i].asset, reports[i].priceD18, depositSecureTimestamp, redeemSecureTimestamp
+                );
             }
         }
         emit ReportsSubmitted(reports);
@@ -127,7 +130,12 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             revert InvalidTimestamp(timestamp, report_.timestamp);
         }
         report_.isSuspicious = false;
-        vault().handleReport(asset, report_.priceD18, timestamp - $.securityParams.secureInterval);
+        vault().handleReport(
+            asset,
+            report_.priceD18,
+            timestamp - $.securityParams.depositSecureInterval,
+            timestamp - $.securityParams.redeemSecureInterval
+        );
         emit ReportAccepted(asset, report_.priceD18, timestamp);
     }
 
@@ -209,7 +217,8 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         if (
             securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0
                 || securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0
-                || securityParams_.timeout == 0 || securityParams_.secureInterval == 0
+                || securityParams_.timeout == 0 || securityParams_.depositSecureInterval == 0
+                || securityParams_.redeemSecureInterval == 0
         ) {
             revert ZeroValue();
         }

@@ -35,13 +35,14 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             maxRelativeDeviationD18: 0.01 ether, // 1% abs
             suspiciousRelativeDeviationD18: 0.005 ether, // 0.05% abs
             timeout: 20 hours,
-            secureInterval: 1 hours
+            depositSecureInterval: 1 hours,
+            redeemSecureInterval: 1 hours
         });
 
         address[] memory assets = new address[](1);
         assets[0] = ASSET;
 
-        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](6);
+        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](9);
 
         Vault vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
         Oracle oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
@@ -52,6 +53,13 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         holders[3] = Vault.RoleHolder(false, oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
         holders[4] = Vault.RoleHolder(true, bytes32(uint256(IACLModule.FundamentalRole.PROXY_OWNER)), $.vaultProxyAdmin);
         holders[5] = Vault.RoleHolder(false, vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
+        holders[6] = Vault.RoleHolder(false, Verifier($.verifierFactory.implementationAt(0)).CALL_ROLE(), $.curator);
+        holders[7] = Vault.RoleHolder(
+            false, RiskManager($.riskManagerFactory.implementationAt(0)).SET_SUBVAULT_LIMIT_ROLE(), $.vaultAdmin
+        );
+        holders[8] = Vault.RoleHolder(
+            false, RiskManager($.riskManagerFactory.implementationAt(0)).ALLOW_SUBVAULT_ASSETS_ROLE(), $.vaultAdmin
+        );
 
         (address shareManager, address feeManager, address riskManager, address oracle, address vault_) = $
             .vaultConfigurator
@@ -68,8 +76,8 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
                 riskManagerParams: abi.encode(int256(100 ether)),
                 oracleVersion: 0,
                 oracleParams: abi.encode(securityParams, assets),
-                defaultDepositHook: address(0),
-                defaultRedeemHook: address(0),
+                defaultDepositHook: address(new RedirectingDepositHook()),
+                defaultRedeemHook: address(new BasicRedeemHook()),
                 queueLimit: 16,
                 roleHolders: holders
             })
@@ -83,7 +91,136 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         vm.startPrank($.vaultAdmin);
         vault.createDepositQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
         vault.createRedeemQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
+            Oracle(oracle).submitReports(reports);
+            Oracle(oracle).acceptReport(ASSET, uint32(block.timestamp));
+        }
+        SymbioticVerifier symbioticVerifier;
+        {
+            address[] memory holders = new address[](3);
+            bytes32[] memory roles = new bytes32[](holders.length);
 
+            SymbioticVerifier symbioticVerifierImplementation =
+                SymbioticVerifier($.protocolVerifierFactory.implementationAt(0));
+
+            holders[0] = $.curator;
+            roles[0] = symbioticVerifierImplementation.CALLER_ROLE();
+
+            holders[1] = address(vault);
+            roles[1] = symbioticVerifierImplementation.MELLOW_VAULT_ROLE();
+
+            holders[2] = SYMBIOTIC_VAULT;
+            roles[2] = symbioticVerifierImplementation.SYMBIOTIC_VAULT_ROLE();
+            symbioticVerifier = SymbioticVerifier(
+                $.protocolVerifierFactory.create(0, $.vaultProxyAdmin, abi.encode($.vaultAdmin, holders, roles))
+            );
+        }
+
+        ERC20Verifier erc20Verifier;
+        {
+            address[] memory holders = new address[](3);
+            bytes32[] memory roles = new bytes32[](holders.length);
+
+            ERC20Verifier erc20VerifierImplementation = ERC20Verifier($.protocolVerifierFactory.implementationAt(1));
+
+            holders[0] = ASSET;
+            roles[0] = erc20VerifierImplementation.ASSET_ROLE();
+
+            holders[1] = $.curator;
+            roles[1] = erc20VerifierImplementation.CALLER_ROLE();
+
+            holders[2] = SYMBIOTIC_VAULT;
+            roles[2] = erc20VerifierImplementation.RECIPIENT_ROLE();
+
+            erc20Verifier = ERC20Verifier(
+                $.protocolVerifierFactory.create(1, $.vaultProxyAdmin, abi.encode($.vaultAdmin, holders, roles))
+            );
+        }
+        Verifier verifier;
+        IVerifier.VerificationPayload[] memory verificationPayloads;
+        {
+            IVerifier.VerificationPayload[] memory leaves = new IVerifier.VerificationPayload[](2);
+            leaves[0] = IVerifier.VerificationPayload({
+                verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+                verificationData: abi.encode(symbioticVerifier),
+                proof: new bytes32[](0)
+            });
+            leaves[1] = IVerifier.VerificationPayload({
+                verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+                verificationData: abi.encode(erc20Verifier),
+                proof: new bytes32[](0)
+            });
+            bytes32 merkleRoot;
+            (merkleRoot, verificationPayloads) = generateMerkleProofs(leaves);
+            verifier = Verifier($.verifierFactory.create(0, $.vaultProxyAdmin, abi.encode(address(vault), merkleRoot)));
+            address subvault = vault.createSubvault(0, $.vaultProxyAdmin, address(verifier));
+
+            address[] memory assets = new address[](1);
+            assets[0] = ASSET;
+            vault.riskManager().setSubvaultLimit(subvault, int256(100 ether));
+            vault.riskManager().allowSubvaultAssets(subvault, assets);
+        }
+        vm.stopPrank();
+
+        vm.startPrank($.user);
+        {
+            DepositQueue queue = DepositQueue(payable(vault.queueAt(ASSET, 0)));
+            uint224 amount = 1 ether;
+            deal(ASSET, $.user, amount);
+            IERC20(ASSET).approve(address(queue), type(uint256).max);
+            queue.deposit(amount, address(0), new bytes32[](0));
+        }
+        vm.stopPrank();
+
+        {
+            IOracle.SecurityParams memory securityParmas = Oracle(oracle).securityParams();
+            skip(Math.max(securityParmas.depositSecureInterval, securityParmas.timeout) + 1);
+        }
+
+        vm.startPrank($.vaultAdmin);
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
+            Oracle(oracle).submitReports(reports);
+        }
+        vm.stopPrank();
+
+        assertEq(vault.shareManager().sharesOf($.user), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+
+        vm.startPrank($.curator);
+        {
+            Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
+            subvault.call(
+                ASSET,
+                0,
+                abi.encodeCall(IERC20.approve, (SYMBIOTIC_VAULT, type(uint256).max)),
+                verificationPayloads[1] // erc20Verifier payload
+            );
+            subvault.call(
+                SYMBIOTIC_VAULT,
+                0,
+                abi.encodeCall(ISymbioticVault.deposit, (address(vault), 1 ether)),
+                verificationPayloads[0] // symbioticVerifier payload
+            );
+        }
+        vm.stopPrank();
+
+        assertEq(vault.shareManager().sharesOf($.user), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
+
+        vm.startPrank($.user);
+        {
+            DepositQueue queue = DepositQueue(payable(vault.queueAt(ASSET, 0)));
+            uint224 amount = 1 ether;
+            deal(ASSET, $.user, amount);
+            IERC20(ASSET).approve(address(queue), type(uint256).max);
+            queue.deposit(amount, address(0), new bytes32[](0));
+        }
         vm.stopPrank();
     }
 }

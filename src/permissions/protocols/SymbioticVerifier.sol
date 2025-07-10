@@ -11,7 +11,6 @@ import "../MellowACL.sol";
 contract SymbioticVerifier is ICustomVerifier, MellowACL {
     error ValueZero();
 
-    bytes32 public constant ASSET_ROLE = keccak256("permissions.protocols.SymbioticVerifier.ASSET_ROLE");
     bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.SymbioticVerifier.CALLER_ROLE");
     bytes32 public constant MELLOW_VAULT_ROLE = keccak256("permissions.protocols.SymbioticVerifier.MELLOW_VAULT_ROLE");
     bytes32 public constant SYMBIOTIC_FARM_ROLE =

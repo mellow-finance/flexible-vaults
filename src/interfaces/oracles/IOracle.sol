@@ -26,7 +26,8 @@ interface IOracle is IFactoryEntity {
         uint64 maxRelativeDeviationD18;
         uint64 suspiciousRelativeDeviationD18;
         uint32 timeout;
-        uint32 secureInterval;
+        uint32 depositSecureInterval;
+        uint32 redeemSecureInterval;
     }
 
     /// @dev shares = price18 * assets / 1e18

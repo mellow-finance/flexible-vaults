@@ -104,7 +104,12 @@ interface IShareModule is IBaseModule {
 
     function callHook(uint256 assets) external;
 
-    function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external;
+    function handleReport(
+        address asset,
+        uint224 priceD18,
+        uint32 latestEligibleDepositTimestamp,
+        uint32 latestEligibleRedeemTimestamp
+    ) external;
 
     // Events
 
@@ -117,5 +122,11 @@ interface IShareModule is IBaseModule {
     event QueuePaused(address indexed queue);
     event QueueUnpaused(address indexed queue);
     event DefaultHookSet(address indexed hook, bool isDepositHook);
-    event ReportHandled(address indexed asset, uint224 priceD18, uint32 latestEligibleTimestamp, uint256 fees);
+    event ReportHandled(
+        address indexed asset,
+        uint224 priceD18,
+        uint32 latestEligibleDepositTimestamp,
+        uint32 latestEligibleRedeemTimestamp,
+        uint256 fees
+    );
 }
