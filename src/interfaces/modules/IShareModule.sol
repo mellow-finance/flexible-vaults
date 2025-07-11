@@ -15,7 +15,7 @@ import "./IBaseModule.sol";
 interface IShareModule is IBaseModule {
     error UnsupportedAsset(address asset);
     error QueueLimitReached();
-    error ValueZero();
+    error ZeroValue();
 
     struct ShareModuleStorage {
         address shareManager;

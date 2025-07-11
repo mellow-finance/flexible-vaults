@@ -59,7 +59,7 @@ contract DepositQueue is IDepositQueue, Queue {
     /// @inheritdoc IDepositQueue
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable nonReentrant {
         if (assets == 0) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         address caller = _msgSender();
         address vault_ = vault();

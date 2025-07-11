@@ -81,7 +81,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
     /// @inheritdoc IRedeemQueue
     function redeem(uint256 shares) external nonReentrant {
         if (shares == 0) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         address caller = _msgSender();
 

@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../MellowACL.sol";
 
 contract ERC20Verifier is ICustomVerifier, MellowACL {
-    error ValueZero();
+    error ZeroValue();
 
     bytes32 public constant ASSET_ROLE = keccak256("permissions.protocols.ERC20Verifier.ASSET_ROLE");
     bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.ERC20Verifier.CALLER_ROLE");
@@ -53,12 +53,12 @@ contract ERC20Verifier is ICustomVerifier, MellowACL {
         (address admin, address[] memory holders, bytes32[] memory roles) =
             abi.decode(data, (address, address[], bytes32[]));
         if (admin == address(0)) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         for (uint256 i = 0; i < holders.length; i++) {
             if (holders[i] == address(0) || roles[i] == bytes32(0)) {
-                revert ValueZero();
+                revert ZeroValue();
             }
             _grantRole(roles[i], holders[i]);
         }

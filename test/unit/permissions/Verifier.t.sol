@@ -60,7 +60,7 @@ contract VerifierTest is Test {
 
         bytes memory initParams = abi.encode(address(0), dummyMerkleRoot);
 
-        vm.expectRevert("ValueZero()");
+        vm.expectRevert("ZeroValue()");
         verifier.initialize(initParams);
 
         initParams = abi.encode(admin, dummyMerkleRoot);
@@ -89,7 +89,7 @@ contract VerifierTest is Test {
         bytes32 newMerkleRoot = keccak256("newMerkleRoot");
 
         vm.prank(SET_MERKLE_ROOT_ROLE_ADDRESS);
-        vm.expectRevert("ValueZero()");
+        vm.expectRevert("ZeroValue()");
         verifier.setMerkleRoot(bytes32(0));
 
         vm.prank(SET_MERKLE_ROOT_ROLE_ADDRESS);

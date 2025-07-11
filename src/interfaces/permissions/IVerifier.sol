@@ -12,7 +12,7 @@ import "./ICustomVerifier.sol";
 interface IVerifier is IFactoryEntity {
     error Forbidden();
     error VerificationFailed();
-    error ValueZero();
+    error ZeroValue();
     error InvalidLength();
     error CompactCallAlreadyAllowed(address who, address where, bytes4 selector);
     error CompactCallNotFound(address who, address where, bytes4 selector);

@@ -46,7 +46,7 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
 
     function __Queue_init(address asset_, address vault_) internal onlyInitializing {
         if (asset_ == address(0) || vault_ == address(0)) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         QueueStorage storage $ = _queueStorage();
         $.asset = asset_;

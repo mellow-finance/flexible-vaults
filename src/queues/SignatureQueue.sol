@@ -87,7 +87,7 @@ abstract contract SignatureQueue is
             revert InvalidQueue(order.queue);
         }
         if (order.ordered == 0 || order.requested == 0) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         if (order.asset != asset()) {
             revert InvalidAsset(order.asset);
@@ -134,7 +134,7 @@ abstract contract SignatureQueue is
         ($.asset, $.vault, data) = abi.decode(initData, (address, address, bytes));
         (address consensus_, string memory name_, string memory version_) = abi.decode(data, (address, string, string));
         if (consensus_ == address(0)) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         __ReentrancyGuard_init();
         __EIP712_init(name_, version_);

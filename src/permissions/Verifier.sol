@@ -130,7 +130,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
     function initialize(bytes calldata initParams) external initializer {
         (address vault_, bytes32 merkleRoot_) = abi.decode(initParams, (address, bytes32));
         if (vault_ == address(0)) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         _verifierStorage().vault = vault_;
         if (merkleRoot_ != bytes32(0)) {
@@ -141,7 +141,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
     /// @inheritdoc IVerifier
     function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(SET_MERKLE_ROOT_ROLE) {
         if (merkleRoot_ == bytes32(0)) {
-            revert ValueZero();
+            revert ZeroValue();
         }
         _verifierStorage().merkleRoot = merkleRoot_;
     }

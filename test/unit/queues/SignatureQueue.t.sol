@@ -27,7 +27,7 @@ contract SignatureQueueTest is FixtureTest {
         address vault = vm.createWallet("vault").addr;
         address consensus = vm.createWallet("consensus").addr;
 
-        vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.ZeroValue.selector));
         queue.initialize(abi.encode(asset, vault, abi.encode(address(0), "MockSignatureQueue", "0")));
 
         queue.initialize(abi.encode(asset, vault, abi.encode(consensus, "MockSignatureQueue", "0")));
@@ -100,13 +100,13 @@ contract SignatureQueueTest is FixtureTest {
         {
             order.requested = 0;
             vm.prank(user);
-            vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.ValueZero.selector));
+            vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.ZeroValue.selector));
             queue.validateOrder(order, signatures);
         }
         {
             order.ordered = 0;
             vm.prank(user);
-            vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.ValueZero.selector));
+            vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.ZeroValue.selector));
             queue.validateOrder(order, signatures);
         }
         {

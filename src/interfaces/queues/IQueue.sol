@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 interface IQueue is IFactoryEntity {
-    error ValueZero();
+    error ZeroValue();
     error Forbidden();
     error InvalidReport();
     error QueuePaused();
