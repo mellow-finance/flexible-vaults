@@ -111,11 +111,14 @@ contract MellowACLTest is Test {
         assertEq(acl.supportedRoles(), 1);
     }
 
-    function createMellowACL(string memory name, uint256 version, address admin) internal returns (MockMellowACL acl) {
+    function createMellowACL(string memory name, uint256 version, address admin_)
+        internal
+        returns (MockMellowACL acl)
+    {
         MockMellowACL aclImplementation = new MockMellowACL(name, version);
         acl = MockMellowACL(
             address(new TransparentUpgradeableProxy(address(aclImplementation), proxyAdmin, new bytes(0)))
         );
-        acl.initialize(abi.encode(admin));
+        acl.initialize(abi.encode(admin_));
     }
 }

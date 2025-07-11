@@ -28,12 +28,6 @@ contract VaultModuleTest is FixtureTest {
     function testCreateSubvault() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
 
-        Verifier anotherVerifier = Verifier(
-            deployment.verifierFactory.create(
-                0, vaultProxyAdmin, abi.encode(vm.createWallet("anotherVault").addr, bytes32(0))
-            )
-        );
-
         Factory newVerifierFactory = Factory(
             address(
                 new TransparentUpgradeableProxy(

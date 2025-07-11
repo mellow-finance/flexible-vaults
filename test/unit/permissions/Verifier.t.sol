@@ -6,13 +6,11 @@ import "../../Imports.sol";
 contract MockCustomVerifier is ICustomVerifier {
     error VerificationFailed();
 
-    function verifyCall(
-        address who,
-        address where,
-        uint256 value,
-        bytes calldata callData,
-        bytes calldata verificationData
-    ) external view returns (bool result) {
+    function verifyCall(address, address, uint256, bytes calldata, bytes calldata verificationData)
+        external
+        pure
+        returns (bool result)
+    {
         (result) = abi.decode(verificationData, (bool));
     }
 
@@ -144,8 +142,6 @@ contract VerifierTest is Test {
         Verifier verifier = createVerifier("Verifier", 1, admin);
         IVerifier.CompactCall[] memory compactCalls = new IVerifier.CompactCall[](1);
         compactCalls[0] = IVerifier.CompactCall({who: caller1, where: target1, selector: bytes4(callData1)});
-        IVerifier.CompactCall memory compactCallNotAllowed =
-            IVerifier.CompactCall({who: caller2, where: target2, selector: bytes4(callData2)});
 
         vm.expectRevert("Forbidden()");
         verifier.disallowCalls(compactCalls);
@@ -287,7 +283,7 @@ contract VerifierTest is Test {
         verifier.verifyCall(CALL_ROLE_ADDRESS, target1, 0, callData1, verificationPayload);
     }
 
-    function createVerifier(string memory name, uint256 version, address admin) internal returns (Verifier verifier) {
+    function createVerifier(string memory name, uint256 version, address admin_) internal returns (Verifier verifier) {
         Verifier verifierImplementation = new Verifier(name, version);
         verifier = Verifier(
             address(new TransparentUpgradeableProxy(address(verifierImplementation), proxyAdmin, new bytes(0)))
@@ -296,7 +292,7 @@ contract VerifierTest is Test {
         bytes memory initParams = abi.encode(vault, dummyMerkleRoot);
         verifier.initialize(initParams);
 
-        vm.startPrank(admin);
+        vm.startPrank(admin_);
         vault.grantRole(verifier.CALL_ROLE(), CALL_ROLE_ADDRESS);
         vault.grantRole(verifier.ALLOW_CALL_ROLE(), ALLOW_CALL_ROLE_ADDRESS);
         vault.grantRole(verifier.DISALLOW_CALL_ROLE(), DISALLOW_CALL_ROLE_ADDRESS);
@@ -306,7 +302,7 @@ contract VerifierTest is Test {
 
     function setValidMerkleRootForPayloadAndProof(
         Verifier verifier,
-        bytes32[] memory proof,
+        bytes32[] memory proof_,
         IVerifier.VerificationPayload memory verificationPayload
     ) internal {
         bytes32 leaf = keccak256(
@@ -316,7 +312,7 @@ contract VerifierTest is Test {
                 )
             )
         );
-        bytes32 root = MerkleProof.processProof(proof, leaf);
+        bytes32 root = MerkleProof.processProof(proof_, leaf);
 
         vm.startPrank(SET_MERKLE_ROOT_ROLE_ADDRESS);
         verifier.setMerkleRoot(root);

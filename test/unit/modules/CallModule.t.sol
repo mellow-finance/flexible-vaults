@@ -36,6 +36,7 @@ contract CallModuleTest is Test {
     function testCreate() external {
         Verifier verifier = createVerifier("Verifier", 1, admin);
         MockCallModule module = createCallModule(address(verifier));
+        require(address(module) != address(0), "Module creation failed");
     }
 
     function testVerificationCall() external {
@@ -62,17 +63,17 @@ contract CallModuleTest is Test {
         module.call(address(this), 0, callData, verificationPayload);
     }
 
-    function createCallModule(address admin) internal returns (MockCallModule module) {
+    function createCallModule(address admin_) internal returns (MockCallModule module) {
         MockCallModule moduleImplementation = new MockCallModule("CallModule", 1);
         module = MockCallModule(
             payable(new TransparentUpgradeableProxy(address(moduleImplementation), proxyAdmin, new bytes(0)))
         );
-        module.initialize(abi.encode(admin));
+        module.initialize(abi.encode(admin_));
     }
 
     function mockFunction() public {}
 
-    function createVerifier(string memory name, uint256 version, address admin) internal returns (Verifier verifier) {
+    function createVerifier(string memory name, uint256 version, address admin_) internal returns (Verifier verifier) {
         Verifier verifierImplementation = new Verifier(name, version);
         verifier = Verifier(
             address(new TransparentUpgradeableProxy(address(verifierImplementation), proxyAdmin, new bytes(0)))
@@ -81,7 +82,7 @@ contract CallModuleTest is Test {
         bytes memory initParams = abi.encode(vault, dummyMerkleRoot);
         verifier.initialize(initParams);
 
-        vm.startPrank(admin);
+        vm.startPrank(admin_);
         vault.grantRole(verifier.CALL_ROLE(), CALL_ROLE_ADDRESS);
         vault.grantRole(verifier.ALLOW_CALL_ROLE(), ALLOW_CALL_ROLE_ADDRESS);
         vm.stopPrank();

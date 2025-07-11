@@ -43,11 +43,11 @@ contract SubvaultModuleTest is Test {
         require(IERC20(address(asset)).balanceOf(address(vault)) == 1 ether, "Vault should have 1 ether of asset");
     }
 
-    function createSubvaultModule(address vault) internal returns (MockSubvaultModule module) {
+    function createSubvaultModule(address vault_) internal returns (MockSubvaultModule module) {
         MockSubvaultModule moduleImplementation = new MockSubvaultModule("SubvaultModule", 1);
         module = MockSubvaultModule(
             payable(new TransparentUpgradeableProxy(address(moduleImplementation), proxyAdmin, new bytes(0)))
         );
-        module.initialize(abi.encode(vault));
+        module.initialize(abi.encode(vault_));
     }
 }

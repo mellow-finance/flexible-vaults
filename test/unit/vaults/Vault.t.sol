@@ -227,7 +227,6 @@ contract VaultTest is Test {
     /// @notice Tests that the initialize function can only be called once.
     function testInitializeRevertsIfCalledTwice() public {
         vault = _createVaultWithRoles("Vault", 1, new Vault.RoleHolder[](0));
-        address culprit = makeAddr("culprit");
         vm.expectRevert();
         vault.initialize(
             abi.encode(

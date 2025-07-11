@@ -191,7 +191,8 @@ contract ConsensusTest is Test {
         consensus.addSigner(signer, 1, IConsensus.SignatureType.EIP712);
 
         bytes memory badSig = _sign(keccak256("wrong"), pk);
-        IConsensus.Signature[] memory signatures;
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](1);
+        signatures[0] = IConsensus.Signature({signer: signer, signature: badSig});
 
         assert(!consensus.checkSignatures(dummyHash, signatures));
     }

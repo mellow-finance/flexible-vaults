@@ -65,8 +65,8 @@ contract OracleTest is FixtureTest {
             oracle.submitReports(reports);
             oracle.acceptReport(assets[0], uint32(block.timestamp));
 
-            IOracle.DetailedReport memory report = oracle.getReport(assets[0]);
-            assertTrue(report.priceD18 == price, "Report price mismatch");
+            IOracle.DetailedReport memory detailedReport = oracle.getReport(assets[0]);
+            assertTrue(detailedReport.priceD18 == price, "Report price mismatch");
         }
         oracle.removeSupportedAssets(assets);
 
@@ -284,9 +284,6 @@ contract OracleTest is FixtureTest {
         IOracle.SecurityParams memory securityParams = oracle.securityParams();
         address invalidAsset = vm.createWallet("random address").addr;
 
-        bool isValid;
-        bool isSuspicious;
-
         IOracle.Report[] memory reports = new IOracle.Report[](1);
         uint224 price = 1e18;
         reports[0] = IOracle.Report({asset: invalidAsset, priceD18: price});
@@ -302,10 +299,9 @@ contract OracleTest is FixtureTest {
         vm.prank(vaultAdmin);
         oracle.submitReports(reports);
 
-        {
-            vm.expectRevert(abi.encodeWithSelector(IOracle.UnsupportedAsset.selector, invalidAsset));
-            IOracle.DetailedReport memory report = oracle.getReport(invalidAsset);
-        }
+        vm.expectRevert(abi.encodeWithSelector(IOracle.UnsupportedAsset.selector, invalidAsset));
+        oracle.getReport(invalidAsset);
+
         IOracle.DetailedReport memory report = oracle.getReport(asset);
         assertEq(report.priceD18, price, "Price mismatch");
         assertEq(report.timestamp, block.timestamp, "Timestamp mismatch");

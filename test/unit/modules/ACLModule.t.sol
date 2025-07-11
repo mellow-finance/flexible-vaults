@@ -9,7 +9,7 @@ contract ACLModuleTest is Test {
     address proxyAdmin = vm.createWallet("proxyAdmin").addr;
 
     function testRole() external {
-        MockACLModule acl = createACL("MockACLModule", 1, admin);
+        MockACLModule acl = createACL("MockACLModule", 1);
         acl.initialize(abi.encode(admin));
         bytes32 role = acl.DEFAULT_ADMIN_ROLE();
         vm.prank(admin);
@@ -18,7 +18,7 @@ contract ACLModuleTest is Test {
         acl.grantRole(role, admin2);
     }
 
-    function createACL(string memory name, uint256 version, address admin) internal returns (MockACLModule acl) {
+    function createACL(string memory name, uint256 version) internal returns (MockACLModule acl) {
         MockACLModule aclImplementation = new MockACLModule(name, version);
         acl = MockACLModule(
             payable(new TransparentUpgradeableProxy(address(aclImplementation), proxyAdmin, new bytes(0)))

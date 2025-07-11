@@ -17,7 +17,7 @@ contract MockQueue is Queue {
         return _timestamps();
     }
 
-    function canBeRemoved() external view returns (bool) {
+    function canBeRemoved() external pure returns (bool) {
         return false;
     }
 
