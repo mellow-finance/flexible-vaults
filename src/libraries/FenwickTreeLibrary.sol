@@ -65,7 +65,7 @@ library FenwickTreeLibrary {
     }
 
     function _get(Tree storage tree, uint256 index) private view returns (int256 prefixSum) {
-        assembly {
+        assembly ("memory-safe") {
             mstore(0x20, tree.slot)
             for {} 1 { index := sub(index, 1) } {
                 mstore(0x00, index)
