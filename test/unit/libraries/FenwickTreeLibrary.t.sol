@@ -138,6 +138,70 @@ contract Unit is Test {
         }
     }
 
+    function testFenwickTreeModifyGasUsage() external {
+        FenwickWrapper tree = new FenwickWrapper();
+        uint256 log2 = 40;
+        uint256 n = 1 << log2;
+        tree.init(n);
+        uint256 calls = 1000;
+        uint256 cumulativeGas = 0;
+
+        for (uint256 i = 0; i < calls; i++) {
+            uint256 index = uint256(keccak256(abi.encode(i))) % n;
+            int256 value = int256(uint256(keccak256(abi.encode(i))) % type(uint128).max);
+            if (i & 1 == 1) {
+                value = -value;
+            }
+            uint256 gasBefore = gasleft();
+            tree.modify(index, value);
+            uint256 gasAfter = gasleft();
+            cumulativeGas += gasBefore - gasAfter;
+        }
+
+        uint256 maxStorageWrites = 20000 * calls * log2;
+        assertLe(cumulativeGas, maxStorageWrites);
+    }
+
+    function testFenwickTreeGetGasUsage() external {
+        FenwickWrapper tree = new FenwickWrapper();
+        uint256 log2 = 19;
+        uint256 n = 1 << log2;
+        tree.init(n);
+        uint256 calls = 1000;
+        uint256 cumulativeGas = 0;
+
+        int256[] memory prefixSum = new int256[](n);
+        for (uint256 i = 0; i < n; i++) {
+            int256 value = int256(uint256(keccak256(abi.encode(i))) % type(uint128).max);
+            if (uint256(keccak256(abi.encode(value))) & 1 == 1) {
+                value = -value;
+            }
+            prefixSum[i] = value;
+            if (i > 0) {
+                prefixSum[i] += prefixSum[i - 1];
+            }
+            tree.modify(i, value);
+        }
+
+        for (uint256 i = 0; i < calls; i++) {
+            uint256 l = uint256(keccak256(abi.encode(i))) % n;
+            uint256 r = uint256(keccak256(abi.encode(i))) % n;
+            if (l > r) {
+                (l, r) = (r, l);
+            }
+            int256 result = 0;
+            uint256 gasBefore = gasleft();
+            result = tree.get(l, r);
+            uint256 gasAfter = gasleft();
+            cumulativeGas += gasBefore - gasAfter;
+            int256 expectedValue = prefixSum[r] - (l == 0 ? int256(0) : prefixSum[l - 1]);
+            assertEq(result, expectedValue);
+        }
+
+        uint256 maxStorageWrites = 2000 * 2 * calls * log2;
+        assertLe(cumulativeGas, maxStorageWrites);
+    }
+
     function getDifferentElements(FenwickWrapper left, FenwickWrapper right)
         internal
         view
