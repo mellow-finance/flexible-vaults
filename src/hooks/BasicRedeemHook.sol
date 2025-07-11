@@ -21,10 +21,10 @@ contract BasicRedeemHook is IRedeemHook {
                 continue;
             }
             if (balance >= required) {
-                vault.pullAssets(subvault, asset, required);
+                vault.hookPullAssets(subvault, asset, required);
                 break;
             } else {
-                vault.pullAssets(subvault, asset, balance);
+                vault.hookPullAssets(subvault, asset, balance);
                 required -= balance;
             }
         }

@@ -49,8 +49,10 @@ interface IVaultModule is IACLModule {
     function reconnectSubvault(address subvault) external;
 
     function pushAssets(address subvault, address asset, uint256 value) external;
-
     function pullAssets(address subvault, address asset, uint256 value) external;
+
+    function hookPushAssets(address subvault, address asset, uint256 value) external;
+    function hookPullAssets(address subvault, address asset, uint256 value) external;
 
     // Events
 

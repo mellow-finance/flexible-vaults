@@ -182,7 +182,8 @@ contract VaultConfiguratorTest is Test {
                     maxRelativeDeviationD18: 0.05 ether,
                     suspiciousRelativeDeviationD18: 0.01 ether,
                     timeout: 12 hours,
-                    secureInterval: 1 hours
+                    depositSecureInterval: 1 hours,
+                    redeemSecureInterval: 1 hours
                 }),
                 new address[](0)
             ),

@@ -29,8 +29,8 @@ interface IRiskManager is IFactoryEntity {
         address vault;
         State vaultState;
         int256 pendingBalance;
-        mapping(address asset => uint256) pendingAssets;
-        mapping(address asset => uint256) pendingShares;
+        mapping(address asset => int256) pendingAssets;
+        mapping(address asset => int256) pendingShares;
         mapping(address subvault => State) subvaultStates;
         mapping(address subvault => EnumerableSet.AddressSet) allowedAssets;
     }
@@ -41,8 +41,8 @@ interface IRiskManager is IFactoryEntity {
     function vault() external view returns (address);
     function vaultState() external view returns (State memory);
     function pendingBalance() external view returns (int256);
-    function pendingAssets(address asset) external view returns (uint256);
-    function pendingShares(address asset) external view returns (uint256);
+    function pendingAssets(address asset) external view returns (int256);
+    function pendingShares(address asset) external view returns (int256);
     function subvaultState(address subvault) external view returns (State memory);
     function allowedAssets(address subvault) external view returns (uint256);
     function allowedAssetAt(address subvault, uint256 index) external view returns (address);
@@ -75,9 +75,9 @@ interface IRiskManager is IFactoryEntity {
     event AllowSubvaultAssets(address indexed subvault, address[] assets);
     event DisallowSubvaultAssets(address indexed subvault, address[] assets);
     event ModifyPendingAssets(
-        address indexed asset, int256 change, uint256 pendingAssetsAfter, uint256 pendingSharesAfter
+        address indexed asset, int256 change, int256 pendingAssetsAfter, int256 pendingSharesAfter
     );
-    event ModifyVaultBalance(address indexed asset, int256 change, int256 newBalance);
+    event ModifyVaultBalance(address indexed asset, int256 shares, int256 newBalance);
     event ModifySubvaultBalance(address indexed subvault, address indexed asset, int256 change, int256 newBalance);
     event ModifySubvaultAssets(
         address indexed subvault,

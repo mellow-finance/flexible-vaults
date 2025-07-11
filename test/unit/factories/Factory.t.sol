@@ -95,19 +95,8 @@ contract FactoryTest is Test {
         {
             address newImplementation = address(new Mock());
             pushImplementation(factory, newImplementation);
-
-            require(
-                address(0) == factory.computeAddress(1, ownerContract, callData),
-                "non-zero address for invalid implementation version"
-            );
-
             vm.expectRevert("OutOfBounds(1)");
             factory.create(1, ownerContract, callData);
-
-            address expectedAddress = factory.computeAddress(0, ownerContract, callData);
-            address factAddress = factory.create(0, ownerContract, callData);
-
-            require(expectedAddress == factAddress, "mismatch compute address");
         }
         {
             address newImplementation = address(new Mock());
@@ -115,11 +104,6 @@ contract FactoryTest is Test {
             vm.prank(admin);
             factory.setBlacklistStatus(0, true);
             require(factory.isBlacklisted(0), "version was not blacklisted");
-
-            require(
-                address(0) == factory.computeAddress(0, ownerContract, callData),
-                "non-zero address for invalid implementation version"
-            );
 
             vm.expectRevert("BlacklistedVersion(0)");
             factory.create(0, ownerContract, callData);

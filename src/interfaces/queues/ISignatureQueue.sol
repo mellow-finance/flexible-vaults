@@ -13,7 +13,7 @@ import "../permissions/IConsensus.sol";
 import "./IQueue.sol";
 
 interface ISignatureQueue is IFactoryEntity {
-    error ValueZero();
+    error ZeroValue();
     error OrderExpired(uint256 deadline);
     error InvalidCaller(address caller);
     error InvalidQueue(address queue);

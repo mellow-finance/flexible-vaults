@@ -40,10 +40,10 @@ contract QueueTest is Test {
         assertEq(queue.vault(), address(0), "Vault address should be zero");
         assertEq(queue.asset(), address(0), "Asset address should be zero");
 
-        vm.expectRevert(abi.encodeWithSelector(IQueue.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(IQueue.ZeroValue.selector));
         queue.initialize(abi.encode(address(0), vault));
 
-        vm.expectRevert(abi.encodeWithSelector(IQueue.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(IQueue.ZeroValue.selector));
         queue.initialize(abi.encode(asset, address(0)));
 
         queue.initialize(abi.encode(asset, vault));

@@ -70,6 +70,14 @@ contract MockVault {
         return subvault[index];
     }
 
+    function hookPullAssets(address subvault, address asset, uint256 value) external {
+        MockERC20(asset).take(subvault, value);
+    }
+
+    function hookPushAssets(address subvault, address asset, uint256 value) external {
+        MockERC20(asset).transfer(subvault, value);
+    }
+
     function pullAssets(address subvault, address asset, uint256 value) external {
         MockERC20(asset).take(subvault, value);
     }

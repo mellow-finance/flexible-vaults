@@ -63,9 +63,9 @@ abstract contract VaultModule is IVaultModule, ACLModule {
     function createSubvault(uint256 version, address owner, address verifier)
         external
         onlyRole(CREATE_SUBVAULT_ROLE)
+        nonReentrant
         returns (address subvault)
     {
-        requireFundamentalRole(FundamentalRole.PROXY_OWNER, owner);
         if (!verifierFactory.isEntity(verifier)) {
             revert NotEntity(verifier);
         }
@@ -109,20 +109,52 @@ abstract contract VaultModule is IVaultModule, ACLModule {
     }
 
     /// @inheritdoc IVaultModule
-    function pullAssets(address subvault, address asset, uint256 value) external onlySelfOrRole(PULL_LIQUIDITY_ROLE) {
+    function pullAssets(address subvault, address asset, uint256 value)
+        external
+        onlyRole(PULL_LIQUIDITY_ROLE)
+        nonReentrant
+    {
+        _pullAssets(subvault, asset, value);
+    }
+
+    /// @inheritdoc IVaultModule
+    function pushAssets(address subvault, address asset, uint256 value)
+        external
+        onlyRole(PUSH_LIQUIDITY_ROLE)
+        nonReentrant
+    {
+        _pushAssets(subvault, asset, value);
+    }
+
+    /// @inheritdoc IVaultModule
+    function hookPullAssets(address subvault, address asset, uint256 value) external {
+        if (_msgSender() != address(this)) {
+            revert Forbidden();
+        }
+        _pullAssets(subvault, asset, value);
+    }
+
+    /// @inheritdoc IVaultModule
+    function hookPushAssets(address subvault, address asset, uint256 value) external {
+        if (_msgSender() != address(this)) {
+            revert Forbidden();
+        }
+        _pushAssets(subvault, asset, value);
+    }
+
+    // Internal functions
+
+    function _pullAssets(address subvault, address asset, uint256 value) internal {
         riskManager().modifySubvaultBalance(subvault, asset, -int256(value));
         ISubvaultModule(subvault).pullAssets(asset, value);
         emit AssetsPulled(asset, subvault, value);
     }
 
-    /// @inheritdoc IVaultModule
-    function pushAssets(address subvault, address asset, uint256 value) external onlySelfOrRole(PUSH_LIQUIDITY_ROLE) {
+    function _pushAssets(address subvault, address asset, uint256 value) internal {
         riskManager().modifySubvaultBalance(subvault, asset, int256(value));
         TransferLibrary.sendAssets(asset, subvault, value);
         emit AssetsPushed(asset, subvault, value);
     }
-
-    // Internal functions
 
     function __VaultModule_init(address riskManager_) internal onlyInitializing {
         if (riskManager_ == address(0)) {

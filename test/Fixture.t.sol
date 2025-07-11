@@ -79,7 +79,8 @@ abstract contract FixtureTest is Test {
             maxRelativeDeviationD18: 0.05 ether,
             suspiciousRelativeDeviationD18: 0.01 ether,
             timeout: 12 hours,
-            secureInterval: 1 hours
+            depositSecureInterval: 1 hours,
+            redeemSecureInterval: 1 hours
         });
     }
 
@@ -298,7 +299,6 @@ abstract contract FixtureTest is Test {
             )
         );
         vm.startPrank(deployment.vaultAdmin);
-        deployment.vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, deployment.vaultProxyAdmin);
         grantRoles(deployment);
         vm.stopPrank();
     }

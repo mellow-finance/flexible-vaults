@@ -8,14 +8,15 @@ import "../libraries/SlotLibrary.sol";
 contract RiskManager is IRiskManager, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    bytes32 public constant SET_VAULT_LIMIT_ROLE = keccak256("manager.RiskManager.SET_VAULT_LIMIT_ROLE");
-    bytes32 public constant SET_SUBVAULT_LIMIT_ROLE = keccak256("manager.RiskManager.SET_SUBVAULT_LIMIT_ROLE");
-    bytes32 public constant ALLOW_SUBVAULT_ASSETS_ROLE = keccak256("manager.RiskManager.ALLOW_SUBVAULT_ASSETS_ROLE");
+    bytes32 public constant SET_VAULT_LIMIT_ROLE = keccak256("managers.RiskManager.SET_VAULT_LIMIT_ROLE");
+    bytes32 public constant SET_SUBVAULT_LIMIT_ROLE = keccak256("managers.RiskManager.SET_SUBVAULT_LIMIT_ROLE");
+    bytes32 public constant ALLOW_SUBVAULT_ASSETS_ROLE = keccak256("managers.RiskManager.ALLOW_SUBVAULT_ASSETS_ROLE");
     bytes32 public constant DISALLOW_SUBVAULT_ASSETS_ROLE =
-        keccak256("manager.RiskManager.DISALLOW_SUBVAULT_ASSETS_ROLE");
-    bytes32 public constant MODIFY_PENDING_ASSETS_ROLE = keccak256("manager.RiskManager.MODIFY_PENDING_ASSETS_ROLE");
-    bytes32 public constant MODIFY_VAULT_BALANCE_ROLE = keccak256("manager.RiskManager.MODIFY_VAULT_BALANCE_ROLE");
-    bytes32 public constant MODIFY_SUBVAULT_BALANCE_ROLE = keccak256("manager.RiskManager.MODIFY_SUBVAULT_BALANCE_ROLE");
+        keccak256("managers.RiskManager.DISALLOW_SUBVAULT_ASSETS_ROLE");
+    bytes32 public constant MODIFY_PENDING_ASSETS_ROLE = keccak256("managers.RiskManager.MODIFY_PENDING_ASSETS_ROLE");
+    bytes32 public constant MODIFY_VAULT_BALANCE_ROLE = keccak256("managers.RiskManager.MODIFY_VAULT_BALANCE_ROLE");
+    bytes32 public constant MODIFY_SUBVAULT_BALANCE_ROLE =
+        keccak256("managers.RiskManager.MODIFY_SUBVAULT_BALANCE_ROLE");
 
     bytes32 private immutable _riskManagerStorageSlot;
 
@@ -74,12 +75,12 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
     }
 
     /// @inheritdoc IRiskManager
-    function pendingAssets(address asset) public view returns (uint256) {
+    function pendingAssets(address asset) public view returns (int256) {
         return _riskManagerStorage().pendingAssets[asset];
     }
 
     /// @inheritdoc IRiskManager
-    function pendingShares(address asset) public view returns (uint256) {
+    function pendingShares(address asset) public view returns (int256) {
         return _riskManagerStorage().pendingShares[asset];
     }
 
@@ -110,19 +111,20 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         if (report.isSuspicious || report.priceD18 == 0) {
             revert InvalidReport();
         }
-        shares = int256(Math.mulDiv(uint256(value < 0 ? -value : value), report.priceD18, 1 ether));
         if (value < 0) {
-            shares = -shares;
+            return -int256(Math.mulDiv(uint256(-value), report.priceD18, 1 ether));
+        } else {
+            return int256(Math.mulDiv(uint256(value), report.priceD18, 1 ether));
         }
     }
 
     /// @inheritdoc IRiskManager
     function maxDeposit(address subvault, address asset) public view returns (uint256 limit) {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        State storage state = $.subvaultStates[subvault];
         if (!$.allowedAssets[subvault].contains(asset)) {
             return 0;
         }
+        State storage state = $.subvaultStates[subvault];
         int256 shares = state.limit - state.balance;
         if (shares <= 0) {
             return 0;
@@ -131,16 +133,14 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         if (report.isSuspicious || report.priceD18 == 0) {
             return 0;
         }
-        uint256 priceD18 = report.priceD18;
-        return Math.mulDiv(uint256(shares), 1 ether, priceD18);
+        return Math.mulDiv(uint256(shares), 1 ether, report.priceD18);
     }
 
     // Mutable functions
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        int256 vaultLimit_ = abi.decode(data, (int256));
-        _riskManagerStorage().vaultState.limit = vaultLimit_;
+        _riskManagerStorage().vaultState.limit = abi.decode(data, (int256));
         emit Initialized(data);
     }
 
@@ -205,17 +205,18 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
     /// @inheritdoc IRiskManager
     function modifyPendingAssets(address asset, int256 change) external onlyQueueOrRole(MODIFY_PENDING_ASSETS_ROLE) {
         RiskManagerStorage storage $ = _riskManagerStorage();
-        uint256 pendingAssetsBefore = $.pendingAssets[asset];
-        uint256 pendingAssetsAfter = uint256(int256(pendingAssetsBefore) + change);
-        uint256 pendingSharesBefore = $.pendingShares[asset];
-        uint256 pendingSharesAfter = uint256(convertToShares(asset, int256(pendingAssetsAfter)));
-        int256 shares = int256(pendingSharesAfter) - int256(pendingSharesBefore);
-        if (shares > 0 && $.vaultState.balance + $.pendingBalance + shares > $.vaultState.limit) {
-            revert LimitExceeded($.vaultState.balance + $.pendingBalance + shares, $.vaultState.limit);
+        int256 pendingAssetsBefore = $.pendingAssets[asset];
+        int256 pendingSharesBefore = $.pendingShares[asset];
+        int256 pendingAssetsAfter = pendingAssetsBefore + change;
+        int256 pendingSharesAfter = convertToShares(asset, pendingAssetsAfter);
+        int256 shares = pendingSharesAfter - pendingSharesBefore;
+        int256 newPendingBalance = $.pendingBalance + shares;
+        if (shares > 0 && $.vaultState.balance + newPendingBalance > $.vaultState.limit) {
+            revert LimitExceeded($.vaultState.balance + newPendingBalance, $.vaultState.limit);
         }
         $.pendingAssets[asset] = pendingAssetsAfter;
         $.pendingShares[asset] = pendingSharesAfter;
-        $.pendingBalance += shares;
+        $.pendingBalance = newPendingBalance;
         emit ModifyPendingAssets(asset, change, pendingAssetsAfter, pendingSharesAfter);
     }
 
@@ -223,11 +224,12 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
     function modifyVaultBalance(address asset, int256 change) external onlyQueueOrRole(MODIFY_VAULT_BALANCE_ROLE) {
         int256 shares = convertToShares(asset, change);
         RiskManagerStorage storage $ = _riskManagerStorage();
-        if (shares > 0 && $.vaultState.balance + $.pendingBalance + shares > $.vaultState.limit) {
-            revert LimitExceeded($.vaultState.balance + $.pendingBalance + shares, $.vaultState.limit);
+        int256 newBalance = $.vaultState.balance + shares;
+        if (shares > 0 && newBalance + $.pendingBalance > $.vaultState.limit) {
+            revert LimitExceeded(newBalance + $.pendingBalance, $.vaultState.limit);
         }
-        $.vaultState.balance += change;
-        emit ModifyVaultBalance(asset, change, $.vaultState.balance);
+        $.vaultState.balance = newBalance;
+        emit ModifyVaultBalance(asset, shares, newBalance);
     }
 
     /// @inheritdoc IRiskManager
@@ -242,11 +244,12 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         }
         State storage state = $.subvaultStates[subvault];
         int256 shares = convertToShares(asset, change);
-        if (shares > 0 && state.balance + shares > state.limit) {
-            revert LimitExceeded(state.balance + shares, state.limit);
+        int256 newBalance = state.balance + shares;
+        if (shares > 0 && newBalance > state.limit) {
+            revert LimitExceeded(newBalance, state.limit);
         }
-        state.balance += change;
-        emit ModifySubvaultBalance(subvault, asset, change, state.balance);
+        state.balance = newBalance;
+        emit ModifySubvaultBalance(subvault, asset, change, newBalance);
     }
 
     // Internal functions

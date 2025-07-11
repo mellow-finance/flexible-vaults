@@ -35,8 +35,10 @@ interface IFeeManager is IFactoryEntity {
 
     function calculateDepositFee(uint256 amount) external view returns (uint256);
     function calculateRedeemFee(uint256 amount) external view returns (uint256);
-    function calculatePerformanceFee(address vault, address asset, uint256 priceD18) external view returns (uint256);
-    function calculateProtocolFee(address vault, uint256 totalShares) external view returns (uint256 shares);
+    function calculateFee(address vault, address asset, uint256 totalShares, uint256 priceD18)
+        external
+        view
+        returns (uint256 shares);
 
     // Mutable functions
     function setFeeRecipient(address feeRecipient_) external;

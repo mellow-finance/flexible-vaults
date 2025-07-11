@@ -83,8 +83,18 @@ abstract contract ShareModule is IShareModule, ACLModule {
     }
 
     /// @inheritdoc IShareModule
+    function getQueueCount() public view returns (uint256) {
+        return _shareModuleStorage().queueCount;
+    }
+
+    /// @inheritdoc IShareModule
     function getQueueCount(address asset) public view returns (uint256) {
         return _shareModuleStorage().queues[asset].length();
+    }
+
+    /// @inheritdoc IShareModule
+    function queueLimit() public view returns (uint256) {
+        return _shareModuleStorage().queueLimit;
     }
 
     /// @inheritdoc IShareModule
@@ -95,16 +105,6 @@ abstract contract ShareModule is IShareModule, ACLModule {
     /// @inheritdoc IShareModule
     function isPausedQueue(address queue) public view returns (bool) {
         return _shareModuleStorage().isPausedQueue[queue];
-    }
-
-    /// @inheritdoc IShareModule
-    function queueLimit() public view returns (uint256) {
-        return _shareModuleStorage().queueLimit;
-    }
-
-    /// @inheritdoc IShareModule
-    function getQueueCount() public view returns (uint256) {
-        return _shareModuleStorage().queueCount;
     }
 
     /// @inheritdoc IShareModule
@@ -233,7 +233,6 @@ abstract contract ShareModule is IShareModule, ACLModule {
         if ($.queueCount == $.queueLimit) {
             revert QueueLimitReached();
         }
-        requireFundamentalRole(FundamentalRole.PROXY_OWNER, owner);
         address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
         $.queueCount++;
         $.queues[asset].add(queue);
@@ -254,7 +253,6 @@ abstract contract ShareModule is IShareModule, ACLModule {
         if ($.queueCount == $.queueLimit) {
             revert QueueLimitReached();
         }
-        requireFundamentalRole(FundamentalRole.PROXY_OWNER, owner);
         address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
         $.queueCount++;
         $.queues[asset].add(queue);
@@ -310,7 +308,12 @@ abstract contract ShareModule is IShareModule, ACLModule {
     }
 
     /// @inheritdoc IShareModule
-    function handleReport(address asset, uint224 priceD18, uint32 latestEligibleTimestamp) external nonReentrant {
+    function handleReport(
+        address asset,
+        uint224 priceD18,
+        uint32 latestEligibleDepositTimestamp,
+        uint32 latestEligibleRedeemTimestamp
+    ) external nonReentrant {
         address caller = _msgSender();
         ShareModuleStorage storage $ = _shareModuleStorage();
         if (caller != $.oracle) {
@@ -321,20 +324,19 @@ abstract contract ShareModule is IShareModule, ACLModule {
         for (uint256 i = 0; i < length; i++) {
             address queue = queues.at(i);
             if ($.isDepositQueue[queue]) {
-                IQueue(queue).handleReport(priceD18, latestEligibleTimestamp);
+                IQueue(queue).handleReport(priceD18, latestEligibleDepositTimestamp);
             } else {
-                IQueue(queue).handleReport(1e36 / priceD18, latestEligibleTimestamp);
+                IQueue(queue).handleReport(1e36 / priceD18, latestEligibleRedeemTimestamp);
             }
         }
 
         IFeeManager feeManager_ = feeManager();
-        uint256 fees = feeManager_.calculateProtocolFee(address(this), shareManager().totalShares())
-            + feeManager_.calculatePerformanceFee(address(this), asset, priceD18);
-        if (fees > 0) {
+        uint256 fees = feeManager_.calculateFee(address(this), asset, shareManager().totalShares(), priceD18);
+        if (fees != 0) {
             shareManager().mint(feeManager_.feeRecipient(), fees);
         }
         feeManager_.updateState(asset, priceD18);
-        emit ReportHandled(asset, priceD18, latestEligibleTimestamp, fees);
+        emit ReportHandled(asset, priceD18, latestEligibleDepositTimestamp, latestEligibleRedeemTimestamp, fees);
     }
 
     // Internal functions

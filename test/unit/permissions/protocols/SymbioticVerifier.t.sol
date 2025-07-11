@@ -20,19 +20,17 @@ contract SymbioticVerifierTest is Test {
         SymbioticVerifier verifierImplementation =
             new SymbioticVerifier(vaultFactory, farmFactory, "Symbiotic Verifier", 1);
 
-        address[] memory holders = new address[](5);
+        address[] memory holders = new address[](4);
         holders[0] = caller;
         holders[1] = mellowVault;
-        holders[2] = token;
-        holders[3] = symbioticVault;
-        holders[4] = symbioticFarm;
+        holders[2] = symbioticVault;
+        holders[3] = symbioticFarm;
 
-        bytes32[] memory roles = new bytes32[](5);
+        bytes32[] memory roles = new bytes32[](4);
         roles[0] = verifierImplementation.CALLER_ROLE();
         roles[1] = verifierImplementation.MELLOW_VAULT_ROLE();
-        roles[2] = verifierImplementation.ASSET_ROLE();
-        roles[3] = verifierImplementation.SYMBIOTIC_VAULT_ROLE();
-        roles[4] = verifierImplementation.SYMBIOTIC_FARM_ROLE();
+        roles[2] = verifierImplementation.SYMBIOTIC_VAULT_ROLE();
+        roles[3] = verifierImplementation.SYMBIOTIC_FARM_ROLE();
 
         // Check all roles are distinct
         for (uint256 i = 0; i < roles.length; i++) {
@@ -274,7 +272,7 @@ contract SymbioticVerifierTest is Test {
 
         address zeroAdminAddress = address(0);
 
-        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             zeroAdminAddress,
@@ -293,7 +291,7 @@ contract SymbioticVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = verifierImplementation.CALLER_ROLE();
 
-        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
@@ -312,7 +310,7 @@ contract SymbioticVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = bytes32(0);
 
-        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
@@ -345,19 +343,17 @@ contract SymbioticVerifierTest is Test {
         SymbioticVerifier verifierImplementation =
             new SymbioticVerifier(vaultFactory, farmFactory, "Symbiotic Verifier", 1);
 
-        address[] memory holders = new address[](5);
+        address[] memory holders = new address[](4);
         holders[0] = caller;
         holders[1] = mellowVault;
-        holders[2] = token;
-        holders[3] = symbioticVault;
-        holders[4] = symbioticFarm;
+        holders[2] = symbioticVault;
+        holders[3] = symbioticFarm;
 
-        bytes32[] memory roles = new bytes32[](5);
+        bytes32[] memory roles = new bytes32[](4);
         roles[0] = verifierImplementation.CALLER_ROLE();
         roles[1] = verifierImplementation.MELLOW_VAULT_ROLE();
-        roles[2] = verifierImplementation.ASSET_ROLE();
-        roles[3] = verifierImplementation.SYMBIOTIC_VAULT_ROLE();
-        roles[4] = verifierImplementation.SYMBIOTIC_FARM_ROLE();
+        roles[2] = verifierImplementation.SYMBIOTIC_VAULT_ROLE();
+        roles[3] = verifierImplementation.SYMBIOTIC_FARM_ROLE();
 
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),

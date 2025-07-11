@@ -643,7 +643,7 @@ contract EigenLayerVerifierTest is Test {
 
         address zeroAdminAddress = address(0);
 
-        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             zeroAdminAddress,
@@ -662,7 +662,7 @@ contract EigenLayerVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = verifierImplementation.CALLER_ROLE();
 
-        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
@@ -681,7 +681,7 @@ contract EigenLayerVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = bytes32(0);
 
-        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ValueZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),

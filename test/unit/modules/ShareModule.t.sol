@@ -353,11 +353,11 @@ contract ShareModuleTest is FixtureTest {
 
         vm.warp(block.timestamp + 10);
         vm.expectRevert(abi.encode(IACLModule.Forbidden.selector));
-        deployment.vault.handleReport(address(asset), 1e6, uint32(block.timestamp - 1));
+        deployment.vault.handleReport(address(asset), 1e6, uint32(block.timestamp - 1), uint32(block.timestamp - 1));
 
         MockTokenizedShareManager(address(deployment.shareManager)).mintShares(user, 1 ether);
         vm.prank(address(deployment.vault.oracle()));
-        deployment.vault.handleReport(address(asset), 1e6, uint32(block.timestamp - 1));
+        deployment.vault.handleReport(address(asset), 1e6, uint32(block.timestamp - 1), uint32(block.timestamp - 1));
     }
 
     function testGetLiquidAssets() external {

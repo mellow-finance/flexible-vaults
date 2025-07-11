@@ -36,10 +36,6 @@ interface IFactory is IFactoryEntity {
     function setBlacklistStatus(uint256 version, bool flag) external;
     function proposeImplementation(address implementation) external;
     function acceptProposedImplementation(address implementation) external;
-    function computeAddress(uint256 version, address owner, bytes calldata initParams)
-        external
-        view
-        returns (address instance);
     function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance);
 
     // events

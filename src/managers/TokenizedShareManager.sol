@@ -43,13 +43,13 @@ contract TokenizedShareManager is ShareManager, ERC20Upgradeable {
     }
 
     function _update(address from, address to, uint256 value) internal override {
+        updateChecks(from, to);
         if (from != address(0)) {
             claimShares(from);
         }
         if (to != address(0)) {
             claimShares(to);
         }
-        updateChecks(from, to);
         super._update(from, to, value);
     }
 }

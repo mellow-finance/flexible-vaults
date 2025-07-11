@@ -6,10 +6,7 @@ import "./IVerifierModule.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 interface ICallModule is IVerifierModule {
-    function call(
-        address where,
-        uint256 value,
-        bytes calldata data,
-        IVerifier.VerificationPayload calldata verificationPayload
-    ) external returns (bytes memory response);
+    function call(address where, uint256 value, bytes calldata data, IVerifier.VerificationPayload calldata payload)
+        external
+        returns (bytes memory response);
 }

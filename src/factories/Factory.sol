@@ -57,32 +57,6 @@ contract Factory is IFactory, OwnableUpgradeable {
         return _factoryStorage().isBlacklisted[version];
     }
 
-    /// @inheritdoc IFactory
-    function computeAddress(uint256 version, address owner, bytes calldata initParams)
-        external
-        view
-        returns (address instance)
-    {
-        FactoryStorage storage $ = _factoryStorage();
-        if (version >= $.implementations.length()) {
-            return address(0);
-        }
-        if ($.isBlacklisted[version]) {
-            return address(0);
-        }
-        address implementation = $.implementations.at(version);
-        bytes32 salt = keccak256(abi.encodePacked(version, owner, initParams, $.entities.length()));
-        return Create2.computeAddress(
-            salt,
-            keccak256(
-                abi.encodePacked(
-                    type(TransparentUpgradeableProxy).creationCode,
-                    abi.encode(implementation, owner, abi.encodeCall(IFactoryEntity.initialize, (initParams)))
-                )
-            )
-        );
-    }
-
     // Mutable functions
 
     /// @inheritdoc IFactoryEntity
