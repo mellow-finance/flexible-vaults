@@ -42,7 +42,6 @@ interface IShareManager is IFactoryEntity {
         bool hasBurnPause;
         bool hasTransferPause;
         bool hasWhitelist;
-        bool hasBlacklist;
         bool hasTransferWhitelist;
         uint32 globalLockup;
         uint32 targetedLockup;

@@ -34,33 +34,39 @@ contract VaultTest is Test {
 
     /// @notice Tests that the constructor utilizes the name and version to set the unique storage slot for ACL module.
     function testConstructorSetsUniqueACLModuleSlot() public {
-        // TODO: replace with another similar case
-        // uint256 version = 1;
-        // string memory name = "Vault";
-        // string memory moduleName = "ACLModule";
+        uint256 version = 1;
+        string memory name = "Vault";
+        string memory moduleName = "MellowACL";
 
-        // vault = _createVault(name, version);
+        vault = _createVault(name, version);
 
-        // // Ensure the vaultAdmin is stored correctly
-        // {
-        //     bytes32 aclModuleSlot = SlotLibrary.getSlot(moduleName, name, version);
-        //     uint256 storedACL = _loadUint256FromMappingSlot(address(vault), aclModuleSlot, vaultAdmin);
-        //     assertEq(storedACL, 1, "ACL should be set for vaultAdmin");
-        // }
+        // Ensure the vaultAdmin is stored correctly
+        {
+            bytes32 aclModuleSlot = SlotLibrary.getSlot(moduleName, name, version);
+            uint256 rolesLength = uint256(vm.load(address(vault), aclModuleSlot));
 
-        // // Ensure there will be no collisions (version is respected)
-        // {
-        //     bytes32 aclModuleSlot = SlotLibrary.getSlot(moduleName, name, version + 1);
-        //     uint256 storedACL = _loadUint256FromMappingSlot(address(vault), aclModuleSlot, vaultAdmin);
-        //     assertEq(storedACL, 0, "ACL should not be set for different version");
-        // }
+            assertEq(rolesLength, 2, "Supported roles length should be 2");
 
-        // // Ensure there will be no collisions (name is respected)
-        // {
-        //     bytes32 aclModuleSlot = SlotLibrary.getSlot(moduleName, "", version);
-        //     uint256 storedACL = _loadUint256FromMappingSlot(address(vault), aclModuleSlot, vaultAdmin);
-        //     assertEq(storedACL, 0, "ACL should not be set for different name");
-        // }
+            bytes32 adminRole = _loadBytes32FromSetSlot(address(vault), aclModuleSlot, 0);
+            assertEq(adminRole, vault.DEFAULT_ADMIN_ROLE(), "First supported role should be default admin role");
+
+            bytes32 holderRole = _loadBytes32FromSetSlot(address(vault), aclModuleSlot, 1);
+            assertEq(holderRole, ROLE_1, "Second supported role should be ROLE_1");
+        }
+
+        // Ensure there will be no collisions (version is respected)
+        {
+            bytes32 aclModuleSlot = SlotLibrary.getSlot(moduleName, name, version + 1);
+            uint256 rolesLength = uint256(vm.load(address(vault), aclModuleSlot));
+            assertEq(rolesLength, 0, "Supported roles should not be set for different version");
+        }
+
+        // Ensure there will be no collisions (name is respected)
+        {
+            bytes32 aclModuleSlot = SlotLibrary.getSlot(moduleName, "", version);
+            uint256 rolesLength = uint256(vm.load(address(vault), aclModuleSlot));
+            assertEq(rolesLength, 0, "Supported roles should not be set for different name");
+        }
     }
 
     /// @notice Tests that the constructor utilizes the name and version to set the unique storage slot for Share module.
@@ -438,14 +444,14 @@ contract VaultTest is Test {
         return address(uint160(uint256(rawAddress)));
     }
 
-    function _loadUint256FromMappingSlot(address _contract, bytes32 _baseSlot, address _key)
+    function _loadBytes32FromSetSlot(address _contract, bytes32 _baseSlot, uint256 _index)
         public
         view
-        returns (uint256)
+        returns (bytes32)
     {
-        bytes32 slot = SlotDerivation.deriveMapping(_baseSlot, _key);
-        bytes32 rawValue = vm.load(_contract, slot);
-        return uint256(rawValue);
+        bytes32 arraySlot = SlotDerivation.deriveArray(_baseSlot);
+        bytes32 elementSlot = SlotDerivation.offset(arraySlot, _index);
+        return vm.load(_contract, elementSlot);
     }
 
     function _createRoleHolder(bytes32 _role, address _holder) public pure returns (Vault.RoleHolder memory) {

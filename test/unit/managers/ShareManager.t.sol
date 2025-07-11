@@ -61,7 +61,6 @@ contract ShareManagerTest is FixtureTest {
             hasBurnPause: false,
             hasTransferPause: false,
             hasWhitelist: false,
-            hasBlacklist: false,
             hasTransferWhitelist: false,
             globalLockup: uint32(block.timestamp + 1 days),
             targetedLockup: uint32(2 days)
@@ -152,7 +151,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: false,
                 hasTransferPause: false,
                 hasWhitelist: false,
-                hasBlacklist: false,
                 hasTransferWhitelist: false,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -166,7 +164,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: false,
                 hasTransferPause: false,
                 hasWhitelist: false,
-                hasBlacklist: false,
                 hasTransferWhitelist: false,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -214,7 +211,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: true,
                 hasTransferPause: false,
                 hasWhitelist: false,
-                hasBlacklist: false,
                 hasTransferWhitelist: false,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -230,7 +226,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: true,
                 hasTransferPause: false,
                 hasWhitelist: false,
-                hasBlacklist: false,
                 hasTransferWhitelist: true,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -266,7 +261,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: true,
                 hasTransferPause: true,
                 hasWhitelist: false,
-                hasBlacklist: false,
                 hasTransferWhitelist: true,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -281,7 +275,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: true,
                 hasTransferPause: true,
                 hasWhitelist: false,
-                hasBlacklist: true,
                 hasTransferWhitelist: true,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -331,7 +324,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: true,
                 hasTransferPause: true,
                 hasWhitelist: true,
-                hasBlacklist: true,
                 hasTransferWhitelist: true,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -346,7 +338,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: true,
                 hasTransferPause: true,
                 hasWhitelist: true,
-                hasBlacklist: true,
                 hasTransferWhitelist: true,
                 globalLockup: globalLockup,
                 targetedLockup: targetedLockup
@@ -368,7 +359,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: false,
                 hasTransferPause: false,
                 hasWhitelist: false,
-                hasBlacklist: false,
                 hasTransferWhitelist: false,
                 globalLockup: 0,
                 targetedLockup: 1 days
@@ -390,7 +380,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: false,
                 hasTransferPause: false,
                 hasWhitelist: false,
-                hasBlacklist: false,
                 hasTransferWhitelist: false,
                 globalLockup: 0,
                 targetedLockup: 1 days
@@ -413,7 +402,6 @@ contract ShareManagerTest is FixtureTest {
                 hasBurnPause: false,
                 hasTransferPause: false,
                 hasWhitelist: true,
-                hasBlacklist: false,
                 hasTransferWhitelist: false,
                 globalLockup: 0,
                 targetedLockup: 1 days

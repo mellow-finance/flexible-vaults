@@ -125,12 +125,25 @@ contract FeeManagerTest is FixtureTest {
         manager.updateState(asset, 1 ether);
         assertEq(manager.timestamps(vault), block.timestamp, "Timestamp should be updated");
         assertEq(manager.maxPriceD18(vault), 1 ether, "Max price should be updated");
-        // TODO: fix
-        // uint256 performanceFee = manager.calculatePerformanceFee(vault, asset, 1 ether);
-        // assertEq(performanceFee, 0, "PerformanceFee should be zero");
 
-        // performanceFee = manager.calculatePerformanceFee(vault, asset, 1.1 ether);
-        // assertEq(performanceFee, 3 * 0.1 ether / 10, "PerformanceFee mismatch");
+        // No price/timestamp change, no fee
+        {
+            uint256 shares = manager.calculateFee(vault, asset, 1 ether, 1 ether);
+            assertEq(shares, 0, "Shares should be zero");
+        }
+
+        // Check performance fee when price increases
+        {
+            uint256 shares = manager.calculateFee(vault, asset, 1.1 ether, 1 ether);
+            assertEq(shares, 3 * 0.1 ether / 10, "Performance fee mismatch");
+        }
+
+        // Check protocol fee when timestamp increases
+        {
+            vm.warp(block.timestamp + 365 days);
+            uint256 shares = manager.calculateFee(vault, asset, 1 ether, 1 ether);
+            assertEq(shares, 4 * 1 ether / 10, "Protocol fee mismatch");
+        }
     }
 
     function decodeFeeManagerParams(bytes memory data)

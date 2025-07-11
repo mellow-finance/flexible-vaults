@@ -9,11 +9,7 @@ import "../permissions/MellowACL.sol";
 import "./BaseModule.sol";
 
 abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
-    bytes32 private immutable _aclModuleStorageSlot;
-
-    constructor(string memory name_, uint256 version_) MellowACL(name_, version_) {
-        _aclModuleStorageSlot = SlotLibrary.getSlot("ACLModule", name_, version_);
-    }
+    constructor(string memory name_, uint256 version_) MellowACL(name_, version_) {}
 
     // Internal functions
 
