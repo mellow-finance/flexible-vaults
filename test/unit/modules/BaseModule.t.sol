@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "../../Imports.sol";
 
 contract MockBaseModule is BaseModule {
-    function initialize(bytes calldata initParams) external initializer {
+    function initialize(bytes calldata) external initializer {
         __BaseModule_init();
     }
 
@@ -18,6 +18,7 @@ contract BaseModuleTest is Test {
 
     function testCreate() external {
         MockBaseModule module = createBaseModule();
+        require(address(module) != address(0), "Module creation failed");
     }
 
     function testGetStorageAt() external {

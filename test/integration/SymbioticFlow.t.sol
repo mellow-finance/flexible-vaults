@@ -44,27 +44,25 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         address[] memory assets = new address[](1);
         assets[0] = ASSET;
 
-        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](8);
+        Vault.RoleHolder[] memory roleHolders = new Vault.RoleHolder[](8);
 
         Vault vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
         Oracle oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
 
-        holders[0] = Vault.RoleHolder(vaultImplementation.CREATE_DEPOSIT_QUEUE_ROLE(), $.vaultAdmin);
-        holders[1] = Vault.RoleHolder(vaultImplementation.CREATE_REDEEM_QUEUE_ROLE(), $.vaultAdmin);
-        holders[2] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
-        holders[3] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
-        holders[4] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
-        holders[5] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALL_ROLE(), $.curator);
-        holders[6] = Vault.RoleHolder(
+        roleHolders[0] = Vault.RoleHolder(vaultImplementation.CREATE_DEPOSIT_QUEUE_ROLE(), $.vaultAdmin);
+        roleHolders[1] = Vault.RoleHolder(vaultImplementation.CREATE_REDEEM_QUEUE_ROLE(), $.vaultAdmin);
+        roleHolders[2] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
+        roleHolders[3] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
+        roleHolders[4] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
+        roleHolders[5] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALL_ROLE(), $.curator);
+        roleHolders[6] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).SET_SUBVAULT_LIMIT_ROLE(), $.vaultAdmin
         );
-        holders[7] = Vault.RoleHolder(
+        roleHolders[7] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).ALLOW_SUBVAULT_ASSETS_ROLE(), $.vaultAdmin
         );
 
-        (address shareManager, address feeManager, address riskManager, address oracle, address vault_) = $
-            .vaultConfigurator
-            .create(
+        (,,, address oracle, address vault_) = $.vaultConfigurator.create(
             VaultConfigurator.InitParams({
                 version: 0,
                 proxyAdmin: $.vaultProxyAdmin,
@@ -80,9 +78,10 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
                 defaultDepositHook: address(new RedirectingDepositHook()),
                 defaultRedeemHook: address(new BasicRedeemHook()),
                 queueLimit: 16,
-                roleHolders: holders
+                roleHolders: roleHolders
             })
         );
+
         Vault vault = Vault(payable(vault_));
 
         vm.startPrank($.vaultAdmin);
@@ -96,19 +95,19 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         }
         SymbioticVerifier symbioticVerifier;
         {
-            address[] memory holders = new address[](2);
-            bytes32[] memory roles = new bytes32[](holders.length);
+            address[] memory holderAddresses = new address[](2);
+            bytes32[] memory roles = new bytes32[](holderAddresses.length);
 
             SymbioticVerifier symbioticVerifierImplementation =
                 SymbioticVerifier($.protocolVerifierFactory.implementationAt(0));
 
-            holders[0] = $.curator;
+            holderAddresses[0] = $.curator;
             roles[0] = symbioticVerifierImplementation.CALLER_ROLE();
 
-            holders[1] = SYMBIOTIC_VAULT;
+            holderAddresses[1] = SYMBIOTIC_VAULT;
             roles[1] = symbioticVerifierImplementation.SYMBIOTIC_VAULT_ROLE();
             symbioticVerifier = SymbioticVerifier(
-                $.protocolVerifierFactory.create(0, $.vaultProxyAdmin, abi.encode($.vaultAdmin, holders, roles))
+                $.protocolVerifierFactory.create(0, $.vaultProxyAdmin, abi.encode($.vaultAdmin, holderAddresses, roles))
             );
         }
 
@@ -151,10 +150,10 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             verifier = Verifier($.verifierFactory.create(0, $.vaultProxyAdmin, abi.encode(address(vault), merkleRoot)));
             address subvault = vault.createSubvault(0, $.vaultProxyAdmin, address(verifier));
 
-            address[] memory assets = new address[](1);
-            assets[0] = ASSET;
+            address[] memory assets_ = new address[](1);
+            assets_[0] = ASSET;
             vault.riskManager().setSubvaultLimit(subvault, int256(100 ether));
-            vault.riskManager().allowSubvaultAssets(subvault, assets);
+            vault.riskManager().allowSubvaultAssets(subvault, assets_);
 
             symbioticVerifier.grantRole(symbioticVerifier.MELLOW_VAULT_ROLE(), subvault);
         }

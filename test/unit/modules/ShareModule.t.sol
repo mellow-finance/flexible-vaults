@@ -349,7 +349,6 @@ contract ShareModuleTest is FixtureTest {
         deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 1, "Queue count should be 1");
         assertEq(deployment.vault.getQueueCount(address(asset)), 1, "Queue count should be 1");
-        address queue = deployment.vault.queueAt(address(asset), 0);
 
         vm.warp(block.timestamp + 10);
         vm.expectRevert(abi.encode(IACLModule.Forbidden.selector));
@@ -372,9 +371,6 @@ contract ShareModuleTest is FixtureTest {
 
         address depositQueue = deployment.vault.queueAt(address(asset), 0);
         address redeemQueue = deployment.vault.queueAt(address(asset), 1);
-        address invalidDepositQueue = IFactory(deployment.depositQueueFactory).create(
-            0, vaultProxyAdmin, abi.encode(address(unsupportedAsset), address(this), new bytes(0))
-        );
 
         vm.expectRevert();
         deployment.vault.getLiquidAssets();
@@ -398,7 +394,6 @@ contract ShareModuleTest is FixtureTest {
         vm.stopPrank();
 
         address depositQueue = deployment.vault.queueAt(address(asset), 0);
-        address redeemQueue = deployment.vault.queueAt(address(asset), 1);
 
         vm.expectRevert();
         deployment.vault.callHook(0);

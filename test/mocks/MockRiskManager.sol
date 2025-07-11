@@ -8,7 +8,7 @@ contract MockRiskManager {
         _limit = limit;
     }
 
-    function maxDeposit(address subvault, address asset) external view returns (uint256) {
+    function maxDeposit(address, address) external view returns (uint256) {
         return _limit;
     }
 

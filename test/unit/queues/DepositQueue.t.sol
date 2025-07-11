@@ -148,7 +148,6 @@ contract DepositQueueTest is FixtureTest {
     function testDepositPausedQueue() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         DepositQueue queue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
-        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
 
         /// @dev push a report to set the initial price
         pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));

@@ -45,7 +45,6 @@ contract FactoryTest is Test {
 
     function testProposeAndAcceptImplementation() external {
         Factory factory = createFactory("Factory", 1, admin);
-        address adminContract = vm.createWallet("adminFactory").addr;
 
         address newImplementation = address(new Mock());
 
@@ -112,11 +111,11 @@ contract FactoryTest is Test {
 
     /// ------------------------------------------ HELPER FUNCTIONS -------------------------------------------------
 
-    function createFactory(string memory name, uint256 version, address admin) internal returns (Factory factory) {
+    function createFactory(string memory name, uint256 version, address admin_) internal returns (Factory factory) {
         Factory factoryImplementation = new Factory(name, version);
         factory =
             Factory(address(new TransparentUpgradeableProxy(address(factoryImplementation), proxyAdmin, new bytes(0))));
-        factory.initialize(abi.encode(admin));
+        factory.initialize(abi.encode(admin_));
     }
 
     function pushImplementation(Factory factory, address newImplementation) internal {
