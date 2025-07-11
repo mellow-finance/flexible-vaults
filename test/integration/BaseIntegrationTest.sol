@@ -254,4 +254,6 @@ abstract contract BaseIntegrationTest is Test {
         }
         return (root, leaves);
     }
+
+    function test() private pure {}
 }

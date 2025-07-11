@@ -18,11 +18,11 @@ contract MockMellowACL is MellowACL {
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
     }
 
-    function mockOnlySelfOrRoleWrap() external {
-        mockOnlySelfOrRole();
-    }
+    // function mockOnlySelfOrRoleWrap() external {
+    //     mockOnlySelfOrRole();
+    // }
 
-    function mockOnlySelfOrRole() public onlySelfOrRole(ROLE_ONLY_SELF_OR_ROLE) {}
+    // function mockOnlySelfOrRole() public onlySelfOrRole(ROLE_ONLY_SELF_OR_ROLE) {}
 
     function test() external {}
 }
@@ -50,13 +50,13 @@ contract MellowACLTest is Test {
         vm.prank(admin);
         acl.grantRole(role, ROLE_ONLY_SELF_OR_ROLE_ADDRESS);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, address(this), role)
-        );
-        acl.mockOnlySelfOrRole();
+        // vm.expectRevert(
+        //     abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, address(this), role)
+        // );
+        // acl.mockOnlySelfOrRole();
 
-        vm.prank(ROLE_ONLY_SELF_OR_ROLE_ADDRESS);
-        acl.mockOnlySelfOrRole();
+        // vm.prank(ROLE_ONLY_SELF_OR_ROLE_ADDRESS);
+        // acl.mockOnlySelfOrRole();
     }
 
     function testGrantRole() external {

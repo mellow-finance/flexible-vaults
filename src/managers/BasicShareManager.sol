@@ -28,8 +28,7 @@ contract BasicShareManager is ShareManager {
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        bytes32 whitelistMerkleRoot_ = abi.decode(data, (bytes32));
-        __ShareManager_init(whitelistMerkleRoot_);
+        __ShareManager_init(abi.decode(data, (bytes32)));
     }
 
     // Internal functions

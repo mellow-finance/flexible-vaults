@@ -17,10 +17,10 @@ contract RedirectingDepositHook is IDepositHook {
                 continue;
             }
             if (assets_ < assets) {
-                vault.pushAssets(subvault, asset, assets_);
+                vault.hookPushAssets(subvault, asset, assets_);
                 assets -= assets_;
             } else {
-                vault.pushAssets(subvault, asset, assets);
+                vault.hookPushAssets(subvault, asset, assets);
                 break;
             }
         }

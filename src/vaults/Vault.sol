@@ -9,7 +9,6 @@ import "../modules/VaultModule.sol";
 
 contract Vault is IFactoryEntity, VaultModule, ShareModule {
     struct RoleHolder {
-        bool isFundamental;
         bytes32 role;
         address holder;
     }
@@ -47,17 +46,8 @@ contract Vault is IFactoryEntity, VaultModule, ShareModule {
                 shareManager_, feeManager_, oracle_, defaultDepositHook_, defaultRedeemHook_, queueLimit_
             );
             __VaultModule_init(riskManager_);
-
-            {
-                RoleHolder memory roleHolder;
-                for (uint256 i = 0; i < roleHolders.length; i++) {
-                    roleHolder = roleHolders[i];
-                    if (roleHolder.isFundamental) {
-                        _grantFundamentalRole(FundamentalRole(uint256(roleHolder.role)), roleHolder.holder);
-                    } else {
-                        _grantRole(roleHolder.role, roleHolder.holder);
-                    }
-                }
+            for (uint256 i = 0; i < roleHolders.length; i++) {
+                _grantRole(roleHolders[i].role, roleHolders[i].holder);
             }
         }
         emit Initialized(initParams);

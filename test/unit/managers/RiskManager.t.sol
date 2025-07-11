@@ -149,7 +149,7 @@ contract RiskManagerTest is FixtureTest {
             vm.expectRevert(
                 abi.encodeWithSelector(
                     IRiskManager.LimitExceeded.selector,
-                    1000 ether + manager.pendingAssets(asset) + uint256(manager.vaultState().balance),
+                    1000 ether + uint256(manager.pendingAssets(asset)) + uint256(manager.vaultState().balance),
                     manager.vaultState().limit
                 )
             );
@@ -164,7 +164,7 @@ contract RiskManagerTest is FixtureTest {
             vm.expectRevert(
                 abi.encodeWithSelector(
                     IRiskManager.LimitExceeded.selector,
-                    1000 ether + manager.pendingAssets(asset) + uint256(manager.vaultState().balance),
+                    1000 ether + uint256(manager.pendingAssets(asset)) + uint256(manager.vaultState().balance),
                     manager.vaultState().limit
                 )
             );

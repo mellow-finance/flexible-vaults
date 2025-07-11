@@ -70,10 +70,7 @@ interface IShareManager is IFactoryEntity {
 
     function totalShares() external view returns (uint256);
 
-    function accounts(address account)
-        external
-        view
-        returns (bool canDeposit, bool canTransfer, bool isBlacklisted, uint232 lockedUntil);
+    function accounts(address account) external view returns (AccountInfo memory);
 
     function updateChecks(address from, address to) external view;
 

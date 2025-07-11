@@ -9,15 +9,15 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     /// @inheritdoc IOracle
-    bytes32 public constant SUBMIT_REPORTS_ROLE = keccak256("oracle.Oracle.SUBMIT_REPORTS_ROLE");
+    bytes32 public constant SUBMIT_REPORTS_ROLE = keccak256("oracles.Oracle.SUBMIT_REPORTS_ROLE");
     /// @inheritdoc IOracle
-    bytes32 public constant ACCEPT_REPORT_ROLE = keccak256("oracle.Oracle.ACCEPT_REPORT_ROLE");
+    bytes32 public constant ACCEPT_REPORT_ROLE = keccak256("oracles.Oracle.ACCEPT_REPORT_ROLE");
     /// @inheritdoc IOracle
-    bytes32 public constant SET_SECURITY_PARAMS_ROLE = keccak256("oracle.Oracle.SET_SECURITY_PARAMS_ROLE");
+    bytes32 public constant SET_SECURITY_PARAMS_ROLE = keccak256("oracles.Oracle.SET_SECURITY_PARAMS_ROLE");
     /// @inheritdoc IOracle
-    bytes32 public constant ADD_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.ADD_SUPPORTED_ASSETS_ROLE");
+    bytes32 public constant ADD_SUPPORTED_ASSETS_ROLE = keccak256("oracles.Oracle.ADD_SUPPORTED_ASSETS_ROLE");
     /// @inheritdoc IOracle
-    bytes32 public constant REMOVE_SUPPORTED_ASSETS_ROLE = keccak256("oracle.Oracle.REMOVE_SUPPORTED_ASSETS_ROLE");
+    bytes32 public constant REMOVE_SUPPORTED_ASSETS_ROLE = keccak256("oracles.Oracle.REMOVE_SUPPORTED_ASSETS_ROLE");
 
     bytes32 private immutable _oracleStorageSlot;
 
@@ -103,7 +103,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         SecurityParams memory securityParams_ = $.securityParams;
         uint32 depositSecureTimestamp = uint32(block.timestamp - securityParams_.depositSecureInterval);
         uint32 redeemSecureTimestamp = uint32(block.timestamp - securityParams_.redeemSecureInterval);
-        IShareModule vault_ = vault();
+        IShareModule vault_ = $.vault;
         EnumerableSet.AddressSet storage supportedAssets_ = $.supportedAssets;
         mapping(address asset => DetailedReport) storage reports_ = $.reports;
         for (uint256 i = 0; i < reports.length; i++) {
@@ -130,7 +130,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             revert InvalidTimestamp(timestamp, report_.timestamp);
         }
         report_.isSuspicious = false;
-        vault().handleReport(
+        $.vault.handleReport(
             asset,
             report_.priceD18,
             timestamp - $.securityParams.depositSecureInterval,
@@ -151,7 +151,16 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
 
     /// @inheritdoc IOracle
     function removeSupportedAssets(address[] calldata assets) external onlyRole(REMOVE_SUPPORTED_ASSETS_ROLE) {
-        _removeSupportedAssets(assets);
+        OracleStorage storage $ = _oracleStorage();
+        EnumerableSet.AddressSet storage asset_ = $.supportedAssets;
+        mapping(address => DetailedReport) storage reports_ = $.reports;
+        for (uint256 i = 0; i < assets.length; i++) {
+            if (!asset_.remove(assets[i])) {
+                revert UnsupportedAsset(assets[i]);
+            }
+            delete reports_[assets[i]];
+        }
+        emit SupportedAssetsRemoved(assets);
     }
 
     // Internal functions
@@ -160,7 +169,6 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         __ReentrancyGuard_init();
         (SecurityParams memory securityParams_, address[] memory assets_) =
             abi.decode(initParams, (SecurityParams, address[]));
-        OracleStorage storage $ = _oracleStorage();
         _setSecurityParams(securityParams_);
         _addSupportedAssets(assets_);
     }
@@ -234,19 +242,6 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             }
         }
         emit SupportedAssetsAdded(assets);
-    }
-
-    function _removeSupportedAssets(address[] calldata assets) private {
-        OracleStorage storage $ = _oracleStorage();
-        EnumerableSet.AddressSet storage asset_ = $.supportedAssets;
-        mapping(address => DetailedReport) storage reports_ = $.reports;
-        for (uint256 i = 0; i < assets.length; i++) {
-            if (!asset_.remove(assets[i])) {
-                revert UnsupportedAsset(assets[i]);
-            }
-            delete reports_[assets[i]];
-        }
-        emit SupportedAssetsRemoved(assets);
     }
 
     function _oracleStorage() internal view returns (OracleStorage storage $) {

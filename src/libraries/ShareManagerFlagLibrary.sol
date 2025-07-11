@@ -1,68 +1,40 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../interfaces/managers/IShareManager.sol";
+
 library ShareManagerFlagLibrary {
     function hasMintPause(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x1) != 0;
+        return (mask & 1) != 0;
     }
 
     function hasBurnPause(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x2) != 0;
+        return (mask & 2) != 0;
     }
 
     function hasTransferPause(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x4) != 0;
+        return (mask & 4) != 0;
     }
 
     function hasWhitelist(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x8) != 0;
-    }
-
-    function hasBlacklist(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x10) != 0;
+        return (mask & 8) != 0;
     }
 
     function hasTransferWhitelist(uint256 mask) internal pure returns (bool) {
-        return (mask & 0x20) != 0;
+        return (mask & 16) != 0;
     }
 
     function getGlobalLockup(uint256 mask) internal pure returns (uint32) {
-        return uint32(mask >> 6);
+        return uint32(mask >> 5);
     }
 
     function getTargetedLockup(uint256 mask) internal pure returns (uint32) {
-        return uint32(mask >> 38);
+        return uint32(mask >> 37);
     }
 
-    function setHasMintPause(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x1) : (mask & ~uint256(0x1));
-    }
-
-    function setHasBurnPause(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x2) : (mask & ~uint256(0x2));
-    }
-
-    function setHasTransferPause(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x4) : (mask & ~uint256(0x4));
-    }
-
-    function setHasWhitelist(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x8) : (mask & ~uint256(0x8));
-    }
-
-    function setHasBlacklist(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x10) : (mask & ~uint256(0x10));
-    }
-
-    function setHasTransferWhitelist(uint256 mask, bool value) internal pure returns (uint256) {
-        return value ? (mask | 0x20) : (mask & ~uint256(0x20));
-    }
-
-    function setGlobalLockup(uint256 mask, uint32 lockup) internal pure returns (uint256) {
-        return (mask & ~uint256(0xFFFFFFFF << 6)) | (uint256(lockup) << 6);
-    }
-
-    function setTargetedLockup(uint256 mask, uint32 lockup) internal pure returns (uint256) {
-        return (mask & ~uint256(0xFFFFFFFF << 38)) | (uint256(lockup) << 38);
+    function createMask(IShareManager.Flags calldata f) internal pure returns (uint256) {
+        return (f.hasMintPause ? 1 : 0) | (f.hasBurnPause ? 2 : 0) | (f.hasTransferPause ? 4 : 0)
+            | (f.hasWhitelist ? 8 : 0) | (f.hasTransferWhitelist ? 16 : 0) | (uint256(f.globalLockup) << 5)
+            | (uint256(f.targetedLockup) << 37);
     }
 }

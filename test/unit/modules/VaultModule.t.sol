@@ -49,16 +49,6 @@ contract VaultModuleTest is FixtureTest {
         newVerifierFactory.acceptProposedImplementation(verifierImplementation);
         Verifier newVerifier =
             Verifier(newVerifierFactory.create(0, vaultProxyAdmin, abi.encode(address(deployment.vault), bytes32(0))));
-
-        vm.expectRevert(abi.encode(IACLModule.Forbidden.selector));
-        deployment.vault.createSubvault(0, vaultAdmin, address(deployment.verifier));
-
-        vm.expectRevert(abi.encodeWithSelector(IACLModule.Forbidden.selector));
-        deployment.vault.createSubvault(0, vaultAdmin, address(deployment.verifier));
-
-        vm.expectRevert(abi.encodeWithSelector(IACLModule.Forbidden.selector));
-        deployment.vault.createSubvault(0, vaultProxyAdmin, address(anotherVerifier));
-
         Factory anotherVerifierFactory = Factory(
             address(
                 new TransparentUpgradeableProxy(

@@ -56,37 +56,32 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
     }
 
     /// @inheritdoc IFeeManager
-    function calculateDepositFee(uint256 amount) public view returns (uint256) {
-        return (amount * depositFeeD6()) / 1e6;
+    function calculateDepositFee(uint256 shares) public view returns (uint256) {
+        return (shares * depositFeeD6()) / 1e6;
     }
 
     /// @inheritdoc IFeeManager
-    function calculateRedeemFee(uint256 amount) public view returns (uint256) {
-        return (amount * redeemFeeD6()) / 1e6;
+    function calculateRedeemFee(uint256 shares) public view returns (uint256) {
+        return (shares * redeemFeeD6()) / 1e6;
     }
 
     /// @inheritdoc IFeeManager
-    function calculatePerformanceFee(address vault, address asset, uint256 priceD18) public view returns (uint256) {
+    function calculateFee(address vault, address asset, uint256 priceD18, uint256 totalShares)
+        public
+        view
+        returns (uint256 shares)
+    {
         FeeManagerStorage storage $ = _feeManagerStorage();
-        if (asset != $.baseAsset[vault]) {
-            return 0;
+        if (asset == $.baseAsset[vault]) {
+            uint256 maxPriceD18_ = $.maxPriceD18[vault];
+            if (priceD18 > maxPriceD18_ && maxPriceD18_ != 0) {
+                shares = Math.mulDiv(priceD18 - maxPriceD18_, $.performanceFeeD6 * totalShares, 1e24);
+            }
         }
-        uint256 maxPriceD18_ = $.maxPriceD18[vault];
-        if (maxPriceD18_ == 0 || priceD18 <= maxPriceD18_) {
-            return 0;
+        uint256 timestamp = $.timestamps[vault];
+        if (timestamp != 0 && block.timestamp > timestamp) {
+            shares += Math.mulDiv(totalShares, $.protocolFeeD6 * (block.timestamp - timestamp), 365e6 days);
         }
-        return Math.mulDiv(priceD18 - maxPriceD18_, $.performanceFeeD6, 1e6);
-    }
-
-    /// @inheritdoc IFeeManager
-    function calculateProtocolFee(address vault, uint256 totalShares) public view returns (uint256 shares) {
-        FeeManagerStorage storage $ = _feeManagerStorage();
-        uint256 previousTimestamp = $.timestamps[vault];
-        uint256 timeElapsed = block.timestamp - previousTimestamp;
-        if (timeElapsed == 0 || totalShares == 0) {
-            return 0;
-        }
-        return Math.mulDiv(totalShares, $.protocolFeeD6 * timeElapsed, 365e6 days);
     }
 
     // Mutable functions
@@ -132,7 +127,7 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
     }
 
     /// @inheritdoc IFactoryEntity
-    function initialize(bytes calldata data) external virtual initializer {
+    function initialize(bytes calldata data) external initializer {
         (
             address owner_,
             address feeRecipient_,

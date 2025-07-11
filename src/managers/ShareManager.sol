@@ -51,15 +51,10 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
             return false;
         }
         bytes32 whitelistMerkleRoot_ = $.whitelistMerkleRoot;
-        if (
-            whitelistMerkleRoot_ != bytes32(0)
-                && !MerkleProof.verify(
-                    merkleProof, whitelistMerkleRoot_, keccak256(bytes.concat(keccak256(abi.encode(account))))
-                )
-        ) {
-            return false;
-        }
-        return true;
+        return whitelistMerkleRoot_ == bytes32(0)
+            || MerkleProof.verify(
+                merkleProof, whitelistMerkleRoot_, keccak256(bytes.concat(keccak256(abi.encode(account))))
+            );
     }
 
     /// @inheritdoc IShareManager
@@ -84,13 +79,13 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     /// @inheritdoc IShareManager
-    function vault() public view returns (address) {
-        return _shareManagerStorage().vault;
+    function allocatedShares() public view returns (uint256) {
+        return _shareManagerStorage().allocatedShares;
     }
 
     /// @inheritdoc IShareManager
-    function allocatedShares() public view returns (uint256) {
-        return _shareManagerStorage().allocatedShares;
+    function vault() public view returns (address) {
+        return _shareManagerStorage().vault;
     }
 
     /// @inheritdoc IShareManager
@@ -100,7 +95,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         f.hasBurnPause = bitmask.hasBurnPause();
         f.hasTransferPause = bitmask.hasTransferPause();
         f.hasWhitelist = bitmask.hasWhitelist();
-        f.hasBlacklist = bitmask.hasBlacklist();
         f.hasTransferWhitelist = bitmask.hasTransferWhitelist();
         f.globalLockup = bitmask.getGlobalLockup();
         f.targetedLockup = bitmask.getTargetedLockup();
@@ -112,13 +106,8 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     /// @inheritdoc IShareManager
-    function accounts(address account)
-        public
-        view
-        returns (bool canDeposit, bool canTransfer, bool isBlacklisted, uint232 lockedUntil)
-    {
-        AccountInfo memory info = _shareManagerStorage().accounts[account];
-        return (info.canDeposit, info.canTransfer, info.isBlacklisted, info.lockedUntil);
+    function accounts(address account) public view returns (AccountInfo memory) {
+        return _shareManagerStorage().accounts[account];
     }
 
     /// @inheritdoc IShareManager
@@ -134,7 +123,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
             if (block.timestamp < info.lockedUntil) {
                 revert TargetedLockupNotExpired(block.timestamp, info.lockedUntil);
             }
-            if (flags_.hasBlacklist() && info.isBlacklisted) {
+            if (info.isBlacklisted) {
                 revert Blacklisted(from);
             }
             if (to != address(0)) {
@@ -160,7 +149,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                 if (flags_.hasWhitelist() && !info.canDeposit) {
                     revert NotWhitelisted(to);
                 }
-                if (flags_.hasBlacklist() && info.isBlacklisted) {
+                if (info.isBlacklisted) {
                     revert Blacklisted(to);
                 }
             }
@@ -170,8 +159,16 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     // Mutable functions
 
     /// @inheritdoc IShareManager
-    function setVault(address vault) external {
-        _setVault(vault);
+    function setVault(address vault_) external {
+        if (vault_ == address(0)) {
+            revert ZeroValue();
+        }
+        ShareManagerStorage storage $ = _shareManagerStorage();
+        if ($.vault != address(0)) {
+            revert InvalidInitialization();
+        }
+        $.vault = vault_;
+        emit SetVault(vault_);
     }
 
     /// @inheritdoc IShareManager
@@ -187,11 +184,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
 
     /// @inheritdoc IShareManager
     function setFlags(Flags calldata f) external onlyRole(SET_FLAGS_ROLE) {
-        uint256 bitmask = uint256(0).setHasMintPause(f.hasMintPause).setHasBurnPause(f.hasBurnPause);
-        bitmask = bitmask.setHasTransferPause(f.hasTransferPause).setHasWhitelist(f.hasWhitelist);
-        bitmask = bitmask.setHasBlacklist(f.hasBlacklist).setHasTransferWhitelist(f.hasTransferWhitelist);
-        bitmask = bitmask.setGlobalLockup(f.globalLockup).setTargetedLockup(f.targetedLockup);
-        _shareManagerStorage().flags = bitmask;
+        _shareManagerStorage().flags = ShareManagerFlagLibrary.createMask(f);
         emit SetFlags(f);
     }
 
@@ -233,7 +226,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     /// @inheritdoc IShareManager
-    function burn(address account, uint256 value) public onlyQueue {
+    function burn(address account, uint256 value) external onlyQueue {
         if (value == 0) {
             revert ZeroValue();
         }
@@ -242,18 +235,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     }
 
     // Internal functions
-
-    function _setVault(address vault_) internal {
-        if (vault_ == address(0)) {
-            revert ZeroValue();
-        }
-        ShareManagerStorage storage $ = _shareManagerStorage();
-        if ($.vault != address(0)) {
-            revert InvalidInitialization();
-        }
-        $.vault = vault_;
-        emit SetVault(vault_);
-    }
 
     function __ShareManager_init(bytes32 whitelistMerkleRoot_) internal onlyInitializing {
         _shareManagerStorage().whitelistMerkleRoot = whitelistMerkleRoot_;

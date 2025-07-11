@@ -44,23 +44,22 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         address[] memory assets = new address[](1);
         assets[0] = ASSET;
 
-        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](9);
+        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](8);
 
         Vault vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
         Oracle oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
 
-        holders[0] = Vault.RoleHolder(false, vaultImplementation.CREATE_DEPOSIT_QUEUE_ROLE(), $.vaultAdmin);
-        holders[1] = Vault.RoleHolder(false, vaultImplementation.CREATE_REDEEM_QUEUE_ROLE(), $.vaultAdmin);
-        holders[2] = Vault.RoleHolder(false, oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
-        holders[3] = Vault.RoleHolder(false, oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
-        holders[4] = Vault.RoleHolder(true, bytes32(uint256(IACLModule.FundamentalRole.PROXY_OWNER)), $.vaultProxyAdmin);
-        holders[5] = Vault.RoleHolder(false, vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
-        holders[6] = Vault.RoleHolder(false, Verifier($.verifierFactory.implementationAt(0)).CALL_ROLE(), $.curator);
-        holders[7] = Vault.RoleHolder(
-            false, RiskManager($.riskManagerFactory.implementationAt(0)).SET_SUBVAULT_LIMIT_ROLE(), $.vaultAdmin
+        holders[0] = Vault.RoleHolder(vaultImplementation.CREATE_DEPOSIT_QUEUE_ROLE(), $.vaultAdmin);
+        holders[1] = Vault.RoleHolder(vaultImplementation.CREATE_REDEEM_QUEUE_ROLE(), $.vaultAdmin);
+        holders[2] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
+        holders[3] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
+        holders[4] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
+        holders[5] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALL_ROLE(), $.curator);
+        holders[6] = Vault.RoleHolder(
+            RiskManager($.riskManagerFactory.implementationAt(0)).SET_SUBVAULT_LIMIT_ROLE(), $.vaultAdmin
         );
-        holders[8] = Vault.RoleHolder(
-            false, RiskManager($.riskManagerFactory.implementationAt(0)).ALLOW_SUBVAULT_ASSETS_ROLE(), $.vaultAdmin
+        holders[7] = Vault.RoleHolder(
+            RiskManager($.riskManagerFactory.implementationAt(0)).ALLOW_SUBVAULT_ASSETS_ROLE(), $.vaultAdmin
         );
 
         (address shareManager, address feeManager, address riskManager, address oracle, address vault_) = $
@@ -294,8 +293,18 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
+        {
+            (uint256 x, uint256 y) = RedeemQueue(payable(vault.queueAt(ASSET, 1))).getDemand();
+            assertEq(x, 1 ether);
+            assertEq(y, 1 ether);
+        }
         RedeemQueue(payable(vault.queueAt(ASSET, 1))).handleReports(1);
 
+        {
+            (uint256 x, uint256 y) = RedeemQueue(payable(vault.queueAt(ASSET, 1))).getDemand();
+            assertEq(x, 0);
+            assertEq(y, 0);
+        }
         assertEq(vault.shareManager().sharesOf($.user), 0);
         assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 1 ether);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
@@ -306,6 +315,13 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         {
             uint256[] memory timestamps = new uint256[](1);
             timestamps[0] = userRedeemTimestamp;
+            RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
+            IRedeemQueue.Request[] memory requests = queue.requestsOf($.user, 0, type(uint256).max);
+            assertEq(requests.length, 1);
+            assertEq(requests[0].timestamp, userRedeemTimestamp);
+            assertEq(requests[0].isClaimable, true, "isClaimable");
+            assertEq(requests[0].assets, 1 ether, "assets");
+            assertEq(requests[0].shares, 1 ether, "shares");
             RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps);
         }
         vm.stopPrank();

@@ -273,7 +273,6 @@ abstract contract FixtureTest is Test {
             )
         );
         vm.startPrank(deployment.vaultAdmin);
-        deployment.vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, deployment.vaultProxyAdmin);
         grantRoles(deployment);
         vm.stopPrank();
     }

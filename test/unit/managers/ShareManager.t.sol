@@ -98,11 +98,11 @@ contract ShareManagerTest is FixtureTest {
             })
         );
 
-        (bool canDeposit, bool canTransfer, bool isBlacklisted, uint232 lockedUntil) = manager.accounts(user);
-        assertEq(canDeposit, true, "canDeposit should be true");
-        assertEq(canTransfer, true, "canTransfer should be true");
-        assertEq(isBlacklisted, false, "isBlacklisted should be false");
-        assertEq(lockedUntil, uint32(block.timestamp + 1 days), "lockedUntil should be set correctly");
+        IShareManager.AccountInfo memory info = manager.accounts(user);
+        assertEq(info.canDeposit, true, "canDeposit should be true");
+        assertEq(info.canTransfer, true, "canTransfer should be true");
+        assertEq(info.isBlacklisted, false, "isBlacklisted should be false");
+        assertEq(info.lockedUntil, uint32(block.timestamp + 1 days), "lockedUntil should be set correctly");
     }
 
     function testAllocateShares() external {

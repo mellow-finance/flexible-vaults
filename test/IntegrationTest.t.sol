@@ -164,7 +164,6 @@ contract Integration is Test {
 
         Verifier verifier = Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
         vm.startPrank(vaultAdmin);
-        vault.grantFundamentalRole(IACLModule.FundamentalRole.PROXY_OWNER, vaultProxyAdmin);
 
         bytes32[27] memory roles = [
             vault.SET_HOOK_ROLE(),
