@@ -166,10 +166,9 @@ contract Unit is Test {
         FenwickWrapper tree = new FenwickWrapper();
         uint256 log2 = 19;
         uint256 n = 1 << log2;
-        tree.init(n);
+        tree.init(1);
         uint256 calls = 1000;
         uint256 cumulativeGas = 0;
-
         int256[] memory prefixSum = new int256[](n);
         for (uint256 i = 0; i < n; i++) {
             int256 value = int256(uint256(keccak256(abi.encode(i))) % type(uint128).max);
@@ -179,6 +178,9 @@ contract Unit is Test {
             prefixSum[i] = value;
             if (i > 0) {
                 prefixSum[i] += prefixSum[i - 1];
+            }
+            if (tree.length() == i + 1) {
+                tree.extend();
             }
             tree.modify(i, value);
         }
