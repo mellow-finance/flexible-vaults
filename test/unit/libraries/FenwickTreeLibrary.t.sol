@@ -164,7 +164,7 @@ contract Unit is Test {
 
     function testFenwickTreeGetGasUsage() external {
         FenwickWrapper tree = new FenwickWrapper();
-        uint256 log2 = 10;
+        uint256 log2 = 19;
         uint256 n = 1 << log2;
         tree.init(1);
         uint256 calls = 1000;
