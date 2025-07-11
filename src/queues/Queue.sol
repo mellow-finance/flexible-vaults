@@ -45,6 +45,7 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
     // Internal functions
 
     function __Queue_init(address asset_, address vault_) internal onlyInitializing {
+        __ReentrancyGuard_init();
         if (asset_ == address(0) || vault_ == address(0)) {
             revert ZeroValue();
         }

@@ -2,13 +2,10 @@
 pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "./Vault.sol";
 
 contract VaultConfigurator {
-    using EnumerableSet for EnumerableSet.AddressSet;
-
     struct InitParams {
         uint256 version;
         address proxyAdmin;
@@ -33,8 +30,6 @@ contract VaultConfigurator {
     IFactory public immutable oracleFactory;
     IFactory public immutable vaultFactory;
 
-    EnumerableSet.AddressSet private _vaults;
-
     constructor(
         address shareManagerFactory_,
         address feeManagerFactory_,
@@ -47,20 +42,6 @@ contract VaultConfigurator {
         riskManagerFactory = IFactory(riskManagerFactory_);
         oracleFactory = IFactory(oracleFactory_);
         vaultFactory = IFactory(vaultFactory_);
-    }
-
-    // View functions
-
-    function entityAt(uint256 index) external view returns (address) {
-        return _vaults.at(index);
-    }
-
-    function entities() external view returns (uint256) {
-        return _vaults.length();
-    }
-
-    function isEntity(address vault) external view returns (bool) {
-        return _vaults.contains(vault);
     }
 
     // Mutable functions
@@ -89,6 +70,5 @@ contract VaultConfigurator {
         IShareManager(shareManager).setVault(vault);
         IRiskManager(riskManager).setVault(vault);
         IOracle(oracle).setVault(vault);
-        _vaults.add(vault);
     }
 }

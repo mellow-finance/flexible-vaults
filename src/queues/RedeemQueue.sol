@@ -72,7 +72,6 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        __ReentrancyGuard_init();
         (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
         __Queue_init(asset_, shareModule_);
         emit Initialized(data);

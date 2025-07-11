@@ -77,9 +77,9 @@ contract Verifier is IVerifier, ContextUpgradeable {
         address where,
         uint256 value,
         bytes calldata data,
-        VerificationPayload calldata verificationPayload
+        VerificationPayload calldata payload
     ) external view {
-        if (!getVerificationResult(who, where, value, data, verificationPayload)) {
+        if (!getVerificationResult(who, where, value, data, payload)) {
             revert VerificationFailed();
         }
     }
@@ -89,36 +89,34 @@ contract Verifier is IVerifier, ContextUpgradeable {
         address who,
         address where,
         uint256 value,
-        bytes calldata callData,
-        VerificationPayload calldata verificationPayload
+        bytes calldata data,
+        VerificationPayload calldata payload
     ) public view returns (bool) {
         if (!vault().hasRole(CALL_ROLE, who)) {
             return false;
         }
 
-        if (verificationPayload.verificationType == VerificationType.ONCHAIN_COMPACT) {
-            return isAllowedCall(who, where, callData);
+        if (payload.verificationType == VerificationType.ONCHAIN_COMPACT) {
+            return isAllowedCall(who, where, data);
         }
 
-        bytes calldata verificationData = verificationPayload.verificationData;
-        bytes32 leaf = keccak256(
-            bytes.concat(keccak256(abi.encode(verificationPayload.verificationType, keccak256(verificationData))))
-        );
-        if (!MerkleProof.verify(verificationPayload.proof, merkleRoot(), leaf)) {
+        bytes calldata verificationData = payload.verificationData;
+        bytes32 leaf =
+            keccak256(bytes.concat(keccak256(abi.encode(payload.verificationType, keccak256(verificationData)))));
+        if (!MerkleProof.verify(payload.proof, merkleRoot(), leaf)) {
             return false;
         }
 
-        if (verificationPayload.verificationType == VerificationType.MERKLE_EXTENDED) {
-            return hashCall(ExtendedCall(who, where, value, callData)) == bytes32(verificationData);
-        } else if (verificationPayload.verificationType == VerificationType.MERKLE_COMPACT) {
-            return callData.length >= 4
-                && hashCall(CompactCall(who, where, bytes4(callData[:4]))) == bytes32(verificationData);
-        } else if (verificationPayload.verificationType == VerificationType.CUSTOM_VERIFIER) {
+        if (payload.verificationType == VerificationType.MERKLE_EXTENDED) {
+            return hashCall(ExtendedCall(who, where, value, data)) == bytes32(verificationData);
+        } else if (payload.verificationType == VerificationType.MERKLE_COMPACT) {
+            return data.length >= 4 && hashCall(CompactCall(who, where, bytes4(data[:4]))) == bytes32(verificationData);
+        } else if (payload.verificationType == VerificationType.CUSTOM_VERIFIER) {
             address verifier;
             assembly {
                 verifier := calldataload(verificationData.offset)
             }
-            return ICustomVerifier(verifier).verifyCall(who, where, value, callData, verificationData[0x20:]);
+            return ICustomVerifier(verifier).verifyCall(who, where, value, data, verificationData[0x20:]);
         } else {
             return false;
         }

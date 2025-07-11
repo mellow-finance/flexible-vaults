@@ -27,7 +27,6 @@ abstract contract BaseModule is IBaseModule, ContextUpgradeable, ReentrancyGuard
     // Internal functions
 
     function __BaseModule_init() internal onlyInitializing {
-        __Context_init();
         __ReentrancyGuard_init();
     }
 }

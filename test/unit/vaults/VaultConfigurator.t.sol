@@ -41,47 +41,6 @@ contract VaultConfiguratorTest is Test {
     }
 
     /**
-     * View function tests
-     */
-
-    /// @notice Tests that entities() returns zero for a newly deployed configurator.
-    function testEntitiesReturnsZeroInitially() external view {
-        assertEq(configurator.entities(), 0);
-    }
-
-    /// @notice Tests that entities() returns correct count after vaults are created.
-    function testEntitiesReturnsCorrectCountAfterCreation() external {
-        configurator.create(_createValidInitParams());
-        configurator.create(_createValidInitParams());
-        assertEq(configurator.entities(), 2);
-    }
-
-    /// @notice Tests that entityAt() reverts when index is out of bounds.
-    function testEntityAtRevertsOnOutOfBounds() external {
-        vm.expectRevert(stdError.indexOOBError);
-        configurator.entityAt(0);
-    }
-
-    /// @notice Tests that entityAt() returns correct vault address at valid index.
-    function testEntityAtReturnsCorrectVaultAddress() external {
-        (,,,, address vault1) = configurator.create(_createValidInitParams());
-        assertEq(configurator.entityAt(0), vault1);
-        (,,,, address vault2) = configurator.create(_createValidInitParams());
-        assertEq(configurator.entityAt(1), vault2);
-    }
-
-    /// @notice Tests that isEntity() returns false for non-vault addresses.
-    function testIsEntityReturnsFalseForNonVaults(uint160 index) external view {
-        assertEq(configurator.isEntity(address(index)), false);
-    }
-
-    /// @notice Tests that isEntity() returns true for created vault addresses.
-    function testIsEntityReturnsTrueForCreatedVaults() external {
-        (,,,, address vault) = configurator.create(_createValidInitParams());
-        assertEq(configurator.isEntity(vault), true);
-    }
-
-    /**
      * Create function tests
      */
 
@@ -95,7 +54,6 @@ contract VaultConfiguratorTest is Test {
         assertEq(Factory(oracleFactory).isEntity(oracle), true);
 
         assertEq(Factory(vaultFactory).isEntity(vault), true);
-        assertEq(configurator.isEntity(vault), true);
     }
 
     /// @notice Tests that create() correctly sets vault relationships between components.

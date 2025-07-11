@@ -9,9 +9,10 @@ interface ISymbioticStorageVault {
     function setDepositLimit(uint256 limit) external;
     function currentEpoch() external view returns (uint256);
     function activeBalanceOf(address user) external view returns (uint256);
+    function activeStake() external view returns (uint256);
 }
 
-contract SymbioticIntegrationTest is BaseIntegrationTest {
+contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
     address public constant ASSET = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
     address public constant SYMBIOTIC_VAULT = 0x7b276aAD6D2ebfD7e270C5a2697ac79182D9550E;
     address public constant SYMBIOTIC_VAULT_ADMIN = 0x9437B2a8cF3b69D782a61f9814baAbc172f72003;
@@ -30,21 +31,21 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         vm.stopPrank();
     }
 
-    function testSymbioticFlow() external {
-        IOracle.SecurityParams memory securityParams = IOracle.SecurityParams({
-            maxAbsoluteDeviation: 0.01 ether, // 1% abs
-            suspiciousAbsoluteDeviation: 0.005 ether, // 0.05% abs
-            maxRelativeDeviationD18: 0.01 ether, // 1% abs
-            suspiciousRelativeDeviationD18: 0.005 ether, // 0.05% abs
-            timeout: 20 hours,
-            depositSecureInterval: 1 hours,
-            redeemSecureInterval: 14 days
-        });
+    IOracle.SecurityParams securityParams = IOracle.SecurityParams({
+        maxAbsoluteDeviation: 0.01 ether, // 1% abs
+        suspiciousAbsoluteDeviation: 0.005 ether, // 0.05% abs
+        maxRelativeDeviationD18: 0.01 ether, // 1% abs
+        suspiciousRelativeDeviationD18: 0.005 ether, // 0.05% abs
+        timeout: 20 hours,
+        depositSecureInterval: 1 hours,
+        redeemSecureInterval: 14 days
+    });
 
+    function testSymbioticFlowWithSlashing() external {
         address[] memory assets = new address[](1);
         assets[0] = ASSET;
 
-        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](8);
+        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](9);
 
         Vault vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
         Oracle oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
@@ -61,6 +62,8 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         holders[7] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).ALLOW_SUBVAULT_ASSETS_ROLE(), $.vaultAdmin
         );
+        holders[8] =
+            Vault.RoleHolder(Oracle($.oracleFactory.implementationAt(0)).SET_SECURITY_PARAMS_ROLE(), $.vaultAdmin);
 
         (address shareManager, address feeManager, address riskManager, address oracle, address vault_) = $
             .vaultConfigurator
@@ -206,6 +209,10 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         }
         vm.stopPrank();
 
+        uint256 ratioD2 = 10; // slash symbiotic vault for 10%
+        uint256 slashedRatioD18 = slashSymbioticVault(ratioD2);
+        uint256 expectedSlashedValue = slashedRatioD18; // ratio*1e18/1e18
+
         assertEq(vault.shareManager().sharesOf($.user), 1 ether);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
@@ -225,13 +232,17 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
 
         vm.startPrank($.curator);
         uint256 currentEpoch = ISymbioticStorageVault(SYMBIOTIC_VAULT).currentEpoch();
+
+        uint256 amountAfterSlashing;
         {
             Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
-            uint256 balance = ISymbioticStorageVault(SYMBIOTIC_VAULT).activeBalanceOf(address(subvault));
+            amountAfterSlashing = ISymbioticStorageVault(SYMBIOTIC_VAULT).activeBalanceOf(address(subvault));
+
+            assertApproxEqAbs(amountAfterSlashing, 1 ether - expectedSlashedValue, 1 wei);
             subvault.call(
                 SYMBIOTIC_VAULT,
                 0,
-                abi.encodeCall(ISymbioticVault.withdraw, (address(subvault), balance)),
+                abi.encodeCall(ISymbioticVault.withdraw, (address(subvault), amountAfterSlashing)),
                 verificationPayloads[0]
             );
         }
@@ -251,28 +262,37 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
                 abi.encodeCall(ISymbioticVault.claim, (address(subvault), currentEpoch + 1)),
                 verificationPayloads[0]
             );
-            assertEq(abi.decode(response, (uint256)), 1 ether);
+            assertApproxEqAbs(abi.decode(response, (uint256)), amountAfterSlashing, 1 wei);
+            amountAfterSlashing = abi.decode(response, (uint256));
         }
         vm.stopPrank();
 
         assertEq(vault.shareManager().sharesOf($.user), 0);
         assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
-        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), amountAfterSlashing);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
         vm.startPrank($.vaultAdmin);
         {
             IOracle.Report[] memory reports = new IOracle.Report[](1);
-            reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: uint224(1e36 / amountAfterSlashing)});
+
+            vm.expectRevert();
             Oracle(oracle).submitReports(reports);
+            securityParams.maxAbsoluteDeviation = 0.12 ether;
+            securityParams.maxRelativeDeviationD18 = 0.12 ether;
+            Oracle(oracle).setSecurityParams(securityParams);
+
+            Oracle(oracle).submitReports(reports);
+            Oracle(oracle).acceptReport(ASSET, uint32(block.timestamp));
         }
         vm.stopPrank();
 
         assertEq(vault.shareManager().sharesOf($.user), 0);
         assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
-        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), amountAfterSlashing);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
         vm.startPrank($.user);
@@ -286,12 +306,12 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         assertEq(vault.shareManager().sharesOf($.user), 0);
         assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
-        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), amountAfterSlashing);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
         {
             (uint256 x, uint256 y) = RedeemQueue(payable(vault.queueAt(ASSET, 1))).getDemand();
-            assertEq(x, 1 ether);
+            assertEq(x, amountAfterSlashing);
             assertEq(y, 1 ether);
         }
         RedeemQueue(payable(vault.queueAt(ASSET, 1))).handleReports(1);
@@ -302,7 +322,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             assertEq(y, 0);
         }
         assertEq(vault.shareManager().sharesOf($.user), 0);
-        assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), amountAfterSlashing);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
@@ -316,7 +336,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             assertEq(requests.length, 1);
             assertEq(requests[0].timestamp, userRedeemTimestamp);
             assertEq(requests[0].isClaimable, true, "isClaimable");
-            assertEq(requests[0].assets, 1 ether, "assets");
+            assertEq(requests[0].assets, amountAfterSlashing, "assets");
             assertEq(requests[0].shares, 1 ether, "shares");
             RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps);
         }
@@ -326,6 +346,35 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         assertEq(IERC20(ASSET).balanceOf(vault.queueAt(ASSET, 1)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
-        assertEq(IERC20(ASSET).balanceOf($.user), 1 ether);
+        assertEq(IERC20(ASSET).balanceOf($.user), amountAfterSlashing);
     }
+
+    function slashSymbioticVault(uint256 ratioD2) public returns (uint256 slashedActiveStakeRatioD18) {
+        ISymbioticSlasher slasher = ISymbioticSlasher(0x295F8c41eA17B330853AC74D1477a6F83B36ee31);
+        address network = 0x83742C346E9f305dcA94e20915aB49A483d33f3E;
+        address operator = 0x087c25f83ED20bda587CFA035ED0c96338D4660f;
+        bytes32 subnetwork = bytes32(uint256(uint160(network)) << 96);
+        vm.startPrank(network);
+        uint256 activeStake = ISymbioticStorageVault(SYMBIOTIC_VAULT).activeStake();
+        uint256 slashIndex = slasher.requestSlash(
+            subnetwork, operator, activeStake * ratioD2 / 100, uint48(block.timestamp) - 1, new bytes(0)
+        );
+        slasher.executeSlash(slashIndex, new bytes(0));
+        uint256 activeStakeAfter = ISymbioticStorageVault(SYMBIOTIC_VAULT).activeStake();
+        vm.stopPrank();
+
+        slashedActiveStakeRatioD18 = Math.mulDiv(activeStake - activeStakeAfter, 1 ether, activeStake);
+    }
+}
+
+interface ISymbioticSlasher {
+    function requestSlash(
+        bytes32 subnetwork,
+        address operator,
+        uint256 amount,
+        uint48 captureTimestamp,
+        bytes calldata hints
+    ) external returns (uint256 slashIndex);
+
+    function executeSlash(uint256 slashIndex, bytes calldata hints) external returns (uint256 slashedAmount);
 }

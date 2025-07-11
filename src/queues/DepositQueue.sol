@@ -49,7 +49,6 @@ contract DepositQueue is IDepositQueue, Queue {
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        __ReentrancyGuard_init();
         (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
         __Queue_init(asset_, shareModule_);
         _depositQueueStorage().requests.initialize(16);
