@@ -1,13 +1,13 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 38      3901      554       325     3022        629           662.66
+Solidity                                 38      3902      554       325     3023        629           662.34
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       22        17       92          8             8.70
 src/hooks/BasicRedeemHook.sol                      42        3         1       38          7            18.42
 src/hooks/LidoDepositHook.sol                      49        8         1       40         13            32.50
 src/hooks/RedirectingDepositHook.sol               28        2         1       25          5            20.00
-src/libraries/FenwickTreeLibrary.sol               84       10         8       66         14            21.21
+src/libraries/FenwickTreeLibrary.sol               85       10         8       67         14            20.90
 src/libraries/ShareManagerFlagLibrary.sol          40        9         1       30          5            16.67
 src/libraries/SlotLibrary.sol                      22        1         1       20          0             0.00
 src/libraries/TransferLibrary.sol                  31        6         1       24          9            37.50
@@ -42,8 +42,8 @@ src/vaults/Subvault.sol                            20        3         1       1
 src/vaults/Vault.sol                               55        5         1       49          1             2.04
 src/vaults/VaultConfigurator.sol                   74        7         2       65          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    38      3901      554       325     3022        629           662.66
+Total                                    38      3902      554       325     3023        629           662.34
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 140426 bytes, 0.140 megabytes (SI)
+Processed 140548 bytes, 0.141 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 

@@ -13,8 +13,8 @@ library FenwickTreeLibrary {
     error IndexOutOfBounds();
 
     struct Tree {
-        uint256 size;
         mapping(uint256 index => int256) array;
+        uint256 size;
     }
 
     function initialize(Tree storage tree, uint256 size) internal {
@@ -65,13 +65,14 @@ library FenwickTreeLibrary {
     }
 
     function _get(Tree storage tree, uint256 index) private view returns (int256 prefixSum) {
-        while (true) {
-            prefixSum += tree.array[index];
-            index = (index & (index + 1));
-            if (index == 0) {
-                break;
+        assembly {
+            mstore(0x20, tree.slot)
+            for {} 1 { index := sub(index, 1) } {
+                mstore(0x00, index)
+                prefixSum := add(prefixSum, sload(keccak256(0x00, 0x40)))
+                index := and(index, add(index, 1))
+                if iszero(index) { break }
             }
-            index -= 1;
         }
     }
 
