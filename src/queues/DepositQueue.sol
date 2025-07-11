@@ -150,10 +150,8 @@ contract DepositQueue is IDepositQueue, Queue {
         Checkpoints.Trace224 storage timestamps = _timestamps();
         uint256 latestEligibleIndex;
         {
-            (bool exists, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
-            if (!exists) {
-                return;
-            }
+            (, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
+
             if (latestTimestamp <= latestEligibleTimestamp) {
                 latestEligibleIndex = latestIndex;
             } else {
