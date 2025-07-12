@@ -40,7 +40,7 @@ interface IConsensus is IFactoryEntity {
 
     function signers() external view returns (uint256);
 
-    function signerAt(uint256 index) external view returns (address, SignatureType);
+    function signerAt(uint256 index) external view returns (address, uint256);
 
     function isSigner(address account) external view returns (bool);
 

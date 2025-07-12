@@ -168,7 +168,7 @@ contract VaultModuleTest is FixtureTest {
         IOracle.Report[] memory reports = new IOracle.Report[](1);
         reports[0] = IOracle.Report({asset: asset, priceD18: 1e6});
         deployment.oracle.submitReports(reports);
-        deployment.oracle.acceptReport(asset, uint32(block.timestamp));
+        deployment.oracle.acceptReport(asset, 1e6, uint32(block.timestamp));
 
         deployment.riskManager.setSubvaultLimit(subvault, int256(1 ether));
         assertEq(MockERC20(asset).balanceOf(address(deployment.vault)), 1 ether, "Vault should have 1 ether of asset");

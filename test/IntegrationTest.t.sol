@@ -219,7 +219,7 @@ contract Integration is Test {
             IOracle.Report[] memory report = new IOracle.Report[](1);
             report[0] = IOracle.Report({asset: address(asset), priceD18: 1 ether});
             oracle.submitReports(report);
-            oracle.acceptReport(address(asset), uint32(block.timestamp));
+            oracle.acceptReport(address(asset), 1 ether, uint32(block.timestamp));
             skip(1 days);
         }
 

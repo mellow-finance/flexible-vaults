@@ -138,7 +138,7 @@ contract RiskManagerTest is FixtureTest {
             reports[0] = IOracle.Report({asset: asset, priceD18: price});
 
             oracle.submitReports(reports);
-            oracle.acceptReport(asset, uint32(block.timestamp));
+            oracle.acceptReport(asset, price, uint32(block.timestamp));
             vm.stopPrank();
         }
         {
@@ -227,7 +227,7 @@ contract RiskManagerTest is FixtureTest {
 
             oracle.submitReports(reports);
             assertEq(manager.maxDeposit(subvault, asset), 0, "Subvault should have 0 max deposit");
-            oracle.acceptReport(asset, uint32(block.timestamp));
+            oracle.acceptReport(asset, price, uint32(block.timestamp));
             vm.stopPrank();
         }
 
@@ -258,7 +258,7 @@ contract RiskManagerTest is FixtureTest {
         vm.expectRevert(abi.encodeWithSelector(IRiskManager.InvalidReport.selector));
         manager.convertToShares(asset, 1 ether);
 
-        oracle.acceptReport(asset, uint32(block.timestamp));
+        oracle.acceptReport(asset, price, uint32(block.timestamp));
         vm.stopPrank();
 
         assertEq(manager.convertToShares(asset, 1 ether), 0.1 ether, "Subvault should have 0.1 shares");

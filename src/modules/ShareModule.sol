@@ -16,7 +16,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
     /// @inheritdoc IShareModule
     bytes32 public constant CREATE_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_QUEUE_ROLE");
     /// @inheritdoc IShareModule
-    bytes32 public constant SET_QUEUE_STATUS_ROLE = keccak256("modules.ShareModule.PAUSE_QUEUE_ROLE");
+    bytes32 public constant SET_QUEUE_STATUS_ROLE = keccak256("modules.ShareModule.SET_QUEUE_STATUS_ROLE");
     /// @inheritdoc IShareModule
     bytes32 public constant SET_QUEUE_LIMIT_ROLE = keccak256("modules.ShareModule.SET_QUEUE_LIMIT_ROLE");
     /// @inheritdoc IShareModule
@@ -272,9 +272,8 @@ abstract contract ShareModule is IShareModule, ACLModule {
         external
         nonReentrant
     {
-        address caller = _msgSender();
         ShareModuleStorage storage $ = _shareModuleStorage();
-        if (caller != $.oracle) {
+        if (_msgSender() != $.oracle) {
             revert Forbidden();
         }
         EnumerableSet.AddressSet storage queues = _shareModuleStorage().queues[asset];
@@ -284,10 +283,11 @@ abstract contract ShareModule is IShareModule, ACLModule {
             IQueue(queue).handleReport(priceD18, $.isDepositQueue[queue] ? depositTimestamp : redeemTimestamp);
         }
 
-        IFeeManager feeManager_ = feeManager();
-        uint256 fees = feeManager_.calculateFee(address(this), asset, shareManager().totalShares(), priceD18);
+        IFeeManager feeManager_ = IFeeManager($.feeManager);
+        IShareManager shareManager_ = IShareManager($.shareManager);
+        uint256 fees = feeManager_.calculateFee(address(this), asset, shareManager_.totalShares(), priceD18);
         if (fees != 0) {
-            shareManager().mint(feeManager_.feeRecipient(), fees);
+            shareManager_.mint(feeManager_.feeRecipient(), fees);
         }
         feeManager_.updateState(asset, priceD18);
         emit ReportHandled(asset, priceD18, depositTimestamp, redeemTimestamp, fees);

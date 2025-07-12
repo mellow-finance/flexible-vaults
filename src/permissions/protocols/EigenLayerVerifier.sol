@@ -4,13 +4,10 @@ pragma solidity 0.8.25;
 import "../../interfaces/external/eigen-layer/IDelegationManager.sol";
 import "../../interfaces/external/eigen-layer/IRewardsCoordinator.sol";
 import "../../interfaces/external/eigen-layer/IStrategyManager.sol";
-import "../../interfaces/permissions/ICustomVerifier.sol";
 
-import "../MellowACL.sol";
+import "./OwnedCustomVerifier.sol";
 
-contract EigenLayerVerifier is ICustomVerifier, MellowACL {
-    error ZeroValue();
-
+contract EigenLayerVerifier is OwnedCustomVerifier {
     bytes32 public constant ASSET_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.ASSET_ROLE");
     bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.CALLER_ROLE");
     bytes32 public constant MELLOW_VAULT_ROLE = keccak256("permissions.protocols.EigenLayerVerifier.MELLOW_VAULT_ROLE");
@@ -28,11 +25,10 @@ contract EigenLayerVerifier is ICustomVerifier, MellowACL {
         address rewardsCoordinator_,
         string memory name_,
         uint256 version_
-    ) MellowACL(name_, version_) {
+    ) OwnedCustomVerifier(name_, version_) {
         delegationManager = IDelegationManager(delegationManager_);
         strategyManager = IStrategyManager(strategyManager_);
         rewardsCoordinator = IRewardsCoordinator(rewardsCoordinator_);
-        _disableInitializers();
     }
 
     // View functions
@@ -132,22 +128,5 @@ contract EigenLayerVerifier is ICustomVerifier, MellowACL {
             return false;
         }
         return true;
-    }
-
-    // Mutable functions
-
-    function initialize(bytes calldata data) external initializer {
-        (address admin, address[] memory holders, bytes32[] memory roles) =
-            abi.decode(data, (address, address[], bytes32[]));
-        if (admin == address(0)) {
-            revert ZeroValue();
-        }
-        for (uint256 i = 0; i < holders.length; i++) {
-            if (holders[i] == address(0) || roles[i] == bytes32(0)) {
-                revert ZeroValue();
-            }
-            _grantRole(roles[i], holders[i]);
-        }
-        _grantRole(DEFAULT_ADMIN_ROLE, admin);
     }
 }

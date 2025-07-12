@@ -1,21 +1,16 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../../interfaces/permissions/ICustomVerifier.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "../MellowACL.sol";
+import "./OwnedCustomVerifier.sol";
 
-contract ERC20Verifier is ICustomVerifier, MellowACL {
-    error ZeroValue();
-
+contract ERC20Verifier is OwnedCustomVerifier {
     bytes32 public constant ASSET_ROLE = keccak256("permissions.protocols.ERC20Verifier.ASSET_ROLE");
     bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.ERC20Verifier.CALLER_ROLE");
     bytes32 public constant RECIPIENT_ROLE = keccak256("permissions.protocols.ERC20Verifier.RECIPIENT_ROLE");
 
-    constructor(string memory name_, uint256 version_) MellowACL(name_, version_) {
-        _disableInitializers();
-    }
+    constructor(string memory name_, uint256 version_) OwnedCustomVerifier(name_, version_) {}
 
     // View functions
 
@@ -45,22 +40,5 @@ contract ERC20Verifier is ICustomVerifier, MellowACL {
             return false;
         }
         return true;
-    }
-
-    // Mutable functions
-
-    function initialize(bytes calldata data) external initializer {
-        (address admin, address[] memory holders, bytes32[] memory roles) =
-            abi.decode(data, (address, address[], bytes32[]));
-        if (admin == address(0)) {
-            revert ZeroValue();
-        }
-        _grantRole(DEFAULT_ADMIN_ROLE, admin);
-        for (uint256 i = 0; i < holders.length; i++) {
-            if (holders[i] == address(0) || roles[i] == bytes32(0)) {
-                revert ZeroValue();
-            }
-            _grantRole(roles[i], holders[i]);
-        }
     }
 }

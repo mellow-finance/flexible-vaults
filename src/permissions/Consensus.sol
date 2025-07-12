@@ -65,36 +65,26 @@ contract Consensus is IConsensus, OwnableUpgradeable {
     }
 
     /// @inheritdoc IConsensus
-    function signerAt(uint256 index) external view returns (address signer, SignatureType signatureType) {
-        ConsensusStorage storage $ = _consensusStorage();
-        uint256 signatureTypeValue;
-        (signer, signatureTypeValue) = $.signers.at(index);
-        signatureType = SignatureType(signatureTypeValue);
+    function signerAt(uint256 index) external view returns (address, uint256) {
+        return _consensusStorage().signers.at(index);
     }
 
     /// @inheritdoc IConsensus
     function isSigner(address account) external view returns (bool) {
-        ConsensusStorage storage $ = _consensusStorage();
-        return $.signers.contains(account);
+        return _consensusStorage().signers.contains(account);
     }
 
     // Mutable functions
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        address owner_ = abi.decode(data, (address));
-        __Ownable_init(owner_);
+        __Ownable_init(abi.decode(data, (address)));
         emit Initialized(data);
     }
 
     /// @inheritdoc IConsensus
     function setThreshold(uint256 threshold_) external onlyOwner {
-        ConsensusStorage storage $ = _consensusStorage();
-        if (threshold_ == 0 || threshold_ > $.signers.length()) {
-            revert InvalidThreshold(threshold_);
-        }
-        $.threshold = threshold_;
-        emit ThresholdSet(threshold_);
+        _setThreshold(threshold_);
     }
 
     /// @inheritdoc IConsensus
@@ -106,10 +96,7 @@ contract Consensus is IConsensus, OwnableUpgradeable {
         if (!$.signers.set(signer, uint256(signatureType))) {
             revert SignerAlreadyExists(signer);
         }
-        if (threshold_ == 0 || threshold_ > $.signers.length()) {
-            revert InvalidThreshold(threshold_);
-        }
-        $.threshold = threshold_;
+        _setThreshold(threshold_);
         emit SignerAdded(signer, signatureType, threshold_);
     }
 
@@ -119,14 +106,20 @@ contract Consensus is IConsensus, OwnableUpgradeable {
         if (!$.signers.remove(signer)) {
             revert SignerNotFound(signer);
         }
-        if (threshold_ == 0 || threshold_ > $.signers.length()) {
-            revert InvalidThreshold(threshold_);
-        }
-        $.threshold = threshold_;
+        _setThreshold(threshold_);
         emit SignerRemoved(signer, threshold_);
     }
 
     // Internal functions
+
+    function _setThreshold(uint256 threshold_) private {
+        ConsensusStorage storage $ = _consensusStorage();
+        if (threshold_ == 0 || threshold_ > $.signers.length()) {
+            revert InvalidThreshold(threshold_);
+        }
+        $.threshold = threshold_;
+        emit ThresholdSet(threshold_);
+    }
 
     function _consensusStorage() internal view returns (ConsensusStorage storage $) {
         bytes32 slot = _consensusStorageSlot;

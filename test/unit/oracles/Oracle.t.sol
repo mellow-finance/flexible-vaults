@@ -63,7 +63,7 @@ contract OracleTest is FixtureTest {
             reports[0] = IOracle.Report({asset: assets[0], priceD18: price});
 
             oracle.submitReports(reports);
-            oracle.acceptReport(assets[0], uint32(block.timestamp));
+            oracle.acceptReport(assets[0], price, uint32(block.timestamp));
 
             IOracle.DetailedReport memory detailedReport = oracle.getReport(assets[0]);
             assertTrue(detailedReport.priceD18 == price, "Report price mismatch");
@@ -240,7 +240,7 @@ contract OracleTest is FixtureTest {
 
             vm.startPrank(vaultAdmin);
             oracle.submitReports(reports);
-            oracle.acceptReport(asset, uint32(block.timestamp));
+            oracle.acceptReport(asset, price, uint32(block.timestamp));
             vm.stopPrank();
 
             (isValid, isSuspicious) = oracle.validatePrice(price + securityParams.maxAbsoluteDeviation + 1, asset);
@@ -258,7 +258,7 @@ contract OracleTest is FixtureTest {
 
             vm.startPrank(vaultAdmin);
             oracle.submitReports(reports);
-            oracle.acceptReport(asset, uint32(block.timestamp));
+            oracle.acceptReport(asset, price, uint32(block.timestamp));
             vm.stopPrank();
 
             (isValid, isSuspicious) = oracle.validatePrice(price + securityParams.maxAbsoluteDeviation - 1, asset);
@@ -298,13 +298,17 @@ contract OracleTest is FixtureTest {
         assertTrue(report.isSuspicious, "Should be suspicious");
 
         vm.startPrank(vaultAdmin);
-        vm.expectRevert(abi.encodeWithSelector(IOracle.InvalidTimestamp.selector, block.timestamp + 1, block.timestamp));
-        oracle.acceptReport(asset, uint32(block.timestamp + 1));
+        vm.expectRevert(abi.encodeWithSelector(IOracle.InvalidReport.selector, block.timestamp + 1, block.timestamp));
+        oracle.acceptReport(asset, report.priceD18, uint32(block.timestamp + 1));
+        vm.expectRevert(abi.encodeWithSelector(IOracle.InvalidReport.selector, asset, block.timestamp));
+        oracle.acceptReport(asset, report.priceD18 + 1, uint32(block.timestamp));
+        vm.expectRevert(abi.encodeWithSelector(IOracle.InvalidReport.selector, asset, block.timestamp));
+        oracle.acceptReport(address(0), report.priceD18, uint32(block.timestamp));
 
-        oracle.acceptReport(asset, uint32(block.timestamp));
+        oracle.acceptReport(asset, report.priceD18, uint32(block.timestamp));
 
-        vm.expectRevert(abi.encodeWithSelector(IOracle.NonSuspiciousReport.selector, asset, block.timestamp));
-        oracle.acceptReport(asset, uint32(block.timestamp));
+        vm.expectRevert(abi.encodeWithSelector(IOracle.InvalidReport.selector, asset, block.timestamp));
+        oracle.acceptReport(asset, report.priceD18, uint32(block.timestamp));
 
         report = oracle.getReport(asset);
         vm.expectRevert(

@@ -29,6 +29,7 @@ contract BasicShareManager is ShareManager {
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
         __ShareManager_init(abi.decode(data, (bytes32)));
+        emit Initialized(data);
     }
 
     // Internal functions

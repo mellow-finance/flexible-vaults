@@ -163,7 +163,7 @@ contract ConsensusTest is Test {
         vm.prank(admin);
         consensus.addSigner(signer1, 1, IConsensus.SignatureType.EIP712);
 
-        (address s, IConsensus.SignatureType t) = consensus.signerAt(0);
+        (address s, uint256 t) = consensus.signerAt(0);
         assertEq(s, signer1);
         assertEq(uint8(t), uint8(IConsensus.SignatureType.EIP712));
     }

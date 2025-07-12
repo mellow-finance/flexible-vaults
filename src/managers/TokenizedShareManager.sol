@@ -30,6 +30,7 @@ contract TokenizedShareManager is ShareManager, ERC20Upgradeable {
             abi.decode(data, (bytes32, string, string));
         __ERC20_init(name_, symbol_);
         __ShareManager_init(whitelistMerkleRoot_);
+        emit Initialized(data);
     }
 
     // Internal functions

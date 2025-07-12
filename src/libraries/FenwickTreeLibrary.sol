@@ -1,65 +1,62 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-/*
-    docs:
-        https://cp-algorithms.com/data_structures/fenwick.html
-        https://en.wikipedia.org/wiki/Fenwick_tree
-        ru: http://e-maxx.ru/algo/fenwick_tree
-*/
+/**
+ * 0-indexed FenwickTree implementation on Solidity
+ * @dev docs: https://cp-algorithms.com/data_structures/fenwick.html
+ * @dev docs: https://en.wikipedia.org/wiki/Fenwick_tree
+ */
 library FenwickTreeLibrary {
-    error ZeroSize();
-    error SizeNotPowerOfTwo();
+    error InvalidLength();
     error IndexOutOfBounds();
 
     struct Tree {
-        mapping(uint256 index => int256) array;
-        uint256 size;
+        mapping(uint256 index => int256) _values;
+        uint256 _length;
     }
 
-    function initialize(Tree storage tree, uint256 size) internal {
-        if (size == 0) {
-            revert ZeroSize();
+    function initialize(Tree storage tree, uint256 length_) internal {
+        if (tree._length != 0 || length_ == 0 || (length_ & (length_ - 1)) != 0) {
+            revert InvalidLength();
         }
-        if ((size & (size - 1)) != 0) {
-            revert SizeNotPowerOfTwo();
-        }
-        tree.size = size;
+        tree._length = length_;
     }
 
     function length(Tree storage tree) internal view returns (uint256) {
-        return tree.size;
+        return tree._length;
     }
 
     function extend(Tree storage tree) internal {
-        uint256 size = tree.size;
-        tree.size = size << 1;
-        /// @dev (2 ** n - 1) | (2 ** n) == 2 ** (n + 1) - 1
-        tree.array[(size << 1) - 1] = tree.array[size - 1];
+        uint256 length_ = tree._length;
+        if (length_ >= (1 << 255)) {
+            revert InvalidLength();
+        }
+        tree._length = length_ << 1;
+        tree._values[(length_ << 1) - 1] = tree._values[length_ - 1];
     }
 
     function modify(Tree storage tree, uint256 index, int256 value) internal {
-        uint256 size = tree.size;
-        if (index >= size) {
+        uint256 length_ = tree._length;
+        if (index >= length_) {
             revert IndexOutOfBounds();
         }
         if (value == 0) {
             return;
         }
-        _modify(tree, index, size, value);
+        _modify(tree, index, length_, value);
     }
 
-    function _modify(Tree storage tree, uint256 index, uint256 size, int256 value) private {
-        while (index < size) {
-            tree.array[index] += value;
+    function _modify(Tree storage tree, uint256 index, uint256 length_, int256 value) private {
+        while (index < length_) {
+            tree._values[index] += value;
             index |= index + 1;
         }
     }
 
     function get(Tree storage tree, uint256 index) internal view returns (int256) {
-        uint256 size = tree.size;
-        if (index >= size) {
-            index = size - 1;
+        uint256 length_ = tree._length;
+        if (index >= length_) {
+            index = length_ - 1;
         }
         return _get(tree, index);
     }

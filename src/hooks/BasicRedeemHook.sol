@@ -12,7 +12,7 @@ contract BasicRedeemHook is IHook {
         if (liquid >= assets) {
             return;
         }
-        uint256 required = assets - liquid;
+        uint256 requiredAssets = assets - liquid;
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
@@ -20,12 +20,12 @@ contract BasicRedeemHook is IHook {
             if (balance == 0) {
                 continue;
             }
-            if (balance >= required) {
-                vault.hookPullAssets(subvault, asset, required);
+            if (balance >= requiredAssets) {
+                vault.hookPullAssets(subvault, asset, requiredAssets);
                 break;
             } else {
                 vault.hookPullAssets(subvault, asset, balance);
-                required -= balance;
+                requiredAssets -= balance;
             }
         }
     }

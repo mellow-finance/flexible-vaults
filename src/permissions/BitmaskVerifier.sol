@@ -36,10 +36,6 @@ contract BitmaskVerifier is ICustomVerifier {
         if (data.length + 0x60 != bitmask.length) {
             return false;
         }
-        bytes32 hash_ = calculateHash(bitmask, who, where, value, data);
-        if (hash_ != verificationHash_) {
-            return false;
-        }
-        return true;
+        return verificationHash_ == calculateHash(bitmask, who, where, value, data);
     }
 }

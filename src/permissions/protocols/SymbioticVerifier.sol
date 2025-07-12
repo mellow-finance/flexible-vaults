@@ -4,13 +4,10 @@ pragma solidity 0.8.25;
 import "../../interfaces/external/symbiotic/ISymbioticRegistry.sol";
 import "../../interfaces/external/symbiotic/ISymbioticStakerRewards.sol";
 import "../../interfaces/external/symbiotic/ISymbioticVault.sol";
-import "../../interfaces/permissions/ICustomVerifier.sol";
 
-import "../MellowACL.sol";
+import "./OwnedCustomVerifier.sol";
 
-contract SymbioticVerifier is ICustomVerifier, MellowACL {
-    error ZeroValue();
-
+contract SymbioticVerifier is OwnedCustomVerifier {
     bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.SymbioticVerifier.CALLER_ROLE");
     bytes32 public constant MELLOW_VAULT_ROLE = keccak256("permissions.protocols.SymbioticVerifier.MELLOW_VAULT_ROLE");
     bytes32 public constant SYMBIOTIC_FARM_ROLE =
@@ -22,11 +19,10 @@ contract SymbioticVerifier is ICustomVerifier, MellowACL {
     ISymbioticRegistry public immutable farmFactory;
 
     constructor(address vaultFactory_, address farmFactory_, string memory name_, uint256 version_)
-        MellowACL(name_, version_)
+        OwnedCustomVerifier(name_, version_)
     {
         vaultFactory = ISymbioticRegistry(vaultFactory_);
         farmFactory = ISymbioticRegistry(farmFactory_);
-        _disableInitializers();
     }
 
     // View functions
@@ -88,22 +84,5 @@ contract SymbioticVerifier is ICustomVerifier, MellowACL {
             return false;
         }
         return true;
-    }
-
-    // Mutable functions
-
-    function initialize(bytes calldata data) external initializer {
-        (address admin, address[] memory holder, bytes32[] memory roles) =
-            abi.decode(data, (address, address[], bytes32[]));
-        if (admin == address(0)) {
-            revert ZeroValue();
-        }
-        _grantRole(DEFAULT_ADMIN_ROLE, admin);
-        for (uint256 i = 0; i < holder.length; i++) {
-            if (holder[i] == address(0) || roles[i] == bytes32(0)) {
-                revert ZeroValue();
-            }
-            _grantRole(roles[i], holder[i]);
-        }
     }
 }

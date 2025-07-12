@@ -14,8 +14,7 @@ import "../modules/IShareModule.sol";
 interface IOracle is IFactoryEntity {
     error UnsupportedAsset(address asset);
     error AlreadySupportedAsset(address asset);
-    error NonSuspiciousReport(address asset, uint256 timestamp);
-    error InvalidTimestamp(uint256 timestamp, uint256 expectedTimestamp);
+    error InvalidReport();
     error ZeroValue();
     error TooEarly(uint256 timestamp, uint256 minTimestamp);
     error InvalidPrice(uint256 priceD18);
@@ -64,7 +63,7 @@ interface IOracle is IFactoryEntity {
     function getReport(address asset) external view returns (DetailedReport memory);
     function validatePrice(uint256 priceD18, address asset) external view returns (bool isValid, bool isSuspicious);
     function submitReports(Report[] calldata reports) external;
-    function acceptReport(address asset, uint32 timestamp) external;
+    function acceptReport(address asset, uint256 priceD18, uint32 timestamp) external;
     function setSecurityParams(SecurityParams calldata securityParams_) external;
     function addSupportedAssets(address[] calldata assets) external;
     function removeSupportedAssets(address[] calldata assets) external;

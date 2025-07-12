@@ -48,7 +48,7 @@ contract EigenLayerVerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(EigenLayerVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         verifier = EigenLayerVerifier(address(proxy));
@@ -643,11 +643,13 @@ contract EigenLayerVerifierTest is Test {
 
         address zeroAdminAddress = address(0);
 
-        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             zeroAdminAddress,
-            abi.encodeWithSelector(EigenLayerVerifier.initialize.selector, abi.encode(zeroAdminAddress, holders, roles))
+            abi.encodeWithSelector(
+                OwnedCustomVerifier.initialize.selector, abi.encode(zeroAdminAddress, holders, roles)
+            )
         );
     }
 
@@ -662,11 +664,11 @@ contract EigenLayerVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = verifierImplementation.CALLER_ROLE();
 
-        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(EigenLayerVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -681,11 +683,11 @@ contract EigenLayerVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = bytes32(0);
 
-        vm.expectRevert(abi.encodeWithSelector(EigenLayerVerifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(EigenLayerVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -705,7 +707,7 @@ contract EigenLayerVerifierTest is Test {
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(EigenLayerVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -727,7 +729,7 @@ contract EigenLayerVerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(EigenLayerVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         EigenLayerVerifier verifierProxy = EigenLayerVerifier(address(proxy));
@@ -750,7 +752,7 @@ contract EigenLayerVerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(EigenLayerVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         EigenLayerVerifier verifierProxy = EigenLayerVerifier(address(proxy));

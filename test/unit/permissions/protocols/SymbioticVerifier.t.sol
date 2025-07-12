@@ -42,7 +42,7 @@ contract SymbioticVerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(SymbioticVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         verifier = SymbioticVerifier(address(proxy));
@@ -272,11 +272,13 @@ contract SymbioticVerifierTest is Test {
 
         address zeroAdminAddress = address(0);
 
-        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             zeroAdminAddress,
-            abi.encodeWithSelector(SymbioticVerifier.initialize.selector, abi.encode(zeroAdminAddress, holders, roles))
+            abi.encodeWithSelector(
+                OwnedCustomVerifier.initialize.selector, abi.encode(zeroAdminAddress, holders, roles)
+            )
         );
     }
 
@@ -291,11 +293,11 @@ contract SymbioticVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = verifierImplementation.CALLER_ROLE();
 
-        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(SymbioticVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -310,11 +312,11 @@ contract SymbioticVerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = bytes32(0);
 
-        vm.expectRevert(abi.encodeWithSelector(SymbioticVerifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(SymbioticVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -334,7 +336,7 @@ contract SymbioticVerifierTest is Test {
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(SymbioticVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -358,7 +360,7 @@ contract SymbioticVerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(SymbioticVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         SymbioticVerifier verifierProxy = SymbioticVerifier(address(proxy));
@@ -381,7 +383,7 @@ contract SymbioticVerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(SymbioticVerifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         SymbioticVerifier verifierProxy = SymbioticVerifier(address(proxy));

@@ -130,17 +130,14 @@ contract Verifier is IVerifier, ContextUpgradeable {
         if (vault_ == address(0)) {
             revert ZeroValue();
         }
-        _verifierStorage().vault = vault_;
-        if (merkleRoot_ != bytes32(0)) {
-            _verifierStorage().merkleRoot = merkleRoot_;
-        }
+        VerifierStorage storage $ = _verifierStorage();
+        $.vault = vault_;
+        $.merkleRoot = merkleRoot_;
+        emit Initialized(initParams);
     }
 
     /// @inheritdoc IVerifier
     function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(SET_MERKLE_ROOT_ROLE) {
-        if (merkleRoot_ == bytes32(0)) {
-            revert ZeroValue();
-        }
         _verifierStorage().merkleRoot = merkleRoot_;
     }
 
@@ -151,11 +148,10 @@ contract Verifier is IVerifier, ContextUpgradeable {
         EnumerableSet.Bytes32Set storage compactCallHashes_ = $.compactCallHashes;
         for (uint256 i = 0; i < compactCalls.length; i++) {
             bytes32 hash_ = hashCall(compactCalls[i]);
-            if (compactCallHashes_.add(hash_)) {
-                compactCalls_[hash_] = compactCalls[i];
-            } else {
+            if (!compactCallHashes_.add(hash_)) {
                 revert CompactCallAlreadyAllowed(compactCalls[i].who, compactCalls[i].where, compactCalls[i].selector);
             }
+            compactCalls_[hash_] = compactCalls[i];
         }
     }
 
@@ -166,11 +162,10 @@ contract Verifier is IVerifier, ContextUpgradeable {
         EnumerableSet.Bytes32Set storage compactCallHashes_ = $.compactCallHashes;
         for (uint256 i = 0; i < compactCalls.length; i++) {
             bytes32 hash_ = hashCall(compactCalls[i]);
-            if (compactCallHashes_.remove(hash_)) {
-                compactCalls_[hash_] = compactCalls[i];
-            } else {
+            if (!compactCallHashes_.remove(hash_)) {
                 revert CompactCallNotFound(compactCalls[i].who, compactCalls[i].where, compactCalls[i].selector);
             }
+            compactCalls_[hash_] = compactCalls[i];
         }
     }
 

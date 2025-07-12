@@ -372,7 +372,7 @@ contract DepositQueueTest is FixtureTest {
         reports[0] = report;
         vm.startPrank(vaultAdmin);
         oracle.submitReports(reports);
-        try oracle.acceptReport(asset, uint32(block.timestamp)) {}
+        try oracle.acceptReport(asset, report.priceD18, uint32(block.timestamp)) {}
         catch (bytes memory) {
             /// @dev catch case if report is not suspicious
         }

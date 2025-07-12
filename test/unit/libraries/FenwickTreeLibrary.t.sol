@@ -32,6 +32,10 @@ contract FenwickWrapper {
         return tree.get(from, to);
     }
 
+    function storageSetLimit(uint256 newLimit) external {
+        tree._length = newLimit;
+    }
+
     function test() external {}
 }
 
@@ -41,14 +45,26 @@ contract Unit is Test {
     function testInitialize() public {
         FenwickWrapper fenwick = new FenwickWrapper();
 
-        vm.expectRevert(FenwickTreeLibrary.ZeroSize.selector);
+        vm.expectRevert(FenwickTreeLibrary.InvalidLength.selector);
         fenwick.init(0);
 
-        vm.expectRevert(FenwickTreeLibrary.SizeNotPowerOfTwo.selector);
+        vm.expectRevert(FenwickTreeLibrary.InvalidLength.selector);
         fenwick.init(3);
 
+        fenwick.init(1);
+        require(fenwick.length() == 1, "length mismatch");
+
+        vm.expectRevert(FenwickTreeLibrary.InvalidLength.selector);
         fenwick.init(2);
-        require(fenwick.length() == 2, "length mismatch");
+        fenwick.storageSetLimit(1 << 255);
+        vm.expectRevert(FenwickTreeLibrary.InvalidLength.selector);
+        fenwick.extend();
+
+        fenwick.storageSetLimit(1);
+        for (uint256 i = 0; i < 254; i++) {
+            fenwick.extend();
+            assertEq(fenwick.length(), 1 << (i + 1));
+        }
     }
 
     function testModifyAndGet() public {

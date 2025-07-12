@@ -90,7 +90,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             IOracle.Report[] memory reports = new IOracle.Report[](1);
             reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
             Oracle(oracle).submitReports(reports);
-            Oracle(oracle).acceptReport(ASSET, uint32(block.timestamp));
+            Oracle(oracle).acceptReport(ASSET, 1 ether, uint32(block.timestamp));
         }
         SymbioticVerifier symbioticVerifier;
         {

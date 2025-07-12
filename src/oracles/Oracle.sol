@@ -21,19 +21,19 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
 
     bytes32 private immutable _oracleStorageSlot;
 
-    constructor(string memory name_, uint256 version_) {
-        _oracleStorageSlot = SlotLibrary.getSlot("Oracle", name_, version_);
-        _disableInitializers();
-    }
-
-    // View functions
-
     modifier onlyRole(bytes32 role) {
         if (!IAccessControl(address(_oracleStorage().vault)).hasRole(role, _msgSender())) {
             revert Forbidden();
         }
         _;
     }
+
+    constructor(string memory name_, uint256 version_) {
+        _oracleStorageSlot = SlotLibrary.getSlot("Oracle", name_, version_);
+        _disableInitializers();
+    }
+
+    // View functions
 
     /// @inheritdoc IOracle
     function vault() public view returns (IShareModule) {
@@ -100,7 +100,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IOracle
-    function submitReports(Report[] calldata reports) external onlyRole(SUBMIT_REPORTS_ROLE) {
+    function submitReports(Report[] calldata reports) external nonReentrant onlyRole(SUBMIT_REPORTS_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = $.securityParams;
         uint32 depositTimestamp = uint32(block.timestamp - securityParams_.depositInterval);
@@ -109,25 +109,27 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         EnumerableSet.AddressSet storage supportedAssets_ = $.supportedAssets;
         mapping(address asset => DetailedReport) storage reports_ = $.reports;
         for (uint256 i = 0; i < reports.length; i++) {
-            if (!supportedAssets_.contains(reports[i].asset)) {
-                revert UnsupportedAsset(reports[i].asset);
+            Report calldata report = reports[i];
+            if (!supportedAssets_.contains(report.asset)) {
+                revert UnsupportedAsset(report.asset);
             }
-            if (_handleReport(securityParams_, reports[i].priceD18, reports_[reports[i].asset])) {
-                vault_.handleReport(reports[i].asset, reports[i].priceD18, depositTimestamp, redeemTimestamp);
+            if (_handleReport(securityParams_, report.priceD18, reports_[report.asset])) {
+                vault_.handleReport(report.asset, report.priceD18, depositTimestamp, redeemTimestamp);
             }
         }
         emit ReportsSubmitted(reports);
     }
 
     /// @inheritdoc IOracle
-    function acceptReport(address asset, uint32 timestamp) external onlyRole(ACCEPT_REPORT_ROLE) {
+    function acceptReport(address asset, uint256 priceD18, uint32 timestamp)
+        external
+        nonReentrant
+        onlyRole(ACCEPT_REPORT_ROLE)
+    {
         OracleStorage storage $ = _oracleStorage();
         DetailedReport storage report_ = $.reports[asset];
-        if (!report_.isSuspicious) {
-            revert NonSuspiciousReport(asset, timestamp);
-        }
-        if (report_.timestamp != timestamp) {
-            revert InvalidTimestamp(timestamp, report_.timestamp);
+        if (!report_.isSuspicious || report_.priceD18 != priceD18 || report_.timestamp != timestamp) {
+            revert InvalidReport();
         }
         report_.isSuspicious = false;
         SecurityParams storage params = $.securityParams;
@@ -175,7 +177,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         internal
         returns (bool)
     {
-        if (report.timestamp != 0 && params.timeout + report.timestamp > block.timestamp) {
+        if (report.timestamp != 0 && params.timeout + report.timestamp > block.timestamp && !report.isSuspicious) {
             revert TooEarly(block.timestamp, params.timeout + report.timestamp);
         }
         (bool isValid, bool isSuspicious) = _validatePrice(priceD18, report, params);

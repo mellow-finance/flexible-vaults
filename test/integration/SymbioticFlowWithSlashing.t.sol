@@ -92,7 +92,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
             IOracle.Report[] memory reports = new IOracle.Report[](1);
             reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
             Oracle(oracle).submitReports(reports);
-            Oracle(oracle).acceptReport(ASSET, uint32(block.timestamp));
+            Oracle(oracle).acceptReport(ASSET, 1 ether, uint32(block.timestamp));
         }
         SymbioticVerifier symbioticVerifier;
         {
@@ -282,7 +282,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
             Oracle(oracle).setSecurityParams(securityParams);
 
             Oracle(oracle).submitReports(reports);
-            Oracle(oracle).acceptReport(ASSET, uint32(block.timestamp));
+            Oracle(oracle).acceptReport(ASSET, reports[0].priceD18, uint32(block.timestamp));
         }
         vm.stopPrank();
 

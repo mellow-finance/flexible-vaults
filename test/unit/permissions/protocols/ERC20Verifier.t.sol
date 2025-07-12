@@ -33,7 +33,7 @@ contract ERC20VerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(ERC20Verifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         verifier = ERC20Verifier(address(proxy));
@@ -198,11 +198,13 @@ contract ERC20VerifierTest is Test {
 
         address zeroAdminAddress = address(0);
 
-        vm.expectRevert(abi.encodeWithSelector(ERC20Verifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             zeroAdminAddress,
-            abi.encodeWithSelector(ERC20Verifier.initialize.selector, abi.encode(zeroAdminAddress, holders, roles))
+            abi.encodeWithSelector(
+                OwnedCustomVerifier.initialize.selector, abi.encode(zeroAdminAddress, holders, roles)
+            )
         );
     }
 
@@ -216,11 +218,11 @@ contract ERC20VerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = verifierImplementation.CALLER_ROLE();
 
-        vm.expectRevert(abi.encodeWithSelector(ERC20Verifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(ERC20Verifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -234,11 +236,11 @@ contract ERC20VerifierTest is Test {
         bytes32[] memory roles = new bytes32[](1);
         roles[0] = bytes32(0);
 
-        vm.expectRevert(abi.encodeWithSelector(ERC20Verifier.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(OwnedCustomVerifier.ZeroValue.selector));
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(ERC20Verifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -257,7 +259,7 @@ contract ERC20VerifierTest is Test {
         new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(ERC20Verifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
     }
 
@@ -278,7 +280,7 @@ contract ERC20VerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(ERC20Verifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         ERC20Verifier verifierProxy = ERC20Verifier(address(proxy));
@@ -300,7 +302,7 @@ contract ERC20VerifierTest is Test {
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(verifierImplementation),
             address(this),
-            abi.encodeWithSelector(ERC20Verifier.initialize.selector, abi.encode(address(this), holders, roles))
+            abi.encodeWithSelector(OwnedCustomVerifier.initialize.selector, abi.encode(address(this), holders, roles))
         );
 
         ERC20Verifier verifierProxy = ERC20Verifier(address(proxy));

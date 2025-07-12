@@ -56,7 +56,7 @@ contract SignatureRedeemQueueTest is FixtureTest {
             reports[0] = IOracle.Report({asset: asset, priceD18: price});
             vm.startPrank(vaultAdmin);
             oracle.submitReports(reports);
-            oracle.acceptReport(asset, uint32(block.timestamp));
+            oracle.acceptReport(asset, price, uint32(block.timestamp));
             vm.stopPrank();
         }
 
