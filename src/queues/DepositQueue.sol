@@ -69,10 +69,8 @@ contract DepositQueue is IDepositQueue, Queue {
         if (!IShareModule(vault_).shareManager().isDepositorWhitelisted(caller, merkleProof)) {
             revert DepositNotAllowed();
         }
-        if ($.requestOf[caller]._value != 0) {
-            if (!_claim(caller)) {
-                revert PendingRequestExists();
-            }
+        if ($.requestOf[caller]._value != 0 && !_claim(caller)) {
+            revert PendingRequestExists();
         }
 
         address asset_ = asset();
@@ -112,9 +110,9 @@ contract DepositQueue is IDepositQueue, Queue {
         }
 
         delete $.requestOf[caller];
-        TransferLibrary.sendAssets(asset_, caller, assets);
         IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
         $.requests.modify(index, -int256(assets));
+        TransferLibrary.sendAssets(asset_, caller, assets);
         emit DepositRequestCanceled(caller, assets, request._key);
     }
 

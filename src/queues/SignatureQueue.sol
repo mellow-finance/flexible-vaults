@@ -19,10 +19,14 @@ abstract contract SignatureQueue is
         "Order(uint256 orderId,address queue,address asset,address caller,address recipient,uint256 ordered,uint256 requested,uint256 deadline,uint256 nonce)"
     );
 
+    /// @inheritdoc ISignatureQueue
+    IFactory public immutable consensusFactory;
+
     bytes32 private immutable _signatureQueueStorageSlot;
 
-    constructor(string memory name_, uint256 version_) {
+    constructor(string memory name_, uint256 version_, address consensusFactory_) {
         _signatureQueueStorageSlot = SlotLibrary.getSlot("SignatureQueue", name_, version_);
+        consensusFactory = IFactory(consensusFactory_);
         _disableInitializers();
     }
 
@@ -133,8 +137,8 @@ abstract contract SignatureQueue is
         bytes memory data;
         ($.asset, $.vault, data) = abi.decode(initData, (address, address, bytes));
         (address consensus_, string memory name_, string memory version_) = abi.decode(data, (address, string, string));
-        if (consensus_ == address(0)) {
-            revert ZeroValue();
+        if (!consensusFactory.isEntity(consensus_)) {
+            revert NotEntity();
         }
         __ReentrancyGuard_init();
         __EIP712_init(name_, version_);
@@ -144,10 +148,10 @@ abstract contract SignatureQueue is
 
     // Internal functions
 
-    function _signatureQueueStorage() internal view returns (SignatureQueueStorage storage dqs) {
+    function _signatureQueueStorage() internal view returns (SignatureQueueStorage storage $) {
         bytes32 slot = _signatureQueueStorageSlot;
         assembly {
-            dqs.slot := slot
+            $.slot := slot
         }
     }
 }

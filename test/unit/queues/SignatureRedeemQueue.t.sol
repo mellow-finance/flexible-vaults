@@ -19,7 +19,7 @@ contract SignatureRedeemQueueTest is FixtureTest {
     function testCreate() external {
         SignatureRedeemQueue queue = createQueue();
         address vault = vm.createWallet("vault").addr;
-        address consensus = vm.createWallet("consensus").addr;
+        address consensus = queue.consensusFactory().create(0, address(this), abi.encode(address(this)));
 
         queue.initialize(abi.encode(asset, vault, abi.encode(consensus, "MockSignatureQueue", "0")));
     }
@@ -75,7 +75,25 @@ contract SignatureRedeemQueueTest is FixtureTest {
     }
 
     function createQueue() internal returns (SignatureRedeemQueue queue) {
-        SignatureRedeemQueue queueImplementation = new SignatureRedeemQueue("SignatureRedeemQueue", 0);
+        address deployer = vm.createWallet("deployer").addr;
+        vm.startPrank(deployer);
+        Factory consensusFactory = Factory(
+            address(
+                new TransparentUpgradeableProxy(
+                    address(new Factory("Mellow", 1)),
+                    address(0xdead),
+                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode(deployer)))
+                )
+            )
+        );
+        {
+            address implementation = address(new Consensus("Mellow", 1));
+            consensusFactory.proposeImplementation(implementation);
+            consensusFactory.acceptProposedImplementation(implementation);
+        }
+
+        SignatureRedeemQueue queueImplementation =
+            new SignatureRedeemQueue("SignatureRedeemQueue", 0, address(consensusFactory));
         queue = SignatureRedeemQueue(
             payable(new TransparentUpgradeableProxy(address(queueImplementation), vaultProxyAdmin, new bytes(0)))
         );

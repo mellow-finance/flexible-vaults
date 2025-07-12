@@ -31,15 +31,15 @@ abstract contract Queue is IQueue, ContextUpgradeable, ReentrancyGuardUpgradeabl
     // Mutable functions
 
     /// @inheritdoc IQueue
-    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external {
+    function handleReport(uint224 priceD18, uint32 timestamp) external {
         if (_msgSender() != vault()) {
             revert Forbidden();
         }
-        if (priceD18 == 0 || latestEligibleTimestamp >= block.timestamp) {
+        if (priceD18 == 0 || timestamp >= block.timestamp) {
             revert InvalidReport();
         }
-        _handleReport(priceD18, latestEligibleTimestamp);
-        emit ReportHandled(priceD18, latestEligibleTimestamp);
+        _handleReport(priceD18, timestamp);
+        emit ReportHandled(priceD18, timestamp);
     }
 
     // Internal functions

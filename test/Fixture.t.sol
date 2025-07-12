@@ -58,13 +58,10 @@ abstract contract FixtureTest is Test {
     {
         consensusImplementation = new Consensus("Consensus", 1);
         consensus = Consensus(
-            address(
-                new TransparentUpgradeableProxy(
-                    address(consensusImplementation), deployment.vaultProxyAdmin, new bytes(0)
-                )
+            SignatureDepositQueue(deployment.depositQueueFactory.implementationAt(1)).consensusFactory().create(
+                0, deployment.vaultProxyAdmin, abi.encode(deployment.vaultAdmin)
             )
         );
-        consensus.initialize(abi.encode(deployment.vaultAdmin));
         vm.startPrank(deployment.vaultAdmin);
         for (uint256 i = 0; i < signers.length; i++) {
             consensus.addSigner(signers[i], 1, IConsensus.SignatureType.EIP712);
@@ -201,14 +198,32 @@ abstract contract FixtureTest is Test {
             address depositQueueImplementation = address(new DepositQueue("Mellow", 1));
             deployment.depositQueueFactory.proposeImplementation(depositQueueImplementation);
             deployment.depositQueueFactory.acceptProposedImplementation(depositQueueImplementation);
-            address signatureDepositQueueImplementation = address(new SignatureDepositQueue("Mellow", 1));
+
+            Factory consensusFactory = Factory(
+                address(
+                    new TransparentUpgradeableProxy(
+                        address(new Factory("Mellow", 1)),
+                        address(0xdead),
+                        abi.encodeCall(IFactoryEntity.initialize, (abi.encode(deployment.vaultAdmin)))
+                    )
+                )
+            );
+            {
+                address implementation = address(new Consensus("Mellow", 1));
+                consensusFactory.proposeImplementation(implementation);
+                consensusFactory.acceptProposedImplementation(implementation);
+                consensusFactory.transferOwnership(deployment.vaultProxyAdmin);
+            }
+            address signatureDepositQueueImplementation =
+                address(new SignatureDepositQueue("Mellow", 1, address(consensusFactory)));
             deployment.depositQueueFactory.proposeImplementation(signatureDepositQueueImplementation);
             deployment.depositQueueFactory.acceptProposedImplementation(signatureDepositQueueImplementation);
 
             address redeemQueueImplementation = address(new RedeemQueue("Mellow", 1));
             deployment.redeemQueueFactory.proposeImplementation(redeemQueueImplementation);
             deployment.redeemQueueFactory.acceptProposedImplementation(redeemQueueImplementation);
-            address signatureRedeemQueueImplementation = address(new SignatureRedeemQueue("Mellow", 1));
+            address signatureRedeemQueueImplementation =
+                address(new SignatureRedeemQueue("Mellow", 1, address(consensusFactory)));
             deployment.redeemQueueFactory.proposeImplementation(signatureRedeemQueueImplementation);
             deployment.redeemQueueFactory.acceptProposedImplementation(signatureRedeemQueueImplementation);
 

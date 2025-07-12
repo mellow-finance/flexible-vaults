@@ -23,6 +23,7 @@ abstract contract BaseIntegrationTest is Test {
         address user;
         address protocolTreasury;
         Factory baseFactory;
+        Factory consensusFactory;
         Factory depositQueueFactory;
         Factory feeManagerFactory;
         Factory oracleFactory;
@@ -63,12 +64,20 @@ abstract contract BaseIntegrationTest is Test {
         }
 
         {
+            $.consensusFactory = Factory($.baseFactory.create(0, $.vaultProxyAdmin, abi.encode($.deployer)));
+            address implementation = address(new Consensus(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+            $.consensusFactory.proposeImplementation(implementation);
+            $.consensusFactory.acceptProposedImplementation(implementation);
+            $.consensusFactory.transferOwnership($.vaultProxyAdmin);
+        }
+
+        {
             $.depositQueueFactory = Factory($.baseFactory.create(0, $.vaultProxyAdmin, abi.encode($.deployer)));
             address depositQueueImplementation = address(new DepositQueue(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
             $.depositQueueFactory.proposeImplementation(depositQueueImplementation);
             $.depositQueueFactory.acceptProposedImplementation(depositQueueImplementation);
             address signatureDepositQueueImplementation =
-                address(new SignatureDepositQueue(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+                address(new SignatureDepositQueue(DEPLOYMENT_NAME, DEPLOYMENT_VERSION, address($.consensusFactory)));
             $.depositQueueFactory.proposeImplementation(signatureDepositQueueImplementation);
             $.depositQueueFactory.acceptProposedImplementation(signatureDepositQueueImplementation);
             $.depositQueueFactory.transferOwnership($.vaultProxyAdmin);
@@ -96,7 +105,7 @@ abstract contract BaseIntegrationTest is Test {
             $.redeemQueueFactory.proposeImplementation(redeemQueueImplementation);
             $.redeemQueueFactory.acceptProposedImplementation(redeemQueueImplementation);
             address signatureRedeemQueueImplementation =
-                address(new SignatureRedeemQueue(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+                address(new SignatureRedeemQueue(DEPLOYMENT_NAME, DEPLOYMENT_VERSION, address($.consensusFactory)));
             $.redeemQueueFactory.proposeImplementation(signatureRedeemQueueImplementation);
             $.redeemQueueFactory.acceptProposedImplementation(signatureRedeemQueueImplementation);
             $.redeemQueueFactory.transferOwnership($.vaultProxyAdmin);

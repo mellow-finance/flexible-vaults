@@ -28,8 +28,8 @@ interface IQueue is IFactoryEntity {
 
     // Mutable functions
 
-    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external;
+    function handleReport(uint224 priceD18, uint32 timestamp) external;
 
     // Events
-    event ReportHandled(uint224 priceD18, uint32 latestEligibleTimestamp);
+    event ReportHandled(uint224 priceD18, uint32 timestamp);
 }

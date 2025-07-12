@@ -19,8 +19,7 @@ contract SignatureDepositQueueTest is FixtureTest {
     function testCreate() external {
         SignatureDepositQueue queue = createQueue();
         address vault = vm.createWallet("vault").addr;
-        address consensus = vm.createWallet("consensus").addr;
-
+        address consensus = queue.consensusFactory().create(0, address(this), abi.encode(address(this)));
         queue.initialize(abi.encode(asset, vault, abi.encode(consensus, "MockSignatureQueue", "0")));
     }
 
@@ -70,7 +69,26 @@ contract SignatureDepositQueueTest is FixtureTest {
     }
 
     function createQueue() internal returns (SignatureDepositQueue queue) {
-        SignatureDepositQueue queueImplementation = new SignatureDepositQueue("SignatureDepositQueue", 0);
+        address deployer = vm.createWallet("deployer").addr;
+        vm.startPrank(deployer);
+        Factory consensusFactory = Factory(
+            address(
+                new TransparentUpgradeableProxy(
+                    address(new Factory("Mellow", 1)),
+                    address(0xdead),
+                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode(deployer)))
+                )
+            )
+        );
+        {
+            address implementation = address(new Consensus("Mellow", 1));
+            consensusFactory.proposeImplementation(implementation);
+            consensusFactory.acceptProposedImplementation(implementation);
+        }
+
+        SignatureDepositQueue queueImplementation = new SignatureDepositQueue("Mellow", 1, address(consensusFactory));
+
+        vm.stopPrank();
         queue = SignatureDepositQueue(
             payable(new TransparentUpgradeableProxy(address(queueImplementation), vaultProxyAdmin, new bytes(0)))
         );

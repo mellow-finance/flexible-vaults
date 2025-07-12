@@ -5,6 +5,7 @@ import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
+import "../factories/IFactory.sol";
 import "../factories/IFactoryEntity.sol";
 
 import "../modules/IShareModule.sol";
@@ -14,6 +15,7 @@ import "./IQueue.sol";
 
 interface ISignatureQueue is IFactoryEntity {
     error ZeroValue();
+    error NotEntity();
     error OrderExpired(uint256 deadline);
     error InvalidCaller(address caller);
     error InvalidQueue(address queue);
@@ -48,6 +50,8 @@ interface ISignatureQueue is IFactoryEntity {
     // View functions
 
     function ORDER_TYPEHASH() external view returns (bytes32);
+
+    function consensusFactory() external view returns (IFactory);
 
     function consensus() external view returns (IConsensus);
 

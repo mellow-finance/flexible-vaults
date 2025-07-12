@@ -5,7 +5,9 @@ import "../../Fixture.t.sol";
 import "../../Imports.sol";
 
 contract MockSignatureQueue is SignatureQueue {
-    constructor(string memory name_, uint256 version_) SignatureQueue(name_, version_) {}
+    constructor(string memory name_, uint256 version_, address consensusFactory_)
+        SignatureQueue(name_, version_, consensusFactory_)
+    {}
 
     function test() external {}
 }
@@ -23,11 +25,12 @@ contract SignatureQueueTest is FixtureTest {
     }
 
     function testCreate() external {
-        MockSignatureQueue queue = createQueue();
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        MockSignatureQueue queue = createQueue(deployment);
         address vault = vm.createWallet("vault").addr;
-        address consensus = vm.createWallet("consensus").addr;
+        address consensus = queue.consensusFactory().create(0, address(this), abi.encode(address(this)));
 
-        vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.ZeroValue.selector));
+        vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.NotEntity.selector));
         queue.initialize(abi.encode(asset, vault, abi.encode(address(0), "MockSignatureQueue", "0")));
 
         queue.initialize(abi.encode(asset, vault, abi.encode(consensus, "MockSignatureQueue", "0")));
@@ -50,7 +53,7 @@ contract SignatureQueueTest is FixtureTest {
         signers[0] = signer;
         (Consensus consensus,) = createConsensus(deployment, signers);
 
-        MockSignatureQueue queue = createQueue();
+        MockSignatureQueue queue = createQueue(deployment);
         queue.initialize(
             abi.encode(asset, address(deployment.vault), abi.encode(address(consensus), "MockSignatureQueue", "0"))
         );
@@ -124,8 +127,12 @@ contract SignatureQueueTest is FixtureTest {
         }
     }
 
-    function createQueue() internal returns (MockSignatureQueue queue) {
-        MockSignatureQueue queueImplementation = new MockSignatureQueue("MockSignatureQueue", 0);
+    function createQueue(Deployment memory deployment) internal returns (MockSignatureQueue queue) {
+        address deployer = vm.createWallet("deployer").addr;
+        Factory consensusFactory =
+            Factory(address(SignatureQueue(deployment.depositQueueFactory.implementationAt(1)).consensusFactory()));
+        MockSignatureQueue queueImplementation =
+            new MockSignatureQueue("MockSignatureQueue", 0, address(consensusFactory));
         queue = MockSignatureQueue(
             payable(new TransparentUpgradeableProxy(address(queueImplementation), vaultProxyAdmin, new bytes(0)))
         );

@@ -4,7 +4,9 @@ pragma solidity 0.8.25;
 import "./SignatureQueue.sol";
 
 contract SignatureDepositQueue is SignatureQueue {
-    constructor(string memory name_, uint256 version_) SignatureQueue(name_, version_) {}
+    constructor(string memory name_, uint256 version_, address consensusFactory_)
+        SignatureQueue(name_, version_, consensusFactory_)
+    {}
 
     function deposit(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
         validateOrder(order, signatures);
