@@ -1,20 +1,28 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-/**
- * 0-indexed FenwickTree implementation on Solidity
- * @dev docs: https://cp-algorithms.com/data_structures/fenwick.html
- * @dev docs: https://en.wikipedia.org/wiki/Fenwick_tree
- */
+/// @title FenwickTreeLibrary
+/// @notice Implements a 0-indexed Fenwick Tree (Binary Indexed Tree) for efficient prefix sum queries and updates.
+/// @dev See: https://cp-algorithms.com/data_structures/fenwick.html
+/// @dev See: https://en.wikipedia.org/wiki/Fenwick_tree
 library FenwickTreeLibrary {
+    /// @notice Thrown when initializing with an invalid length (must be power of 2 and nonzero), or during overflow.
     error InvalidLength();
+
+    /// @notice Thrown when an index is outside the bounds of the tree.
     error IndexOutOfBounds();
 
+    /// @notice Internal Fenwick Tree structure using a mapping as a flat array.
     struct Tree {
+        /// @notice Mapping of index to its cumulative value.
         mapping(uint256 index => int256) _values;
+        /// @notice Length of the tree (must be a power of 2).
         uint256 _length;
     }
 
+    /// @notice Initializes the tree with a given length (must be > 0 and power of 2).
+    /// @param tree The Fenwick tree to initialize.
+    /// @param length_ The length of the tree.
     function initialize(Tree storage tree, uint256 length_) internal {
         if (tree._length != 0 || length_ == 0 || (length_ & (length_ - 1)) != 0) {
             revert InvalidLength();
@@ -22,10 +30,15 @@ library FenwickTreeLibrary {
         tree._length = length_;
     }
 
+    /// @notice Returns the current size of the tree.
+    /// @param tree The Fenwick tree.
+    /// @return The length of the tree.
     function length(Tree storage tree) internal view returns (uint256) {
         return tree._length;
     }
 
+    /// @notice Doubles the size of the tree (maintaining power of two invariant).
+    /// @param tree The Fenwick tree.
     function extend(Tree storage tree) internal {
         uint256 length_ = tree._length;
         if (length_ >= (1 << 255)) {
@@ -35,6 +48,10 @@ library FenwickTreeLibrary {
         tree._values[(length_ << 1) - 1] = tree._values[length_ - 1];
     }
 
+    /// @notice Updates the tree at the specified index by a given delta.
+    /// @param tree The Fenwick tree.
+    /// @param index Index to modify.
+    /// @param value Value to add (can be negative).
     function modify(Tree storage tree, uint256 index, int256 value) internal {
         uint256 length_ = tree._length;
         if (index >= length_) {
@@ -46,6 +63,11 @@ library FenwickTreeLibrary {
         _modify(tree, index, length_, value);
     }
 
+    /// @dev Internal function to apply Fenwick update logic.
+    /// @param tree The Fenwick tree.
+    /// @param index Index to start updating from.
+    /// @param length_ Length of the tree.
+    /// @param value Value to add.
     function _modify(Tree storage tree, uint256 index, uint256 length_, int256 value) private {
         while (index < length_) {
             tree._values[index] += value;
@@ -53,6 +75,10 @@ library FenwickTreeLibrary {
         }
     }
 
+    /// @notice Returns the prefix sum from index 0 to `index` (inclusive).
+    /// @param tree The Fenwick tree.
+    /// @param index Right bound index for sum (inclusive).
+    /// @return prefixSum The sum of values from index 0 to `index`.
     function get(Tree storage tree, uint256 index) internal view returns (int256) {
         uint256 length_ = tree._length;
         if (index >= length_) {
@@ -61,6 +87,10 @@ library FenwickTreeLibrary {
         return _get(tree, index);
     }
 
+    /// @dev Internal function to compute prefix sum up to `index`.
+    /// @param tree The Fenwick tree.
+    /// @param index Right bound index for sum (inclusive).
+    /// @return prefixSum The cumulative sum up to and including `index`.
     function _get(Tree storage tree, uint256 index) private view returns (int256 prefixSum) {
         assembly ("memory-safe") {
             mstore(0x20, tree.slot)
@@ -73,6 +103,11 @@ library FenwickTreeLibrary {
         }
     }
 
+    /// @notice Returns the sum over the interval [from, to].
+    /// @param tree The Fenwick tree.
+    /// @param from Left bound index (inclusive).
+    /// @param to Right bound index (inclusive).
+    /// @return The sum over the specified interval.
     function get(Tree storage tree, uint256 from, uint256 to) internal view returns (int256) {
         if (from > to) {
             return 0;

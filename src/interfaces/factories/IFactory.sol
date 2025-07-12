@@ -7,82 +7,76 @@ import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.so
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 /// @title IFactory
-/// @notice Interface for a factory managing deployable upgradeable proxies and implementation proposals.
+/// @notice Interface for a factory that manages deployable upgradeable proxies and implementation governance.
 interface IFactory is IFactoryEntity {
-    /// @notice Thrown when accessing an index that exceeds bounds.
+    /// @notice Thrown when attempting to access an index outside the valid range.
     error OutOfBounds(uint256 index);
 
-    /// @notice Thrown when trying to use a version that has been blacklisted.
+    /// @notice Thrown when trying to use an implementation version that is blacklisted.
     error BlacklistedVersion(uint256 version);
 
-    /// @notice Thrown when an implementation is already accepted.
+    /// @notice Thrown when an implementation is already in the accepted list.
     error ImplementationAlreadyAccepted(address implementation);
 
     /// @notice Thrown when an implementation has already been proposed.
     error ImplementationAlreadyProposed(address implementation);
 
-    /// @notice Thrown when an implementation has not been proposed yet.
+    /// @notice Thrown when attempting to accept an implementation that was never proposed.
     error ImplementationNotProposed(address implementation);
 
-    /// @dev Storage struct used internally to track factory state.
+    /// @dev Internal storage structure for tracking factory state.
     struct FactoryStorage {
-        EnumerableSet.AddressSet entities;
-        EnumerableSet.AddressSet implementations;
-        EnumerableSet.AddressSet proposals;
-        mapping(uint256 => bool) isBlacklisted;
+        EnumerableSet.AddressSet entities; // Set of deployed upgradeable proxies
+        EnumerableSet.AddressSet implementations; // Set of accepted implementation addresses
+        EnumerableSet.AddressSet proposals; // Set of currently proposed (but not yet accepted) implementations
+        mapping(uint256 version => bool) isBlacklisted; // Tracks whether a given version is blacklisted
     }
 
-    // View functions
-
-    /// @notice Returns the total number of deployed instances.
+    /// @notice Returns the total number of deployed entities (proxies).
     function entities() external view returns (uint256);
 
-    /// @notice Returns the address of an entity at a specific index.
+    /// @notice Returns the address of the deployed entity at a given index.
     function entityAt(uint256 index) external view returns (address);
 
-    /// @notice Checks whether an address is a registered entity.
+    /// @notice Returns whether the given address is a deployed entity.
     function isEntity(address entity) external view returns (bool);
 
-    /// @notice Returns the total number of accepted implementations.
+    /// @notice Returns the total number of accepted implementation contracts.
     function implementations() external view returns (uint256);
 
-    /// @notice Returns the implementation address at a given index.
+    /// @notice Returns the implementation address at the given index.
     function implementationAt(uint256 index) external view returns (address);
 
-    /// @notice Returns the number of currently proposed (unaccepted) implementations.
+    /// @notice Returns the number of currently proposed (pending) implementations.
     function proposals() external view returns (uint256);
 
-    /// @notice Returns the proposed implementation address at a given index.
+    /// @notice Returns the address of a proposed implementation at a given index.
     function proposalAt(uint256 index) external view returns (address);
 
-    /// @notice Checks if a given version is blacklisted.
+    /// @notice Returns whether the given implementation version is blacklisted.
     function isBlacklisted(uint256 version) external view returns (bool);
 
-    // Mutable functions
-
-    /// @notice Updates blacklist status of a specific implementation version.
-    /// @param version The implementation version index.
-    /// @param flag Whether the version should be blacklisted or not.
+    /// @notice Updates the blacklist status for a specific implementation version.
+    /// @param version The version index to update.
+    /// @param flag True to blacklist, false to unblacklist.
     function setBlacklistStatus(uint256 version, bool flag) external;
 
-    /// @notice Proposes a new implementation for approval.
-    /// @param implementation Address of the new implementation contract.
+    /// @notice Proposes a new implementation for future deployment.
+    /// @param implementation The address of the proposed implementation contract.
     function proposeImplementation(address implementation) external;
 
-    /// @notice Accepts a previously proposed implementation.
-    /// @param implementation Address of the proposed implementation to approve.
+    /// @notice Approves a previously proposed implementation, allowing it to be used for deployments.
+    /// @param implementation The address of the proposed implementation to approve.
     function acceptProposedImplementation(address implementation) external;
 
-    /// @notice Creates a new upgradeable proxy instance using a registered implementation version.
-    /// @param version Index of the accepted implementation version.
-    /// @param owner Address that will become the admin of the proxy.
-    /// @param initParams Calldata used for initializing the proxy contract.
-    /// @return instance The address of the newly deployed contract.
+    /// @notice Deploys a new TransparentUpgradeableProxy using an accepted implementation.
+    /// @param version The version index of the implementation to use.
+    /// @param owner The address that will become the owner of the proxy.
+    /// @param initParams Calldata to be passed for initialization of the new proxy instance.
+    /// @return instance The address of the newly deployed proxy contract.
     function create(uint256 version, address owner, bytes calldata initParams) external returns (address instance);
 
-    // Events
-
-    /// @notice Emitted when blacklist status is changed for a version.
+    /// @notice Emitted when the blacklist status of a version is updated.
     event SetBlacklistStatus(uint256 version, bool flag);
 
     /// @notice Emitted when a new implementation is proposed.
@@ -91,6 +85,6 @@ interface IFactory is IFactoryEntity {
     /// @notice Emitted when a proposed implementation is accepted.
     event AcceptProposedImplementation(address implementation);
 
-    /// @notice Emitted when a new proxy instance is created.
-    event Created(address instance, uint256 version, address owner, bytes initParams);
+    /// @notice Emitted when a new proxy instance is successfully deployed.
+    event Created(address indexed instance, uint256 indexed version, address indexed owner, bytes initParams);
 }

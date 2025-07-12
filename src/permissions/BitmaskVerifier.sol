@@ -4,7 +4,23 @@ pragma solidity 0.8.25;
 import "../interfaces/permissions/ICustomVerifier.sol";
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
+/// @title BitmaskVerifier
+/// @notice Verifies low-level contract calls using a bitmask-based hash encoding.
+///         Designed for intent-based permission systems where selected parts of calldata
+///         are verified using a compact bitmasking scheme.
 contract BitmaskVerifier is ICustomVerifier {
+    /// @notice Computes a verification hash using a bitmask applied over call data fields.
+    /// @param bitmask A byte array where each bit defines whether the corresponding byte of input is considered in hashing.
+    ///        Layout:
+    ///        - [0:32]    -> mask for `who`
+    ///        - [32:64]   -> mask for `where`
+    ///        - [64:96]   -> mask for `value`
+    ///        - [96:]     -> mask for `data`
+    /// @param who Caller address.
+    /// @param where Target contract address.
+    /// @param value ETH value to be sent.
+    /// @param data Arbitrary calldata of the function being verified.
+    /// @return Hash computed by successively combining masked fields using `keccak256`.
     function calculateHash(bytes calldata bitmask, address who, address where, uint256 value, bytes calldata data)
         public
         pure
@@ -20,6 +36,15 @@ contract BitmaskVerifier is ICustomVerifier {
         return hash_;
     }
 
+    /// @notice Verifies that a call matches a previously authorized hash using bitmask encoding.
+    /// @param who Caller address to verify.
+    /// @param where Target contract address.
+    /// @param value ETH value to be sent with the call.
+    /// @param data Calldata used in the intended call.
+    /// @param verificationData Encoded structure containing:
+    ///        - bytes32 expectedHash
+    ///        - bytes calldata bitmask
+    /// @return Whether the input parameters match the expected hash when processed with the provided bitmask.
     function verifyCall(address who, address where, uint256 value, bytes calldata data, bytes calldata verificationData)
         public
         pure

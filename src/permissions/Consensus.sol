@@ -97,7 +97,7 @@ contract Consensus is IConsensus, OwnableUpgradeable {
             revert SignerAlreadyExists(signer);
         }
         _setThreshold(threshold_);
-        emit SignerAdded(signer, signatureType, threshold_);
+        emit SignerAdded(signer, signatureType);
     }
 
     /// @inheritdoc IConsensus
@@ -107,7 +107,7 @@ contract Consensus is IConsensus, OwnableUpgradeable {
             revert SignerNotFound(signer);
         }
         _setThreshold(threshold_);
-        emit SignerRemoved(signer, threshold_);
+        emit SignerRemoved(signer);
     }
 
     // Internal functions

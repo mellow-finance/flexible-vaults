@@ -128,7 +128,6 @@ contract SignatureQueueTest is FixtureTest {
     }
 
     function createQueue(Deployment memory deployment) internal returns (MockSignatureQueue queue) {
-        address deployer = vm.createWallet("deployer").addr;
         Factory consensusFactory =
             Factory(address(SignatureQueue(deployment.depositQueueFactory.implementationAt(1)).consensusFactory()));
         MockSignatureQueue queueImplementation =

@@ -3,9 +3,9 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import "../interfaces/external/tokens/IWETH.sol";
+import "../interfaces/external/tokens/IWSTETH.sol";
 import "../interfaces/hooks/IHook.sol";
-import "../interfaces/tokens/IWETH.sol";
-import "../interfaces/tokens/IWSTETH.sol";
 
 import "../libraries/TransferLibrary.sol";
 
