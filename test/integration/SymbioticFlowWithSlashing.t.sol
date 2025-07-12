@@ -45,24 +45,23 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         address[] memory assets = new address[](1);
         assets[0] = ASSET;
 
-        Vault.RoleHolder[] memory holders_ = new Vault.RoleHolder[](9);
+        Vault.RoleHolder[] memory holders_ = new Vault.RoleHolder[](8);
 
         Vault vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
         Oracle oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
 
-        holders_[0] = Vault.RoleHolder(vaultImplementation.CREATE_DEPOSIT_QUEUE_ROLE(), $.vaultAdmin);
-        holders_[1] = Vault.RoleHolder(vaultImplementation.CREATE_REDEEM_QUEUE_ROLE(), $.vaultAdmin);
-        holders_[2] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
-        holders_[3] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
-        holders_[4] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
-        holders_[5] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALLER_ROLE(), $.curator);
-        holders_[6] = Vault.RoleHolder(
+        holders_[0] = Vault.RoleHolder(vaultImplementation.CREATE_QUEUE_ROLE(), $.vaultAdmin);
+        holders_[1] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
+        holders_[2] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
+        holders_[3] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
+        holders_[4] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALLER_ROLE(), $.curator);
+        holders_[5] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).SET_SUBVAULT_LIMIT_ROLE(), $.vaultAdmin
         );
-        holders_[7] = Vault.RoleHolder(
+        holders_[6] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).ALLOW_SUBVAULT_ASSETS_ROLE(), $.vaultAdmin
         );
-        holders_[8] =
+        holders_[7] =
             Vault.RoleHolder(Oracle($.oracleFactory.implementationAt(0)).SET_SECURITY_PARAMS_ROLE(), $.vaultAdmin);
 
         (,,, address oracle, address vault_) = $.vaultConfigurator.create(
@@ -87,8 +86,8 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         Vault vault = Vault(payable(vault_));
 
         vm.startPrank($.vaultAdmin);
-        vault.createDepositQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
-        vault.createRedeemQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
+        vault.createQueue(0, true, $.vaultProxyAdmin, ASSET, new bytes(0));
+        vault.createQueue(0, false, $.vaultProxyAdmin, ASSET, new bytes(0));
         {
             IOracle.Report[] memory reports = new IOracle.Report[](1);
             reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});

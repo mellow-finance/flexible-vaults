@@ -165,10 +165,9 @@ contract Integration is Test {
         Verifier verifier = Verifier(verifierFactory.create(0, vaultProxyAdmin, abi.encode(address(vault), bytes32(0))));
         vm.startPrank(vaultAdmin);
 
-        bytes32[27] memory roles = [
+        bytes32[26] memory roles = [
             vault.SET_HOOK_ROLE(),
-            vault.CREATE_DEPOSIT_QUEUE_ROLE(),
-            vault.CREATE_REDEEM_QUEUE_ROLE(),
+            vault.CREATE_QUEUE_ROLE(),
             vault.SET_QUEUE_LIMIT_ROLE(),
             vault.CREATE_SUBVAULT_ROLE(),
             vault.DISCONNECT_SUBVAULT_ROLE(),
@@ -206,13 +205,13 @@ contract Integration is Test {
         consensus.addSigner(vaultAdmin, 1, IConsensus.SignatureType.EIP712);
 
         vault.setQueueLimit(4);
-        vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
-        vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
-        vault.createDepositQueue(
-            1, vaultProxyAdmin, address(asset), abi.encode(address(consensus), string("x"), string("y"))
+        vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
+        vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
+        vault.createQueue(
+            1, true, vaultProxyAdmin, address(asset), abi.encode(address(consensus), string("x"), string("y"))
         );
-        vault.createRedeemQueue(
-            1, vaultProxyAdmin, address(asset), abi.encode(address(consensus), string("x"), string("y"))
+        vault.createQueue(
+            1, false, vaultProxyAdmin, address(asset), abi.encode(address(consensus), string("x"), string("y"))
         );
 
         skip(1 hours);

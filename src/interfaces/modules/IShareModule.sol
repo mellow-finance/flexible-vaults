@@ -35,8 +35,7 @@ interface IShareModule is IBaseModule {
     // View functions
 
     function SET_HOOK_ROLE() external view returns (bytes32);
-    function CREATE_DEPOSIT_QUEUE_ROLE() external view returns (bytes32);
-    function CREATE_REDEEM_QUEUE_ROLE() external view returns (bytes32);
+    function CREATE_QUEUE_ROLE() external view returns (bytes32);
     function PAUSE_QUEUE_ROLE() external view returns (bytes32);
     function UNPAUSE_QUEUE_ROLE() external view returns (bytes32);
     function SET_QUEUE_LIMIT_ROLE() external view returns (bytes32);
@@ -90,9 +89,8 @@ interface IShareModule is IBaseModule {
     function setDefaultDepositHook(address hook) external;
     function setDefaultRedeemHook(address hook) external;
 
-    function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data) external;
-
-    function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data) external;
+    function createQueue(uint256 version, bool isDepositQueue, address owner, address asset, bytes calldata data)
+        external;
 
     function removeQueue(address queue) external;
 

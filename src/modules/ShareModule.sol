@@ -14,9 +14,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
     /// @inheritdoc IShareModule
     bytes32 public constant SET_HOOK_ROLE = keccak256("modules.ShareModule.SET_HOOK_ROLE");
     /// @inheritdoc IShareModule
-    bytes32 public constant CREATE_DEPOSIT_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_DEPOSIT_QUEUE_ROLE");
-    /// @inheritdoc IShareModule
-    bytes32 public constant CREATE_REDEEM_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_REDEEM_QUEUE_ROLE");
+    bytes32 public constant CREATE_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_QUEUE_ROLE");
     /// @inheritdoc IShareModule
     bytes32 public constant PAUSE_QUEUE_ROLE = keccak256("modules.ShareModule.PAUSE_QUEUE_ROLE");
     /// @inheritdoc IShareModule
@@ -58,8 +56,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
 
     /// @inheritdoc IShareModule
     function hasQueue(address queue) public view returns (bool) {
-        ShareModuleStorage storage $ = _shareModuleStorage();
-        return $.queues[IQueue(queue).asset()].contains(queue);
+        return _shareModuleStorage().queues[IQueue(queue).asset()].contains(queue);
     }
 
     /// @inheritdoc IShareModule
@@ -137,30 +134,28 @@ abstract contract ShareModule is IShareModule, ACLModule {
     }
 
     /// @inheritdoc IShareModule
-    function getHook(address queue) public view returns (address hook) {
+    function getHook(address queue) public view returns (address) {
         ShareModuleStorage storage $ = _shareModuleStorage();
-        hook = $.customHooks[queue];
-        if (hook == address(0)) {
-            hook = $.isDepositQueue[queue] ? $.defaultDepositHook : $.defaultRedeemHook;
-        }
-        return hook;
+        address hook = $.customHooks[queue];
+        return hook != address(0) ? hook : $.isDepositQueue[queue] ? $.defaultDepositHook : $.defaultRedeemHook;
     }
 
     /// @inheritdoc IShareModule
     function getLiquidAssets() public view returns (uint256) {
         address queue = _msgSender();
-        ShareModuleStorage storage $ = _shareModuleStorage();
         address asset = IQueue(queue).asset();
+        ShareModuleStorage storage $ = _shareModuleStorage();
         if (!$.queues[asset].contains(queue) || $.isDepositQueue[queue]) {
             revert Forbidden();
         }
-        return IRedeemHook(getHook(queue)).getLiquidAssets(asset);
+        address hook = getHook(queue);
+        return hook == address(0) ? IERC20(asset).balanceOf(address(this)) : IRedeemHook(hook).getLiquidAssets(asset);
     }
 
     // Mutable functions
 
     /// @inheritdoc IShareModule
-    function claimShares(address account) public {
+    function claimShares(address account) external {
         ShareModuleStorage storage $ = _shareModuleStorage();
         EnumerableSet.AddressSet storage assets = $.assets;
         uint256 assetsCount = assets.length();
@@ -222,9 +217,9 @@ abstract contract ShareModule is IShareModule, ACLModule {
     }
 
     /// @inheritdoc IShareModule
-    function createDepositQueue(uint256 version, address owner, address asset, bytes calldata data)
+    function createQueue(uint256 version, bool isDeposit, address owner, address asset, bytes calldata data)
         external
-        onlyRole(CREATE_DEPOSIT_QUEUE_ROLE)
+        onlyRole(CREATE_QUEUE_ROLE)
     {
         ShareModuleStorage storage $ = _shareModuleStorage();
         if (!IOracle($.oracle).isSupportedAsset(asset)) {
@@ -233,41 +228,23 @@ abstract contract ShareModule is IShareModule, ACLModule {
         if ($.queueCount == $.queueLimit) {
             revert QueueLimitReached();
         }
-        address queue = IFactory(depositQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
+        address queue = IFactory(isDeposit ? depositQueueFactory : redeemQueueFactory).create(
+            version, owner, abi.encode(asset, address(this), data)
+        );
         $.queueCount++;
         $.queues[asset].add(queue);
-        $.isDepositQueue[queue] = true;
+        $.isDepositQueue[queue] = isDeposit;
         $.assets.add(asset);
-        emit QueueCreated(queue, asset, true);
-    }
-
-    /// @inheritdoc IShareModule
-    function createRedeemQueue(uint256 version, address owner, address asset, bytes calldata data)
-        external
-        onlyRole(CREATE_REDEEM_QUEUE_ROLE)
-    {
-        ShareModuleStorage storage $ = _shareModuleStorage();
-        if (!IOracle($.oracle).isSupportedAsset(asset)) {
-            revert UnsupportedAsset(asset);
-        }
-        if ($.queueCount == $.queueLimit) {
-            revert QueueLimitReached();
-        }
-        address queue = IFactory(redeemQueueFactory).create(version, owner, abi.encode(asset, address(this), data));
-        $.queueCount++;
-        $.queues[asset].add(queue);
-        $.isDepositQueue[queue] = false;
-        $.assets.add(asset);
-        emit QueueCreated(queue, asset, false);
+        emit QueueCreated(queue, asset, isDeposit);
     }
 
     /// @inheritdoc IShareModule
     function removeQueue(address queue) external onlyRole(REMOVE_QUEUE_ROLE) {
-        ShareModuleStorage storage $ = _shareModuleStorage();
         if (!IQueue(queue).canBeRemoved()) {
             revert Forbidden();
         }
         address asset = IQueue(queue).asset();
+        ShareModuleStorage storage $ = _shareModuleStorage();
         if (!$.queues[asset].contains(queue)) {
             revert Forbidden();
         }

@@ -97,22 +97,22 @@ contract ShareModuleTest is FixtureTest {
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 address(this),
-                deployment.vault.CREATE_DEPOSIT_QUEUE_ROLE()
+                deployment.vault.CREATE_QUEUE_ROLE()
             )
         );
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
 
         vm.prank(vaultAdmin);
         vm.expectRevert(abi.encodeWithSelector(IShareModule.UnsupportedAsset.selector, unsupportedAsset));
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(unsupportedAsset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(unsupportedAsset), new bytes(0));
 
         vm.prank(vaultAdmin);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 1, "Queue count should be 1");
 
         vm.prank(vaultAdmin);
         vm.expectRevert(abi.encode(IShareModule.QueueLimitReached.selector));
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
     }
 
     function testCreateRedeemQueue() external {
@@ -135,22 +135,22 @@ contract ShareModuleTest is FixtureTest {
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 address(this),
-                deployment.vault.CREATE_REDEEM_QUEUE_ROLE()
+                deployment.vault.CREATE_QUEUE_ROLE()
             )
         );
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
 
         vm.prank(vaultAdmin);
         vm.expectRevert(abi.encodeWithSelector(IShareModule.UnsupportedAsset.selector, unsupportedAsset));
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(unsupportedAsset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(unsupportedAsset), new bytes(0));
 
         vm.prank(vaultAdmin);
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 1, "Queue count should be 1");
 
         vm.prank(vaultAdmin);
         vm.expectRevert(abi.encode(IShareModule.QueueLimitReached.selector));
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
     }
 
     function testPauseQueue() external {
@@ -161,7 +161,7 @@ contract ShareModuleTest is FixtureTest {
         assertEq(deployment.vault.queueLimit(), 1, "QueueLimit count should be 1");
 
         vm.prank(vaultAdmin);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 1, "Queue count should be 1");
         address queue = deployment.vault.queueAt(address(asset), 0);
 
@@ -202,7 +202,7 @@ contract ShareModuleTest is FixtureTest {
         assertEq(deployment.vault.queueLimit(), 1, "QueueLimit count should be 1");
 
         vm.prank(vaultAdmin);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 1, "Queue count should be 1");
         address queue = deployment.vault.queueAt(address(asset), 0);
 
@@ -243,8 +243,8 @@ contract ShareModuleTest is FixtureTest {
 
         vm.startPrank(vaultAdmin);
         deployment.vault.setQueueLimit(2);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 2, "Queue count should be 2");
         vm.stopPrank();
 
@@ -287,8 +287,8 @@ contract ShareModuleTest is FixtureTest {
 
         vm.startPrank(vaultAdmin);
         deployment.vault.setQueueLimit(2);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 2, "Queue count should be 2");
         vm.stopPrank();
 
@@ -346,7 +346,7 @@ contract ShareModuleTest is FixtureTest {
         assertEq(deployment.vault.queueLimit(), 1, "QueueLimit count should be 1");
 
         vm.prank(vaultAdmin);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 1, "Queue count should be 1");
         assertEq(deployment.vault.getQueueCount(address(asset)), 1, "Queue count should be 1");
 
@@ -364,8 +364,8 @@ contract ShareModuleTest is FixtureTest {
 
         vm.startPrank(vaultAdmin);
         deployment.vault.setQueueLimit(2);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 2, "Queue count should be 2");
         vm.stopPrank();
 
@@ -388,8 +388,8 @@ contract ShareModuleTest is FixtureTest {
 
         vm.startPrank(vaultAdmin);
         deployment.vault.setQueueLimit(2);
-        deployment.vault.createDepositQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
-        deployment.vault.createRedeemQueue(0, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, true, vaultProxyAdmin, address(asset), new bytes(0));
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
         assertEq(deployment.vault.getQueueCount(), 2, "Queue count should be 2");
         vm.stopPrank();
 

@@ -44,21 +44,20 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         address[] memory assets = new address[](1);
         assets[0] = ASSET;
 
-        Vault.RoleHolder[] memory roleHolders = new Vault.RoleHolder[](8);
+        Vault.RoleHolder[] memory roleHolders = new Vault.RoleHolder[](7);
 
         Vault vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
         Oracle oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
 
-        roleHolders[0] = Vault.RoleHolder(vaultImplementation.CREATE_DEPOSIT_QUEUE_ROLE(), $.vaultAdmin);
-        roleHolders[1] = Vault.RoleHolder(vaultImplementation.CREATE_REDEEM_QUEUE_ROLE(), $.vaultAdmin);
-        roleHolders[2] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
-        roleHolders[3] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
-        roleHolders[4] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
-        roleHolders[5] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALLER_ROLE(), $.curator);
-        roleHolders[6] = Vault.RoleHolder(
+        roleHolders[0] = Vault.RoleHolder(vaultImplementation.CREATE_QUEUE_ROLE(), $.vaultAdmin);
+        roleHolders[1] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
+        roleHolders[2] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
+        roleHolders[3] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
+        roleHolders[4] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALLER_ROLE(), $.curator);
+        roleHolders[5] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).SET_SUBVAULT_LIMIT_ROLE(), $.vaultAdmin
         );
-        roleHolders[7] = Vault.RoleHolder(
+        roleHolders[6] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).ALLOW_SUBVAULT_ASSETS_ROLE(), $.vaultAdmin
         );
 
@@ -85,8 +84,8 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         Vault vault = Vault(payable(vault_));
 
         vm.startPrank($.vaultAdmin);
-        vault.createDepositQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
-        vault.createRedeemQueue(0, $.vaultProxyAdmin, ASSET, new bytes(0));
+        vault.createQueue(0, true, $.vaultProxyAdmin, ASSET, new bytes(0));
+        vault.createQueue(0, false, $.vaultProxyAdmin, ASSET, new bytes(0));
         {
             IOracle.Report[] memory reports = new IOracle.Report[](1);
             reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});

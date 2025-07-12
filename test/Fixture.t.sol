@@ -98,7 +98,7 @@ abstract contract FixtureTest is Test {
     function addDepositQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
-        deployment.vault.createDepositQueue(0, owner, asset, new bytes(0));
+        deployment.vault.createQueue(0, true, owner, asset, new bytes(0));
         vm.stopPrank();
 
         uint256 index = deployment.vault.getQueueCount(asset);
@@ -111,7 +111,7 @@ abstract contract FixtureTest is Test {
     {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
-        deployment.vault.createDepositQueue(1, owner, asset, abi.encode(address(consensus), "MockSignatureQueue", "0"));
+        deployment.vault.createQueue(1, true, owner, asset, abi.encode(address(consensus), "MockSignatureQueue", "0"));
         vm.stopPrank();
 
         uint256 index = deployment.vault.getQueueCount(asset);
@@ -121,7 +121,7 @@ abstract contract FixtureTest is Test {
     function addRedeemQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
-        deployment.vault.createRedeemQueue(0, owner, asset, new bytes(0));
+        deployment.vault.createQueue(2, false, owner, asset, new bytes(0));
         vm.stopPrank();
 
         uint256 index = deployment.vault.getQueueCount(asset);
@@ -134,7 +134,7 @@ abstract contract FixtureTest is Test {
     {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
-        deployment.vault.createRedeemQueue(1, owner, asset, abi.encode(address(consensus), "MockSignatureQueue", "0"));
+        deployment.vault.createQueue(1, false, owner, asset, abi.encode(address(consensus), "MockSignatureQueue", "0"));
         vm.stopPrank();
 
         uint256 index = deployment.vault.getQueueCount(asset);
@@ -304,10 +304,9 @@ abstract contract FixtureTest is Test {
     }
 
     function grantRoles(Deployment memory deployment) internal {
-        bytes32[27] memory roles = [
+        bytes32[26] memory roles = [
             deployment.vault.SET_HOOK_ROLE(),
-            deployment.vault.CREATE_DEPOSIT_QUEUE_ROLE(),
-            deployment.vault.CREATE_REDEEM_QUEUE_ROLE(),
+            deployment.vault.CREATE_QUEUE_ROLE(),
             deployment.vault.SET_QUEUE_LIMIT_ROLE(),
             deployment.vault.CREATE_SUBVAULT_ROLE(),
             deployment.vault.DISCONNECT_SUBVAULT_ROLE(),
