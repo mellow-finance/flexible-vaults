@@ -37,8 +37,8 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         maxRelativeDeviationD18: 0.01 ether, // 1% abs
         suspiciousRelativeDeviationD18: 0.005 ether, // 0.05% abs
         timeout: 20 hours,
-        depositSecureInterval: 1 hours,
-        redeemSecureInterval: 14 days
+        depositInterval: 1 hours,
+        redeemInterval: 14 days
     });
 
     function testSymbioticFlowWithSlashing() external {
@@ -173,7 +173,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
 
         {
             IOracle.SecurityParams memory securityParmas = Oracle(oracle).securityParams();
-            skip(Math.max(securityParmas.depositSecureInterval, securityParmas.timeout) + 1);
+            skip(Math.max(securityParmas.depositInterval, securityParmas.timeout) + 1);
         }
 
         vm.startPrank($.vaultAdmin);
@@ -248,7 +248,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
 
         {
             IOracle.SecurityParams memory securityParmas = Oracle(oracle).securityParams();
-            skip(Math.max(securityParmas.redeemSecureInterval, securityParmas.timeout) + 1);
+            skip(Math.max(securityParmas.redeemInterval, securityParmas.timeout) + 1);
         }
 
         vm.startPrank($.curator);
@@ -295,8 +295,8 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
 
         vm.startPrank($.user);
         {
-            uint256[] memory timestamps = new uint256[](1);
-            timestamps[0] = userRedeemTimestamp;
+            uint32[] memory timestamps = new uint32[](1);
+            timestamps[0] = uint32(userRedeemTimestamp);
             RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps);
         }
         vm.stopPrank();
@@ -327,8 +327,8 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
 
         vm.startPrank($.user);
         {
-            uint256[] memory timestamps = new uint256[](1);
-            timestamps[0] = userRedeemTimestamp;
+            uint32[] memory timestamps = new uint32[](1);
+            timestamps[0] = uint32(userRedeemTimestamp);
             RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
             IRedeemQueue.Request[] memory requests = queue.requestsOf($.user, 0, type(uint256).max);
             assertEq(requests.length, 1);

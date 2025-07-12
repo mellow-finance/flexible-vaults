@@ -117,14 +117,8 @@ contract OracleTest is FixtureTest {
             "Suspicious relative deviation mismatch"
         );
         assertEq(securityParams.timeout, securityParamsDefault.timeout, "Timeout mismatch");
-        assertEq(
-            securityParams.depositSecureInterval,
-            securityParamsDefault.depositSecureInterval,
-            "Secure interval mismatch"
-        );
-        assertEq(
-            securityParams.redeemSecureInterval, securityParamsDefault.redeemSecureInterval, "Secure interval mismatch"
-        );
+        assertEq(securityParams.depositInterval, securityParamsDefault.depositInterval, "interval mismatch");
+        assertEq(securityParams.redeemInterval, securityParamsDefault.redeemInterval, "interval mismatch");
 
         IOracle.SecurityParams memory securityParamsNew = IOracle.SecurityParams({
             maxAbsoluteDeviation: 6e16,
@@ -132,8 +126,8 @@ contract OracleTest is FixtureTest {
             maxRelativeDeviationD18: 4e16,
             suspiciousRelativeDeviationD18: 3e16,
             timeout: 3600,
-            depositSecureInterval: 300,
-            redeemSecureInterval: 600
+            depositInterval: 300,
+            redeemInterval: 600
         });
 
         vm.prank(deployment.vaultAdmin);
@@ -161,12 +155,8 @@ contract OracleTest is FixtureTest {
             "Suspicious relative deviation mismatch"
         );
         assertEq(securityParams.timeout, securityParamsNew.timeout, "Timeout mismatch");
-        assertEq(
-            securityParams.depositSecureInterval, securityParamsNew.depositSecureInterval, "Secure interval mismatch"
-        );
-        assertEq(
-            securityParams.redeemSecureInterval, securityParamsNew.redeemSecureInterval, "Secure interval mismatch"
-        );
+        assertEq(securityParams.depositInterval, securityParamsNew.depositInterval, "interval mismatch");
+        assertEq(securityParams.redeemInterval, securityParamsNew.redeemInterval, "interval mismatch");
 
         IOracle.SecurityParams memory securityParamsNewInvalid = defaultSecurityParams();
         {
@@ -184,18 +174,18 @@ contract OracleTest is FixtureTest {
             securityParamsNewInvalid.maxRelativeDeviationD18 = 1;
         }
         {
-            securityParamsNewInvalid.depositSecureInterval = 0;
+            securityParamsNewInvalid.depositInterval = 0;
             vm.startPrank(deployment.vaultAdmin);
             vm.expectRevert(abi.encodeWithSelector(IOracle.ZeroValue.selector));
             oracle.setSecurityParams(securityParamsNewInvalid);
-            securityParamsNewInvalid.depositSecureInterval = 1;
+            securityParamsNewInvalid.depositInterval = 1;
         }
         {
-            securityParamsNewInvalid.redeemSecureInterval = 0;
+            securityParamsNewInvalid.redeemInterval = 0;
             vm.startPrank(deployment.vaultAdmin);
             vm.expectRevert(abi.encodeWithSelector(IOracle.ZeroValue.selector));
             oracle.setSecurityParams(securityParamsNewInvalid);
-            securityParamsNewInvalid.redeemSecureInterval = 1;
+            securityParamsNewInvalid.redeemInterval = 1;
         }
         {
             securityParamsNewInvalid.suspiciousAbsoluteDeviation = 0;
@@ -288,7 +278,7 @@ contract OracleTest is FixtureTest {
         uint224 price = 1e18;
         reports[0] = IOracle.Report({asset: invalidAsset, priceD18: price});
 
-        vm.expectRevert("Oracle: forbidden");
+        vm.expectRevert(abi.encodeWithSelector(IOracle.Forbidden.selector));
         oracle.submitReports(reports);
 
         vm.prank(vaultAdmin);

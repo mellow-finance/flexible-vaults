@@ -45,13 +45,13 @@ interface IRedeemQueue is IQueue {
 
     function redeem(uint256 shares) external;
 
-    function claim(address account, uint256[] calldata timestamps) external returns (uint256 assets);
+    function claim(address account, uint32[] calldata timestamps) external returns (uint256 assets);
 
     function handleReports(uint256 reports) external returns (uint256 counter);
 
     // Events
 
     event RedeemRequested(address indexed account, uint256 shares, uint256 timestamp);
-    event RedeemRequestClaimed(address indexed account, address indexed receiver, uint256 assets, uint256[] timestamps);
+    event RedeemRequestClaimed(address indexed account, address indexed receiver, uint256 assets, uint32[] timestamps);
     event RedeemRequestsHandled(uint256 counter, uint256 demand);
 }

@@ -135,8 +135,8 @@ contract Integration is Test {
                     maxRelativeDeviationD18: 0.05 ether,
                     suspiciousRelativeDeviationD18: 0.01 ether,
                     timeout: 12 hours,
-                    depositSecureInterval: 1 hours,
-                    redeemSecureInterval: 1 hours
+                    depositInterval: 1 hours,
+                    redeemInterval: 1 hours
                 }),
                 assets
             );
@@ -278,8 +278,8 @@ contract Integration is Test {
 
         vm.startPrank(user);
         {
-            uint256[] memory timestamps = new uint256[](1);
-            timestamps[0] = block.timestamp - 2 days;
+            uint32[] memory timestamps = new uint32[](1);
+            timestamps[0] = uint32(block.timestamp - 2 days);
 
             IRedeemQueue(vault.queueAt(address(asset), 1)).handleReports(1);
             IRedeemQueue(vault.queueAt(address(asset), 1)).claim(user, timestamps);

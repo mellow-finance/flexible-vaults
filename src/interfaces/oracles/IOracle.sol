@@ -19,6 +19,7 @@ interface IOracle is IFactoryEntity {
     error ZeroValue();
     error TooEarly(uint256 timestamp, uint256 minTimestamp);
     error InvalidPrice(uint256 priceD18);
+    error Forbidden();
 
     struct SecurityParams {
         uint224 maxAbsoluteDeviation;
@@ -26,8 +27,8 @@ interface IOracle is IFactoryEntity {
         uint64 maxRelativeDeviationD18;
         uint64 suspiciousRelativeDeviationD18;
         uint32 timeout;
-        uint32 depositSecureInterval;
-        uint32 redeemSecureInterval;
+        uint32 depositInterval;
+        uint32 redeemInterval;
     }
 
     /// @dev shares = price18 * assets / 1e18

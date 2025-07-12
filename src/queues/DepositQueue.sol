@@ -61,14 +61,14 @@ contract DepositQueue is IDepositQueue, Queue {
             revert ZeroValue();
         }
         address caller = _msgSender();
+        DepositQueueStorage storage $ = _depositQueueStorage();
         address vault_ = vault();
         if (IShareModule(vault_).isPausedQueue(address(this))) {
             revert QueuePaused();
         }
-        if (!IShareManager(IShareModule(vault_).shareManager()).isDepositorWhitelisted(caller, merkleProof)) {
+        if (!IShareModule(vault_).shareManager().isDepositorWhitelisted(caller, merkleProof)) {
             revert DepositNotAllowed();
         }
-        DepositQueueStorage storage $ = _depositQueueStorage();
         if ($.requestOf[caller]._value != 0) {
             if (!_claim(caller)) {
                 revert PendingRequestExists();
@@ -78,17 +78,16 @@ contract DepositQueue is IDepositQueue, Queue {
         address asset_ = asset();
         TransferLibrary.receiveAssets(asset_, caller, assets);
         uint32 timestamp = uint32(block.timestamp);
-        uint256 index;
         Checkpoints.Trace224 storage timestamps = _timestamps();
+        uint256 index = timestamps.length();
         (, uint32 latestTimestamp,) = timestamps.latestCheckpoint();
         if (latestTimestamp < timestamp) {
-            index = timestamps.length();
             timestamps.push(timestamp, uint224(index));
             if ($.requests.length() == index) {
                 $.requests.extend();
             }
         } else {
-            index = timestamps.length() - 1;
+            --index;
         }
 
         IVaultModule(vault_).riskManager().modifyPendingAssets(asset_, int256(uint256(assets)));
@@ -142,7 +141,7 @@ contract DepositQueue is IDepositQueue, Queue {
         return true;
     }
 
-    function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {
+    function _handleReport(uint224 priceD18, uint32 timestamp) internal override {
         IShareModule vault_ = IShareModule(vault());
 
         DepositQueueStorage storage $ = _depositQueueStorage();
@@ -150,11 +149,10 @@ contract DepositQueue is IDepositQueue, Queue {
         uint256 latestEligibleIndex;
         {
             (, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
-
-            if (latestTimestamp <= latestEligibleTimestamp) {
+            if (latestTimestamp <= timestamp) {
                 latestEligibleIndex = latestIndex;
             } else {
-                latestEligibleIndex = uint256(timestamps.upperLookupRecent(latestEligibleTimestamp));
+                latestEligibleIndex = uint256(timestamps.upperLookupRecent(timestamp));
                 if (latestEligibleIndex == 0) {
                     return;
                 }
@@ -168,17 +166,17 @@ contract DepositQueue is IDepositQueue, Queue {
         uint256 assets = uint256($.requests.get($.handledIndices, latestEligibleIndex));
         $.handledIndices = latestEligibleIndex + 1;
 
-        IFeeManager feeManager = IShareModule(address(vault_)).feeManager();
+        IFeeManager feeManager = vault_.feeManager();
         uint224 feePriceD18 = uint224(feeManager.calculateDepositFee(priceD18));
         uint224 reducedPriceD18 = priceD18 - feePriceD18;
-        $.prices.push(latestEligibleTimestamp, reducedPriceD18);
+        $.prices.push(timestamp, reducedPriceD18);
 
         if (assets == 0) {
             return;
         }
 
         {
-            IShareManager shareManager_ = IShareModule(address(vault_)).shareManager();
+            IShareManager shareManager_ = vault_.shareManager();
             uint256 shares = Math.mulDiv(assets, reducedPriceD18, 1 ether);
             if (shares > 0) {
                 shareManager_.allocateShares(shares);

@@ -44,7 +44,7 @@ contract DepositQueueTest is FixtureTest {
         queue.deposit(amount, address(0), new bytes32[](0));
 
         /// @dev update the price
-        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemSecureInterval));
+        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemInterval));
         pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
 
         uint256 claimable = queue.claimableOf(user);
@@ -75,7 +75,7 @@ contract DepositQueueTest is FixtureTest {
         assertFalse(queue.claim(user), "Claim should fail before the price update");
 
         /// @dev update the price
-        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemSecureInterval));
+        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemInterval));
         pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
 
         assertEq(queue.claimableOf(user), amount, "Claimable amount should match the deposited amount");
@@ -132,7 +132,7 @@ contract DepositQueueTest is FixtureTest {
             (, uint256 assets) = queue.requestOf(user);
             assertEq(assets, amount, "Assets should match the deposited amount");
 
-            vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemSecureInterval));
+            vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemInterval));
             pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
 
             vm.prank(user);
@@ -238,7 +238,7 @@ contract DepositQueueTest is FixtureTest {
 
         makeDeposit(user, amount, queue);
 
-        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemSecureInterval));
+        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemInterval));
         pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
 
         assertEq(
@@ -252,7 +252,7 @@ contract DepositQueueTest is FixtureTest {
 
         makeDeposit(user, amount, queue);
 
-        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemSecureInterval));
+        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemInterval));
         pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
 
         assertEq(
@@ -284,7 +284,7 @@ contract DepositQueueTest is FixtureTest {
             makeDeposit(users[i], amount, queue);
             assertEq(queue.claimableOf(users[i]), 0, "Claimable amount should be zero");
         }
-        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemSecureInterval));
+        vm.warp(block.timestamp + Math.max(securityParams.timeout, securityParams.redeemInterval));
         pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
 
         for (uint256 i = 0; i < users.length; i++) {
@@ -302,8 +302,8 @@ contract DepositQueueTest is FixtureTest {
             maxRelativeDeviationD18: 4e16,
             suspiciousRelativeDeviationD18: 3e16,
             timeout: 1000,
-            depositSecureInterval: 3600,
-            redeemSecureInterval: 3600
+            depositInterval: 3600,
+            redeemInterval: 3600
         });
 
         vm.prank(deployment.vaultAdmin);
@@ -327,7 +327,7 @@ contract DepositQueueTest is FixtureTest {
 
         makeDeposit(user3, amount, queue);
 
-        vm.warp(block.timestamp + securityParams.depositSecureInterval - securityParams.timeout + 1);
+        vm.warp(block.timestamp + securityParams.depositInterval - securityParams.timeout + 1);
         pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
     }
 
@@ -341,8 +341,8 @@ contract DepositQueueTest is FixtureTest {
             maxRelativeDeviationD18: 4e16,
             suspiciousRelativeDeviationD18: 3e16,
             timeout: 1000,
-            depositSecureInterval: 3600,
-            redeemSecureInterval: 3600
+            depositInterval: 3600,
+            redeemInterval: 3600
         });
 
         vm.prank(deployment.vaultAdmin);

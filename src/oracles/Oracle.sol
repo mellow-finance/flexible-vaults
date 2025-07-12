@@ -29,7 +29,9 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     // View functions
 
     modifier onlyRole(bytes32 role) {
-        require(IAccessControl(address(_oracleStorage().vault)).hasRole(role, _msgSender()), "Oracle: forbidden");
+        if (!IAccessControl(address(_oracleStorage().vault)).hasRole(role, _msgSender())) {
+            revert Forbidden();
+        }
         _;
     }
 
@@ -73,7 +75,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         if (!$.supportedAssets.contains(asset)) {
             return (false, false);
         }
-        return _validatePrice(priceD18, $.reports[asset]);
+        return _validatePrice(priceD18, $.reports[asset], $.securityParams);
     }
 
     // Mutable functions
@@ -101,8 +103,8 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
     function submitReports(Report[] calldata reports) external onlyRole(SUBMIT_REPORTS_ROLE) {
         OracleStorage storage $ = _oracleStorage();
         SecurityParams memory securityParams_ = $.securityParams;
-        uint32 depositSecureTimestamp = uint32(block.timestamp - securityParams_.depositSecureInterval);
-        uint32 redeemSecureTimestamp = uint32(block.timestamp - securityParams_.redeemSecureInterval);
+        uint32 depositTimestamp = uint32(block.timestamp - securityParams_.depositInterval);
+        uint32 redeemTimestamp = uint32(block.timestamp - securityParams_.redeemInterval);
         IShareModule vault_ = $.vault;
         EnumerableSet.AddressSet storage supportedAssets_ = $.supportedAssets;
         mapping(address asset => DetailedReport) storage reports_ = $.reports;
@@ -111,9 +113,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
                 revert UnsupportedAsset(reports[i].asset);
             }
             if (_handleReport(securityParams_, reports[i].priceD18, reports_[reports[i].asset])) {
-                vault_.handleReport(
-                    reports[i].asset, reports[i].priceD18, depositSecureTimestamp, redeemSecureTimestamp
-                );
+                vault_.handleReport(reports[i].asset, reports[i].priceD18, depositTimestamp, redeemTimestamp);
             }
         }
         emit ReportsSubmitted(reports);
@@ -130,11 +130,9 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
             revert InvalidTimestamp(timestamp, report_.timestamp);
         }
         report_.isSuspicious = false;
+        SecurityParams storage params = $.securityParams;
         $.vault.handleReport(
-            asset,
-            report_.priceD18,
-            timestamp - $.securityParams.depositSecureInterval,
-            timestamp - $.securityParams.redeemSecureInterval
+            asset, report_.priceD18, timestamp - params.depositInterval, timestamp - params.redeemInterval
         );
         emit ReportAccepted(asset, report_.priceD18, timestamp);
     }
@@ -173,14 +171,14 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         _addSupportedAssets(assets_);
     }
 
-    function _handleReport(SecurityParams memory securityParams_, uint224 priceD18, DetailedReport storage report)
+    function _handleReport(SecurityParams memory params, uint224 priceD18, DetailedReport storage report)
         internal
         returns (bool)
     {
-        if (report.timestamp != 0 && securityParams_.timeout + report.timestamp > block.timestamp) {
-            revert TooEarly(block.timestamp, securityParams_.timeout + report.timestamp);
+        if (report.timestamp != 0 && params.timeout + report.timestamp > block.timestamp) {
+            revert TooEarly(block.timestamp, params.timeout + report.timestamp);
         }
-        (bool isValid, bool isSuspicious) = _validatePrice(priceD18, report);
+        (bool isValid, bool isSuspicious) = _validatePrice(priceD18, report, params);
         if (!isValid) {
             revert InvalidPrice(priceD18);
         }
@@ -190,7 +188,7 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         return !isSuspicious;
     }
 
-    function _validatePrice(uint256 priceD18, DetailedReport storage report)
+    function _validatePrice(uint256 priceD18, DetailedReport storage report, SecurityParams memory params)
         private
         view
         returns (bool isValid, bool isSuspicious)
@@ -199,39 +197,34 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         if (prevPriceD18 == 0) {
             return (true, true);
         }
-        SecurityParams memory securityParams_ = _oracleStorage().securityParams;
         uint256 absoluteDeviation = priceD18 > prevPriceD18 ? priceD18 - prevPriceD18 : prevPriceD18 - priceD18;
         uint256 relativeDeviationD18 = Math.mulDiv(absoluteDeviation, 1 ether, prevPriceD18);
-        if (
-            absoluteDeviation > securityParams_.maxAbsoluteDeviation
-                || relativeDeviationD18 > securityParams_.maxRelativeDeviationD18
-        ) {
+        if (absoluteDeviation > params.maxAbsoluteDeviation || relativeDeviationD18 > params.maxRelativeDeviationD18) {
             return (false, false);
         }
         if (report.isSuspicious) {
             return (true, true);
         }
         if (
-            absoluteDeviation > securityParams_.suspiciousAbsoluteDeviation
-                || relativeDeviationD18 > securityParams_.suspiciousRelativeDeviationD18
+            absoluteDeviation > params.suspiciousAbsoluteDeviation
+                || relativeDeviationD18 > params.suspiciousRelativeDeviationD18
         ) {
             return (true, true);
         }
         return (true, false);
     }
 
-    function _setSecurityParams(SecurityParams memory securityParams_) private {
+    function _setSecurityParams(SecurityParams memory params) private {
         OracleStorage storage $ = _oracleStorage();
         if (
-            securityParams_.maxAbsoluteDeviation == 0 || securityParams_.suspiciousAbsoluteDeviation == 0
-                || securityParams_.maxRelativeDeviationD18 == 0 || securityParams_.suspiciousRelativeDeviationD18 == 0
-                || securityParams_.timeout == 0 || securityParams_.depositSecureInterval == 0
-                || securityParams_.redeemSecureInterval == 0
+            params.maxAbsoluteDeviation == 0 || params.suspiciousAbsoluteDeviation == 0
+                || params.maxRelativeDeviationD18 == 0 || params.suspiciousRelativeDeviationD18 == 0 || params.timeout == 0
+                || params.depositInterval == 0 || params.redeemInterval == 0
         ) {
             revert ZeroValue();
         }
-        $.securityParams = securityParams_;
-        emit SecurityParamsSet(securityParams_);
+        $.securityParams = params;
+        emit SecurityParamsSet(params);
     }
 
     function _addSupportedAssets(address[] memory assets) private {

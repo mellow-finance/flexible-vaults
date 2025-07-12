@@ -120,36 +120,37 @@ contract RedeemQueue is IRedeemQueue, Queue {
     }
 
     /// @inheritdoc IRedeemQueue
-    function claim(address receiver, uint256[] calldata timestamps) external nonReentrant returns (uint256 assets) {
+    function claim(address receiver, uint32[] calldata timestamps) external nonReentrant returns (uint256 assets) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         address account = _msgSender();
         EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[account];
-        (bool doesExist, uint32 latestReportTimestamp,) = $.prices.latestCheckpoint();
-        if (!doesExist) {
+        (, uint32 latestReportTimestamp,) = $.prices.latestCheckpoint();
+        if (latestReportTimestamp == 0) {
             return 0;
         }
 
         uint256 outflowDemandIterator_ = $.outflowDemandIterator;
         for (uint256 i = 0; i < timestamps.length; i++) {
-            uint256 timestamp = timestamps[i];
+            uint32 timestamp = timestamps[i];
             if (timestamp > latestReportTimestamp) {
                 continue;
             }
             (bool hasRequest, uint256 shares) = callerRequests.tryGet(timestamp);
-            if (!hasRequest || shares == 0) {
+            if (!hasRequest) {
                 continue;
             }
-            uint256 index = $.prices.lowerLookup(uint32(timestamp));
-            if (index >= outflowDemandIterator_) {
-                continue;
+            if (shares != 0) {
+                uint256 index = $.prices.lowerLookup(timestamp);
+                if (index >= outflowDemandIterator_) {
+                    continue;
+                }
+                Pair storage pair = $.outflowDemand[index];
+
+                uint256 assets_ = Math.mulDiv(shares, pair.assets, pair.shares);
+                assets += assets_;
+                pair.assets -= assets_;
+                pair.shares -= shares;
             }
-            Pair storage pair = $.outflowDemand[index];
-
-            uint256 assets_ = Math.mulDiv(shares, pair.assets, pair.shares);
-            assets += assets_;
-            pair.assets -= assets_;
-            pair.shares -= shares;
-
             callerRequests.remove(timestamp);
         }
 
@@ -193,20 +194,16 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
     // Internal functions
 
-    function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {
+    function _handleReport(uint224 priceD18, uint32 timestamp) internal override {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
 
         Checkpoints.Trace224 storage timestamps = _timestamps();
-        (bool exists, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
-        if (!exists) {
-            return;
-        }
-
+        (, uint32 latestTimestamp, uint224 latestIndex) = timestamps.latestCheckpoint();
         uint256 latestEligibleIndex;
-        if (latestTimestamp <= latestEligibleTimestamp) {
+        if (latestTimestamp <= timestamp) {
             latestEligibleIndex = latestIndex;
         } else {
-            latestEligibleIndex = uint256(timestamps.upperLookupRecent(latestEligibleTimestamp));
+            latestEligibleIndex = uint256(timestamps.upperLookupRecent(timestamp));
             if (latestEligibleIndex == 0) {
                 return;
             }
@@ -227,7 +224,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
 
         uint256 index = $.prices.length();
-        $.prices.push(latestEligibleTimestamp, uint224(index));
+        $.prices.push(timestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
         $.outflowDemand.push(Pair(assets_, shares));
         $.fullDemand += assets_;
