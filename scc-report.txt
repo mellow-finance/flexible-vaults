@@ -1,15 +1,15 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 38      3850      550       325     2975        619           661.52
+Solidity                                 38      3826      549       323     2954        617           662.15
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       22        17       92          8             8.70
 src/hooks/BasicRedeemHook.sol                      42        3         1       38          7            18.42
 src/hooks/LidoDepositHook.sol                      49        8         1       40         13            32.50
-src/hooks/RedirectingDepositHook.sol               28        2         1       25          5            20.00
+src/hooks/RedirectingDepositHook.sol               27        2         1       24          5            20.83
 src/libraries/FenwickTreeLibrary.sol               85       10         8       67         14            20.90
 src/libraries/ShareManagerFlagLibrary.sol          40        9         1       30          5            16.67
-src/libraries/SlotLibrary.sol                      22        1         1       20          0             0.00
+src/libraries/SlotLibrary.sol                      12        1         1       10          0             0.00
 src/libraries/TransferLibrary.sol                  31        6         1       24          9            37.50
 src/managers/BasicShareManager.sol                 71       14         7       50          9            18.00
 src/managers/FeeManager.sol                       176       26        20      130         21            16.15
@@ -19,7 +19,7 @@ src/managers/TokenizedShareManager.sol             55       13         7       3
 src/modules/ACLModule.sol                          22        6         2       14          2            14.29
 src/modules/BaseModule.sol                         32        9         6       17          0             0.00
 src/modules/CallModule.sol                         20        4         3       13          0             0.00
-src/modules/ShareModule.sol                       337       43        41      253         38            15.02
+src/modules/ShareModule.sol                       324       42        39      243         36            14.81
 src/modules/SubvaultModule.sol                     49       12         6       31          3             9.68
 src/modules/VaultModule.sol                       172       26        22      124         19            15.32
 src/modules/VerifierModule.sol                     39       10         4       25          3            12.00
@@ -42,8 +42,8 @@ src/vaults/Subvault.sol                            20        3         1       1
 src/vaults/Vault.sol                               55        5         1       49          1             2.04
 src/vaults/VaultConfigurator.sol                   74        7         2       65          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    38      3850      550       325     2975        619           661.52
+Total                                    38      3826      549       323     2954        617           662.15
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 138565 bytes, 0.139 megabytes (SI)
+Processed 137774 bytes, 0.138 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 

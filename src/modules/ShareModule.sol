@@ -16,9 +16,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
     /// @inheritdoc IShareModule
     bytes32 public constant CREATE_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_QUEUE_ROLE");
     /// @inheritdoc IShareModule
-    bytes32 public constant PAUSE_QUEUE_ROLE = keccak256("modules.ShareModule.PAUSE_QUEUE_ROLE");
-    /// @inheritdoc IShareModule
-    bytes32 public constant UNPAUSE_QUEUE_ROLE = keccak256("modules.ShareModule.UNPAUSE_QUEUE_ROLE");
+    bytes32 public constant SET_QUEUE_STATUS_ROLE = keccak256("modules.ShareModule.PAUSE_QUEUE_ROLE");
     /// @inheritdoc IShareModule
     bytes32 public constant SET_QUEUE_LIMIT_ROLE = keccak256("modules.ShareModule.SET_QUEUE_LIMIT_ROLE");
     /// @inheritdoc IShareModule
@@ -155,6 +153,84 @@ abstract contract ShareModule is IShareModule, ACLModule {
     // Mutable functions
 
     /// @inheritdoc IShareModule
+    function setCustomHook(address queue, address hook) external onlyRole(SET_HOOK_ROLE) {
+        if (queue == address(0)) {
+            revert ZeroAddress();
+        }
+        _shareModuleStorage().customHooks[queue] = hook;
+        emit CustomHookSet(queue, hook);
+    }
+
+    /// @inheritdoc IShareModule
+    function setDefaultDepositHook(address hook) external onlyRole(SET_HOOK_ROLE) {
+        _shareModuleStorage().defaultDepositHook = hook;
+        emit DefaultHookSet(hook, true);
+    }
+
+    /// @inheritdoc IShareModule
+    function setDefaultRedeemHook(address hook) external onlyRole(SET_HOOK_ROLE) {
+        _shareModuleStorage().defaultRedeemHook = hook;
+        emit DefaultHookSet(hook, false);
+    }
+
+    /// @inheritdoc IShareModule
+    function setQueueLimit(uint256 limit) external onlyRole(SET_QUEUE_LIMIT_ROLE) {
+        _shareModuleStorage().queueLimit = limit;
+        emit QueueLimitSet(limit);
+    }
+
+    /// @inheritdoc IShareModule
+    function setQueueStatus(address queue, bool isPaused) external onlyRole(SET_QUEUE_STATUS_ROLE) {
+        if (!hasQueue(queue)) {
+            revert Forbidden();
+        }
+        _shareModuleStorage().isPausedQueue[queue] = isPaused;
+        emit SetQueueStatus(queue, isPaused);
+    }
+
+    /// @inheritdoc IShareModule
+    function createQueue(uint256 version, bool isDeposit, address owner, address asset, bytes calldata data)
+        external
+        onlyRole(CREATE_QUEUE_ROLE)
+    {
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        if (!IOracle($.oracle).isSupportedAsset(asset)) {
+            revert UnsupportedAsset(asset);
+        }
+        uint256 count = $.queueCount + 1;
+        if (count > $.queueLimit) {
+            revert QueueLimitReached();
+        }
+        address queue = (isDeposit ? depositQueueFactory : redeemQueueFactory).create(
+            version, owner, abi.encode(asset, address(this), data)
+        );
+        $.queueCount = count;
+        $.queues[asset].add(queue);
+        $.assets.add(asset);
+        $.isDepositQueue[queue] = isDeposit;
+        emit QueueCreated(queue, asset, isDeposit);
+    }
+
+    /// @inheritdoc IShareModule
+    function removeQueue(address queue) external onlyRole(REMOVE_QUEUE_ROLE) {
+        if (!IQueue(queue).canBeRemoved()) {
+            revert Forbidden();
+        }
+        address asset = IQueue(queue).asset();
+        ShareModuleStorage storage $ = _shareModuleStorage();
+        if (!$.queues[asset].remove(queue)) {
+            revert Forbidden();
+        }
+        delete $.isDepositQueue[queue];
+        if ($.queues[asset].length() == 0) {
+            $.assets.remove(asset);
+        }
+        delete $.customHooks[queue];
+        --$.queueCount;
+        emit QueueRemoved(queue, asset);
+    }
+
+    /// @inheritdoc IShareModule
     function claimShares(address account) external {
         ShareModuleStorage storage $ = _shareModuleStorage();
         EnumerableSet.AddressSet storage assets = $.assets;
@@ -189,95 +265,6 @@ abstract contract ShareModule is IShareModule, ACLModule {
             TransferLibrary.sendAssets(asset, queue, assets);
         }
         emit HookCalled(queue, asset, assets, hook);
-    }
-
-    /// @inheritdoc IShareModule
-    function setCustomHook(address queue, address hook) external onlyRole(SET_HOOK_ROLE) {
-        if (queue == address(0)) {
-            revert ZeroAddress();
-        }
-        _shareModuleStorage().customHooks[queue] = hook;
-        emit CustomHookSet(queue, hook);
-    }
-
-    /// @inheritdoc IShareModule
-    function setDefaultDepositHook(address hook) external onlyRole(SET_HOOK_ROLE) {
-        _shareModuleStorage().defaultDepositHook = hook;
-        emit DefaultHookSet(hook, true);
-    }
-
-    /// @inheritdoc IShareModule
-    function setDefaultRedeemHook(address hook) external onlyRole(SET_HOOK_ROLE) {
-        _shareModuleStorage().defaultRedeemHook = hook;
-        emit DefaultHookSet(hook, false);
-    }
-
-    /// @inheritdoc IShareModule
-    function createQueue(uint256 version, bool isDeposit, address owner, address asset, bytes calldata data)
-        external
-        onlyRole(CREATE_QUEUE_ROLE)
-    {
-        ShareModuleStorage storage $ = _shareModuleStorage();
-        if (!IOracle($.oracle).isSupportedAsset(asset)) {
-            revert UnsupportedAsset(asset);
-        }
-        if ($.queueCount == $.queueLimit) {
-            revert QueueLimitReached();
-        }
-        address queue = IFactory(isDeposit ? depositQueueFactory : redeemQueueFactory).create(
-            version, owner, abi.encode(asset, address(this), data)
-        );
-        $.queueCount++;
-        $.queues[asset].add(queue);
-        $.isDepositQueue[queue] = isDeposit;
-        $.assets.add(asset);
-        emit QueueCreated(queue, asset, isDeposit);
-    }
-
-    /// @inheritdoc IShareModule
-    function removeQueue(address queue) external onlyRole(REMOVE_QUEUE_ROLE) {
-        if (!IQueue(queue).canBeRemoved()) {
-            revert Forbidden();
-        }
-        address asset = IQueue(queue).asset();
-        ShareModuleStorage storage $ = _shareModuleStorage();
-        if (!$.queues[asset].contains(queue)) {
-            revert Forbidden();
-        }
-        $.queues[asset].remove(queue);
-        delete $.isDepositQueue[queue];
-        if ($.queues[asset].length() == 0) {
-            $.assets.remove(asset);
-        }
-        delete $.customHooks[queue];
-        $.queueCount--;
-        emit QueueRemoved(queue, asset);
-    }
-
-    /// @inheritdoc IShareModule
-    function setQueueLimit(uint256 limit) external onlyRole(SET_QUEUE_LIMIT_ROLE) {
-        _shareModuleStorage().queueLimit = limit;
-        emit QueueLimitSet(limit);
-    }
-
-    /// @inheritdoc IShareModule
-    function pauseQueue(address queue) external onlyRole(PAUSE_QUEUE_ROLE) {
-        ShareModuleStorage storage $ = _shareModuleStorage();
-        if (!$.queues[IQueue(queue).asset()].contains(queue)) {
-            revert Forbidden();
-        }
-        $.isPausedQueue[queue] = true;
-        emit QueuePaused(queue);
-    }
-
-    /// @inheritdoc IShareModule
-    function unpauseQueue(address queue) external onlyRole(UNPAUSE_QUEUE_ROLE) {
-        ShareModuleStorage storage $ = _shareModuleStorage();
-        if (!$.queues[IQueue(queue).asset()].contains(queue)) {
-            revert Forbidden();
-        }
-        $.isPausedQueue[queue] = false;
-        emit QueueUnpaused(queue);
     }
 
     /// @inheritdoc IShareModule

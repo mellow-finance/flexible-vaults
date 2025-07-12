@@ -169,28 +169,27 @@ contract ShareModuleTest is FixtureTest {
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector,
                 address(this),
-                deployment.vault.PAUSE_QUEUE_ROLE()
+                deployment.vault.SET_QUEUE_STATUS_ROLE()
             )
         );
-        deployment.vault.pauseQueue(queue);
+        deployment.vault.setQueueStatus(queue, true);
 
         vm.startPrank(vaultAdmin);
-        deployment.vault.grantRole(deployment.vault.PAUSE_QUEUE_ROLE(), vaultAdmin);
-        deployment.vault.grantRole(deployment.vault.UNPAUSE_QUEUE_ROLE(), vaultAdmin);
+        deployment.vault.grantRole(deployment.vault.SET_QUEUE_STATUS_ROLE(), vaultAdmin);
 
         address invalidQueue = IFactory(deployment.depositQueueFactory).create(
             0, vaultProxyAdmin, abi.encode(address(unsupportedAsset), address(this), new bytes(0))
         );
         vm.expectRevert(abi.encode(IACLModule.Forbidden.selector));
-        deployment.vault.pauseQueue(invalidQueue);
+        deployment.vault.setQueueStatus(invalidQueue, true);
 
-        deployment.vault.pauseQueue(queue);
+        deployment.vault.setQueueStatus(queue, true);
         assertTrue(deployment.vault.isPausedQueue(queue), "Queue should be paused");
 
         vm.expectRevert(abi.encode(IACLModule.Forbidden.selector));
-        deployment.vault.unpauseQueue(invalidQueue);
+        deployment.vault.setQueueStatus(invalidQueue, false);
 
-        deployment.vault.unpauseQueue(queue);
+        deployment.vault.setQueueStatus(queue, false);
         assertFalse(deployment.vault.isPausedQueue(queue), "Queue should not be paused");
     }
 

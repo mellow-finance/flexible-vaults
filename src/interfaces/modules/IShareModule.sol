@@ -35,8 +35,7 @@ interface IShareModule is IBaseModule {
 
     function SET_HOOK_ROLE() external view returns (bytes32);
     function CREATE_QUEUE_ROLE() external view returns (bytes32);
-    function PAUSE_QUEUE_ROLE() external view returns (bytes32);
-    function UNPAUSE_QUEUE_ROLE() external view returns (bytes32);
+    function SET_QUEUE_STATUS_ROLE() external view returns (bytes32);
     function SET_QUEUE_LIMIT_ROLE() external view returns (bytes32);
     function REMOVE_QUEUE_ROLE() external view returns (bytes32);
 
@@ -95,9 +94,7 @@ interface IShareModule is IBaseModule {
 
     function setQueueLimit(uint256 limit) external;
 
-    function pauseQueue(address queue) external;
-
-    function unpauseQueue(address queue) external;
+    function setQueueStatus(address queue, bool isPaused) external;
 
     function callHook(uint256 assets) external;
 
@@ -116,8 +113,7 @@ interface IShareModule is IBaseModule {
     event QueueRemoved(address indexed queue, address indexed asset);
     event HookCalled(address indexed queue, address indexed asset, uint256 assets, address hook);
     event QueueLimitSet(uint256 limit);
-    event QueuePaused(address indexed queue);
-    event QueueUnpaused(address indexed queue);
+    event SetQueueStatus(address indexed queue, bool indexed isPaused);
     event DefaultHookSet(address indexed hook, bool isDepositHook);
     event ReportHandled(
         address indexed asset,

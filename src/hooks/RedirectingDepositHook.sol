@@ -2,7 +2,6 @@
 pragma solidity 0.8.25;
 
 import "../interfaces/hooks/IHook.sol";
-import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/modules/IVaultModule.sol";
 
 contract RedirectingDepositHook is IHook {

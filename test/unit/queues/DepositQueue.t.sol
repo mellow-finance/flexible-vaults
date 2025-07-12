@@ -156,8 +156,8 @@ contract DepositQueueTest is FixtureTest {
         uint224 amount = 1 ether;
 
         vm.startPrank(vaultAdmin);
-        deployment.vault.grantRole(deployment.vault.PAUSE_QUEUE_ROLE(), vaultAdmin);
-        deployment.vault.pauseQueue(address(queue));
+        deployment.vault.grantRole(deployment.vault.SET_QUEUE_STATUS_ROLE(), vaultAdmin);
+        deployment.vault.setQueueStatus(address(queue), true);
         vm.stopPrank();
 
         giveAssetsToUserAndApprove(user, amount, address(queue));
