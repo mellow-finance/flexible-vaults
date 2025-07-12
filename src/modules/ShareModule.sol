@@ -323,11 +323,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         uint256 length = queues.length();
         for (uint256 i = 0; i < length; i++) {
             address queue = queues.at(i);
-            if ($.isDepositQueue[queue]) {
-                IQueue(queue).handleReport(priceD18, latestEligibleDepositTimestamp);
-            } else {
-                IQueue(queue).handleReport(1e36 / priceD18, latestEligibleRedeemTimestamp);
-            }
+            IQueue(queue).handleReport(priceD18, latestEligibleDepositTimestamp);
         }
 
         IFeeManager feeManager_ = feeManager();

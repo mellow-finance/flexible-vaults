@@ -228,7 +228,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
         uint256 index = $.prices.length();
         $.prices.push(latestEligibleTimestamp, uint224(index));
-        uint256 assets_ = Math.mulDiv(shares, priceD18, 1 ether);
+        uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
         $.outflowDemand.push(Pair(assets_, shares));
         $.fullDemand += assets_;
     }

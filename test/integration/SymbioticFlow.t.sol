@@ -54,7 +54,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         roleHolders[2] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
         roleHolders[3] = Vault.RoleHolder(oracleImplementation.ACCEPT_REPORT_ROLE(), $.vaultAdmin);
         roleHolders[4] = Vault.RoleHolder(vaultImplementation.CREATE_SUBVAULT_ROLE(), $.vaultAdmin);
-        roleHolders[5] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALL_ROLE(), $.curator);
+        roleHolders[5] = Vault.RoleHolder(Verifier($.verifierFactory.implementationAt(0)).CALLER_ROLE(), $.curator);
         roleHolders[6] = Vault.RoleHolder(
             RiskManager($.riskManagerFactory.implementationAt(0)).SET_SUBVAULT_LIMIT_ROLE(), $.vaultAdmin
         );

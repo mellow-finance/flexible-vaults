@@ -52,14 +52,10 @@ contract FeeManagerTest is FixtureTest {
         manager.setFeeRecipient(feeRecipient);
         assertEq(manager.feeRecipient(), feeRecipient, "Fee recipient should be updated");
 
-        vm.expectRevert(abi.encodeWithSelector(IFeeManager.InvalidDepositFee.selector, 1e7));
-        manager.setFees(1e7, 1e5, 1e5, 1e5);
-        vm.expectRevert(abi.encodeWithSelector(IFeeManager.InvalidRedeemFee.selector, 1e7));
-        manager.setFees(1e5, 1e7, 1e5, 1e5);
-        vm.expectRevert(abi.encodeWithSelector(IFeeManager.InvalidPerformanceFee.selector, 1e7));
-        manager.setFees(1e5, 1e5, 1e7, 1e5);
-        vm.expectRevert(abi.encodeWithSelector(IFeeManager.InvalidProtocolFee.selector, 1e7));
-        manager.setFees(1e5, 1e5, 1e5, 1e7);
+        vm.expectRevert(
+            abi.encodeWithSelector(IFeeManager.InvalidFees.selector, 1e6 / 4, 1e6 / 4, 1e6 / 4, 1e6 / 4 + 1)
+        );
+        manager.setFees(1e6 / 4, 1e6 / 4, 1e6 / 4, 1e6 / 4 + 1);
 
         manager.setFees(1e5, 2e5, 3e5, 4e5);
         assertEq(manager.depositFeeD6(), 1e5, "Deposit fee mismatch");

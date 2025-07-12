@@ -293,7 +293,7 @@ contract VerifierTest is Test {
         verifier.initialize(initParams);
 
         vm.startPrank(admin_);
-        vault.grantRole(verifier.CALL_ROLE(), CALL_ROLE_ADDRESS);
+        vault.grantRole(verifier.CALLER_ROLE(), CALL_ROLE_ADDRESS);
         vault.grantRole(verifier.ALLOW_CALL_ROLE(), ALLOW_CALL_ROLE_ADDRESS);
         vault.grantRole(verifier.DISALLOW_CALL_ROLE(), DISALLOW_CALL_ROLE_ADDRESS);
         vault.grantRole(verifier.SET_MERKLE_ROOT_ROLE(), SET_MERKLE_ROOT_ROLE_ADDRESS);

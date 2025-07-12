@@ -55,7 +55,7 @@ interface IVerifier is IFactoryEntity {
     // View functions
 
     function SET_MERKLE_ROOT_ROLE() external view returns (bytes32);
-    function CALL_ROLE() external view returns (bytes32);
+    function CALLER_ROLE() external view returns (bytes32);
     function ALLOW_CALL_ROLE() external view returns (bytes32);
     function DISALLOW_CALL_ROLE() external view returns (bytes32);
 

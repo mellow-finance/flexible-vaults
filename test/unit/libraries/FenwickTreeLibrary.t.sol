@@ -187,7 +187,7 @@ contract Unit is Test {
 
         for (uint256 i = 0; i < calls; i++) {
             uint256 l = uint256(keccak256(abi.encode(i))) % n;
-            uint256 r = uint256(keccak256(abi.encode(i))) % n;
+            uint256 r = uint256(keccak256(abi.encode(i, l))) % n;
             if (l > r) {
                 (l, r) = (r, l);
             }

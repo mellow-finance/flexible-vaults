@@ -171,7 +171,7 @@ contract DepositQueue is IDepositQueue, Queue {
         IFeeManager feeManager = IShareModule(address(vault_)).feeManager();
         uint224 feePriceD18 = uint224(feeManager.calculateDepositFee(priceD18));
         uint224 reducedPriceD18 = priceD18 - feePriceD18;
-        $.prices.push(latestEligibleTimestamp, priceD18);
+        $.prices.push(latestEligibleTimestamp, reducedPriceD18);
 
         if (assets == 0) {
             return;

@@ -320,7 +320,7 @@ abstract contract FixtureTest is Test {
             deployment.oracle.ADD_SUPPORTED_ASSETS_ROLE(),
             deployment.oracle.REMOVE_SUPPORTED_ASSETS_ROLE(),
             deployment.verifier.SET_MERKLE_ROOT_ROLE(),
-            deployment.verifier.CALL_ROLE(),
+            deployment.verifier.CALLER_ROLE(),
             deployment.verifier.ALLOW_CALL_ROLE(),
             deployment.verifier.DISALLOW_CALL_ROLE(),
             deployment.shareManager.SET_FLAGS_ROLE(),

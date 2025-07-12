@@ -156,17 +156,8 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
     function _setFees(uint24 depositFeeD6_, uint24 redeemFeeD6_, uint24 performanceFeeD6_, uint24 protocolFeeD6_)
         internal
     {
-        if (depositFeeD6_ > 1e6) {
-            revert InvalidDepositFee(depositFeeD6_);
-        }
-        if (redeemFeeD6_ > 1e6) {
-            revert InvalidRedeemFee(redeemFeeD6_);
-        }
-        if (performanceFeeD6_ > 1e6) {
-            revert InvalidPerformanceFee(performanceFeeD6_);
-        }
-        if (protocolFeeD6_ > 1e6) {
-            revert InvalidProtocolFee(protocolFeeD6_);
+        if (depositFeeD6_ + redeemFeeD6_ + performanceFeeD6_ + protocolFeeD6_ > 1e6) {
+            revert InvalidFees(depositFeeD6_, redeemFeeD6_, performanceFeeD6_, protocolFeeD6_);
         }
         FeeManagerStorage storage $ = _feeManagerStorage();
         $.depositFeeD6 = depositFeeD6_;

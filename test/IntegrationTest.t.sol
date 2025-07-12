@@ -181,7 +181,7 @@ contract Integration is Test {
             oracle.ADD_SUPPORTED_ASSETS_ROLE(),
             oracle.REMOVE_SUPPORTED_ASSETS_ROLE(),
             verifier.SET_MERKLE_ROOT_ROLE(),
-            verifier.CALL_ROLE(),
+            verifier.CALLER_ROLE(),
             verifier.ALLOW_CALL_ROLE(),
             verifier.DISALLOW_CALL_ROLE(),
             shareManager.SET_FLAGS_ROLE(),

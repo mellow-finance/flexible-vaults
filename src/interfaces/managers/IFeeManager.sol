@@ -7,10 +7,7 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 
 interface IFeeManager is IFactoryEntity {
     error ZeroAddress();
-    error InvalidDepositFee(uint256 fee);
-    error InvalidRedeemFee(uint256 fee);
-    error InvalidPerformanceFee(uint256 fee);
-    error InvalidProtocolFee(uint256 fee);
+    error InvalidFees(uint24 depositFeeD6, uint24 redeemFeeD6, uint24 performanceFeeD6, uint24 protocolFeeD6);
     error BaseAssetAlreadySet(address vault, address baseAsset);
 
     struct FeeManagerStorage {

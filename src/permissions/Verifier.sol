@@ -11,7 +11,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
     /// @inheritdoc IVerifier
     bytes32 public constant SET_MERKLE_ROOT_ROLE = keccak256("permissions.Verifier.SET_MERKLE_ROOT_ROLE");
     /// @inheritdoc IVerifier
-    bytes32 public constant CALL_ROLE = keccak256("permissions.Verifier.CALL_ROLE");
+    bytes32 public constant CALLER_ROLE = keccak256("permissions.Verifier.CALLER_ROLE");
     /// @inheritdoc IVerifier
     bytes32 public constant ALLOW_CALL_ROLE = keccak256("permissions.Verifier.ALLOW_CALL_ROLE");
     /// @inheritdoc IVerifier
@@ -92,7 +92,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
         bytes calldata data,
         VerificationPayload calldata payload
     ) public view returns (bool) {
-        if (!vault().hasRole(CALL_ROLE, who)) {
+        if (!vault().hasRole(CALLER_ROLE, who)) {
             return false;
         }
 
