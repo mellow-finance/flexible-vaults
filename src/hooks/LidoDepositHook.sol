@@ -3,13 +3,13 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "../interfaces/hooks/IDepositHook.sol";
+import "../interfaces/hooks/IHook.sol";
 import "../interfaces/tokens/IWETH.sol";
 import "../interfaces/tokens/IWSTETH.sol";
 
 import "../libraries/TransferLibrary.sol";
 
-contract LidoDepositHook is IDepositHook {
+contract LidoDepositHook is IHook {
     error UnsupportedAsset(address asset);
 
     using SafeERC20 for IERC20;
@@ -26,7 +26,7 @@ contract LidoDepositHook is IDepositHook {
         nextHook = nextHook_;
     }
 
-    function afterDeposit(address asset, uint256 assets) public override {
+    function callHook(address asset, uint256 assets) public override {
         if (asset != wsteth) {
             uint256 balance = IERC20(wsteth).balanceOf(address(this));
             if (asset == steth) {
@@ -43,7 +43,7 @@ contract LidoDepositHook is IDepositHook {
             assets = IERC20(wsteth).balanceOf(address(this)) - balance;
         }
         if (nextHook != address(0)) {
-            Address.functionDelegateCall(nextHook, abi.encodeCall(IDepositHook.afterDeposit, (wsteth, assets)));
+            Address.functionDelegateCall(nextHook, abi.encodeCall(IHook.callHook, (wsteth, assets)));
         }
     }
 }

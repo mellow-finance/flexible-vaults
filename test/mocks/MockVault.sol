@@ -43,15 +43,15 @@ contract MockVault {
     }
 
     function beforeRedeemHookCall(address asset, uint256 assets) external {
-        Address.functionDelegateCall(redeemHook, abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
+        Address.functionDelegateCall(redeemHook, abi.encodeCall(IHook.callHook, (asset, assets)));
     }
 
     function afterDepositHookCall(address asset, uint256 assets) external {
-        Address.functionDelegateCall(redirectingDepositHook, abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
+        Address.functionDelegateCall(redirectingDepositHook, abi.encodeCall(IHook.callHook, (asset, assets)));
     }
 
     function lidoDepositHookCall(address asset, uint256 assets) external {
-        Address.functionDelegateCall(lidoDepositHook, abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
+        Address.functionDelegateCall(lidoDepositHook, abi.encodeCall(IHook.callHook, (asset, assets)));
     }
 
     function getLiquidAssetsCall(address asset) external view returns (uint256) {

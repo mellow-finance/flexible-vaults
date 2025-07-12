@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/hooks/IRedeemHook.sol";
+import "../interfaces/hooks/IHook.sol";
 import "../interfaces/modules/IVaultModule.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract BasicRedeemHook is IRedeemHook {
-    function beforeRedeem(address asset, uint256 assets) public virtual {
+contract BasicRedeemHook is IHook {
+    function callHook(address asset, uint256 assets) public virtual {
         IVaultModule vault = IVaultModule(address(this));
         uint256 liquid = IERC20(asset).balanceOf(address(vault));
         if (liquid >= assets) {

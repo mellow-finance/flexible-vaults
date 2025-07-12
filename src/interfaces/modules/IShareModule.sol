@@ -2,7 +2,6 @@
 pragma solidity 0.8.25;
 
 import "../factories/IFactory.sol";
-import "../hooks/IDepositHook.sol";
 import "../hooks/IRedeemHook.sol";
 import "../managers/IFeeManager.sol";
 import "../managers/IShareManager.sol";

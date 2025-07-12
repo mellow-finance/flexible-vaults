@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/hooks/IDepositHook.sol";
+import "../interfaces/hooks/IHook.sol";
 import "../interfaces/modules/IShareModule.sol";
 import "../interfaces/modules/IVaultModule.sol";
 
-contract RedirectingDepositHook is IDepositHook {
-    function afterDeposit(address asset, uint256 assets) public virtual {
+contract RedirectingDepositHook is IHook {
+    function callHook(address asset, uint256 assets) public virtual {
         IVaultModule vault = IVaultModule(address(this));
         IRiskManager riskManager = vault.riskManager();
         uint256 subvaults = vault.subvaults();

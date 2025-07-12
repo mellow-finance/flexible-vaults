@@ -176,20 +176,16 @@ abstract contract ShareModule is IShareModule, ACLModule {
     /// @inheritdoc IShareModule
     function callHook(uint256 assets) external {
         address queue = _msgSender();
-        ShareModuleStorage storage $ = _shareModuleStorage();
         address asset = IQueue(queue).asset();
+        ShareModuleStorage storage $ = _shareModuleStorage();
         if (!_shareModuleStorage().queues[asset].contains(queue)) {
             revert Forbidden();
         }
         address hook = getHook(queue);
-        if ($.isDepositQueue[queue]) {
-            if (hook != address(0)) {
-                Address.functionDelegateCall(hook, abi.encodeCall(IDepositHook.afterDeposit, (asset, assets)));
-            }
-        } else {
-            if (hook != address(0)) {
-                Address.functionDelegateCall(hook, abi.encodeCall(IRedeemHook.beforeRedeem, (asset, assets)));
-            }
+        if (hook != address(0)) {
+            Address.functionDelegateCall(hook, abi.encodeCall(IHook.callHook, (asset, assets)));
+        }
+        if (!$.isDepositQueue[queue]) {
             TransferLibrary.sendAssets(asset, queue, assets);
         }
         emit HookCalled(queue, asset, assets, hook);
