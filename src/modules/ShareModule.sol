@@ -276,20 +276,19 @@ abstract contract ShareModule is IShareModule, ACLModule {
         if (_msgSender() != $.oracle) {
             revert Forbidden();
         }
+        IShareManager shareManager_ = IShareManager($.shareManager);
+        IFeeManager feeManager_ = IFeeManager($.feeManager);
+        uint256 fees = feeManager_.calculateFee(address(this), asset, priceD18, shareManager_.totalShares());
+        if (fees != 0) {
+            shareManager_.mint(feeManager_.feeRecipient(), fees);
+        }
+        feeManager_.updateState(asset, priceD18);
         EnumerableSet.AddressSet storage queues = _shareModuleStorage().queues[asset];
         uint256 length = queues.length();
         for (uint256 i = 0; i < length; i++) {
             address queue = queues.at(i);
             IQueue(queue).handleReport(priceD18, $.isDepositQueue[queue] ? depositTimestamp : redeemTimestamp);
         }
-
-        IFeeManager feeManager_ = IFeeManager($.feeManager);
-        IShareManager shareManager_ = IShareManager($.shareManager);
-        uint256 fees = feeManager_.calculateFee(address(this), asset, shareManager_.totalShares(), priceD18);
-        if (fees != 0) {
-            shareManager_.mint(feeManager_.feeRecipient(), fees);
-        }
-        feeManager_.updateState(asset, priceD18);
         emit ReportHandled(asset, priceD18, depositTimestamp, redeemTimestamp, fees);
     }
 

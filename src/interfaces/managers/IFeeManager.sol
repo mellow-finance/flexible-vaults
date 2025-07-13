@@ -25,7 +25,7 @@ interface IFeeManager is IFactoryEntity {
         uint24 performanceFeeD6; // Performance fee applied on price increase (6 decimals)
         uint24 protocolFeeD6; // Protocol fee applied over time (6 decimals annualized)
         mapping(address vault => uint256) timestamps; // Last update timestamp for protocol fee accrual
-        mapping(address vault => uint256) maxPriceD18; // Highest price seen for performance fee trigger
+        mapping(address vault => uint256) minPriceD18; // Lowests price seen for performance fee trigger
         mapping(address vault => address) baseAsset; // Base asset used to evaluate price-based fees
     }
 
@@ -47,8 +47,8 @@ interface IFeeManager is IFactoryEntity {
     /// @notice Returns the last recorded timestamp for a given vault (used for protocol fee accrual)
     function timestamps(address vault) external view returns (uint256);
 
-    /// @notice Returns the last recorded max price for a vault’s base asset (used for performance fee)
-    function maxPriceD18(address vault) external view returns (uint256);
+    /// @notice Returns the last recorded min price for a vault's base asset (used for performance fee)
+    function minPriceD18(address vault) external view returns (uint256);
 
     /// @notice Returns the base asset configured for a vault
     function baseAsset(address vault) external view returns (address);

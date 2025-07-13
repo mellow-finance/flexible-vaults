@@ -15,8 +15,7 @@ interface ISymbioticVault {
     function claim(address recipient, uint256 epoch) external returns (uint256 amount);
 }
 
-/// @notice Out of scope!
-/// @notice Used explicitly as an example
+/// @notice Out of scope! Used as an example only.
 contract SymbioticStrategy is Ownable {
     error ApproveCallFailed();
 

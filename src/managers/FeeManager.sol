@@ -46,8 +46,8 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
     }
 
     /// @inheritdoc IFeeManager
-    function maxPriceD18(address vault) public view returns (uint256) {
-        return _feeManagerStorage().maxPriceD18[vault];
+    function minPriceD18(address vault) public view returns (uint256) {
+        return _feeManagerStorage().minPriceD18[vault];
     }
 
     /// @inheritdoc IFeeManager
@@ -73,9 +73,9 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
     {
         FeeManagerStorage storage $ = _feeManagerStorage();
         if (asset == $.baseAsset[vault]) {
-            uint256 maxPriceD18_ = $.maxPriceD18[vault];
-            if (priceD18 > maxPriceD18_ && maxPriceD18_ != 0) {
-                shares = Math.mulDiv(priceD18 - maxPriceD18_, $.performanceFeeD6 * totalShares, 1e24);
+            uint256 minPriceD18_ = $.minPriceD18[vault];
+            if (priceD18 < minPriceD18_ && minPriceD18_ != 0) {
+                shares = Math.mulDiv(minPriceD18_ - priceD18, $.performanceFeeD6 * totalShares, 1e24);
             }
         }
         uint256 timestamp = $.timestamps[vault];
@@ -119,8 +119,9 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         if ($.baseAsset[vault] != asset) {
             return;
         }
-        if ($.maxPriceD18[vault] < priceD18) {
-            $.maxPriceD18[vault] = priceD18;
+        uint256 minPriceD18_ = $.minPriceD18[vault];
+        if (minPriceD18_ == 0 || minPriceD18_ > priceD18) {
+            $.minPriceD18[vault] = priceD18;
         }
         $.timestamps[vault] = block.timestamp;
         emit UpdateState(vault, asset, priceD18);
