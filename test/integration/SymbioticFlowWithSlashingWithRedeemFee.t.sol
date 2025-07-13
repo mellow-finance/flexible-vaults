@@ -41,14 +41,18 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         redeemInterval: 14 days
     });
 
-    function testSymbioticFlowWithSlashing() external {
+    uint256 amountAfterSlashing;
+    Vault vaultImplementation;
+    Oracle oracleImplementation;
+
+    function testSymbioticFlowWithSlashingWithRedemptionFee() external {
         address[] memory assets = new address[](1);
         assets[0] = ASSET;
 
-        Vault.RoleHolder[] memory holders_ = new Vault.RoleHolder[](9);
+        Vault.RoleHolder[] memory holders_ = new Vault.RoleHolder[](10);
 
-        Vault vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
-        Oracle oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
+        vaultImplementation = Vault(payable($.vaultFactory.implementationAt(0)));
+        oracleImplementation = Oracle($.oracleFactory.implementationAt(0));
 
         holders_[0] = Vault.RoleHolder(vaultImplementation.CREATE_QUEUE_ROLE(), $.vaultAdmin);
         holders_[1] = Vault.RoleHolder(oracleImplementation.SUBMIT_REPORTS_ROLE(), $.vaultAdmin);
@@ -64,6 +68,8 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         holders_[7] =
             Vault.RoleHolder(Oracle($.oracleFactory.implementationAt(0)).SET_SECURITY_PARAMS_ROLE(), $.vaultAdmin);
         holders_[8] = Vault.RoleHolder(vaultImplementation.REMOVE_QUEUE_ROLE(), $.vaultAdmin);
+
+        holders_[9] = Vault.RoleHolder(vaultImplementation.SET_QUEUE_STATUS_ROLE(), $.vaultAdmin);
 
         (,,, address oracle, address vault_) = $.vaultConfigurator.create(
             VaultConfigurator.InitParams({
@@ -85,6 +91,10 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
             })
         );
         Vault vault = Vault(payable(vault_));
+
+        vm.startPrank($.vaultAdmin);
+        vault.feeManager().setFees(0, 1e4, 0, 0); // 1% redeem fee
+        vm.stopPrank();
 
         vm.startPrank($.vaultAdmin);
         vault.createQueue(0, true, $.vaultProxyAdmin, ASSET, new bytes(0));
@@ -149,23 +159,8 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
             });
             bytes32 merkleRoot;
             (merkleRoot, verificationPayloads) = generateMerkleProofs(leaves);
-            {
-                address badVerifier = address(
-                    Verifier($.verifierFactory.create(0, $.vaultProxyAdmin, abi.encode(address(1), merkleRoot)))
-                );
-                vm.expectRevert();
-                vault.createSubvault(0, $.vaultProxyAdmin, address(badVerifier));
-            }
             verifier = Verifier($.verifierFactory.create(0, $.vaultProxyAdmin, abi.encode(address(vault), merkleRoot)));
-
             address subvault = vault.createSubvault(0, $.vaultProxyAdmin, address(verifier));
-
-            {
-                vm.expectRevert();
-                vault.hookPullAssets(subvault, ASSET, 1);
-                vm.expectRevert();
-                vault.hookPushAssets(subvault, ASSET, 1);
-            }
 
             address[] memory assets_ = new address[](1);
             assets_[0] = ASSET;
@@ -235,7 +230,42 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         {
             RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
             uint224 shares = uint224(vault.shareManager().sharesOf($.user));
-            queue.redeem(shares);
+            vm.expectRevert();
+            queue.redeem(0);
+            queue.redeem(shares / 2);
+            queue.redeem(shares / 2);
+        }
+        vm.stopPrank();
+
+        assertEq(RedeemQueue(payable(vault.queueAt(ASSET, 1))).requestsOf($.user, 0, 10).length, 1);
+
+        vm.startPrank($.vaultAdmin);
+        skip(20 hours);
+        {
+            RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
+            vault.setQueueStatus(address(queue), true);
+            vm.expectRevert();
+            queue.redeem(1 ether);
+            vault.setQueueStatus(address(queue), false);
+
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
+            Oracle(oracle).submitReports(reports);
+        }
+        vm.stopPrank();
+
+        vm.startPrank($.vaultAdmin);
+        skip(20 hours);
+        {
+            RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
+            vault.setQueueStatus(address(queue), true);
+            vm.expectRevert();
+            queue.redeem(1 ether);
+            vault.setQueueStatus(address(queue), false);
+
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
+            Oracle(oracle).submitReports(reports);
         }
         vm.stopPrank();
 
@@ -246,11 +276,12 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         vm.startPrank($.curator);
         uint256 currentEpoch = ISymbioticStorageVault(SYMBIOTIC_VAULT).currentEpoch();
 
-        uint256 amountAfterSlashing;
+        uint256 expectedRedeemAmount = 1 ether - expectedSlashedValue;
+        expectedRedeemAmount -= vault.feeManager().calculateRedeemFee(expectedRedeemAmount);
+
         {
             Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
             amountAfterSlashing = ISymbioticStorageVault(SYMBIOTIC_VAULT).activeBalanceOf(address(subvault));
-
             assertApproxEqAbs(amountAfterSlashing, 1 ether - expectedSlashedValue, 1 wei);
             subvault.call(
                 SYMBIOTIC_VAULT,
@@ -286,6 +317,14 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), amountAfterSlashing);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
+        vm.startPrank($.user);
+        {
+            uint32[] memory timestamps = new uint32[](1);
+            timestamps[0] = uint32(userRedeemTimestamp);
+            assertEq(0, RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps));
+        }
+        vm.stopPrank();
+
         vm.startPrank($.vaultAdmin);
         {
             IOracle.Report[] memory reports = new IOracle.Report[](1);
@@ -302,6 +341,12 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
 
             RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
             assertFalse(queue.canBeRemoved());
+
+            skip(20 hours);
+            Oracle(oracle).submitReports(reports);
+
+            skip(20 hours);
+            Oracle(oracle).submitReports(reports);
         }
         vm.stopPrank();
 
@@ -315,7 +360,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         {
             uint32[] memory timestamps = new uint32[](1);
             timestamps[0] = uint32(userRedeemTimestamp);
-            RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps);
+            assertEq(0, RedeemQueue(payable(vault.queueAt(ASSET, 1))).claim($.user, timestamps));
         }
         vm.stopPrank();
 
@@ -325,22 +370,31 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), amountAfterSlashing);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
+        RedeemQueue redeemQueue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
         {
-            RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
-            (uint256 batchIterator,,,) = queue.getState();
-            (uint256 x, uint256 y) = queue.batchAt(batchIterator);
-            assertEq(x, amountAfterSlashing);
-            assertEq(y, 1 ether);
-            assertFalse(queue.canBeRemoved());
+            uint256 x;
+            uint256 y;
+            {
+                (uint256 batchIterator,,,) = redeemQueue.getState();
+                (x, y) = redeemQueue.batchAt(batchIterator);
+            }
+            {
+                assertEq(y, 1 ether - vault.feeManager().calculateRedeemFee(1 ether));
+            }
+
+            assertApproxEqAbs(x, expectedRedeemAmount, 2 wei);
+            expectedRedeemAmount = x;
+            assertFalse(redeemQueue.canBeRemoved());
 
             vm.startPrank($.vaultAdmin);
             vm.expectRevert();
-            vault.removeQueue(address(queue));
+            vault.removeQueue(address(redeemQueue));
             vm.stopPrank();
         }
 
-        RedeemQueue redeemQueue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
-        redeemQueue.handleReports(1);
+        assertEq(0, redeemQueue.handleReports(0));
+        assertEq(1, redeemQueue.handleReports(1));
+        assertEq(0, redeemQueue.handleReports(1));
 
         {
             (uint256 batchIterator,,,) = redeemQueue.getState();
@@ -348,36 +402,98 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
             assertEq(x, 0);
             assertEq(y, 0);
             assertTrue(redeemQueue.canBeRemoved());
-
-            vm.startPrank($.vaultAdmin);
-            vault.removeQueue(address(redeemQueue));
-            vm.stopPrank();
         }
         assertEq(vault.shareManager().sharesOf($.user), 0);
-        assertEq(IERC20(ASSET).balanceOf(address(redeemQueue)), amountAfterSlashing);
+        assertEq(IERC20(ASSET).balanceOf(address(redeemQueue)), expectedRedeemAmount);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
-        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), amountAfterSlashing - expectedRedeemAmount);
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
         vm.startPrank($.user);
         {
-            uint32[] memory timestamps = new uint32[](1);
-            timestamps[0] = uint32(userRedeemTimestamp);
             IRedeemQueue.Request[] memory requests = redeemQueue.requestsOf($.user, 0, type(uint256).max);
             assertEq(requests.length, 1);
             assertEq(requests[0].timestamp, userRedeemTimestamp);
             assertEq(requests[0].isClaimable, true, "isClaimable");
-            assertEq(requests[0].assets, amountAfterSlashing, "assets");
-            assertEq(requests[0].shares, 1 ether, "shares");
-            redeemQueue.claim($.user, timestamps);
+            assertEq(requests[0].assets, expectedRedeemAmount, "assets");
+            assertEq(requests[0].shares, 0.99 ether, "shares");
+            uint32[] memory timestamps = new uint32[](1);
+            timestamps[0] = type(uint32).max;
+            assertEq(redeemQueue.claim($.user, timestamps), 0);
+            timestamps[0] = uint32(userRedeemTimestamp) - 1;
+            assertEq(redeemQueue.claim($.user, timestamps), 0);
+            timestamps[0] = uint32(userRedeemTimestamp);
+            assertEq(redeemQueue.claim($.user, timestamps), expectedRedeemAmount);
+            assertEq(redeemQueue.requestsOf($.user, type(uint256).max, 0).length, 0);
         }
         vm.stopPrank();
 
         assertEq(vault.shareManager().sharesOf($.user), 0);
         assertEq(IERC20(ASSET).balanceOf(address(redeemQueue)), 0);
         assertEq(IERC20(ASSET).balanceOf(address(vault)), 0);
-        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), 0);
-        assertEq(IERC20(ASSET).balanceOf($.user), amountAfterSlashing);
+        assertEq(IERC20(ASSET).balanceOf(address(vault.subvaultAt(0))), amountAfterSlashing - expectedRedeemAmount);
+        assertEq(IERC20(ASSET).balanceOf($.user), expectedRedeemAmount);
+
+        vm.startPrank($.user);
+        {
+            DepositQueue queue = DepositQueue(payable(vault.queueAt(ASSET, 0)));
+            uint224 amount = 1 ether;
+            deal(ASSET, $.user, amount);
+            IERC20(ASSET).approve(address(queue), type(uint256).max);
+            queue.deposit(amount, address(0), new bytes32[](0));
+        }
+        vm.stopPrank();
+
+        vm.startPrank($.vaultAdmin);
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: uint224(1e36 / amountAfterSlashing)});
+
+            skip(20 hours);
+            Oracle(oracle).submitReports(reports);
+        }
+        vm.stopPrank();
+
+        vm.startPrank($.user);
+        {
+            redeemQueue.redeem(vault.shareManager().sharesOf($.user));
+        }
+        vm.stopPrank();
+
+        vm.startPrank($.vaultAdmin);
+        for (uint256 i = 0; i < 30; i++) {
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            reports[0] = IOracle.Report({asset: ASSET, priceD18: uint224(1e36 / amountAfterSlashing)});
+
+            skip(20 hours);
+            Oracle(oracle).submitReports(reports);
+        }
+        vm.stopPrank();
+
+        {
+            (uint256 batchIterator,, uint256 demandAssets, uint256 pendingShares) = redeemQueue.getState();
+            assertEq(pendingShares, 1099777681625627299, "pending shares");
+            assertEq(demandAssets, 0.99 ether, "required assets");
+            {
+                (uint256 batchAssets, uint256 batchShares) = redeemQueue.batchAt(batchIterator);
+                assertEq(batchAssets, 0.99 ether);
+                assertEq(batchShares, 1099777681625627299);
+            }
+
+            assertFalse(redeemQueue.canBeRemoved());
+            assertEq(1, redeemQueue.handleReports(1));
+
+            (,, demandAssets, pendingShares) = redeemQueue.getState();
+
+            assertEq(pendingShares, 0, "pending shares");
+            assertEq(demandAssets, 0, "required assets");
+
+            assertTrue(redeemQueue.canBeRemoved());
+
+            vm.startPrank($.vaultAdmin);
+            vault.removeQueue(address(redeemQueue));
+            vm.stopPrank();
+        }
     }
 
     function slashSymbioticVault(uint256 ratioD2) public returns (uint256 slashedActiveStakeRatioD18) {

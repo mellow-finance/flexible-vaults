@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "./IHook.sol";
 
 /// @title IRedeemHook
-/// @notice Interface for redeem-side hooks that implement custom logic during asset withdrawals or redemptions.
+/// @notice Interface for redeem-side hooks that implement custom logic during asset redemptions.
 interface IRedeemHook is IHook {
     /// @notice Returns the amount of liquid (immediately withdrawable) assets available for a given token.
     /// @dev Used by queues to determine how much can be processed in the current redemption cycle.

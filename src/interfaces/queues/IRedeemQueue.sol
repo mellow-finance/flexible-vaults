@@ -36,17 +36,12 @@ interface IRedeemQueue is IQueue {
     /// @notice Internal storage layout for redeem queue implementations.
     struct RedeemQueueStorage {
         uint256 handledIndices;
-        /// Index up to which batches have been processed.
-        uint256 outflowDemandIterator;
-        /// Index for processing batches from outflowDemand.
-        uint256 fullDemand;
-        /// Total outstanding redemption demand (in assets).
+        uint256 batchIterator;
+        uint256 totalDemandAssets;
+        uint256 totalPendingShares;
         mapping(address => EnumerableMap.UintToUintMap) requestsOf;
-        /// User redemption requests (timestamp => shares).
         mapping(uint256 => uint256) prefixSum;
-        /// Running sum of shares per batch index.
-        Pair[] outflowDemand;
-        /// Batched demand ready for redemption fulfillment.
+        Pair[] batches;
         Checkpoints.Trace224 prices;
     }
     /// Oracle price reports and timestamps.
@@ -61,10 +56,21 @@ interface IRedeemQueue is IQueue {
         view
         returns (Request[] memory requests);
 
-    /// @notice Returns the total asset and share demand from queued redemptions.
-    /// @return assets Total asset demand.
-    /// @return shares Total share supply matched to this demand.
-    function getDemand() external view returns (uint256 assets, uint256 shares);
+    /// @notice Returns the asset and share for a redemption batch at a given index.
+    /// @param batchIndex Index of the redemption batch.
+    /// @return assets Total assets corresponding to this batch.
+    /// @return shares Total shares redeemed in this batch.
+    function batchAt(uint256 batchIndex) external view returns (uint256 assets, uint256 shares);
+
+    /// @notice Returns the current state of the redeem queue system.
+    /// @return batchIterator Current index of the batch iterator (i.e., next batch to process).
+    /// @return batches Total number of recorded redemption batches.
+    /// @return totalDemand Aggregate amount of redeem requests (in assets) awaiting fulfillment.
+    /// @return totalPendingShares Total number of shares across all unprocessed redemption requests.
+    function getState()
+        external
+        view
+        returns (uint256 batchIterator, uint256 batches, uint256 totalDemand, uint256 totalPendingShares);
 
     /// @notice Initiates a new redemption by queuing shares for future asset claims.
     /// @param shares Amount of shares to redeem.
@@ -76,26 +82,17 @@ interface IRedeemQueue is IQueue {
     /// @return assets Total amount of assets claimed.
     function claim(address account, uint32[] calldata timestamps) external returns (uint256 assets);
 
-    /// @notice Processes oracle price reports and matches them against queued redemptions.
-    /// @param reports Maximum number of price reports to process in one call.
+    /// @notice Processes oracle price reports and matches them against queued redemption batches.
+    /// @param reports Maximum number of batches to process in one call.
     /// @return counter Number of processed redemption batches.
     function handleReports(uint256 reports) external returns (uint256 counter);
 
-    /// @notice Emitted when a new redemption request is made.
-    /// @param account Address of the redeemer.
-    /// @param shares Amount of shares redeemed.
-    /// @param timestamp Timestamp of the request.
+    /// @notice Emitted when a new redemption request is requested.
     event RedeemRequested(address indexed account, uint256 shares, uint256 timestamp);
 
     /// @notice Emitted when redemption is claimed by a user.
-    /// @param account Address of the redeemer.
-    /// @param receiver Address receiving the assets.
-    /// @param assets Amount of assets claimed.
-    /// @param timestamps Timestamps of the claimed redemption requests.
     event RedeemRequestClaimed(address indexed account, address indexed receiver, uint256 assets, uint32[] timestamps);
 
-    /// @notice Emitted when oracle price reports are processed and redemptions are fulfilled.
-    /// @param counter Number of processed batches.
-    /// @param demand Total assets fulfilled in the processed redemptions.
+    /// @notice Emitted when oracle price reports are processed.
     event RedeemRequestsHandled(uint256 counter, uint256 demand);
 }

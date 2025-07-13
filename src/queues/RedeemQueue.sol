@@ -20,13 +20,18 @@ contract RedeemQueue is IRedeemQueue, Queue {
     // View functions
 
     /// @inheritdoc IRedeemQueue
-    function getDemand() public view returns (uint256 assets, uint256 shares) {
+    function getState() public view returns (uint256, uint256, uint256, uint256) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
-        uint256 iterator_ = $.outflowDemandIterator;
-        if (iterator_ >= $.outflowDemand.length) {
+        return ($.batchIterator, $.batches.length, $.totalDemandAssets, $.totalPendingShares);
+    }
+
+    /// @inheritdoc IRedeemQueue
+    function batchAt(uint256 index) public view returns (uint256 assets, uint256 shares) {
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+        if (index >= $.batches.length) {
             return (0, 0);
         }
-        Pair storage pair = $.outflowDemand[iterator_];
+        Pair storage pair = $.batches[index];
         return (pair.assets, pair.shares);
     }
 
@@ -44,7 +49,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
         limit = Math.min(length - offset, limit);
         requests = new Request[](limit);
-        uint256 outflowDemandIterator = $.outflowDemandIterator;
+        uint256 batchIterator = $.batchIterator;
         (, uint32 latestEligibleTimestamp,) = $.prices.latestCheckpoint();
         Pair memory pair;
         for (uint256 i = 0; i < limit; i++) {
@@ -55,15 +60,16 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 continue;
             }
             uint256 index = $.prices.lowerLookup(uint32(timestamp));
-            pair = $.outflowDemand[index];
+            pair = $.batches[index];
             requests[i].assets = Math.mulDiv(shares, pair.assets, pair.shares);
-            requests[i].isClaimable = index < outflowDemandIterator;
+            requests[i].isClaimable = index < batchIterator;
         }
     }
 
     /// @inheritdoc IQueue
     function canBeRemoved() external view returns (bool) {
-        return _redeemQueueStorage().handledIndices == _timestamps().length();
+        RedeemQueueStorage storage $ = _redeemQueueStorage();
+        return _timestamps().length() == $.handledIndices && $.batchIterator == $.batches.length;
     }
 
     // Mutable functions
@@ -95,27 +101,26 @@ contract RedeemQueue is IRedeemQueue, Queue {
             uint256 fees = feeManager.calculateRedeemFee(shares);
             if (fees > 0) {
                 shareManager_.mint(feeManager.feeRecipient(), fees);
+                shares -= fees;
             }
         }
 
         RedeemQueueStorage storage $ = _redeemQueueStorage();
-
         uint32 timestamp = uint32(block.timestamp);
-        uint256 index;
         Checkpoints.Trace224 storage timestamps = _timestamps();
+        uint256 index = timestamps.length();
         (, uint32 latestTimestamp,) = timestamps.latestCheckpoint();
         if (latestTimestamp < timestamp) {
-            index = timestamps.length();
             timestamps.push(timestamp, uint224(index));
             $.prefixSum[index] = shares + $.prefixSum[index - 1];
         } else {
-            index = timestamps.length() - 1;
-            $.prefixSum[index] += shares;
+            $.prefixSum[--index] += shares;
         }
 
         EnumerableMap.UintToUintMap storage callerRequests = $.requestsOf[caller];
         (, uint256 pendingShares) = callerRequests.tryGet(timestamp);
         callerRequests.set(timestamp, pendingShares + shares);
+        $.totalPendingShares += shares;
         emit RedeemRequested(caller, shares, timestamp);
     }
 
@@ -129,7 +134,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             return 0;
         }
 
-        uint256 outflowDemandIterator_ = $.outflowDemandIterator;
+        uint256 batchIterator = $.batchIterator;
         for (uint256 i = 0; i < timestamps.length; i++) {
             uint32 timestamp = timestamps[i];
             if (timestamp > latestReportTimestamp) {
@@ -141,10 +146,10 @@ contract RedeemQueue is IRedeemQueue, Queue {
             }
             if (shares != 0) {
                 uint256 index = $.prices.lowerLookup(timestamp);
-                if (index >= outflowDemandIterator_) {
+                if (index >= batchIterator) {
                     continue;
                 }
-                Pair storage pair = $.outflowDemand[index];
+                Pair storage pair = $.batches[index];
 
                 uint256 assets_ = Math.mulDiv(shares, pair.assets, pair.shares);
                 assets += assets_;
@@ -161,8 +166,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
     /// @inheritdoc IRedeemQueue
     function handleReports(uint256 reports) external nonReentrant returns (uint256 counter) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
-        uint256 iterator_ = $.outflowDemandIterator;
-        uint256 length = $.outflowDemand.length;
+        uint256 iterator_ = $.batchIterator;
+        uint256 length = $.batches.length;
         if (iterator_ >= length || reports == 0) {
             return 0;
         }
@@ -171,13 +176,15 @@ contract RedeemQueue is IRedeemQueue, Queue {
         IShareModule vault_ = IShareModule(vault());
         uint256 liquidAssets = vault_.getLiquidAssets();
         uint256 demand = 0;
+        uint256 shares = 0;
         Pair memory pair;
         for (uint256 i = 0; i < reports; i++) {
-            pair = $.outflowDemand[iterator_ + i];
+            pair = $.batches[iterator_ + i];
             if (demand + pair.assets > liquidAssets) {
                 break;
             }
             demand += pair.assets;
+            shares += pair.shares;
             counter++;
         }
 
@@ -185,9 +192,10 @@ contract RedeemQueue is IRedeemQueue, Queue {
             if (demand > 0) {
                 vault_.callHook(demand);
                 IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset(), -int256(uint256(demand)));
-                $.fullDemand -= demand;
+                $.totalDemandAssets -= demand;
             }
-            $.outflowDemandIterator += counter;
+            $.batchIterator += counter;
+            $.totalPendingShares -= shares;
             emit RedeemRequestsHandled(counter, demand);
         }
     }
@@ -226,8 +234,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
         uint256 index = $.prices.length();
         $.prices.push(timestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
-        $.outflowDemand.push(Pair(assets_, shares));
-        $.fullDemand += assets_;
+        $.batches.push(Pair(assets_, shares));
+        $.totalDemandAssets += assets_;
     }
 
     function _redeemQueueStorage() internal view returns (RedeemQueueStorage storage $) {

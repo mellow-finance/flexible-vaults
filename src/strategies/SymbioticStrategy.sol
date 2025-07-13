@@ -61,4 +61,6 @@ contract SymbioticStrategy is Ownable {
             symbioticVault, 0, abi.encodeCall(ISymbioticVault.claim, (subvault, epoch)), verificationPayload
         );
     }
+
+    function test() private pure {}
 }

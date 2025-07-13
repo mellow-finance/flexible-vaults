@@ -288,14 +288,18 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
         assertEq(IERC20(ASSET).balanceOf($.user), 0);
 
         {
-            (uint256 x, uint256 y) = RedeemQueue(payable(vault.queueAt(ASSET, 1))).getDemand();
+            RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
+            (uint256 batchIterator,,,) = queue.getState();
+            (uint256 x, uint256 y) = queue.batchAt(batchIterator);
             assertEq(x, 1 ether);
             assertEq(y, 1 ether);
         }
         RedeemQueue(payable(vault.queueAt(ASSET, 1))).handleReports(1);
 
         {
-            (uint256 x, uint256 y) = RedeemQueue(payable(vault.queueAt(ASSET, 1))).getDemand();
+            RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
+            (uint256 batchIterator,,,) = queue.getState();
+            (uint256 x, uint256 y) = queue.batchAt(batchIterator);
             assertEq(x, 0);
             assertEq(y, 0);
         }
