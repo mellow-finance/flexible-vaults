@@ -8,7 +8,18 @@ import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
 import "../factories/IFactoryEntity.sol";
 
-/// @notice Interface for the Consensus contract, which validates multisignature approval using EIP-712 and EIP-1271
+/// @title IConsensus
+/// @notice Interface for a Consensus contract that validates multisignature approvals via EIP-712 and EIP-1271.
+/// @dev Enables off-chain consensus-based authorization for deposit and redemption queues or other vault operations.
+///
+/// # Overview
+/// The `Consensus` contract acts as a cryptographic gatekeeper that validates signed messages from a trusted set of signers.
+/// It supports both EIP-712 structured signatures and EIP-1271 contract-based signature validation, enabling:
+/// - Multisignature validation for off-chain approvals.
+/// - Compatibility with externally owned accounts (EOAs) and smart contract wallets (e.g., Safe).
+///
+/// This interface is typically used by modules like `SignatureQueue` that rely on off-chain consensus to approve user actions
+/// without requiring full on-chain execution or delays.
 interface IConsensus is IFactoryEntity {
     /// @notice Thrown when provided signatures are invalid or below the required threshold
     error InvalidSignatures(bytes32 orderHash, Signature[] signatures);
@@ -68,12 +79,8 @@ interface IConsensus is IFactoryEntity {
     /// @param account Address to check
     function isSigner(address account) external view returns (bool);
 
-    /// @notice Initializes the consensus contract (sets initial owner)
-    /// @param data Encoded address of initial owner
-    function initialize(bytes calldata data) external;
-
     /// @notice Updates the threshold required to approve an operation
-    /// @param threshold New threshold (must be >0 and ≤ signer count)
+    /// @param threshold New threshold (must be > 0 and <= signer count)
     function setThreshold(uint256 threshold) external;
 
     /// @notice Adds a new signer and updates the threshold

@@ -11,14 +11,17 @@ import "../queues/IQueue.sol";
 import "../queues/IRedeemQueue.sol";
 import "./IBaseModule.sol";
 
+/// @title IShareModule
+/// @notice Manages user-facing interactions with the vault via deposit/redeem queues, hooks, and share accounting.
+/// @dev Coordinates oracle report handling, hook invocation, fee calculation, and queue lifecycle.
 interface IShareModule is IBaseModule {
-    /// @dev Thrown when an unsupported asset is used for queue creation.
+    /// @notice Thrown when an unsupported asset is used for queue creation.
     error UnsupportedAsset(address asset);
 
-    /// @dev Thrown when the queue count exceeds the configured system-wide limit.
+    /// @notice Thrown when the number of queues exceeds the allowed system-wide maximum.
     error QueueLimitReached();
 
-    /// @dev Thrown when a zero value is provided where non-zero is required.
+    /// @notice Thrown when an operation is attempted with a zero-value parameter.
     error ZeroValue();
 
     /// @dev Storage structure for the ShareModule.
@@ -26,8 +29,8 @@ interface IShareModule is IBaseModule {
         address shareManager; // Address of the ShareManager responsible for minting/burning shares
         address feeManager; // Address of the FeeManager that calculates and collects protocol fees
         address oracle; // Address of the Oracle
-        address defaultDepositHook; // Default hook to call after deposit queue request processing
-        address defaultRedeemHook; // Default hook to call before redeem queue request processing
+        address defaultDepositHook; // Optional hook that is called by default after DepositQueue requests are processed
+        address defaultRedeemHook; // Optional hook that is called by default before RedeemQueue requests are processed
         uint256 queueCount; // Total number of queues across all assets
         uint256 queueLimit; // Maximum number of queues allowed in the system
         mapping(address => address) customHooks; // Optional queue-specific hooks
@@ -37,7 +40,7 @@ interface IShareModule is IBaseModule {
         EnumerableSet.AddressSet assets; // Set of all supported assets with queues
     }
 
-    /// @notice Role identifier for managing per-queue hooks
+    /// @notice Role identifier for managing per-queue and default hooks
     function SET_HOOK_ROLE() external view returns (bytes32);
 
     /// @notice Role identifier for creating new queues
@@ -55,10 +58,10 @@ interface IShareModule is IBaseModule {
     /// @notice Returns the ShareManager used for minting and burning shares
     function shareManager() external view returns (IShareManager);
 
-    /// @notice Returns the FeeManager contract used for fee calculations and accrual
+    /// @notice Returns the FeeManager contract used for fee calculations
     function feeManager() external view returns (IFeeManager);
 
-    /// @notice Returns the Oracle used to validate prices and detect suspicious quotes
+    /// @notice Returns the Oracle contract used for handling reports and managing supported assets.
     function oracle() external view returns (IOracle);
 
     /// @notice Returns the factory used for deploying deposit queues
@@ -94,7 +97,7 @@ interface IShareModule is IBaseModule {
     /// @notice Returns the queue at the given index for the specified asset
     function queueAt(address asset, uint256 index) external view returns (address);
 
-    /// @notice Returns the hook assigned to a queue (custom or default)
+    /// @notice Returns the hook assigned to a queue (customHook or defaultHook as a fallback)
     function getHook(address queue) external view returns (address hook);
 
     /// @notice Returns the default hook for deposit queues
@@ -106,10 +109,10 @@ interface IShareModule is IBaseModule {
     /// @notice Returns the current global queue limit
     function queueLimit() external view returns (uint256);
 
-    /// @notice Returns the total number of unclaimed shares for a given user
+    /// @notice Returns the total number of claimable shares for a given user
     function claimableSharesOf(address account) external view returns (uint256 shares);
 
-    /// @notice Called by redeem queues to check the amount of assets available for withdrawal
+    /// @notice Called by redeem queues to check the amount of assets available for instant withdrawal
     function getLiquidAssets() external view returns (uint256);
 
     /// @notice Claims all claimable shares from deposit queues for the specified account
@@ -140,7 +143,7 @@ interface IShareModule is IBaseModule {
     /// @notice Invokes a queue's hook (also transfers assets to the queue for redeem queues)
     function callHook(uint256 assets) external;
 
-    /// @notice Handles an oracle price report and distributes fees / calls internal hooks
+    /// @notice Handles an oracle price report, distributes fees and calls internal hooks
     function handleReport(address asset, uint224 priceD18, uint32 depositTimestamp, uint32 redeemTimestamp) external;
 
     /// @notice Emitted when a user successfully claims shares from deposit queues
@@ -161,7 +164,7 @@ interface IShareModule is IBaseModule {
     /// @notice Emitted when the global queue limit is updated
     event QueueLimitSet(uint256 limit);
 
-    /// @notice Emitted when a queue’s paused status changes
+    /// @notice Emitted when a queue's paused status changes
     event SetQueueStatus(address indexed queue, bool indexed isPaused);
 
     /// @notice Emitted when a new default hook is configured

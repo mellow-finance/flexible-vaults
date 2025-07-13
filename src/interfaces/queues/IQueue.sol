@@ -16,43 +16,41 @@ interface IQueue is IFactoryEntity {
     /// @notice Reverts when caller is not authorized to perform an action.
     error Forbidden();
 
-    /// @notice Reverts when an oracle price report is malformed, invalid, or rejected.
+    /// @notice Reverts when an oracle price report is invalid.
     error InvalidReport();
 
     /// @notice Reverts when queue interactions are restricted due to governance or ACL pause.
     error QueuePaused();
 
-    /// @notice Internal storage layout for a queue contract.
+    /// @notice Storage layout for a generic queue contract (deposit or redeem).
     struct QueueStorage {
+        /// @notice The asset managed by this queue (ERC20 or ETH).
         address asset;
-        /// The asset handled by the queue (e.g., ERC20 token).
+        /// @notice The vault that this queue is connected to. Only this vault can trigger `handleReport`.
         address vault;
-        /// Address of the associated vault.
+        /// @notice Timeline of user request checkpoints.
+        /// @dev Stores a sorted series of (timestamp, value) pairs, where the meaning of `value` is defined by the specific queue implementation.
         Checkpoints.Trace224 timestamps;
     }
-    /// Oracle-reported price history (timestamp → price).
 
     /// @notice Returns the associated vault address.
-    /// @return vault The address of the vault using this queue.
     function vault() external view returns (address vault);
 
     /// @notice Returns the asset handled by this queue (ERC20 or ETH).
-    /// @return asset The address of the underlying asset.
     function asset() external view returns (address asset);
 
     /// @notice Returns true if this queue is eligible for removal by the vault.
-    /// @dev Typically used during upgrades or vault reconfigurations.
     /// @return removable True if the queue is safe to remove.
     function canBeRemoved() external view returns (bool removable);
 
     /// @notice Handles a new price report from the oracle.
     /// @dev Only callable by the vault. Validates input timestamp and price.
-    /// @param priceD18 Price reported with 18 decimal precision.
+    /// @param priceD18 Price reported with 18 decimal precision (shares = price * assets).
     /// @param timestamp Timestamp when the report becomes effective.
     function handleReport(uint224 priceD18, uint32 timestamp) external;
 
     /// @notice Emitted when a price report is successfully processed by the queue.
-    /// @param priceD18 Reported price (18-decimal fixed-point).
-    /// @param timestamp Timestamp of when the price becomes valid.
+    /// @param priceD18 Reported price in 18-decimal fixed-point format (shares = assets * price).
+    /// @param timestamp All unprocessed requests with timestamps <= this value were handled using this report.
     event ReportHandled(uint224 priceD18, uint32 timestamp);
 }

@@ -33,14 +33,13 @@ abstract contract SignatureQueue is
     // View functions
 
     /// @inheritdoc ISignatureQueue
-    function claimableOf(address /* account */ ) public view virtual returns (uint256) {
-        return 0;
-    }
+    function claimableOf(address) public view virtual returns (uint256) {}
 
     /// @inheritdoc ISignatureQueue
-    function claim(address /* account */ ) external virtual returns (uint256) {
-        return 0;
-    }
+    function claim(address /* account */ ) external virtual returns (bool) {}
+
+    /// @inheritdoc ISignatureQueue
+    function handleReport(uint224, uint32) external view {}
 
     /// @inheritdoc ISignatureQueue
     function vault() public view returns (address) {
@@ -125,9 +124,6 @@ abstract contract SignatureQueue is
     function canBeRemoved() external pure returns (bool) {
         return true;
     }
-
-    /// @inheritdoc ISignatureQueue
-    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external view {}
 
     // Mutable functions
 

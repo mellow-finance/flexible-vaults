@@ -17,7 +17,7 @@ interface IRiskManager is IFactoryEntity {
     /// @notice Thrown when the caller lacks appropriate permission
     error Forbidden();
 
-    /// @notice Thrown when a price report is invalid or flagged as suspicious, or has not been set yet.
+    /// @notice Thrown when a price report is flagged as suspicious, or has not been set yet.
     error InvalidReport();
 
     /// @notice Thrown when attempting to allow an already allowed asset
@@ -41,16 +41,16 @@ interface IRiskManager is IFactoryEntity {
         int256 limit; // Maximum allowable approximate shares
     }
 
-    /// @notice Storage layout for RiskManager (used with explicit storage slots).
+    /// @notice Storage layout for RiskManager.
     struct RiskManagerStorage {
         address vault; // Address of the Vault associated with this risk manager.
-        State vaultState; // Tracks the share balance and limit for the main vault.
+        State vaultState; // Tracks the share balance and limit for the Vault.
         int256 pendingBalance;
         /// Cumulative approximate share balance from all pending requests in all deposit queues. Used to track unprocessed inflows.
-        mapping(address asset => int256) pendingAssets; // Pending inflow amount per asset (asset -> delta).
+        mapping(address asset => int256) pendingAssets; // Pending inflow amount per asset.
         mapping(address asset => int256) pendingShares; // Pending inflow amount in shares per asset converted by the last oracle report.
         mapping(address subvault => State) subvaultStates; // Share state tracking for each connected subvault.
-        mapping(address subvault => EnumerableSet.AddressSet) allowedAssets; // List of assets that each subvault is allowed to interact with (pull/push).
+        mapping(address subvault => EnumerableSet.AddressSet) allowedAssets; // List of assets that each subvault is allowed to interact with.
     }
 
     /// @notice Reverts if the given subvault is not valid for the vault
@@ -59,19 +59,19 @@ interface IRiskManager is IFactoryEntity {
     /// @notice Returns the address of the Vault
     function vault() external view returns (address);
 
-    /// @notice Returns the overall vault state (balance and limit)
+    /// @notice Returns the approximate share balance and the share limit limit of the vault.
     function vaultState() external view returns (State memory);
 
-    /// @notice Returns the pending (unsettled) balance across all assets
+    /// @notice Returns the pending share balance across all assets and deposit queues.
     function pendingBalance() external view returns (int256);
 
     /// @notice Returns the pending asset value for a specific asset
     function pendingAssets(address asset) external view returns (int256);
 
-    /// @notice Returns the pending shares equivalent of a specific asset
+    /// @notice Returns the pending shares equivalent of a specific asset converted by the last oracle report for the given asset.
     function pendingShares(address asset) external view returns (int256);
 
-    /// @notice Returns the balance and limit state of a specific subvault
+    /// @notice Returns the approximate balance and the limit of a specific subvault
     function subvaultState(address subvault) external view returns (State memory);
 
     /// @notice Returns number of assets allowed for a given subvault
@@ -83,10 +83,10 @@ interface IRiskManager is IFactoryEntity {
     /// @notice Checks if an asset is allowed for the specified subvault
     function isAllowedAsset(address subvault, address asset) external view returns (bool);
 
-    /// @notice Converts an asset amount into its equivalent share representation
+    /// @notice Converts an asset amount into its equivalent share representation by the last oracle report
     /// @param asset Asset being valued
     /// @param value Amount in asset units (can be positive or negative)
-    /// @return shares Value in internal share units. Converted by the last oracle report.
+    /// @return shares Share amount
     function convertToShares(address asset, int256 value) external view returns (int256 shares);
 
     /// @notice Returns the maximum amount that can be deposited into a subvault for a specific asset
@@ -110,7 +110,7 @@ interface IRiskManager is IFactoryEntity {
     /// @notice Disallows specific assets from being used in a subvault
     function disallowSubvaultAssets(address subvault, address[] calldata assets) external;
 
-    /// @notice Modifies the pending (unsettled) asset and share balances
+    /// @notice Modifies the vault's pending balances by a signed delta (in asset terms)
     function modifyPendingAssets(address asset, int256 change) external;
 
     /// @notice Sets the vault address this RiskManager is associated with
@@ -119,7 +119,7 @@ interface IRiskManager is IFactoryEntity {
     /// @notice Emitted when a limit is set for a specific subvault
     event SetSubvaultLimit(address indexed subvault, int256 limit);
 
-    /// @notice Emitted when the overall vault limit is updated
+    /// @notice Emitted when the vault limit is updated
     event SetVaultLimit(int256 limit);
 
     /// @notice Emitted when assets are newly allowed for a subvault

@@ -78,7 +78,7 @@ contract IntegrationTest is BaseIntegrationTest {
         vault.createQueue(0, false, $.vaultProxyAdmin, ASSET, new bytes(0));
 
         DepositQueue depositQueue = DepositQueue(payable(vault.queueAt(ASSET, 0)));
-        // RedeemQueue redeemQueue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
+        RedeemQueue redeemQueue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
 
         IOracle.Report[] memory reports = new IOracle.Report[](1);
         reports[0] = IOracle.Report({asset: ASSET, priceD18: 1 ether});
@@ -133,12 +133,56 @@ contract IntegrationTest is BaseIntegrationTest {
             skip(1000 hours);
             adjustPrice(reports[0]);
             Oracle(oracle).submitReports(reports);
+            feeManager.setFees(0, 0, 0, 0);
         }
 
         assertEq(shareManager.totalShares(), (shares * 1e4 * 1000 hours / 365e6 days) + shares, "1090 hours");
         shares = shareManager.totalShares();
+        {
+            skip(1000 hours);
+            adjustPrice(reports[0]);
+            Oracle(oracle).submitReports(reports);
+        }
+        assertEq(shareManager.totalShares(), shares, "2090 hours");
+
+        uint256 totalAssets = IERC20(ASSET).balanceOf(address(vault));
+        uint256 totalShares = shareManager.totalShares();
+
+        assertEq(Math.mulDiv(totalShares, 1 ether, totalAssets), reports[0].priceD18);
 
         vm.stopPrank();
+
+        uint256 userShares = shareManager.sharesOf($.user);
+        uint256 protocolTreasuryShares = shareManager.sharesOf($.protocolTreasury);
+
+        vm.startPrank($.user);
+        redeemQueue.redeem(userShares);
+        vm.stopPrank();
+        vm.startPrank($.protocolTreasury);
+        redeemQueue.redeem(protocolTreasuryShares);
+        vm.stopPrank();
+
+        vm.startPrank($.vaultAdmin);
+        {
+            skip(20 hours);
+            Oracle(oracle).submitReports(reports);
+        }
+        vm.stopPrank();
+
+        redeemQueue.handleBatches(1);
+
+        uint32[] memory timestamps = new uint32[](1);
+        timestamps[0] = uint32(block.timestamp - 20 hours);
+        vm.prank($.user);
+        redeemQueue.claim($.user, timestamps);
+        vm.prank($.protocolTreasury);
+        redeemQueue.claim($.protocolTreasury, timestamps);
+
+        assertEq(IERC20(ASSET).balanceOf($.user) + IERC20(ASSET).balanceOf($.protocolTreasury), 1 ether);
+        assertEq(
+            IERC20(ASSET).balanceOf($.protocolTreasury),
+            Math.mulDiv(1 ether, protocolTreasuryShares, protocolTreasuryShares + userShares, Math.Rounding.Ceil)
+        );
     }
 
     function adjustPrice(IOracle.Report memory report) public view {

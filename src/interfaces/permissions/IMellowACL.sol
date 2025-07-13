@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnume
 /// @notice Interface for the MellowACL contract, which extends OpenZeppelin's AccessControlEnumerable
 /// @dev Adds tracking of which roles are actively in use (i.e., assigned to at least one address)
 interface IMellowACL is IAccessControlEnumerable {
-    /// @notice Storage struct used to track actively assigned roles
+    /// @notice Storage layout used to track actively assigned roles
     struct MellowACLStorage {
         EnumerableSet.Bytes32Set supportedRoles; // Set of roles that have at least one assigned member
     }
@@ -24,9 +24,9 @@ interface IMellowACL is IAccessControlEnumerable {
     /// @return isActive True if the role has any members assigned
     function hasSupportedRole(bytes32 role) external view returns (bool);
 
-    /// @notice Emitted when a new role is granted for the first time (becomes active)
+    /// @notice Emitted when a new role is granted for the first time
     event RoleAdded(bytes32 indexed role);
 
-    /// @notice Emitted when a role loses its last member (becomes inactive)
+    /// @notice Emitted when a role loses its last member
     event RoleRemoved(bytes32 indexed role);
 }

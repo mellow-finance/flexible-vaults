@@ -21,7 +21,7 @@ interface IVaultModule is IACLModule {
     /// @dev Thrown when the provided address is not a valid factory-deployed entity.
     error NotEntity(address subvault);
 
-    /// @dev Thrown when a given subvault is not correctly configured or does not match expectations.
+    /// @dev Thrown when a given subvault is not correctly configured.
     error InvalidSubvault(address subvault);
 
     /// @notice Storage structure used to track vault state and subvaults.
@@ -36,7 +36,11 @@ interface IVaultModule is IACLModule {
     /// @notice Role that allows disconnecting existing subvaults.
     function DISCONNECT_SUBVAULT_ROLE() external view returns (bytes32);
 
-    /// @notice Role that allows re-connecting previously disconnected subvaults.
+    /// @notice Role identifier for reconnecting subvaults.
+    /// @dev Grants permission to reattach a subvault to the vault system.
+    /// This includes both re-connecting a previously disconnected subvault
+    /// and connecting a new, properly configured subvault for the first time.
+    /// Used to maintain modularity and support hot-swapping of subvaults.
     function RECONNECT_SUBVAULT_ROLE() external view returns (bytes32);
 
     /// @notice Role that allows pulling assets from subvaults.
@@ -76,20 +80,38 @@ interface IVaultModule is IACLModule {
     /// @param subvault Address of the subvault to disconnect.
     function disconnectSubvault(address subvault) external;
 
-    /// @notice Reconnects a previously disconnected or misconfigured subvault.
-    /// @param subvault Address of the subvault to reconnect.
+    /// @notice Reconnects a subvault to the main vault system.
+    /// @dev Can be used to reattach either:
+    /// - A previously disconnected subvault, or
+    /// - A newly created and properly configured subvault.
+    /// Requires the caller to have the `RECONNECT_SUBVAULT_ROLE`.
+    /// @param subvault The address of the subvault to reconnect.
     function reconnectSubvault(address subvault) external;
 
-    /// @notice Sends assets from the vault to a connected subvault.
+    /// @notice Sends a specified amount of assets from the vault to a connected subvault.
+    /// @param subvault Address of the destination subvault.
+    /// @param asset Address of the asset to transfer.
+    /// @param value Amount of the asset to send.
     function pushAssets(address subvault, address asset, uint256 value) external;
 
-    /// @notice Pulls assets from a connected subvault into the vault.
+    /// @notice Pulls a specified amount of assets from a connected subvault into the vault.
+    /// @param subvault Address of the source subvault.
+    /// @param asset Address of the asset to transfer.
+    /// @param value Amount of the asset to receive.
     function pullAssets(address subvault, address asset, uint256 value) external;
 
-    /// @notice Internal hook to push assets from the vault to a subvault. Must be called by the vault itself.
+    /// @notice Internally used function that transfers assets from the vault to a connected subvault.
+    /// @dev Must be invoked by the vault itself via hook execution logic.
+    /// @param subvault Address of the destination subvault.
+    /// @param asset Address of the asset being transferred.
+    /// @param value Amount of the asset being transferred.
     function hookPushAssets(address subvault, address asset, uint256 value) external;
 
-    /// @notice Internal hook to pull assets from a subvault to the vault. Must be called by the vault itself.
+    /// @notice Internally used function that pulls assets from a connected subvault into the vault.
+    /// @dev Must be invoked by the vault itself via hook execution logic.
+    /// @param subvault Address of the source subvault.
+    /// @param asset Address of the asset being pulled.
+    /// @param value Amount of the asset being pulled.
     function hookPullAssets(address subvault, address asset, uint256 value) external;
 
     /// @notice Emitted when a new subvault is created.

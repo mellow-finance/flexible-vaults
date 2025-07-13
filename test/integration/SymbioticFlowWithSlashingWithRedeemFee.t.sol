@@ -392,9 +392,9 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
             vm.stopPrank();
         }
 
-        assertEq(0, redeemQueue.handleReports(0));
-        assertEq(1, redeemQueue.handleReports(1));
-        assertEq(0, redeemQueue.handleReports(1));
+        assertEq(0, redeemQueue.handleBatches(0));
+        assertEq(1, redeemQueue.handleBatches(1));
+        assertEq(0, redeemQueue.handleBatches(1));
 
         {
             (uint256 batchIterator,,,) = redeemQueue.getState();
@@ -481,7 +481,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
             }
 
             assertFalse(redeemQueue.canBeRemoved());
-            assertEq(1, redeemQueue.handleReports(1));
+            assertEq(1, redeemQueue.handleBatches(1));
 
             (,, demandAssets, pendingShares) = redeemQueue.getState();
 

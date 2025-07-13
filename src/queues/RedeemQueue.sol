@@ -31,8 +31,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
         if (index >= $.batches.length) {
             return (0, 0);
         }
-        Pair storage pair = $.batches[index];
-        return (pair.assets, pair.shares);
+        Batch storage batch = $.batches[index];
+        return (batch.assets, batch.shares);
     }
 
     /// @inheritdoc IRedeemQueue
@@ -51,7 +51,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         requests = new Request[](limit);
         uint256 batchIterator = $.batchIterator;
         (, uint32 latestEligibleTimestamp,) = $.prices.latestCheckpoint();
-        Pair memory pair;
+        Batch memory batch;
         for (uint256 i = 0; i < limit; i++) {
             (uint256 timestamp, uint256 shares) = callerRequests.at(i + offset);
             requests[i].timestamp = timestamp;
@@ -60,8 +60,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 continue;
             }
             uint256 index = $.prices.lowerLookup(uint32(timestamp));
-            pair = $.batches[index];
-            requests[i].assets = Math.mulDiv(shares, pair.assets, pair.shares);
+            batch = $.batches[index];
+            requests[i].assets = Math.mulDiv(shares, batch.assets, batch.shares);
             requests[i].isClaimable = index < batchIterator;
         }
     }
@@ -149,42 +149,43 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 if (index >= batchIterator) {
                     continue;
                 }
-                Pair storage pair = $.batches[index];
+                Batch storage batch = $.batches[index];
 
-                uint256 assets_ = Math.mulDiv(shares, pair.assets, pair.shares);
+                uint256 assets_ = Math.mulDiv(shares, batch.assets, batch.shares);
                 assets += assets_;
-                pair.assets -= assets_;
-                pair.shares -= shares;
+                batch.assets -= assets_;
+                batch.shares -= shares;
+
+                emit RedeemRequestClaimed(account, receiver, assets_, timestamp);
             }
             callerRequests.remove(timestamp);
         }
 
         TransferLibrary.sendAssets(asset(), receiver, assets);
-        emit RedeemRequestClaimed(account, receiver, assets, timestamps);
     }
 
     /// @inheritdoc IRedeemQueue
-    function handleReports(uint256 reports) external nonReentrant returns (uint256 counter) {
+    function handleBatches(uint256 batches) external nonReentrant returns (uint256 counter) {
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         uint256 iterator_ = $.batchIterator;
         uint256 length = $.batches.length;
-        if (iterator_ >= length || reports == 0) {
+        if (iterator_ >= length || batches == 0) {
             return 0;
         }
-        reports = Math.min(reports, length - iterator_);
+        batches = Math.min(batches, length - iterator_);
 
         IShareModule vault_ = IShareModule(vault());
         uint256 liquidAssets = vault_.getLiquidAssets();
         uint256 demand = 0;
         uint256 shares = 0;
-        Pair memory pair;
-        for (uint256 i = 0; i < reports; i++) {
-            pair = $.batches[iterator_ + i];
-            if (demand + pair.assets > liquidAssets) {
+        Batch memory batch;
+        for (uint256 i = 0; i < batches; i++) {
+            batch = $.batches[iterator_ + i];
+            if (demand + batch.assets > liquidAssets) {
                 break;
             }
-            demand += pair.assets;
-            shares += pair.shares;
+            demand += batch.assets;
+            shares += batch.shares;
             counter++;
         }
 
@@ -234,7 +235,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         uint256 index = $.prices.length();
         $.prices.push(timestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
-        $.batches.push(Pair(assets_, shares));
+        $.batches.push(Batch(assets_, shares));
         $.totalDemandAssets += assets_;
     }
 

@@ -14,7 +14,23 @@ import "../permissions/IConsensus.sol";
 import "./IQueue.sol";
 
 /// @title ISignatureQueue
-/// @notice Interface for queues that rely on off-chain consensus-based approvals via EIP-712 or EIP-1271 signatures.
+/// @notice Interface for signature-based queues supporting instant deposit and withdrawal approvals via off-chain consensus.
+/// @dev Implements fast-lane asset processing using EIP-712 or EIP-1271 signed messages from trusted consensus actors.
+///
+/// # Overview
+/// A `SignatureQueue` enables instant deposits or redemptions by relying on signatures produced off-chain by a consensus group.
+/// Instead of queuing requests on-chain and waiting for an oracle report, trusted users can present signed approvals that authorize their actions.
+/// This offers a faster alternative to time-delayed queues while still ensuring integrity via oracle-bound price validation.
+///
+/// # Security Assumptions
+/// - A trusted consensus group is responsible for signing approvals.
+/// - Off-chain signers are expected to use oracle-compatible pricing when issuing approvals.
+/// - On-chain signature verification must conform to EIP-712 or EIP-1271 standards.
+/// - Price validation is still enforced on-chain using default oracle bounds.
+///
+/// # Limitations
+/// This mechanism bypasses normal queueing, deposit and redeem fees. Thus, signature queues are generally used in parallel with deposit/redeem queues,
+/// and are subject to stricter trust assumptions regarding off-chain actors.
 interface ISignatureQueue is IFactoryEntity {
     /// @notice Thrown when a required value is zero.
     error ZeroValue();
@@ -46,40 +62,54 @@ interface ISignatureQueue is IFactoryEntity {
         EIP1271
     }
 
-    /// @notice Persistent storage layout for the signature queue.
+    /// @notice Storage layout for the SignatureQueue contract.
+    /// @dev Tracks consensus configuration, asset context, and per-user signature nonces.
     struct SignatureQueueStorage {
+        /// @notice Address of the associated Consensus contract.
+        /// @dev Used to validate off-chain approvals via EIP-712 or EIP-1271.
         address consensus;
+        /// @notice Address of the parent Vault contract.
         address vault;
+        /// @notice Address of the asset managed by this queue (e.g., ERC20 or native ETH).
         address asset;
+        /// @notice Mapping of user nonces to prevent signature replay attacks.
+        /// @dev Each user has an incrementing nonce that must be included in signed messages.
         mapping(address account => uint256 nonce) nonces;
     }
 
-    /// @notice Structure used for off-chain order authorization via signatures.
+    /// @notice EIP-712 compatible order structure used for off-chain approvals in SignatureQueue.
+    /// @dev Represents a deposit or redeem intent authorized by a consensus group via signature.
     struct Order {
+        /// @notice Unique identifier for this order (off-chain tracking).
         uint256 orderId;
-        /// Unique order identifier.
+        /// @notice Address of this queue contract expected to process this order.
+        /// @dev Used to bind the order to a specific queue instance.
         address queue;
-        /// Address of the queue contract expected to process this order.
+        /// @notice Address of the asset involved (ERC20 token or native ETH).
         address asset;
-        /// Address of the ERC20 or ETH asset involved.
+        /// @notice Address that initiated the off-chain request (signer or proxy).
         address caller;
-        /// Original sender/initiator of the request.
+        /// @notice Address that will receive the assets or resulting shares.
         address recipient;
-        /// Address that will receive the assets or result.
+        /// @notice Amount of shares or assets being provided in the request.
+        /// @dev Interpreted as assets for deposit, or shares for redeem.
         uint256 ordered;
-        /// Amount of shares or assets sent in the request.
+        /// @notice Amount of shares or assets expected in return.
+        /// @dev Interpreted as shares for deposit, or assets for redeem.
         uint256 requested;
-        /// Amount of assets or shares expected in return.
+        /// @notice Expiration timestamp after which the order is no longer valid.
         uint256 deadline;
-        /// Timestamp after which the order is invalid.
+        /// @notice Nonce value for replay protection.
+        /// @dev Must match current user nonce stored in SignatureQueueStorage to be valid.
         uint256 nonce;
     }
-    /// Nonce for replay protection.
 
-    /// @notice Returns the type hash used for signing EIP-712 orders.
-    function ORDER_TYPEHASH() external view returns (bytes32);
+    /// @notice Returns the EIP-712 type hash for the `Order` struct.
+    /// @dev This is used to compute the EIP-712 digest for signature verification.
+    /// @return typeHash The keccak256 hash of the EIP-712 type definition for `Order`.
+    function ORDER_TYPEHASH() external view returns (bytes32 typeHash);
 
-    /// @notice Returns the factory that deploys and verifies consensus contracts.
+    /// @notice Returns the factory that deploys consensus contracts.
     function consensusFactory() external view returns (IFactory);
 
     /// @notice Returns the current consensus contract responsible for signature validation.
@@ -106,23 +136,22 @@ interface ISignatureQueue is IFactoryEntity {
     /// @notice Returns the address of the asset this queue supports.
     function asset() external view returns (address);
 
-    /// @notice Returns the amount of tokens currently claimable by a given account.
-    /// @param account User address.
-    /// @return Amount of claimable assets.
-    function claimableOf(address account) external view returns (uint256);
-
-    /// @notice Claims any pending asset balance for the specified account.
-    /// @param account Address for which the claim should be executed.
-    /// @return Amount of assets claimed.
-    function claim(address account) external returns (uint256);
-
     /// @notice Always returns true to indicate signature queues are stateless and removable.
     function canBeRemoved() external pure returns (bool);
 
-    /// @notice Stub for compatibility; does not do anything in signature queues.
-    /// @param priceD18 Price in 18-decimal fixed point.
-    /// @param latestEligibleTimestamp The timestamp associated with the price.
-    function handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) external view;
+    /// @notice Always returns zero.
+    /// @dev Included for compatibility with other queue interfaces. This queue does not accumulate claimable shares.
+    /// @return claimable Always returns 0.
+    function claimableOf(address) external view returns (uint256 claimable);
+
+    /// @notice Always returns false.
+    /// @dev Included for compatibility with queue interfaces that support claim functionality. No claims are processed by this queue.
+    /// @return success Always returns false.
+    function claim(address) external returns (bool success);
+
+    /// @notice No-op placeholder for compatibility.
+    /// @dev Stub for interface compatibility. This queue does not process oracle reports.
+    function handleReport(uint224, uint32) external view;
 
     /// @notice Emitted after a signed order is successfully validated and executed.
     /// @param order The executed order.

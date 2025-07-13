@@ -37,7 +37,7 @@ contract SignatureQueueTest is FixtureTest {
 
         assertTrue(queue.canBeRemoved(), "Queue should be removable");
         assertEq(queue.claimableOf(user), 0, "Claimable should be zero");
-        assertEq(queue.claim(user), 0, "Claim should be zero");
+        assertEq(queue.claim(user), false, "Claim should be false");
         assertEq(queue.vault(), vault, "Vault address mismatch");
         assertEq(queue.asset(), asset, "Asset address mismatch");
         assertEq(address(queue.consensus()), consensus, "Consensus address mismatch");

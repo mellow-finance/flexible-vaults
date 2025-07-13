@@ -5,7 +5,7 @@ import "../permissions/IVerifier.sol";
 import "./IVerifierModule.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-/// @notice Interface for the CallModule, which enables externally verified low-level calls
+/// @notice Interface for the CallModule, which enables verified low-level calls
 /// @dev Requires an associated IVerifier contract to authorize each call based on payload verification
 interface ICallModule is IVerifierModule {
     /// @notice Executes a low-level call to the specified address with provided value and calldata

@@ -2,9 +2,22 @@
 pragma solidity 0.8.25;
 
 /// @title FenwickTreeLibrary
-/// @notice Implements a 0-indexed Fenwick Tree (Binary Indexed Tree) for efficient prefix sum queries and updates.
-/// @dev See: https://cp-algorithms.com/data_structures/fenwick.html
-/// @dev See: https://en.wikipedia.org/wiki/Fenwick_tree
+/// @notice Implements a 0-indexed Fenwick Tree (Binary Indexed Tree) for prefix sum operations.
+/// @dev Enables efficient updates and prefix sum queries over a dynamic array.
+///
+/// # Overview
+/// Fenwick Tree is a compact data structure optimized for cumulative frequency computations:
+/// - `update(i, delta)` increments the element at index `i` by signed `delta`.
+/// - `prefixSum(i)` returns the sum of elements in the range `[0, i]`.
+///
+/// This library provides:
+/// - `O(log n)` time complexity for updates and prefix queries.
+/// - `O(1)` fixed cost for extending the tree by doubling its capacity.
+/// - Support only for arrays whose lengths are powers of two (2^k).
+///
+/// # References
+/// - https://cp-algorithms.com/data_structures/fenwick.html
+/// - https://en.wikipedia.org/wiki/Fenwick_tree
 library FenwickTreeLibrary {
     /// @notice Thrown when initializing with an invalid length (must be power of 2 and nonzero), or during overflow.
     error InvalidLength();
@@ -37,8 +50,8 @@ library FenwickTreeLibrary {
         return tree._length;
     }
 
-    /// @notice Doubles the size of the tree (maintaining power of two invariant).
-    /// @param tree The Fenwick tree.
+    /// @notice Doubles the length of the Fenwick tree while preserving internal state.
+    /// @param tree The Fenwick tree to be extended.
     function extend(Tree storage tree) internal {
         uint256 length_ = tree._length;
         if (length_ >= (1 << 255)) {

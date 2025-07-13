@@ -340,7 +340,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         }
 
         RedeemQueue redeemQueue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
-        redeemQueue.handleReports(1);
+        redeemQueue.handleBatches(1);
 
         {
             (uint256 batchIterator,,,) = redeemQueue.getState();

@@ -12,52 +12,71 @@ import "../factories/IFactoryEntity.sol";
 import "../modules/IShareModule.sol";
 
 /// @title IOracle
-/// @notice Interface for price oracle that handles report submission, validation, and state propagation to vault
+/// @notice Interface for the vault price oracle responsible for submitting, validating, and propagating price reports.
+/// @dev The reported price is structured such that the invariant `shares = assets * price` holds true.
+/// @dev Typically used to coordinate deposit, redemption and limit operations across queues, the vault and subvaults.
 interface IOracle is IFactoryEntity {
-    /// @notice Thrown when an asset is not supported by the oracle
+    /// @notice Thrown when an asset is not supported by the oracle.
+    /// @param asset The address of the unsupported asset.
     error UnsupportedAsset(address asset);
 
-    /// @notice Thrown when an asset is already supported
+    /// @notice Thrown when attempting to register an asset that is already supported.
+    /// @param asset The address of the already supported asset.
     error AlreadySupportedAsset(address asset);
 
-    /// @notice Thrown when a suspicious report does not match expected data
+    /// @notice Thrown when a suspicious report fails validation due to unexpected data.
+    /// @dev This includes mismatches in price, timestamp, or incorrect `isSuspicios` flag.
     error InvalidReport();
 
-    /// @notice Thrown when zero value is provided where non-zero is required
+    /// @notice Thrown when a function receives a zero value where a non-zero value is required.
     error ZeroValue();
 
-    /// @notice Thrown when a report is submitted too early relative to the timeout
+    /// @notice Thrown when a report is submitted before the required timeout period,
+    ///         and the previous report was not marked as suspicious.
+    /// @param timestamp The submitted report timestamp.
+    /// @param minTimestamp The earliest acceptable timestamp based on timeout configuration.
     error TooEarly(uint256 timestamp, uint256 minTimestamp);
 
-    /// @notice Thrown when submitted price is invalid according to oracle security rules
+    /// @notice Thrown when the submitted price violates oracle security rules.
+    /// @param priceD18 The submitted price in 18-decimal fixed-point format.
     error InvalidPrice(uint256 priceD18);
 
-    /// @notice Thrown when the caller does not have the required permission
+    /// @notice Thrown when the caller lacks the necessary permission to perform the operation.
     error Forbidden();
 
-    /// @notice Parameters that control oracle behavior and report validation
+    /// @notice Configuration parameters that govern oracle price validation logic and reporting cadence.
     struct SecurityParams {
-        uint224 maxAbsoluteDeviation; // Max allowed absolute price deviation
-        uint224 suspiciousAbsoluteDeviation; // Threshold for flagging absolute deviations as suspicious
-        uint64 maxRelativeDeviationD18; // Max allowed relative deviation (in 1e18 format)
-        uint64 suspiciousRelativeDeviationD18; // Threshold for flagging relative deviation as suspicious (in 1e18 format)
-        uint32 timeout; // Minimum seconds between valid report updates
-        uint32 depositInterval; // Lookback interval for eligible deposit timestamp
-        uint32 redeemInterval; // Lookback interval for eligible redeem timestamp
+        /// @notice Maximum absolute difference between the new and previous price, beyond which the report is rejected.
+        uint224 maxAbsoluteDeviation;
+        /// @notice Absolute deviation threshold beyond which the report is flagged as suspicious (but not rejected).
+        uint224 suspiciousAbsoluteDeviation;
+        /// @notice Maximum allowed relative price deviation (as a fixed-point value with 18 decimals), beyond which the report is rejected.
+        ///         Example: 0.05 * 1e18 = 5% max relative deviation.
+        uint64 maxRelativeDeviationD18;
+        /// @notice Relative deviation threshold for flagging suspicious reports (in 18-decimal format),
+        ///         beyond which the report is flagged as suspicious (but not rejected).
+        ///         Example: 0.03 * 1e18 = 3% suspicious threshold.
+        uint64 suspiciousRelativeDeviationD18;
+        /// @notice Minimum time in seconds required between two valid non-suspicious reports.
+        uint32 timeout;
+        /// @notice Minimum age (in seconds) a deposit request must have to be eligible for processing by a report submitted at the current timestamp.
+        uint32 depositInterval;
+        /// @notice Minimum age (in seconds) a redemption request must have to be eligible for processing by a report submitted at the current timestamp.
+        uint32 redeemInterval;
     }
 
-    /// @notice Price report struct
-    /// @dev shares = price * assets / 1e18
+    /// @notice Struct representing a price report submitted to the oracle.
+    /// @dev Used in vault accounting where `shares = (assets * priceD18) / 1e18`.
     struct Report {
-        address asset;
-        uint224 priceD18; // price with 18 decimals
+        address asset; // Address of the asset the price refers to
+        uint224 priceD18; // Asset price in 18-decimal fixed-point format
     }
 
     /// @notice Detailed price report used for validation and tracking
     struct DetailedReport {
-        uint224 priceD18; // latest price
-        uint32 timestamp; // when the price was submitted
-        bool isSuspicious; // whether report is flagged as suspicious
+        uint224 priceD18; // Reported asset price in 18-decimal fixed-point format
+        uint32 timestamp; // Timestamp when the report was submitted
+        bool isSuspicious; // Whether the report is flagged as suspicious according to deviation thresholds
     }
 
     /// @notice Storage layout of the oracle
@@ -104,22 +123,27 @@ interface IOracle is IFactoryEntity {
     /// @param asset Address of the asset
     function getReport(address asset) external view returns (DetailedReport memory);
 
-    /// @notice Validates a price value for an asset based on configured thresholds
-    /// @param priceD18 Price to validate (18 decimals)
-    /// @param asset Address of the asset
-    /// @return isValid Whether price is acceptable
-    /// @return isSuspicious Whether price is flagged as suspicious
+    /// @notice Validates the given price for a specific asset based on oracle security parameters.
+    /// @dev Evaluates both absolute and relative deviation limits to determine whether the price is valid or suspicious.
+    /// @param priceD18 Price to validate, in 18-decimal fixed-point format.
+    /// @param asset Address of the asset being evaluated.
+    /// @return isValid True if the price is within maximum allowed deviation.
+    /// @return isSuspicious True if the price exceeds the suspicious deviation threshold.
     function validatePrice(uint256 priceD18, address asset) external view returns (bool isValid, bool isSuspicious);
 
-    /// @notice Submits one or more price reports
-    /// @dev Callable only by account with `SUBMIT_REPORTS_ROLE`
-    /// @param reports Array of price reports
+    /// @notice Submits price reports for supported assets.
+    /// @dev Processes pending deposit and redemption requests across DepositQueue and RedeemQueue contracts.
+    ///      The core processing logic is determined by the ShareModule and Queue contracts.
+    ///      Only callable by accounts with the `SUBMIT_REPORTS_ROLE`.
+    /// @param reports An array of price reports, each specifying the target asset and its latest price (in 18 decimals).
+    ///
+    /// @dev Note: Submitted prices MUST reflect protocol and performance fee deductions, ensuring accurate share issuance.
     function submitReports(Report[] calldata reports) external;
 
     /// @notice Accepts a previously suspicious report
     /// @dev Callable only by account with `ACCEPT_REPORT_ROLE`
     /// @param asset Address of the asset
-    /// @param priceD18 Submitted price
+    /// @param priceD18 Timestamp that must match existing suspicious report
     /// @param timestamp Timestamp that must match existing suspicious report
     function acceptReport(address asset, uint256 priceD18, uint32 timestamp) external;
 

@@ -7,7 +7,7 @@ import "./IBaseModule.sol";
 /// @notice Interface for the VerifierModule, which integrates with an external IVerifier contract
 /// @dev Used in modular systems to delegate permission checks or validation to a shared verifier
 interface IVerifierModule is IBaseModule {
-    /// @notice Thrown when a zero address is provided where a valid verifier address is required
+    /// @notice Thrown when a zero address is provided
     error ZeroAddress();
 
     /// @notice Internal storage structure for VerifierModule

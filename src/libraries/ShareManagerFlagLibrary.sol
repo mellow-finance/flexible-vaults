@@ -4,7 +4,17 @@ pragma solidity 0.8.25;
 import "../interfaces/managers/IShareManager.sol";
 
 /// @title ShareManagerFlagLibrary
-/// @notice Library to encode and decode bitmask flags used in ShareManager
+/// @notice Utility library for encoding and decoding bitmask flags used in ShareManager configuration.
+/// @dev Flags are encoded into a single uint256, with specific bits representing distinct toggles or durations.
+///
+/// # Bitmask Layout
+/// - [0]   `hasMintPause`
+/// - [1]   `hasBurnPause`
+/// - [2]   `hasTransferPause`
+/// - [3]   `hasWhitelist`
+/// - [4]   `hasTransferWhitelist`
+/// - [5..36]   `globalLockup` (32 bits)
+/// - [37..68]  `targetedLockup` (32 bits)
 library ShareManagerFlagLibrary {
     /// @notice Checks if the minting pause flag is enabled
     /// @param mask Encoded flags

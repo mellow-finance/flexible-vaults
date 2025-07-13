@@ -10,12 +10,11 @@ import "../modules/IShareModule.sol";
 
 /// @title IShareManager
 /// @notice Interface for managing share allocations, permissions, minting, burning, and user restrictions
-/// @dev Intended for use within modular vault systems that decouple share logic from core vault
 interface IShareManager is IFactoryEntity {
     /// @notice Unauthorized call
     error Forbidden();
 
-    /// @notice Attempted to mint more shares than allocated
+    /// @notice Attempted to mint more shares than pre-allocated
     error InsufficientAllocatedShares(uint256 value, uint256 allocated);
 
     /// @notice Global lockup not yet expired
@@ -48,13 +47,13 @@ interface IShareManager is IFactoryEntity {
     /// @notice Provided value was zero
     error ZeroValue();
 
-    /// @notice Storage layout for ShareManager. Handles permissioning, user states, and share allocation for a vault.
+    /// @notice Storage layout for ShareManager.
     struct ShareManagerStorage {
         /// @notice Address of the vault associated with this ShareManager.
         address vault;
-        /// @notice Bitpacked configuration flags controlling global minting, burning, transfers, and whitelists.
+        /// @notice Bitpacked configuration flags controlling global minting, burning, transfers, whitelists and lockups.
         uint256 flags;
-        /// @notice Total shares allocated to all accounts (includes unclaimed and locked shares).
+        /// @notice Total shares allocated to all accounts (includes pending shares).
         uint256 allocatedShares;
         /// @notice Merkle root for verifying account permissions (used for deposits if whitelist flags are active).
         bytes32 whitelistMerkleRoot;
@@ -66,12 +65,12 @@ interface IShareManager is IFactoryEntity {
     struct AccountInfo {
         /// @notice Whether the account is allowed to deposit when the `hasWhitelist` flag is active.
         bool canDeposit;
-        /// @notice If true, account is allowed to transfer shares regardless of global transfer whitelist state.
+        /// @notice Whether the account is allowed to transfer (send or receive) shares when the `hasTransferWhitelist` flag is active.
         bool canTransfer;
-        /// @notice If true, account is blocked from all transfer actions.
+        /// @notice Whether the account is disallowed to send or receive shares.
         bool isBlacklisted;
-        /// @notice Timestamp (in seconds) until which shares are non-transferable due to lockup.
-        /// Set on per-account basis.
+        /// @notice Timestamp in seconds until which shares are non-transferable due to lockup.
+        /// Set on per-account basis on each mint call if `targetedLockup` != 0
         uint32 lockedUntil;
     }
 
@@ -81,50 +80,50 @@ interface IShareManager is IFactoryEntity {
         bool hasMintPause;
         /// @notice If true, burning of shares is globally paused.
         bool hasBurnPause;
-        /// @notice If true, transfers of shares between accounts are globally paused.
+        /// @notice If true, transfers of shares between accounts are globally paused (only for TokenizedShareManager).
         bool hasTransferPause;
-        /// @notice If true, deposit access is controlled via onchain mapping.
+        /// @notice If true, deposit access is controlled via onchain whitelist (mapping `accounts`).
         bool hasWhitelist;
-        /// @notice If true, transfer access is controlled via onchain mapping.
+        /// @notice If true, transfer access is controlled via offchain whitelist (`whitelistMerkleRoot`).
         bool hasTransferWhitelist;
-        /// @notice Global lockup duration (in seconds) applied after every mint.
+        /// @notice Global lockup duration (timestamp in seconds) applied to all users in the vault.
         uint32 globalLockup;
-        /// @notice Optional per-account lockup override (in seconds). Apply to all users separately after every deposit.
+        /// @notice Per-account lockup (in seconds). Apply to all users separately after every mint/deposit.
         uint32 targetedLockup;
     }
 
-    /// @notice Returns address of the vault using this ShareManager
+    /// @return address Returns address of the vault using this ShareManager
     function vault() external view returns (address);
 
-    /// @notice Total allocated shares
+    /// @return uint256 Total allocated shares
     function allocatedShares() external view returns (uint256);
 
-    /// @notice Returns current system-wide flags (as decoded struct)
-    function flags() external view returns (Flags memory);
+    /// @return f Returns current flag structure
+    function flags() external view returns (Flags memory f);
 
-    /// @notice Returns Merkle root used for whitelist verification
+    /// @return bytes32 Returns Merkle root used for deposit whitelist verification
     function whitelistMerkleRoot() external view returns (bytes32);
 
     /// @return bool Returns true whether depositor is allowed under current Merkle root and flag settings
     function isDepositorWhitelisted(address account, bytes32[] calldata merkleProof) external view returns (bool);
 
-    /// @notice Returns total shares (active + claimable) for an account
-    function sharesOf(address account) external view returns (uint256);
+    /// @return shares Returns total shares (active + claimable) for an account
+    function sharesOf(address account) external view returns (uint256 shares);
 
-    /// @notice Returns claimable shares for an account
-    function claimableSharesOf(address account) external view returns (uint256);
+    /// @return shares Returns claimable shares for an account
+    function claimableSharesOf(address account) external view returns (uint256 shares);
 
-    /// @notice Returns active (non-claimable) shares
-    function activeSharesOf(address account) external view returns (uint256);
+    /// @return shares Returns active shares for an account
+    function activeSharesOf(address account) external view returns (uint256 shares);
 
-    /// @notice Returns total active shares across the vault
-    function activeShares() external view returns (uint256);
+    /// @return shares Returns total active shares across the vault
+    function activeShares() external view returns (uint256 shares);
 
-    /// @notice Total shares including active and claimable
-    function totalShares() external view returns (uint256);
+    /// @return shares Total shares including active and claimable
+    function totalShares() external view returns (uint256 shares);
 
-    /// @notice Returns account-specific configuration and permissions
-    function accounts(address account) external view returns (AccountInfo memory);
+    /// @return info Returns account-specific configuration and permissions
+    function accounts(address account) external view returns (AccountInfo memory info);
 
     /// @notice Internal checks for mint/burn/transfer under flags, lockups, blacklists, etc.
     function updateChecks(address from, address to) external view;

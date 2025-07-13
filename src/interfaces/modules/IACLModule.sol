@@ -6,7 +6,7 @@ import "./IBaseModule.sol";
 
 /// @notice Interface for the ACLModule, implements IMellowACL
 interface IACLModule is IMellowACL {
-    /// @notice Thrown when a zero address is provided where a non-zero address is required
+    /// @notice Thrown when a zero address is provided
     error ZeroAddress();
 
     /// @notice Thrown when an unauthorized caller attempts a restricted operation

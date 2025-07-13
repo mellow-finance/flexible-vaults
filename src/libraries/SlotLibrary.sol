@@ -7,10 +7,9 @@ pragma solidity 0.8.25;
 library SlotLibrary {
     /// @notice Computes a unique storage slot based on the module's identifiers
     /// @param contractName Logical contract/module name (e.g., "ShareModule")
-    /// @param name Human-readable instance name (e.g., "main", "vaultA")
+    /// @param name Human-readable instance name (e.g., "Mellow")
     /// @param version Version number for the module configuration
     /// @return A bytes32 value representing the derived storage slot
-    /// @dev The returned value is aligned to 0x00...00 by zeroing out the least significant byte (bitwise AND with ~0xff)
     function getSlot(string memory contractName, string memory name, uint256 version) internal pure returns (bytes32) {
         return keccak256(
             abi.encode(

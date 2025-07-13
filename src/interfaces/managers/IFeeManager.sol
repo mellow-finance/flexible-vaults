@@ -25,7 +25,7 @@ interface IFeeManager is IFactoryEntity {
         uint24 performanceFeeD6; // Performance fee applied on price increase (6 decimals)
         uint24 protocolFeeD6; // Protocol fee applied over time (6 decimals annualized)
         mapping(address vault => uint256) timestamps; // Last update timestamp for protocol fee accrual
-        mapping(address vault => uint256) minPriceD18; // Lowests price seen for performance fee trigger
+        mapping(address vault => uint256) minPriceD18; // Lowests price seen for performance fee trigger (price * assets = shares)
         mapping(address vault => address) baseAsset; // Base asset used to evaluate price-based fees
     }
 
@@ -65,10 +65,10 @@ interface IFeeManager is IFactoryEntity {
 
     /// @notice Calculates the combined performance and protocol fee in shares
     /// @param vault Address of the vault
-    /// @param asset Base asset used for pricing
-    /// @param priceD18 Current asset price (18 decimals)
-    /// @param totalShares Total shares from which fee will be extracted
-    /// @return shares Fee to be taken in shares
+    /// @param asset Asset used for pricing
+    /// @param priceD18 Current vault share price for the specific `asset` (price = shares / assets)
+    /// @param totalShares Total shares of the vault
+    /// @return shares Fee to be added in shares
     function calculateFee(address vault, address asset, uint256 priceD18, uint256 totalShares)
         external
         view
@@ -87,19 +87,19 @@ interface IFeeManager is IFactoryEntity {
     /// @dev Can only be set once per vault
     function setBaseAsset(address vault, address baseAsset_) external;
 
-    /// @notice Updates the vault’s state (max price and timestamp) based on asset price
+    /// @notice Updates the vault's state (min price and timestamp) based on asset price only if `asset` == `baseAssets[vault]`
     /// @dev Used by the vault to notify FeeManager of new price highs or protocol fee accrual checkpoints
     function updateState(address asset, uint256 priceD18) external;
 
     /// @notice Emitted when the fee recipient is changed
     event SetFeeRecipient(address indexed feeRecipient);
 
-    /// @notice Emitted when the global fee configuration is updated
+    /// @notice Emitted when the fee configuration is updated
     event SetFees(uint24 depositFeeD6, uint24 redeemFeeD6, uint24 performanceFeeD6, uint24 protocolFeeD6);
 
-    /// @notice Emitted when a vault’s base asset is set
+    /// @notice Emitted when a vault's base asset is set
     event SetBaseAsset(address indexed vault, address indexed baseAsset);
 
-    /// @notice Emitted when the vault’s max price or timestamp is updated
+    /// @notice Emitted when the vault's min price or timestamp is updated
     event UpdateState(address indexed vault, address indexed asset, uint256 priceD18);
 }

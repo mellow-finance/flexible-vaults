@@ -5,8 +5,11 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 /// @title TransferLibrary
-/// @notice Library for handling ETH and ERC20 transfers with unified logic
-/// @dev Provides safe asset sending and receiving with support for both native ETH and ERC20 tokens
+/// @notice Library for unified handling of native ETH and ERC20 asset transfers.
+/// @dev Provides safe and abstracted methods for sending and receiving both ETH and ERC20 tokens.
+///
+/// # ETH Convention
+/// Uses the constant `ETH = 0xEeee...EeE` to distinguish native ETH from ERC20 tokens.
 library TransferLibrary {
     using SafeERC20 for IERC20;
 

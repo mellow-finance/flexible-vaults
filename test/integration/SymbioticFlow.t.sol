@@ -294,7 +294,7 @@ contract SymbioticIntegrationTest is BaseIntegrationTest {
             assertEq(x, 1 ether);
             assertEq(y, 1 ether);
         }
-        RedeemQueue(payable(vault.queueAt(ASSET, 1))).handleReports(1);
+        RedeemQueue(payable(vault.queueAt(ASSET, 1))).handleBatches(1);
 
         {
             RedeemQueue queue = RedeemQueue(payable(vault.queueAt(ASSET, 1)));
