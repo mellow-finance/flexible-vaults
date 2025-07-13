@@ -1,16 +1,16 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 39      3902      548       430     2924        599           698.42
+Solidity                                 39      3934      549       465     2920        599           699.10
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       22        17       92          8             8.70
 src/hooks/BasicRedeemHook.sol                      42        3         1       38          7            18.42
 src/hooks/LidoDepositHook.sol                      49        8         1       40         13            32.50
 src/hooks/RedirectingDepositHook.sol               27        2         1       24          5            20.83
-src/libraries/FenwickTreeLibrary.sol              117       11        40       66         17            25.76
-src/libraries/ShareManagerFlagLibrary.sol          66        9        27       30          5            16.67
-src/libraries/SlotLibrary.sol                      21        1        10       10          0             0.00
-src/libraries/TransferLibrary.sol                  46        6        16       24          9            37.50
+src/libraries/FenwickTreeLibrary.sol              130       11        53       66         17            25.76
+src/libraries/ShareManagerFlagLibrary.sol          76        9        37       30          5            16.67
+src/libraries/SlotLibrary.sol                      20        1         9       10          0             0.00
+src/libraries/TransferLibrary.sol                  49        6        19       24          9            37.50
 src/managers/BasicShareManager.sol                 72       14         7       51          9            17.65
 src/managers/FeeManager.sol                       177       26        20      131         23            17.56
 src/managers/RiskManager.sol                      263       34        24      205         34            16.59
@@ -24,7 +24,7 @@ src/modules/SubvaultModule.sol                     49       12         6       3
 src/modules/VaultModule.sol                       172       26        22      124         19            15.32
 src/modules/VerifierModule.sol                     39       10         4       25          3            12.00
 src/oracles/Oracle.sol                            248       30        23      195         47            24.10
-src/permissions/BitmaskVerifier.sol                66        3        26       37          5            13.51
+src/permissions/BitmaskVerifier.sol                76        3        36       37          5            13.51
 src/permissions/Consensus.sol                     131       20        14       97         27            27.84
 src/permissions/MellowACL.sol                      64       13         6       45          7            15.56
 src/permissions/Verifier.sol                      180       27        21      132         28            21.21
@@ -34,17 +34,17 @@ src/permissions/Verifier.sol                      180       27        21      13
 ~ermissions/protocols/SymbioticVerifier.sol        88        8         2       78         38            48.72
 src/queues/DepositQueue.sol                       202       28        11      163         36            22.09
 src/queues/Queue.sol                               70       15         7       48         11            22.92
-src/queues/RedeemQueue.sol                        247       33        12      202         39            19.31
+src/queues/RedeemQueue.sol                        248       34        12      202         39            19.31
 src/queues/SignatureDepositQueue.sol               24        5         1       18          0             0.00
-src/queues/SignatureQueue.sol                     157       24        17      116         22            18.97
+src/queues/SignatureQueue.sol                     153       24        17      112         22            19.64
 src/queues/SignatureRedeemQueue.sol                28        6         1       21          1             4.76
 src/strategies/SymbioticStrategy.sol               65        9         2       54          1             1.85
 src/vaults/Subvault.sol                            20        3         1       16          0             0.00
 src/vaults/Vault.sol                               55        5         1       49          1             2.04
 src/vaults/VaultConfigurator.sol                   74        7         2       65          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    39      3902      548       430     2924        599           698.42
+Total                                    39      3934      549       465     2920        599           699.10
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 143498 bytes, 0.143 megabytes (SI)
+Processed 144961 bytes, 0.145 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
