@@ -35,7 +35,7 @@ contract FeeManagerTest is FixtureTest {
         assertEq(manager.performanceFeeD6(), performanceFeeD6, "Performance fee should match");
         assertEq(manager.protocolFeeD6(), protocolFeeD6, "Protocol fee should match");
         assertEq(manager.timestamps(address(deployment.vault)), 0, "Timestamp should be unset");
-        assertEq(manager.maxPriceD18(address(deployment.vault)), 0, "Max price should be zero");
+        assertEq(manager.minPriceD18(address(deployment.vault)), 0, "Max price should be zero");
         assertEq(manager.baseAsset(address(deployment.vault)), address(0), "Asset should not be set");
     }
 
@@ -112,7 +112,7 @@ contract FeeManagerTest is FixtureTest {
         vm.prank(vault);
         manager.updateState(asset, 1 ether);
         assertEq(manager.timestamps(vault), 0, "Timestamp should be unset");
-        assertEq(manager.maxPriceD18(vault), 0, "Max price should be zero");
+        assertEq(manager.minPriceD18(vault), 0, "Max price should be zero");
 
         vm.prank(deployment.vaultAdmin);
         manager.setBaseAsset(vault, asset);
@@ -120,7 +120,7 @@ contract FeeManagerTest is FixtureTest {
         vm.prank(vault);
         manager.updateState(asset, 1 ether);
         assertEq(manager.timestamps(vault), block.timestamp, "Timestamp should be updated");
-        assertEq(manager.maxPriceD18(vault), 1 ether, "Max price should be updated");
+        assertEq(manager.minPriceD18(vault), 1 ether, "Max price should be updated");
 
         // No price/timestamp change, no fee
         {
@@ -130,7 +130,7 @@ contract FeeManagerTest is FixtureTest {
 
         // Check performance fee when price increases
         {
-            uint256 shares = manager.calculateFee(vault, asset, 1.1 ether, 1 ether);
+            uint256 shares = manager.calculateFee(vault, asset, 0.9 ether, 1 ether);
             assertEq(shares, 3 * 0.1 ether / 10, "Performance fee mismatch");
         }
 
