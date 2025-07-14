@@ -9,8 +9,13 @@ import "../libraries/SlotLibrary.sol";
 abstract contract ShareManager is IShareManager, ContextUpgradeable {
     using ShareManagerFlagLibrary for uint256;
 
+    /// @inheritdoc IShareManager
     bytes32 public constant SET_FLAGS_ROLE = keccak256("managers.ShareManager.SET_FLAGS_ROLE");
+    /// @inheritdoc IShareManager
     bytes32 public constant SET_ACCOUNT_INFO_ROLE = keccak256("managers.ShareManager.SET_ACCOUNT_INFO_ROLE");
+    /// @inheritdoc IShareManager
+    bytes32 public constant SET_WHITELIST_MERKLE_ROOT_ROLE =
+        keccak256("managers.ShareManager.SET_WHITELIST_MERKLE_ROOT_ROLE");
 
     bytes32 private immutable _shareManagerStorageSlot;
 
@@ -186,6 +191,12 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     function setFlags(Flags calldata f) external onlyRole(SET_FLAGS_ROLE) {
         _shareManagerStorage().flags = ShareManagerFlagLibrary.createMask(f);
         emit SetFlags(f);
+    }
+
+    /// @inheritdoc IShareManager
+    function setWhitelistMerkleRoot(bytes32 newWhitelistMerkleRoot) external onlyRole(SET_WHITELIST_MERKLE_ROOT_ROLE) {
+        _shareManagerStorage().whitelistMerkleRoot = newWhitelistMerkleRoot;
+        emit SetWhitelistMerkleRoot(newWhitelistMerkleRoot);
     }
 
     /// @inheritdoc IShareManager

@@ -92,6 +92,15 @@ interface IShareManager is IFactoryEntity {
         uint32 targetedLockup;
     }
 
+    /// @return bytes32 Returns role required to set global flags
+    function SET_FLAGS_ROLE() external view returns (bytes32);
+
+    /// @return bytes32 Returns role required to set per-user flags
+    function SET_ACCOUNT_INFO_ROLE() external view returns (bytes32);
+
+    /// @return bytes32 Returns role required to set new merkle root for whitelist validation
+    function SET_WHITELIST_MERKLE_ROOT_ROLE() external view returns (bytes32);
+
     /// @return address Returns address of the vault using this ShareManager
     function vault() external view returns (address);
 
@@ -137,6 +146,9 @@ interface IShareManager is IFactoryEntity {
     /// @notice Sets global flag bitmask controlling mints, burns, lockups, etc.
     function setFlags(Flags calldata flags) external;
 
+    /// @notice Sets new whitelist merkle root
+    function setWhitelistMerkleRoot(bytes32 whitelistMerkleRoot) external;
+
     /// @notice Allocates `shares` that can be later minted via `mintAllocatedShares`
     function allocateShares(uint256 shares) external;
 
@@ -163,6 +175,9 @@ interface IShareManager is IFactoryEntity {
 
     /// @notice Emitted when global flag configuration is changed
     event SetFlags(Flags flags);
+
+    /// @notice Emitted when whitelist merkle root is changed
+    event SetWhitelistMerkleRoot(bytes32 newWhitelistMerkleRoot);
 
     /// @notice Emitted when a user account is updated
     event SetAccountInfo(address indexed account, AccountInfo info);
