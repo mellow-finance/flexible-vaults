@@ -19,7 +19,7 @@ contract SignatureRedeemQueue is SignatureQueue {
             revert InsufficientAssets(order.requested, vault_.getLiquidAssets());
         }
 
-        vault_.shareManager().burn(order.recipient, order.requested);
+        vault_.shareManager().burn(order.recipient, order.ordered);
         vault_.callHook(order.requested);
         TransferLibrary.sendAssets(order.asset, order.recipient, order.requested);
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, -int256(order.requested));

@@ -15,8 +15,8 @@ contract SignatureDepositQueue is SignatureQueue {
 
         IShareModule vault_ = IShareModule(vault());
 
-        TransferLibrary.sendAssets(order.asset, address(vault_), order.requested);
-        vault_.callHook(order.requested);
+        TransferLibrary.sendAssets(order.asset, address(vault_), order.ordered);
+        vault_.callHook(order.ordered);
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, int256(order.ordered));
         vault_.shareManager().mint(order.recipient, order.requested);
         emit OrderExecuted(order, signatures);
