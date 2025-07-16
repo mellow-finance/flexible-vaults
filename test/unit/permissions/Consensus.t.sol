@@ -331,6 +331,31 @@ contract ConsensusTest is Test {
         consensus.requireValidSignatures(dummyHash, signatures);
     }
 
+    function testCheckSignatures_EIP712_NotEnoughSignatures() public {
+        Consensus consensus = _createConsensus();
+
+        uint256 pk1 = uint256(keccak256("private key 1"));
+        uint256 pk2 = uint256(keccak256("private key 2"));
+        address signerA = vm.addr(pk1);
+        address signerB = vm.addr(pk2);
+
+        // Add two signers and set the threshold to 2
+        vm.startPrank(admin);
+        consensus.addSigner(signerA, 1, IConsensus.SignatureType.EIP712);
+        consensus.addSigner(signerB, 2, IConsensus.SignatureType.EIP712); // threshold is now 2
+        vm.stopPrank();
+
+        // Provide only one valid signature (below the threshold)
+        bytes memory sig1 = _sign(dummyHash, pk1);
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](1);
+        signatures[0] = IConsensus.Signature({signer: signerA, signature: sig1});
+
+        assertFalse(consensus.checkSignatures(dummyHash, signatures));
+
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, dummyHash, signatures));
+        consensus.requireValidSignatures(dummyHash, signatures);
+    }
+
     function testCheckSignatures_EIP1271_Valid() public {
         Consensus consensus = _createConsensus();
 
