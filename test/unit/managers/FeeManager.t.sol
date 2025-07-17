@@ -142,6 +142,63 @@ contract FeeManagerTest is FixtureTest {
         }
     }
 
+    /// @notice Tests that performance fee is calculated correctly when the price changes
+    /// @dev fee_factor · total_shares · (1 – price/min_price), price < min_price
+    function testFeeCalculation_PerformanceFeeArithmetic() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        FeeManager manager = deployment.feeManager;
+        address vault = address(deployment.vault);
+
+        vm.prank(deployment.vaultAdmin);
+        manager.setBaseAsset(vault, asset);
+
+        // Set performance fee to 10%
+        vm.prank(deployment.vaultAdmin);
+        manager.setFees(0, 0, 0.1e6, 0);
+
+        uint256 priceInitial = 100 ether;
+        uint256 priceUpdated = 25 ether; 
+
+        vm.prank(vault);
+        manager.updateState(asset, priceInitial);
+        assertEq(manager.timestamps(vault), block.timestamp, "Timestamp should be updated");
+        assertEq(manager.minPriceD18(vault), priceInitial, "Max price should be updated");
+
+        uint256 totalShares = 2 ether;
+        uint256 feeShares = manager.calculateFee(vault, asset, priceUpdated, totalShares);
+        assertEq(feeShares, 0.15 ether, "Performance fee mismatch");
+    }
+
+    /// @notice Tests that fee calculation (protocol + performance) is not performed for not base asset
+    function testFeeCalculation_NotBaseAsset() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        FeeManager manager = deployment.feeManager;
+        address vault = address(deployment.vault);
+
+        vm.prank(deployment.vaultAdmin);
+        manager.setBaseAsset(vault, asset);
+
+        uint256 priceInitial = 1 ether;
+
+        vm.prank(vault);
+        manager.updateState(asset, priceInitial);
+
+        assertEq(manager.timestamps(vault), block.timestamp, "Timestamp should be updated");
+        assertEq(manager.minPriceD18(vault), priceInitial, "Max price should be updated");
+
+        // Price is lower, so performance fee should have been accrued (for base asset)
+        uint256 priceUpdated = 0.5 ether;
+
+        // Timestamp has changed, so protocol fee should have been accrued (for base asset)
+        skip(1 hours);
+
+        MockERC20 unknownAsset = new MockERC20();
+        uint256 shares = manager.calculateFee(vault, address(unknownAsset), priceUpdated, 1 ether);
+
+        // No fee should be calculated for not base asset
+        assertEq(shares, 0, "Shares should be zero");
+    }
+
     function decodeFeeManagerParams(bytes memory data)
         internal
         pure
