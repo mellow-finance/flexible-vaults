@@ -104,14 +104,18 @@ contract DepositQueue is IDepositQueue, Queue {
             revert NoPendingRequest();
         }
         address asset_ = asset();
-        (bool exists, uint32 timestamp, uint256 index) = $.prices.latestCheckpoint();
+        (bool exists, uint32 timestamp,) = $.prices.latestCheckpoint();
         if (exists && timestamp >= request._key) {
             revert ClaimableRequestExists();
         }
 
         delete $.requestOf[caller];
         IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
+
+        Checkpoints.Trace224 storage timestamps = _timestamps();
+        uint256 index = uint256(timestamps.upperLookupRecent(uint32(request._key)));
         $.requests.modify(index, -int256(assets));
+
         TransferLibrary.sendAssets(asset_, caller, assets);
         emit DepositRequestCanceled(caller, assets, request._key);
     }

@@ -145,6 +145,47 @@ contract DepositQueueTest is FixtureTest {
         }
     }
 
+    /// @notice Tests that the final amount of deposited assets is correct after various number of deposits and cancellations.
+    function testDepositRequestAmountIntegrity(uint8 initialReports, uint8 users, uint8 cancels) external {
+        vm.assume(initialReports > 0); // [1, 255]
+        vm.assume(users > 1 && users <= 32); // [2, 32]
+        vm.assume(cancels <= users); // [0, 32]
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        DepositQueue queue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        /// @dev push initial reports to check that the length of the "prices" list does not affect the calculation
+        for (uint8 i = 0; i < initialReports; i++) {
+            skip(securityParams.timeout);
+            pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
+        }
+
+        assertEq(IERC20(asset).balanceOf(address(deployment.vault)), 0);
+
+        uint224 amount = 1 ether;
+
+        for (uint8 i = 0; i < users; i++) {
+            skip(1 minutes);
+
+            address user = vm.addr(i + 1);
+            makeDeposit(user, amount, queue);
+        }
+
+        for (uint8 i = 0; i < cancels; i++) {
+            skip(1 minutes);
+
+            address user = vm.addr(i + 1);
+            vm.prank(user);
+            queue.cancelDepositRequest();
+        }
+
+        skip(securityParams.timeout);
+        pushReport(deployment.oracle, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        assertEq(IERC20(asset).balanceOf(address(deployment.vault)), amount * (users - cancels));
+    }
+
     function testDepositPausedQueue() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         DepositQueue queue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
