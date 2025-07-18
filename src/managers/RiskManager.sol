@@ -211,7 +211,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         int256 pendingSharesAfter = convertToShares(asset, pendingAssetsAfter);
         int256 shares = pendingSharesAfter - pendingSharesBefore;
         int256 newPendingBalance = $.pendingBalance + shares;
-        if (shares > 0 && $.vaultState.balance + newPendingBalance > $.vaultState.limit) {
+        if (change > 0 && $.vaultState.balance + newPendingBalance > $.vaultState.limit) {
             revert LimitExceeded($.vaultState.balance + newPendingBalance, $.vaultState.limit);
         }
         $.pendingAssets[asset] = pendingAssetsAfter;
@@ -225,7 +225,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         int256 shares = convertToShares(asset, change);
         RiskManagerStorage storage $ = _riskManagerStorage();
         int256 newBalance = $.vaultState.balance + shares;
-        if (shares > 0 && newBalance + $.pendingBalance > $.vaultState.limit) {
+        if (change > 0 && newBalance + $.pendingBalance > $.vaultState.limit) {
             revert LimitExceeded(newBalance + $.pendingBalance, $.vaultState.limit);
         }
         $.vaultState.balance = newBalance;

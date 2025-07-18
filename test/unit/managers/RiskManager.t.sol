@@ -197,6 +197,160 @@ contract RiskManagerTest is FixtureTest {
         }
     }
 
+    /// @notice Test that "modifyPendingAssets" reverts when adding pending assets exceeds the vault limit.
+    function testModifyPendingAssets_RevertOnLimitExceededWhenAdding() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+        Oracle oracle = deployment.oracle;
+
+        address queue = addDepositQueue(deployment, vaultProxyAdmin, asset); 
+
+        uint224 price = 1e18;
+        int256 vaultLimit = 1 ether;
+
+        vm.prank(vaultAdmin);
+        manager.setVaultLimit(vaultLimit);
+
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({asset: asset, priceD18: price});
+    
+        vm.startPrank(vaultAdmin);
+        oracle.submitReports(reports);
+        oracle.acceptReport(asset, price, uint32(block.timestamp));
+        vm.stopPrank();
+    
+        vm.prank(queue);
+        manager.modifyPendingAssets(asset, 1 ether);
+    
+        // Vault is full with pending assets
+        assertEq(manager.pendingAssets(asset), vaultLimit);
+    
+        vm.prank(queue);
+        vm.expectPartialRevert(IRiskManager.LimitExceeded.selector);
+        manager.modifyPendingAssets(asset, 1 ether);
+    }
+
+    /// @notice Test that "modifyPendingAssets" does not revert when removing pending assets.
+    /// @dev This is to allow users to redeem without facing the `LimitExceeded` revert.
+    function testModifyPendingAssets_NotRevertOnLimitExceededWhenRemoving() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+        Oracle oracle = deployment.oracle;
+
+        address queue = addDepositQueue(deployment, vaultProxyAdmin, asset);
+
+        int256 vaultLimit = 20 ether; // Limit is in "shares"
+        vm.prank(vaultAdmin);
+        manager.setVaultLimit(vaultLimit);
+
+        // Publish initial price and accept it
+        uint224 price1 = 1e18;
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({asset: asset, priceD18: price1});
+
+        vm.startPrank(vaultAdmin);
+        oracle.submitReports(reports);
+        oracle.acceptReport(asset, price1, uint32(block.timestamp));
+        vm.stopPrank();
+
+        // Fill the pending balance exactly up to the vault limit
+        vm.prank(queue);
+        manager.modifyPendingAssets(asset, vaultLimit);
+        assertEq(manager.pendingAssets(asset), vaultLimit, "Pending assets should equal vault limit");
+        assertEq(manager.pendingBalance(), vaultLimit, "Pending balance should equal vault limit");
+
+
+        IOracle.SecurityParams memory securityParams = oracle.securityParams();
+        vm.warp(block.timestamp + securityParams.timeout + 1);
+
+        uint224 price2 = 1.05e18;
+        reports[0] = IOracle.Report({asset: asset, priceD18: price2});
+
+        vm.startPrank(vaultAdmin);
+        oracle.submitReports(reports);
+        oracle.acceptReport(asset, price2, uint32(block.timestamp));
+        vm.stopPrank();
+
+        // Although `change` is negative, due to the higher price the share balance increases and exceeds the vault limit.
+        int256 change = -0.1 ether;
+        vm.prank(queue);
+        manager.modifyPendingAssets(asset, change);
+
+        assertTrue(manager.pendingBalance() > manager.vaultState().limit, "Pending balance should exceed the limit after price increase");
+        assertEq(manager.pendingAssets(asset), vaultLimit + change, "Pending assets should decrease by the change value");
+    }
+
+    /// @notice Test that "modifyVaultBalance" reverts when adding assets exceeds the vault limit.
+    function testModifyVaultBalance_RevertOnLimitExceededWhenAdding() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+        Oracle oracle = deployment.oracle;
+
+        address queue = addDepositQueue(deployment, vaultProxyAdmin, asset);
+
+        int256 vaultLimit = 1 ether;
+        vm.prank(vaultAdmin);
+        manager.setVaultLimit(vaultLimit);
+
+        uint224 price = 1e18;
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({asset: asset, priceD18: price});
+
+        vm.startPrank(vaultAdmin);
+        oracle.submitReports(reports);
+        oracle.acceptReport(asset, price, uint32(block.timestamp));
+        vm.stopPrank();
+
+        // First deposit exactly up to the limit – should pass
+        vm.prank(queue);
+        manager.modifyVaultBalance(asset, 1 ether);
+        assertEq(manager.vaultState().balance, vaultLimit, "Vault balance should equal the limit");
+
+        // Second deposit would exceed the limit – expect a LimitExceeded revert
+        vm.prank(queue);
+        vm.expectPartialRevert(IRiskManager.LimitExceeded.selector);
+        manager.modifyVaultBalance(asset, 1 ether);
+    }
+
+    /// @notice Test that "modifyVaultBalance" does not revert when removing assets.
+    function testModifyVaultBalance_NotRevertOnLimitExceededWhenRemoving() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+        Oracle oracle = deployment.oracle;
+
+        address queue = addDepositQueue(deployment, vaultProxyAdmin, asset);
+
+        int256 vaultLimit = 20 ether;
+        vm.prank(vaultAdmin);
+        manager.setVaultLimit(vaultLimit);
+
+        uint224 price = 1e18;
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({asset: asset, priceD18: price});
+
+        vm.startPrank(vaultAdmin);
+        oracle.submitReports(reports);
+        oracle.acceptReport(asset, price, uint32(block.timestamp));
+        vm.stopPrank();
+
+        // Fill vault balance up to the limit
+        vm.prank(queue);
+        manager.modifyVaultBalance(asset, vaultLimit);
+        assertEq(manager.vaultState().balance, vaultLimit, "Vault balance should equal limit");
+
+        vaultLimit =  0.001 ether;
+
+        // Manually set the vault limit to a very small value to verify that revert does not happen.
+        vm.prank(vaultAdmin);
+        manager.setVaultLimit(vaultLimit);
+
+        int256 change = -0.1 ether;
+        vm.prank(queue);
+        manager.modifyVaultBalance(asset, change);
+
+        assertTrue(manager.vaultState().balance > vaultLimit, "Vault balance should be greater than the limit");
+    }
+
     function testMaxDeposit() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         RiskManager manager = deployment.riskManager;
