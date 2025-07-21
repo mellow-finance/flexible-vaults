@@ -7,8 +7,8 @@ contract BasicRedeemHookTest is Test {
     MockERC20 asset1 = new MockERC20();
     MockERC20 asset2 = new MockERC20();
     MockVault vault = new MockVault();
-    address subvault1 = vm.createWallet("subvault1").addr;
-    address subvault2 = vm.createWallet("subvault2").addr;
+    address subvault1 = address(new MockSubvault());
+    address subvault2 = address(new MockSubvault());
 
     function testGetLiquidAssets() external {
         asset1.mint(address(vault), 11 ether);
@@ -22,6 +22,21 @@ contract BasicRedeemHookTest is Test {
 
         vm.prank(address(vault));
         assertEq(vault.getLiquidAssetsCall(address(asset2)), 24 ether);
+    }
+
+    function testGetLiquidAssets_WithNativeToken() external {
+        address nativeToken = TransferLibrary.ETH;
+
+        vm.deal(address(vault), 11 ether);
+
+        vault.addSubvault(subvault1);
+        vm.deal(subvault1, 1 ether);
+
+        vault.addSubvault(subvault2);
+        vm.deal(subvault2, 2.5 ether);
+
+        vm.prank(address(vault));
+        assertEq(vault.getLiquidAssetsCall(nativeToken), 14.5 ether);
     }
 
     function testBeforeRedeem() external {
@@ -62,5 +77,30 @@ contract BasicRedeemHookTest is Test {
         vault.beforeRedeemHookCall(address(asset2), 1000 ether);
         require(vaultBalance2 + subvaultBalance2 == IERC20(address(asset2)).balanceOf(address(vault)));
         require(0 == IERC20(address(asset2)).balanceOf(address(subvault2)));
+    }
+
+    function testBeforeRedeem_WithNativeToken() external {
+        address nativeToken = TransferLibrary.ETH;
+        
+        // Total is 30 ether
+        uint256 vaultBalance = 10 ether;
+        uint256 subvaultBalance1 = 10 ether;
+        uint256 subvaultBalance2 = 10 ether;
+
+        vault.addSubvault(subvault1);
+        vault.addSubvault(subvault2);
+
+        vm.deal(address(vault), vaultBalance);
+        vm.deal(subvault1, subvaultBalance1);
+        vm.deal(subvault2, subvaultBalance2);
+
+        // Try to redeem 25 ether
+        uint256 amountToRedeem = 25 ether;
+        vault.beforeRedeemHookCall(nativeToken, amountToRedeem);
+
+        // Vault should have 25 ether, it took full amount from subvault1 and 5 ether from subvault2
+        require(address(vault).balance == 25 ether, "wrong vault balance");
+        require(subvault1.balance == 0, "wrong subvault1 balance");
+        require(subvault2.balance == 5 ether, "wrong subvault2 balance");
     }
 }

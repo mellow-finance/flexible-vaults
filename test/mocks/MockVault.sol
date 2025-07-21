@@ -3,6 +3,7 @@ pragma solidity 0.8.25;
 
 import "./MockERC20.sol";
 import "./MockRiskManager.sol";
+import "./MockSubvault.sol";
 
 import "@openzeppelin/contracts/utils/Address.sol";
 import "src/hooks/BasicRedeemHook.sol";
@@ -32,10 +33,14 @@ contract MockVault {
     }
 
     function addSubvault(address subvault_, MockERC20 asset_, uint256 amount_) external {
-        subvault.push(subvault_);
+        addSubvault(subvault_);
         if (amount_ > 0) {
             asset_.mint(subvault_, amount_);
         }
+    }
+
+    function addSubvault(address subvault_) public {
+        subvault.push(subvault_);
     }
 
     function addRiskManager(uint256 limit) external {
@@ -71,7 +76,11 @@ contract MockVault {
     }
 
     function hookPullAssets(address subvault_, address asset, uint256 value) external {
-        MockERC20(asset).take(subvault_, value);
+        if (asset == TransferLibrary.ETH) {
+            MockSubvault(subvault_).sendValue(address(this), value);
+        } else {
+            MockERC20(asset).take(subvault_, value);
+        }
     }
 
     function hookPushAssets(address subvault_, address asset, uint256 value) external {
