@@ -417,4 +417,83 @@ contract RiskManagerTest is FixtureTest {
 
         assertEq(manager.convertToShares(asset, 1 ether), 0.1 ether, "Subvault should have 0.1 shares");
     }
+
+    /// @notice Test that "modifySubvaultBalance" reverts when adding assets exceeds the subvault limit.
+    function testModifySubvaultBalance_RevertOnLimitExceededWhenAdding() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+        Oracle oracle = deployment.oracle;
+
+        vm.prank(vaultAdmin);
+        address subvault = deployment.vault.createSubvault(0, vaultProxyAdmin, address(deployment.verifier));
+
+        int256 subvaultLimit = 1 ether;
+        vm.prank(vaultAdmin);
+        manager.setSubvaultLimit(subvault, subvaultLimit);
+
+        vm.prank(vaultAdmin);
+        manager.allowSubvaultAssets(subvault, assetsDefault);
+
+        uint224 price = 1e18;
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({asset: asset, priceD18: price});
+
+        vm.startPrank(vaultAdmin);
+        oracle.submitReports(reports);
+        oracle.acceptReport(asset, price, uint32(block.timestamp));
+        vm.stopPrank();
+
+        // First deposit exactly up to the limit – should pass
+        vm.prank(address(deployment.vault));
+        manager.modifySubvaultBalance(subvault, asset, 1 ether);
+        assertEq(manager.subvaultState(subvault).balance, subvaultLimit, "Subvault balance should equal the limit");
+
+        // Second deposit would exceed the limit – expect a LimitExceeded revert
+        vm.prank(address(deployment.vault));
+        vm.expectPartialRevert(IRiskManager.LimitExceeded.selector);
+        manager.modifySubvaultBalance(subvault, asset, 1 ether);
+    }
+
+    /// @notice Test that "modifySubvaultBalance" does not revert when removing assets.
+    function testModifySubvaultBalance_NotRevertOnLimitExceededWhenRemoving() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+        Oracle oracle = deployment.oracle;
+
+        vm.prank(vaultAdmin);
+        address subvault = deployment.vault.createSubvault(0, vaultProxyAdmin, address(deployment.verifier));
+
+        int256 subvaultLimit = 20 ether;
+        vm.prank(vaultAdmin);
+        manager.setSubvaultLimit(subvault, subvaultLimit);
+
+        vm.prank(vaultAdmin);
+        manager.allowSubvaultAssets(subvault, assetsDefault);
+
+        uint224 price = 1e18;
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({asset: asset, priceD18: price});
+
+        vm.startPrank(vaultAdmin);
+        oracle.submitReports(reports);
+        oracle.acceptReport(asset, price, uint32(block.timestamp));
+        vm.stopPrank();
+
+        // Fill subvault balance up to the limit
+        vm.prank(address(deployment.vault));
+        manager.modifySubvaultBalance(subvault, asset, subvaultLimit);
+        assertEq(manager.subvaultState(subvault).balance, subvaultLimit, "Subvault balance should equal limit");
+
+        subvaultLimit = 0.001 ether;
+
+        // Manually set the subvault limit to a very small value to verify that revert does not happen.
+        vm.prank(vaultAdmin);
+        manager.setSubvaultLimit(subvault, subvaultLimit);
+
+        int256 change = -0.1 ether;
+        vm.prank(address(deployment.vault));
+        manager.modifySubvaultBalance(subvault, asset, change);
+
+        assertTrue(manager.subvaultState(subvault).balance > subvaultLimit, "Subvault balance should be greater than the limit");
+    }
 }

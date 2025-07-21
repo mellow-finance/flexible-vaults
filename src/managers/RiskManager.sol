@@ -245,7 +245,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         State storage state = $.subvaultStates[subvault];
         int256 shares = convertToShares(asset, change);
         int256 newBalance = state.balance + shares;
-        if (shares > 0 && newBalance > state.limit) {
+        if (change > 0 && newBalance > state.limit) {
             revert LimitExceeded(newBalance, state.limit);
         }
         state.balance = newBalance;
