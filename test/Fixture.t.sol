@@ -118,7 +118,7 @@ abstract contract FixtureTest is Test {
     function addRedeemQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
-        deployment.vault.createQueue(2, false, owner, asset, new bytes(0));
+        deployment.vault.createQueue(0, false, owner, asset, new bytes(0));
         vm.stopPrank();
 
         uint256 index = deployment.vault.getQueueCount(asset);
@@ -136,6 +136,54 @@ abstract contract FixtureTest is Test {
 
         uint256 index = deployment.vault.getQueueCount(asset);
         return deployment.vault.queueAt(asset, index - 1);
+    }
+
+    function pushReport(Deployment memory deployment, IOracle.Report memory report) internal {
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = report;
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.oracle.submitReports(reports);
+        try deployment.oracle.acceptReport(report.asset, report.priceD18, uint32(block.timestamp)) {}
+        catch (bytes memory) {
+            /// @dev catch case if report is not suspicious
+        }
+        vm.stopPrank();
+    }
+
+    function makeDeposit(address account, uint256 amount, DepositQueue queue) internal {
+        giveAssetsToUserAndApprove(account, uint224(amount), queue);
+        vm.prank(account);
+        queue.deposit(uint224(amount), address(0), new bytes32[](0));
+    }
+
+    function giveAssetsToUserAndApprove(address account, uint224 amount, DepositQueue queue) internal {
+        vm.startPrank(account);
+        MockERC20(queue.asset()).mint(account, amount);
+        MockERC20(queue.asset()).approve(address(queue), amount);
+        vm.stopPrank();
+    }
+
+    function _applyDeltaX16(uint224 value, int16 delta) internal pure returns (uint224) {
+        return uint224(int224(value) + (int224(delta) * int224(value)) / int224(uint224(type(uint16).max)));
+    }
+
+    function _applyDeltaX16Price(uint224 priceD18, int16 deltaPrice, IOracle.SecurityParams memory securityParams)
+        internal
+        pure
+        returns (uint224)
+    {
+        int224 dPrice = int224(deltaPrice) * int224(priceD18) / int224(uint224(type(uint16).max));
+        uint224 dPriceAbsolute = uint224(dPrice < 0 ? -dPrice : dPrice);
+        if (dPriceAbsolute > securityParams.maxAbsoluteDeviation) {
+            dPriceAbsolute = securityParams.maxAbsoluteDeviation;
+        }
+        uint224 relativeDeviationD18 = dPriceAbsolute * 1 ether / priceD18;
+        if (relativeDeviationD18 > securityParams.maxRelativeDeviationD18) {
+            dPriceAbsolute = priceD18 * securityParams.maxRelativeDeviationD18 / 1 ether;
+        }
+        dPrice = dPrice > 0 ? int224(dPriceAbsolute) : -int224(dPriceAbsolute);
+
+        return uint224(int224(priceD18) + dPrice);
     }
 
     function createVault(address vaultAdmin, address vaultProxyAdmin, address[] memory assets)
