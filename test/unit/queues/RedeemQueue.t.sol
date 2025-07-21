@@ -462,10 +462,127 @@ contract RedeemQueueTest is FixtureTest {
 
         timestamps[0] = redeemTimestamp2;
         vm.prank(user2);
-        redeemQueue.claim(user2, timestamps);
+        redeemQueue.claim(user2, timestamps); // `claim` is no-op for user2, redeem interval was not reached
 
         assertEq(MockERC20(asset).balanceOf(user1), amount, "User1 should have all of the assets after redeem");
-        assertEq(MockERC20(asset).balanceOf(user2), 0, "User2 should have all of the assets after redeem");
+        assertEq(MockERC20(asset).balanceOf(user2), 0, "User2 should not have any assets after redeem");
+
+        // Another report & batch handling, now user2 should have all of the assets after redeem
+        {
+            skip(securityParams.timeout);
+
+            pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+            redeemQueue.handleBatches(1);
+
+            timestamps[0] = redeemTimestamp2;
+            vm.prank(user2);
+            redeemQueue.claim(user2, timestamps);
+
+            assertEq(MockERC20(asset).balanceOf(user2), amount, "User2 should have all of the assets after redeem");
+        }
+    }
+
+    function testRedeemInterval_Claimable() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RedeemQueue redeemQueue = RedeemQueue(payable(addRedeemQueue(deployment, vaultProxyAdmin, asset)));
+        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setFees(0, 0, 0, 0);
+
+        uint224 amount = 1 ether;
+
+        address userA = vm.createWallet("userA").addr;
+        giveAssetsToUserAndApprove(userA, amount * 10, depositQueue);
+
+        address userB = vm.createWallet("userB").addr;
+        giveAssetsToUserAndApprove(userB, amount * 10, depositQueue);
+
+        /// @dev push a report to set the initial price
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+        skip(securityParams.timeout);
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+        skip(securityParams.timeout);
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        makeDeposit(userA, amount, depositQueue);
+        makeDeposit(userB, amount, depositQueue);
+
+        // After this report, both users are eligible to claim shares from the deposit queue
+        {
+            skip(securityParams.timeout);
+            pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+            assertEq(depositQueue.claimableOf(userA), amount, "userA claimable should be the deposited amount");
+            assertEq(depositQueue.claimableOf(userB), amount, "userB claimable should be the deposited amount");
+
+            assertTrue(depositQueue.claim(userA));
+            assertEq(deployment.shareManager.activeSharesOf(userA), amount, "userA should have shares after claiming");
+
+            assertTrue(depositQueue.claim(userB));
+            assertEq(deployment.shareManager.activeSharesOf(userB), amount, "userB should have shares after claiming");
+        }
+
+        skip(securityParams.timeout);
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        // Reedem as userA
+        vm.prank(userA);
+        redeemQueue.redeem(amount);
+        uint32 redeemTimestamp_userA = uint32(block.timestamp);
+
+        // Skip almost to the next report
+        skip(securityParams.timeout - 1);
+
+        // Reedem as userB
+        vm.prank(userB);
+        redeemQueue.redeem(amount);
+        uint32 redeemTimestamp_userB = uint32(block.timestamp);
+
+        // After this report, only userA is eligible to claim shares from the redeem queue
+        // Because there is not enough time passed to make userB eligible.
+        {
+            skip(1);
+
+            pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+            redeemQueue.handleBatches(1);
+
+            uint32[] memory timestamps = new uint32[](1);
+
+            timestamps[0] = redeemTimestamp_userA;
+            vm.prank(userA);
+            uint256 userAClaimed = redeemQueue.claim(userA, timestamps);
+
+            timestamps[0] = redeemTimestamp_userB;
+            vm.prank(userB);
+            uint256 userBClaimed = redeemQueue.claim(userB, timestamps);
+
+            assertEq(userAClaimed, amount, "userA should have claimed all of the assets");
+            assertEq(userBClaimed, 0, "userB should not have claimed any assets");
+        }
+
+        // After this report, userA should not have claimed any assets, it's already claimed.
+        // UserB should claim all of the assets.
+        {
+            skip(securityParams.timeout);
+
+            pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+            redeemQueue.handleBatches(1);
+
+            uint32[] memory timestamps = new uint32[](1);
+
+            timestamps[0] = redeemTimestamp_userA;
+            vm.prank(userA);
+            uint256 userAClaimed = redeemQueue.claim(userA, timestamps);
+
+            timestamps[0] = redeemTimestamp_userB;
+            vm.prank(userB);
+            uint256 userBClaimed = redeemQueue.claim(userB, timestamps);
+
+            assertEq(userAClaimed, 0, "userA should not have claimed any assets, already claimed");
+            assertEq(userBClaimed, amount, "userB should have claimed all of the assets, redeem interval passed");
+        }
     }
 
     function testFuzzMultipleBatches(uint8[] calldata batchSizes, uint8 unhandledBatchesLimit) external {

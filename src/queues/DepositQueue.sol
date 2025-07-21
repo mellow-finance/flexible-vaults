@@ -158,9 +158,7 @@ contract DepositQueue is IDepositQueue, Queue {
                 if (latestEligibleIndex == 0) {
                     return;
                 }
-                latestEligibleIndex--;
             }
-
             if (latestEligibleIndex < $.handledIndices) {
                 return;
             }

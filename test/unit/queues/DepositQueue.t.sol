@@ -80,6 +80,53 @@ contract DepositQueueTest is FixtureTest {
         assertEq(deployment.shareManager.activeSharesOf(user2), 0, "User2 should have shares after claiming");
     }
 
+    function testDepositInterval_Claimable() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        DepositQueue queue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        uint224 amount = 1 ether;
+
+        address userA = vm.createWallet("userA").addr;
+        giveAssetsToUserAndApprove(userA, amount * 10, queue);
+
+        address userB = vm.createWallet("userB").addr;
+        giveAssetsToUserAndApprove(userB, amount * 10, queue);
+
+        /// @dev push a report to set the initial price
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+        skip(securityParams.timeout);
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+        skip(securityParams.timeout);
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        vm.prank(userA);
+        queue.deposit(amount, address(0), new bytes32[](0));
+
+        skip(securityParams.timeout - 1);
+
+        vm.prank(userB);
+        queue.deposit(amount, address(0), new bytes32[](0));
+
+        // After this report, only userA is eligible to claim, userB is not (due to deposit interval)
+        {
+            skip(1);
+            pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+            assertEq(queue.claimableOf(userA), amount, "userA claimable should be the deposited amount");
+            assertEq(queue.claimableOf(userB), 0, "userB claimable should be zero");
+        }
+
+        // After this report, both users are eligible to claim
+        {
+            skip(securityParams.timeout);
+            pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+            assertEq(queue.claimableOf(userA), amount, "userA claimable should be the deposited amount");
+            assertEq(queue.claimableOf(userB), amount, "userB claimable should be the deposited amount");
+        }
+    }
+
     function testDepositLimitExceeded() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         DepositQueue queue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
