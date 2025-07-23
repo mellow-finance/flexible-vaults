@@ -50,6 +50,29 @@ contract DepositQueueTest is FixtureTest {
         assertEq(queue.claimableOf(user), amount, "Claimable amount should match the deposited amount");
     }
 
+    function testDepositETH() external {
+        address[] memory assets = new address[](1);
+        assets[0] = TransferLibrary.ETH;
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        DepositQueue queue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH));
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+
+        uint224 amount = 1 ether;
+        address user = vm.createWallet("user").addr;
+        makeDeposit(user, amount, queue);
+
+        skip(Math.max(securityParams.timeout, securityParams.depositInterval));
+        pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+
+        assertEq(queue.claimableOf(user), amount, "Claimable amount should match the deposited amount");
+
+        queue.claim(user);
+        assertEq(deployment.shareManager.activeSharesOf(user), amount, "User should have shares after claiming");
+    }
+
     function testDepositInterval() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         DepositQueue queue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));

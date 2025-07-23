@@ -135,6 +135,86 @@ contract RedeemQueueTest is FixtureTest {
         assertEq(MockERC20(asset).balanceOf(user), amount, "User should have all of the assets after handleBatches");
     }
 
+    function testRedeemETH() external {
+        address[] memory assets = new address[](1);
+        assets[0] = TransferLibrary.ETH;
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH));
+        RedeemQueue redeemQueue = RedeemQueue(payable(addRedeemQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH)));
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setFees(1e4, 1e4, 0, 0);
+
+        uint24 depositFeeD6 = deployment.feeManager.depositFeeD6();
+        uint24 redeemFeeD6 = deployment.feeManager.redeemFeeD6();
+
+        pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+
+        uint224 amount = 1 ether;
+        address user = vm.createWallet("user").addr;
+        makeDeposit(user, amount, depositQueue);
+
+        skip(Math.max(securityParams.timeout, securityParams.depositInterval));
+        pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+
+        assertEq(
+            depositQueue.claimableOf(user),
+            uint256(1e6 - depositFeeD6) * amount / 1e6,
+            "Claimable amount should match the deposited amount"
+        );
+
+        depositQueue.claim(user);
+        uint256 shares = deployment.shareManager.sharesOf(user);
+        assertEq(shares, uint256(1e6 - depositFeeD6) * amount / 1e6, "User should have shares after claiming");
+
+        vm.prank(user);
+        redeemQueue.redeem(shares);
+
+        uint32[] memory timestamps = new uint32[](1);
+        timestamps[0] = uint32(block.timestamp);
+
+        skip(Math.max(securityParams.timeout, securityParams.redeemInterval));
+        pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+
+        redeemQueue.handleBatches(1);
+
+        assertEq(user.balance, 0, "User should have no ETH before claim");
+
+        vm.prank(user);
+        redeemQueue.claim(user, timestamps);
+
+        assertEq(
+            user.balance,
+            uint256(1e6 - redeemFeeD6) * uint256(1e6 - depositFeeD6) * 1 ether / 1e12,
+            "User should have 1 ETH after claim"
+        );
+
+        address feeRecipient = deployment.feeManager.feeRecipient();
+
+        shares = deployment.shareManager.sharesOf(feeRecipient);
+        vm.prank(feeRecipient);
+        redeemQueue.redeem(shares);
+        timestamps[0] = uint32(block.timestamp);
+
+        skip(Math.max(securityParams.timeout, securityParams.redeemInterval));
+        pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+
+        redeemQueue.handleBatches(1);
+
+        vm.prank(feeRecipient);
+        redeemQueue.claim(feeRecipient, timestamps);
+
+        assertEq(
+            feeRecipient.balance,
+            uint256(1e6 - redeemFeeD6)
+                * (uint256(depositFeeD6) * 1 ether + uint256(redeemFeeD6) * uint256(1e6 - depositFeeD6) * 1 ether / 1e6)
+                / 1e12,
+            "FeeRecipient should have expected ETH balance after claim"
+        );
+    }
+
     function testRedeemFee() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         RedeemQueue redeemQueue = RedeemQueue(payable(addRedeemQueue(deployment, vaultProxyAdmin, asset)));

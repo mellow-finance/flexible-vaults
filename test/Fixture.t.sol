@@ -152,14 +152,20 @@ abstract contract FixtureTest is Test {
 
     function makeDeposit(address account, uint256 amount, DepositQueue queue) internal {
         giveAssetsToUserAndApprove(account, uint224(amount), queue);
+        uint256 value = queue.asset() == TransferLibrary.ETH ? amount : 0;
         vm.prank(account);
-        queue.deposit(uint224(amount), address(0), new bytes32[](0));
+        queue.deposit{value: value}(uint224(amount), address(0), new bytes32[](0));
     }
 
     function giveAssetsToUserAndApprove(address account, uint224 amount, DepositQueue queue) internal {
+        address asset = queue.asset();
         vm.startPrank(account);
-        MockERC20(queue.asset()).mint(account, amount);
-        MockERC20(queue.asset()).approve(address(queue), amount);
+        if (asset != TransferLibrary.ETH) {
+            MockERC20(asset).mint(account, amount);
+            MockERC20(asset).approve(address(queue), amount);
+        } else {
+            vm.deal(account, amount);
+        }
         vm.stopPrank();
     }
 
