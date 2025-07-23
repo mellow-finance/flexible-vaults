@@ -46,4 +46,16 @@ library TransferLibrary {
             IERC20(asset).safeTransferFrom(from, address(this), assets);
         }
     }
+
+    /// @notice Returns the balance of an account for a given asset
+    /// @param asset Address of the asset to check the balance of (use `ETH` constant for native ETH)
+    /// @param account Address of the account to check the balance of
+    /// @return Balance of the account for the given asset
+    function balanceOf(address asset, address account) internal view returns (uint256) {
+        if (asset == ETH) {
+            return account.balance;
+        } else {
+            return IERC20(asset).balanceOf(account);
+        }
+    }
 }

@@ -148,10 +148,7 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
         address hook = getHook(queue);
         if (hook == address(0)) {
-            if (asset == TransferLibrary.ETH) {
-                return address(this).balance;
-            }
-            return IERC20(asset).balanceOf(address(this));
+            return TransferLibrary.balanceOf(asset, address(this));
         }
         return IRedeemHook(hook).getLiquidAssets(asset);
     }

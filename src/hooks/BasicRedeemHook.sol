@@ -7,10 +7,11 @@ import "../libraries/TransferLibrary.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract BasicRedeemHook is IHook {
+    using TransferLibrary for address;
+
     function callHook(address asset, uint256 assets) public virtual {
         IVaultModule vault = IVaultModule(address(this));
-        bool isNativeToken = asset == TransferLibrary.ETH;
-        uint256 liquid = isNativeToken ? address(vault).balance : IERC20(asset).balanceOf(address(vault));
+        uint256 liquid = asset.balanceOf(address(vault));
         if (liquid >= assets) {
             return;
         }
@@ -18,7 +19,7 @@ contract BasicRedeemHook is IHook {
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
-            uint256 balance = isNativeToken ? subvault.balance : IERC20(asset).balanceOf(subvault);
+            uint256 balance = asset.balanceOf(subvault);
             if (balance == 0) {
                 continue;
             }
@@ -34,12 +35,11 @@ contract BasicRedeemHook is IHook {
 
     function getLiquidAssets(address asset) public view virtual returns (uint256 assets) {
         IVaultModule vault = IVaultModule(msg.sender);
-        bool isNativeToken = asset == TransferLibrary.ETH;
-        assets = isNativeToken ? address(vault).balance : IERC20(asset).balanceOf(address(vault));
+        assets = asset.balanceOf(address(vault));
         uint256 subvaults = vault.subvaults();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
-            assets += isNativeToken ? subvault.balance : IERC20(asset).balanceOf(subvault);
+            assets += asset.balanceOf(subvault);
         }
     }
 }
