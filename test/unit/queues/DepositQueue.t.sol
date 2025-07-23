@@ -28,7 +28,7 @@ contract DepositQueueTest is FixtureTest {
         /// @dev push a report to set the initial price
         pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
         address user = vm.createWallet("user").addr;
-        giveAssetsToUserAndApprove(user, amount, queue);
+        giveAssetsToUserAndApprove(user, amount, address(queue));
 
         assertEq(queue.claimableOf(user), 0, "Claimable amount should be zero before deposit");
 
@@ -111,10 +111,10 @@ contract DepositQueueTest is FixtureTest {
         uint224 amount = 1 ether;
 
         address userA = vm.createWallet("userA").addr;
-        giveAssetsToUserAndApprove(userA, amount * 10, queue);
+        giveAssetsToUserAndApprove(userA, amount * 10, address(queue));
 
         address userB = vm.createWallet("userB").addr;
-        giveAssetsToUserAndApprove(userB, amount * 10, queue);
+        giveAssetsToUserAndApprove(userB, amount * 10, address(queue));
 
         /// @dev push a report to set the initial price
         pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
@@ -165,7 +165,7 @@ contract DepositQueueTest is FixtureTest {
         /// @dev push a report to set the initial price
         pushReport(deployment, IOracle.Report({asset: asset, priceD18: priceD18}));
         address user = vm.createWallet("user").addr;
-        giveAssetsToUserAndApprove(user, 10 * amount, queue);
+        giveAssetsToUserAndApprove(user, 10 * amount, address(queue));
 
         vm.prank(user);
         vm.expectRevert(abi.encodeWithSelector(IRiskManager.LimitExceeded.selector, amount, vaultLimit));
@@ -204,7 +204,7 @@ contract DepositQueueTest is FixtureTest {
         vm.prank(deployment.vaultAdmin);
         deployment.riskManager.setVaultLimit(1e6 ether);
 
-        giveAssetsToUserAndApprove(user, 1e6 ether, queue);
+        giveAssetsToUserAndApprove(user, 1e6 ether, address(queue));
 
         uint224 shareTotal;
 
@@ -650,7 +650,7 @@ contract DepositQueueTest is FixtureTest {
         deployment.vault.setQueueStatus(address(queue), true);
         vm.stopPrank();
 
-        giveAssetsToUserAndApprove(user, amount, queue);
+        giveAssetsToUserAndApprove(user, amount, address(queue));
         vm.prank(user);
         vm.expectRevert(abi.encodeWithSelector(IQueue.QueuePaused.selector));
         queue.deposit(amount, address(0), new bytes32[](0));
@@ -690,7 +690,7 @@ contract DepositQueueTest is FixtureTest {
             })
         );
 
-        giveAssetsToUserAndApprove(user, amount, queue);
+        giveAssetsToUserAndApprove(user, amount, address(queue));
         vm.prank(user);
         vm.expectRevert(abi.encodeWithSelector(IDepositQueue.DepositNotAllowed.selector));
         queue.deposit(amount, address(0), new bytes32[](0));

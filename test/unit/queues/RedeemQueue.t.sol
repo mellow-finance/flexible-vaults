@@ -574,10 +574,10 @@ contract RedeemQueueTest is FixtureTest {
         uint224 amount = 1 ether;
 
         address userA = vm.createWallet("userA").addr;
-        giveAssetsToUserAndApprove(userA, amount * 10, depositQueue);
+        giveAssetsToUserAndApprove(userA, amount * 10, address(depositQueue));
 
         address userB = vm.createWallet("userB").addr;
-        giveAssetsToUserAndApprove(userB, amount * 10, depositQueue);
+        giveAssetsToUserAndApprove(userB, amount * 10, address(depositQueue));
 
         /// @dev push a report to set the initial price
         pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));

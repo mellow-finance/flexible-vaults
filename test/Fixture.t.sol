@@ -51,11 +51,12 @@ abstract contract FixtureTest is Test {
         vm.stopPrank();
     }
 
-    function createConsensus(Deployment memory deployment, address[] memory signers)
-        internal
-        virtual
-        returns (Consensus consensus, Consensus consensusImplementation)
-    {
+    function createConsensus(
+        Deployment memory deployment,
+        uint256 threshold,
+        uint256[] memory signerPKs,
+        IConsensus.SignatureType[] memory signatureTypes
+    ) internal virtual returns (Consensus consensus, Consensus consensusImplementation) {
         consensusImplementation = new Consensus("Consensus", 1);
         consensus = Consensus(
             SignatureDepositQueue(deployment.depositQueueFactory.implementationAt(1)).consensusFactory().create(
@@ -63,9 +64,10 @@ abstract contract FixtureTest is Test {
             )
         );
         vm.startPrank(deployment.vaultAdmin);
-        for (uint256 i = 0; i < signers.length; i++) {
-            consensus.addSigner(signers[i], 1, IConsensus.SignatureType.EIP712);
+        for (uint256 i = 0; i < signerPKs.length; i++) {
+            consensus.addSigner(vm.addr(signerPKs[i]), 1, signatureTypes[i]);
         }
+        consensus.setThreshold(threshold);
         vm.stopPrank();
     }
 
@@ -151,18 +153,33 @@ abstract contract FixtureTest is Test {
     }
 
     function makeDeposit(address account, uint256 amount, DepositQueue queue) internal {
-        giveAssetsToUserAndApprove(account, uint224(amount), queue);
+        giveAssetsToUserAndApprove(account, uint224(amount), address(queue));
         uint256 value = queue.asset() == TransferLibrary.ETH ? amount : 0;
         vm.prank(account);
         queue.deposit{value: value}(uint224(amount), address(0), new bytes32[](0));
     }
 
-    function giveAssetsToUserAndApprove(address account, uint224 amount, DepositQueue queue) internal {
-        address asset = queue.asset();
+    function makeDepositSignature(
+        SignatureDepositQueue queue,
+        ISignatureQueue.Order memory order,
+        uint256[] memory signerPks,
+        address[] memory signers
+    ) internal {
+        uint224 amount = uint224(order.ordered);
+        giveAssetsToUserAndApprove(order.caller, amount, address(queue));
+        uint256 value = queue.asset() == TransferLibrary.ETH ? amount : 0;
+
+        vm.startPrank(order.caller);
+        queue.deposit{value: value}(order, signOrder(queue, order, signerPks, signers));
+        vm.stopPrank();
+    }
+
+    function giveAssetsToUserAndApprove(address account, uint224 amount, address queue) internal {
+        address asset = IQueue(queue).asset();
         vm.startPrank(account);
         if (asset != TransferLibrary.ETH) {
             MockERC20(asset).mint(account, amount);
-            MockERC20(asset).approve(address(queue), amount);
+            MockERC20(asset).approve(queue, amount);
         } else {
             vm.deal(account, amount);
         }
@@ -190,6 +207,89 @@ abstract contract FixtureTest is Test {
         dPrice = dPrice > 0 ? int224(dPriceAbsolute) : -int224(dPriceAbsolute);
 
         return uint224(int224(priceD18) + dPrice);
+    }
+
+    function _applyDeltaX16PriceNonSuspicious(
+        uint224 priceD18,
+        int16 deltaPrice,
+        IOracle.SecurityParams memory securityParams
+    ) internal pure returns (uint224) {
+        int224 dPrice = int224(deltaPrice) * int224(priceD18) / int224(uint224(type(uint16).max));
+        uint224 dPriceAbsolute = uint224(dPrice < 0 ? -dPrice : dPrice);
+        if (dPriceAbsolute > securityParams.suspiciousAbsoluteDeviation) {
+            dPriceAbsolute = securityParams.suspiciousAbsoluteDeviation;
+        }
+        uint224 relativeDeviationD18 = dPriceAbsolute * 1 ether / priceD18;
+        if (relativeDeviationD18 > securityParams.suspiciousRelativeDeviationD18) {
+            dPriceAbsolute = priceD18 * securityParams.suspiciousRelativeDeviationD18 / 1 ether;
+        }
+        dPrice = dPrice > 0 ? int224(dPriceAbsolute) : -int224(dPriceAbsolute);
+
+        return uint224(int224(priceD18) + dPrice);
+    }
+
+    function generateSortedSigners(IConsensus.SignatureType[] memory signatureTypes)
+        internal
+        returns (uint256[] memory signerPks, address[] memory signerAddresses, IConsensus.SignatureType[] memory)
+    {
+        uint256 signerCount = signatureTypes.length;
+        signerPks = new uint256[](signerCount);
+        signerAddresses = new address[](signerCount);
+        for (uint256 i = 0; i < signerCount; i++) {
+            if (signatureTypes[i] == IConsensus.SignatureType.EIP1271) {
+                address admin = vm.addr(uint256(keccak256(abi.encodePacked("signer", i))));
+                signerPks[i] = uint256(0);
+                signerAddresses[i] = address(new EIP1271Mock(admin));
+            } else {
+                signerPks[i] = uint256(keccak256(abi.encodePacked("signer", i)));
+                signerAddresses[i] = vm.addr(signerPks[i]);
+            }
+        }
+        /// @dev sort signers by address
+        for (uint256 i = 0; i < signerCount - 1; i++) {
+            for (uint256 j = i + 1; j < signerCount; j++) {
+                if (signerAddresses[i] > signerAddresses[j]) {
+                    (signerAddresses[i], signerAddresses[j]) = (signerAddresses[j], signerAddresses[i]);
+                    (signerPks[i], signerPks[j]) = (signerPks[j], signerPks[i]);
+                    (signatureTypes[i], signatureTypes[j]) = (signatureTypes[j], signatureTypes[i]);
+                }
+            }
+        }
+        return (signerPks, signerAddresses, signatureTypes);
+    }
+
+    function signOrder(
+        SignatureQueue queue,
+        ISignatureQueue.Order memory order,
+        uint256[] memory signerPks,
+        address[] memory signers
+    ) internal returns (IConsensus.Signature[] memory signatures) {
+        signatures = new IConsensus.Signature[](signerPks.length);
+        bytes32 hashOrder = queue.hashOrder(order);
+        for (uint256 i = 0; i < signerPks.length; i++) {
+            if (signerPks[i] == 0) {
+                // EIP1271 mock signer
+                signatures[i] = signEIP_1271(hashOrder, signers[i]);
+            } else {
+                // EOA signer
+                signatures[i] = signEIP_712(hashOrder, signerPks[i]);
+            }
+        }
+    }
+
+    function signEIP_1271(bytes32 hashOrder, address contractEIP1271)
+        internal
+        returns (IConsensus.Signature memory signature)
+    {
+        signature = IConsensus.Signature({signer: contractEIP1271, signature: bytes("signature")});
+
+        vm.prank(EIP1271Mock(contractEIP1271).admin());
+        EIP1271Mock(contractEIP1271).sign(hashOrder);
+    }
+
+    function signEIP_712(bytes32 hashOrder, uint256 signerPk) internal pure returns (IConsensus.Signature memory) {
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(signerPk, hashOrder);
+        return IConsensus.Signature({signer: vm.addr(signerPk), signature: abi.encodePacked(r, s, v)});
     }
 
     function createVault(address vaultAdmin, address vaultProxyAdmin, address[] memory assets)

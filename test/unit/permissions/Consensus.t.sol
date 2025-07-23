@@ -1,34 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../../Fixture.t.sol";
 import "../../Imports.sol";
 
-contract EIP1271Mock is IERC1271 {
-    bytes4 internal _response;
-    address private _admin;
-    mapping(bytes32 => bool) private validSignatures;
-
-    constructor(address admin, bytes4 response) {
-        _admin = admin;
-        _response = response;
-    }
-
-    function sign(bytes32 txHash) external {
-        require(msg.sender == _admin, "admin");
-        validSignatures[txHash] = true;
-    }
-
-    function isValidSignature(bytes32 txHash, bytes memory) external view override returns (bytes4) {
-        if (validSignatures[txHash]) {
-            return _response;
-        }
-        return bytes4(0);
-    }
-
-    function test() external {}
-}
-
-contract ConsensusTest is Test {
+contract ConsensusTest is FixtureTest {
     address admin = vm.createWallet("admin").addr;
     address proxyAdmin = vm.createWallet("proxyAdmin").addr;
     address internal signer1 = vm.createWallet("signer1").addr;
@@ -360,7 +336,7 @@ contract ConsensusTest is Test {
         Consensus consensus = _createConsensus();
 
         address adminEIP1271 = vm.createWallet("adminEIP1271").addr;
-        EIP1271Mock mock = new EIP1271Mock(adminEIP1271, IERC1271.isValidSignature.selector);
+        EIP1271Mock mock = new EIP1271Mock(adminEIP1271);
 
         vm.prank(admin);
         consensus.addSigner(address(mock), 1, IConsensus.SignatureType.EIP1271);
@@ -381,7 +357,7 @@ contract ConsensusTest is Test {
         Consensus consensus = _createConsensus();
 
         address adminEIP1271 = vm.createWallet("adminEIP1271").addr;
-        EIP1271Mock mock = new EIP1271Mock(adminEIP1271, IERC1271.isValidSignature.selector);
+        EIP1271Mock mock = new EIP1271Mock(adminEIP1271);
 
         vm.prank(admin);
         consensus.addSigner(address(mock), 1, IConsensus.SignatureType.EIP1271);
@@ -407,8 +383,8 @@ contract ConsensusTest is Test {
         address adminB = vm.addr(pk2);
 
         // Deploy mock EIP-1271 contracts controlled by the different admins
-        EIP1271Mock mockA = new EIP1271Mock(adminA, IERC1271.isValidSignature.selector);
-        EIP1271Mock mockB = new EIP1271Mock(adminB, IERC1271.isValidSignature.selector);
+        EIP1271Mock mockA = new EIP1271Mock(adminA);
+        EIP1271Mock mockB = new EIP1271Mock(adminB);
 
         // Register both signers and set threshold to two
         vm.startPrank(admin);
@@ -444,8 +420,8 @@ contract ConsensusTest is Test {
         address adminA = vm.addr(pk1);
         address adminB = vm.addr(pk2);
 
-        EIP1271Mock mockA = new EIP1271Mock(adminA, IERC1271.isValidSignature.selector);
-        EIP1271Mock mockB = new EIP1271Mock(adminB, IERC1271.isValidSignature.selector);
+        EIP1271Mock mockA = new EIP1271Mock(adminA);
+        EIP1271Mock mockB = new EIP1271Mock(adminB);
 
         vm.startPrank(admin);
         consensus.addSigner(address(mockA), 1, IConsensus.SignatureType.EIP1271);
@@ -478,8 +454,8 @@ contract ConsensusTest is Test {
         address adminA = vm.addr(pk1);
         address adminB = vm.addr(pk2);
 
-        EIP1271Mock mockA = new EIP1271Mock(adminA, IERC1271.isValidSignature.selector);
-        EIP1271Mock mockB = new EIP1271Mock(adminB, IERC1271.isValidSignature.selector);
+        EIP1271Mock mockA = new EIP1271Mock(adminA);
+        EIP1271Mock mockB = new EIP1271Mock(adminB);
 
         vm.startPrank(admin);
         consensus.addSigner(address(mockA), 1, IConsensus.SignatureType.EIP1271);
@@ -511,5 +487,200 @@ contract ConsensusTest is Test {
 
         vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, txHash, signatures));
         consensus.requireValidSignatures(txHash, signatures);
+    }
+
+    function testFuzzSignaturesValid(bool[] calldata isEIP1271) public {
+        uint256 signerCount = isEIP1271.length;
+        vm.assume(signerCount > 0 && signerCount < 100);
+
+        uint256[] memory signerPks;
+        address[] memory signers;
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        for (uint256 i = 0; i < signerCount; i++) {
+            if (isEIP1271[i]) {
+                signatureTypes[i] = IConsensus.SignatureType.EIP1271;
+            } else {
+                signatureTypes[i] = IConsensus.SignatureType.EIP712;
+            }
+        }
+
+        uint256 threshold = 2 * signerCount / 3 + 1;
+        if (threshold > signerCount) {
+            threshold = signerCount;
+        }
+
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        Consensus consensus = _createConsensus();
+
+        vm.startPrank(admin);
+        for (uint256 i = 0; i < signers.length; i++) {
+            consensus.addSigner(signers[i], 1, signatureTypes[i]);
+        }
+        consensus.setThreshold(threshold);
+        vm.stopPrank();
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](signerCount);
+
+        bytes32 txHash = keccak256(abi.encode(signers, signerCount, threshold, signatures));
+        for (uint256 index = 0; index < signers.length; index++) {
+            if (signatureTypes[index] == IConsensus.SignatureType.EIP1271) {
+                signatures[index] = signEIP_1271(txHash, signers[index]);
+            } else {
+                signatures[index] = signEIP_712(txHash, signerPks[index]);
+            }
+        }
+        assertTrue(consensus.checkSignatures(txHash, signatures));
+    }
+
+    function testFuzzCheckSignaturesInvalidOrder(bool[] calldata isEIP1271, uint8 first, uint8 second) public {
+        uint256 signerCount = isEIP1271.length;
+        vm.assume(
+            signerCount > 0 && signerCount < 256 && first < signerCount && second < signerCount && first != second
+        );
+
+        uint256[] memory signerPks;
+        address[] memory signers;
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        for (uint256 i = 0; i < signerCount; i++) {
+            if (isEIP1271[i]) {
+                signatureTypes[i] = IConsensus.SignatureType.EIP1271;
+            } else {
+                signatureTypes[i] = IConsensus.SignatureType.EIP712;
+            }
+        }
+
+        uint256 threshold = 2 * signerCount / 3 + 1;
+        if (threshold > signerCount) {
+            threshold = signerCount;
+        }
+
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        Consensus consensus = _createConsensus();
+
+        vm.startPrank(admin);
+        for (uint256 i = 0; i < signers.length; i++) {
+            consensus.addSigner(signers[i], 1, signatureTypes[i]);
+        }
+        consensus.setThreshold(threshold);
+        vm.stopPrank();
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](signerCount);
+
+        bytes32 txHash = keccak256(abi.encode(signers, signerCount, threshold, signatures));
+        for (uint256 index = 0; index < signers.length; index++) {
+            if (signatureTypes[index] == IConsensus.SignatureType.EIP1271) {
+                signatures[index] = signEIP_1271(txHash, signers[index]);
+            } else {
+                signatures[index] = signEIP_712(txHash, signerPks[index]);
+            }
+        }
+        // Swap two signatures to create an invalid order
+        (signatures[first], signatures[second]) = (signatures[second], signatures[first]);
+        assertFalse(consensus.checkSignatures(txHash, signatures));
+    }
+
+    function testFuzzCheckSignaturesDuplicates(bool[] calldata isEIP1271, uint8 dupIndex) public {
+        uint256 signerCount = isEIP1271.length;
+        vm.assume(signerCount > 1 && signerCount < 256 && dupIndex < signerCount);
+
+        uint256[] memory signerPks;
+        address[] memory signers;
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        for (uint256 i = 0; i < signerCount; i++) {
+            if (isEIP1271[i]) {
+                signatureTypes[i] = IConsensus.SignatureType.EIP1271;
+            } else {
+                signatureTypes[i] = IConsensus.SignatureType.EIP712;
+            }
+        }
+
+        uint256 threshold = 2 * signerCount / 3 + 1;
+        if (threshold > signerCount) {
+            threshold = signerCount;
+        }
+
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        Consensus consensus = _createConsensus();
+
+        vm.startPrank(admin);
+        for (uint256 i = 0; i < signers.length; i++) {
+            consensus.addSigner(signers[i], 1, signatureTypes[i]);
+        }
+        consensus.setThreshold(threshold);
+        vm.stopPrank();
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](signerCount);
+
+        bytes32 txHash = keccak256(abi.encode(signers, signerCount, threshold, signatures));
+        for (uint256 index = 0; index < signers.length; index++) {
+            if (signatureTypes[index] == IConsensus.SignatureType.EIP1271) {
+                signatures[index] = signEIP_1271(txHash, signers[index]);
+            } else {
+                signatures[index] = signEIP_712(txHash, signerPks[index]);
+            }
+        }
+        // Duplicate one signature
+        signatures[dupIndex] = dupIndex == 0 ? signatures[dupIndex + 1] : signatures[dupIndex - 1];
+
+        assertFalse(consensus.checkSignatures(txHash, signatures));
+    }
+
+    function testFuzzCheckSignaturesInvalidSignature(bool[] calldata isEIP1271, uint8 indexInvalid) public {
+        uint256 signerCount = isEIP1271.length;
+        vm.assume(signerCount > 1 && signerCount < 256 && indexInvalid < signerCount);
+
+        uint256[] memory signerPks;
+        address[] memory signers;
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        for (uint256 i = 0; i < signerCount; i++) {
+            if (isEIP1271[i]) {
+                signatureTypes[i] = IConsensus.SignatureType.EIP1271;
+            } else {
+                signatureTypes[i] = IConsensus.SignatureType.EIP712;
+            }
+        }
+
+        uint256 threshold = 2 * signerCount / 3 + 1;
+        if (threshold > signerCount) {
+            threshold = signerCount;
+        }
+
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        Consensus consensus = _createConsensus();
+
+        vm.startPrank(admin);
+        for (uint256 i = 0; i < signers.length; i++) {
+            consensus.addSigner(signers[i], 1, signatureTypes[i]);
+        }
+        consensus.setThreshold(threshold);
+        vm.stopPrank();
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](signerCount);
+        uint256 invalidSignerPk = uint256(keccak256(abi.encodePacked("invalid signer", indexInvalid)));
+
+        bytes32 txHash = keccak256(abi.encode(signers, signerCount, threshold, signatures));
+        for (uint256 index = 0; index < signers.length; index++) {
+            if (index != indexInvalid) {
+                if (signatureTypes[index] == IConsensus.SignatureType.EIP1271) {
+                    signatures[index] = signEIP_1271(txHash, signers[index]);
+                } else {
+                    signatures[index] = signEIP_712(txHash, signerPks[index]);
+                }
+            } else {
+                if (signatureTypes[index] == IConsensus.SignatureType.EIP1271) {
+                    signatures[index] = IConsensus.Signature({signer: signers[index], signature: bytes("signature")});
+                } else {
+                    signatures[index] = signEIP_712(txHash, signerPks[index]);
+                    IConsensus.Signature memory invalidSignature = signEIP_712(txHash, invalidSignerPk);
+                    signatures[index].signature = invalidSignature.signature; // Just replace the signature
+                }
+            }
+        }
+
+        assertFalse(consensus.checkSignatures(txHash, signatures));
     }
 }
