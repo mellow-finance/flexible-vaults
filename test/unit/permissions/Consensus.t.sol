@@ -231,6 +231,31 @@ contract ConsensusTest is Test {
         consensus.requireValidSignatures(dummyHash, signatures);
     }
 
+    function testCheckSignatures_EIP712_MultipleValid(uint128 pk1, uint128 pk2) public {
+        vm.assume(pk1 > 0 && pk2 > 0 && pk1 != pk2);
+
+        address signerA = vm.addr(pk1);
+        address signerB = vm.addr(pk2);
+        vm.assume(signerA < signerB);
+
+        Consensus consensus = _createConsensus();
+
+        vm.startPrank(admin);
+        consensus.addSigner(signerA, 1, IConsensus.SignatureType.EIP712);
+        consensus.addSigner(signerB, 2, IConsensus.SignatureType.EIP712);
+        vm.stopPrank();
+
+        bytes memory sigA = _sign(dummyHash, pk1);
+        bytes memory sigB = _sign(dummyHash, pk2);
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](2);
+        signatures[0] = IConsensus.Signature({signer: signerA, signature: sigA});
+        signatures[1] = IConsensus.Signature({signer: signerB, signature: sigB});
+
+        assertTrue(consensus.checkSignatures(dummyHash, signatures));
+        consensus.requireValidSignatures(dummyHash, signatures);
+    }
+
     function testCheckSignatures_EIP712_Invalid() public {
         Consensus consensus = _createConsensus();
 
@@ -243,6 +268,87 @@ contract ConsensusTest is Test {
         bytes memory badSig = _sign(keccak256("wrong"), pk);
         IConsensus.Signature[] memory signatures = new IConsensus.Signature[](1);
         signatures[0] = IConsensus.Signature({signer: signer, signature: badSig});
+
+        assertFalse(consensus.checkSignatures(dummyHash, signatures));
+
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, dummyHash, signatures));
+        consensus.requireValidSignatures(dummyHash, signatures);
+    }
+
+    function testCheckSignatures_EIP712_Invalid_DuplicateSignatures(uint128 pk1, uint128 pk2) public {
+        vm.assume(pk1 > 0 && pk2 > 0 && pk1 != pk2);
+
+        Consensus consensus = _createConsensus();
+
+        address signerA = vm.addr(pk1);
+        address signerB = vm.addr(pk2);
+
+        vm.startPrank(admin);
+        consensus.addSigner(signerA, 1, IConsensus.SignatureType.EIP712);
+        consensus.addSigner(signerB, 2, IConsensus.SignatureType.EIP712);
+        vm.stopPrank();
+
+        bytes memory sigA = _sign(dummyHash, pk1);
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](2);
+
+        // Same signature two times
+        signatures[0] = IConsensus.Signature({signer: signerA, signature: sigA});
+        signatures[1] = IConsensus.Signature({signer: signerA, signature: sigA});
+
+        assertFalse(consensus.checkSignatures(dummyHash, signatures));
+
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, dummyHash, signatures));
+        consensus.requireValidSignatures(dummyHash, signatures);
+    }
+
+    function testCheckSignatures_EIP712_Invalid_WrongOrder(uint128 pk1, uint128 pk2) public {
+        vm.assume(pk1 > 0 && pk2 > 0 && pk1 != pk2);
+
+        address signerA = vm.addr(pk1);
+        address signerB = vm.addr(pk2);
+        vm.assume(signerA < signerB);
+
+        Consensus consensus = _createConsensus();
+
+        vm.startPrank(admin);
+        consensus.addSigner(signerA, 1, IConsensus.SignatureType.EIP712);
+        consensus.addSigner(signerB, 2, IConsensus.SignatureType.EIP712);
+        vm.stopPrank();
+
+        bytes memory sigA = _sign(dummyHash, pk1);
+        bytes memory sigB = _sign(dummyHash, pk2);
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](2);
+
+        // Wrong order, signerA should be first (signerA < signerB)
+        signatures[0] = IConsensus.Signature({signer: signerB, signature: sigB});
+        signatures[1] = IConsensus.Signature({signer: signerA, signature: sigA});
+
+        assertFalse(consensus.checkSignatures(dummyHash, signatures));
+
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, dummyHash, signatures));
+        consensus.requireValidSignatures(dummyHash, signatures);
+    }
+
+    function testCheckSignatures_EIP712_NotEnoughSignatures() public {
+        Consensus consensus = _createConsensus();
+
+        uint256 pk1 = uint256(keccak256("private key 1"));
+        uint256 pk2 = uint256(keccak256("private key 2"));
+        address signerA = vm.addr(pk1);
+        address signerB = vm.addr(pk2);
+
+        // Add two signers and set the threshold to 2
+        vm.startPrank(admin);
+        consensus.addSigner(signerA, 1, IConsensus.SignatureType.EIP712);
+        consensus.addSigner(signerB, 2, IConsensus.SignatureType.EIP712); // threshold is now 2
+        vm.stopPrank();
+
+        // Provide only one valid signature (below the threshold)
+        bytes memory sig1 = _sign(dummyHash, pk1);
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](1);
+        signatures[0] = IConsensus.Signature({signer: signerA, signature: sig1});
 
         assertFalse(consensus.checkSignatures(dummyHash, signatures));
 
@@ -284,6 +390,122 @@ contract ConsensusTest is Test {
         signatures[0] = IConsensus.Signature({signer: address(mock), signature: "0x1234"});
 
         bytes32 txHash = keccak256(abi.encode(signatures[0]));
+
+        assertFalse(consensus.checkSignatures(txHash, signatures));
+
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, txHash, signatures));
+        consensus.requireValidSignatures(txHash, signatures);
+    }
+
+    function testCheckSignatures_EIP1271_MultipleValid(uint128 pk1, uint128 pk2) public {
+        vm.assume(pk1 > 0 && pk2 > 0 && pk1 != pk2);
+
+        Consensus consensus = _createConsensus();
+
+        // Create separate admin wallets for each EIP-1271 signer
+        address adminA = vm.addr(pk1);
+        address adminB = vm.addr(pk2);
+
+        // Deploy mock EIP-1271 contracts controlled by the different admins
+        EIP1271Mock mockA = new EIP1271Mock(adminA, IERC1271.isValidSignature.selector);
+        EIP1271Mock mockB = new EIP1271Mock(adminB, IERC1271.isValidSignature.selector);
+
+        // Register both signers and set threshold to two
+        vm.startPrank(admin);
+        consensus.addSigner(address(mockA), 1, IConsensus.SignatureType.EIP1271);
+        consensus.addSigner(address(mockB), 2, IConsensus.SignatureType.EIP1271);
+        vm.stopPrank();
+
+        // Determine ascending order of the signer addresses as required
+        address firstSigner = address(mockA) < address(mockB) ? address(mockA) : address(mockB);
+        address secondSigner = address(mockA) < address(mockB) ? address(mockB) : address(mockA);
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](2);
+        signatures[0] = IConsensus.Signature({signer: firstSigner, signature: "0x1234"});
+        signatures[1] = IConsensus.Signature({signer: secondSigner, signature: "0x1234"});
+
+        bytes32 txHash = keccak256(abi.encode(signatures[0], signatures[1]));
+
+        // Both admins approve the txHash
+        vm.prank(adminA);
+        mockA.sign(txHash);
+        vm.prank(adminB);
+        mockB.sign(txHash);
+
+        assertTrue(consensus.checkSignatures(txHash, signatures));
+        consensus.requireValidSignatures(txHash, signatures);
+    }
+
+    function testCheckSignatures_EIP1271_Invalid_DuplicateSignatures(uint128 pk1, uint128 pk2) public {
+        vm.assume(pk1 > 0 && pk2 > 0 && pk1 != pk2);
+
+        Consensus consensus = _createConsensus();
+
+        address adminA = vm.addr(pk1);
+        address adminB = vm.addr(pk2);
+
+        EIP1271Mock mockA = new EIP1271Mock(adminA, IERC1271.isValidSignature.selector);
+        EIP1271Mock mockB = new EIP1271Mock(adminB, IERC1271.isValidSignature.selector);
+
+        vm.startPrank(admin);
+        consensus.addSigner(address(mockA), 1, IConsensus.SignatureType.EIP1271);
+        consensus.addSigner(address(mockB), 2, IConsensus.SignatureType.EIP1271);
+        vm.stopPrank();
+
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](2);
+        signatures[0] = IConsensus.Signature({signer: address(mockA), signature: "0x1234"});
+        signatures[1] = IConsensus.Signature({signer: address(mockA), signature: "0x1234"}); // duplicate signer
+
+        bytes32 txHash = keccak256(abi.encode(signatures[0]));
+
+        vm.prank(adminA);
+        mockA.sign(txHash);
+
+        vm.prank(adminB);
+        mockB.sign(txHash);
+
+        assertFalse(consensus.checkSignatures(txHash, signatures));
+
+        vm.expectRevert(abi.encodeWithSelector(IConsensus.InvalidSignatures.selector, txHash, signatures));
+        consensus.requireValidSignatures(txHash, signatures);
+    }
+
+    function testCheckSignatures_EIP1271_Invalid_WrongOrder(uint128 pk1, uint128 pk2) public {
+        vm.assume(pk1 > 0 && pk2 > 0 && pk1 != pk2);
+
+        Consensus consensus = _createConsensus();
+
+        address adminA = vm.addr(pk1);
+        address adminB = vm.addr(pk2);
+
+        EIP1271Mock mockA = new EIP1271Mock(adminA, IERC1271.isValidSignature.selector);
+        EIP1271Mock mockB = new EIP1271Mock(adminB, IERC1271.isValidSignature.selector);
+
+        vm.startPrank(admin);
+        consensus.addSigner(address(mockA), 1, IConsensus.SignatureType.EIP1271);
+        consensus.addSigner(address(mockB), 2, IConsensus.SignatureType.EIP1271);
+        vm.stopPrank();
+
+        // Determine correct ascending order of addresses
+        address signerA = address(mockA);
+        address signerB = address(mockB);
+
+        // Prepare signatures array in DESCENDING order to make it invalid
+        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](2);
+        if (signerA < signerB) {
+            signatures[0] = IConsensus.Signature({signer: signerB, signature: "0x1234"});
+            signatures[1] = IConsensus.Signature({signer: signerA, signature: "0x1234"});
+        } else {
+            signatures[0] = IConsensus.Signature({signer: signerA, signature: "0x1234"});
+            signatures[1] = IConsensus.Signature({signer: signerB, signature: "0x1234"});
+        }
+
+        bytes32 txHash = keccak256(abi.encode(signatures[0], signatures[1]));
+
+        vm.prank(adminA);
+        mockA.sign(txHash);
+        vm.prank(adminB);
+        mockB.sign(txHash);
 
         assertFalse(consensus.checkSignatures(txHash, signatures));
 
