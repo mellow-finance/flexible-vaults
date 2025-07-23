@@ -57,3 +57,4 @@ import "../src/vaults/VaultConfigurator.sol";
 import "./mocks/MockACLModule.sol";
 import "./mocks/MockERC20.sol";
 import "./mocks/MockVault.sol";
+import "./mocks/MockSubvault.sol";
