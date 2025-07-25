@@ -12,5 +12,9 @@ contract MockRiskManager {
         return _limit;
     }
 
+    function modifyPendingAssets(address, /* asset */ int256 /* pendingAssets */ ) external {}
+
+    function modifyVaultBalance(address, /* asset */ int256 /* vaultBalance */ ) external {}
+
     function test() external {}
 }

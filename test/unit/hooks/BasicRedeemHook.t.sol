@@ -81,7 +81,7 @@ contract BasicRedeemHookTest is Test {
 
     function testBeforeRedeem_WithNativeToken() external {
         address nativeToken = TransferLibrary.ETH;
-        
+
         // Total is 30 ether
         uint256 vaultBalance = 10 ether;
         uint256 subvaultBalance1 = 10 ether;

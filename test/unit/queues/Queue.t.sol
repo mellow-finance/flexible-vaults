@@ -4,6 +4,8 @@ pragma solidity 0.8.25;
 import "../../Imports.sol";
 
 contract MockQueue is Queue {
+    event ReportHookCalled(uint224 priceD18, uint32 latestEligibleTimestamp);
+
     constructor(string memory name_, uint256 version_) Queue(name_, version_) {}
 
     /// @inheritdoc IFactoryEntity
@@ -21,7 +23,9 @@ contract MockQueue is Queue {
         return false;
     }
 
-    function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {}
+    function _handleReport(uint224 priceD18, uint32 latestEligibleTimestamp) internal override {
+        emit ReportHookCalled(priceD18, latestEligibleTimestamp);
+    }
 
     function test() external {}
 }
