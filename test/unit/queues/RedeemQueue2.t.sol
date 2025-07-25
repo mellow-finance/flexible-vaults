@@ -287,6 +287,27 @@ contract RedeemQueueTest2 is Test {
         assertEq(totalPendingShares, 3 ether, "Total pending shares should be 3 ether");
     }
 
+    /// @notice Tests that `handleReport` correctly handles the case when the first redeem is made right after the queue is created.
+    function testHandleReportCorrectlyHandlesFirstRedeemAfterQueueCreation() public {
+        _performRedeem(user, 1 ether);
+        
+        skip(REDEEM_INTERVAL);
+
+        _performRedeem(user, 2 ether);
+
+        skip(1);
+
+        _pushReport(1e18);
+
+        // Check that only first request is processed, second request is not processed yet
+        (uint256 batchIterator, uint256 batches, uint256 totalDemandAssets, uint256 totalPendingShares) =
+            queue.getState();
+        assertEq(batchIterator, 0, "Batch iterator should be 0");
+        assertEq(batches, 1, "Batches length should be 1");
+        assertEq(totalDemandAssets, 1 ether, "Total demand assets should be 1 ether");
+        assertEq(totalPendingShares, 3 ether, "Total pending shares should be 3 ether");
+    }
+
     // -----------------------------------------------------------------------
     // handleBatches() function tests
     // -----------------------------------------------------------------------
