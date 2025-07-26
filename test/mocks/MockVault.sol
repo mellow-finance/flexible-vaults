@@ -39,6 +39,7 @@ contract MockVault {
 
         addShareManager();
         addFeeManager();
+        addRiskManager(type(uint256).max);
     }
 
     receive() external payable {}
