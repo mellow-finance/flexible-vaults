@@ -39,6 +39,20 @@ contract BasicRedeemHookTest is Test {
         assertEq(vault.getLiquidAssetsCall(nativeToken), 14.5 ether);
     }
 
+    function testGetLiquidAssets_WithNotAllowedAsset() external {
+        MockRiskManager riskManager = vault.addRiskManager(type(uint256).max);
+        riskManager.__setDisallowedAsset(subvault1, address(asset1));
+
+        asset1.mint(address(vault), 11 ether);
+        asset2.mint(address(vault), 22 ether);
+        
+        vault.addSubvault(subvault1, asset1, 1 ether);
+        vault.addSubvault(subvault2, asset1, 2 ether);
+
+        vm.prank(address(vault));
+        assertEq(vault.getLiquidAssetsCall(address(asset1)), 13 ether);
+    }
+
     function testBeforeRedeem() external {
         uint256 vaultBalance1 = 11 ether;
         uint256 vaultBalance2 = 22 ether;
@@ -102,5 +116,34 @@ contract BasicRedeemHookTest is Test {
         require(address(vault).balance == 25 ether, "wrong vault balance");
         require(subvault1.balance == 0, "wrong subvault1 balance");
         require(subvault2.balance == 5 ether, "wrong subvault2 balance");
+    }
+
+    function testBeforeRedeem_WithNotAllowedAsset() external {
+        address nativeToken = TransferLibrary.ETH;
+    
+        // Mark native token as not allowed for subvault1
+        MockRiskManager riskManager = vault.addRiskManager(type(uint256).max);
+        riskManager.__setDisallowedAsset(subvault1, nativeToken);
+
+        // Total is 30 ether
+        uint256 vaultBalance = 10 ether;
+        uint256 subvaultBalance1 = 10 ether;
+        uint256 subvaultBalance2 = 10 ether;
+
+        vault.addSubvault(subvault1);
+        vault.addSubvault(subvault2);
+
+        vm.deal(address(vault), vaultBalance);
+        vm.deal(subvault1, subvaultBalance1);
+        vm.deal(subvault2, subvaultBalance2);
+
+        // Try to redeem 25 ether
+        uint256 amountToRedeem = 25 ether;
+        vault.beforeRedeemHookCall(nativeToken, amountToRedeem);
+
+        // Vault should have 20 ether, because subvault1 is not allowed to hold native token, so it took full amount from subvault2
+        assertEq(address(vault).balance, 20 ether, "wrong vault balance");
+        assertEq(subvault1.balance, 10 ether, "wrong subvault1 balance");
+        assertEq(subvault2.balance, 0 ether, "wrong subvault2 balance");
     }
 }

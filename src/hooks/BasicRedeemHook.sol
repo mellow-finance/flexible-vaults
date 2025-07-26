@@ -17,8 +17,12 @@ contract BasicRedeemHook is IHook {
         }
         uint256 requiredAssets = assets - liquid;
         uint256 subvaults = vault.subvaults();
+        IRiskManager riskManager = vault.riskManager();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
+            if (!riskManager.isAllowedAsset(subvault, asset)) {
+                continue;
+            }
             uint256 balance = asset.balanceOf(subvault);
             if (balance == 0) {
                 continue;
@@ -37,8 +41,12 @@ contract BasicRedeemHook is IHook {
         IVaultModule vault = IVaultModule(msg.sender);
         assets = asset.balanceOf(address(vault));
         uint256 subvaults = vault.subvaults();
+        IRiskManager riskManager = vault.riskManager();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
+            if (!riskManager.isAllowedAsset(subvault, asset)) {
+                continue;
+            }
             assets += asset.balanceOf(subvault);
         }
     }
