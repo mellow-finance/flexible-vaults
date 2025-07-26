@@ -139,31 +139,40 @@ contract VerifierTest is Test {
         IVerifier.CompactCall[] memory compactCalls = new IVerifier.CompactCall[](1);
         compactCalls[0] = IVerifier.CompactCall({who: caller1, where: target1, selector: bytes4(callData1)});
 
-        vm.expectRevert("Forbidden()");
-        verifier.disallowCalls(compactCalls);
+        // Check that disallowCalls reverts if the caller is not DISALLOW_CALL_ROLE_ADDRESS
+        {
+            vm.expectRevert("Forbidden()");
+            verifier.disallowCalls(compactCalls);
 
-        vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                IVerifier.CompactCallNotFound.selector,
-                compactCalls[0].who,
-                compactCalls[0].where,
-                compactCalls[0].selector
-            )
-        );
-        verifier.disallowCalls(compactCalls);
+            vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    IVerifier.CompactCallNotFound.selector,
+                    compactCalls[0].who,
+                    compactCalls[0].where,
+                    compactCalls[0].selector
+                )
+            );
+            verifier.disallowCalls(compactCalls);
+        }
 
-        vm.prank(ALLOW_CALL_ROLE_ADDRESS);
-        verifier.allowCalls(compactCalls);
-
-        assertEq(verifier.allowedCalls(), 1);
-        assertTrue(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
-
-        vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
-        verifier.disallowCalls(compactCalls);
-
-        assertEq(verifier.allowedCalls(), 0);
-        assertFalse(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
+        // Check success case
+        {
+            vm.prank(ALLOW_CALL_ROLE_ADDRESS);
+            verifier.allowCalls(compactCalls);
+    
+            assertEq(verifier.allowedCalls(), 1);
+            assertTrue(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
+            assertEq(verifier.allowedCallAt(0).who, compactCalls[0].who);
+    
+            vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
+            verifier.disallowCalls(compactCalls);
+    
+            assertEq(verifier.allowedCalls(), 0);
+            assertFalse(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
+            vm.expectRevert("panic: array out-of-bounds access (0x32)");
+            verifier.allowedCallAt(1);
+        }
     }
 
     function testVerificationCall_Onchain_Compat() external {
