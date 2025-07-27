@@ -39,6 +39,7 @@ contract MockVault {
 
         addShareManager();
         addFeeManager();
+        addRiskManager(type(uint256).max);
     }
 
     receive() external payable {}
@@ -58,8 +59,10 @@ contract MockVault {
         subvault.push(subvault_);
     }
 
-    function addRiskManager(uint256 limit) external {
-        _riskManager = address(new MockRiskManager(limit));
+    function addRiskManager(uint256 limit) public returns (MockRiskManager) {
+        MockRiskManager riskManager_ = new MockRiskManager(limit);
+        _riskManager = address(riskManager_);
+        return riskManager_;
     }
 
     function addShareManager() public returns (MockShareManager) {
