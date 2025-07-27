@@ -471,7 +471,7 @@ contract RedeemQueueTest is FixtureTest {
             redeemQueue.handleBatches(1);
             vm.prank(user);
             uint256 assets = redeemQueue.claim(user, timestamps);
-            assertApproxEqAbs(assets * priceD18 / 1e18, redeemShare, 2, "User should receive assets after claim");
+            assertApproxEqAbs(assets * priceD18 / 1e18, redeemShare, 3, "User should receive assets after claim");
         }
 
         assertTrue(

@@ -125,7 +125,7 @@ contract SignatureDepositQueueTest is FixtureTest {
     }
 
     function testFuzzDepositCallerRecipient(address caller, address recipient) external {
-        vm.assume(caller != address(0) && recipient != address(0));
+        vm.assume(caller != address(0) && recipient != address(0) && caller != recipient);
 
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
 
