@@ -135,8 +135,12 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                 if (flags_.hasTransferPause()) {
                     revert TransferPaused();
                 }
+                AccountInfo memory toInfo = $.accounts[to];
+                if (toInfo.isBlacklisted) {
+                    revert Blacklisted(to);
+                }
                 if (flags_.hasTransferWhitelist()) {
-                    if (!info.canTransfer || !$.accounts[to].canTransfer) {
+                    if (!info.canTransfer || !toInfo.canTransfer) {
                         revert TransferNotAllowed(from, to);
                     }
                 }
