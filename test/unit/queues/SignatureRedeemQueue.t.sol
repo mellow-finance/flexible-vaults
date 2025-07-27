@@ -97,17 +97,21 @@ contract SignatureRedeemQueueTest is FixtureTest {
 
         (Consensus consensus,) = createConsensus(deployment, 5, signerPks, signatureTypes);
 
-        SignatureDepositQueue depositQueue = SignatureDepositQueue(
-            addSignatureDepositQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH, address(consensus))
-        );
 
+        address caller = vm.createWallet(string(abi.encodePacked("order.caller"))).addr;
+        address recipient = vm.createWallet(string(abi.encodePacked("order.recipient"))).addr;
+
+        // Deposit ETH
         {
+            SignatureDepositQueue depositQueue = SignatureDepositQueue(
+                addSignatureDepositQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH, address(consensus))
+            );
             ISignatureQueue.Order memory order = ISignatureQueue.Order({
                 orderId: 1,
                 queue: address(depositQueue),
                 asset: TransferLibrary.ETH,
-                caller: vm.createWallet(string(abi.encodePacked("order.caller"))).addr,
-                recipient: vm.createWallet(string(abi.encodePacked("order.recipient"))).addr,
+                caller: caller,
+                recipient: recipient,
                 ordered: 1 ether,
                 requested: 1 ether,
                 deadline: block.timestamp + 1 days,
@@ -126,24 +130,33 @@ contract SignatureRedeemQueueTest is FixtureTest {
             pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
         }
 
-        SignatureRedeemQueue redeemQueue = SignatureRedeemQueue(
-            payable(addSignatureRedeemQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH, address(consensus)))
-        );
+        // Redeem ETH
         {
+            // Swap caller and recipient, so that the caller has shares
+            (caller, recipient) = (recipient, caller);
+
+            SignatureRedeemQueue redeemQueue = SignatureRedeemQueue(
+                payable(addSignatureRedeemQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH, address(consensus)))
+            );
             ISignatureQueue.Order memory order = ISignatureQueue.Order({
                 orderId: 1,
                 queue: address(redeemQueue),
                 asset: TransferLibrary.ETH,
-                caller: vm.createWallet(string(abi.encodePacked("order.caller"))).addr,
-                recipient: vm.createWallet(string(abi.encodePacked("order.recipient"))).addr,
+                caller: caller,
+                recipient: recipient,
                 ordered: 1 ether,
                 requested: 1 ether,
                 deadline: block.timestamp + 1 days,
                 nonce: 0
             });
-            vm.startPrank(order.caller);
+
+            assertEq(recipient.balance, 0, "Recipient should not have ETH");
+
+            vm.startPrank(caller);
             redeemQueue.redeem(order, signOrder(redeemQueue, order, signerPks, signers));
             vm.stopPrank();
+
+            assertEq(recipient.balance, 1 ether, "Recipient should have ETH");
         }
     }
 
@@ -157,7 +170,6 @@ contract SignatureRedeemQueueTest is FixtureTest {
         (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
 
         (Consensus consensus,) = createConsensus(deployment, 5, signerPks, signatureTypes);
-        address user = vm.createWallet(string(abi.encodePacked("user"))).addr;
         {
             SignatureDepositQueue queue =
                 SignatureDepositQueue(addSignatureDepositQueue(deployment, vaultProxyAdmin, asset, address(consensus)));
