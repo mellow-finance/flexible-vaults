@@ -213,7 +213,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             latestEligibleIndex = latestIndex;
         } else {
             latestEligibleIndex = uint256(timestamps.upperLookupRecent(timestamp));
-            if (latestEligibleIndex == 0) {
+            if (latestEligibleIndex == 0 && timestamp < timestamps.at(0)._key) {
                 return;
             }
         }

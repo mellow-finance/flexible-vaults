@@ -481,6 +481,25 @@ contract DepositQueueTest2 is Test {
         assertEq(queue.claim(userB), false, "Deposit should not be claimable");
     }
 
+    /// @notice Tests that `handleReport` correctly handles the case when the first deposit is made right after the queue is created.
+    function testHandleReportCorrectlyHandlesFirstDepositAfterQueueCreation() public {
+        address userA = makeAddr("userA");
+        address userB = makeAddr("userB");
+
+        _performDeposit(userA, 1 ether);
+
+        skip(DEPOSIT_INTERVAL);
+
+        _performDeposit(userB, 2 ether);
+
+        skip(1);
+
+        _pushReport(1e18);
+
+        assertEq(queue.claim(userA), true, "Deposit should be claimable");
+        assertEq(queue.claim(userB), false, "Deposit should not be claimable");
+    }
+
     // -----------------------------------------------------------------------
     // canBeRemoved() function tests
     // -----------------------------------------------------------------------
