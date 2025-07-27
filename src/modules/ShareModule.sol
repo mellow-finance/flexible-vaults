@@ -147,7 +147,10 @@ abstract contract ShareModule is IShareModule, ACLModule {
             revert Forbidden();
         }
         address hook = getHook(queue);
-        return hook == address(0) ? IERC20(asset).balanceOf(address(this)) : IRedeemHook(hook).getLiquidAssets(asset);
+        if (hook == address(0)) {
+            return TransferLibrary.balanceOf(asset, address(this));
+        }
+        return IRedeemHook(hook).getLiquidAssets(asset);
     }
 
     // Mutable functions

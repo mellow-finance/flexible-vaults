@@ -382,6 +382,71 @@ contract ShareModuleTest is FixtureTest {
         deployment.vault.getLiquidAssets();
     }
 
+    /// @notice Tests that the ERC20 vault balance is used when there is no hook and the queue's asset is not native token.
+    function testGetLiquidAssets_WithERC20VaultBalanceWhenNoHook() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+
+        vm.startPrank(vaultAdmin);
+        deployment.vault.setQueueLimit(1);
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(asset), new bytes(0));
+
+        address vaultAddress = address(deployment.vault);
+        IShareModule shareModule = IShareModule(vaultAddress);
+        // Ensure that there are no default hooks
+        shareModule.setDefaultDepositHook(address(0));
+        shareModule.setDefaultRedeemHook(address(0));
+
+        // Ensure that there is no custom hook
+        address queue = deployment.vault.queueAt(address(asset), 0);
+        shareModule.setCustomHook(queue, address(0));
+        vm.stopPrank();
+
+        // Mint assets to the vault
+        uint256 amount = 1 ether;
+
+        asset.mint(vaultAddress, amount);
+        assertEq(asset.balanceOf(vaultAddress), amount, "Wrong vault balance");
+
+        // Get the liquid assets
+        vm.prank(queue);
+        uint256 liquidAssets = shareModule.getLiquidAssets();
+        assertEq(liquidAssets, amount, "Wrong liquid assets");
+    }
+
+    /// @notice Tests that the native vault balance is used when there is no hook and the queue's asset is native token.
+    function testGetLiquidAssets_WithNativeVaultBalanceWhenNoHook() external {
+        address[] memory _assets = new address[](1);
+        _assets[0] = address(TransferLibrary.ETH);
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, _assets);
+
+        vm.startPrank(vaultAdmin);
+        deployment.vault.setQueueLimit(1);
+        deployment.vault.createQueue(0, false, vaultProxyAdmin, address(TransferLibrary.ETH), new bytes(0));
+
+        address vaultAddress = address(deployment.vault);
+        IShareModule shareModule = IShareModule(vaultAddress);
+        // Ensure that there are no default hooks
+        shareModule.setDefaultDepositHook(address(0));
+        shareModule.setDefaultRedeemHook(address(0));
+
+        // Ensure that there is no custom hook
+        address queue = deployment.vault.queueAt(TransferLibrary.ETH, 0);
+        shareModule.setCustomHook(queue, address(0));
+        vm.stopPrank();
+
+        // Mint assets to the vault
+        uint256 amount = 1 ether;
+
+        vm.deal(vaultAddress, amount);
+        assertEq(address(vaultAddress).balance, amount, "Wrong vault balance");
+
+        // Get the liquid assets
+        vm.prank(queue);
+        uint256 liquidAssets = shareModule.getLiquidAssets();
+        assertEq(liquidAssets, amount, "Wrong liquid assets");
+    }
+
     function testCallHookForbidden() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
 

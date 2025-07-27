@@ -423,7 +423,7 @@ contract RiskManagerTest is FixtureTest {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         RiskManager manager = deployment.riskManager;
         Oracle oracle = deployment.oracle;
-
+        
         vm.prank(vaultAdmin);
         address subvault = deployment.vault.createSubvault(0, vaultProxyAdmin, address(deployment.verifier));
 
@@ -495,5 +495,27 @@ contract RiskManagerTest is FixtureTest {
         manager.modifySubvaultBalance(subvault, asset, change);
 
         assertTrue(manager.subvaultState(subvault).balance > subvaultLimit, "Subvault balance should be greater than the limit");
+    }
+
+    /// @notice Tests that the function reverts when the result of the multiplication overflows int256.
+    /// @dev We should choose 'price' and 'value' such that (price * value / 1e18) exceeds type(int256).max to ensure the conversion to int256 will overflow.
+    function testConvertToShares_RevertOnOverflow(bool isNegativeValue) external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RiskManager manager = deployment.riskManager;
+        Oracle oracle = deployment.oracle;
+        
+        uint224 price = 1e18 + 1;
+
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({asset: asset, priceD18: price});
+
+        vm.prank(vaultAdmin);
+        oracle.submitReports(reports);
+
+        vm.prank(vaultAdmin);
+        oracle.acceptReport(asset, price, uint32(block.timestamp));
+
+        vm.expectPartialRevert(SafeCast.SafeCastOverflowedUintToInt.selector);
+        manager.convertToShares(asset, isNegativeValue ? -type(int256).max : type(int256).max);
     }
 }

@@ -216,7 +216,6 @@ contract RedeemQueue is IRedeemQueue, Queue {
             if (latestEligibleIndex == 0) {
                 return;
             }
-            latestEligibleIndex--;
         }
 
         uint256 handledIndices_ = $.handledIndices;
