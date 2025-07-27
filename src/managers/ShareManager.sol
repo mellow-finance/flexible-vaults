@@ -136,7 +136,7 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                     revert TransferPaused();
                 }
                 if (flags_.hasTransferWhitelist()) {
-                    if (info.canTransfer || !$.accounts[to].canTransfer) {
+                    if (!info.canTransfer || !$.accounts[to].canTransfer) {
                         revert TransferNotAllowed(from, to);
                     }
                 }
