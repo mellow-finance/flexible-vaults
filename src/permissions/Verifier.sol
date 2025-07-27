@@ -165,7 +165,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
             if (!compactCallHashes_.remove(hash_)) {
                 revert CompactCallNotFound(compactCalls[i].who, compactCalls[i].where, compactCalls[i].selector);
             }
-            compactCalls_[hash_] = compactCalls[i];
+            delete compactCalls_[hash_];
         }
     }
 
