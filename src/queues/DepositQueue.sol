@@ -41,13 +41,13 @@ contract DepositQueue is IDepositQueue, Queue {
     }
 
     /// @inheritdoc IDepositQueue
-    function unclaimedRequests() external view returns (uint256) {
+    function unclaimedRequests() public view returns (uint256) {
         return _depositQueueStorage().unclaimedRequests;
     }
 
     /// @inheritdoc IQueue
     function canBeRemoved() external view returns (bool) {
-        return _depositQueueStorage().unclaimedRequests == 0;
+        return unclaimedRequests() == 0;
     }
 
     // Mutable functions
