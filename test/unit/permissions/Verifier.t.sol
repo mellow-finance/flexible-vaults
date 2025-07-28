@@ -86,6 +86,9 @@ contract VerifierTest is Test {
 
         bytes32 newMerkleRoot = keccak256("newMerkleRoot");
 
+        vm.expectEmit(true, true, true, true);
+        emit IVerifier.SetMerkleRoot(newMerkleRoot);
+
         vm.prank(SET_MERKLE_ROOT_ROLE_ADDRESS);
         verifier.setMerkleRoot(newMerkleRoot);
 
@@ -103,6 +106,9 @@ contract VerifierTest is Test {
 
         vm.expectRevert("Forbidden()");
         verifier.allowCalls(compactCalls);
+
+        vm.expectEmit(true, true, true, true);
+        emit IVerifier.AllowCall(compactCalls[0].who, compactCalls[0].where, compactCalls[0].selector);
 
         vm.prank(ALLOW_CALL_ROLE_ADDRESS);
         verifier.allowCalls(compactCalls);
@@ -164,7 +170,10 @@ contract VerifierTest is Test {
             assertEq(verifier.allowedCalls(), 1);
             assertTrue(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
             assertEq(verifier.allowedCallAt(0).who, compactCalls[0].who);
-    
+
+            vm.expectEmit(true, true, true, true);
+            emit IVerifier.DisallowCall(compactCalls[0].who, compactCalls[0].where, compactCalls[0].selector);
+
             vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
             verifier.disallowCalls(compactCalls);
     

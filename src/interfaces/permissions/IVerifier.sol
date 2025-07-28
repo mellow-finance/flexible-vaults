@@ -144,4 +144,13 @@ interface IVerifier is IFactoryEntity {
 
     /// @notice Removes a list of CompactCalls from the allowlist
     function disallowCalls(CompactCall[] calldata compactCalls) external;
+
+    /// @notice Emitted when the Merkle root is set
+    event SetMerkleRoot(bytes32 merkleRoot);
+
+    /// @notice Emitted when a new CompactCall is allowed
+    event AllowCall(address who, address where, bytes4 selector);
+
+    /// @notice Emitted when a CompactCall is disallowed
+    event DisallowCall(address who, address where, bytes4 selector);
 }
