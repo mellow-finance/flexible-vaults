@@ -11,6 +11,10 @@ contract MockTokenizedShareManager is TokenizedShareManager {
         _mint(account, value);
     }
 
+    function __setIsClaiming(bool value) external {
+        _tokenizedShareManagerStorage().isClaiming = value;
+    }
+
     function test() external {}
 }
 
@@ -27,6 +31,39 @@ contract TokenizedShareManagerTest is FixtureTest {
         }
     }
 
+    /// @notice Tests that derived storage slot for the `TokenizedShareManager` is unique
+    function testConstructorSetsUniqueStorageSlots() public {
+        uint256 version = 1;
+        string memory moduleName = "TokenizedShareManager";
+        string memory name = "Mellow";
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        MockTokenizedShareManager shareManager = MockTokenizedShareManager(address(deployment.shareManager));
+
+        shareManager.__setIsClaiming(true);
+
+        // Ensure the storage slot is set correctly
+        {
+            bytes32 moduleSlot = SlotLibrary.getSlot(moduleName, name, version);
+            bool storedFlag = _loadBoolFromSlot(address(shareManager), moduleSlot);
+            assertEq(storedFlag, true, "Flag value mismatch");
+        }
+
+        // Ensure there will be no collisions (version is respected)
+        {
+            bytes32 moduleSlot = SlotLibrary.getSlot(moduleName, name, 0);
+            bool storedFlag = _loadBoolFromSlot(address(shareManager), moduleSlot);
+            assertEq(storedFlag, false, "Flag should be unset for different version");
+        }
+
+        // Ensure there will be no collisions (name is respected)
+        {
+            bytes32 moduleSlot = SlotLibrary.getSlot(moduleName, "", version);
+            bool storedFlag = _loadBoolFromSlot(address(shareManager), moduleSlot);
+            assertEq(storedFlag, false, "Flag should be unset for different name");
+        }
+    }
+
     function testCreate() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
 
@@ -36,6 +73,28 @@ contract TokenizedShareManagerTest is FixtureTest {
         shareManager.mintShares(user, 1 ether);
         assertEq(shareManager.activeSharesOf(user), 1 ether, "Shares should not be zero");
         assertEq(shareManager.activeShares(), 1 ether, "Active shares should not be zero");
+    }
+
+    /// @notice Tests that the share manager should try to claim shares on transfer (or any other update)
+    function testShouldClaimSharesOnTransfer() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+
+        MockTokenizedShareManager shareManager = MockTokenizedShareManager(address(deployment.shareManager));
+
+        address userA = vm.createWallet("userA").addr;
+        address userB = vm.createWallet("userB").addr;
+
+        shareManager.mintShares(userA, 1 ether);
+        shareManager.mintShares(userB, 1 ether);
+
+        vm.expectEmit(true, true, true, true);
+        emit IShareModule.SharesClaimed(userA);
+
+        vm.expectEmit(true, true, true, true);
+        emit IShareModule.SharesClaimed(userB);
+
+        vm.prank(userA);
+        shareManager.transfer(userB, 1 ether);
     }
 
     function createShareManager(Deployment memory deployment)
@@ -57,5 +116,11 @@ contract TokenizedShareManagerTest is FixtureTest {
             shareManager.setVault(address(deployment.vault));
         }
         vm.stopPrank();
+    }
+
+    /// @notice Loads a boolean value from a storage slot.
+    function _loadBoolFromSlot(address _contract, bytes32 _slot) public view returns (bool) {
+        bytes32 raw = vm.load(_contract, _slot);
+        return uint256(raw) != 0;
     }
 }
