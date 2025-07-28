@@ -20,9 +20,6 @@ interface IShareManager is IFactoryEntity {
     /// @notice Global lockup not yet expired
     error GlobalLockupNotExpired(uint256 timestamp, uint32 globalLockup);
 
-    /// @notice Targeted lockup not yet expired
-    error TargetedLockupNotExpired(uint256 timestamp, uint32 targetedLockup);
-
     /// @notice Blacklisted account tried to interact
     error Blacklisted(address account);
 
@@ -69,9 +66,6 @@ interface IShareManager is IFactoryEntity {
         bool canTransfer;
         /// @notice Whether the account is disallowed to send or receive shares.
         bool isBlacklisted;
-        /// @notice Timestamp in seconds until which shares are non-transferable due to lockup.
-        /// Set on per-account basis on each mint call if `targetedLockup` != 0
-        uint32 lockedUntil;
     }
 
     /// @notice Decoded configuration flags from `ShareManagerStorage.flags`.
@@ -88,8 +82,6 @@ interface IShareManager is IFactoryEntity {
         bool hasTransferWhitelist;
         /// @notice Global lockup duration (timestamp in seconds) applied to all users in the vault.
         uint32 globalLockup;
-        /// @notice Per-account lockup (in seconds). Apply to all users separately after every mint/deposit.
-        uint32 targetedLockup;
     }
 
     /// @return bytes32 Returns role required to set global flags
@@ -168,7 +160,7 @@ interface IShareManager is IFactoryEntity {
     event AllocateShares(int256 value);
 
     /// @notice Emitted when new shares are minted
-    event Mint(address indexed account, uint256 shares, uint32 lockedUntil);
+    event Mint(address indexed account, uint256 shares);
 
     /// @notice Emitted when shares are burned
     event Burn(address indexed account, uint256 shares);

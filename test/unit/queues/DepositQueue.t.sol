@@ -674,8 +674,7 @@ contract DepositQueueTest is FixtureTest {
                 hasTransferPause: false,
                 hasWhitelist: true,
                 hasTransferWhitelist: false,
-                globalLockup: 0,
-                targetedLockup: 1 days
+                globalLockup: 0
             })
         );
 
@@ -685,8 +684,7 @@ contract DepositQueueTest is FixtureTest {
             IShareManager.AccountInfo({
                 canDeposit: false,
                 canTransfer: true,
-                isBlacklisted: false,
-                lockedUntil: uint32(block.timestamp + 1 days)
+                isBlacklisted: false
             })
         );
 
@@ -701,8 +699,7 @@ contract DepositQueueTest is FixtureTest {
             IShareManager.AccountInfo({
                 canDeposit: true,
                 canTransfer: true,
-                isBlacklisted: false,
-                lockedUntil: uint32(block.timestamp + 1 days)
+                isBlacklisted: false
             })
         );
 
