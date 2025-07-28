@@ -16,9 +16,6 @@ contract ShareManagerFlagLibraryTest is Test {
     uint256 constant GLOBAL_LOCKUP_START_BIT = 5;
     uint256 constant GLOBAL_LOCKUP_END_BIT = 36;
 
-    uint256 constant TARGETED_LOCKUP_START_BIT = 37;
-    uint256 constant TARGETED_LOCKUP_END_BIT = 68;
-
     /// @notice Tests that `hasMintPause` returns correct values for bit 0 .
     function testHasMintPause(uint256 value) public pure {
         assertEq(BIT_0.hasMintPause(), true);
@@ -131,89 +128,26 @@ contract ShareManagerFlagLibraryTest is Test {
     }
 
     /**
-     * Targeted lockup extraction tests
-     */
-
-    /// @notice Tests that `getTargetedLockup` returns zero for zero input.
-    function testGetTargetedLockupZero() public pure {
-        assertEq(uint256(0).getTargetedLockup(), 0);
-    }
-
-    /// @notice Tests that `getTargetedLockup` returns zero when only flags are set.
-    function testGetTargetedLockupOnlyFlags() public pure {
-        uint256 value = BIT_0 | BIT_1 | BIT_2 | BIT_3 | BIT_4;
-        assertEq(value.getTargetedLockup(), 0);
-    }
-
-    /// @notice Tests that `getTargetedLockup` returns zero when only global lockup is set.
-    function testGetTargetedLockupOnlyGlobalLockup() public pure {
-        uint256 value = uint256(42) << GLOBAL_LOCKUP_START_BIT;
-        assertEq(value.getTargetedLockup(), 0);
-    }
-
-    /// @notice Tests that `getTargetedLockup` correctly extracts small lockup value.
-    function testGetTargetedLockupSimpleValue() public pure {
-        uint256 value = uint256(42) << TARGETED_LOCKUP_START_BIT;
-        assertEq(value.getTargetedLockup(), 42);
-    }
-
-    /// @notice Tests that `getTargetedLockup` handles maximum uint32 values.
-    function testGetTargetedLockupMaxValue() public pure {
-        uint256 value = uint256(type(uint32).max) << TARGETED_LOCKUP_START_BIT;
-        assertEq(value.getTargetedLockup(), type(uint32).max);
-    }
-
-    /// @notice Tests that `getTargetedLockup` ignores higher bits beyond bit 68.
-    function testGetTargetedLockupIgnoreHigherBits() public pure {
-        uint256 value =
-            (uint256(42) << TARGETED_LOCKUP_START_BIT) | (uint256(0xFFFFFFFF) << (TARGETED_LOCKUP_END_BIT + 1));
-        assertEq(value.getTargetedLockup(), 42);
-    }
-
-    /// @notice Tests that `getTargetedLockup` works with combined flags and lockup.
-    function testGetTargetedLockupCombinedWithFlags() public pure {
-        uint256 everyFlag = BIT_0 | BIT_1 | BIT_2 | BIT_3 | BIT_4;
-        uint256 value = everyFlag | (uint256(123) << TARGETED_LOCKUP_START_BIT); // All flags set + lockup value 123
-        assertEq(value.getTargetedLockup(), 123);
-    }
-
-    /// @notice Tests that `getTargetedLockup` works with combined flags, global lockup, and targeted lockup.
-    function testGetTargetedLockupCombinedWithFlagsAndGlobalLockup() public pure {
-        uint256 everyFlag = BIT_0 | BIT_1 | BIT_2 | BIT_3 | BIT_4;
-        uint256 globalLockup = uint256(456) << GLOBAL_LOCKUP_START_BIT;
-        uint256 targetedLockup = uint256(789) << TARGETED_LOCKUP_START_BIT;
-        uint256 value = everyFlag | globalLockup | targetedLockup;
-        assertEq(value.getTargetedLockup(), 789);
-    }
-
-    /// @notice Tests that `getTargetedLockup` correctly extracts values from bits 37-68 for any input.
-    function testGetTargetedLockupFuzzed(uint256 value) public pure {
-        uint32 expected = uint32(value >> TARGETED_LOCKUP_START_BIT);
-        assertEq(value.getTargetedLockup(), expected);
-    }
-
-    /**
      * Mask creation tests
      */
 
     /// @notice Tests that `createMask` returns zero when all flags are false and lockups are zero.
     function testCreateMaskAllZero() public view {
-        uint256 mask = _createMask(false, false, false, false, false, 0, 0);
+        uint256 mask = _createMask(false, false, false, false, false, 0);
         assertEq(mask, 0);
     }
 
     /// @notice Tests that `createMask` correctly handles all boolean flags being true.
     function testCreateMaskAllBooleanFlags() public view {
-        uint256 mask = _createMask(true, true, true, true, true, 0, 0);
+        uint256 mask = _createMask(true, true, true, true, true, 0);
         assertEq(mask, BIT_0 | BIT_1 | BIT_2 | BIT_3 | BIT_4);
     }
 
     /// @notice Tests that `createMask` correctly handles lockup values.
     function testCreateMaskWithLockups() public view {
-        uint256 mask = _createMask(true, true, true, true, true, 123, 456);
+        uint256 mask = _createMask(true, true, true, true, true, 123);
         uint256 globalLockup = uint256(123) << GLOBAL_LOCKUP_START_BIT;
-        uint256 targetedLockup = uint256(456) << TARGETED_LOCKUP_START_BIT;
-        assertEq(mask, BIT_0 | BIT_1 | BIT_2 | BIT_3 | BIT_4 | globalLockup | targetedLockup);
+        assertEq(mask, BIT_0 | BIT_1 | BIT_2 | BIT_3 | BIT_4 | globalLockup);
     }
 
     /// @notice Tests that the mask creation and retrieval work correctly for any valid input.
@@ -223,8 +157,7 @@ contract ShareManagerFlagLibraryTest is Test {
         bool hasTransferPause,
         bool hasWhitelist,
         bool hasTransferWhitelist,
-        uint32 globalLockup,
-        uint32 targetedLockup
+        uint32 globalLockup
     ) public view {
         uint256 mask = _createMask(
             hasMintPause,
@@ -232,8 +165,7 @@ contract ShareManagerFlagLibraryTest is Test {
             hasTransferPause,
             hasWhitelist,
             hasTransferWhitelist,
-            globalLockup,
-            targetedLockup
+            globalLockup
         );
         assertEq(mask.hasMintPause(), hasMintPause);
         assertEq(mask.hasBurnPause(), hasBurnPause);
@@ -241,7 +173,6 @@ contract ShareManagerFlagLibraryTest is Test {
         assertEq(mask.hasWhitelist(), hasWhitelist);
         assertEq(mask.hasTransferWhitelist(), hasTransferWhitelist);
         assertEq(mask.getGlobalLockup(), globalLockup);
-        assertEq(mask.getTargetedLockup(), targetedLockup);
     }
 
     /**
@@ -253,8 +184,7 @@ contract ShareManagerFlagLibraryTest is Test {
         bool hasTransferPause,
         bool hasWhitelist,
         bool hasTransferWhitelist,
-        uint32 globalLockup,
-        uint32 targetedLockup
+        uint32 globalLockup
     ) private view returns (uint256) {
         return this.createMaskHelper(
             IShareManager.Flags({
@@ -263,8 +193,7 @@ contract ShareManagerFlagLibraryTest is Test {
                 hasTransferPause: hasTransferPause,
                 hasWhitelist: hasWhitelist,
                 hasTransferWhitelist: hasTransferWhitelist,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
     }
