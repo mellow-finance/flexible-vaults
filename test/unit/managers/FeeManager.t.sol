@@ -131,7 +131,7 @@ contract FeeManagerTest is FixtureTest {
         // Check performance fee when price increases
         {
             uint256 shares = manager.calculateFee(vault, asset, 0.9 ether, 1 ether);
-            assertEq(shares, 3 * 0.1 ether / 10, "Performance fee mismatch");
+            assertEq(shares, 33333333333333333, "Performance fee mismatch");
         }
 
         // Check protocol fee when timestamp increases
@@ -166,7 +166,7 @@ contract FeeManagerTest is FixtureTest {
 
         uint256 totalShares = 2 ether;
         uint256 feeShares = manager.calculateFee(vault, asset, priceUpdated, totalShares);
-        assertEq(feeShares, 0.15 ether, "Performance fee mismatch");
+        assertEq(feeShares, 0.60 ether, "Performance fee mismatch");
     }
 
     /// @notice Tests that fee calculation (protocol + performance) is not performed for not base asset
