@@ -88,6 +88,10 @@ interface IDepositQueue is IQueue {
     /// @return assets Amount of assets deposited.
     function requestOf(address account) external view returns (uint256 timestamp, uint256 assets);
 
+    /// @notice Returns the number of unclaimed requests.
+    /// @return unclaimedRequests Number of unclaimed requests.
+    function unclaimedRequests() external view returns (uint256 unclaimedRequests);
+
     /// @notice Submits a new deposit request into the queue.
     /// @dev Reverts if a previous pending (not yet claimable) request exists.
     /// @param assets Amount of assets to deposit.

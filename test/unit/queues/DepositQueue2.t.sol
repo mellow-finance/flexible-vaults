@@ -520,14 +520,47 @@ contract DepositQueueTest2 is Test {
     }
 
     // -----------------------------------------------------------------------
+    // unclaimedRequests() function tests
+    // -----------------------------------------------------------------------
+
+    /// @notice Tests that `unclaimedRequests` returns the number of unclaimed requests.
+    function testUnclaimedRequests() public {
+        // No requests initially
+        assertEq(queue.unclaimedRequests(), 0);
+
+        // Case A: Claim decrements the counter
+        {
+            _performDeposit(user, 1 ether);
+            assertEq(queue.unclaimedRequests(), 1);
+    
+            skip(DEPOSIT_INTERVAL);
+            _pushReport(1e18);
+        
+            assertEq(queue.unclaimedRequests(), 1);
+    
+            queue.claim(user);
+    
+            assertEq(queue.unclaimedRequests(), 0);
+        }
+
+        // Case B: Cancel decrements the counter
+        {
+            _performDeposit(user, 1 ether);
+            assertEq(queue.unclaimedRequests(), 1);
+
+            _cancelDepositRequest(user);
+            assertEq(queue.unclaimedRequests(), 0);
+        }
+    }
+
+    // -----------------------------------------------------------------------
     // canBeRemoved() function tests
     // -----------------------------------------------------------------------
 
     /// @notice Tests that `canBeRemoved` returns true only after all timestamps have been handled.
     function testCanBeRemoved() public {
         // Case A: No requests were made
-        // (?) We need to handle some deposits first
-        assertEq(queue.canBeRemoved(), false, "Queue should not be removable");
+        assertEq(queue.canBeRemoved(), true, "Queue should be removable");
 
         // Case B: Requests were made but not all have been handled
         _performDeposit(user, 1 ether);
