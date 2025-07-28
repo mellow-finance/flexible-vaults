@@ -275,7 +275,12 @@ contract DepositQueueTest is FixtureTest {
         uint224 shareTotal;
         for (uint256 i = 0; i < amountDeviation.length; i++) {
             queue.claim(user[i]);
-            assertTrue(queue.canBeRemoved(), "Queue should be removable now");
+
+            if (i == amountDeviation.length - 1) {
+                assertTrue(queue.canBeRemoved(), "Queue should be removable now, all requests have been claimed");
+            } else {
+                assertFalse(queue.canBeRemoved(), "Queue should not be removable now, there are unclaimed requests");
+            }
 
             assertEq(
                 deployment.shareManager.activeSharesOf(user[i]),
@@ -462,24 +467,22 @@ contract DepositQueueTest is FixtureTest {
         skip(Math.max(securityParams.timeout, securityParams.depositInterval));
         pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
 
-        assertTrue(queue.canBeRemoved(), "Queue should be removable after claimable request");
+        assertFalse(queue.canBeRemoved(), "Queue should not be removable, there are unclaimed requests");
+        queue.claim(user);
+        assertTrue(queue.canBeRemoved(), "Queue should be removable after all requests have been claimed");
 
         vm.startPrank(vaultAdmin);
         deployment.vault.grantRole(deployment.vault.REMOVE_QUEUE_ROLE(), vaultAdmin);
         deployment.vault.removeQueue(address(queue));
         vm.stopPrank();
 
-        /// @notice it s known behavior that DepositQueue can be removed even if there are no claimable requests
-        /// @notice role holder who can remove the queue should take care of this and should call permissionless claim before
-        vm.expectRevert(abi.encodeWithSelector(IQueue.Forbidden.selector));
-        queue.claim(user);
-
-        deployment.shareManager.claimShares(user);
-        assertEq(deployment.shareManager.activeSharesOf(user), 0, "User should not have shares after claiming");
-
-        vm.prank(address(deployment.vault));
-        deployment.shareManager.mintAllocatedShares(user, amount);
-        assertEq(deployment.shareManager.activeSharesOf(user), amount, "User should have shares after claiming");
+        // Next deposit should revert, since the queue is not connected to the vault anymore
+        {
+            giveAssetsToUserAndApprove(user, amount, address(queue));
+            vm.expectRevert(abi.encodeWithSelector(IQueue.Forbidden.selector));
+            vm.prank(user);
+            queue.deposit(amount, address(0), new bytes32[](0));
+        }
     }
 
     function testCancelSingleDepositRequest() external {
