@@ -315,6 +315,25 @@ contract DepositQueueTest2 is Test {
         assertEq(assets, 0);
     }
 
+    function testClaimSuccess_MultipleClaimsShouldNotThrow() public {
+        _performDeposit(user, 1 ether);
+        skip(DEPOSIT_INTERVAL);
+        _pushReport(1e18);
+
+        assertEq(queue.claim(user), true, "Deposit should be claimable now");
+
+        // Request does not exist after claim
+        (uint256 timestamp, uint256 assets) = queue.requestOf(user);
+        assertEq(timestamp, 0);
+        assertEq(assets, 0);
+
+        // Check that all requests have been claimed
+        assertTrue(queue.canBeRemoved(), "Queue should be removable now");
+
+        // Check that the next claim does not revert
+        assertEq(queue.claim(user), true, "Deposit should be claimable now");
+    }
+
     // -----------------------------------------------------------------------
     // handleReport() internal hook tests (invoked via public `handleReport` in Queue)
     // -----------------------------------------------------------------------
@@ -514,10 +533,16 @@ contract DepositQueueTest2 is Test {
         _performDeposit(user, 1 ether);
         assertEq(queue.canBeRemoved(), false, "Queue should not be removable yet");
 
-        // Case C: All requests have been handled
+        // Case C: All requests have been handled, but there are unclaimed requests
         {
             skip(DEPOSIT_INTERVAL);
             _pushReport(1e18);
+            assertEq(queue.canBeRemoved(), false, "Queue should not be removable, there are unclaimed requests");
+        }
+
+        // Case D: All requests are claimed
+        {
+            queue.claim(user);
             assertEq(queue.canBeRemoved(), true, "Queue should be removable after all requests have been handled");
         }
     }

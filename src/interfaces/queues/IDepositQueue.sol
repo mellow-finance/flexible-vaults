@@ -72,6 +72,9 @@ interface IDepositQueue is IQueue {
         /// @dev Price history reported by the oracle (indexed by timestamp).
         /// Used to convert deposited assets into vault shares.
         Checkpoints.Trace224 prices;
+        /// @dev Total number of unclaimed requests.
+        /// Used to check that the queue can be deleted.
+        uint256 unclaimedRequests;
     }
 
     /// @notice Returns the number of shares that can currently be claimed by the given account.
