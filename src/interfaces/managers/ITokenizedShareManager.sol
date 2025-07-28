@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./IShareManager.sol";
-
 /// @title ITokenizedShareManager
 /// @notice Interface for the TokenizedShareManager contract.
 /// @dev This module allows making vault shares externally transferable and fully compliant with the ERC20 standard.
