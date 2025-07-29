@@ -84,6 +84,25 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         }
     }
 
+    function calculateFee2(address vault, address asset, uint256 priceD18, uint256 totalShares)
+        public
+        view
+        returns (uint256 shares)
+    {
+        FeeManagerStorage storage $ = _feeManagerStorage();
+        if (asset == $.baseAsset[vault]) {
+            uint256 minPriceD18_ = $.minPriceD18[vault];
+            if (priceD18 < minPriceD18_ && minPriceD18_ != 0) {
+                shares = Math.mulDiv(minPriceD18_ - priceD18, $.performanceFeeD6 * totalShares, priceD18 * 1e6);
+            }
+            uint256 timestamp = $.timestamps[vault];
+            if (timestamp != 0 && block.timestamp > timestamp) {
+                uint256 protocolFeeD6 = $.protocolFeeD6;
+                shares += Math.mulDiv(totalShares, 2 * protocolFeeD6 * (block.timestamp - timestamp), 365 days * (2e6 - protocolFeeD6));
+            }
+        }
+    }
+
     // Mutable functions
 
     /// @inheritdoc IFeeManager

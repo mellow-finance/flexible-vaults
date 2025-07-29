@@ -157,7 +157,7 @@ contract FeeManagerTest is FixtureTest {
         manager.setFees(0, 0, 0.1e6, 0);
 
         uint256 priceInitial = 100 ether;
-        uint256 priceUpdated = 25 ether; 
+        uint256 priceUpdated = 25 ether;
 
         vm.prank(vault);
         manager.updateState(asset, priceInitial);
@@ -166,7 +166,65 @@ contract FeeManagerTest is FixtureTest {
 
         uint256 totalShares = 2 ether;
         uint256 feeShares = manager.calculateFee(vault, asset, priceUpdated, totalShares);
-        assertEq(feeShares, 0.60 ether, "Performance fee mismatch");
+        assertEq(feeShares, 0.6 ether, "Performance fee mismatch");
+    }
+
+    function testFeeCalculation_ProtocolFeeArithmetic() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        FeeManager manager = deployment.feeManager;
+        address vault = address(deployment.vault);
+
+        vm.prank(deployment.vaultAdmin);
+        manager.setBaseAsset(vault, asset);
+
+        // Set protocol fee to 10%
+        vm.prank(deployment.vaultAdmin);
+        manager.setFees(0, 0, 0, 0.003e6);
+
+        // Set initial price
+        uint256 price = 1 ether;
+        vm.prank(vault);
+        manager.updateState(asset, price);
+
+        // Current implementation
+        {
+            uint256 totalShares = 1 ether;
+            uint256 mintedFees = 0;
+            for (uint256 i = 0; i < 365; i++) {
+                skip(1 days);
+                vm.prank(vault);
+
+                uint256 feeShares = manager.calculateFee(vault, asset, price, totalShares);
+                totalShares += feeShares;
+                mintedFees += feeShares;
+
+                vm.prank(vault);
+                manager.updateState(asset, price);
+            }
+
+            console2.log("mintedFees", mintedFees); // 3004492137635723 (0.003 ether)
+            console2.log("totalShares", totalShares); // 1003004492137635723 (1.003 ether)
+        }
+
+        // New implementation
+        {
+            uint256 totalShares = 1 ether;
+            uint256 mintedFees = 0;
+            for (uint256 i = 0; i < 365; i++) {
+                skip(1 days);
+                vm.prank(vault);
+
+                uint256 feeShares = manager.calculateFee2(vault, asset, price, totalShares);
+                totalShares += feeShares;
+                mintedFees += feeShares;
+
+                vm.prank(vault);
+                manager.updateState(asset, price);
+            }
+
+            console2.log("new mintedFees", mintedFees); // 3009012411306391 (0.003 ether)
+            console2.log("new totalShares", totalShares); // 1003009012411306391 (1.003 ether)
+        }
     }
 
     /// @notice Tests that fee calculation (protocol + performance) is not performed for not base asset
