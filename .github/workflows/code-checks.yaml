@@ -48,7 +48,7 @@ jobs:
           FOUNDRY_FUZZ_RUNS: 16
           FOUNDRY_FUZZ_SEED: "0x462D53D1F8B0F"
         timeout-minutes: 30
-        run: yarn test
+        run: yarn test:ci
 
   sizes:
     name: Check contract sizes
