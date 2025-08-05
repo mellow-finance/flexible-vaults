@@ -86,12 +86,7 @@ contract ShareManagerTest is FixtureTest {
 
         vm.prank(deployment.vaultAdmin);
         manager.setAccountInfo(
-            user,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            user, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
 
         IShareManager.AccountInfo memory info = manager.accounts(user);
@@ -162,20 +157,10 @@ contract ShareManagerTest is FixtureTest {
         );
 
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
 
         vm.expectRevert(
@@ -228,12 +213,7 @@ contract ShareManagerTest is FixtureTest {
         manager.updateChecks(address(0), to);
 
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: false,
-                canTransfer: false,
-                isBlacklisted: false
-            })
+            to, IShareManager.AccountInfo({canDeposit: false, canTransfer: false, isBlacklisted: false})
         );
         manager.updateChecks(address(0), to);
         manager.setFlags(
@@ -301,12 +281,7 @@ contract ShareManagerTest is FixtureTest {
         );
 
         manager.setAccountInfo(
-            user,
-            IShareManager.AccountInfo({
-                canDeposit: false,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            user, IShareManager.AccountInfo({canDeposit: false, canTransfer: true, isBlacklisted: false})
         );
         assertFalse(manager.isDepositorWhitelisted(user, new bytes32[](0)), "Should not be whitelisted");
         manager.setFlags(
@@ -357,52 +332,27 @@ contract ShareManagerTest is FixtureTest {
 
         // Case 1: sender not allowed, recipient allowed -> should revert
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: false,
-                isBlacklisted: false
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferNotAllowed.selector, from, to));
         manager.updateChecks(from, to);
 
         // Case 2: sender allowed, recipient not allowed -> should revert
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: false,
-                isBlacklisted: false
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferNotAllowed.selector, from, to));
         manager.updateChecks(from, to);
 
         // Case 3: both sender and recipient allowed -> should NOT revert
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         manager.updateChecks(from, to);
         vm.stopPrank();
@@ -432,80 +382,40 @@ contract ShareManagerTest is FixtureTest {
 
         // Case 1: sender is blacklisted, recipient is not -> should revert with sender blacklisted
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: true
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, from));
         manager.updateChecks(from, to);
 
         // Case 2: sender is not blacklisted, recipient is blacklisted -> should revert with recipient blacklisted
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: true
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, to));
         manager.updateChecks(from, to);
 
         // Case 3: both sender and recipient are blacklisted -> should revert with sender blacklisted
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: true
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: true
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, from));
         manager.updateChecks(from, to);
 
         // Case 4: No one is blacklisted -> all good, should NOT revert
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         manager.updateChecks(from, to);
 

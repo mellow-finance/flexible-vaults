@@ -290,7 +290,7 @@ contract RedeemQueueTest2 is Test {
     /// @notice Tests that `handleReport` correctly handles the case when the first redeem is made right after the queue is created.
     function testHandleReportCorrectlyHandlesFirstRedeemAfterQueueCreation() public {
         _performRedeem(user, 1 ether);
-        
+
         skip(REDEEM_INTERVAL);
 
         _performRedeem(user, 2 ether);

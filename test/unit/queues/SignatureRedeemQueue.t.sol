@@ -97,7 +97,6 @@ contract SignatureRedeemQueueTest is FixtureTest {
 
         (Consensus consensus,) = createConsensus(deployment, 5, signerPks, signatureTypes);
 
-
         address caller = vm.createWallet(string(abi.encodePacked("order.caller"))).addr;
         address recipient = vm.createWallet(string(abi.encodePacked("order.recipient"))).addr;
 

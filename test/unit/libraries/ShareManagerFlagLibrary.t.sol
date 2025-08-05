@@ -159,14 +159,8 @@ contract ShareManagerFlagLibraryTest is Test {
         bool hasTransferWhitelist,
         uint32 globalLockup
     ) public view {
-        uint256 mask = _createMask(
-            hasMintPause,
-            hasBurnPause,
-            hasTransferPause,
-            hasWhitelist,
-            hasTransferWhitelist,
-            globalLockup
-        );
+        uint256 mask =
+            _createMask(hasMintPause, hasBurnPause, hasTransferPause, hasWhitelist, hasTransferWhitelist, globalLockup);
         assertEq(mask.hasMintPause(), hasMintPause);
         assertEq(mask.hasBurnPause(), hasBurnPause);
         assertEq(mask.hasTransferPause(), hasTransferPause);

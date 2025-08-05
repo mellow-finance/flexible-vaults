@@ -45,7 +45,7 @@ contract BasicRedeemHookTest is Test {
 
         asset1.mint(address(vault), 11 ether);
         asset2.mint(address(vault), 22 ether);
-        
+
         vault.addSubvault(subvault1, asset1, 1 ether);
         vault.addSubvault(subvault2, asset1, 2 ether);
 
@@ -120,7 +120,7 @@ contract BasicRedeemHookTest is Test {
 
     function testBeforeRedeem_WithNotAllowedAsset() external {
         address nativeToken = TransferLibrary.ETH;
-    
+
         // Mark native token as not allowed for subvault1
         MockRiskManager riskManager = vault.addRiskManager(type(uint256).max);
         riskManager.__setDisallowedAsset(subvault1, nativeToken);

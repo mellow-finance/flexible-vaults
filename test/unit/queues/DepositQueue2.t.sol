@@ -532,14 +532,14 @@ contract DepositQueueTest2 is Test {
         {
             _performDeposit(user, 1 ether);
             assertEq(queue.unclaimedRequests(), 1);
-    
+
             skip(DEPOSIT_INTERVAL);
             _pushReport(1e18);
-        
+
             assertEq(queue.unclaimedRequests(), 1);
-    
+
             queue.claim(user);
-    
+
             assertEq(queue.unclaimedRequests(), 0);
         }
 
