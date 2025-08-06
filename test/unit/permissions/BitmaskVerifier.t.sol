@@ -20,12 +20,7 @@ contract BitmaskVerifierTest is Test {
     function testValid() external view {
         uint256 value = 100 ether;
 
-        bytes memory bitmask = abi.encodePacked(
-            WILDCARD_MASK,
-            WILDCARD_MASK,
-            WILDCARD_MASK,
-            new bytes(callData.length)
-        );
+        bytes memory bitmask = abi.encodePacked(WILDCARD_MASK, WILDCARD_MASK, WILDCARD_MASK, new bytes(callData.length));
 
         bytes memory verificationData = abi.encode(
             verifier.calculateHash(bitmask, who, where, value, callData),
@@ -38,12 +33,7 @@ contract BitmaskVerifierTest is Test {
     function testInvalid() external view {
         uint256 value = 100 ether;
 
-        bytes memory bitmask = abi.encodePacked(
-            WILDCARD_MASK,
-            WILDCARD_MASK,
-            WILDCARD_MASK,
-            new bytes(callData.length)
-        );
+        bytes memory bitmask = abi.encodePacked(WILDCARD_MASK, WILDCARD_MASK, WILDCARD_MASK, new bytes(callData.length));
 
         bytes memory verificationData =
             abi.encode(keccak256("verifier.calculateHash(bitmask, who, where, value, callData)"), bitmask);
@@ -57,17 +47,11 @@ contract BitmaskVerifierTest is Test {
     function testVerifyCallChecksWho() external view {
         uint256 value = 1 ether;
 
-        bytes memory bitmask = abi.encodePacked(
-            bytes32(bytes20(who)),
-            WILDCARD_MASK,
-            WILDCARD_MASK,
-            new bytes(callData.length)
-        );
+        bytes memory bitmask =
+            abi.encodePacked(bytes32(bytes20(who)), WILDCARD_MASK, WILDCARD_MASK, new bytes(callData.length));
 
-        bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, who, where, value, callData),
-            bitmask
-        );
+        bytes memory verificationData =
+            abi.encode(verifier.calculateHash(bitmask, who, where, value, callData), bitmask);
 
         assertTrue(verifier.verifyCall(who, where, value, callData, verificationData));
 
@@ -86,17 +70,10 @@ contract BitmaskVerifierTest is Test {
         uint256 rawBitmask = ~(toUint256(who1) ^ toUint256(who2));
         bytes32 whoBitmask = bytes32(rawBitmask << 96);
 
-        bytes memory bitmask = abi.encodePacked(
-            whoBitmask,
-            WILDCARD_MASK,
-            WILDCARD_MASK,
-            new bytes(callData.length)
-        );
+        bytes memory bitmask = abi.encodePacked(whoBitmask, WILDCARD_MASK, WILDCARD_MASK, new bytes(callData.length));
 
-        bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, who1, where, value, callData),
-            bitmask
-        );
+        bytes memory verificationData =
+            abi.encode(verifier.calculateHash(bitmask, who1, where, value, callData), bitmask);
 
         assertTrue(verifier.verifyCall(who1, where, value, callData, verificationData));
         assertTrue(verifier.verifyCall(who2, where, value, callData, verificationData));
@@ -107,17 +84,11 @@ contract BitmaskVerifierTest is Test {
     function testVerifyCallChecksWhere() external view {
         uint256 value = 1 ether;
 
-        bytes memory bitmask = abi.encodePacked(
-            WILDCARD_MASK,
-            bytes32(bytes20(where)),
-            WILDCARD_MASK,
-            new bytes(callData.length)
-        );
+        bytes memory bitmask =
+            abi.encodePacked(WILDCARD_MASK, bytes32(bytes20(where)), WILDCARD_MASK, new bytes(callData.length));
 
-        bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, who, where, value, callData),
-            bitmask
-        );
+        bytes memory verificationData =
+            abi.encode(verifier.calculateHash(bitmask, who, where, value, callData), bitmask);
 
         assertTrue(verifier.verifyCall(who, where, value, callData, verificationData));
 
@@ -136,17 +107,10 @@ contract BitmaskVerifierTest is Test {
         uint256 rawBitmask = ~(toUint256(where1) ^ toUint256(where2));
         bytes32 whereBitmask = bytes32(rawBitmask << 96);
 
-        bytes memory bitmask = abi.encodePacked(
-            WILDCARD_MASK,
-            whereBitmask,
-            WILDCARD_MASK,
-            new bytes(callData.length)
-        );
+        bytes memory bitmask = abi.encodePacked(WILDCARD_MASK, whereBitmask, WILDCARD_MASK, new bytes(callData.length));
 
-        bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, who, where1, value, callData),
-            bitmask
-        );
+        bytes memory verificationData =
+            abi.encode(verifier.calculateHash(bitmask, who, where1, value, callData), bitmask);
 
         assertTrue(verifier.verifyCall(who, where1, value, callData, verificationData));
         assertTrue(verifier.verifyCall(who, where2, value, callData, verificationData));
@@ -162,14 +126,12 @@ contract BitmaskVerifierTest is Test {
         bytes memory bitmask = abi.encodePacked(
             WILDCARD_MASK, // who
             WILDCARD_MASK, // where
-            valueBitmask,  // value
+            valueBitmask, // value
             new bytes(callData.length) // calldata
         );
 
-        bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, who, where, baseValue, callData),
-            bitmask
-        );
+        bytes memory verificationData =
+            abi.encode(verifier.calculateHash(bitmask, who, where, baseValue, callData), bitmask);
 
         assertTrue(verifier.verifyCall(who, where, baseValue, callData, verificationData));
         assertFalse(verifier.verifyCall(who, where, baseValue + 1 ether, callData, verificationData));
@@ -185,14 +147,12 @@ contract BitmaskVerifierTest is Test {
         bytes memory bitmask = abi.encodePacked(
             WILDCARD_MASK, // who
             WILDCARD_MASK, // where
-            valueBitmask,  // value
+            valueBitmask, // value
             new bytes(callData.length) // calldata
         );
 
-        bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, who, where, baseValue, callData),
-            bitmask
-        );
+        bytes memory verificationData =
+            abi.encode(verifier.calculateHash(bitmask, who, where, baseValue, callData), bitmask);
 
         assertTrue(verifier.verifyCall(who, where, 0, callData, verificationData));
         assertTrue(verifier.verifyCall(who, where, baseValue, callData, verificationData));
@@ -214,10 +174,7 @@ contract BitmaskVerifierTest is Test {
             WILDCARD_MASK, // value
             exactBitmask // calldata
         );
-        bytes memory verificationData = abi.encode(
-            verifier.calculateHash(bitmask, who, where, 0, callData1),
-            bitmask
-        );
+        bytes memory verificationData = abi.encode(verifier.calculateHash(bitmask, who, where, 0, callData1), bitmask);
         assertTrue(verifier.verifyCall(who, where, 0, callData1, verificationData));
         assertFalse(verifier.verifyCall(who, where, 0, callData2, verificationData));
     }
@@ -235,15 +192,9 @@ contract BitmaskVerifierTest is Test {
             createCommonBitmask(callData1, callData2) // calldata
         );
 
-        bytes memory verificationData1 = abi.encode(
-            verifier.calculateHash(bitmask, who, where, 0, callData1),
-            bitmask
-        );
+        bytes memory verificationData1 = abi.encode(verifier.calculateHash(bitmask, who, where, 0, callData1), bitmask);
 
-        bytes memory verificationData2 = abi.encode(
-            verifier.calculateHash(bitmask, who, where, 0, callData2),
-            bitmask
-        );
+        bytes memory verificationData2 = abi.encode(verifier.calculateHash(bitmask, who, where, 0, callData2), bitmask);
 
         assertTrue(verifier.verifyCall(who, where, 0, callData1, verificationData1));
         assertTrue(verifier.verifyCall(who, where, 0, callData2, verificationData1));
