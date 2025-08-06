@@ -1,7 +1,6 @@
 name: Code checks
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - src/**
