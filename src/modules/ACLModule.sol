@@ -17,6 +17,7 @@ abstract contract ACLModule is IACLModule, BaseModule, MellowACL {
         if (admin_ == address(0)) {
             revert ZeroAddress();
         }
+        __BaseModule_init();
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
     }
 }
