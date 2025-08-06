@@ -260,6 +260,39 @@ contract VerifierTest is Test {
         verifier.verifyCall(CALL_ROLE_ADDRESS, target1, 0, validCalldata2, verificationPayload);
     }
 
+    /// @notice Checks that the bitmask verifier can be used to verify a call.
+    function testVerificationCall_Custom_BitmaskVerifier() external {
+        Verifier verifier = createVerifier("Verifier", 1, admin);
+        BitmaskVerifier bitmaskVerifier = new BitmaskVerifier();
+
+        address who = CALL_ROLE_ADDRESS;
+        address where = vm.createWallet("where").addr;
+        bytes memory callData = abi.encodeWithSignature("testFunction(uint256)", 42);
+
+        bytes memory exactBitmask = new bytes(callData.length);
+        for (uint256 i = 0; i < callData.length; i++) {
+            exactBitmask[i] = 0xFF;
+        }
+        bytes memory bitmask = abi.encodePacked(
+            bytes32(0), // who,
+            bytes32(0), // where
+            bytes32(0), // value
+            exactBitmask // calldata
+        );
+        bytes memory verificationData =
+            abi.encode(bitmaskVerifier.calculateHash(bitmask, who, where, 0, callData), bitmask);
+
+        IVerifier.VerificationPayload memory verificationPayload = IVerifier.VerificationPayload({
+            verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+            verificationData: bytes.concat(abi.encode(bitmaskVerifier), verificationData),
+            proof: proof
+        });
+
+        setValidMerkleRootForPayloadAndProof(verifier, proof, verificationPayload);
+
+        assertTrue(verifier.getVerificationResult(CALL_ROLE_ADDRESS, where, 0, callData, verificationPayload));
+    }
+
     function testVerificationCall_Custom_Verifier_Success() external {
         Verifier verifier = createVerifier("Verifier", 1, admin);
         MockCustomVerifier customVerifier = new MockCustomVerifier();
