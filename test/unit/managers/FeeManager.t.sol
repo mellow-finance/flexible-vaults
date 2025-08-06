@@ -157,7 +157,7 @@ contract FeeManagerTest is FixtureTest {
         manager.setFees(0, 0, 0.1e6, 0);
 
         uint256 priceInitial = 100 ether;
-        uint256 priceUpdated = 25 ether; 
+        uint256 priceUpdated = 25 ether;
 
         vm.prank(vault);
         manager.updateState(asset, priceInitial);
@@ -166,7 +166,7 @@ contract FeeManagerTest is FixtureTest {
 
         uint256 totalShares = 2 ether;
         uint256 feeShares = manager.calculateFee(vault, asset, priceUpdated, totalShares);
-        assertEq(feeShares, 0.60 ether, "Performance fee mismatch");
+        assertEq(feeShares, 0.6 ether, "Performance fee mismatch");
     }
 
     /// @notice Tests that fee calculation (protocol + performance) is not performed for not base asset

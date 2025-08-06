@@ -166,7 +166,7 @@ contract VerifierTest is Test {
         {
             vm.prank(ALLOW_CALL_ROLE_ADDRESS);
             verifier.allowCalls(compactCalls);
-    
+
             assertEq(verifier.allowedCalls(), 1);
             assertTrue(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
             assertEq(verifier.allowedCallAt(0).who, compactCalls[0].who);
@@ -176,7 +176,7 @@ contract VerifierTest is Test {
 
             vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
             verifier.disallowCalls(compactCalls);
-    
+
             assertEq(verifier.allowedCalls(), 0);
             assertFalse(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
             vm.expectRevert("panic: array out-of-bounds access (0x32)");

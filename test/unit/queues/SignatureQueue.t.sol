@@ -197,7 +197,7 @@ contract SignatureQueueTest is FixtureTest {
                 asset: asset,
                 caller: user,
                 recipient: user,
-                ordered: 1 ether ,
+                ordered: 1 ether,
                 requested: 1 ether + 1,
                 deadline: block.timestamp + 1 days,
                 nonce: 0

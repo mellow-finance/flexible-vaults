@@ -203,7 +203,7 @@ contract RiskManagerTest is FixtureTest {
         RiskManager manager = deployment.riskManager;
         Oracle oracle = deployment.oracle;
 
-        address queue = addDepositQueue(deployment, vaultProxyAdmin, asset); 
+        address queue = addDepositQueue(deployment, vaultProxyAdmin, asset);
 
         uint224 price = 1e18;
         int256 vaultLimit = 1 ether;
@@ -213,18 +213,18 @@ contract RiskManagerTest is FixtureTest {
 
         IOracle.Report[] memory reports = new IOracle.Report[](1);
         reports[0] = IOracle.Report({asset: asset, priceD18: price});
-    
+
         vm.startPrank(vaultAdmin);
         oracle.submitReports(reports);
         oracle.acceptReport(asset, price, uint32(block.timestamp));
         vm.stopPrank();
-    
+
         vm.prank(queue);
         manager.modifyPendingAssets(asset, 1 ether);
-    
+
         // Vault is full with pending assets
         assertEq(manager.pendingAssets(asset), vaultLimit);
-    
+
         vm.prank(queue);
         vm.expectPartialRevert(IRiskManager.LimitExceeded.selector);
         manager.modifyPendingAssets(asset, 1 ether);
@@ -259,7 +259,6 @@ contract RiskManagerTest is FixtureTest {
         assertEq(manager.pendingAssets(asset), vaultLimit, "Pending assets should equal vault limit");
         assertEq(manager.pendingBalance(), vaultLimit, "Pending balance should equal vault limit");
 
-
         IOracle.SecurityParams memory securityParams = oracle.securityParams();
         vm.warp(block.timestamp + securityParams.timeout + 1);
 
@@ -276,8 +275,13 @@ contract RiskManagerTest is FixtureTest {
         vm.prank(queue);
         manager.modifyPendingAssets(asset, change);
 
-        assertTrue(manager.pendingBalance() > manager.vaultState().limit, "Pending balance should exceed the limit after price increase");
-        assertEq(manager.pendingAssets(asset), vaultLimit + change, "Pending assets should decrease by the change value");
+        assertTrue(
+            manager.pendingBalance() > manager.vaultState().limit,
+            "Pending balance should exceed the limit after price increase"
+        );
+        assertEq(
+            manager.pendingAssets(asset), vaultLimit + change, "Pending assets should decrease by the change value"
+        );
     }
 
     /// @notice Test that "modifyVaultBalance" reverts when adding assets exceeds the vault limit.
@@ -338,7 +342,7 @@ contract RiskManagerTest is FixtureTest {
         manager.modifyVaultBalance(asset, vaultLimit);
         assertEq(manager.vaultState().balance, vaultLimit, "Vault balance should equal limit");
 
-        vaultLimit =  0.001 ether;
+        vaultLimit = 0.001 ether;
 
         // Manually set the vault limit to a very small value to verify that revert does not happen.
         vm.prank(vaultAdmin);
@@ -423,7 +427,7 @@ contract RiskManagerTest is FixtureTest {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         RiskManager manager = deployment.riskManager;
         Oracle oracle = deployment.oracle;
-        
+
         vm.prank(vaultAdmin);
         address subvault = deployment.vault.createSubvault(0, vaultProxyAdmin, address(deployment.verifier));
 
@@ -494,7 +498,9 @@ contract RiskManagerTest is FixtureTest {
         vm.prank(address(deployment.vault));
         manager.modifySubvaultBalance(subvault, asset, change);
 
-        assertTrue(manager.subvaultState(subvault).balance > subvaultLimit, "Subvault balance should be greater than the limit");
+        assertTrue(
+            manager.subvaultState(subvault).balance > subvaultLimit, "Subvault balance should be greater than the limit"
+        );
     }
 
     /// @notice Tests that the function reverts when the result of the multiplication overflows int256.
@@ -503,7 +509,7 @@ contract RiskManagerTest is FixtureTest {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         RiskManager manager = deployment.riskManager;
         Oracle oracle = deployment.oracle;
-        
+
         uint224 price = 1e18 + 1;
 
         IOracle.Report[] memory reports = new IOracle.Report[](1);

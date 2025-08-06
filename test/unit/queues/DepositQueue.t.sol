@@ -683,12 +683,7 @@ contract DepositQueueTest is FixtureTest {
 
         vm.prank(vaultAdmin);
         deployment.shareManager.setAccountInfo(
-            user,
-            IShareManager.AccountInfo({
-                canDeposit: false,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            user, IShareManager.AccountInfo({canDeposit: false, canTransfer: true, isBlacklisted: false})
         );
 
         giveAssetsToUserAndApprove(user, amount, address(queue));
@@ -698,12 +693,7 @@ contract DepositQueueTest is FixtureTest {
 
         vm.prank(vaultAdmin);
         deployment.shareManager.setAccountInfo(
-            user,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false
-            })
+            user, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
 
         /// @dev just to make sure the deposit works after the account is allowed
