@@ -14,6 +14,9 @@ contract SignatureRedeemQueue is SignatureQueue {
         validateOrder(order, signatures);
         _signatureQueueStorage().nonces[order.caller]++;
         IShareModule vault_ = IShareModule(vault());
+        if (vault_.isPausedQueue(address(this))) {
+            revert QueuePaused();
+        }
 
         if (order.requested > vault_.getLiquidAssets()) {
             revert InsufficientAssets(order.requested, vault_.getLiquidAssets());

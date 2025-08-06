@@ -226,6 +226,63 @@ contract SignatureDepositQueueTest is FixtureTest {
         );
     }
 
+    function testDepositQueuePause() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.riskManager.setVaultLimit(1e6 ether);
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](10);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, 5, signerPks, signatureTypes);
+
+        SignatureDepositQueue queue =
+            SignatureDepositQueue(addSignatureDepositQueue(deployment, vaultProxyAdmin, asset, address(consensus)));
+
+        vm.startPrank(vaultAdmin);
+        deployment.vault.grantRole(deployment.vault.SET_QUEUE_STATUS_ROLE(), vaultAdmin);
+        vm.stopPrank();
+
+        assertFalse(deployment.vault.isPausedQueue(address(queue)), "Queue should not be paused");
+
+        ISignatureQueue.Order memory order = ISignatureQueue.Order({
+            orderId: 1,
+            queue: address(queue),
+            asset: asset,
+            caller: user,
+            recipient: user,
+            ordered: 1000,
+            requested: 1000,
+            deadline: block.timestamp + 1 days,
+            nonce: 0
+        });
+
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        uint224 amount = uint224(order.ordered);
+        giveAssetsToUserAndApprove(order.caller, amount, address(queue));
+
+        vm.prank(vaultAdmin);
+        deployment.vault.setQueueStatus(address(queue), true);
+
+        vm.startPrank(order.caller);
+        IConsensus.Signature[] memory signatures = signOrder(queue, order, signerPks, signers);
+        vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.QueuePaused.selector));
+        queue.deposit(order, signatures);
+        vm.stopPrank();
+
+        vm.prank(vaultAdmin);
+        deployment.vault.setQueueStatus(address(queue), false);
+
+        vm.prank(order.caller);
+        queue.deposit(order, signatures);
+    }
+
     function createQueue() internal returns (SignatureDepositQueue queue) {
         address deployer = vm.createWallet("deployer").addr;
         vm.startPrank(deployer);

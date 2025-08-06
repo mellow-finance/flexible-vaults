@@ -233,6 +233,76 @@ contract SignatureRedeemQueueTest is FixtureTest {
         }
     }
 
+    function testRedeemQueuePause() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+
+        uint256 signerCount = 10;
+        uint256 threshold = 5;
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, threshold, signerPks, signatureTypes);
+
+        SignatureRedeemQueue queue = SignatureRedeemQueue(
+            payable(addSignatureRedeemQueue(deployment, vaultProxyAdmin, asset, address(consensus)))
+        );
+
+        assertFalse(deployment.vault.isPausedQueue(address(queue)), "Queue should not be paused");
+
+        vm.startPrank(vaultAdmin);
+        deployment.vault.grantRole(deployment.vault.SET_QUEUE_STATUS_ROLE(), vaultAdmin);
+        vm.stopPrank();
+
+        uint256 amount = 1000;
+        ISignatureQueue.Order memory order = ISignatureQueue.Order({
+            orderId: 1,
+            queue: address(queue),
+            asset: asset,
+            caller: user,
+            recipient: user,
+            ordered: amount,
+            requested: amount,
+            deadline: block.timestamp + 1 days,
+            nonce: 0
+        });
+
+        IConsensus.Signature[] memory signatures = signOrder(queue, order, signerPks, signers);
+
+        {
+            Oracle oracle = deployment.oracle;
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            uint224 price = 1e18;
+            reports[0] = IOracle.Report({asset: asset, priceD18: price});
+            vm.startPrank(vaultAdmin);
+            oracle.submitReports(reports);
+            oracle.acceptReport(asset, price, uint32(block.timestamp));
+            vm.stopPrank();
+        }
+
+        vm.prank(address(queue));
+        deployment.shareManager.mint(user, amount);
+        MockERC20(asset).mint(address(deployment.vault), amount);
+
+        vm.prank(vaultAdmin);
+        deployment.vault.setQueueStatus(address(queue), true);
+
+        vm.prank(user);
+        vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.QueuePaused.selector));
+        queue.redeem(order, signatures);
+
+        vm.prank(vaultAdmin);
+        deployment.vault.setQueueStatus(address(queue), false);
+
+        vm.prank(user);
+        queue.redeem(order, signatures);
+
+        assertEq(MockERC20(asset).balanceOf(user), amount, "User should receive assets");
+    }
+
     function createQueue() internal returns (SignatureRedeemQueue queue) {
         address deployer = vm.createWallet("deployer").addr;
         vm.startPrank(deployer);
