@@ -67,7 +67,8 @@ interface IVerifier is IFactoryEntity {
         /// Validates a Merkle proof for `keccak256(abi.encode(who, where, value, data))` against a stored Merkle root.
         MERKLE_EXTENDED,
         /// @dev Delegated verification via external contract.
-        /// Forwards call details to a custom verifier contract implementing `ICustomVerifier`.
+        /// Forwards call details `abi.encode(address customVerifier, customVerifierSpecificData)`
+        /// to a custom verifier contract implementing `ICustomVerifier`.
         CUSTOM_VERIFIER
     }
 
@@ -76,9 +77,10 @@ interface IVerifier is IFactoryEntity {
         /// @dev The method used to verify the delegated call.
         VerificationType verificationType;
         /// @dev Encoded payload to be verified, varies by verification type:
-        /// - MERKLE_COMPACT: abi.encode(who, where, selector)
-        /// - MERKLE_EXTENDED: abi.encode(who, where, value, callData)
-        /// - CUSTOM_VERIFIER: abi.encodePacked(address customVerifier, customVerifierSpecificData)
+        /// - ONCHAIN_COMPACT: empty, checking directly that `keccak256(abi.encode(who, where, selector))` is allowed
+        /// - MERKLE_COMPACT: `abi.encodePacked(keccak256(abi.encode(who, where, selector)))` to validates a Merkle proof
+        /// - MERKLE_EXTENDED: `abi.encodePacked(keccak256(abi.encode(who, where, value, data)))` to validates a Merkle proof
+        /// - CUSTOM_VERIFIER: `abi.encode(address customVerifier, customVerifierSpecificData)`
         bytes verificationData;
         /// @dev Merkle proof used to validate the `verificationType` and `verificationData` for MERKLE_COMPACT,
         /// MERKLE_EXTENDED, and CUSTOM_VERIFIER types.
