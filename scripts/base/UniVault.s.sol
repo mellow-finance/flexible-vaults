@@ -385,469 +385,470 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
-        defaultDepositHook = new RedirectingDepositHook();
-        defaultRedeemHook = new BasicRedeemHook();
+        // defaultDepositHook = new RedirectingDepositHook();
+        // defaultRedeemHook = new BasicRedeemHook();
 
-        Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](19);
-        holders[0] = Vault.RoleHolder(keccak256("oracles.Oracle.SUBMIT_REPORTS_ROLE"), deployer);
-        holders[1] = Vault.RoleHolder(keccak256("oracles.Oracle.ACCEPT_REPORT_ROLE"), deployer);
-        holders[2] = Vault.RoleHolder(keccak256("modules.VaultModule.CREATE_SUBVAULT_ROLE"), deployer);
-        holders[3] = Vault.RoleHolder(keccak256("modules.VaultModule.PULL_LIQUIDITY_ROLE"), deployer);
-        holders[4] = Vault.RoleHolder(keccak256("modules.VaultModule.PUSH_LIQUIDITY_ROLE"), deployer);
-        holders[5] = Vault.RoleHolder(keccak256("permissions.Verifier.SET_MERKLE_ROOT_ROLE"), deployer);
-        holders[6] = Vault.RoleHolder(keccak256("permissions.Verifier.CALLER_ROLE"), deployer);
-        holders[7] = Vault.RoleHolder(keccak256("permissions.Verifier.ALLOW_CALL_ROLE"), deployer);
-        holders[8] = Vault.RoleHolder(keccak256("permissions.Verifier.DISALLOW_CALL_ROLE"), deployer);
-        holders[9] = Vault.RoleHolder(keccak256("modules.ShareModule.CREATE_QUEUE_ROLE"), deployer);
-        holders[10] = Vault.RoleHolder(keccak256("modules.ShareModule.CREATE_QUEUE_ROLE"), deployer);
-        holders[11] = Vault.RoleHolder(keccak256("managers.RiskManager.SET_VAULT_LIMIT_ROLE"), deployer);
-        holders[12] = Vault.RoleHolder(keccak256("managers.RiskManager.SET_SUBVAULT_LIMIT_ROLE"), deployer);
-        holders[13] = Vault.RoleHolder(keccak256("managers.RiskManager.ALLOW_SUBVAULT_ASSETS_ROLE"), deployer);
-        holders[14] = Vault.RoleHolder(keccak256("managers.RiskManager.MODIFY_VAULT_BALANCE_ROLE"), deployer);
-        holders[15] = Vault.RoleHolder(keccak256("managers.RiskManager.MODIFY_SUBVAULT_BALANCE_ROLE"), deployer);
+        // Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](19);
+        // holders[0] = Vault.RoleHolder(keccak256("oracles.Oracle.SUBMIT_REPORTS_ROLE"), deployer);
+        // holders[1] = Vault.RoleHolder(keccak256("oracles.Oracle.ACCEPT_REPORT_ROLE"), deployer);
+        // holders[2] = Vault.RoleHolder(keccak256("modules.VaultModule.CREATE_SUBVAULT_ROLE"), deployer);
+        // holders[3] = Vault.RoleHolder(keccak256("modules.VaultModule.PULL_LIQUIDITY_ROLE"), deployer);
+        // holders[4] = Vault.RoleHolder(keccak256("modules.VaultModule.PUSH_LIQUIDITY_ROLE"), deployer);
+        // holders[5] = Vault.RoleHolder(keccak256("permissions.Verifier.SET_MERKLE_ROOT_ROLE"), deployer);
+        // holders[6] = Vault.RoleHolder(keccak256("permissions.Verifier.CALLER_ROLE"), deployer);
+        // holders[7] = Vault.RoleHolder(keccak256("permissions.Verifier.ALLOW_CALL_ROLE"), deployer);
+        // holders[8] = Vault.RoleHolder(keccak256("permissions.Verifier.DISALLOW_CALL_ROLE"), deployer);
+        // holders[9] = Vault.RoleHolder(keccak256("modules.ShareModule.CREATE_QUEUE_ROLE"), deployer);
+        // holders[10] = Vault.RoleHolder(keccak256("modules.ShareModule.CREATE_QUEUE_ROLE"), deployer);
+        // holders[11] = Vault.RoleHolder(keccak256("managers.RiskManager.SET_VAULT_LIMIT_ROLE"), deployer);
+        // holders[12] = Vault.RoleHolder(keccak256("managers.RiskManager.SET_SUBVAULT_LIMIT_ROLE"), deployer);
+        // holders[13] = Vault.RoleHolder(keccak256("managers.RiskManager.ALLOW_SUBVAULT_ASSETS_ROLE"), deployer);
+        // holders[14] = Vault.RoleHolder(keccak256("managers.RiskManager.MODIFY_VAULT_BALANCE_ROLE"), deployer);
+        // holders[15] = Vault.RoleHolder(keccak256("managers.RiskManager.MODIFY_SUBVAULT_BALANCE_ROLE"), deployer);
 
-        holders[16] = Vault.RoleHolder(keccak256("modules.VaultModule.PULL_LIQUIDITY_ROLE"), curator);
-        holders[17] = Vault.RoleHolder(keccak256("modules.VaultModule.PUSH_LIQUIDITY_ROLE"), curator);
-        holders[18] = Vault.RoleHolder(keccak256("permissions.Verifier.CALLER_ROLE"), curator);
+        // holders[16] = Vault.RoleHolder(keccak256("modules.VaultModule.PULL_LIQUIDITY_ROLE"), curator);
+        // holders[17] = Vault.RoleHolder(keccak256("modules.VaultModule.PUSH_LIQUIDITY_ROLE"), curator);
+        // holders[18] = Vault.RoleHolder(keccak256("permissions.Verifier.CALLER_ROLE"), curator);
 
-        securityParams_ = IOracle.SecurityParams({
-            maxAbsoluteDeviation: 0.001 ether,
-            suspiciousAbsoluteDeviation: 0.0005 ether,
-            maxRelativeDeviationD18: 0.001 ether,
-            suspiciousRelativeDeviationD18: 0.0005 ether,
-            timeout: 10 minutes,
-            depositInterval: 1 minutes,
-            redeemInterval: 1 minutes
-        });
-        address[] memory assets_ = new address[](5);
-        assets_[0] = USDC;
-        assets_[1] = USDT;
-        assets_[2] = KAITO;
-        assets_[3] = WETH;
-        assets_[4] = TransferLibrary.ETH;
+        // securityParams_ = IOracle.SecurityParams({
+        //     maxAbsoluteDeviation: 0.001 ether,
+        //     suspiciousAbsoluteDeviation: 0.0005 ether,
+        //     maxRelativeDeviationD18: 0.001 ether,
+        //     suspiciousRelativeDeviationD18: 0.0005 ether,
+        //     timeout: 10 minutes,
+        //     depositInterval: 1 minutes,
+        //     redeemInterval: 1 minutes
+        // });
+        // address[] memory assets_ = new address[](5);
+        // assets_[0] = USDC;
+        // assets_[1] = USDT;
+        // assets_[2] = KAITO;
+        // assets_[3] = WETH;
+        // assets_[4] = TransferLibrary.ETH;
 
-        (,,,, address vault_) = vaultConfigurator.create(
-            VaultConfigurator.InitParams({
-                version: 0,
-                proxyAdmin: deployer,
-                vaultAdmin: deployer,
-                shareManagerVersion: 0,
-                shareManagerParams: abi.encode(bytes32(0), "MellowTestVaultBase", "MTVB"),
-                feeManagerVersion: 0,
-                feeManagerParams: abi.encode(deployer, deployer, uint24(0), uint24(0), uint24(0), uint24(0)),
-                riskManagerVersion: 0,
-                riskManagerParams: abi.encode(int256(100 ether)),
-                oracleVersion: 0,
-                oracleParams: abi.encode(securityParams_, assets_),
-                defaultDepositHook: address(defaultDepositHook),
-                defaultRedeemHook: address(defaultRedeemHook),
-                queueLimit: 16,
-                roleHolders: holders
-            })
-        );
+        // (,,,, address vault_) = vaultConfigurator.create(
+        //     VaultConfigurator.InitParams({
+        //         version: 0,
+        //         proxyAdmin: deployer,
+        //         vaultAdmin: deployer,
+        //         shareManagerVersion: 0,
+        //         shareManagerParams: abi.encode(bytes32(0), "MellowTestVaultBase", "MTVB"),
+        //         feeManagerVersion: 0,
+        //         feeManagerParams: abi.encode(deployer, deployer, uint24(0), uint24(0), uint24(0), uint24(0)),
+        //         riskManagerVersion: 0,
+        //         riskManagerParams: abi.encode(int256(100 ether)),
+        //         oracleVersion: 0,
+        //         oracleParams: abi.encode(securityParams_, assets_),
+        //         defaultDepositHook: address(defaultDepositHook),
+        //         defaultRedeemHook: address(defaultRedeemHook),
+        //         queueLimit: 16,
+        //         roleHolders: holders
+        //     })
+        // );
 
-        Vault vault = Vault(payable(vault_));
+        // Vault vault = Vault(payable(vault_));
 
-        vault.createQueue(0, true, deployer, TransferLibrary.ETH, new bytes(0));
-        vault.createQueue(0, true, deployer, WETH, new bytes(0));
-        vault.createQueue(0, true, deployer, USDC, new bytes(0));
-        vault.createQueue(0, true, deployer, USDT, new bytes(0));
-        vault.createQueue(0, true, deployer, KAITO, new bytes(0));
+        // vault.createQueue(0, true, deployer, TransferLibrary.ETH, new bytes(0));
+        // vault.createQueue(0, true, deployer, WETH, new bytes(0));
+        // vault.createQueue(0, true, deployer, USDC, new bytes(0));
+        // vault.createQueue(0, true, deployer, USDT, new bytes(0));
+        // vault.createQueue(0, true, deployer, KAITO, new bytes(0));
 
-        vault.createQueue(0, false, deployer, TransferLibrary.ETH, new bytes(0));
-        vault.createQueue(0, false, deployer, WETH, new bytes(0));
-        vault.createQueue(0, false, deployer, USDC, new bytes(0));
-        vault.createQueue(0, false, deployer, USDT, new bytes(0));
-        vault.createQueue(0, false, deployer, KAITO, new bytes(0));
+        // vault.createQueue(0, false, deployer, TransferLibrary.ETH, new bytes(0));
+        // vault.createQueue(0, false, deployer, WETH, new bytes(0));
+        // vault.createQueue(0, false, deployer, USDC, new bytes(0));
+        // vault.createQueue(0, false, deployer, USDT, new bytes(0));
+        // vault.createQueue(0, false, deployer, KAITO, new bytes(0));
 
-        address verifier = verifierFactory.create(0, deployer, abi.encode(vault, bytes32(0)));
-        address subvault = vault.createSubvault(0, deployer, verifier);
+        // address verifier = verifierFactory.create(0, deployer, abi.encode(vault, bytes32(0)));
+        // address subvault = vault.createSubvault(0, deployer, verifier);
 
-        IVerifier.VerificationPayload[] memory array = new IVerifier.VerificationPayload[](50);
-        /*
-            ERC20 (usdc, usdt, kaito, weth):
-                approve: selector, to, infAmount
-        */
+        // IVerifier.VerificationPayload[] memory array = new IVerifier.VerificationPayload[](50);
+        // /*
+        //     ERC20 (usdc, usdt, kaito, weth):
+        //         approve: selector, to, infAmount
+        // */
 
-        uint256 iterator = 0;
-        // weth.deposit()
-        array[iterator++] = makeVerificationPayload(
-            curator,
-            WETH,
-            0,
-            abi.encodeCall(IWETHInterface.deposit, ()),
-            abi.encodePacked(type(uint256).max, type(uint256).max, uint256(0), type(uint32).max)
-        );
-        // weth.withdraw(amount)
-        array[iterator++] = makeVerificationPayload(
-            curator,
-            WETH,
-            0,
-            abi.encodeCall(IWETHInterface.withdraw, (0)),
-            abi.encodePacked(type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, uint256(0))
-        );
-        // positionManager.burn(tokenId)
-        array[iterator++] = makeVerificationPayload(
-            curator,
-            positionManager,
-            0,
-            abi.encodeCall(INFPM.burn, (0)),
-            abi.encodePacked(type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, uint256(0))
-        );
-        // positionManager.increaseLiquidity(...)
-        {
-            INFPM.IncreaseLiquidityParams memory increaseLiquidityEmptyParams;
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                positionManager,
-                0,
-                abi.encodeCall(INFPM.increaseLiquidity, (increaseLiquidityEmptyParams)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    abi.encode(increaseLiquidityEmptyParams)
-                )
-            );
-        }
-        // positionManager.decreaseLiquidity
-        {
-            INFPM.DecreaseLiquidityParams memory decreaseLiquidityEmptyParams;
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                positionManager,
-                0,
-                abi.encodeCall(INFPM.decreaseLiquidity, (decreaseLiquidityEmptyParams)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    abi.encode(decreaseLiquidityEmptyParams)
-                )
-            );
-        }
-        // positionManger.collect
-        {
-            INFPM.CollectParams memory p;
-            p.recipient = subvault;
-            INFPM.CollectParams memory bp;
-            bp.recipient = address(type(uint160).max);
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                positionManager,
-                0,
-                abi.encodeCall(INFPM.collect, (p)),
-                abi.encodePacked(
-                    type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bp)
-                )
-            );
-        }
-        // swapRouter.exactInputSingle
-        {
-            IV3SwapRouter.ExactInputSingleParams memory exactInputParams;
-            exactInputParams.recipient = subvault;
-            IV3SwapRouter.ExactInputSingleParams memory bitmaskParams;
-            bitmaskParams.recipient = address(type(uint160).max);
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                swapRouter,
-                0,
-                abi.encodeCall(IV3SwapRouter.exactInputSingle, (exactInputParams)),
-                abi.encodePacked(
-                    type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bitmaskParams)
-                )
-            );
-        }
-        // swapRouter.exactOutputSingle
-        {
-            IV3SwapRouter.ExactOutputSingleParams memory exactOutputParams;
-            exactOutputParams.recipient = subvault;
-            IV3SwapRouter.ExactOutputSingleParams memory bitmaskParams;
-            bitmaskParams.recipient = address(type(uint160).max);
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                swapRouter,
-                0,
-                abi.encodeCall(IV3SwapRouter.exactOutputSingle, (exactOutputParams)),
-                abi.encodePacked(
-                    type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bitmaskParams)
-                )
-            );
-        }
-        // token.approve(swapRouter/positionManager, inf)
-        {
-            // usdc.approve(swapRouter, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                USDC,
-                0,
-                abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
+        // uint256 iterator = 0;
+        // // weth.deposit()
+        // array[iterator++] = makeVerificationPayload(
+        //     curator,
+        //     WETH,
+        //     0,
+        //     abi.encodeCall(IWETHInterface.deposit, ()),
+        //     abi.encodePacked(type(uint256).max, type(uint256).max, uint256(0), type(uint32).max)
+        // );
+        // // weth.withdraw(amount)
+        // array[iterator++] = makeVerificationPayload(
+        //     curator,
+        //     WETH,
+        //     0,
+        //     abi.encodeCall(IWETHInterface.withdraw, (0)),
+        //     abi.encodePacked(type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, uint256(0))
+        // );
+        // // positionManager.burn(tokenId)
+        // array[iterator++] = makeVerificationPayload(
+        //     curator,
+        //     positionManager,
+        //     0,
+        //     abi.encodeCall(INFPM.burn, (0)),
+        //     abi.encodePacked(type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, uint256(0))
+        // );
+        // // positionManager.increaseLiquidity(...)
+        // {
+        //     INFPM.IncreaseLiquidityParams memory increaseLiquidityEmptyParams;
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         positionManager,
+        //         0,
+        //         abi.encodeCall(INFPM.increaseLiquidity, (increaseLiquidityEmptyParams)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             abi.encode(increaseLiquidityEmptyParams)
+        //         )
+        //     );
+        // }
+        // // positionManager.decreaseLiquidity
+        // {
+        //     INFPM.DecreaseLiquidityParams memory decreaseLiquidityEmptyParams;
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         positionManager,
+        //         0,
+        //         abi.encodeCall(INFPM.decreaseLiquidity, (decreaseLiquidityEmptyParams)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             abi.encode(decreaseLiquidityEmptyParams)
+        //         )
+        //     );
+        // }
+        // // positionManger.collect
+        // {
+        //     INFPM.CollectParams memory p;
+        //     p.recipient = subvault;
+        //     INFPM.CollectParams memory bp;
+        //     bp.recipient = address(type(uint160).max);
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         positionManager,
+        //         0,
+        //         abi.encodeCall(INFPM.collect, (p)),
+        //         abi.encodePacked(
+        //             type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bp)
+        //         )
+        //     );
+        // }
+        // // swapRouter.exactInputSingle
+        // {
+        //     IV3SwapRouter.ExactInputSingleParams memory exactInputParams;
+        //     exactInputParams.recipient = subvault;
+        //     IV3SwapRouter.ExactInputSingleParams memory bitmaskParams;
+        //     bitmaskParams.recipient = address(type(uint160).max);
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         swapRouter,
+        //         0,
+        //         abi.encodeCall(IV3SwapRouter.exactInputSingle, (exactInputParams)),
+        //         abi.encodePacked(
+        //             type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bitmaskParams)
+        //         )
+        //     );
+        // }
+        // // swapRouter.exactOutputSingle
+        // {
+        //     IV3SwapRouter.ExactOutputSingleParams memory exactOutputParams;
+        //     exactOutputParams.recipient = subvault;
+        //     IV3SwapRouter.ExactOutputSingleParams memory bitmaskParams;
+        //     bitmaskParams.recipient = address(type(uint160).max);
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         swapRouter,
+        //         0,
+        //         abi.encodeCall(IV3SwapRouter.exactOutputSingle, (exactOutputParams)),
+        //         abi.encodePacked(
+        //             type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bitmaskParams)
+        //         )
+        //     );
+        // }
+        // // token.approve(swapRouter/positionManager, inf)
+        // {
+        //     // usdc.approve(swapRouter, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         USDC,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
 
-            // usdt.approve(swapRouter, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                USDT,
-                0,
-                abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
-            // weth.approve(swapRouter, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                WETH,
-                0,
-                abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
-            // kaito.approve(swapRouter, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                KAITO,
-                0,
-                abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
+        //     // usdt.approve(swapRouter, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         USDT,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
+        //     // weth.approve(swapRouter, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         WETH,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
+        //     // kaito.approve(swapRouter, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         KAITO,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
 
-            // usdc.approve(positionManager, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                USDC,
-                0,
-                abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
-            // usdt.approve(positionManager, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                USDT,
-                0,
-                abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
-            // weth.approve(positionManager, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                WETH,
-                0,
-                abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
-            // kaito.approve(positionManager, inf)
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                KAITO,
-                0,
-                abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
-                abi.encodePacked(
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint256).max,
-                    type(uint32).max,
-                    type(uint256).max,
-                    abi.encode(type(uint256).max)
-                )
-            );
-        }
+        //     // usdc.approve(positionManager, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         USDC,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
+        //     // usdt.approve(positionManager, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         USDT,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
+        //     // weth.approve(positionManager, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         WETH,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
+        //     // kaito.approve(positionManager, inf)
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         KAITO,
+        //         0,
+        //         abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)),
+        //         abi.encodePacked(
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint256).max,
+        //             type(uint32).max,
+        //             type(uint256).max,
+        //             abi.encode(type(uint256).max)
+        //         )
+        //     );
+        // }
 
-        address[4] memory pools = [
-            0xd0b53D9277642d899DF5C87A3966A349A798F224,
-            0x37bb450b17721c6720040a150029e504766e9777,
-            0xd92E0767473D1E3FF11Ac036f2b1DB90aD0aE55F,
-            0xcE1d8c90A5F0ef28fe0F457e5Ad615215899319a
-        ];
-        for (uint256 i = 0; i < pools.length; i++) {
-            IPool pool = IPool(pools[i]);
+        // address[4] memory pools = [
+        //     0xd0b53D9277642d899DF5C87A3966A349A798F224,
+        //     0x37bb450b17721c6720040a150029e504766e9777,
+        //     0xd92E0767473D1E3FF11Ac036f2b1DB90aD0aE55F,
+        //     0xcE1d8c90A5F0ef28fe0F457e5Ad615215899319a
+        // ];
+        // for (uint256 i = 0; i < pools.length; i++) {
+        //     IPool pool = IPool(pools[i]);
 
-            INFPM.MintParams memory p;
-            p.token0 = pool.token0();
-            p.token1 = pool.token0();
-            p.fee = pool.fee();
-            p.recipient = subvault;
+        //     INFPM.MintParams memory p;
+        //     p.token0 = pool.token0();
+        //     p.token1 = pool.token0();
+        //     p.fee = pool.fee();
+        //     p.recipient = subvault;
 
-            INFPM.MintParams memory bp;
-            bp.token0 = address(type(uint160).max);
-            bp.token1 = address(type(uint160).max);
-            bp.fee = type(uint24).max;
-            bp.recipient = address(type(uint160).max);
+        //     INFPM.MintParams memory bp;
+        //     bp.token0 = address(type(uint160).max);
+        //     bp.token1 = address(type(uint160).max);
+        //     bp.fee = type(uint24).max;
+        //     bp.recipient = address(type(uint160).max);
 
-            array[iterator++] = makeVerificationPayload(
-                curator,
-                positionManager,
-                0,
-                abi.encodeCall(INFPM.mint, (p)),
-                abi.encodePacked(
-                    type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bp)
-                )
-            );
-        }
-        assembly {
-            mstore(array, iterator)
-        }
+        //     array[iterator++] = makeVerificationPayload(
+        //         curator,
+        //         positionManager,
+        //         0,
+        //         abi.encodeCall(INFPM.mint, (p)),
+        //         abi.encodePacked(
+        //             type(uint256).max, type(uint256).max, type(uint256).max, type(uint32).max, abi.encode(bp)
+        //         )
+        //     );
+        // }
+        // assembly {
+        //     mstore(array, iterator)
+        // }
 
-        bytes32 verifierMerkleRoot;
-        (verifierMerkleRoot, array) = generateMerkleProofs(array);
+        // bytes32 verifierMerkleRoot;
+        // (verifierMerkleRoot, array) = generateMerkleProofs(array);
 
-        Verifier(verifier).setMerkleRoot(verifierMerkleRoot);
+        // Verifier(verifier).setMerkleRoot(verifierMerkleRoot);
 
-        iterator = 0;
+        // iterator = 0;
 
-        console2.log("WETH.deposit verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, WETH, 0.001 ether, abi.encodeCall(IWETHInterface.deposit, ()), array[iterator++]
-        );
-        console2.log("WETH.withdraw verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, WETH, 0, abi.encodeCall(IWETHInterface.withdraw, (0.001 ether)), array[iterator++]
-        );
-        console2.log("NonfungiblePositionManager.burn verifyCall");
-        Verifier(verifier).verifyCall(curator, positionManager, 0, abi.encodeCall(INFPM.burn, (1)), array[iterator++]);
+        // console2.log("WETH.deposit verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, WETH, 0.001 ether, abi.encodeCall(IWETHInterface.deposit, ()), array[iterator++]
+        // );
+        // console2.log("WETH.withdraw verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, WETH, 0, abi.encodeCall(IWETHInterface.withdraw, (0.001 ether)), array[iterator++]
+        // );
+        // console2.log("NonfungiblePositionManager.burn verifyCall");
+        // Verifier(verifier).verifyCall(curator, positionManager, 0, abi.encodeCall(INFPM.burn, (1)), array[iterator++]);
 
-        console2.log("NonfungiblePositionManager.increaseLiquidity verifyCall");
-        {
-            INFPM.IncreaseLiquidityParams memory p;
-            Verifier(verifier).verifyCall(
-                curator, positionManager, 0, abi.encodeCall(INFPM.increaseLiquidity, (p)), array[iterator++]
-            );
-        }
-        console2.log("NonfungiblePositionManager.decreaseLiquidity verifyCall");
-        {
-            INFPM.DecreaseLiquidityParams memory p;
-            Verifier(verifier).verifyCall(
-                curator, positionManager, 0, abi.encodeCall(INFPM.decreaseLiquidity, (p)), array[iterator++]
-            );
-        }
-        console2.log("NonfungiblePositionManager.collect verifyCall");
-        {
-            INFPM.CollectParams memory p;
-            p.recipient = subvault;
-            Verifier(verifier).verifyCall(
-                curator, positionManager, 0, abi.encodeCall(INFPM.collect, (p)), array[iterator++]
-            );
-        }
+        // console2.log("NonfungiblePositionManager.increaseLiquidity verifyCall");
+        // {
+        //     INFPM.IncreaseLiquidityParams memory p;
+        //     Verifier(verifier).verifyCall(
+        //         curator, positionManager, 0, abi.encodeCall(INFPM.increaseLiquidity, (p)), array[iterator++]
+        //     );
+        // }
+        // console2.log("NonfungiblePositionManager.decreaseLiquidity verifyCall");
+        // {
+        //     INFPM.DecreaseLiquidityParams memory p;
+        //     Verifier(verifier).verifyCall(
+        //         curator, positionManager, 0, abi.encodeCall(INFPM.decreaseLiquidity, (p)), array[iterator++]
+        //     );
+        // }
+        // console2.log("NonfungiblePositionManager.collect verifyCall");
+        // {
+        //     INFPM.CollectParams memory p;
+        //     p.recipient = subvault;
+        //     Verifier(verifier).verifyCall(
+        //         curator, positionManager, 0, abi.encodeCall(INFPM.collect, (p)), array[iterator++]
+        //     );
+        // }
 
-        console2.log("swapRouter.exactInputSingle verifyCall");
-        {
-            IV3SwapRouter.ExactInputSingleParams memory p;
-            p.recipient = subvault;
-            Verifier(verifier).verifyCall(
-                curator, swapRouter, 0, abi.encodeCall(IV3SwapRouter.exactInputSingle, (p)), array[iterator++]
-            );
-        }
+        // console2.log("swapRouter.exactInputSingle verifyCall");
+        // {
+        //     IV3SwapRouter.ExactInputSingleParams memory p;
+        //     p.recipient = subvault;
+        //     Verifier(verifier).verifyCall(
+        //         curator, swapRouter, 0, abi.encodeCall(IV3SwapRouter.exactInputSingle, (p)), array[iterator++]
+        //     );
+        // }
 
-        console2.log("swapRouter.exactOutputSingle verifyCall");
-        {
-            IV3SwapRouter.ExactOutputSingleParams memory p;
-            p.recipient = subvault;
-            Verifier(verifier).verifyCall(
-                curator, swapRouter, 0, abi.encodeCall(IV3SwapRouter.exactOutputSingle, (p)), array[iterator++]
-            );
-        }
+        // console2.log("swapRouter.exactOutputSingle verifyCall");
+        // {
+        //     IV3SwapRouter.ExactOutputSingleParams memory p;
+        //     p.recipient = subvault;
+        //     Verifier(verifier).verifyCall(
+        //         curator, swapRouter, 0, abi.encodeCall(IV3SwapRouter.exactOutputSingle, (p)), array[iterator++]
+        //     );
+        // }
 
-        console2.log("usdc.approve(swapRouter, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, USDC, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
-        );
-        console2.log("usdt.approve(swapRouter, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, USDT, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
-        );
-        console2.log("weth.approve(swapRouter, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, WETH, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
-        );
-        console2.log("kaito.approve(swapRouter, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, KAITO, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
-        );
+        // console2.log("usdc.approve(swapRouter, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, USDC, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
+        // );
+        // console2.log("usdt.approve(swapRouter, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, USDT, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
+        // );
+        // console2.log("weth.approve(swapRouter, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, WETH, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
+        // );
+        // console2.log("kaito.approve(swapRouter, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, KAITO, 0, abi.encodeCall(IERC20.approve, (swapRouter, type(uint256).max)), array[iterator++]
+        // );
 
-        console2.log("usdc.approve(positionManager, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, USDC, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
-        );
-        console2.log("usdt.approve(positionManager, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, USDT, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
-        );
-        console2.log("weth.approve(positionManager, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, WETH, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
-        );
-        console2.log("kaito.approve(positionManager, type(uint256).max) verifyCall");
-        Verifier(verifier).verifyCall(
-            curator, KAITO, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
-        );
+        // console2.log("usdc.approve(positionManager, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, USDC, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
+        // );
+        // console2.log("usdt.approve(positionManager, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, USDT, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
+        // );
+        // console2.log("weth.approve(positionManager, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, WETH, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
+        // );
+        // console2.log("kaito.approve(positionManager, type(uint256).max) verifyCall");
+        // Verifier(verifier).verifyCall(
+        //     curator, KAITO, 0, abi.encodeCall(IERC20.approve, (positionManager, type(uint256).max)), array[iterator++]
+        // );
 
-        for (uint256 i = 0; i < pools.length; i++) {
-            IPool pool = IPool(pools[i]);
+        // for (uint256 i = 0; i < pools.length; i++) {
+        //     IPool pool = IPool(pools[i]);
 
-            INFPM.MintParams memory p;
-            p.token0 = pool.token0();
-            p.token1 = pool.token0();
-            p.fee = pool.fee();
-            p.recipient = subvault;
+        //     INFPM.MintParams memory p;
+        //     p.token0 = pool.token0();
+        //     p.token1 = pool.token0();
+        //     p.fee = pool.fee();
+        //     p.recipient = subvault;
 
-            console2.log("positionManager.mint(%s)", pools[i]);
-            Verifier(verifier).verifyCall(
-                curator, positionManager, 0, abi.encodeCall(INFPM.mint, (p)), array[iterator++]
-            );
-        }
+        //     console2.log("positionManager.mint(%s)", pools[i]);
+        //     Verifier(verifier).verifyCall(
+        //         curator, positionManager, 0, abi.encodeCall(INFPM.mint, (p)), array[iterator++]
+        //     );
+        // }
 
-        vault.riskManager().allowSubvaultAssets(subvault, assets_);
-        vault.riskManager().setSubvaultLimit(subvault, type(int256).max);
+        // vault.riskManager().allowSubvaultAssets(subvault, assets_);
+        // vault.riskManager().setSubvaultLimit(subvault, type(int256).max);
 
+        Vault vault = Vault(payable(0x85C205b7Dd8EAd3a288feF72E7e6681E524F1575));
         IOracle oracle = vault.oracle();
         IOracle.Report[] memory reports = new IOracle.Report[](5);
         reports[0] = IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1 ether});
@@ -864,31 +865,31 @@ contract Deploy is Script {
         // IDepositQueue depositQueue = IDepositQueue(vault.queueAt(TransferLibrary.ETH, 0));
         // depositQueue.deposit{value: 0.001 ether}(0.001 ether, address(0), new bytes32[](0));
 
-        for (uint256 i = 0; i < array.length; i++) {
-            console2.log("VerificationPayload for %s-th call:", i + 1);
-            console2.log(convert(array[i]));
-        }
+        // for (uint256 i = 0; i < array.length; i++) {
+        //     console2.log("VerificationPayload for %s-th call:", i + 1);
+        //     console2.log(convert(array[i]));
+        // }
 
-        console2.log("Vault", address(vault));
-        console2.log("Subvault", address(subvault));
+        // console2.log("Vault", address(vault));
+        // console2.log("Subvault", address(subvault));
 
-        console2.log("Oracle", address(vault.oracle()));
+        // console2.log("Oracle", address(vault.oracle()));
 
-        console2.log("ShareManager", address(vault.shareManager()));
-        console2.log("RiskManager", address(vault.riskManager()));
-        console2.log("FeeManager", address(vault.feeManager()));
+        // console2.log("ShareManager", address(vault.shareManager()));
+        // console2.log("RiskManager", address(vault.riskManager()));
+        // console2.log("FeeManager", address(vault.feeManager()));
 
-        console2.log("DepositQueue ETH", address(vault.queueAt(TransferLibrary.ETH, 0)));
-        console2.log("DepositQueue WETH", address(vault.queueAt(WETH, 0)));
-        console2.log("DepositQueue USDC", address(vault.queueAt(USDC, 0)));
-        console2.log("DepositQueue USDT", address(vault.queueAt(USDT, 0)));
-        console2.log("DepositQueue KAITO", address(vault.queueAt(KAITO, 0)));
+        // console2.log("DepositQueue ETH", address(vault.queueAt(TransferLibrary.ETH, 0)));
+        // console2.log("DepositQueue WETH", address(vault.queueAt(WETH, 0)));
+        // console2.log("DepositQueue USDC", address(vault.queueAt(USDC, 0)));
+        // console2.log("DepositQueue USDT", address(vault.queueAt(USDT, 0)));
+        // console2.log("DepositQueue KAITO", address(vault.queueAt(KAITO, 0)));
 
-        console2.log("RedeemQueue ETH", address(vault.queueAt(TransferLibrary.ETH, 1)));
-        console2.log("RedeemQueue WETH", address(vault.queueAt(WETH, 1)));
-        console2.log("RedeemQueue USDC", address(vault.queueAt(USDC, 1)));
-        console2.log("RedeemQueue USDT", address(vault.queueAt(USDT, 1)));
-        console2.log("RedeemQueue KAITO", address(vault.queueAt(KAITO, 1)));
+        // console2.log("RedeemQueue ETH", address(vault.queueAt(TransferLibrary.ETH, 1)));
+        // console2.log("RedeemQueue WETH", address(vault.queueAt(WETH, 1)));
+        // console2.log("RedeemQueue USDC", address(vault.queueAt(USDC, 1)));
+        // console2.log("RedeemQueue USDT", address(vault.queueAt(USDT, 1)));
+        // console2.log("RedeemQueue KAITO", address(vault.queueAt(KAITO, 1)));
 
         vm.stopBroadcast();
         // revert("ok");
