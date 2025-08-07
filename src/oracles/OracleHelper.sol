@@ -6,6 +6,11 @@ import "../vaults/Vault.sol";
 contract OracleHelper {
     struct AssetPrice {
         address asset;
+        /**
+         * @dev If `asset` is the baseAsset, this value is 0.
+         *      Otherwise, it represents the amount in base asset weis
+         *      that corresponds to 1e18 weis of the given `asset`.
+         */
         uint256 priceD18;
     }
 
@@ -69,7 +74,6 @@ contract OracleHelper {
             }
 
             uint256 baseAssetPriceD18 = vault.oracle().getReport($.baseAsset).priceD18;
-
             uint256 totalShares = vault.shareManager().totalShares();
             while (true) {
                 uint256 newBaseAssetPriceD18 = Math.mulDiv(
