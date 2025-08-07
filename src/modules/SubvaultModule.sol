@@ -37,7 +37,6 @@ abstract contract SubvaultModule is ISubvaultModule, BaseModule {
     // Internal functions
 
     function __SubvaultModule_init(address vault_) internal onlyInitializing {
-        __BaseModule_init();
         _subvaultModuleStorage().vault = vault_;
     }
 
