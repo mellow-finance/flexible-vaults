@@ -848,7 +848,6 @@ contract Deploy is Script {
         vault.riskManager().allowSubvaultAssets(subvault, assets_);
         vault.riskManager().setSubvaultLimit(subvault, type(int256).max);
 
-        Vault vault = Vault(payable(0x85C205b7Dd8EAd3a288feF72E7e6681E524F1575));
         IOracle oracle = vault.oracle();
         IOracle.Report[] memory reports = new IOracle.Report[](5);
         reports[0] = IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1 ether});
@@ -857,13 +856,13 @@ contract Deploy is Script {
         reports[3] = IOracle.Report({asset: USDC, priceD18: 275938189845474613686534216});
         reports[4] = IOracle.Report({asset: KAITO, priceD18: 309050772626931});
         oracle.submitReports(reports);
-        uint32 timestamp = oracle.getReport(TransferLibrary.ETH).timestamp;
-        for (uint256 i = 0; i < reports.length; i++) {
-            oracle.acceptReport(reports[i].asset, reports[i].priceD18, timestamp);
-        }
+        // uint32 timestamp = oracle.getReport(TransferLibrary.ETH).timestamp;
+        // for (uint256 i = 0; i < reports.length; i++) {
+        //     oracle.acceptReport(reports[i].asset, reports[i].priceD18, timestamp);
+        // }
 
-        IDepositQueue depositQueue = IDepositQueue(vault.queueAt(TransferLibrary.ETH, 0));
-        depositQueue.deposit{value: 0.001 ether}(0.001 ether, address(0), new bytes32[](0));
+        // IDepositQueue depositQueue = IDepositQueue(vault.queueAt(TransferLibrary.ETH, 0));
+        // depositQueue.deposit{value: 0.001 ether}(0.001 ether, address(0), new bytes32[](0));
 
         for (uint256 i = 0; i < array.length; i++) {
             console2.log("VerificationPayload for %s-th call:", i + 1);
