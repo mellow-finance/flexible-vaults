@@ -37,6 +37,71 @@ contract OracleTest is FixtureTest {
         oracle.setVault(vm.createWallet("randomVault").addr);
     }
 
+    function testRemoveBaseAsset() external {
+        address[] memory assets = new address[](5);
+        for (uint256 index = 0; index < assets.length; index++) {
+            assets[index] = address(new MockERC20());
+        }
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        Oracle oracle = deployment.oracle;
+
+        assertEq(oracle.supportedAssets(), assets.length, "Assets length mismatch");
+        for (uint256 index = 0; index < assets.length; index++) {
+            assertEq(oracle.supportedAssetAt(index), assets[index], "Asset mismatch");
+            assertTrue(oracle.isSupportedAsset(assets[index]), "Asset not supported");
+        }
+
+        address baseAsset = address(new MockERC20());
+        address[] memory tempArray = new address[](1);
+        tempArray[0] = baseAsset;
+        {
+            assertEq(
+                deployment.feeManager.baseAsset(address(deployment.vault)), address(0), "Base asset should be unset"
+            );
+            /// @dev baseAsset is not yet supported
+            vm.prank(deployment.vaultAdmin);
+            vm.expectRevert(abi.encodeWithSelector(IOracle.UnsupportedAsset.selector, baseAsset));
+            oracle.removeSupportedAssets(tempArray);
+        }
+        {
+            vm.prank(deployment.vaultAdmin);
+            deployment.feeManager.setBaseAsset(address(deployment.vault), baseAsset);
+            assertEq(deployment.feeManager.baseAsset(address(deployment.vault)), baseAsset, "Base asset should be set");
+
+            /// @dev reverts since baseAsset is supported
+            vm.prank(deployment.vaultAdmin);
+            vm.expectRevert(abi.encodeWithSelector(IOracle.Forbidden.selector));
+            oracle.removeSupportedAssets(tempArray);
+        }
+    }
+
+    function testRemoveAssetWithQueue() external {
+        address[] memory assets = new address[](5);
+        for (uint256 index = 0; index < assets.length; index++) {
+            assets[index] = address(new MockERC20());
+        }
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        deployment.feeManager.baseAsset(address(deployment.vault));
+        Oracle oracle = deployment.oracle;
+
+        address queue = addDepositQueue(deployment, vaultProxyAdmin, assets[0]);
+
+        /// @dev reverts since queue is using the asset
+        vm.startPrank(vaultAdmin);
+        vm.expectRevert(abi.encodeWithSelector(IOracle.Forbidden.selector));
+        oracle.removeSupportedAssets(assets);
+
+        deployment.vault.grantRole(deployment.vault.REMOVE_QUEUE_ROLE(), vaultAdmin);
+
+        deployment.vault.removeQueue(queue);
+
+        /// @dev successfully removes the asset
+        oracle.removeSupportedAssets(assets);
+        vm.stopPrank();
+    }
+
     function testAddAndRemoveSupportedAsset() external {
         address[] memory assets = new address[](5);
         for (uint256 index = 0; index < assets.length; index++) {
