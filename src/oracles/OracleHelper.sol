@@ -6,11 +6,6 @@ import "../vaults/Vault.sol";
 contract OracleHelper {
     struct AssetPrice {
         address asset;
-        /**
-         * @dev If `asset` is the baseAsset, this value is 0.
-         *      Otherwise, it represents the amount in base asset weis
-         *      that corresponds to 1e18 weis of the given `asset`.
-         */
         uint256 priceD18;
     }
 
@@ -30,7 +25,7 @@ contract OracleHelper {
         $.baseAssetIndex = type(uint256).max;
         pricesD18 = new uint256[](assetPrices.length);
         for (uint256 i = 0; i < assetPrices.length; i++) {
-            if (i > 0 && assetPrices[i].asset <= assetPrices[i - 1].asset) {
+            if (0 < i && assetPrices[i].asset <= assetPrices[i - 1].asset) {
                 revert("OracleHelper: invalid asset order");
             }
             if (assetPrices[i].priceD18 == 0) {
@@ -48,7 +43,16 @@ contract OracleHelper {
         for (uint256 i = 0; i < queueAssets; i++) {
             address queueAsset = vault.assetAt(i);
             uint256 queueCount = vault.getQueueCount(queueAsset);
-            AssetPrice calldata assetPrice = find(assetPrices, queueAsset);
+            AssetPrice calldata assetPrice = assetPrices[0];
+            for (uint256 j = 0; j < assetPrices.length; j++) {
+                if (assetPrices[j].asset == queueAsset) {
+                    assetPrice = assetPrices[j];
+                    break;
+                }
+            }
+            if (assetPrice.asset != queueAsset) {
+                revert("OracleHelper: asset not found");
+            }
             for (uint256 j = 0; j < queueCount; j++) {
                 address queue = vault.queueAt(queueAsset, j);
                 if (vault.isDepositQueue(queue) || IQueue(queue).canBeRemoved()) {
@@ -96,29 +100,5 @@ contract OracleHelper {
             }
             pricesD18[i] = Math.mulDiv(pricesD18[$.baseAssetIndex], assetPrices[i].priceD18, 1 ether);
         }
-    }
-
-    function find(AssetPrice[] calldata assetPrices, address asset) public pure returns (AssetPrice calldata) {
-        if (assetPrices.length == 0) {
-            revert("OracleHelper: asset not found");
-        }
-        uint256 left = 0;
-        uint256 right = assetPrices.length - 1;
-        uint256 mid;
-        while (left <= right) {
-            mid = (left + right) >> 1;
-            if (assetPrices[mid].asset <= asset) {
-                if (assetPrices[mid].asset == asset) {
-                    return assetPrices[mid];
-                }
-                left = mid + 1;
-            } else {
-                if (mid == 0) {
-                    break;
-                }
-                right = mid - 1;
-            }
-        }
-        revert("OracleHelper: asset not found");
     }
 }
