@@ -6,6 +6,14 @@ import "../vaults/Vault.sol";
 contract OracleHelper {
     struct AssetPrice {
         address asset;
+        /**
+         * Price of the asset expressed via the base asset.
+         * If the price is 0, it means that the asset is the base asset.
+         * E.g.
+         * - If priceD18 = 1e18, it means that 1 asset = 1 base asset
+         * - If priceD18 = 0.5e18, it means that 1 asset = 0.5 base asset
+         * - If priceD18 = 2e18, it means that 1 asset = 2 base asset
+         */
         uint256 priceD18;
     }
 
@@ -16,11 +24,18 @@ contract OracleHelper {
         uint256 totalRedeemDemand;
     }
 
+    /**
+     * Calculates the prices of the vault's assets which will be reported to the oracle.
+     * @param vault Vault to calculate the prices for.
+     * @param totalAssets Total assets in the vault expressed via the base asset (TVL denominated in the base asset).
+     * @param assetPrices Prices of the assets.
+     */
     function getPricesD18(Vault vault, uint256 totalAssets, AssetPrice[] calldata assetPrices)
         external
         view
         returns (uint256[] memory pricesD18)
     {
+        // Step 1. Find the base asset index.
         Stack memory $;
         $.baseAssetIndex = type(uint256).max;
         pricesD18 = new uint256[](assetPrices.length);
@@ -33,9 +48,11 @@ contract OracleHelper {
                     revert("OracleHelper: multiple base assets");
                 }
                 $.baseAssetIndex = i;
-                break;
             }
         }
+
+        // Step 2. Process withdrawal queues.
+        // Calculate total demand assets (expressed via the base asset) and unprocessed shares.
         IFeeManager feeManager = vault.feeManager();
         $.baseAsset = assetPrices[$.baseAssetIndex].asset;
 
@@ -68,6 +85,7 @@ contract OracleHelper {
             }
         }
 
+        // Step 3. Calculate the price of the base asset.
         if (feeManager.baseAsset(address(vault)) == address(0)) {
             pricesD18[$.baseAssetIndex] = Math.mulDiv(
                 vault.shareManager().totalShares() + $.unprocessedShares, 1 ether, totalAssets - $.totalRedeemDemand
@@ -94,6 +112,7 @@ contract OracleHelper {
             pricesD18[$.baseAssetIndex] = baseAssetPriceD18;
         }
 
+        // Step 4. Calculate the price of the other assets expressed via the base asset.
         for (uint256 i = 0; i < assetPrices.length; i++) {
             if (i == $.baseAssetIndex) {
                 continue;
