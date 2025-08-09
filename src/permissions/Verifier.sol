@@ -139,6 +139,7 @@ contract Verifier is IVerifier, ContextUpgradeable {
     /// @inheritdoc IVerifier
     function setMerkleRoot(bytes32 merkleRoot_) external onlyRole(SET_MERKLE_ROOT_ROLE) {
         _verifierStorage().merkleRoot = merkleRoot_;
+        emit SetMerkleRoot(merkleRoot_);
     }
 
     /// @inheritdoc IVerifier
@@ -147,11 +148,13 @@ contract Verifier is IVerifier, ContextUpgradeable {
         mapping(bytes32 => CompactCall) storage compactCalls_ = $.compactCalls;
         EnumerableSet.Bytes32Set storage compactCallHashes_ = $.compactCallHashes;
         for (uint256 i = 0; i < compactCalls.length; i++) {
-            bytes32 hash_ = hashCall(compactCalls[i]);
+            CompactCall calldata call = compactCalls[i];
+            bytes32 hash_ = hashCall(call);
             if (!compactCallHashes_.add(hash_)) {
-                revert CompactCallAlreadyAllowed(compactCalls[i].who, compactCalls[i].where, compactCalls[i].selector);
+                revert CompactCallAlreadyAllowed(call.who, call.where, call.selector);
             }
-            compactCalls_[hash_] = compactCalls[i];
+            compactCalls_[hash_] = call;
+            emit AllowCall(call.who, call.where, call.selector);
         }
     }
 
@@ -161,11 +164,13 @@ contract Verifier is IVerifier, ContextUpgradeable {
         mapping(bytes32 => CompactCall) storage compactCalls_ = $.compactCalls;
         EnumerableSet.Bytes32Set storage compactCallHashes_ = $.compactCallHashes;
         for (uint256 i = 0; i < compactCalls.length; i++) {
-            bytes32 hash_ = hashCall(compactCalls[i]);
+            CompactCall calldata call = compactCalls[i];
+            bytes32 hash_ = hashCall(call);
             if (!compactCallHashes_.remove(hash_)) {
-                revert CompactCallNotFound(compactCalls[i].who, compactCalls[i].where, compactCalls[i].selector);
+                revert CompactCallNotFound(call.who, call.where, call.selector);
             }
-            compactCalls_[hash_] = compactCalls[i];
+            delete compactCalls_[hash_];
+            emit DisallowCall(call.who, call.where, call.selector);
         }
     }
 

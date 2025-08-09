@@ -3,12 +3,18 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
+import "../interfaces/managers/ITokenizedShareManager.sol";
+
 import "./ShareManager.sol";
 
-contract TokenizedShareManager is ShareManager, ERC20Upgradeable {
+contract TokenizedShareManager is ITokenizedShareManager, ShareManager, ERC20Upgradeable {
     using ShareManagerFlagLibrary for uint256;
 
-    constructor(string memory name_, uint256 version_) ShareManager(name_, version_) {}
+    bytes32 private immutable _tokenizedShareManagerStorageSlot;
+
+    constructor(string memory name_, uint256 version_) ShareManager(name_, version_) {
+        _tokenizedShareManagerStorageSlot = SlotLibrary.getSlot("TokenizedShareManager", name_, version_);
+    }
 
     // View functions
 
@@ -45,12 +51,26 @@ contract TokenizedShareManager is ShareManager, ERC20Upgradeable {
 
     function _update(address from, address to, uint256 value) internal override {
         updateChecks(from, to);
-        if (from != address(0)) {
-            claimShares(from);
+
+        TokenizedShareManagerStorage storage $ = _tokenizedShareManagerStorage();
+        if (!$.isClaiming) {
+            $.isClaiming = true;
+            if (from != address(0)) {
+                claimShares(from);
+            }
+            if (to != address(0)) {
+                claimShares(to);
+            }
+            $.isClaiming = false;
         }
-        if (to != address(0)) {
-            claimShares(to);
-        }
+
         super._update(from, to, value);
+    }
+
+    function _tokenizedShareManagerStorage() internal view returns (TokenizedShareManagerStorage storage $) {
+        bytes32 slot = _tokenizedShareManagerStorageSlot;
+        assembly {
+            $.slot := slot
+        }
     }
 }

@@ -41,6 +41,7 @@ contract Vault is IFactoryEntity, VaultModule, ShareModule {
             ) = abi.decode(
                 initParams, (address, address, address, address, address, address, address, uint256, RoleHolder[])
             );
+            __BaseModule_init();
             __ACLModule_init(admin_);
             __ShareModule_init(
                 shareManager_, feeManager_, oracle_, defaultDepositHook_, defaultRedeemHook_, queueLimit_

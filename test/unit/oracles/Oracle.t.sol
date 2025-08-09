@@ -37,6 +37,71 @@ contract OracleTest is FixtureTest {
         oracle.setVault(vm.createWallet("randomVault").addr);
     }
 
+    function testRemoveBaseAsset() external {
+        address[] memory assets = new address[](5);
+        for (uint256 index = 0; index < assets.length; index++) {
+            assets[index] = address(new MockERC20());
+        }
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        Oracle oracle = deployment.oracle;
+
+        assertEq(oracle.supportedAssets(), assets.length, "Assets length mismatch");
+        for (uint256 index = 0; index < assets.length; index++) {
+            assertEq(oracle.supportedAssetAt(index), assets[index], "Asset mismatch");
+            assertTrue(oracle.isSupportedAsset(assets[index]), "Asset not supported");
+        }
+
+        address baseAsset = address(new MockERC20());
+        address[] memory tempArray = new address[](1);
+        tempArray[0] = baseAsset;
+        {
+            assertEq(
+                deployment.feeManager.baseAsset(address(deployment.vault)), address(0), "Base asset should be unset"
+            );
+            /// @dev baseAsset is not yet supported
+            vm.prank(deployment.vaultAdmin);
+            vm.expectRevert(abi.encodeWithSelector(IOracle.UnsupportedAsset.selector, baseAsset));
+            oracle.removeSupportedAssets(tempArray);
+        }
+        {
+            vm.prank(deployment.vaultAdmin);
+            deployment.feeManager.setBaseAsset(address(deployment.vault), baseAsset);
+            assertEq(deployment.feeManager.baseAsset(address(deployment.vault)), baseAsset, "Base asset should be set");
+
+            /// @dev reverts since baseAsset is supported
+            vm.prank(deployment.vaultAdmin);
+            vm.expectRevert(abi.encodeWithSelector(IOracle.Forbidden.selector));
+            oracle.removeSupportedAssets(tempArray);
+        }
+    }
+
+    function testRemoveAssetWithQueue() external {
+        address[] memory assets = new address[](5);
+        for (uint256 index = 0; index < assets.length; index++) {
+            assets[index] = address(new MockERC20());
+        }
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        deployment.feeManager.baseAsset(address(deployment.vault));
+        Oracle oracle = deployment.oracle;
+
+        address queue = addDepositQueue(deployment, vaultProxyAdmin, assets[0]);
+
+        /// @dev reverts since queue is using the asset
+        vm.startPrank(vaultAdmin);
+        vm.expectRevert(abi.encodeWithSelector(IOracle.Forbidden.selector));
+        oracle.removeSupportedAssets(assets);
+
+        deployment.vault.grantRole(deployment.vault.REMOVE_QUEUE_ROLE(), vaultAdmin);
+
+        deployment.vault.removeQueue(queue);
+
+        /// @dev successfully removes the asset
+        oracle.removeSupportedAssets(assets);
+        vm.stopPrank();
+    }
+
     function testAddAndRemoveSupportedAsset() external {
         address[] memory assets = new address[](5);
         for (uint256 index = 0; index < assets.length; index++) {
@@ -317,7 +382,7 @@ contract OracleTest is FixtureTest {
             )
         );
         oracle.submitReports(reports);
-        vm.warp(block.timestamp + securityParams.timeout + 1);
+        skip(securityParams.timeout + 1);
 
         {
             reports[0].priceD18 = price + securityParams.maxAbsoluteDeviation + 1;
@@ -329,6 +394,217 @@ contract OracleTest is FixtureTest {
             reports[0].priceD18 = price + securityParams.maxAbsoluteDeviation - 1;
             oracle.submitReports(reports);
             oracle.validatePrice(reports[0].priceD18, asset);
+            oracle.acceptReport(asset, reports[0].priceD18, uint32(block.timestamp));
+
+            report = oracle.getReport(asset);
+            assertEq(report.priceD18, reports[0].priceD18, "Price mismatch");
+            assertEq(report.timestamp, block.timestamp, "Timestamp mismatch");
+            assertFalse(report.isSuspicious, "Should not be suspicious");
+        }
+        vm.stopPrank();
+    }
+
+    function testFuzzNonSuspiciousDeviation(uint8 steps) external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        Oracle oracle = deployment.oracle;
+        address asset = assetsDefault[0];
+        IOracle.SecurityParams memory securityParams = oracle.securityParams();
+
+        IOracle.DetailedReport memory report;
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        uint224 priceD18 = 1e18;
+        reports[0] = IOracle.Report({asset: asset, priceD18: priceD18});
+
+        // Submit a report with initial price
+        vm.startPrank(vaultAdmin);
+        skip(securityParams.timeout);
+        oracle.submitReports(reports);
+
+        report = oracle.getReport(asset);
+        assertTrue(report.isSuspicious, "The first report should be suspicious");
+
+        oracle.acceptReport(asset, priceD18, uint32(block.timestamp));
+        assertEq(report.priceD18, priceD18, "Report must be accepted");
+
+        skip(securityParams.timeout);
+        reports[0] = IOracle.Report({asset: asset, priceD18: priceD18});
+        oracle.submitReports(reports);
+
+        report = oracle.getReport(asset);
+        assertFalse(report.isSuspicious, "Next report should not be suspicious");
+        assertEq(report.priceD18, priceD18, "Report must be accepted");
+
+        vm.expectRevert(abi.encodeWithSelector(IOracle.InvalidReport.selector, asset, block.timestamp));
+        oracle.acceptReport(asset, priceD18, uint32(block.timestamp));
+
+        for (uint256 i = 0; i < steps; i++) {
+            priceD18 = _applyDeltaX16PriceNonSuspicious(
+                priceD18, i % 2 == 0 ? type(int16).max : type(int16).min, securityParams
+            );
+            skip(securityParams.timeout);
+            reports[0] = IOracle.Report({asset: asset, priceD18: priceD18});
+            oracle.submitReports(reports);
+
+            report = oracle.getReport(asset);
+            assertFalse(report.isSuspicious, "Report should not be suspicious");
+
+            report = oracle.getReport(asset);
+            assertEq(report.priceD18, priceD18, "Report must be accepted");
+        }
+        vm.stopPrank();
+    }
+
+    function testFuzzSuspiciousDeviation(int16[] memory deltaPrice) external {
+        vm.assume(deltaPrice.length > 0 && deltaPrice.length < 100);
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        Oracle oracle = deployment.oracle;
+        address asset = assetsDefault[0];
+        IOracle.SecurityParams memory securityParams = oracle.securityParams();
+
+        IOracle.DetailedReport memory report;
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        uint224 priceD18 = 1e18;
+        reports[0] = IOracle.Report({asset: asset, priceD18: priceD18});
+
+        // Submit a report with initial price
+        vm.startPrank(vaultAdmin);
+        skip(securityParams.timeout);
+        oracle.submitReports(reports);
+
+        report = oracle.getReport(asset);
+        assertTrue(report.isSuspicious, "The first report should be suspicious");
+
+        oracle.acceptReport(asset, priceD18, uint32(block.timestamp));
+        assertEq(report.priceD18, priceD18, "Report must be accepted");
+
+        for (uint256 i = 0; i < deltaPrice.length; i++) {
+            priceD18 = _applyDeltaX16Price(priceD18, deltaPrice[i], securityParams);
+
+            skip(securityParams.timeout);
+            reports[0] = IOracle.Report({asset: asset, priceD18: priceD18});
+            oracle.submitReports(reports);
+
+            report = oracle.getReport(asset);
+            if (report.isSuspicious) {
+                oracle.acceptReport(asset, priceD18, uint32(block.timestamp));
+            }
+
+            report = oracle.getReport(asset);
+            assertEq(report.priceD18, priceD18, "Report must be accepted");
+        }
+        vm.stopPrank();
+    }
+
+    function testFuzzMultipleAssets(int16[] calldata initDeltaPrices, int16[] calldata deltaPrices) external {
+        uint256 assetsCount = initDeltaPrices.length;
+
+        vm.assume(assetsCount > 0 && assetsCount < 10);
+        vm.assume(deltaPrices.length > 0 && deltaPrices.length < 200);
+
+        address[] memory assets = new address[](assetsCount);
+        uint224[] memory assetPrices = new uint224[](assetsCount);
+
+        for (uint256 i = 0; i < assetsCount; i++) {
+            assets[i] = address(new MockERC20());
+            assetPrices[i] = _applyDeltaX16(1e18, initDeltaPrices[i]);
+        }
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        Oracle oracle = deployment.oracle;
+        IOracle.SecurityParams memory securityParams = oracle.securityParams();
+
+        IOracle.Report[] memory reports = new IOracle.Report[](assetsCount);
+
+        vm.startPrank(vaultAdmin);
+        for (uint256 i = 0; i < assetsCount; i++) {
+            reports[i] = IOracle.Report({asset: assets[i], priceD18: assetPrices[i]});
+        }
+        oracle.submitReports(reports);
+        for (uint256 i = 0; i < assetsCount; i++) {
+            oracle.acceptReport(assets[i], assetPrices[i], uint32(block.timestamp));
+        }
+        IOracle.DetailedReport memory report;
+        for (uint256 i = 0; i < assetsCount; i++) {
+            report = oracle.getReport(assets[i]);
+            assertEq(report.priceD18, assetPrices[i], "Report price must match submitted price");
+        }
+
+        for (uint256 index = 0; index < deltaPrices.length; index++) {
+            for (uint256 i = 0; i < assetsCount; i++) {
+                assetPrices[i] = _applyDeltaX16Price(assetPrices[i], deltaPrices[index], securityParams);
+                reports[i] = IOracle.Report({asset: assets[i], priceD18: assetPrices[i]});
+            }
+
+            skip(securityParams.timeout);
+            oracle.submitReports(reports);
+
+            for (uint256 i = 0; i < assetsCount; i++) {
+                report = oracle.getReport(assets[i]);
+                if (report.isSuspicious) {
+                    oracle.acceptReport(assets[i], assetPrices[i], uint32(block.timestamp));
+                }
+                report = oracle.getReport(assets[i]);
+                assertEq(report.priceD18, assetPrices[i], "Report price must match submitted price");
+            }
+        }
+        vm.stopPrank();
+    }
+
+    function testFuzzMultipleAssetsWithInvalidSubmits(int16[] calldata initDeltaPrices, int16[] calldata deltaPrices)
+        external
+    {
+        uint256 assetsCount = initDeltaPrices.length;
+
+        vm.assume(assetsCount > 0 && assetsCount < 10);
+        vm.assume(deltaPrices.length > 0 && deltaPrices.length < 200);
+
+        address[] memory assets = new address[](assetsCount);
+        uint224[] memory assetPrices = new uint224[](assetsCount);
+
+        for (uint256 i = 0; i < assetsCount; i++) {
+            assets[i] = address(new MockERC20());
+            assetPrices[i] = _applyDeltaX16(1e18, initDeltaPrices[i]);
+        }
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        Oracle oracle = deployment.oracle;
+        IOracle.SecurityParams memory securityParams = oracle.securityParams();
+
+        IOracle.Report[] memory reports = new IOracle.Report[](assetsCount);
+
+        vm.startPrank(vaultAdmin);
+        for (uint256 i = 0; i < assetsCount; i++) {
+            reports[i] = IOracle.Report({asset: assets[i], priceD18: assetPrices[i]});
+        }
+        oracle.submitReports(reports);
+        for (uint256 i = 0; i < assetsCount; i++) {
+            oracle.acceptReport(assets[i], assetPrices[i], uint32(block.timestamp));
+        }
+
+        IOracle.DetailedReport memory report;
+        for (uint256 i = 0; i < assetsCount; i++) {
+            report = oracle.getReport(assets[i]);
+            assertEq(report.priceD18, assetPrices[i], "Report price must match submitted price");
+        }
+
+        for (uint256 index = 0; index < deltaPrices.length; index++) {
+            for (uint256 i = 0; i < assetsCount; i++) {
+                report = oracle.getReport(assets[i]);
+                assetPrices[i] = _applyDeltaX16(report.priceD18, deltaPrices[index]);
+                reports[i] = IOracle.Report({asset: assets[i], priceD18: assetPrices[i]});
+            }
+
+            skip(securityParams.timeout);
+            try oracle.submitReports(reports) {} catch (bytes memory) {}
+
+            for (uint256 i = 0; i < assetsCount; i++) {
+                report = oracle.getReport(assets[i]);
+                if (report.isSuspicious) {
+                    oracle.acceptReport(assets[i], assetPrices[i], uint32(block.timestamp));
+                    report = oracle.getReport(assets[i]);
+                    assertEq(report.priceD18, assetPrices[i], "Report price must match submitted price");
+                }
+            }
         }
         vm.stopPrank();
     }

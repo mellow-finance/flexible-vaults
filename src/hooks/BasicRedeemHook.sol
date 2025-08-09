@@ -3,20 +3,27 @@ pragma solidity 0.8.25;
 
 import "../interfaces/hooks/IHook.sol";
 import "../interfaces/modules/IVaultModule.sol";
+import "../libraries/TransferLibrary.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract BasicRedeemHook is IHook {
+    using TransferLibrary for address;
+
     function callHook(address asset, uint256 assets) public virtual {
         IVaultModule vault = IVaultModule(address(this));
-        uint256 liquid = IERC20(asset).balanceOf(address(vault));
+        uint256 liquid = asset.balanceOf(address(vault));
         if (liquid >= assets) {
             return;
         }
         uint256 requiredAssets = assets - liquid;
         uint256 subvaults = vault.subvaults();
+        IRiskManager riskManager = vault.riskManager();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
-            uint256 balance = IERC20(asset).balanceOf(subvault);
+            if (!riskManager.isAllowedAsset(subvault, asset)) {
+                continue;
+            }
+            uint256 balance = asset.balanceOf(subvault);
             if (balance == 0) {
                 continue;
             }
@@ -32,11 +39,15 @@ contract BasicRedeemHook is IHook {
 
     function getLiquidAssets(address asset) public view virtual returns (uint256 assets) {
         IVaultModule vault = IVaultModule(msg.sender);
-        assets = IERC20(asset).balanceOf(address(vault));
+        assets = asset.balanceOf(address(vault));
         uint256 subvaults = vault.subvaults();
+        IRiskManager riskManager = vault.riskManager();
         for (uint256 i = 0; i < subvaults; i++) {
             address subvault = vault.subvaultAt(i);
-            assets += IERC20(asset).balanceOf(subvault);
+            if (!riskManager.isAllowedAsset(subvault, asset)) {
+                continue;
+            }
+            assets += asset.balanceOf(subvault);
         }
     }
 }

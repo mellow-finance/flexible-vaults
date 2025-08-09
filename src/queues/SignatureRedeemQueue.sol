@@ -14,15 +14,20 @@ contract SignatureRedeemQueue is SignatureQueue {
         validateOrder(order, signatures);
         _signatureQueueStorage().nonces[order.caller]++;
         IShareModule vault_ = IShareModule(vault());
+        if (vault_.isPausedQueue(address(this))) {
+            revert QueuePaused();
+        }
 
         if (order.requested > vault_.getLiquidAssets()) {
             revert InsufficientAssets(order.requested, vault_.getLiquidAssets());
         }
 
-        vault_.shareManager().burn(order.recipient, order.ordered);
+        vault_.shareManager().burn(order.caller, order.ordered);
         vault_.callHook(order.requested);
         TransferLibrary.sendAssets(order.asset, order.recipient, order.requested);
         IVaultModule(address(vault_)).riskManager().modifyVaultBalance(order.asset, -int256(order.requested));
         emit OrderExecuted(order, signatures);
     }
+
+    receive() external payable {}
 }

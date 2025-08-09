@@ -14,6 +14,9 @@ contract SignatureDepositQueue is SignatureQueue {
         TransferLibrary.receiveAssets(order.asset, order.caller, order.ordered);
 
         IShareModule vault_ = IShareModule(vault());
+        if (vault_.isPausedQueue(address(this))) {
+            revert QueuePaused();
+        }
 
         TransferLibrary.sendAssets(order.asset, address(vault_), order.ordered);
         vault_.callHook(order.ordered);
