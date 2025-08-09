@@ -460,6 +460,12 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         }
         vm.stopPrank();
 
+        {
+            (,, uint256 demandAssets, uint256 pendingShares) = redeemQueue.getState();
+            assertEq(pendingShares, 1099777681625627299, "pending shares");
+            assertEq(demandAssets, 0, "required assets");
+        }
+
         vm.startPrank($.vaultAdmin);
         for (uint256 i = 0; i < 30; i++) {
             IOracle.Report[] memory reports = new IOracle.Report[](1);
@@ -472,7 +478,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
 
         {
             (uint256 batchIterator,, uint256 demandAssets, uint256 pendingShares) = redeemQueue.getState();
-            assertEq(pendingShares, 1099777681625627299, "pending shares");
+            assertEq(pendingShares, 0, "pending shares");
             assertEq(demandAssets, 0.99 ether, "required assets");
             {
                 (uint256 batchAssets, uint256 batchShares) = redeemQueue.batchAt(batchIterator);
