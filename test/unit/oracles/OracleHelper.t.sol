@@ -22,27 +22,16 @@ contract OracleHelperTest is FixtureTest {
         MockERC20 asset = new MockERC20();
         address assetAddress = address(asset);
 
-        address[] memory assets = new address[](1);
-        assets[0] = assetAddress;
-
-        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
-        FeeManager feeManager = deployment.feeManager;
-
-        addRedeemQueue(deployment, vaultProxyAdmin, assetAddress);
-        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, assetAddress));
-        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+        (Deployment memory deployment, DepositQueue depositQueue,) = createVaultWithBaseAsset(assetAddress);
 
         vm.prank(deployment.vaultAdmin);
-        deployment.feeManager.setBaseAsset(address(deployment.vault), assetAddress);
-
-        vm.prank(deployment.vaultAdmin);
-        feeManager.setFees(0, 0, 0, 0);
+        deployment.feeManager.setFees(0, 0, 0, 0);
 
         pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
 
         makeDeposit(user, amount, depositQueue);
 
-        skip(Math.max(securityParams.timeout, securityParams.depositInterval));
+        skip(Math.max(deployment.oracle.securityParams().timeout, deployment.oracle.securityParams().depositInterval));
         pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
 
         uint256 userShares = deployment.shareManager.sharesOf(user);
@@ -60,34 +49,100 @@ contract OracleHelperTest is FixtureTest {
         assertEq(prices[0], 1e18, "Price should be equal to the amount");
     }
 
+    /// @dev Test that the price calculation for the base asset is correct after multiple reports.
+    /// Simulates the case when the vault gets yield (liquidity is growing)
+    function testPriceCalculationForBaseAsset_IterativeLiquidityGrowth() external {
+        uint256 amount = 1e18;
+
+        MockERC20 asset = new MockERC20();
+        address assetAddress = address(asset);
+
+        (Deployment memory deployment, DepositQueue depositQueue,) = createVaultWithBaseAsset(assetAddress);
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setFees(0, 0, 0, 0);
+
+        pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
+
+        makeDeposit(user, amount, depositQueue);
+
+        skip(1 days);
+        pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
+
+        OracleHelper.AssetPrice[] memory assetPrices = new OracleHelper.AssetPrice[](1);
+        assetPrices[0] = OracleHelper.AssetPrice({asset: assetAddress, priceD18: 0});
+
+        // Check price is consistently decreasing after multiple reports when the vault gets yield (liquidity is growing)
+        uint256 totalShares = deployment.shareManager.totalShares();
+        for (uint256 i = 0; i < 5; i++) {
+            asset.mint(address(deployment.vault), 0.01 ether);
+            amount += 0.01 ether;
+
+            uint256[] memory prices = oracleHelper.getPricesD18(deployment.vault, amount, assetPrices);
+            assertEq(prices[0], Math.mulDiv(totalShares, 1 ether, amount), "Wrong price");
+
+            skip(1 days);
+            pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: uint224(prices[0])}));
+        }
+    }
+
+    /// @dev Test that the price calculation for the base asset is correct after multiple reports.
+    /// Simulates the case when the vault mints fees (shares are growing)
+    function testPriceCalculationForBaseAsset_IterativeSharesGrowth() external {
+        uint256 amount = 1e18;
+
+        MockERC20 asset = new MockERC20();
+        address assetAddress = address(asset);
+        (Deployment memory deployment, DepositQueue depositQueue,) = createVaultWithBaseAsset(assetAddress);
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setFees(0, 0, 0, 0.1e6); // 10% protocol fees
+
+        pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
+
+        makeDeposit(user, amount, depositQueue);
+
+        skip(1 days);
+        pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
+
+        OracleHelper.AssetPrice[] memory assetPrices = new OracleHelper.AssetPrice[](1);
+        assetPrices[0] = OracleHelper.AssetPrice({asset: assetAddress, priceD18: 0});
+
+        uint256 accumulatedFees = 0;
+
+        // Check price is consistently increasing after multiple reports when the vault mint shares (due to fees)
+        for (uint256 i = 0; i < 5; i++) {
+            uint256 totalShares = deployment.shareManager.totalShares();
+            uint256[] memory prices = oracleHelper.getPricesD18(deployment.vault, amount, assetPrices);
+            assertEq(prices[0], Math.mulDiv(totalShares, 1 ether, amount), "Wrong price");
+
+            // Check that the protocol fees are the only source of the price increase
+            assertEq(prices[0] - accumulatedFees, 1 ether, "Wrong shares accumulation");
+
+            skip(1 days);
+            accumulatedFees +=
+                deployment.feeManager.calculateFee(address(deployment.vault), assetAddress, prices[0], totalShares);
+            pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: uint224(prices[0])}));
+        }
+    }
+
     /// @dev Test that the price calculation for the base asset is correct.
     /// Case with fees, but with no pending withdrawals.
     function testPriceCalculationForBaseAsset_WithFees() external {
         MockERC20 asset = new MockERC20();
         address assetAddress = address(asset);
 
-        address[] memory assets = new address[](1);
-        assets[0] = assetAddress;
-
-        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
-        FeeManager feeManager = deployment.feeManager;
-
-        addRedeemQueue(deployment, vaultProxyAdmin, assetAddress);
-        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, assetAddress));
-        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+        (Deployment memory deployment, DepositQueue depositQueue,) = createVaultWithBaseAsset(assetAddress);
 
         vm.prank(deployment.vaultAdmin);
-        deployment.feeManager.setBaseAsset(address(deployment.vault), assetAddress);
-
-        vm.prank(deployment.vaultAdmin);
-        feeManager.setFees(0, 0, 0, 0.1e6);
+        deployment.feeManager.setFees(0, 0, 0, 0.1e6);
 
         pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
 
         uint256 amount = 3 ether;
         makeDeposit(user, amount, depositQueue);
 
-        skip(Math.max(securityParams.timeout, securityParams.depositInterval));
+        skip(Math.max(deployment.oracle.securityParams().timeout, deployment.oracle.securityParams().depositInterval));
         pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
 
         skip(31 days);
@@ -114,22 +169,11 @@ contract OracleHelperTest is FixtureTest {
     function testPriceCalculationForBaseAsset_WithFeesAndPendingWithdrawals() external {
         MockERC20 asset = new MockERC20();
         address assetAddress = address(asset);
-
-        address[] memory assets = new address[](1);
-        assets[0] = assetAddress;
-
-        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
-        FeeManager feeManager = deployment.feeManager;
-
-        RedeemQueue redeemQueue = RedeemQueue(payable(addRedeemQueue(deployment, vaultProxyAdmin, assetAddress)));
-        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, assetAddress));
+        (Deployment memory deployment, DepositQueue depositQueue, RedeemQueue redeemQueue) = createVaultWithBaseAsset(assetAddress);
         IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
 
         vm.prank(deployment.vaultAdmin);
-        deployment.feeManager.setBaseAsset(address(deployment.vault), assetAddress);
-
-        vm.prank(deployment.vaultAdmin);
-        feeManager.setFees(0, 0, 0, 0.1e6);
+        deployment.feeManager.setFees(0, 0, 0, 0.1e6);
 
         pushReport(deployment, IOracle.Report({asset: assetAddress, priceD18: 1e18}));
 
@@ -387,5 +431,22 @@ contract OracleHelperTest is FixtureTest {
 
         vm.expectRevert("OracleHelper: multiple base assets");
         oracleHelper.getPricesD18(vault, 0, assetPrices);
+    }
+
+    /// @dev Create a vault with a single base asset.
+    function createVaultWithBaseAsset(address assetAddress)
+        private
+        returns (Deployment memory deployment, DepositQueue depositQueue, RedeemQueue redeemQueue)
+    {
+        address[] memory assets = new address[](1);
+        assets[0] = assetAddress;
+
+        deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+
+        redeemQueue = RedeemQueue(payable(addRedeemQueue(deployment, vaultProxyAdmin, assetAddress)));
+        depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, assetAddress));
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setBaseAsset(address(deployment.vault), assetAddress);
     }
 }
