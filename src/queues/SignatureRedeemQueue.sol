@@ -10,7 +10,7 @@ contract SignatureRedeemQueue is SignatureQueue {
         SignatureQueue(name_, version_, consensusFactory_)
     {}
 
-    function redeem(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
+    function redeem(Order calldata order, IConsensus.Signature[] calldata signatures) external nonReentrant {
         IShareModule vault_ = IShareModule(vault());
         if (vault_.isPausedQueue(address(this))) {
             revert QueuePaused();
