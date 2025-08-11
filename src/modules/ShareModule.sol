@@ -282,11 +282,20 @@ abstract contract ShareModule is IShareModule, ACLModule {
         }
         IShareManager shareManager_ = IShareManager($.shareManager);
         IFeeManager feeManager_ = IFeeManager($.feeManager);
-        uint256 fees = feeManager_.calculateFee(address(this), asset, priceD18, shareManager_.totalShares());
-        if (fees != 0) {
-            shareManager_.mint(feeManager_.feeRecipient(), fees);
+        uint256 fees;
+        if (asset == feeManager_.baseAsset(address(this))) {
+            address feeRecipient_ = feeManager_.feeRecipient();
+            fees = feeManager_.calculateFee(
+                address(this),
+                asset,
+                priceD18,
+                shareManager_.totalShares() - shareManager_.activeSharesOf(feeRecipient_)
+            );
+            if (fees != 0) {
+                shareManager_.mint(feeRecipient_, fees);
+            }
+            feeManager_.updateState(asset, priceD18);
         }
-        feeManager_.updateState(asset, priceD18);
         EnumerableSet.AddressSet storage queues = _shareModuleStorage().queues[asset];
         uint256 length = queues.length();
         for (uint256 i = 0; i < length; i++) {

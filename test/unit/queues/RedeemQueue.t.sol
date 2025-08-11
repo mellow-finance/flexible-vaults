@@ -187,7 +187,7 @@ contract RedeemQueueTest is FixtureTest {
 
         assertEq(
             user.balance,
-            uint256(1e6 - redeemFeeD6) * uint256(1e6 - depositFeeD6) * 1 ether / 1e12,
+            uint256(1e6 - redeemFeeD6) * uint256(1e6 - depositFeeD6) * amount / 1e12,
             "User should have 1 ETH after claim"
         );
 
@@ -205,12 +205,10 @@ contract RedeemQueueTest is FixtureTest {
 
         vm.prank(feeRecipient);
         redeemQueue.claim(feeRecipient, timestamps);
-
         assertEq(
             feeRecipient.balance,
-            uint256(1e6 - redeemFeeD6)
-                * (uint256(depositFeeD6) * 1 ether + uint256(redeemFeeD6) * uint256(1e6 - depositFeeD6) * 1 ether / 1e6)
-                / 1e12,
+            /// @dev Fee accrued (deposit and redeem) only on User's shares, not on the feeRecipient shares
+            amount * depositFeeD6 / 1e6 + (1e6 - depositFeeD6) * amount * redeemFeeD6 / 1e12,
             "FeeRecipient should have expected ETH balance after claim"
         );
     }
