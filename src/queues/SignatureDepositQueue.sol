@@ -9,14 +9,14 @@ contract SignatureDepositQueue is SignatureQueue {
     {}
 
     function deposit(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
-        validateOrder(order, signatures);
-        _signatureQueueStorage().nonces[order.caller]++;
-        TransferLibrary.receiveAssets(order.asset, order.caller, order.ordered);
-
         IShareModule vault_ = IShareModule(vault());
         if (vault_.isPausedQueue(address(this))) {
             revert QueuePaused();
         }
+
+        validateOrder(order, signatures);
+        _signatureQueueStorage().nonces[order.caller]++;
+        TransferLibrary.receiveAssets(order.asset, order.caller, order.ordered);
 
         TransferLibrary.sendAssets(order.asset, address(vault_), order.ordered);
         vault_.callHook(order.ordered);

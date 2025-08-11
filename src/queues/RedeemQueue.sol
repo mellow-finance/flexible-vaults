@@ -96,11 +96,13 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
         IShareManager shareManager_ = IShareManager(IShareModule(vault_).shareManager());
         shareManager_.burn(caller, shares);
-        {
-            IFeeManager feeManager = IShareModule(vault_).feeManager();
-            uint256 fees = feeManager.calculateRedeemFee(shares);
+        IFeeManager feeManager_ = IShareModule(vault_).feeManager();
+        address feeRecipient_ = feeManager_.feeRecipient();
+
+        if (caller != feeRecipient_) {
+            uint256 fees = feeManager_.calculateRedeemFee(shares);
             if (fees > 0) {
-                shareManager_.mint(feeManager.feeRecipient(), fees);
+                shareManager_.mint(feeRecipient_, fees);
                 shares -= fees;
             }
         }

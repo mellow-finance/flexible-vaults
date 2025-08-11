@@ -10,13 +10,14 @@ contract SignatureRedeemQueue is SignatureQueue {
         SignatureQueue(name_, version_, consensusFactory_)
     {}
 
-    function redeem(Order calldata order, IConsensus.Signature[] calldata signatures) external payable nonReentrant {
-        validateOrder(order, signatures);
-        _signatureQueueStorage().nonces[order.caller]++;
+    function redeem(Order calldata order, IConsensus.Signature[] calldata signatures) external nonReentrant {
         IShareModule vault_ = IShareModule(vault());
         if (vault_.isPausedQueue(address(this))) {
             revert QueuePaused();
         }
+
+        validateOrder(order, signatures);
+        _signatureQueueStorage().nonces[order.caller]++;
 
         if (order.requested > vault_.getLiquidAssets()) {
             revert InsufficientAssets(order.requested, vault_.getLiquidAssets());

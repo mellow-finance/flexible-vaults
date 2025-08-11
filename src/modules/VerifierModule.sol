@@ -27,7 +27,6 @@ abstract contract VerifierModule is IVerifierModule, BaseModule {
         if (verifier_ == address(0)) {
             revert ZeroAddress();
         }
-        __BaseModule_init();
         _verifierModuleStorage().verifier = verifier_;
     }
 
