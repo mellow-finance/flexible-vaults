@@ -49,6 +49,50 @@ contract OracleHelperTest is FixtureTest {
         assertEq(prices[0], 1e18, "Price should be equal to the amount");
     }
 
+    /// @dev Test that the price calculation should revert if the price is zero.
+    /// Price is zero because there is no minted shares.
+    function testPriceCalculationFailsWhenPriceIsZero() external {
+        MockERC20 asset = new MockERC20();
+        address assetAddress = address(asset);
+
+        (Deployment memory deployment,,) = createVaultWithBaseAsset(assetAddress);
+
+        OracleHelper.AssetPrice[] memory assetPrices = new OracleHelper.AssetPrice[](1);
+        assetPrices[0] = OracleHelper.AssetPrice({asset: assetAddress, priceD18: 0});
+
+        vm.expectRevert("OracleHelper: invalid price");
+        oracleHelper.getPricesD18(deployment.vault, 1e18, assetPrices);
+    }
+
+    /// @dev Test that the price calculation should revert if the price is too high >uint224.max.
+    function testPriceCalculationFailsWhenPriceIsTooHigh() external {
+        address[] memory assets = new address[](2);
+        assets[0] = address(new MockERC20());
+        assets[1] = address(new MockERC20());
+        assets = sort(assets);
+
+        (Deployment memory deployment, DepositQueue[] memory depositQueues,) = createVaultWithMultipleAssets(assets);
+
+        pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: 1e18}));
+        pushReport(deployment, IOracle.Report({asset: assets[1], priceD18: 1e18}));
+
+        makeDeposit(user, 1e18, depositQueues[0]);
+        makeDeposit(user, 1e18, depositQueues[1]);
+
+        skip(1 days);
+        pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: 1e18}));
+        pushReport(deployment, IOracle.Report({asset: assets[1], priceD18: 1e18}));
+
+        assertGt(deployment.shareManager.totalShares(), 0, "Total shares should be greater than 0");
+
+        OracleHelper.AssetPrice[] memory assetPrices = new OracleHelper.AssetPrice[](2);
+        assetPrices[0] = OracleHelper.AssetPrice({asset: assets[0], priceD18: 0});
+        assetPrices[1] = OracleHelper.AssetPrice({asset: assets[1], priceD18: type(uint176).max});
+
+        vm.expectRevert("OracleHelper: invalid price");
+        oracleHelper.getPricesD18(deployment.vault, 1, assetPrices);
+    }
+
     /// @dev Test that the price calculation for the base asset is correct after multiple reports.
     /// Simulates the case when the vault gets yield (liquidity is growing)
     function testPriceCalculationForBaseAsset_IterativeLiquidityGrowth() external {

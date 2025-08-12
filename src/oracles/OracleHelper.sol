@@ -96,7 +96,7 @@ contract OracleHelper {
             uint256 baseAssetPriceD18 = vault.oracle().getReport($.baseAsset).priceD18;
             uint256 recipientShares = vault.shareManager().activeSharesOf(feeManager.feeRecipient());
             while (true) {
-                uint256 feeShares = totalShares > 0
+                uint256 feeShares = totalShares > recipientShares
                     ? feeManager.calculateFee(address(vault), $.baseAsset, baseAssetPriceD18, totalShares - recipientShares)
                     : 0;
                 uint256 newBaseAssetPriceD18 = Math.mulDiv(
@@ -112,10 +112,12 @@ contract OracleHelper {
 
         // Step 4. Calculate the price of the other assets expressed via the base asset.
         for (uint256 i = 0; i < assetPrices.length; i++) {
-            if (i == $.baseAssetIndex) {
-                continue;
+            if (i != $.baseAssetIndex) {
+                pricesD18[i] = Math.mulDiv(pricesD18[$.baseAssetIndex], assetPrices[i].priceD18, 1 ether);
             }
-            pricesD18[i] = Math.mulDiv(pricesD18[$.baseAssetIndex], assetPrices[i].priceD18, 1 ether);
+            if (pricesD18[i] > type(uint224).max || pricesD18[i] == 0) {
+                revert("OracleHelper: invalid price");
+            }
         }
     }
 }
