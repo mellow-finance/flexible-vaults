@@ -8,11 +8,10 @@ contract OracleHelper {
         address asset;
         /**
          * Price of the asset expressed via the base asset.
-         * If the price is 0, it means that the asset is the base asset.
-         * E.g.
+         * If the price is 0, it means that the asset is the base asset, then for other assets:
          * - If priceD18 = 1e18, it means that 1 asset = 1 base asset
          * - If priceD18 = 0.5e18, it means that 1 asset = 0.5 base asset
-         * - If priceD18 = 2e18, it means that 1 asset = 2 base asset
+         * - If priceD18 = 2e18, it means that 1 asset = 2 base assets
          */
         uint256 priceD18;
     }
@@ -86,23 +85,22 @@ contract OracleHelper {
         }
 
         // Step 3. Calculate the price of the base asset.
+        uint256 totalShares = vault.shareManager().totalShares();
         if (feeManager.baseAsset(address(vault)) == address(0)) {
-            pricesD18[$.baseAssetIndex] = Math.mulDiv(
-                vault.shareManager().totalShares() + $.unprocessedShares, 1 ether, totalAssets - $.totalRedeemDemand
-            );
+            pricesD18[$.baseAssetIndex] =
+                Math.mulDiv(totalShares + $.unprocessedShares, 1 ether, totalAssets - $.totalRedeemDemand);
         } else {
             if (feeManager.baseAsset(address(vault)) != $.baseAsset) {
                 revert("OracleHelper: invalid base asset");
             }
-
             uint256 baseAssetPriceD18 = vault.oracle().getReport($.baseAsset).priceD18;
-            uint256 totalShares = vault.shareManager().totalShares();
+            uint256 recipientShares = vault.shareManager().activeSharesOf(feeManager.feeRecipient());
             while (true) {
+                uint256 feeShares = totalShares > 0
+                    ? feeManager.calculateFee(address(vault), $.baseAsset, baseAssetPriceD18, totalShares - recipientShares)
+                    : 0;
                 uint256 newBaseAssetPriceD18 = Math.mulDiv(
-                    totalShares + $.unprocessedShares
-                        + feeManager.calculateFee(address(vault), $.baseAsset, baseAssetPriceD18, totalShares),
-                    1 ether,
-                    totalAssets - $.totalRedeemDemand
+                    totalShares + $.unprocessedShares + feeShares, 1 ether, totalAssets - $.totalRedeemDemand
                 );
                 if (newBaseAssetPriceD18 == baseAssetPriceD18) {
                     break;
