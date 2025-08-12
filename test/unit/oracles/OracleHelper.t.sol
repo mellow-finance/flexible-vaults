@@ -49,6 +49,61 @@ contract OracleHelperTest is FixtureTest {
         assertEq(prices[0], 1e18, "Price should be equal to the amount");
     }
 
+    /// @dev Tests that the price calculation for a single non-base asset is correct.
+    function testPriceCalculationForSingleNonBaseAsset() external {
+        MockERC20 asset = new MockERC20();
+        address[] memory assets = new address[](1);
+        assets[0] = address(asset);
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        addRedeemQueue(deployment, vaultProxyAdmin, assets[0]);
+        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, assets[0]));
+
+        // Set the initial price
+        pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: 1e18}));
+
+        // Make and process a deposit
+        makeDeposit(user, 1 ether, depositQueue);
+        skip(1 days);
+        pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: 1e18}));
+
+        // Check that the base asset is not set
+        assertNotEq(
+            deployment.feeManager.baseAsset(address(deployment.vault)), assets[0], "Base asset should not be set"
+        );
+
+        OracleHelper.AssetPrice[] memory assetPrices = new OracleHelper.AssetPrice[](1);
+        assetPrices[0] = OracleHelper.AssetPrice({asset: assets[0], priceD18: 0});
+        uint256[] memory prices = oracleHelper.getPricesD18(deployment.vault, 1 ether, assetPrices);
+
+        // Check invariant: shares = assets * priceD18 / 1e18
+        uint256 totalShares = deployment.shareManager.totalShares();
+        assertEq(totalShares, Math.mulDiv(1 ether, prices[0], 1e18), "Invariant is not met");
+
+        // Check that oracle helper provides the same price for base asset when fees are not set
+        {
+            // Make sure that there are no fees
+            vm.prank(deployment.vaultAdmin);
+            deployment.feeManager.setFees(0, 0, 0, 0);
+
+            // Set base asset
+            vm.prank(deployment.vaultAdmin);
+            deployment.feeManager.setBaseAsset(address(deployment.vault), assets[0]);
+
+            // Make and process another deposit
+            makeDeposit(user, 1 ether, depositQueue);
+            skip(1 days);
+            pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: 1e18}));
+
+            // Check that the price calculation is correct
+            prices = oracleHelper.getPricesD18(deployment.vault, 2 ether, assetPrices);
+            assertEq(prices[0], 1e18, "Price should be equal to the amount");
+            assertEq(
+                deployment.shareManager.totalShares(), Math.mulDiv(2 ether, prices[0], 1e18), "Invariant is not met"
+            );
+        }
+    }
+
     /// @dev Test that the price calculation should revert if the price is zero.
     /// Price is zero because there is no minted shares.
     function testPriceCalculationFailsWhenPriceIsZero() external {

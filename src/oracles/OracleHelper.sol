@@ -110,7 +110,7 @@ contract OracleHelper {
             pricesD18[$.baseAssetIndex] = baseAssetPriceD18;
         }
 
-        // Step 4. Calculate the price of the other assets expressed via the base asset.
+        // Step 4. Calculate the price of the other assets based on the base asset.
         for (uint256 i = 0; i < assetPrices.length; i++) {
             if (i != $.baseAssetIndex) {
                 pricesD18[i] = Math.mulDiv(pricesD18[$.baseAssetIndex], assetPrices[i].priceD18, 1 ether);
