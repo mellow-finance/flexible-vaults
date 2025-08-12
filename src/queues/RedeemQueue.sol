@@ -198,7 +198,6 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 $.totalDemandAssets -= demand;
             }
             $.batchIterator += counter;
-            $.totalPendingShares -= shares;
             emit RedeemRequestsHandled(counter, demand);
         }
     }
@@ -234,6 +233,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
 
         uint256 index = $.prices.length();
+        $.totalPendingShares -= shares;
         $.prices.push(timestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
         $.batches.push(Batch(assets_, shares));

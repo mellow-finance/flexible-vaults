@@ -269,22 +269,29 @@ contract RedeemQueueTest2 is Test {
         assertEq(batchIterator, 0, "Batch iterator should be 0");
         assertEq(batches, 1, "Batches length should be 1");
         assertEq(totalDemandAssets, 1 ether, "Total demand assets should be 1 ether");
-        assertEq(totalPendingShares, 1 ether, "Total pending shares should be 1 ether");
+        assertEq(totalPendingShares, 0, "Total pending shares should be 0");
     }
 
     /// @notice Tests that `handleReport` should create a batch and increase demand assets if multiple requests were made.
     function testHandleReportCreatesBatchAndIncreasesDemandAssets_WithMultipleRequests() public {
         _performRedeem(user, 1 ether);
         _performRedeem(user, 2 ether);
-        skip(REDEEM_INTERVAL);
-        _pushReport(1e18);
 
         (uint256 batchIterator, uint256 batches, uint256 totalDemandAssets, uint256 totalPendingShares) =
             queue.getState();
         assertEq(batchIterator, 0, "Batch iterator should be 0");
+        assertEq(batches, 0, "Batches length should be 0");
+        assertEq(totalDemandAssets, 0, "Total demand assets should be 0");
+        assertEq(totalPendingShares, 3 ether, "Total pending shares should be 3 ether");
+
+        skip(REDEEM_INTERVAL);
+        _pushReport(1e18);
+
+        (batchIterator, batches, totalDemandAssets, totalPendingShares) = queue.getState();
+        assertEq(batchIterator, 0, "Batch iterator should be 0");
         assertEq(batches, 1, "Batches length should be 1");
         assertEq(totalDemandAssets, 3 ether, "Total demand assets should be 3 ether");
-        assertEq(totalPendingShares, 3 ether, "Total pending shares should be 3 ether");
+        assertEq(totalPendingShares, 0, "Total pending shares should be 0");
     }
 
     /// @notice Tests that `handleReport` correctly handles the case when the first redeem is made right after the queue is created.
@@ -305,7 +312,9 @@ contract RedeemQueueTest2 is Test {
         assertEq(batchIterator, 0, "Batch iterator should be 0");
         assertEq(batches, 1, "Batches length should be 1");
         assertEq(totalDemandAssets, 1 ether, "Total demand assets should be 1 ether");
-        assertEq(totalPendingShares, 3 ether, "Total pending shares should be 3 ether");
+
+        // Pending shares should be 2 ether, because only first request is processed
+        assertEq(totalPendingShares, 2 ether, "Total pending shares should be 2 ether");
     }
 
     // -----------------------------------------------------------------------
@@ -386,9 +395,32 @@ contract RedeemQueueTest2 is Test {
     function testHandleBatchesHandlesPartialLiquidity() public {
         vault.__setLiquidAssets(1.5 ether);
 
+        // Check that the initial state is expected
+        (uint256 batchIterator, uint256 batches, uint256 totalDemandAssets, uint256 totalPendingShares) =
+            queue.getState();
+        assertEq(batchIterator, 0, "Batch iterator should be 0");
+        assertEq(batches, 0, "Batches length should be 0");
+        assertEq(totalDemandAssets, 0, "Total demand assets should be 0");
+        assertEq(totalPendingShares, 0, "Total pending shares should be 0");
+
         _performRedeem(user, 1 ether);
+
+        // Check that pending shares are recorded, but no batches are created yet
+        (batchIterator, batches, totalDemandAssets, totalPendingShares) = queue.getState();
+        assertEq(batchIterator, 0, "Batch iterator should be 0");
+        assertEq(batches, 0, "Batches length should be 0");
+        assertEq(totalDemandAssets, 0, "Total demand assets should be 0");
+        assertEq(totalPendingShares, 1 ether, "Total pending shares should be 1 ether");
+
         skip(REDEEM_INTERVAL);
         _pushReport(1e18);
+
+        // Check that pending shares are decreased and a batch is created
+        (batchIterator, batches, totalDemandAssets, totalPendingShares) = queue.getState();
+        assertEq(batchIterator, 0, "Batch iterator should be 0");
+        assertEq(batches, 1, "Batches length should be 1");
+        assertEq(totalDemandAssets, 1 ether, "Total demand assets should be 1 ether");
+        assertEq(totalPendingShares, 0, "Total pending shares should be 0");
 
         skip(1);
 
@@ -396,13 +428,12 @@ contract RedeemQueueTest2 is Test {
         skip(REDEEM_INTERVAL);
         _pushReport(1e18);
 
-        // Check that the state is expected
-        (uint256 batchIterator, uint256 batches, uint256 totalDemandAssets, uint256 totalPendingShares) =
-            queue.getState();
+        // Check that the state is expected after second redeem
+        (batchIterator, batches, totalDemandAssets, totalPendingShares) = queue.getState();
         assertEq(batchIterator, 0, "Batch iterator should be 0");
         assertEq(batches, 2, "Batches length should be 2");
         assertEq(totalDemandAssets, 2 ether, "Total demand assets should be 2 ether");
-        assertEq(totalPendingShares, 2 ether, "Total pending shares should be 2 ether");
+        assertEq(totalPendingShares, 0, "Total pending shares should be 0");
 
         // Process the batches
         // Only one batch should be processed, because the vault has only 1.5 ether of liquid assets
@@ -412,7 +443,7 @@ contract RedeemQueueTest2 is Test {
         assertEq(batchIterator, 1, "Batch iterator should be 1");
         assertEq(batches, 2, "Batches length should be 2");
         assertEq(totalDemandAssets, 1 ether, "Total demand assets should be 1 ether");
-        assertEq(totalPendingShares, 1 ether, "Total pending shares should be 1 ether");
+        assertEq(totalPendingShares, 0, "Total pending shares should be 0");
 
         // Vault got more liquid assets, keep processing
         {
@@ -424,6 +455,7 @@ contract RedeemQueueTest2 is Test {
             assertEq(batchIterator, 2, "Batch iterator should be 2");
             assertEq(batches, 2, "Batches length should be 2");
             assertEq(totalDemandAssets, 0 ether, "Total demand assets should be 0 ether");
+            assertEq(totalPendingShares, 0, "Total pending shares should be 0");
         }
     }
 

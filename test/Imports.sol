@@ -26,6 +26,7 @@ import "../src/modules/VaultModule.sol";
 import "../src/modules/VerifierModule.sol";
 
 import "../src/oracles/Oracle.sol";
+import "../src/oracles/OracleHelper.sol";
 
 import "../src/permissions/BitmaskVerifier.sol";
 
