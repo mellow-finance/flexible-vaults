@@ -884,6 +884,154 @@ contract OracleHelperTest is FixtureTest {
         }
     }
 
+    /// @dev Test that the price calculation is correct after partial redeem.
+    /// Algorithm:
+    /// 1. Make a deposit of 1 ether of base asset and 1 ether of other asset.
+    /// - Assume that base asset is 2 times cheaper than the other asset.
+    /// 2. Process deposits.
+    /// 3. Report new prices so that the price of other asset is increased by 1%.
+    /// 4. Redeem 10% of the total shares via base asset.
+    /// 5. Calculate new prices and check that the invariant is preserved.
+    function testPriceCalculationIsCorrectAfterPartialRedeem() external {
+        address[] memory assetAddresses = new address[](2);
+        assetAddresses[0] = address(new MockERC20());
+        assetAddresses[1] = address(new MockERC20());
+        assetAddresses = sort(assetAddresses);
+
+        (Deployment memory deployment, DepositQueue[] memory depositQueues, RedeemQueue[] memory redeemQueues) =
+            createVaultWithMultipleAssets(assetAddresses);
+
+        // Make sure that there are no fees to get accurate calculations
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setFees(0, 0, 0, 0);
+
+        // Push initial reports for every asset
+        pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: 1e18}));
+        pushReport(deployment, IOracle.Report({asset: assetAddresses[1], priceD18: 2e18}));
+
+        // Define initial price-relations between assets, base asset is 2 times cheaper than the other asset.
+        OracleHelper.AssetPrice[] memory assetPrices = new OracleHelper.AssetPrice[](assetAddresses.length);
+        assetPrices[0] = OracleHelper.AssetPrice({asset: assetAddresses[0], priceD18: 0});
+        assetPrices[1] = OracleHelper.AssetPrice({asset: assetAddresses[1], priceD18: 2e18});
+
+        // Make same amount of deposits for each asset from the same user
+        for (uint256 i = 0; i < assetAddresses.length; i++) {
+            uint256 amount = 1 ether;
+            makeDeposit(user, amount, depositQueues[i]);
+        }
+
+        skip(1 days);
+        pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: 1e18}));
+        pushReport(deployment, IOracle.Report({asset: assetAddresses[1], priceD18: 2e18}));
+
+        // Calculate initial prices
+        uint256[] memory prices = oracleHelper.getPricesD18(deployment.vault, 3 ether, assetPrices);
+        assertEq(prices[0], 1e18, "Base asset price should be 1e18");
+        assertEq(prices[1], 2e18, "Other asset price should be 2e18");
+
+        // Assume that price of other asset changed, increased by 1%
+        {
+            assetPrices[0] = OracleHelper.AssetPrice({asset: assetAddresses[0], priceD18: 0});
+
+            uint224 newOtherAssetPrice = uint224(Math.mulDiv(2e18, 101, 100));
+            assetPrices[1] = OracleHelper.AssetPrice({asset: assetAddresses[1], priceD18: newOtherAssetPrice});
+
+            // Calculate the new TVL of the base asset and the other asset
+            uint256 baseAssetTVL = 1 ether + Math.mulDiv(1 ether, 202, 100); // 3.02 ether
+            uint256 otherAssetTVL = 1 ether + Math.mulDiv(1 ether, 100, 202); // 1.495 ether
+
+            uint256[] memory newPrices = oracleHelper.getPricesD18(deployment.vault, baseAssetTVL, assetPrices);
+            assertLt(newPrices[0], prices[0], "Base asset price should be less than the initial price");
+            assertGt(newPrices[1], prices[1], "Other asset price should be greater than the initial price");
+
+            // Report new prices
+            skip(1 days);
+            pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: uint224(newPrices[0])}));
+            pushReport(deployment, IOracle.Report({asset: assetAddresses[1], priceD18: uint224(newPrices[1])}));
+
+            // Check that invariant is preserved
+            prices = oracleHelper.getPricesD18(deployment.vault, baseAssetTVL, assetPrices);
+            uint256 totalShares = deployment.shareManager.totalShares();
+            assertEq(totalShares, 3 ether);
+            assertApproxEqAbs(
+                totalShares, Math.mulDiv(baseAssetTVL, prices[0], 1e18), 1, "Wrong invariant for base asset"
+            );
+            assertApproxEqAbs(
+                totalShares, Math.mulDiv(otherAssetTVL, prices[1], 1e18), 3, "Wrong invariant for other asset"
+            );
+        }
+
+        // Redeem 20% of the total shares via base asset
+        {
+            uint256 totalShares = deployment.shareManager.totalShares();
+            uint256 sharesToRedeem = totalShares / 5;
+            vm.prank(user);
+            redeemQueues[0].redeem(sharesToRedeem);
+
+            // Check that the user redeemed 20% of the total shares
+            assertEq(
+                deployment.shareManager.totalShares(), Math.mulDiv(totalShares, 80, 100), "80% of shares should be left"
+            );
+
+            skip(1 days);
+            pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: uint224(prices[0])}));
+            pushReport(deployment, IOracle.Report({asset: assetAddresses[1], priceD18: uint224(prices[1])}));
+
+            // Check that invariant `shares = assets * priceD18 / 1e18` is preserved
+            // For assets: `assets = shares * 1e18 / priceD18`
+            (,, uint256 totalDemandAssets,) = redeemQueues[0].getState();
+            uint256 withdrawnAmount = (1 ether + Math.mulDiv(1 ether, 202, 100)) / 5; // 0.64 ether
+            assertEq(totalDemandAssets, withdrawnAmount);
+
+            // Calculate new prices when redeem is not processed yet
+            {
+                uint256 baseAssetTVL = withdrawnAmount * 5; // Nothing is withdrawn yet, so the TVL is the same as the initial TVL
+                uint256[] memory newPrices = oracleHelper.getPricesD18(deployment.vault, baseAssetTVL, assetPrices);
+                assertEq(newPrices[0], prices[0], "Base asset price should be equal to the previous price");
+                assertEq(newPrices[1], prices[1], "Other asset price should be equal to the previous price");
+
+                // Check that invariant is preserved
+                totalShares = deployment.shareManager.totalShares() + sharesToRedeem;
+                assertApproxEqAbs(
+                    totalShares,
+                    Math.mulDiv(baseAssetTVL, newPrices[0], 1e18),
+                    1,
+                    "Invariant is not met (not processed redeem)"
+                );
+            }
+
+            // Calculate new prices when redeem is processed
+            {
+                assertEq(IERC20(assetAddresses[0]).balanceOf(user), 0, "User should have no base asset");
+
+                redeemQueues[0].handleBatches(type(uint256).max);
+
+                uint32[] memory timestamps = new uint32[](1);
+                timestamps[0] = uint32(block.timestamp - 1 days);
+
+                vm.prank(user);
+                redeemQueues[0].claim(user, timestamps);
+
+                uint256 baseAssetTVL = withdrawnAmount * 4; // 20% of the shares are withdrawn, so the TVL is 80% of the initial TVL
+                uint256[] memory newPrices = oracleHelper.getPricesD18(deployment.vault, baseAssetTVL, assetPrices);
+                assertEq(newPrices[0], prices[0], "Base asset price should be equal to the previous price");
+                assertEq(newPrices[1], prices[1], "Other asset price should be equal to the previous price");
+
+                // Verify that redeem is successful
+                assertGt(IERC20(assetAddresses[0]).balanceOf(user), 0, "User should have some base asset");
+
+                // Check that invariant is preserved
+                totalShares = deployment.shareManager.totalShares();
+                assertApproxEqAbs(
+                    totalShares,
+                    Math.mulDiv(baseAssetTVL, newPrices[0], 1e18),
+                    1,
+                    "Invariant is not met (processed redeem)"
+                );
+            }
+        }
+    }
+
     /// @dev Test that the price calculation is correct when the assets have different decimals.
     /// Assume base asset has 18 decimals and other asset has 6 decimals.
     /// Other asset is two times cheaper than the base asset.
