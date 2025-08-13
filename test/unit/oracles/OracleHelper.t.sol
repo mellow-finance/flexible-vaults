@@ -402,6 +402,10 @@ contract OracleHelperTest is FixtureTest {
             // priceD18 = shares * 1e18 / assets = amount * 1e18 / amount = 1e18
             assertEq(prices[0], 0.5e18, "Price of base asset should be equal to the amount");
             assertEq(prices[1], 1e18, "Price of other asset should be equal to the amount");
+
+            totalShares = deployment.shareManager.totalShares();
+            assertEq(totalShares, Math.mulDiv(amount * 2, prices[0], 1e18), "Invariant is not met for base asset");
+            assertEq(totalShares, Math.mulDiv(amount, prices[1], 1e18), "Invariant is not met for other asset");
         }
     }
 
@@ -802,10 +806,12 @@ contract OracleHelperTest is FixtureTest {
             uint224 newOtherAssetPrice = uint224(Math.mulDiv(2e18, 101, 100));
             assetPrices[1] = OracleHelper.AssetPrice({asset: assetAddresses[1], priceD18: newOtherAssetPrice});
 
-            // Total assets in base asset = shares * priceD18 / 1e18 = 3 ether
-            uint256 baseAssetTVL = 3 ether;
+            // Calculate the new TVL of the base asset and the other asset
+            uint256 baseAssetTVL = 1 ether + Math.mulDiv(1 ether, 202, 100); // 3.02 ether
+            uint256 otherAssetTVL = 1 ether + Math.mulDiv(1 ether, 100, 202); // 1.495 ether
+
             uint256[] memory newPrices = oracleHelper.getPricesD18(deployment.vault, baseAssetTVL, assetPrices);
-            assertEq(newPrices[0], prices[0], "Base asset price should be the same as the initial price");
+            assertLt(newPrices[0], prices[0], "Base asset price should be less than the initial price");
             assertGt(newPrices[1], prices[1], "Other asset price should be greater than the initial price");
 
             // Report new prices
@@ -820,39 +826,60 @@ contract OracleHelperTest is FixtureTest {
             assertApproxEqAbs(
                 totalShares, Math.mulDiv(baseAssetTVL, prices[0], 1e18), 1, "Wrong invariant for base asset"
             );
-            uint256 otherAssetTVL = Math.mulDiv(baseAssetTVL, 100, 202);
             assertApproxEqAbs(
                 totalShares, Math.mulDiv(otherAssetTVL, prices[1], 1e18), 3, "Wrong invariant for other asset"
             );
 
-            // Check proportion after withdrawal
+            uint256 snapshot = vm.snapshot();
+
+            // Check invariant for base asset after withdrawal
             {
-                uint256 timestamp = block.timestamp;
-                vm.startPrank(user);
-                redeemQueues[0].redeem(1 ether);
-                redeemQueues[1].redeem(2 ether);
-                vm.stopPrank();
+                vm.prank(user);
+                redeemQueues[0].redeem(3 ether);
+
+                // Check that the user redeemed all shares
+                assertEq(deployment.shareManager.totalShares(), 0, "All shares should be redeemed");
 
                 skip(1 days);
                 pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: uint224(prices[0])}));
                 pushReport(deployment, IOracle.Report({asset: assetAddresses[1], priceD18: uint224(prices[1])}));
 
-                redeemQueues[0].handleBatches(type(uint256).max);
-                redeemQueues[1].handleBatches(type(uint256).max);
-                uint32[] memory timestamps = new uint32[](1);
-                timestamps[0] = uint32(timestamp);
+                // Check that invariant `shares = assets * priceD18 / 1e18` is preserved
+                // For assets: `assets = shares * 1e18 / priceD18`
+                (,, uint256 totalDemandAssets,) = redeemQueues[0].getState();
+                assertEq(
+                    totalDemandAssets, Math.mulDiv(3 ether, 1e18, prices[0]), "All demand assets should be redeemed"
+                );
 
-                vm.startPrank(user);
-                redeemQueues[0].claim(user, timestamps);
-                redeemQueues[1].claim(user, timestamps);
-                vm.stopPrank();
+                // User should get all base asset + all other asset (expressed in base asset)
+                uint256 withdrawnAmount = 1 ether + Math.mulDiv(1 ether, 202, 100); // 3.02 ether
+                assertApproxEqAbs(totalDemandAssets, withdrawnAmount, 1);
+            }
 
-                uint256 balanceBaseAsset = IERC20(assetAddresses[0]).balanceOf(user);
-                uint256 balanceOtherAsset = IERC20(assetAddresses[1]).balanceOf(user);
-                assertEq(balanceBaseAsset, 1 ether, "Base asset balance should be the same as initial deposit");
-                assertLt(balanceOtherAsset, 1 ether, "Other asset balance should be less than initial deposit");
+            vm.revertTo(snapshot);
 
+            // Check invariant for other asset after withdrawal
+            {
+                vm.prank(user);
+                redeemQueues[1].redeem(3 ether);
+
+                // Check that the user redeemed all shares
                 assertEq(deployment.shareManager.totalShares(), 0, "All shares should be redeemed");
+
+                skip(1 days);
+                pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: uint224(prices[0])}));
+                pushReport(deployment, IOracle.Report({asset: assetAddresses[1], priceD18: uint224(prices[1])}));
+
+                // Check that invariant `shares = assets * priceD18 / 1e18` is preserved
+                // For assets: `assets = shares * 1e18 / priceD18`
+                (,, uint256 totalDemandAssets,) = redeemQueues[1].getState();
+                assertEq(
+                    totalDemandAssets, Math.mulDiv(3 ether, 1e18, prices[1]), "All demand assets should be redeemed"
+                );
+
+                // User should get all other asset + all base asset (expressed in other asset)
+                uint256 withdrawnAmount = 1 ether + Math.mulDiv(1 ether, 100, 202); // 1.495 ether
+                assertApproxEqAbs(totalDemandAssets, withdrawnAmount, 1);
             }
         }
     }
