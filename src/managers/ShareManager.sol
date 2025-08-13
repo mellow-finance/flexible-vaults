@@ -228,6 +228,26 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         emit Mint(account, value);
     }
 
+    function reduceSharesOf(address account, uint256 value) external onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
+        _reduceSharesOf(account, value);
+        emit ReduceSharesOf(account, value);
+    }
+
+    event ReduceSharesOf(address account, uint256 value);
+
+    function burnActiveShares(uint256 value) external onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
+        }
+        _burnActiveShares(value);
+        emit BurnActiveShares(value);
+    }
+
+    event BurnActiveShares(uint256 value);
+
     /// @inheritdoc IShareManager
     function burn(address account, uint256 value) external onlyQueue {
         if (value == 0) {
@@ -253,4 +273,8 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     function _mintShares(address account, uint256 value) internal virtual;
 
     function _burnShares(address account, uint256 value) internal virtual;
+
+    function _reduceSharesOf(address account, uint256 value) internal virtual;
+
+    function _burnActiveShares(uint256 value) internal virtual;
 }

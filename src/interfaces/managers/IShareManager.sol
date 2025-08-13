@@ -153,6 +153,10 @@ interface IShareManager is IFactoryEntity {
     /// @notice Burns user's shares
     function burn(address account, uint256 amount) external;
 
+    function reduceSharesOf(address acount, uint256 amount) external;
+
+    function burnActiveShares(uint256 amount) external;
+
     /// @notice One-time vault assignment during initialization
     function setVault(address vault_) external;
 

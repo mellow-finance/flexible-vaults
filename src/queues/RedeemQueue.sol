@@ -95,7 +95,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             revert QueuePaused();
         }
         IShareManager shareManager_ = IShareManager(IShareModule(vault_).shareManager());
-        shareManager_.burn(caller, shares);
+        shareManager_.reduceSharesOf(caller, shares);
         IFeeManager feeManager_ = IShareModule(vault_).feeManager();
         address feeRecipient_ = feeManager_.feeRecipient();
 
@@ -197,6 +197,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset(), -int256(uint256(demand)));
                 $.totalDemandAssets -= demand;
             }
+            vault_.shareManager().burnActiveShares(shares);
             $.batchIterator += counter;
             emit RedeemRequestsHandled(counter, demand);
         }
