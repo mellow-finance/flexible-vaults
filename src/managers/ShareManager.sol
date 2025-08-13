@@ -146,9 +146,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                 }
             }
         } else {
-            if (to == address(this)) {
-                return;
-            }
             if (flags_.hasMintPause()) {
                 revert MintPaused();
             }
@@ -231,26 +228,13 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         emit Mint(account, value);
     }
 
-    function reduceSharesOf(address account, uint256 value) external onlyQueue {
+    function lockSharesOf(address account, uint256 value) external onlyQueue {
         if (value == 0) {
             revert ZeroValue();
         }
-        _burnShares(account, value);
-        _mintShares(address(this), value);
-        emit ReduceSharesOf(account, value);
+        _lockSharesOf(account, value);
+        emit LockSharesOf(account, value);
     }
-
-    event ReduceSharesOf(address account, uint256 value);
-
-    function burnActiveShares(uint256 value) external onlyQueue {
-        if (value == 0) {
-            revert ZeroValue();
-        }
-        _burnShares(address(this), value);
-        emit BurnActiveShares(value);
-    }
-
-    event BurnActiveShares(uint256 value);
 
     /// @inheritdoc IShareManager
     function burn(address account, uint256 value) external onlyQueue {
@@ -277,4 +261,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     function _mintShares(address account, uint256 value) internal virtual;
 
     function _burnShares(address account, uint256 value) internal virtual;
+
+    function _lockSharesOf(address account, uint256 value) internal virtual;
 }

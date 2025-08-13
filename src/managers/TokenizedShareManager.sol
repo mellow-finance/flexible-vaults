@@ -49,6 +49,20 @@ contract TokenizedShareManager is ITokenizedShareManager, ShareManager, ERC20Upg
         _burn(account, value);
     }
 
+    function _lockSharesOf(address account, uint256 value) internal override {
+        if (account == address(0)) {
+            revert ERC20InvalidReceiver(address(0));
+        }
+        updateChecks(account, address(0));
+        TokenizedShareManagerStorage storage $ = _tokenizedShareManagerStorage();
+        if (!$.isClaiming) {
+            $.isClaiming = true;
+            claimShares(account);
+            $.isClaiming = false;
+        }
+        super._update(account, address(this), value);
+    }
+
     function _update(address from, address to, uint256 value) internal override {
         updateChecks(from, to);
 
