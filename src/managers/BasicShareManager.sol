@@ -64,15 +64,6 @@ contract BasicShareManager is ShareManager {
         emit IERC20.Transfer(account, address(0), value);
     }
 
-    function _reduceSharesOf(address account, uint256 value) internal override {
-        _burnShares(account, value);
-        _mintShares(address(this), value);
-    }
-
-    function _burnActiveShares(uint256 value) internal override {
-        _burnShares(address(this), value);
-    }
-
     function _getERC20Storage() private pure returns (ERC20Upgradeable.ERC20Storage storage $) {
         assembly {
             $.slot := ERC20StorageLocation

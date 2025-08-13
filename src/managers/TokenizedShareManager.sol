@@ -49,15 +49,6 @@ contract TokenizedShareManager is ITokenizedShareManager, ShareManager, ERC20Upg
         _burn(account, value);
     }
 
-    function _reduceSharesOf(address account, uint256 value) internal override {
-        _burn(account, value);
-        _mint(address(this), value);
-    }
-
-    function _burnActiveShares(uint256 value) internal override {
-        _burn(address(this), value);
-    }
-
     function _update(address from, address to, uint256 value) internal override {
         updateChecks(from, to);
 
