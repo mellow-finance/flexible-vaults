@@ -65,34 +65,12 @@ contract BasicShareManager is ShareManager {
     }
 
     function _reduceSharesOf(address account, uint256 value) internal override {
-        if (account == address(0)) {
-            revert IERC20Errors.ERC20InvalidSender(address(0));
-        }
-        updateChecks(account, address(0));
-        ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
-        uint256 balance = $._balances[account];
-        if (balance < value) {
-            revert IERC20Errors.ERC20InsufficientBalance(account, balance, value);
-        }
-        unchecked {
-            $._balances[account] = balance - value;
-        }
-        // burn of the user balance
-        emit IERC20.Transfer(account, address(0), value);
-        // mint to the address(this)
-        emit IERC20.Transfer(account, address(this), value);
+        _burnShares(account, value);
+        _mintShares(address(this), value);
     }
 
     function _burnActiveShares(uint256 value) internal override {
-        ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
-        uint256 totalSupply_ = $._totalSupply;
-        if (totalSupply_ < value) {
-            revert IERC20Errors.ERC20InsufficientBalance(address(this), totalSupply_, value);
-        }
-        unchecked {
-            $._totalSupply -= value;
-        }
-        emit IERC20.Transfer(address(this), address(0), value);
+        _burnShares(address(this), value);
     }
 
     function _getERC20Storage() private pure returns (ERC20Upgradeable.ERC20Storage storage $) {
