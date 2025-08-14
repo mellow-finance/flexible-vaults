@@ -19,8 +19,7 @@ contract OracleHelper {
     struct Stack {
         uint256 baseAssetIndex;
         address baseAsset;
-        uint256 unprocessedShares;
-        uint256 totalRedeemDemand;
+        uint256 totalRedeemDemand; // total processed and unclaimed assets amount nominated in baseAsset
     }
 
     /**
@@ -74,8 +73,7 @@ contract OracleHelper {
                 if (vault.isDepositQueue(queue) || IQueue(queue).canBeRemoved()) {
                     continue;
                 }
-                (,, uint256 demand_, uint256 shares_) = IRedeemQueue(queue).getState();
-                $.unprocessedShares += shares_;
+                (,, uint256 demand_,) = IRedeemQueue(queue).getState();
                 if (assetPrice.priceD18 == 0) {
                     $.totalRedeemDemand += demand_;
                 } else {
@@ -87,8 +85,7 @@ contract OracleHelper {
         // Step 3. Calculate the price of the base asset.
         uint256 totalShares = vault.shareManager().totalShares();
         if (feeManager.baseAsset(address(vault)) == address(0)) {
-            pricesD18[$.baseAssetIndex] =
-                Math.mulDiv(totalShares + $.unprocessedShares, 1 ether, totalAssets - $.totalRedeemDemand);
+            pricesD18[$.baseAssetIndex] = Math.mulDiv(totalShares, 1 ether, totalAssets - $.totalRedeemDemand);
         } else {
             if (feeManager.baseAsset(address(vault)) != $.baseAsset) {
                 revert("OracleHelper: invalid base asset");
@@ -99,9 +96,8 @@ contract OracleHelper {
                 uint256 feeShares = totalShares > recipientShares
                     ? feeManager.calculateFee(address(vault), $.baseAsset, baseAssetPriceD18, totalShares - recipientShares)
                     : 0;
-                uint256 newBaseAssetPriceD18 = Math.mulDiv(
-                    totalShares + $.unprocessedShares + feeShares, 1 ether, totalAssets - $.totalRedeemDemand
-                );
+                uint256 newBaseAssetPriceD18 =
+                    Math.mulDiv(totalShares + feeShares, 1 ether, totalAssets - $.totalRedeemDemand);
                 if (newBaseAssetPriceD18 == baseAssetPriceD18) {
                     break;
                 }

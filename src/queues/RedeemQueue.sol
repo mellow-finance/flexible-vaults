@@ -197,8 +197,6 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset(), -int256(uint256(demand)));
                 $.totalDemandAssets -= demand;
             }
-            IShareManager shareManager_ = vault_.shareManager();
-            shareManager_.burn(address(shareManager_), shares);
             $.batchIterator += counter;
             emit RedeemRequestsHandled(counter, demand);
         }
@@ -236,6 +234,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
         uint256 index = $.prices.length();
         $.totalPendingShares -= shares;
+        IShareManager shareManager_ = IShareModule(vault()).shareManager();
+        shareManager_.burn(address(shareManager_), shares);
         $.prices.push(timestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
         $.batches.push(Batch(assets_, shares));

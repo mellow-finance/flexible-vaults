@@ -837,8 +837,12 @@ contract OracleHelperTest is FixtureTest {
                 vm.prank(user);
                 redeemQueues[0].redeem(3 ether);
 
-                // Check that the user redeemed all shares
-                assertEq(deployment.shareManager.totalShares(), 0, "All shares should be redeemed");
+                // Check that the user redeemed all shares: locked at shareManager is actually redeemed
+                assertEq(
+                    deployment.shareManager.totalShares(),
+                    deployment.shareManager.sharesOf(address(deployment.shareManager)), // locked shares
+                    "All shares should be redeemed"
+                );
 
                 skip(1 days);
                 pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: uint224(prices[0])}));
@@ -863,8 +867,12 @@ contract OracleHelperTest is FixtureTest {
                 vm.prank(user);
                 redeemQueues[1].redeem(3 ether);
 
-                // Check that the user redeemed all shares
-                assertEq(deployment.shareManager.totalShares(), 0, "All shares should be redeemed");
+                // Check that the user redeemed all shares: locked at shareManager is actually redeemed
+                assertEq(
+                    deployment.shareManager.totalShares(),
+                    deployment.shareManager.sharesOf(address(deployment.shareManager)), // locked shares
+                    "All shares should be redeemed"
+                );
 
                 skip(1 days);
                 pushReport(deployment, IOracle.Report({asset: assetAddresses[0], priceD18: uint224(prices[0])}));
@@ -970,7 +978,9 @@ contract OracleHelperTest is FixtureTest {
 
             // Check that the user redeemed 20% of the total shares
             assertEq(
-                deployment.shareManager.totalShares(), Math.mulDiv(totalShares, 80, 100), "80% of shares should be left"
+                deployment.shareManager.totalShares() - sharesToRedeem, // reduce by locked shares
+                Math.mulDiv(totalShares, 80, 100),
+                "80% of shares should be left as free"
             );
 
             skip(1 days);
@@ -980,7 +990,7 @@ contract OracleHelperTest is FixtureTest {
             // Check that invariant `shares = assets * priceD18 / 1e18` is preserved
             // For assets: `assets = shares * 1e18 / priceD18`
             (,, uint256 totalDemandAssets,) = redeemQueues[0].getState();
-            uint256 withdrawnAmount = (1 ether + Math.mulDiv(1 ether, 202, 100)) / 5; // 0.64 ether
+            uint256 withdrawnAmount = (1 ether + Math.mulDiv(1 ether, 202, 100)) / 5; // 0.604 ether
             assertEq(totalDemandAssets, withdrawnAmount);
 
             // Calculate new prices when redeem is not processed yet
@@ -991,9 +1001,9 @@ contract OracleHelperTest is FixtureTest {
                 assertEq(newPrices[1], prices[1], "Other asset price should be equal to the previous price");
 
                 // Check that invariant is preserved
-                totalShares = deployment.shareManager.totalShares() + sharesToRedeem;
+                totalShares = deployment.shareManager.totalShares(); // includes both active and locked shares
                 assertApproxEqAbs(
-                    totalShares,
+                    totalShares + sharesToRedeem,
                     Math.mulDiv(baseAssetTVL, newPrices[0], 1e18),
                     1,
                     "Invariant is not met (not processed redeem)"
