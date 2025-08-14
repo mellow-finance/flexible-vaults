@@ -16,12 +16,6 @@ contract OracleHelper {
         uint256 priceD18;
     }
 
-    struct Stack {
-        uint256 baseAssetIndex;
-        address baseAsset;
-        uint256 totalRedeemDemand; // total processed and unclaimed assets amount nominated in baseAsset
-    }
-
     /**
      * Calculates the prices of the vault's assets which will be reported to the oracle.
      * @param vault Vault to calculate the prices for.
@@ -34,85 +28,106 @@ contract OracleHelper {
         returns (uint256[] memory pricesD18)
     {
         // Step 1. Find the base asset index.
-        Stack memory $;
-        $.baseAssetIndex = type(uint256).max;
+        uint256 baseAssetIndex = type(uint256).max;
         pricesD18 = new uint256[](assetPrices.length);
         for (uint256 i = 0; i < assetPrices.length; i++) {
             if (0 < i && assetPrices[i].asset <= assetPrices[i - 1].asset) {
                 revert("OracleHelper: invalid asset order");
             }
             if (assetPrices[i].priceD18 == 0) {
-                if ($.baseAssetIndex < type(uint256).max) {
+                if (baseAssetIndex < type(uint256).max) {
                     revert("OracleHelper: multiple base assets");
                 }
-                $.baseAssetIndex = i;
+                baseAssetIndex = i;
             }
         }
 
         // Step 2. Process withdrawal queues.
         // Calculate total demand assets (expressed via the base asset) and unprocessed shares.
         IFeeManager feeManager = vault.feeManager();
-        $.baseAsset = assetPrices[$.baseAssetIndex].asset;
-
-        uint256 queueAssets = vault.getAssetCount();
-        for (uint256 i = 0; i < queueAssets; i++) {
-            address queueAsset = vault.assetAt(i);
-            uint256 queueCount = vault.getQueueCount(queueAsset);
-            AssetPrice calldata assetPrice = assetPrices[0];
-            for (uint256 j = 0; j < assetPrices.length; j++) {
-                if (assetPrices[j].asset == queueAsset) {
-                    assetPrice = assetPrices[j];
-                    break;
+        {
+            uint256 queueAssets = vault.getAssetCount();
+            for (uint256 i = 0; i < queueAssets; i++) {
+                address queueAsset = vault.assetAt(i);
+                uint256 queueCount = vault.getQueueCount(queueAsset);
+                AssetPrice calldata assetPrice = assetPrices[0];
+                for (uint256 j = 0; j < assetPrices.length; j++) {
+                    if (assetPrices[j].asset == queueAsset) {
+                        assetPrice = assetPrices[j];
+                        break;
+                    }
                 }
-            }
-            if (assetPrice.asset != queueAsset) {
-                revert("OracleHelper: asset not found");
-            }
-            for (uint256 j = 0; j < queueCount; j++) {
-                address queue = vault.queueAt(queueAsset, j);
-                if (vault.isDepositQueue(queue) || IQueue(queue).canBeRemoved()) {
-                    continue;
+                if (assetPrice.asset != queueAsset) {
+                    revert("OracleHelper: asset not found");
                 }
-                (,, uint256 demand_,) = IRedeemQueue(queue).getState();
-                if (assetPrice.priceD18 == 0) {
-                    $.totalRedeemDemand += demand_;
-                } else {
-                    $.totalRedeemDemand += Math.mulDiv(demand_, 1 ether, assetPrice.priceD18);
+                for (uint256 j = 0; j < queueCount; j++) {
+                    address queue = vault.queueAt(queueAsset, j);
+                    if (vault.isDepositQueue(queue) || IQueue(queue).canBeRemoved()) {
+                        continue;
+                    }
+                    (,, uint256 demand_,) = IRedeemQueue(queue).getState();
+                    if (assetPrice.priceD18 == 0) {
+                        totalAssets -= demand_;
+                    } else {
+                        totalAssets -= Math.mulDiv(demand_, assetPrice.priceD18, 1 ether);
+                    }
                 }
             }
         }
 
         // Step 3. Calculate the price of the base asset.
-        uint256 totalShares = vault.shareManager().totalShares();
-        if (feeManager.baseAsset(address(vault)) == address(0)) {
-            pricesD18[$.baseAssetIndex] = Math.mulDiv(totalShares, 1 ether, totalAssets - $.totalRedeemDemand);
-        } else {
-            if (feeManager.baseAsset(address(vault)) != $.baseAsset) {
+        uint256 shares =
+            vault.shareManager().totalShares() - vault.shareManager().activeSharesOf(feeManager.feeRecipient());
+        uint256 minPriceD18 = feeManager.minPriceD18(address(vault));
+
+        address baseAsset = feeManager.baseAsset(address(vault));
+        pricesD18[baseAssetIndex] = Math.mulDiv(
+            shares + feeManager.calculateFee(address(vault), baseAsset, minPriceD18, shares), 1 ether, totalAssets
+        );
+
+        if (baseAsset != address(0)) {
+            if (assetPrices[baseAssetIndex].asset != baseAsset) {
                 revert("OracleHelper: invalid base asset");
             }
-            uint256 baseAssetPriceD18 = vault.oracle().getReport($.baseAsset).priceD18;
-            uint256 recipientShares = vault.shareManager().activeSharesOf(feeManager.feeRecipient());
-            while (true) {
-                uint256 feeShares = totalShares > recipientShares
-                    ? feeManager.calculateFee(address(vault), $.baseAsset, baseAssetPriceD18, totalShares - recipientShares)
-                    : 0;
-                uint256 newBaseAssetPriceD18 =
-                    Math.mulDiv(totalShares + feeShares, 1 ether, totalAssets - $.totalRedeemDemand);
-                if (newBaseAssetPriceD18 == baseAssetPriceD18) {
-                    break;
-                }
-                baseAssetPriceD18 = newBaseAssetPriceD18;
+            if (0 < minPriceD18 && pricesD18[baseAssetIndex] < minPriceD18) {
+                pricesD18[baseAssetIndex] =
+                    _find(feeManager, vault, pricesD18[baseAssetIndex], minPriceD18, baseAsset, shares, totalAssets);
             }
-            pricesD18[$.baseAssetIndex] = baseAssetPriceD18;
         }
 
         // Step 4. Calculate the price of the other assets based on the base asset.
         for (uint256 i = 0; i < assetPrices.length; i++) {
-            if (i != $.baseAssetIndex) {
-                pricesD18[i] = Math.mulDiv(pricesD18[$.baseAssetIndex], assetPrices[i].priceD18, 1 ether);
+            if (i != baseAssetIndex) {
+                pricesD18[i] = Math.mulDiv(pricesD18[baseAssetIndex], assetPrices[i].priceD18, 1 ether);
             }
             if (pricesD18[i] > type(uint224).max || pricesD18[i] == 0) {
                 revert("OracleHelper: invalid price");
+            }
+        }
+    }
+
+    function _find(
+        IFeeManager feeManager,
+        Vault vault,
+        uint256 left,
+        uint256 right,
+        address baseAsset,
+        uint256 shares,
+        uint256 assets
+    ) internal view returns (uint256 basePriceD18) {
+        uint256 mid;
+        basePriceD18 = right;
+        while (left <= right) {
+            mid = (left + right) >> 1;
+            uint256 fee = feeManager.calculateFee(address(vault), baseAsset, mid, shares);
+            if (Math.mulDiv(shares + fee, 1 ether, assets) <= mid) {
+                basePriceD18 = mid;
+                if (mid == 0) {
+                    break;
+                }
+                right = mid - 1;
+            } else {
+                left = mid + 1;
             }
         }
     }
