@@ -1,0 +1,72 @@
+name: Code checks
+
+on:
+  push:
+    paths:
+      - src/**
+      - test/**
+      - scripts/**
+
+jobs:
+  check-format:
+    name: Check code formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+ 
+      - name: Run format check
+        run: forge fmt --check
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    needs: check-format
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: ./package.json
+
+      - name: Run tests
+        env:
+          ETH_RPC: https://eth.drpc.org
+          FOUNDRY_FUZZ_RUNS: 16
+          FOUNDRY_FUZZ_SEED: "0x462D53D1F8B0F"
+        timeout-minutes: 30
+        run: yarn test:ci
+
+  sizes:
+    name: Check contract sizes
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: ./package.json
+
+      - name: Check contract sizes
+        run: yarn sizes

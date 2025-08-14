@@ -40,9 +40,14 @@ contract DepositQueue is IDepositQueue, Queue {
         return (request._key, request._value);
     }
 
+    /// @inheritdoc IDepositQueue
+    function unclaimedRequests() public view returns (uint256) {
+        return _depositQueueStorage().unclaimedRequests;
+    }
+
     /// @inheritdoc IQueue
     function canBeRemoved() external view returns (bool) {
-        return _depositQueueStorage().handledIndices == _timestamps().length();
+        return unclaimedRequests() == 0;
     }
 
     // Mutable functions
@@ -91,6 +96,7 @@ contract DepositQueue is IDepositQueue, Queue {
         IVaultModule(vault_).riskManager().modifyPendingAssets(asset_, int256(uint256(assets)));
         $.requests.modify(index, int256(uint256(assets)));
         $.requestOf[caller] = Checkpoints.Checkpoint224(timestamp, assets);
+        $.unclaimedRequests++;
         emit DepositRequested(caller, referral, assets, timestamp);
     }
 
@@ -104,14 +110,19 @@ contract DepositQueue is IDepositQueue, Queue {
             revert NoPendingRequest();
         }
         address asset_ = asset();
-        (bool exists, uint32 timestamp, uint256 index) = $.prices.latestCheckpoint();
+        (bool exists, uint32 timestamp,) = $.prices.latestCheckpoint();
         if (exists && timestamp >= request._key) {
             revert ClaimableRequestExists();
         }
 
         delete $.requestOf[caller];
+        $.unclaimedRequests--;
         IVaultModule(vault()).riskManager().modifyPendingAssets(asset_, -int256(uint256(assets)));
+
+        Checkpoints.Trace224 storage timestamps = _timestamps();
+        uint256 index = uint256(timestamps.upperLookupRecent(uint32(request._key)));
         $.requests.modify(index, -int256(assets));
+
         TransferLibrary.sendAssets(asset_, caller, assets);
         emit DepositRequestCanceled(caller, assets, request._key);
     }
@@ -130,12 +141,15 @@ contract DepositQueue is IDepositQueue, Queue {
         if (priceD18 == 0) {
             return false;
         }
-        uint256 shares = Math.mulDiv(request._value, priceD18, 1 ether);
-        delete $.requestOf[account];
-        if (shares != 0) {
-            IShareModule(vault()).shareManager().mintAllocatedShares(account, shares);
+        if (request._value > 0) {
+            uint256 shares = Math.mulDiv(request._value, priceD18, 1 ether);
+            delete $.requestOf[account];
+            $.unclaimedRequests--;
+            if (shares != 0) {
+                IShareModule(vault()).shareManager().mintAllocatedShares(account, shares);
+            }
+            emit DepositRequestClaimed(account, shares, request._key);
         }
-        emit DepositRequestClaimed(account, shares, request._key);
         return true;
     }
 
@@ -151,12 +165,10 @@ contract DepositQueue is IDepositQueue, Queue {
                 latestEligibleIndex = latestIndex;
             } else {
                 latestEligibleIndex = uint256(timestamps.upperLookupRecent(timestamp));
-                if (latestEligibleIndex == 0) {
+                if (latestEligibleIndex == 0 && timestamp < timestamps.at(0)._key) {
                     return;
                 }
-                latestEligibleIndex--;
             }
-
             if (latestEligibleIndex < $.handledIndices) {
                 return;
             }

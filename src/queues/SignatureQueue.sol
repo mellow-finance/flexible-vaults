@@ -109,9 +109,9 @@ abstract contract SignatureQueue is
         if (address(oracle_) != address(0)) {
             uint256 priceD18;
             if (shareModule_.isDepositQueue(address(this))) {
-                priceD18 = Math.mulDiv(order.requested, 1 ether, order.ordered);
+                priceD18 = Math.mulDiv(order.requested, 1 ether, order.ordered, Math.Rounding.Ceil);
             } else {
-                priceD18 = Math.mulDiv(order.ordered, 1 ether, order.requested, Math.Rounding.Ceil);
+                priceD18 = Math.mulDiv(order.ordered, 1 ether, order.requested);
             }
             (bool isValid, bool isSuspicious) = oracle_.validatePrice(priceD18, order.asset);
             if (!isValid || isSuspicious) {

@@ -56,6 +56,9 @@ interface ISignatureQueue is IFactoryEntity {
     /// @notice Thrown when the price computed during validation is not valid.
     error InvalidPrice();
 
+    /// @notice Reverts when queue interactions are restricted due to governance or ACL pause.
+    error QueuePaused();
+
     /// @notice Supported signature types for order validation.
     enum SignatureType {
         EIP712,

@@ -75,12 +75,12 @@ contract FeeManager is IFeeManager, OwnableUpgradeable {
         if (asset == $.baseAsset[vault]) {
             uint256 minPriceD18_ = $.minPriceD18[vault];
             if (priceD18 < minPriceD18_ && minPriceD18_ != 0) {
-                shares = Math.mulDiv(minPriceD18_ - priceD18, $.performanceFeeD6 * totalShares, 1e24);
+                shares = Math.mulDiv(minPriceD18_ - priceD18, $.performanceFeeD6 * totalShares, priceD18 * 1e6);
             }
-        }
-        uint256 timestamp = $.timestamps[vault];
-        if (timestamp != 0 && block.timestamp > timestamp) {
-            shares += Math.mulDiv(totalShares, $.protocolFeeD6 * (block.timestamp - timestamp), 365e6 days);
+            uint256 timestamp = $.timestamps[vault];
+            if (timestamp != 0 && block.timestamp > timestamp) {
+                shares += Math.mulDiv(totalShares, $.protocolFeeD6 * (block.timestamp - timestamp), 365e6 days);
+            }
         }
     }
 

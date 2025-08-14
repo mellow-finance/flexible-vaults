@@ -154,7 +154,15 @@ contract Oracle is IOracle, ContextUpgradeable, ReentrancyGuardUpgradeable {
         OracleStorage storage $ = _oracleStorage();
         EnumerableSet.AddressSet storage asset_ = $.supportedAssets;
         mapping(address => DetailedReport) storage reports_ = $.reports;
+        IShareModule vault_ = $.vault;
+        address baseAsset = vault_.feeManager().baseAsset(address(vault_));
         for (uint256 i = 0; i < assets.length; i++) {
+            if (baseAsset != address(0) && baseAsset == assets[i]) {
+                revert Forbidden();
+            }
+            if (vault_.getQueueCount(assets[i]) > 0) {
+                revert Forbidden();
+            }
             if (!asset_.remove(assets[i])) {
                 revert UnsupportedAsset(assets[i]);
             }

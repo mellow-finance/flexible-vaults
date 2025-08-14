@@ -2,7 +2,12 @@
 pragma solidity 0.8.25;
 
 import "./MockERC20.sol";
+
+import "./MockFeeManager.sol";
 import "./MockRiskManager.sol";
+
+import "./MockShareManager.sol";
+import "./MockSubvault.sol";
 
 import "@openzeppelin/contracts/utils/Address.sol";
 import "src/hooks/BasicRedeemHook.sol";
@@ -15,14 +20,26 @@ contract MockVault {
     address public redeemHook;
     address public redirectingDepositHook;
     address public lidoDepositHook;
+
     address internal _riskManager;
+    address internal _shareManager;
+    address internal _feeManager;
+
+    address internal _pausedQueue;
+    uint256 internal _liquidAssets;
 
     address public immutable wstETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
     address public immutable WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
+    event __HookCalled(uint256 assets);
+
     constructor() {
         redeemHook = address(new BasicRedeemHook());
         redirectingDepositHook = address(new RedirectingDepositHook());
+
+        addShareManager();
+        addFeeManager();
+        addRiskManager(type(uint256).max);
     }
 
     receive() external payable {}
@@ -32,14 +49,32 @@ contract MockVault {
     }
 
     function addSubvault(address subvault_, MockERC20 asset_, uint256 amount_) external {
-        subvault.push(subvault_);
+        addSubvault(subvault_);
         if (amount_ > 0) {
             asset_.mint(subvault_, amount_);
         }
     }
 
-    function addRiskManager(uint256 limit) external {
-        _riskManager = address(new MockRiskManager(limit));
+    function addSubvault(address subvault_) public {
+        subvault.push(subvault_);
+    }
+
+    function addRiskManager(uint256 limit) public returns (MockRiskManager) {
+        MockRiskManager riskManager_ = new MockRiskManager(limit);
+        _riskManager = address(riskManager_);
+        return riskManager_;
+    }
+
+    function addShareManager() public returns (MockShareManager) {
+        MockShareManager shareManager_ = new MockShareManager();
+        _shareManager = address(shareManager_);
+        return shareManager_;
+    }
+
+    function addFeeManager() public returns (MockFeeManager) {
+        MockFeeManager feeManager_ = new MockFeeManager();
+        _feeManager = address(feeManager_);
+        return feeManager_;
     }
 
     function beforeRedeemHookCall(address asset, uint256 assets) external {
@@ -71,7 +106,11 @@ contract MockVault {
     }
 
     function hookPullAssets(address subvault_, address asset, uint256 value) external {
-        MockERC20(asset).take(subvault_, value);
+        if (asset == TransferLibrary.ETH) {
+            MockSubvault(subvault_).sendValue(address(this), value);
+        } else {
+            MockERC20(asset).take(subvault_, value);
+        }
     }
 
     function hookPushAssets(address subvault_, address asset, uint256 value) external {
@@ -84,6 +123,38 @@ contract MockVault {
 
     function pushAssets(address subvault_, address asset, uint256 value) external {
         MockERC20(asset).transfer(subvault_, value);
+    }
+
+    function isPausedQueue(address queue) external view returns (bool) {
+        return queue == _pausedQueue;
+    }
+
+    function shareManager() external view returns (IShareManager) {
+        return IShareManager(_shareManager);
+    }
+
+    function feeManager() external view returns (IFeeManager) {
+        return IFeeManager(_feeManager);
+    }
+
+    function callHook(uint256 assets) external {
+        emit __HookCalled(assets);
+    }
+
+    function getLiquidAssets() external view returns (uint256) {
+        return _liquidAssets;
+    }
+
+    // -----------------------------------------------------------------------
+    // Custom functions, just for testing purposes.
+    // -----------------------------------------------------------------------
+
+    function __setLiquidAssets(uint256 liquidAssets) external {
+        _liquidAssets = liquidAssets;
+    }
+
+    function __setPausedQueue(address queue) external {
+        _pausedQueue = queue;
     }
 
     function test() external {}

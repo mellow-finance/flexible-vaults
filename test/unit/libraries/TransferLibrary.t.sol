@@ -71,4 +71,14 @@ contract TransferLibraryTest is Test {
         vm.expectRevert(TransferLibrary.InvalidValue.selector);
         wrapper.receiveAssets{value: 0.1 ether}(TransferLibrary.ETH, user, 1 ether);
     }
+
+    function testBalanceOf(uint128 nativeBalance, uint128 tokenBalance) public {
+        address emptyUser = makeAddr("emptyUser");
+
+        vm.deal(emptyUser, nativeBalance);
+        token.mint(emptyUser, tokenBalance);
+
+        assertEq(TransferLibrary.balanceOf(TransferLibrary.ETH, emptyUser), nativeBalance);
+        assertEq(TransferLibrary.balanceOf(address(token), emptyUser), tokenBalance);
+    }
 }

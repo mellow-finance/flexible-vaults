@@ -71,6 +71,7 @@ contract IntegrationTest is BaseIntegrationTest {
         vm.startPrank($.vaultAdmin);
         IFeeManager feeManager = vault.feeManager();
         IShareManager shareManager = vault.shareManager();
+        address feeRecipient = feeManager.feeRecipient();
 
         feeManager.setBaseAsset(address(vault), ASSET);
         feeManager.setFees(0, 0, 0, 1e4);
@@ -104,51 +105,54 @@ contract IntegrationTest is BaseIntegrationTest {
 
         {
             skip(20 hours);
-            adjustPrice(reports[0]);
+            adjustPrice(reports[0], 1 ether, 1 ether);
             Oracle(oracle).submitReports(reports);
         }
 
         assertEq(shareManager.totalShares(), 1 ether, "20 hours");
-        uint256 shares = shareManager.totalShares();
+        (uint256 totalShares, uint256 feeShares) = (shareManager.totalShares(), shareManager.sharesOf(feeRecipient));
+        uint256 pureShares = totalShares - feeShares;
 
         {
             skip(20 hours);
-            adjustPrice(reports[0]);
+            adjustPrice(reports[0], totalShares, feeShares);
             Oracle(oracle).submitReports(reports);
         }
 
-        assertEq(shareManager.totalShares(), (shares * 1e4 * 20 hours / 365e6 days) + shares, "40 hours");
-        shares = shareManager.totalShares();
+        assertEq(shareManager.totalShares(), (pureShares * 1e4 * 20 hours / 365e6 days) + totalShares, "40 hours");
+        (totalShares, feeShares) = (shareManager.totalShares(), shareManager.sharesOf(feeRecipient));
+        pureShares = totalShares - feeShares;
 
         {
             skip(50 hours);
-            adjustPrice(reports[0]);
+            adjustPrice(reports[0], totalShares, feeShares);
             Oracle(oracle).submitReports(reports);
         }
 
-        assertEq(shareManager.totalShares(), (shares * 1e4 * 50 hours / 365e6 days) + shares, "90 hours");
-        shares = shareManager.totalShares();
+        assertEq(shareManager.totalShares(), (pureShares * 1e4 * 50 hours / 365e6 days) + totalShares, "90 hours");
+        (totalShares, feeShares) = (shareManager.totalShares(), shareManager.sharesOf(feeRecipient));
+        pureShares = totalShares - feeShares;
 
         {
             skip(1000 hours);
-            adjustPrice(reports[0]);
+            adjustPrice(reports[0], totalShares, feeShares);
             Oracle(oracle).submitReports(reports);
             feeManager.setFees(0, 0, 0, 0);
         }
 
-        assertEq(shareManager.totalShares(), (shares * 1e4 * 1000 hours / 365e6 days) + shares, "1090 hours");
-        shares = shareManager.totalShares();
+        assertEq(shareManager.totalShares(), (pureShares * 1e4 * 1000 hours / 365e6 days) + totalShares, "1090 hours");
+        (totalShares, feeShares) = (shareManager.totalShares(), shareManager.sharesOf(feeRecipient));
         {
             skip(1000 hours);
-            adjustPrice(reports[0]);
+            adjustPrice(reports[0], totalShares, feeShares);
             Oracle(oracle).submitReports(reports);
         }
-        assertEq(shareManager.totalShares(), shares, "2090 hours");
+        assertEq(shareManager.totalShares(), totalShares, "2090 hours");
 
         uint256 totalAssets = IERC20(ASSET).balanceOf(address(vault));
-        uint256 totalShares = shareManager.totalShares();
+        (totalShares, feeShares) = (shareManager.totalShares(), shareManager.sharesOf(feeRecipient));
 
-        assertEq(Math.mulDiv(totalShares, 1 ether, totalAssets), reports[0].priceD18);
+        assertEq(Math.mulDiv(totalShares, 1 ether, totalAssets), reports[0].priceD18, "Price mismatch");
 
         vm.stopPrank();
 
@@ -185,10 +189,16 @@ contract IntegrationTest is BaseIntegrationTest {
         );
     }
 
-    function adjustPrice(IOracle.Report memory report) public view {
-        if (vault.shareManager().totalShares() != 0) {
-            report.priceD18 +=
-                uint224(vault.feeManager().calculateFee(address(vault), ASSET, report.priceD18, report.priceD18));
+    function adjustPrice(IOracle.Report memory report, uint256 totalShares, uint256 feeShares) public view {
+        if (totalShares != 0) {
+            report.priceD18 += uint224(
+                vault.feeManager().calculateFee(
+                    address(vault),
+                    ASSET,
+                    report.priceD18,
+                    uint224(Math.mulDiv(uint256(report.priceD18), totalShares - feeShares, totalShares))
+                )
+            );
         }
     }
 }
