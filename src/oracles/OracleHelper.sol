@@ -76,7 +76,8 @@ contract OracleHelper {
         }
 
         // Step 3. Calculate the price of the base asset.
-        pricesD18[baseAssetIndex] = _calculateBasePriceD18(vault, feeManager, assetPrices[baseAssetIndex].asset, totalAssets);
+        pricesD18[baseAssetIndex] =
+            _calculateBasePriceD18(vault, feeManager, assetPrices[baseAssetIndex].asset, totalAssets);
 
         // Step 4. Calculate the price of the other assets based on the base asset.
         for (uint256 i = 0; i < assetPrices.length; i++) {
@@ -89,12 +90,11 @@ contract OracleHelper {
         }
     }
 
-    function _calculateBasePriceD18(
-        Vault vault,
-        IFeeManager feeManager,
-        address baseAssetToUse,
-        uint256 totalAssets
-    ) internal view returns (uint256 basePriceD18) {
+    function _calculateBasePriceD18(Vault vault, IFeeManager feeManager, address baseAssetToUse, uint256 totalAssets)
+        internal
+        view
+        returns (uint256 basePriceD18)
+    {
         uint256 totalShares = vault.shareManager().totalShares();
         uint256 recipientShares = vault.shareManager().activeSharesOf(feeManager.feeRecipient());
         uint256 minPriceD18 = feeManager.minPriceD18(address(vault));
@@ -110,14 +110,7 @@ contract OracleHelper {
             }
             if (0 < minPriceD18 && basePriceD18 < minPriceD18) {
                 basePriceD18 = _find(
-                    feeManager,
-                    vault,
-                    basePriceD18,
-                    minPriceD18,
-                    baseAsset,
-                    totalShares,
-                    recipientShares,
-                    totalAssets
+                    feeManager, vault, basePriceD18, minPriceD18, baseAsset, totalShares, recipientShares, totalAssets
                 );
             }
         }
