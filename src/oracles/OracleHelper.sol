@@ -76,24 +76,7 @@ contract OracleHelper {
         }
 
         // Step 3. Calculate the price of the base asset.
-        uint256 shares =
-            vault.shareManager().totalShares() - vault.shareManager().activeSharesOf(feeManager.feeRecipient());
-        uint256 minPriceD18 = feeManager.minPriceD18(address(vault));
-
-        address baseAsset = feeManager.baseAsset(address(vault));
-        pricesD18[baseAssetIndex] = Math.mulDiv(
-            shares + feeManager.calculateFee(address(vault), baseAsset, minPriceD18, shares), 1 ether, totalAssets
-        );
-
-        if (baseAsset != address(0)) {
-            if (assetPrices[baseAssetIndex].asset != baseAsset) {
-                revert("OracleHelper: invalid base asset");
-            }
-            if (0 < minPriceD18 && pricesD18[baseAssetIndex] < minPriceD18) {
-                pricesD18[baseAssetIndex] =
-                    _find(feeManager, vault, pricesD18[baseAssetIndex], minPriceD18, baseAsset, shares, totalAssets);
-            }
-        }
+        pricesD18[baseAssetIndex] = _calculateBasePriceD18(vault, feeManager, assetPrices[baseAssetIndex].asset, totalAssets);
 
         // Step 4. Calculate the price of the other assets based on the base asset.
         for (uint256 i = 0; i < assetPrices.length; i++) {
@@ -106,21 +89,56 @@ contract OracleHelper {
         }
     }
 
+    function _calculateBasePriceD18(
+        Vault vault,
+        IFeeManager feeManager,
+        address baseAssetToUse,
+        uint256 totalAssets
+    ) internal view returns (uint256 basePriceD18) {
+        uint256 totalShares = vault.shareManager().totalShares();
+        uint256 recipientShares = vault.shareManager().activeSharesOf(feeManager.feeRecipient());
+        uint256 minPriceD18 = feeManager.minPriceD18(address(vault));
+        address baseAsset = feeManager.baseAsset(address(vault));
+        basePriceD18 = Math.mulDiv(
+            totalShares + feeManager.calculateFee(address(vault), baseAsset, minPriceD18, totalShares - recipientShares),
+            1 ether,
+            totalAssets
+        );
+        if (baseAsset != address(0)) {
+            if (baseAssetToUse != baseAsset) {
+                revert("OracleHelper: invalid base asset");
+            }
+            if (0 < minPriceD18 && basePriceD18 < minPriceD18) {
+                basePriceD18 = _find(
+                    feeManager,
+                    vault,
+                    basePriceD18,
+                    minPriceD18,
+                    baseAsset,
+                    totalShares,
+                    recipientShares,
+                    totalAssets
+                );
+            }
+        }
+    }
+
     function _find(
         IFeeManager feeManager,
         Vault vault,
         uint256 left,
         uint256 right,
         address baseAsset,
-        uint256 shares,
+        uint256 totalShares,
+        uint256 recipientShares,
         uint256 assets
     ) internal view returns (uint256 basePriceD18) {
         uint256 mid;
         basePriceD18 = right;
         while (left <= right) {
             mid = (left + right) >> 1;
-            uint256 fee = feeManager.calculateFee(address(vault), baseAsset, mid, shares);
-            if (Math.mulDiv(shares + fee, 1 ether, assets) <= mid) {
+            uint256 fee = feeManager.calculateFee(address(vault), baseAsset, mid, totalShares - recipientShares);
+            if (Math.mulDiv(totalShares + fee, 1 ether, assets) <= mid) {
                 basePriceD18 = mid;
                 if (mid == 0) {
                     break;

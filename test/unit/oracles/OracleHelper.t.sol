@@ -472,7 +472,7 @@ contract OracleHelperTest is FixtureTest {
         }
     }
 
-    /// @dev Test that that the oracle helper provides valid prices so that the invariant is preserved after deposit and full withdrawal.
+    /// @dev Test that that the oracle helper provides valid prices so that the invariant is preserved after deposit and withdrawal.
     function testPriceCalculationForOtherAsset_WithDynamicLiquidity() external {
         MockERC20 baseAsset = new MockERC20();
         MockERC20 otherAsset = new MockERC20();
@@ -500,6 +500,8 @@ contract OracleHelperTest is FixtureTest {
         assetPrices[0] = OracleHelper.AssetPrice({asset: assets[0], priceD18: 0});
         assetPrices[1] = OracleHelper.AssetPrice({asset: assets[1], priceD18: otherAssetPrice});
 
+        uint256[] memory prices;
+
         // Make deposits and push reports
         {
             pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: baseAssetPrice}));
@@ -515,7 +517,7 @@ contract OracleHelperTest is FixtureTest {
             uint256 totalShares = deployment.shareManager.totalShares();
             assertEq(totalShares, 3 ether); // 1 ether (base asset) + 2 ether (other asset in base asset)
 
-            uint256[] memory prices = oracleHelper.getPricesD18(deployment.vault, 3 ether, assetPrices);
+            prices = oracleHelper.getPricesD18(deployment.vault, 3 ether, assetPrices);
             assertEq(prices.length, 2, "Prices length should be 2");
 
             // Total assets in base asset = 1 ether (base asset) + 2 ether (other asset in base asset) = 3 ether
@@ -525,30 +527,74 @@ contract OracleHelperTest is FixtureTest {
             assertEq(totalShares, Math.mulDiv(1.5 ether, prices[1], 1e18), "Wrong invariant for other asset");
         }
 
-        // Drain all the liquidity, redeem all the shares
+        uint256 snapshot = vm.snapshot();
+
+        // Redeem 1 ether of the other asset
         {
-            vm.startPrank(user);
-            redeemQueues[0].redeem(1 ether);
-            redeemQueues[1].redeem(2 ether);
-            vm.stopPrank();
+            vm.prank(user);
+            redeemQueues[1].redeem(1 ether);
 
-            uint256[] memory prices = oracleHelper.getPricesD18(deployment.vault, 3 ether, assetPrices);
-
+            // Make report using the same prices as before
             skip(1 days);
             pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: uint224(prices[0])}));
             pushReport(deployment, IOracle.Report({asset: assets[1], priceD18: uint224(prices[1])}));
 
-            redeemQueues[0].handleBatches(type(uint256).max);
+            // Total assets value is still 3 ether, because redeem is not handled yet
+            prices = oracleHelper.getPricesD18(deployment.vault, 3 ether, assetPrices);
+            assertEq(prices[0], 1e18);
+            assertEq(prices[1], 2e18);
+
             redeemQueues[1].handleBatches(type(uint256).max);
+
+            // Total assets value is 2 ether, because redeem is handled now
+            // Total assets = Total asset before redeem - Redeemed assets
+            // Total assets = 3 ether - (1 ether (shares) * 1e18 / 2e18 (price of the other asset) * 2) = 2 ether
+            prices = oracleHelper.getPricesD18(deployment.vault, 2 ether, assetPrices);
+            assertEq(prices[0], 1e18);
+            assertEq(prices[1], 2e18);
+
             uint32[] memory timestamps = new uint32[](1);
             timestamps[0] = uint32(block.timestamp - 1 days);
 
-            vm.startPrank(user);
-            redeemQueues[0].claim(user, timestamps);
+            vm.prank(user);
             redeemQueues[1].claim(user, timestamps);
-            vm.stopPrank();
 
-            assertEq(deployment.shareManager.totalShares(), 0, "All shares should be redeemed");
+            assertEq(IERC20(assets[1]).balanceOf(user), 0.5 ether);
+        }
+
+        vm.revertTo(snapshot);
+
+        // Redeem 1 ether of the base asset
+        {
+            vm.prank(user);
+            redeemQueues[0].redeem(1 ether);
+
+            // Make report using the same prices as before
+            skip(1 days);
+            pushReport(deployment, IOracle.Report({asset: assets[0], priceD18: uint224(prices[0])}));
+            pushReport(deployment, IOracle.Report({asset: assets[1], priceD18: uint224(prices[1])}));
+
+            // Total assets value is still 3 ether, because redeem is not handled yet
+            prices = oracleHelper.getPricesD18(deployment.vault, 3 ether, assetPrices);
+            assertEq(prices[0], 1e18);
+            assertEq(prices[1], 2e18);
+
+            redeemQueues[0].handleBatches(type(uint256).max);
+
+            // Total assets value is 2 ether, because redeem is handled now
+            // Total assets = Total asset before redeem - Redeemed assets
+            // Total assets = 3 ether - (1 ether (shares) * 1e18 / 1e18 (price of the base asset)) = 2 ether
+            prices = oracleHelper.getPricesD18(deployment.vault, 2 ether, assetPrices);
+            assertEq(prices[0], 1e18);
+            assertEq(prices[1], 2e18);
+
+            uint32[] memory timestamps = new uint32[](1);
+            timestamps[0] = uint32(block.timestamp - 1 days);
+
+            vm.prank(user);
+            redeemQueues[0].claim(user, timestamps);
+
+            assertEq(IERC20(assets[0]).balanceOf(user), 1 ether);
         }
     }
 
