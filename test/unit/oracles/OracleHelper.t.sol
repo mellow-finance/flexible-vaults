@@ -527,7 +527,7 @@ contract OracleHelperTest is FixtureTest {
             assertEq(totalShares, Math.mulDiv(1.5 ether, prices[1], 1e18), "Wrong invariant for other asset");
         }
 
-        uint256 snapshot = vm.snapshot();
+        uint256 snapshot = vm.snapshotState();
 
         // Redeem 1 ether of the other asset
         {
@@ -562,7 +562,7 @@ contract OracleHelperTest is FixtureTest {
             assertEq(IERC20(assets[1]).balanceOf(user), 0.5 ether);
         }
 
-        vm.revertTo(snapshot);
+        vm.revertToState(snapshot);
 
         // Redeem 1 ether of the base asset
         {
@@ -876,7 +876,7 @@ contract OracleHelperTest is FixtureTest {
                 totalShares, Math.mulDiv(otherAssetTVL, prices[1], 1e18), 3, "Wrong invariant for other asset"
             );
 
-            uint256 snapshot = vm.snapshot();
+            uint256 snapshot = vm.snapshotState();
 
             // Check invariant for base asset after withdrawal
             {
@@ -906,7 +906,7 @@ contract OracleHelperTest is FixtureTest {
                 assertApproxEqAbs(totalDemandAssets, withdrawnAmount, 1);
             }
 
-            vm.revertTo(snapshot);
+            vm.revertToState(snapshot);
 
             // Check invariant for other asset after withdrawal
             {

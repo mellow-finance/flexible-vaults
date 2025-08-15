@@ -228,7 +228,6 @@ contract SignatureDepositQueueTest is FixtureTest {
 
     function testDepositQueuePause() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
-        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
 
         vm.prank(deployment.vaultAdmin);
         deployment.riskManager.setVaultLimit(1e6 ether);

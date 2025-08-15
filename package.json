@@ -6,8 +6,9 @@
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
     "deploy:base:uni-vault": "forge script ./scripts/base/UniVault.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
-    "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:ci",
-    "test:ci": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv",
+    "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
+    "test:ci": "yarn test:base --deny-warnings",
+    "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv",
     "test:integration": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv --match-path './test/integration/**'",
     "coverage:report": "forge coverage --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 22730425 --force --report lcov && genhtml lcov.info -o report --branch-coverage && rm lcov.info",
     "compile": "forge build --use 0.8.25 --cache-path cache",
