@@ -95,7 +95,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             revert QueuePaused();
         }
         IShareManager shareManager_ = IShareManager(IShareModule(vault_).shareManager());
-        shareManager_.burn(caller, shares);
+        shareManager_.lockSharesOf(caller, shares);
         IFeeManager feeManager_ = IShareModule(vault_).feeManager();
         address feeRecipient_ = feeManager_.feeRecipient();
 
@@ -234,6 +234,8 @@ contract RedeemQueue is IRedeemQueue, Queue {
 
         uint256 index = $.prices.length();
         $.totalPendingShares -= shares;
+        IShareManager shareManager_ = IShareModule(vault()).shareManager();
+        shareManager_.burn(address(shareManager_), shares);
         $.prices.push(timestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
         $.batches.push(Batch(assets_, shares));
