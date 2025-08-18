@@ -134,8 +134,7 @@ contract OracleHelperFindTest is Test {
         view
     {
         /// @dev calculate the fee shares that should be generated at this price
-        uint256 feeSharesExpected =
-            feeManager.calculateFee(address(0), address(0), solutionD18, totalSharesBefore);
+        uint256 feeSharesExpected = feeManager.calculateFee(address(0), address(0), solutionD18, totalSharesBefore);
 
         /// @dev a new expected totalShares, while totalAssets is unchanged
         uint256 totalShares = Math.mulDiv(totalAssets, solutionD18, 1 ether);
@@ -149,7 +148,7 @@ contract OracleHelperFindTest is Test {
             /// (totalSharesBefore + fee) * 1 ether / totalAssets <= solutionD18
             uint256 leftSideD18 = Math.mulDiv(totalSharesBefore + feeSharesExpected, 1 ether, totalAssets);
             assertLe(leftSideD18, solutionD18, "Solution doesn't satisfy the _find equation");
-            
+
             /// @dev also verify that the solution is close to the boundary (within reasonable precision)
             /// This ensures we found the optimal solution, not just any solution that satisfies the inequality
             assertApproxEqAbs(leftSideD18, solutionD18, 1, "Solution should be close to the boundary");
