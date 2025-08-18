@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "forge-std/Test.sol";
 import "test/mocks/MockOracleHelper.sol";
 
-contract OracleHelperTest is Test {
+contract OracleHelperFindTest is Test {
     MockOracleHelper private oracleHelper;
     MockFeeManager private feeManager;
 
@@ -128,30 +128,31 @@ contract OracleHelperTest is Test {
     /// @notice Check the solution for the price is correct:
     /// 1. calculate expected feeShares based on the solutionD18
     /// 2. assert that the feeShares is approximately equal to the calculated fee
-    /// 3. calculate expectedPriceD18 based on the totalShares with included feeShares
-    /// 4. assert that the solutionD18 is approximately equal to the expectedPriceD18
+    /// 3. verify that the _find equation is satisfied: (totalSharesBefore + fee) * 1 ether / totalAssets <= solutionD18
     function _checkPriceSolutionD18(uint256 solutionD18, uint256 totalAssets, uint256 totalSharesBefore)
         internal
         view
     {
+        /// @dev calculate the fee shares that should be generated at this price
+        uint256 feeSharesExpected =
+            feeManager.calculateFee(address(0), address(0), solutionD18, totalSharesBefore);
+
         /// @dev a new expected totalShares, while totalAssets is unchanged
         uint256 totalShares = Math.mulDiv(totalAssets, solutionD18, 1 ether);
-
         if (totalShares > totalSharesBefore) {
             uint256 feeShares = totalShares - totalSharesBefore;
-            uint256 feeSharesExpected =
-                feeManager.calculateFee(address(0), address(0), solutionD18, totalShares - feeShares);
+            assertApproxEqAbs(feeShares, feeSharesExpected, 1, "Wrong fee shares");
+        }
 
-            uint256 feeSharesAbsDelta =
-                feeShares > feeSharesExpected ? feeShares - feeSharesExpected : feeSharesExpected - feeShares;
-
-            if (feeSharesAbsDelta > 1) {
-                /// @dev 1e-18 precision
-                assertApproxEqRel(feeShares, feeSharesExpected, 1, "Wrong feeShares");
-            }
-            uint256 expectedPriceD18 = Math.mulDiv(totalShares, 1 ether, totalAssets);
-            /// @dev 1e-14 precision
-            assertApproxEqRel(solutionD18, expectedPriceD18, 1e4, "Wrong price");
+        if (feeSharesExpected > 0) {
+            /// @dev verify the core equation that _find is solving:
+            /// (totalSharesBefore + fee) * 1 ether / totalAssets <= solutionD18
+            uint256 leftSideD18 = Math.mulDiv(totalSharesBefore + feeSharesExpected, 1 ether, totalAssets);
+            assertLe(leftSideD18, solutionD18, "Solution doesn't satisfy the _find equation");
+            
+            /// @dev also verify that the solution is close to the boundary (within reasonable precision)
+            /// This ensures we found the optimal solution, not just any solution that satisfies the inequality
+            assertApproxEqAbs(leftSideD18, solutionD18, 1, "Solution should be close to the boundary");
         }
     }
 }
