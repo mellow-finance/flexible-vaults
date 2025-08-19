@@ -69,7 +69,6 @@ abstract contract FixtureTest is Test {
         }
         consensus.setThreshold(threshold);
         vm.stopPrank();
-        
     }
 
     function defaultSecurityParams() internal pure virtual returns (IOracle.SecurityParams memory securityParams) {
