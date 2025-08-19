@@ -154,10 +154,7 @@ contract Unit is Test {
         }
     }
 
-    function testFenwickTreeModifyGasUsage() external {
-        if (isInCI()) {
-            return;
-        }
+    function testFenwickTreeModifyGasUsage_NO_CI() external {
         FenwickWrapper tree = new FenwickWrapper();
         uint256 log2 = 20;
         uint256 n = 1 << log2;
@@ -181,10 +178,7 @@ contract Unit is Test {
         assertLe(cumulativeGas, maxStorageWrites);
     }
 
-    function testFenwickTreeGetGasUsage() external {
-        if (isInCI()) {
-            return;
-        }
+    function testFenwickTreeGetGasUsage_NO_CI() external {
         FenwickWrapper tree = new FenwickWrapper();
         uint256 log2 = 19;
         uint256 n = 1 << log2;
@@ -238,15 +232,6 @@ contract Unit is Test {
             if (left.get(index) != right.get(index)) {
                 elemCount++;
             }
-        }
-    }
-
-    /// @dev CI is set to true when running in CI environment (e.g. github actions).
-    function isInCI() internal view returns (bool) {
-        try vm.envString("CI") returns (string memory ciValue) {
-            return keccak256(abi.encodePacked(ciValue)) == keccak256(abi.encodePacked("true"));
-        } catch {
-            return false;
         }
     }
 }
