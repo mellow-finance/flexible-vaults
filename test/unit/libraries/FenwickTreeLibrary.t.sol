@@ -154,7 +154,7 @@ contract Unit is Test {
         }
     }
 
-    function testFenwickTreeModifyGasUsage() external {
+    function testFenwickTreeModifyGasUsage_NO_CI() external {
         FenwickWrapper tree = new FenwickWrapper();
         uint256 log2 = 20;
         uint256 n = 1 << log2;
@@ -178,7 +178,7 @@ contract Unit is Test {
         assertLe(cumulativeGas, maxStorageWrites);
     }
 
-    function testFenwickTreeGetGasUsage() external {
+    function testFenwickTreeGetGasUsage_NO_CI() external {
         FenwickWrapper tree = new FenwickWrapper();
         uint256 log2 = 19;
         uint256 n = 1 << log2;

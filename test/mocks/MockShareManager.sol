@@ -17,6 +17,8 @@ contract MockShareManager {
 
     function burn(address, /* from */ uint256 /* amount */ ) external {}
 
+    function lockSharesOf(address, /* account */ uint256 /* shares */ ) external {}
+
     /// -----------------------------------------------------------------------
     /// Custom functions, just for testing purposes.
     /// -----------------------------------------------------------------------
