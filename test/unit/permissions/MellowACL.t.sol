@@ -18,12 +18,6 @@ contract MockMellowACL is MellowACL {
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
     }
 
-    // function mockOnlySelfOrRoleWrap() external {
-    //     mockOnlySelfOrRole();
-    // }
-
-    // function mockOnlySelfOrRole() public onlySelfOrRole(ROLE_ONLY_SELF_OR_ROLE) {}
-
     function test() external {}
 }
 

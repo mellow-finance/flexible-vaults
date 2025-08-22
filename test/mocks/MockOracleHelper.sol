@@ -18,6 +18,8 @@ contract MockOracleHelper is OracleHelper {
             IFeeManager(feeManager), Vault(payable(vault)), left, right, baseAsset, totalShares, recipientShares, assets
         );
     }
+
+    function test() external {}
 }
 
 contract MockFeeManager {
@@ -72,4 +74,6 @@ contract MockFeeManager {
             shares += Math.mulDiv(totalShares, _protocolFeeD6 * (block.timestamp - timestamp_), 365e6 days);
         }
     }
+
+    function test() external {}
 }

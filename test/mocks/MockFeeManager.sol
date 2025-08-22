@@ -33,4 +33,6 @@ contract MockFeeManager {
     function __setFeeRecipient(address recipient) external {
         _feeRecipient = recipient;
     }
+
+    function test() external {}
 }
