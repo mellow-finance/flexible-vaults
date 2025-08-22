@@ -49,10 +49,10 @@ interface IDepositQueue is IQueue {
     /// @notice Thrown when a user is not allowed to deposit.
     error DepositNotAllowed();
 
-    /// @notice Thrown if a new deposit is attempted while an pending request exists.
+    /// @notice Thrown if a new deposit is attempted while a pending request exists.
     error PendingRequestExists();
 
-    /// @notice Thrown when a user tries to deposit again while a claimable request exists.
+    /// @notice Thrown when attempting to cancel a deposit request that has become claimable.
     error ClaimableRequestExists();
 
     /// @notice Thrown when trying to cancel a non-existent deposit request.
@@ -100,7 +100,8 @@ interface IDepositQueue is IQueue {
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable;
 
     /// @notice Cancels the caller's current pending deposit request.
-    /// @dev Refunds the originally deposited assets.
+    /// @dev Refunds the originally deposited assets. Reverts with `ClaimableRequestExists` if the
+    /// request has already become claimable.
     function cancelDepositRequest() external;
 
     /// @notice Claims shares from a fulfilled deposit request for a specific account.
