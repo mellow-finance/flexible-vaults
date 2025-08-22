@@ -62,8 +62,7 @@ contract ShareManagerTest is FixtureTest {
             hasTransferPause: false,
             hasWhitelist: false,
             hasTransferWhitelist: false,
-            globalLockup: uint32(block.timestamp + 1 days),
-            targetedLockup: uint32(2 days)
+            globalLockup: uint32(block.timestamp + 1 days)
         });
 
         vm.expectRevert(abi.encodeWithSelector(IShareManager.Forbidden.selector));
@@ -79,7 +78,6 @@ contract ShareManagerTest is FixtureTest {
         assertEq(flags.hasWhitelist, flagsNew.hasWhitelist);
         assertEq(flags.hasTransferWhitelist, flagsNew.hasTransferWhitelist);
         assertEq(flags.globalLockup, flagsNew.globalLockup);
-        assertEq(flags.targetedLockup, flagsNew.targetedLockup);
     }
 
     function testAccountInfo() external {
@@ -88,20 +86,13 @@ contract ShareManagerTest is FixtureTest {
 
         vm.prank(deployment.vaultAdmin);
         manager.setAccountInfo(
-            user,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false,
-                lockedUntil: uint32(block.timestamp + 1 days)
-            })
+            user, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
 
         IShareManager.AccountInfo memory info = manager.accounts(user);
         assertEq(info.canDeposit, true, "canDeposit should be true");
         assertEq(info.canTransfer, true, "canTransfer should be true");
         assertEq(info.isBlacklisted, false, "isBlacklisted should be false");
-        assertEq(info.lockedUntil, uint32(block.timestamp + 1 days), "lockedUntil should be set correctly");
     }
 
     function testAllocateShares() external {
@@ -139,10 +130,7 @@ contract ShareManagerTest is FixtureTest {
         ShareManager manager = deployment.shareManager;
         address from = vm.createWallet("from").addr;
         address to = vm.createWallet("to").addr;
-        uint32 timestampLockedFrom = uint32(block.timestamp + 1 days);
-        uint32 timestampLockedTo = uint32(block.timestamp + 2 days);
         uint32 globalLockup = uint32(block.timestamp + 6 hours);
-        uint32 targetedLockup = uint32(8 hours);
 
         vm.expectRevert(abi.encodeWithSelector(IShareManager.Forbidden.selector));
         manager.setFlags(
@@ -152,8 +140,7 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: false,
                 hasWhitelist: false,
                 hasTransferWhitelist: false,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
 
@@ -165,28 +152,15 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: false,
                 hasWhitelist: false,
                 hasTransferWhitelist: false,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
 
         manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false,
-                lockedUntil: timestampLockedFrom
-            })
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: true,
-                isBlacklisted: false,
-                lockedUntil: timestampLockedTo
-            })
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
         );
 
         vm.expectRevert(
@@ -194,15 +168,7 @@ contract ShareManagerTest is FixtureTest {
         );
         manager.updateChecks(from, to);
 
-        vm.warp(timestampLockedFrom - 1);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                IShareManager.TargetedLockupNotExpired.selector, block.timestamp, timestampLockedFrom
-            )
-        );
-        manager.updateChecks(from, to);
-
-        vm.warp(timestampLockedFrom + 1);
+        skip(globalLockup + 1);
         manager.updateChecks(from, to);
 
         manager.setFlags(
@@ -212,8 +178,7 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: false,
                 hasWhitelist: false,
                 hasTransferWhitelist: false,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
 
@@ -224,46 +189,10 @@ contract ShareManagerTest is FixtureTest {
             IShareManager.Flags({
                 hasMintPause: false,
                 hasBurnPause: true,
-                hasTransferPause: false,
-                hasWhitelist: false,
-                hasTransferWhitelist: true,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
-            })
-        );
-        manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: false,
-                isBlacklisted: false,
-                lockedUntil: timestampLockedTo
-            })
-        );
-        vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferNotAllowed.selector, from, to));
-        manager.updateChecks(from, to);
-
-        manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: false,
-                isBlacklisted: false,
-                lockedUntil: timestampLockedFrom
-            })
-        );
-        vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferNotAllowed.selector, from, to));
-        manager.updateChecks(from, to);
-
-        manager.setFlags(
-            IShareManager.Flags({
-                hasMintPause: false,
-                hasBurnPause: true,
                 hasTransferPause: true,
                 hasWhitelist: false,
                 hasTransferWhitelist: true,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferPaused.selector));
@@ -276,8 +205,7 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: true,
                 hasWhitelist: false,
                 hasTransferWhitelist: true,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferPaused.selector));
@@ -285,37 +213,7 @@ contract ShareManagerTest is FixtureTest {
         manager.updateChecks(address(0), to);
 
         manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: false,
-                isBlacklisted: true,
-                lockedUntil: timestampLockedFrom
-            })
-        );
-        vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, to));
-        manager.updateChecks(address(0), to);
-
-        manager.setAccountInfo(
-            from,
-            IShareManager.AccountInfo({
-                canDeposit: true,
-                canTransfer: false,
-                isBlacklisted: true,
-                lockedUntil: timestampLockedFrom
-            })
-        );
-        vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, from));
-        manager.updateChecks(from, to);
-
-        manager.setAccountInfo(
-            to,
-            IShareManager.AccountInfo({
-                canDeposit: false,
-                canTransfer: false,
-                isBlacklisted: false,
-                lockedUntil: timestampLockedFrom
-            })
+            to, IShareManager.AccountInfo({canDeposit: false, canTransfer: false, isBlacklisted: false})
         );
         manager.updateChecks(address(0), to);
         manager.setFlags(
@@ -325,8 +223,7 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: true,
                 hasWhitelist: true,
                 hasTransferWhitelist: true,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
 
@@ -339,8 +236,7 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: true,
                 hasWhitelist: true,
                 hasTransferWhitelist: true,
-                globalLockup: globalLockup,
-                targetedLockup: targetedLockup
+                globalLockup: globalLockup
             })
         );
         vm.expectRevert(abi.encodeWithSelector(IShareManager.MintPaused.selector));
@@ -360,8 +256,7 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: false,
                 hasWhitelist: false,
                 hasTransferWhitelist: false,
-                globalLockup: 0,
-                targetedLockup: 1 days
+                globalLockup: 0
             })
         );
 
@@ -381,19 +276,12 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: false,
                 hasWhitelist: false,
                 hasTransferWhitelist: false,
-                globalLockup: 0,
-                targetedLockup: 1 days
+                globalLockup: 0
             })
         );
 
         manager.setAccountInfo(
-            user,
-            IShareManager.AccountInfo({
-                canDeposit: false,
-                canTransfer: true,
-                isBlacklisted: false,
-                lockedUntil: uint32(block.timestamp + 1 days)
-            })
+            user, IShareManager.AccountInfo({canDeposit: false, canTransfer: true, isBlacklisted: false})
         );
         assertFalse(manager.isDepositorWhitelisted(user, new bytes32[](0)), "Should not be whitelisted");
         manager.setFlags(
@@ -403,8 +291,7 @@ contract ShareManagerTest is FixtureTest {
                 hasTransferPause: false,
                 hasWhitelist: true,
                 hasTransferWhitelist: false,
-                globalLockup: 0,
-                targetedLockup: 1 days
+                globalLockup: 0
             })
         );
         assertFalse(manager.isDepositorWhitelisted(user, new bytes32[](0)), "Should not be whitelisted");
@@ -419,6 +306,120 @@ contract ShareManagerTest is FixtureTest {
         manager.mint(user, 1 ether);
 
         manager.claimShares(user);
+    }
+
+    /// @notice Tests share transfer whitelist permissions, both "from" and "to" are not zero address
+    function testUpdateChecks_transferWhitelist() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+
+        address from = vm.createWallet("from").addr;
+        address to = vm.createWallet("to").addr;
+
+        vm.startPrank(deployment.vaultAdmin);
+
+        // Enable transfer whitelist
+        manager.setFlags(
+            IShareManager.Flags({
+                hasMintPause: false,
+                hasBurnPause: false,
+                hasTransferPause: false,
+                hasWhitelist: false,
+                hasTransferWhitelist: true,
+                globalLockup: 0
+            })
+        );
+
+        // Case 1: sender not allowed, recipient allowed -> should revert
+        manager.setAccountInfo(
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
+        );
+        manager.setAccountInfo(
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
+        );
+        vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferNotAllowed.selector, from, to));
+        manager.updateChecks(from, to);
+
+        // Case 2: sender allowed, recipient not allowed -> should revert
+        manager.setAccountInfo(
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
+        );
+        manager.setAccountInfo(
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
+        );
+        vm.expectRevert(abi.encodeWithSelector(IShareManager.TransferNotAllowed.selector, from, to));
+        manager.updateChecks(from, to);
+
+        // Case 3: both sender and recipient allowed -> should NOT revert
+        manager.setAccountInfo(
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
+        );
+        manager.updateChecks(from, to);
+        vm.stopPrank();
+    }
+
+    /// @notice Tests share transfer blacklist permissions, both "from" and "to" are not zero address
+    function testUpdateChecks_blacklist() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+
+        address from = vm.createWallet("from").addr;
+        address to = vm.createWallet("to").addr;
+
+        vm.startPrank(deployment.vaultAdmin);
+
+        // Reset flags, just to verify blacklist checks
+        manager.setFlags(
+            IShareManager.Flags({
+                hasMintPause: false,
+                hasBurnPause: false,
+                hasTransferPause: false,
+                hasWhitelist: false,
+                hasTransferWhitelist: false,
+                globalLockup: 0
+            })
+        );
+
+        // Case 1: sender is blacklisted, recipient is not -> should revert with sender blacklisted
+        manager.setAccountInfo(
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
+        );
+        manager.setAccountInfo(
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
+        );
+        vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, from));
+        manager.updateChecks(from, to);
+
+        // Case 2: sender is not blacklisted, recipient is blacklisted -> should revert with recipient blacklisted
+        manager.setAccountInfo(
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
+        );
+        manager.setAccountInfo(
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
+        );
+        vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, to));
+        manager.updateChecks(from, to);
+
+        // Case 3: both sender and recipient are blacklisted -> should revert with sender blacklisted
+        manager.setAccountInfo(
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
+        );
+        manager.setAccountInfo(
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: true})
+        );
+        vm.expectRevert(abi.encodeWithSelector(IShareManager.Blacklisted.selector, from));
+        manager.updateChecks(from, to);
+
+        // Case 4: No one is blacklisted -> all good, should NOT revert
+        manager.setAccountInfo(
+            from, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
+        );
+        manager.setAccountInfo(
+            to, IShareManager.AccountInfo({canDeposit: true, canTransfer: true, isBlacklisted: false})
+        );
+        manager.updateChecks(from, to);
+
+        vm.stopPrank();
     }
 
     function createShareManager(Deployment memory deployment)

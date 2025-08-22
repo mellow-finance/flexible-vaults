@@ -14,7 +14,6 @@ import "../interfaces/managers/IShareManager.sol";
 /// - [3]   `hasWhitelist`
 /// - [4]   `hasTransferWhitelist`
 /// - [5..36]   `globalLockup` (32 bits)
-/// - [37..68]  `targetedLockup` (32 bits)
 library ShareManagerFlagLibrary {
     /// @notice Checks if the minting pause flag is enabled
     /// @param mask Encoded flags
@@ -58,19 +57,11 @@ library ShareManagerFlagLibrary {
         return uint32(mask >> 5);
     }
 
-    /// @notice Extracts the targeted lockup duration from the mask
-    /// @param mask Encoded flags
-    /// @return Targeted lockup period in seconds
-    function getTargetedLockup(uint256 mask) internal pure returns (uint32) {
-        return uint32(mask >> 37);
-    }
-
     /// @notice Encodes a Flags struct into a single uint256 mask
     /// @param f Flags struct containing individual settings
     /// @return Bitmask encoding all flag values
     function createMask(IShareManager.Flags calldata f) internal pure returns (uint256) {
         return (f.hasMintPause ? 1 : 0) | (f.hasBurnPause ? 2 : 0) | (f.hasTransferPause ? 4 : 0)
-            | (f.hasWhitelist ? 8 : 0) | (f.hasTransferWhitelist ? 16 : 0) | (uint256(f.globalLockup) << 5)
-            | (uint256(f.targetedLockup) << 37);
+            | (f.hasWhitelist ? 8 : 0) | (f.hasTransferWhitelist ? 16 : 0) | (uint256(f.globalLockup) << 5);
     }
 }

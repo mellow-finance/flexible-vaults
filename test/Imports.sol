@@ -26,6 +26,7 @@ import "../src/modules/VaultModule.sol";
 import "../src/modules/VerifierModule.sol";
 
 import "../src/oracles/Oracle.sol";
+import "../src/oracles/OracleHelper.sol";
 
 import "../src/permissions/BitmaskVerifier.sol";
 
@@ -56,4 +57,7 @@ import "../src/vaults/VaultConfigurator.sol";
 
 import "./mocks/MockACLModule.sol";
 import "./mocks/MockERC20.sol";
+
+import "./mocks/MockEIP1271.sol";
+import "./mocks/MockSubvault.sol";
 import "./mocks/MockVault.sol";

@@ -49,10 +49,10 @@ interface IDepositQueue is IQueue {
     /// @notice Thrown when a user is not allowed to deposit.
     error DepositNotAllowed();
 
-    /// @notice Thrown if a new deposit is attempted while an pending request exists.
+    /// @notice Thrown if a new deposit is attempted while a pending request exists.
     error PendingRequestExists();
 
-    /// @notice Thrown when a user tries to deposit again while a claimable request exists.
+    /// @notice Thrown when attempting to cancel a deposit request that has become claimable.
     error ClaimableRequestExists();
 
     /// @notice Thrown when trying to cancel a non-existent deposit request.
@@ -72,6 +72,9 @@ interface IDepositQueue is IQueue {
         /// @dev Price history reported by the oracle (indexed by timestamp).
         /// Used to convert deposited assets into vault shares.
         Checkpoints.Trace224 prices;
+        /// @dev Total number of unclaimed requests.
+        /// Used to check that the queue can be deleted.
+        uint256 unclaimedRequests;
     }
 
     /// @notice Returns the number of shares that can currently be claimed by the given account.
@@ -85,6 +88,10 @@ interface IDepositQueue is IQueue {
     /// @return assets Amount of assets deposited.
     function requestOf(address account) external view returns (uint256 timestamp, uint256 assets);
 
+    /// @notice Returns the number of unclaimed requests.
+    /// @return unclaimedRequests Number of unclaimed requests.
+    function unclaimedRequests() external view returns (uint256 unclaimedRequests);
+
     /// @notice Submits a new deposit request into the queue.
     /// @dev Reverts if a previous pending (not yet claimable) request exists.
     /// @param assets Amount of assets to deposit.
@@ -93,7 +100,8 @@ interface IDepositQueue is IQueue {
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable;
 
     /// @notice Cancels the caller's current pending deposit request.
-    /// @dev Refunds the originally deposited assets.
+    /// @dev Refunds the originally deposited assets. Reverts with `ClaimableRequestExists` if the
+    /// request has already become claimable.
     function cancelDepositRequest() external;
 
     /// @notice Claims shares from a fulfilled deposit request for a specific account.

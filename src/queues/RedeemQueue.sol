@@ -95,12 +95,14 @@ contract RedeemQueue is IRedeemQueue, Queue {
             revert QueuePaused();
         }
         IShareManager shareManager_ = IShareManager(IShareModule(vault_).shareManager());
-        shareManager_.burn(caller, shares);
-        {
-            IFeeManager feeManager = IShareModule(vault_).feeManager();
-            uint256 fees = feeManager.calculateRedeemFee(shares);
+        shareManager_.lockSharesOf(caller, shares);
+        IFeeManager feeManager_ = IShareModule(vault_).feeManager();
+        address feeRecipient_ = feeManager_.feeRecipient();
+
+        if (caller != feeRecipient_) {
+            uint256 fees = feeManager_.calculateRedeemFee(shares);
             if (fees > 0) {
-                shareManager_.mint(feeManager.feeRecipient(), fees);
+                shareManager_.mint(feeRecipient_, fees);
                 shares -= fees;
             }
         }
@@ -196,7 +198,6 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 $.totalDemandAssets -= demand;
             }
             $.batchIterator += counter;
-            $.totalPendingShares -= shares;
             emit RedeemRequestsHandled(counter, demand);
         }
     }
@@ -213,10 +214,9 @@ contract RedeemQueue is IRedeemQueue, Queue {
             latestEligibleIndex = latestIndex;
         } else {
             latestEligibleIndex = uint256(timestamps.upperLookupRecent(timestamp));
-            if (latestEligibleIndex == 0) {
+            if (latestEligibleIndex == 0 && timestamp < timestamps.at(0)._key) {
                 return;
             }
-            latestEligibleIndex--;
         }
 
         uint256 handledIndices_ = $.handledIndices;
@@ -233,6 +233,9 @@ contract RedeemQueue is IRedeemQueue, Queue {
         }
 
         uint256 index = $.prices.length();
+        $.totalPendingShares -= shares;
+        IShareManager shareManager_ = IShareModule(vault()).shareManager();
+        shareManager_.burn(address(shareManager_), shares);
         $.prices.push(timestamp, uint224(index));
         uint256 assets_ = Math.mulDiv(shares, 1 ether, priceD18);
         $.batches.push(Batch(assets_, shares));

@@ -47,11 +47,16 @@ contract SignatureQueueTest is FixtureTest {
     function testValidateOrder() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
 
-        uint256 signerPk = uint256(keccak256("signer"));
-        address signer = vm.addr(signerPk);
-        address[] memory signers = new address[](1);
-        signers[0] = signer;
-        (Consensus consensus,) = createConsensus(deployment, signers);
+        uint256 signerCount = 10;
+        uint256 threshold = 5;
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, threshold, signerPks, signatureTypes);
 
         MockSignatureQueue queue = createQueue(deployment);
         queue.initialize(
@@ -68,8 +73,8 @@ contract SignatureQueueTest is FixtureTest {
             deadline: block.timestamp + 1 days,
             nonce: 0
         });
-        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](1);
-        signatures[0] = signOrder(queue, order, signerPk);
+
+        IConsensus.Signature[] memory signatures = signOrder(queue, order, signerPks, signers);
         {
             vm.prank(user);
             vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.InvalidPrice.selector));
@@ -114,7 +119,7 @@ contract SignatureQueueTest is FixtureTest {
         }
         {
             order.queue = vm.createWallet("invalidQueue").addr;
-            signatures[0] = signOrder(queue, order, signerPk);
+            signatures = signOrder(queue, order, signerPks, signers);
             vm.prank(user);
             vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.InvalidQueue.selector, order.queue));
             queue.validateOrder(order, signatures);
@@ -127,6 +132,102 @@ contract SignatureQueueTest is FixtureTest {
         }
     }
 
+    function testValidateOrder_WithPriceRounding() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+
+        uint256 signerCount = 10;
+        uint256 threshold = 5;
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, threshold, signerPks, signatureTypes);
+
+        MockSignatureQueue queue = createQueue(deployment);
+        queue.initialize(
+            abi.encode(asset, address(deployment.vault), abi.encode(address(consensus), "MockSignatureQueue", "0"))
+        );
+
+        // Validate that the price is rounded up for deposit order
+        {
+            ISignatureQueue.Order memory order = ISignatureQueue.Order({
+                orderId: 1,
+                queue: address(queue),
+                asset: asset,
+                caller: user,
+                recipient: user,
+                ordered: 1 ether + 1,
+                requested: 1 ether,
+                deadline: block.timestamp + 1 days,
+                nonce: 0
+            });
+            IConsensus.Signature[] memory signatures = signOrder(queue, order, signerPks, signers);
+
+            // Make sure we make "deposit" order
+            vm.mockCall(
+                address(deployment.vault),
+                abi.encodeWithSelector(IShareModule.isDepositQueue.selector),
+                abi.encode(true)
+            );
+
+            // Make sure the oracle is valid and not suspicious
+            vm.mockCall(
+                address(deployment.oracle),
+                abi.encodeWithSelector(IOracle.validatePrice.selector),
+                abi.encode(true, false)
+            );
+
+            // Validate price is rounded up, it should be 1 ether (not ether - 1 wei)
+            vm.expectCall(
+                address(deployment.oracle), abi.encodeWithSelector(IOracle.validatePrice.selector, 1 ether, asset)
+            );
+
+            vm.prank(user);
+            queue.validateOrder(order, signatures);
+        }
+
+        // Validate that the price is rounded down for redeem order
+        {
+            ISignatureQueue.Order memory order = ISignatureQueue.Order({
+                orderId: 1,
+                queue: address(queue),
+                asset: asset,
+                caller: user,
+                recipient: user,
+                ordered: 1 ether,
+                requested: 1 ether + 1,
+                deadline: block.timestamp + 1 days,
+                nonce: 0
+            });
+            IConsensus.Signature[] memory signatures = signOrder(queue, order, signerPks, signers);
+
+            // Make sure we make "redeem" order
+            vm.mockCall(
+                address(deployment.vault),
+                abi.encodeWithSelector(IShareModule.isDepositQueue.selector),
+                abi.encode(false)
+            );
+
+            // Make sure the oracle is valid and not suspicious
+            vm.mockCall(
+                address(deployment.oracle),
+                abi.encodeWithSelector(IOracle.validatePrice.selector),
+                abi.encode(true, false)
+            );
+
+            // Validate price is rounded down, it should be 1 ether - 1 wei (not 1 ether)
+            vm.expectCall(
+                address(deployment.oracle), abi.encodeWithSelector(IOracle.validatePrice.selector, 1 ether - 1, asset)
+            );
+
+            vm.prank(user);
+            queue.validateOrder(order, signatures);
+        }
+    }
+
     function createQueue(Deployment memory deployment) internal returns (MockSignatureQueue queue) {
         Factory consensusFactory =
             Factory(address(SignatureQueue(deployment.depositQueueFactory.implementationAt(1)).consensusFactory()));
@@ -135,15 +236,5 @@ contract SignatureQueueTest is FixtureTest {
         queue = MockSignatureQueue(
             payable(new TransparentUpgradeableProxy(address(queueImplementation), vaultProxyAdmin, new bytes(0)))
         );
-    }
-
-    function signOrder(SignatureQueue queue, ISignatureQueue.Order memory order, uint256 pk)
-        internal
-        view
-        returns (IConsensus.Signature memory)
-    {
-        bytes32 hash = queue.hashOrder(order);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(pk, hash);
-        return IConsensus.Signature({signer: vm.addr(pk), signature: abi.encodePacked(r, s, v)});
     }
 }

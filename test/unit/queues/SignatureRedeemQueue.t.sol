@@ -27,13 +27,20 @@ contract SignatureRedeemQueueTest is FixtureTest {
     function testRedeem() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
 
-        uint256 signerPk = uint256(keccak256("signer"));
-        address signer = vm.addr(signerPk);
-        address[] memory signers = new address[](1);
-        signers[0] = signer;
-        (Consensus consensus,) = createConsensus(deployment, signers);
-        SignatureRedeemQueue queue =
-            SignatureRedeemQueue(addSignatureRedeemQueue(deployment, vaultProxyAdmin, asset, address(consensus)));
+        uint256 signerCount = 10;
+        uint256 threshold = 5;
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, threshold, signerPks, signatureTypes);
+
+        SignatureRedeemQueue queue = SignatureRedeemQueue(
+            payable(addSignatureRedeemQueue(deployment, vaultProxyAdmin, asset, address(consensus)))
+        );
 
         uint256 amount = 1000;
         ISignatureQueue.Order memory order = ISignatureQueue.Order({
@@ -47,8 +54,9 @@ contract SignatureRedeemQueueTest is FixtureTest {
             deadline: block.timestamp + 1 days,
             nonce: 0
         });
-        IConsensus.Signature[] memory signatures = new IConsensus.Signature[](1);
-        signatures[0] = signOrder(queue, order, signerPk);
+
+        IConsensus.Signature[] memory signatures = signOrder(queue, order, signerPks, signers);
+
         {
             Oracle oracle = deployment.oracle;
             IOracle.Report[] memory reports = new IOracle.Report[](1);
@@ -67,6 +75,227 @@ contract SignatureRedeemQueueTest is FixtureTest {
         vm.prank(address(queue));
         deployment.shareManager.mint(user, amount);
         MockERC20(asset).mint(address(deployment.vault), amount);
+
+        vm.prank(user);
+        queue.redeem(order, signatures);
+
+        assertEq(MockERC20(asset).balanceOf(user), amount, "User should receive assets");
+    }
+
+    function testRedeemETH() external {
+        address[] memory assets = new address[](1);
+        assets[0] = TransferLibrary.ETH;
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assets);
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](10);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, 5, signerPks, signatureTypes);
+
+        address caller = vm.createWallet(string(abi.encodePacked("order.caller"))).addr;
+        address recipient = vm.createWallet(string(abi.encodePacked("order.recipient"))).addr;
+
+        // Deposit ETH
+        {
+            SignatureDepositQueue depositQueue = SignatureDepositQueue(
+                addSignatureDepositQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH, address(consensus))
+            );
+            ISignatureQueue.Order memory order = ISignatureQueue.Order({
+                orderId: 1,
+                queue: address(depositQueue),
+                asset: TransferLibrary.ETH,
+                caller: caller,
+                recipient: recipient,
+                ordered: 1 ether,
+                requested: 1 ether,
+                deadline: block.timestamp + 1 days,
+                nonce: 0
+            });
+
+            pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+
+            makeDepositSignature(depositQueue, order, signerPks, signers);
+            assertEq(deployment.shareManager.activeSharesOf(order.caller), 0, "Caller should not have shares");
+            assertEq(
+                deployment.shareManager.activeSharesOf(order.recipient), order.requested, "Recipient should have shares"
+            );
+
+            skip(securityParams.timeout);
+            pushReport(deployment, IOracle.Report({asset: TransferLibrary.ETH, priceD18: 1e18}));
+        }
+
+        // Redeem ETH
+        {
+            // Swap caller and recipient, so that the caller has shares
+            (caller, recipient) = (recipient, caller);
+
+            SignatureRedeemQueue redeemQueue = SignatureRedeemQueue(
+                payable(addSignatureRedeemQueue(deployment, vaultProxyAdmin, TransferLibrary.ETH, address(consensus)))
+            );
+            ISignatureQueue.Order memory order = ISignatureQueue.Order({
+                orderId: 1,
+                queue: address(redeemQueue),
+                asset: TransferLibrary.ETH,
+                caller: caller,
+                recipient: recipient,
+                ordered: 1 ether,
+                requested: 1 ether,
+                deadline: block.timestamp + 1 days,
+                nonce: 0
+            });
+
+            assertEq(recipient.balance, 0, "Recipient should not have ETH");
+
+            vm.startPrank(caller);
+            redeemQueue.redeem(order, signOrder(redeemQueue, order, signerPks, signers));
+            vm.stopPrank();
+
+            assertEq(recipient.balance, 1 ether, "Recipient should have ETH");
+        }
+    }
+
+    function testFuzzRedeemCallerRecipient(address[64] calldata recipient) external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](10);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, 5, signerPks, signatureTypes);
+        {
+            SignatureDepositQueue queue =
+                SignatureDepositQueue(addSignatureDepositQueue(deployment, vaultProxyAdmin, asset, address(consensus)));
+
+            ISignatureQueue.Order memory order = ISignatureQueue.Order({
+                orderId: 1,
+                queue: address(queue),
+                asset: asset,
+                caller: user,
+                recipient: user,
+                ordered: 1 ether,
+                requested: 1 ether,
+                deadline: block.timestamp + 1 days,
+                nonce: 0
+            });
+
+            pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+            makeDepositSignature(queue, order, signerPks, signers);
+
+            assertEq(deployment.shareManager.activeSharesOf(user), order.requested, "Recipient should have shares");
+        }
+
+        {
+            SignatureRedeemQueue queue = SignatureRedeemQueue(
+                payable(addSignatureRedeemQueue(deployment, vaultProxyAdmin, asset, address(consensus)))
+            );
+
+            ISignatureQueue.Order memory order = ISignatureQueue.Order({
+                orderId: 1,
+                queue: address(queue),
+                asset: asset,
+                caller: user,
+                recipient: address(0),
+                ordered: 1 ether / 64,
+                requested: 1 ether / 64,
+                deadline: 0,
+                nonce: 0
+            });
+
+            for (uint256 i = 0; i < recipient.length; i++) {
+                order.recipient = recipient[i];
+                order.nonce = queue.nonces(order.caller);
+                order.deadline = block.timestamp + 1 hours;
+                if (order.recipient == address(0)) {
+                    continue;
+                }
+
+                uint256 balanceBefore = MockERC20(asset).balanceOf(order.recipient);
+
+                vm.startPrank(user);
+                queue.redeem(order, signOrder(queue, order, signerPks, signers));
+                vm.stopPrank();
+                assertEq(
+                    MockERC20(asset).balanceOf(order.recipient),
+                    order.requested + balanceBefore,
+                    "Recipient should have assets"
+                );
+                skip(deployment.oracle.securityParams().timeout);
+                pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+            }
+        }
+    }
+
+    function testRedeemQueuePause() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+
+        uint256 signerCount = 10;
+        uint256 threshold = 5;
+
+        /// @dev Generate signers and their public keys with EIP712 signature type
+        IConsensus.SignatureType[] memory signatureTypes = new IConsensus.SignatureType[](signerCount);
+        uint256[] memory signerPks;
+        address[] memory signers;
+        (signerPks, signers, signatureTypes) = generateSortedSigners(signatureTypes);
+
+        (Consensus consensus,) = createConsensus(deployment, threshold, signerPks, signatureTypes);
+
+        SignatureRedeemQueue queue = SignatureRedeemQueue(
+            payable(addSignatureRedeemQueue(deployment, vaultProxyAdmin, asset, address(consensus)))
+        );
+
+        assertFalse(deployment.vault.isPausedQueue(address(queue)), "Queue should not be paused");
+
+        vm.startPrank(vaultAdmin);
+        deployment.vault.grantRole(deployment.vault.SET_QUEUE_STATUS_ROLE(), vaultAdmin);
+        vm.stopPrank();
+
+        uint256 amount = 1000;
+        ISignatureQueue.Order memory order = ISignatureQueue.Order({
+            orderId: 1,
+            queue: address(queue),
+            asset: asset,
+            caller: user,
+            recipient: user,
+            ordered: amount,
+            requested: amount,
+            deadline: block.timestamp + 1 days,
+            nonce: 0
+        });
+
+        IConsensus.Signature[] memory signatures = signOrder(queue, order, signerPks, signers);
+
+        {
+            Oracle oracle = deployment.oracle;
+            IOracle.Report[] memory reports = new IOracle.Report[](1);
+            uint224 price = 1e18;
+            reports[0] = IOracle.Report({asset: asset, priceD18: price});
+            vm.startPrank(vaultAdmin);
+            oracle.submitReports(reports);
+            oracle.acceptReport(asset, price, uint32(block.timestamp));
+            vm.stopPrank();
+        }
+
+        vm.prank(address(queue));
+        deployment.shareManager.mint(user, amount);
+        MockERC20(asset).mint(address(deployment.vault), amount);
+
+        vm.prank(vaultAdmin);
+        deployment.vault.setQueueStatus(address(queue), true);
+
+        vm.prank(user);
+        vm.expectRevert(abi.encodeWithSelector(ISignatureQueue.QueuePaused.selector));
+        queue.redeem(order, signatures);
+
+        vm.prank(vaultAdmin);
+        deployment.vault.setQueueStatus(address(queue), false);
 
         vm.prank(user);
         queue.redeem(order, signatures);
@@ -97,15 +326,5 @@ contract SignatureRedeemQueueTest is FixtureTest {
         queue = SignatureRedeemQueue(
             payable(new TransparentUpgradeableProxy(address(queueImplementation), vaultProxyAdmin, new bytes(0)))
         );
-    }
-
-    function signOrder(SignatureQueue queue, ISignatureQueue.Order memory order, uint256 pk)
-        internal
-        view
-        returns (IConsensus.Signature memory)
-    {
-        bytes32 hash = queue.hashOrder(order);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(pk, hash);
-        return IConsensus.Signature({signer: vm.addr(pk), signature: abi.encodePacked(r, s, v)});
     }
 }

@@ -102,7 +102,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         f.hasWhitelist = bitmask.hasWhitelist();
         f.hasTransferWhitelist = bitmask.hasTransferWhitelist();
         f.globalLockup = bitmask.getGlobalLockup();
-        f.targetedLockup = bitmask.getTargetedLockup();
     }
 
     /// @inheritdoc IShareManager
@@ -125,9 +124,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
             if (block.timestamp < flags_.getGlobalLockup()) {
                 revert GlobalLockupNotExpired(block.timestamp, flags_.getGlobalLockup());
             }
-            if (block.timestamp < info.lockedUntil) {
-                revert TargetedLockupNotExpired(block.timestamp, info.lockedUntil);
-            }
             if (info.isBlacklisted) {
                 revert Blacklisted(from);
             }
@@ -135,8 +131,12 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
                 if (flags_.hasTransferPause()) {
                     revert TransferPaused();
                 }
+                AccountInfo memory toInfo = $.accounts[to];
+                if (toInfo.isBlacklisted) {
+                    revert Blacklisted(to);
+                }
                 if (flags_.hasTransferWhitelist()) {
-                    if (info.canTransfer || !$.accounts[to].canTransfer) {
+                    if (!info.canTransfer || !toInfo.canTransfer) {
                         revert TransferNotAllowed(from, to);
                     }
                 }
@@ -225,15 +225,15 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
             revert ZeroValue();
         }
         _mintShares(account, value);
-        ShareManagerStorage storage $ = _shareManagerStorage();
-        uint32 targetLockup = $.flags.getTargetedLockup();
-        if (targetLockup != 0) {
-            uint32 lockedUntil = uint32(block.timestamp) + targetLockup;
-            $.accounts[account].lockedUntil = lockedUntil;
-            emit Mint(account, value, lockedUntil);
-        } else {
-            emit Mint(account, value, 0);
+        emit Mint(account, value);
+    }
+
+    function lockSharesOf(address account, uint256 value) external onlyQueue {
+        if (value == 0) {
+            revert ZeroValue();
         }
+        _lockSharesOf(account, value);
+        emit LockSharesOf(account, value);
     }
 
     /// @inheritdoc IShareManager
@@ -261,4 +261,6 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
     function _mintShares(address account, uint256 value) internal virtual;
 
     function _burnShares(address account, uint256 value) internal virtual;
+
+    function _lockSharesOf(address account, uint256 value) internal virtual;
 }

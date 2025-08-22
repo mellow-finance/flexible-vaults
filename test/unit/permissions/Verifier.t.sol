@@ -86,6 +86,9 @@ contract VerifierTest is Test {
 
         bytes32 newMerkleRoot = keccak256("newMerkleRoot");
 
+        vm.expectEmit(true, true, true, true);
+        emit IVerifier.SetMerkleRoot(newMerkleRoot);
+
         vm.prank(SET_MERKLE_ROOT_ROLE_ADDRESS);
         verifier.setMerkleRoot(newMerkleRoot);
 
@@ -103,6 +106,9 @@ contract VerifierTest is Test {
 
         vm.expectRevert("Forbidden()");
         verifier.allowCalls(compactCalls);
+
+        vm.expectEmit(true, true, true, true);
+        emit IVerifier.AllowCall(compactCalls[0].who, compactCalls[0].where, compactCalls[0].selector);
 
         vm.prank(ALLOW_CALL_ROLE_ADDRESS);
         verifier.allowCalls(compactCalls);
@@ -139,31 +145,43 @@ contract VerifierTest is Test {
         IVerifier.CompactCall[] memory compactCalls = new IVerifier.CompactCall[](1);
         compactCalls[0] = IVerifier.CompactCall({who: caller1, where: target1, selector: bytes4(callData1)});
 
-        vm.expectRevert("Forbidden()");
-        verifier.disallowCalls(compactCalls);
+        // Check that disallowCalls reverts if the caller is not DISALLOW_CALL_ROLE_ADDRESS
+        {
+            vm.expectRevert("Forbidden()");
+            verifier.disallowCalls(compactCalls);
 
-        vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                IVerifier.CompactCallNotFound.selector,
-                compactCalls[0].who,
-                compactCalls[0].where,
-                compactCalls[0].selector
-            )
-        );
-        verifier.disallowCalls(compactCalls);
+            vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    IVerifier.CompactCallNotFound.selector,
+                    compactCalls[0].who,
+                    compactCalls[0].where,
+                    compactCalls[0].selector
+                )
+            );
+            verifier.disallowCalls(compactCalls);
+        }
 
-        vm.prank(ALLOW_CALL_ROLE_ADDRESS);
-        verifier.allowCalls(compactCalls);
+        // Check success case
+        {
+            vm.prank(ALLOW_CALL_ROLE_ADDRESS);
+            verifier.allowCalls(compactCalls);
 
-        assertEq(verifier.allowedCalls(), 1);
-        assertTrue(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
+            assertEq(verifier.allowedCalls(), 1);
+            assertTrue(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
+            assertEq(verifier.allowedCallAt(0).who, compactCalls[0].who);
 
-        vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
-        verifier.disallowCalls(compactCalls);
+            vm.expectEmit(true, true, true, true);
+            emit IVerifier.DisallowCall(compactCalls[0].who, compactCalls[0].where, compactCalls[0].selector);
 
-        assertEq(verifier.allowedCalls(), 0);
-        assertFalse(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
+            vm.prank(DISALLOW_CALL_ROLE_ADDRESS);
+            verifier.disallowCalls(compactCalls);
+
+            assertEq(verifier.allowedCalls(), 0);
+            assertFalse(verifier.isAllowedCall(compactCalls[0].who, compactCalls[0].where, callData1));
+            vm.expectRevert("panic: array out-of-bounds access (0x32)");
+            verifier.allowedCallAt(1);
+        }
     }
 
     function testVerificationCall_Onchain_Compat() external {
@@ -240,6 +258,39 @@ contract VerifierTest is Test {
 
         assertTrue(verifier.getVerificationResult(CALL_ROLE_ADDRESS, target1, 0, validCalldata2, verificationPayload));
         verifier.verifyCall(CALL_ROLE_ADDRESS, target1, 0, validCalldata2, verificationPayload);
+    }
+
+    /// @notice Checks that the bitmask verifier can be used to verify a call.
+    function testVerificationCall_Custom_BitmaskVerifier() external {
+        Verifier verifier = createVerifier("Verifier", 1, admin);
+        BitmaskVerifier bitmaskVerifier = new BitmaskVerifier();
+
+        address who = CALL_ROLE_ADDRESS;
+        address where = vm.createWallet("where").addr;
+        bytes memory callData = abi.encodeWithSignature("testFunction(uint256)", 42);
+
+        bytes memory exactBitmask = new bytes(callData.length);
+        for (uint256 i = 0; i < callData.length; i++) {
+            exactBitmask[i] = 0xFF;
+        }
+        bytes memory bitmask = abi.encodePacked(
+            bytes32(0), // who,
+            bytes32(0), // where
+            bytes32(0), // value
+            exactBitmask // calldata
+        );
+        bytes memory verificationData =
+            abi.encode(bitmaskVerifier.calculateHash(bitmask, who, where, 0, callData), bitmask);
+
+        IVerifier.VerificationPayload memory verificationPayload = IVerifier.VerificationPayload({
+            verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+            verificationData: bytes.concat(abi.encode(bitmaskVerifier), verificationData),
+            proof: proof
+        });
+
+        setValidMerkleRootForPayloadAndProof(verifier, proof, verificationPayload);
+
+        assertTrue(verifier.getVerificationResult(CALL_ROLE_ADDRESS, where, 0, callData, verificationPayload));
     }
 
     function testVerificationCall_Custom_Verifier_Success() external {

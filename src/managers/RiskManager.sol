@@ -7,6 +7,7 @@ import "../libraries/SlotLibrary.sol";
 
 contract RiskManager is IRiskManager, ContextUpgradeable {
     using EnumerableSet for EnumerableSet.AddressSet;
+    using SafeCast for uint256;
 
     bytes32 public constant SET_VAULT_LIMIT_ROLE = keccak256("managers.RiskManager.SET_VAULT_LIMIT_ROLE");
     bytes32 public constant SET_SUBVAULT_LIMIT_ROLE = keccak256("managers.RiskManager.SET_SUBVAULT_LIMIT_ROLE");
@@ -112,9 +113,9 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
             revert InvalidReport();
         }
         if (value < 0) {
-            return -int256(Math.mulDiv(uint256(-value), report.priceD18, 1 ether));
+            return -Math.mulDiv(uint256(-value), report.priceD18, 1 ether).toInt256();
         } else {
-            return int256(Math.mulDiv(uint256(value), report.priceD18, 1 ether));
+            return Math.mulDiv(uint256(value), report.priceD18, 1 ether).toInt256();
         }
     }
 
@@ -211,7 +212,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         int256 pendingSharesAfter = convertToShares(asset, pendingAssetsAfter);
         int256 shares = pendingSharesAfter - pendingSharesBefore;
         int256 newPendingBalance = $.pendingBalance + shares;
-        if (shares > 0 && $.vaultState.balance + newPendingBalance > $.vaultState.limit) {
+        if (change > 0 && $.vaultState.balance + newPendingBalance > $.vaultState.limit) {
             revert LimitExceeded($.vaultState.balance + newPendingBalance, $.vaultState.limit);
         }
         $.pendingAssets[asset] = pendingAssetsAfter;
@@ -225,7 +226,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         int256 shares = convertToShares(asset, change);
         RiskManagerStorage storage $ = _riskManagerStorage();
         int256 newBalance = $.vaultState.balance + shares;
-        if (shares > 0 && newBalance + $.pendingBalance > $.vaultState.limit) {
+        if (change > 0 && newBalance + $.pendingBalance > $.vaultState.limit) {
             revert LimitExceeded(newBalance + $.pendingBalance, $.vaultState.limit);
         }
         $.vaultState.balance = newBalance;
@@ -245,7 +246,7 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         State storage state = $.subvaultStates[subvault];
         int256 shares = convertToShares(asset, change);
         int256 newBalance = state.balance + shares;
-        if (shares > 0 && newBalance > state.limit) {
+        if (change > 0 && newBalance > state.limit) {
             revert LimitExceeded(newBalance, state.limit);
         }
         state.balance = newBalance;

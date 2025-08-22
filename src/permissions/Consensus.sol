@@ -24,6 +24,10 @@ contract Consensus is IConsensus, OwnableUpgradeable {
             return false;
         }
         for (uint256 i = 0; i < signatures.length; i++) {
+            if (i > 0 && signatures[i - 1].signer >= signatures[i].signer) {
+                return false; // Duplicate or out-of-order signers
+            }
+
             address signer = signatures[i].signer;
             (bool exists, uint256 signatureTypeValue) = $.signers.tryGet(signer);
             if (!exists) {

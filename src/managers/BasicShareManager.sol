@@ -64,6 +64,23 @@ contract BasicShareManager is ShareManager {
         emit IERC20.Transfer(account, address(0), value);
     }
 
+    function _lockSharesOf(address account, uint256 value) internal override {
+        if (account == address(0)) {
+            revert IERC20Errors.ERC20InvalidSender(address(0));
+        }
+        updateChecks(account, address(0));
+        ERC20Upgradeable.ERC20Storage storage $ = _getERC20Storage();
+        uint256 accountBalance = $._balances[account];
+        if (accountBalance < value) {
+            revert IERC20Errors.ERC20InsufficientBalance(account, accountBalance, value);
+        }
+        unchecked {
+            $._balances[account] = accountBalance - value;
+            $._balances[address(this)] += value;
+        }
+        emit IERC20.Transfer(account, address(this), value);
+    }
+
     function _getERC20Storage() private pure returns (ERC20Upgradeable.ERC20Storage storage $) {
         assembly {
             $.slot := ERC20StorageLocation
