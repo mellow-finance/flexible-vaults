@@ -106,7 +106,9 @@ contract BasicShareManagerTest is FixtureTest {
             assertEq(manager.activeSharesOf(address(manager)), 0, "Manager shares should be zero");
 
             // Trying to lock two times the user's shares
-            vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, user, 1 ether, 2 ether));
+            vm.expectRevert(
+                abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, user, 1 ether, 2 ether)
+            );
             manager.lock(user, 2 ether);
         }
         vm.stopPrank();
