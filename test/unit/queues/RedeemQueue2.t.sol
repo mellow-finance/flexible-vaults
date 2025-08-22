@@ -196,9 +196,9 @@ contract RedeemQueueTest2 is Test {
 
     /// @notice Tests that a successful `redeem` burns shares and records the request.
     function testRedeemSuccess() public {
-        // Expect the lockSharesOf to be called
+        // Expect the `lock` to be called
         vm.expectCall(
-            address(vault.shareManager()), abi.encodeWithSelector(IShareManager.lockSharesOf.selector, user, 1 ether)
+            address(vault.shareManager()), abi.encodeWithSelector(IShareManager.lock.selector, user, 1 ether)
         );
 
         // Expect the emit of the event

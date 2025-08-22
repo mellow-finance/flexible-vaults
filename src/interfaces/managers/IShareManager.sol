@@ -154,7 +154,7 @@ interface IShareManager is IFactoryEntity {
     function burn(address account, uint256 amount) external;
 
     /// @notice 'Locks' user's shares by transferring them to the vault balance
-    function lockSharesOf(address acount, uint256 amount) external;
+    function lock(address acount, uint256 amount) external;
 
     /// @notice One-time vault assignment during initialization
     function setVault(address vault_) external;
@@ -169,7 +169,7 @@ interface IShareManager is IFactoryEntity {
     event Burn(address indexed account, uint256 shares);
 
     /// @notice Emitted when shares are locked
-    event LockSharesOf(address account, uint256 value);
+    event Lock(address account, uint256 value);
 
     /// @notice Emitted when global flag configuration is changed
     event SetFlags(Flags flags);

@@ -228,12 +228,13 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
         emit Mint(account, value);
     }
 
-    function lockSharesOf(address account, uint256 value) external onlyQueue {
+    /// @inheritdoc IShareManager
+    function lock(address account, uint256 value) external onlyQueue {
         if (value == 0) {
             revert ZeroValue();
         }
-        _lockSharesOf(account, value);
-        emit LockSharesOf(account, value);
+        _lockShares(account, value);
+        emit Lock(account, value);
     }
 
     /// @inheritdoc IShareManager
@@ -262,5 +263,5 @@ abstract contract ShareManager is IShareManager, ContextUpgradeable {
 
     function _burnShares(address account, uint256 value) internal virtual;
 
-    function _lockSharesOf(address account, uint256 value) internal virtual;
+    function _lockShares(address account, uint256 value) internal virtual;
 }

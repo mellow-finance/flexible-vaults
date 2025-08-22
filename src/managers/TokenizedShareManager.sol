@@ -49,7 +49,7 @@ contract TokenizedShareManager is ITokenizedShareManager, ShareManager, ERC20Upg
         _burn(account, value);
     }
 
-    function _lockSharesOf(address account, uint256 value) internal override {
+    function _lockShares(address account, uint256 value) internal override {
         if (account == address(0)) {
             revert ERC20InvalidReceiver(address(0));
         }

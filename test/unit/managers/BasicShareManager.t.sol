@@ -59,6 +59,59 @@ contract BasicShareManagerTest is FixtureTest {
         manager.burn(user, 1 ether);
     }
 
+    /// @notice Tests that `lockShares` transfers shares to the manager contract
+    function testLockShares() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+        address depositQueue = addDepositQueue(deployment, deployment.vaultProxyAdmin, asset);
+
+        vm.startPrank(depositQueue);
+        {
+            // Mint shares to the user
+            manager.mint(user, 1 ether);
+            assertEq(manager.activeSharesOf(user), 1 ether, "User shares should not be zero");
+            assertEq(manager.activeSharesOf(address(manager)), 0, "Manager shares should be zero");
+
+            // Lock half of the user's shares to the manager contract
+            manager.lock(user, 0.5 ether);
+            assertEq(manager.activeSharesOf(user), 0.5 ether, "User shares should not be zero");
+            assertEq(manager.activeSharesOf(address(manager)), 0.5 ether, "Manager shares should not be zero");
+        }
+        vm.stopPrank();
+    }
+
+    /// @notice Tests that `lockShares` reverts when the account is the zero address
+    function testLockSharesRevertsOnZeroAddress() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+        address depositQueue = addDepositQueue(deployment, deployment.vaultProxyAdmin, asset);
+
+        vm.startPrank(depositQueue);
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidSender.selector, address(0)));
+        manager.lock(address(0), 1 ether);
+        vm.stopPrank();
+    }
+
+    /// @notice Tests that `lockShares` reverts when the account has insufficient balance
+    function testLockSharesRevertsOnExceedingBalance() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+        address depositQueue = addDepositQueue(deployment, deployment.vaultProxyAdmin, asset);
+
+        vm.startPrank(depositQueue);
+        {
+            // Mint shares to the user
+            manager.mint(user, 1 ether);
+            assertEq(manager.activeSharesOf(user), 1 ether, "User shares should not be zero");
+            assertEq(manager.activeSharesOf(address(manager)), 0, "Manager shares should be zero");
+
+            // Trying to lock two times the user's shares
+            vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, user, 1 ether, 2 ether));
+            manager.lock(user, 2 ether);
+        }
+        vm.stopPrank();
+    }
+
     function createShareManager(Deployment memory deployment)
         internal
         override

@@ -308,6 +308,40 @@ contract ShareManagerTest is FixtureTest {
         manager.claimShares(user);
     }
 
+    /// @notice Tests that `lock` transfers shares to the manager contract
+    function testLockShares() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+        address depositQueue = addDepositQueue(deployment, deployment.vaultProxyAdmin, asset);
+
+        // Mint shares to the user
+        vm.prank(address(deployment.vault));
+        manager.mint(user, 1 ether);
+        assertEq(manager.activeSharesOf(user), 1 ether, "User shares should not be zero");
+        assertEq(manager.activeSharesOf(address(manager)), 0, "Manager shares should be zero");
+
+        // Expect the `lock` to be called
+        vm.expectEmit(true, true, true, true);
+        emit IShareManager.Lock(user, 1 ether);
+
+        // Lock shares to the manager contract
+        vm.startPrank(depositQueue);
+        manager.lock(user, 1 ether);
+        assertEq(manager.activeSharesOf(user), 0, "User shares should be zero");
+        assertEq(manager.activeSharesOf(address(manager)), 1 ether, "Manager shares should not be zero");
+    }
+
+    /// @notice Tests that `lock` reverts when the value is zero
+    function testLockSharesRevertsOnZeroValue() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        ShareManager manager = deployment.shareManager;
+        address depositQueue = addDepositQueue(deployment, deployment.vaultProxyAdmin, asset);
+        vm.startPrank(depositQueue);
+        vm.expectRevert(abi.encodeWithSelector(IShareManager.ZeroValue.selector));
+        manager.lock(user, 0);
+        vm.stopPrank();
+    }
+
     /// @notice Tests share transfer whitelist permissions, both "from" and "to" are not zero address
     function testUpdateChecks_transferWhitelist() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);

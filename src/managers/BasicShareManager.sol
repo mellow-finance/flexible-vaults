@@ -64,7 +64,7 @@ contract BasicShareManager is ShareManager {
         emit IERC20.Transfer(account, address(0), value);
     }
 
-    function _lockSharesOf(address account, uint256 value) internal override {
+    function _lockShares(address account, uint256 value) internal override {
         if (account == address(0)) {
             revert IERC20Errors.ERC20InvalidSender(address(0));
         }
