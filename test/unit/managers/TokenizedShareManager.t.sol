@@ -11,6 +11,10 @@ contract MockTokenizedShareManager is TokenizedShareManager {
         _mint(account, value);
     }
 
+    function __lockShares(address account, uint256 value) external {
+        _lockShares(account, value);
+    }
+
     function __setIsClaiming(bool value) external {
         _tokenizedShareManagerStorage().isClaiming = value;
     }
@@ -95,6 +99,34 @@ contract TokenizedShareManagerTest is FixtureTest {
 
         vm.prank(userA);
         shareManager.transfer(userB, 1 ether);
+    }
+
+    /// @notice Tests that `lockShares` transfers shares to the manager contract
+    function testLockShares() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        MockTokenizedShareManager shareManager = MockTokenizedShareManager(address(deployment.shareManager));
+
+        // Mint shares to the user
+        shareManager.mintShares(user, 1 ether);
+        assertEq(shareManager.activeSharesOf(user), 1 ether, "User shares should not be zero");
+        assertEq(shareManager.activeSharesOf(address(shareManager)), 0, "Manager shares should be zero");
+
+        vm.expectEmit(true, true, true, true);
+        emit IShareModule.SharesClaimed(user);
+
+        // Lock shares to the manager contract
+        shareManager.__lockShares(user, 0.75 ether);
+        assertEq(shareManager.activeSharesOf(user), 0.25 ether, "User shares should not be zero");
+        assertEq(shareManager.activeSharesOf(address(shareManager)), 0.75 ether, "Manager shares should not be zero");
+    }
+
+    /// @notice Tests that `lockShares` reverts when the account is the zero address
+    function testLockSharesRevertsOnZeroAddress() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        MockTokenizedShareManager shareManager = MockTokenizedShareManager(address(deployment.shareManager));
+
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
+        shareManager.__lockShares(address(0), 0.75 ether);
     }
 
     function createShareManager(Deployment memory deployment)

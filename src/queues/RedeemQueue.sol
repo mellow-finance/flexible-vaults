@@ -95,7 +95,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             revert QueuePaused();
         }
         IShareManager shareManager_ = IShareManager(IShareModule(vault_).shareManager());
-        shareManager_.lockSharesOf(caller, shares);
+        shareManager_.lock(caller, shares);
         IFeeManager feeManager_ = IShareModule(vault_).feeManager();
         address feeRecipient_ = feeManager_.feeRecipient();
 
