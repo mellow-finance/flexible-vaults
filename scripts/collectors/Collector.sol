@@ -11,18 +11,25 @@ import "../../src/interfaces/managers/IShareManager.sol";
 import "../../src/interfaces/oracles/IOracle.sol";
 
 import "../../src/interfaces/queues/IDepositQueue.sol";
+
 import "../../src/interfaces/queues/IRedeemQueue.sol";
+import "../../src/interfaces/queues/ISignatureQueue.sol";
 import "../../src/vaults/Vault.sol";
 import "./IPriceOracle.sol";
 
 contract Collector is Ownable {
-    struct Withdrawal {
+    struct Config {
+        address baseAssetFallback;
+        uint256 oracleUpdateInterval;
+        uint256 redeemHandlingInterval;
+    }
+
+    struct Request {
         address queue;
         address asset;
         uint256 shares;
         uint256 assets;
-        bool isTimestamp; // always true
-        uint256 claimingTime; // estimation, not the precise value!
+        uint256 eta;
     }
 
     struct Response {
@@ -35,34 +42,47 @@ contract Collector is Ownable {
         address[] redeemQueues;
         uint256 totalLP;
         uint256 limitLP;
-        uint256 userLP;
+        uint256 accountLP;
         uint256 totalBase;
         uint256 limitBase;
-        uint256 userBase;
+        uint256 accountBase;
         uint256 lpPriceBase;
         uint256 totalUSD;
         uint256 limitUSD;
-        uint256 userUSD;
+        uint256 accountUSD;
         uint256 lpPriceUSD;
-        Withdrawal[] withdrawals;
+        Request[] deposits;
+        Request[] withdrawals;
         uint256 blockNumber;
         uint256 timestamp;
     }
 
-    struct FetchDepositAmountsResponse {
+    struct DepositParams {
         bool isDepositPossible;
         bool isDepositorWhitelisted;
         bool isMerkleProofRequired;
         address asset;
-        uint256 expectedLpAmount;
-        uint256 expectedLpAmountUSDC;
-        uint256 expectedAmount;
-        uint256 expectedAmountUSDC;
+        uint256 shares;
+        uint256 sharesUSDC;
+        uint256 assets;
+        uint256 assetsUSDC;
+        uint256 eta;
+    }
+
+    struct WithdrawalParams {
+        bool isWithdrawalPossible;
+        address asset;
+        uint256 shares;
+        uint256 sharesUSDC;
+        uint256 assets;
+        uint256 assetsUSDC;
+        uint256 eta;
     }
 
     address public immutable USD = address(bytes20(keccak256("usd-token-address")));
 
     IPriceOracle public oracle;
+    uint256 public bufferSize = 256;
 
     constructor(address oracle_, address owner_) Ownable(owner_) {
         oracle = IPriceOracle(oracle_);
@@ -72,7 +92,11 @@ contract Collector is Ownable {
         oracle = IPriceOracle(oracle_);
     }
 
-    function collect(address user, Vault vault, address baseAssetFallback) public view returns (Response memory r) {
+    function setBufferSize(uint256 bufferSize_) external onlyOwner {
+        bufferSize = bufferSize_;
+    }
+
+    function collect(address account, Vault vault, Config calldata config) public view returns (Response memory r) {
         r.vault = address(vault);
         r.blockNumber = block.number;
         r.timestamp = block.timestamp;
@@ -84,7 +108,7 @@ contract Collector is Ownable {
 
         r.baseAsset = feeManager.baseAsset(address(vault));
         if (r.baseAsset == address(0)) {
-            r.baseAsset = baseAssetFallback;
+            r.baseAsset = config.baseAssetFallback;
         }
 
         {
@@ -100,15 +124,15 @@ contract Collector is Ownable {
         }
 
         r.totalLP = shareManager.totalShares();
-        r.userLP = shareManager.sharesOf(user);
+        r.accountLP = shareManager.sharesOf(account);
 
         uint224 vaultBasePriceD18 = vaultOracle.getReport(r.baseAsset).priceD18;
         if (vaultBasePriceD18 > 0) {
             r.totalBase = Math.mulDiv(r.totalLP, 1 ether, vaultBasePriceD18);
-            r.userBase = Math.mulDiv(r.userLP, 1 ether, vaultBasePriceD18);
+            r.accountBase = Math.mulDiv(r.accountLP, 1 ether, vaultBasePriceD18);
 
             r.totalUSD = oracle.getValue(r.baseAsset, USD, r.totalBase);
-            r.userUSD = oracle.getValue(r.baseAsset, USD, r.userBase);
+            r.accountUSD = oracle.getValue(r.baseAsset, USD, r.accountBase);
         }
 
         IRiskManager.State memory vaultState = riskManager.vaultState();
@@ -124,89 +148,152 @@ contract Collector is Ownable {
         r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
         r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
 
-        r.withdrawals = _collectWithdrawals(vault, user);
+        r.deposits = _collectDeposits(vault, account, config);
+        r.withdrawals = _collectWithdrawals(vault, account, config);
     }
 
-    function _collectWithdrawals(Vault vault, address user) private view returns (Withdrawal[] memory) {
-        // // Count total withdrawals
-        // uint256 totalWithdrawals = 0;
-        // uint256 assetCount = vault.getAssetCount();
-
-        // for (uint256 i = 0; i < assetCount; i++) {
-        //     address asset = vault.assetAt(i);
-        //     uint256 queueCount = vault.getQueueCount(asset);
-
-        //     for (uint256 j = 0; j < queueCount; j++) {
-        //         address queue = vault.queueAt(asset, j);
-        //         if (!vault.isDepositQueue(queue)) {
-        //             IRedeemQueue.Request[] memory requests = IRedeemQueue(queue).requestsOf(user, 0, 100);
-        //             totalWithdrawals += requests.length;
-        //         }
-        //     }
-        // }
-
-        // // Collect the actual withdrawals
-        // Withdrawal[] memory withdrawals = new Withdrawal[](totalWithdrawals);
-        // uint256 withdrawalIndex = 0;
-
-        // for (uint256 i = 0; i < assetCount; i++) {
-        //     address asset = vault.assetAt(i);
-        //     uint256 queueCount = vault.getQueueCount(asset);
-
-        //     for (uint256 j = 0; j < queueCount; j++) {
-        //         address queue = vault.queueAt(asset, j);
-        //         if (!vault.isDepositQueue(queue)) {
-        //             IRedeemQueue.Request[] memory requests = IRedeemQueue(queue).requestsOf(user, 0, 100);
-        //             for (uint256 k = 0; k < requests.length; k++) {
-        //                 withdrawals[withdrawalIndex] = Withdrawal({
-        //                     queue: queue,
-        //                     asset: asset,
-        //                     timestamp: requests[k].timestamp,
-        //                     shares: requests[k].shares,
-        //                     assets: requests[k].assets,
-        //                     isClaimable: requests[k].isClaimable
-        //                 });
-        //                 withdrawalIndex++;
-        //             }
-        //         }
-        //     }
-        // }
-
-        // return withdrawals;
+    function _collectDeposits(Vault vault, address account, Config calldata config)
+        private
+        view
+        returns (Request[] memory requests)
+    {
+        requests = new Request[](vault.getQueueCount());
+        uint256 iterator = 0;
+        IOracle.SecurityParams memory securityParams = vault.oracle().securityParams();
+        for (uint256 i = 0; i < vault.getAssetCount(); i++) {
+            address asset = vault.assetAt(i);
+            IOracle.DetailedReport memory report = vault.oracle().getReport(asset);
+            for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
+                address queue = vault.queueAt(asset, j);
+                if (!vault.isDepositQueue(queue)) {
+                    continue;
+                }
+                try ISignatureQueue(queue).consensus() {
+                    continue;
+                } catch {}
+                (uint256 timestamp, uint256 assets) = IDepositQueue(queue).requestOf(account);
+                if (assets == 0) {
+                    continue;
+                }
+                requests[iterator] = Request({
+                    queue: queue,
+                    asset: asset,
+                    shares: IDepositQueue(queue).claimableOf(account),
+                    assets: assets,
+                    eta: 0
+                });
+                if (requests[iterator].shares == 0) {
+                    requests[iterator].shares = Math.mulDiv(assets, report.priceD18, 1 ether);
+                    requests[iterator].eta = _findNextTimestamp(
+                        report.timestamp, timestamp, securityParams.depositInterval, config.oracleUpdateInterval
+                    );
+                }
+                iterator++;
+            }
+        }
+        assembly {
+            mstore(requests, iterator)
+        }
     }
 
-    function collect(address user, address[] memory vaults, address baseAsset)
+    function _collectWithdrawals(Vault vault, address account, Config calldata config)
+        private
+        view
+        returns (Request[] memory requests)
+    {
+        requests = new Request[](bufferSize);
+        uint256 iterator = 0;
+        IOracle.SecurityParams memory securityParams = vault.oracle().securityParams();
+        for (uint256 i = 0; i < vault.getAssetCount(); i++) {
+            address asset = vault.assetAt(i);
+            IOracle.DetailedReport memory report = vault.oracle().getReport(asset);
+            for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
+                address queue = vault.queueAt(asset, j);
+                if (vault.isDepositQueue(queue)) {
+                    continue;
+                }
+                try ISignatureQueue(queue).consensus() {
+                    continue;
+                } catch {}
+                IRedeemQueue.Request[] memory redeemRequests =
+                    IRedeemQueue(queue).requestsOf(account, 0, requests.length);
+                for (uint256 k = 0; k < redeemRequests.length; k++) {
+                    requests[iterator] = Request({
+                        queue: queue,
+                        asset: asset,
+                        shares: redeemRequests[k].shares,
+                        assets: redeemRequests[k].assets,
+                        eta: 0
+                    });
+                    if (redeemRequests[k].isClaimable) {} else if (redeemRequests[k].assets != 0) {
+                        requests[iterator].eta = block.timestamp + config.redeemHandlingInterval;
+                    } else {
+                        requests[iterator].assets = Math.mulDiv(redeemRequests[k].shares, 1 ether, report.priceD18);
+                        requests[iterator].eta = _findNextTimestamp(
+                            report.timestamp,
+                            redeemRequests[k].timestamp,
+                            securityParams.redeemInterval,
+                            config.oracleUpdateInterval
+                        ) + config.redeemHandlingInterval;
+                    }
+                    iterator++;
+                }
+            }
+        }
+        assembly {
+            mstore(requests, iterator)
+        }
+    }
+
+    function _findNextTimestamp(
+        uint256 reportTimestamp,
+        uint256 requestTimestamp,
+        uint256 oracleInterval,
+        uint256 oracleUpdateInterval
+    ) internal view returns (uint256) {
+        uint256 latestOracleUpdate = reportTimestamp == 0 ? block.timestamp : reportTimestamp;
+        uint256 minEligibleTimestamp = requestTimestamp + oracleInterval;
+        uint256 delta = minEligibleTimestamp < latestOracleUpdate ? 0 : minEligibleTimestamp - latestOracleUpdate;
+        return latestOracleUpdate
+            + Math.max(oracleUpdateInterval, delta * (oracleUpdateInterval - 1) / oracleUpdateInterval);
+    }
+
+    function collect(address user, address[] memory vaults, Config calldata config)
         public
         view
         returns (Response[] memory responses)
     {
         responses = new Response[](vaults.length);
         for (uint256 i = 0; i < vaults.length; i++) {
-            responses[i] = collect(user, Vault(payable(vaults[i])), baseAsset);
+            responses[i] = collect(user, Vault(payable(vaults[i])), config);
         }
     }
 
-    function multiCollect(address[] calldata users, address[] calldata vaults, address baseAsset)
+    function multiCollect(address[] calldata users, address[] calldata vaults, Config calldata config)
         external
         view
         returns (Response[][] memory responses)
     {
         responses = new Response[][](users.length);
         for (uint256 i = 0; i < users.length; i++) {
-            responses[i] = collect(users[i], vaults, baseAsset);
+            responses[i] = collect(users[i], vaults, config);
         }
     }
 
-    function fetchDepositAmounts(uint256 assets, address queue, address account)
+    function getDepositParams(address queue, uint256 assets, address account, Config calldata config)
         external
         view
-        returns (FetchDepositAmountsResponse memory r)
+        returns (DepositParams memory r)
     {
-        // Check if queue is paused
         IDepositQueue depositQueue = IDepositQueue(queue);
         address vault = depositQueue.vault();
         IShareModule shareModule = IShareModule(vault);
         if (shareModule.isPausedQueue(queue)) {
+            return r;
+        }
+        IOracle vaultOracle = shareModule.oracle();
+        IOracle.DetailedReport memory report = vaultOracle.getReport(r.asset);
+        if (report.isSuspicious || report.timestmap == 0) {
             return r;
         }
         r.isDepositPossible = true;
@@ -222,63 +309,60 @@ contract Collector is Ownable {
             r.asset = depositQueue.asset();
         }
 
-        IOracle vaultOracle = shareModule.oracle();
-        uint224 priceD18 = vaultOracle.getReport(r.asset).priceD18;
+        r.assets = assets;
+        r.assetsUSDC = oracle.getValue(r.asset, USD, r.assets);
+
+        r.shares = Math.mulDiv(assets, report.priceD18, 1 ether);
+        r.sharesUSDC = oracle.getValue(r.asset, USD, r.sharesUSDC);
 
         IFeeManager feeManager = shareModule.feeManager();
-        uint256 feePriceD18 = feeManager.calculateDepositFee(priceD18);
-        uint256 reducedPriceD18 = priceD18 - feePriceD18;
+        if (feeManager.depositFeeD6() != 0) {
+            r.shares -= feeManager.calculateDepositFee(r.shares);
+            r.sharesUSDC -= feeManager.calculateDepositFee(r.sharesUSDC);
+        }
 
-        r.expectedAmount = assets;
-        r.expectedLpAmount = Math.mulDiv(assets, reducedPriceD18, 1 ether);
-
-        r.expectedAmountUSDC = oracle.getValue(r.asset, USD, assets);
-        r.expectedLpAmountUSDC = r.expectedAmountUSDC - feeManager.calculateDepositFee(r.expectedAmountUSDC);
+        r.eta = _findNextTimestamp(
+            report.timestamp, block.timestamp, vaultOracle.securityParams().depositInterval, config.oracleUpdateInterval
+        );
     }
 
-    function fetchWithdrawalAmounts(uint256 lpAmount, address queue)
+    function getWithdrawalParams(uint256 shares, address queue, Config calldata config)
         external
         view
-        returns (uint256[] memory expectedAmounts, uint256[] memory expectedAmountsUSDC)
+        returns (WithdrawalParams memory r)
     {
-        expectedAmounts = new uint256[](1);
-        expectedAmountsUSDC = new uint256[](1);
+        Vault vault = Vault(payable(IRedeemQueue(queue).vault()));
 
-        IRedeemQueue redeemQueue = IRedeemQueue(queue);
-        address asset = redeemQueue.asset();
-
-        // Apply redeem fee to shares estimate
-        // TODO: Check if it does make sense (especially for the calculation using the batch)
-        address vault = redeemQueue.vault();
-        IShareModule shareModule = IShareModule(vault);
-        IFeeManager feeManager = shareModule.feeManager();
-        uint256 feeShares = feeManager.calculateRedeemFee(lpAmount);
-        if (feeShares > lpAmount) {
-            lpAmount = 0;
-        } else {
-            lpAmount -= feeShares;
+        r = WithdrawalParams({
+            isWithdrawalPossible: !vault.isPausedQueue(queue),
+            asset: IRedeemQueue(queue).asset(),
+            expectedLpAmount: shares,
+            expectedLpAmountUSDC: 0,
+            expectedAmount: 0,
+            expectedAmountUSDC: 0,
+            eta: 0
+        });
+        if (!r.isWithdrawalPossible) {
+            return r;
+        }
+        IOracle vaultOracle = vault.oracle();
+        IOracle.DetailedReport memory report = vaultOracle.getReport(r.asset);
+        if (report.isSuspicious || report.timestmap == 0) {
+            return r;
         }
 
-        // Get the latest batch to calculate conversion rate
-        (, uint256 batchesLength,,) = redeemQueue.getState();
-        if (batchesLength > 0) {
-            (uint256 batchAssets, uint256 batchShares) = redeemQueue.batchAt(batchesLength - 1);
-            if (batchShares > 0) {
-                //  assets = shares * batchAssets / batchShares
-                expectedAmounts[0] = Math.mulDiv(lpAmount, batchAssets, batchShares);
-                expectedAmountsUSDC[0] = oracle.getValue(asset, USD, expectedAmounts[0]);
-                return (expectedAmounts, expectedAmountsUSDC);
-            }
+        r.expectedAmount = Math.mulDiv(r.expectedLpAmount, 1 ether, report.priceD18);
+        r.expectedAmountUSDC = oracle.getValue(r.asset, USD, r.expectedAmount);
+        r.expectedLpAmountUSDC = r.expectedAmountUSDC;
+
+        IFeeManager feeManager = vault.feeManager();
+        if (feeManager.redeemFeeD6() != 0) {
+            r.expectedAmount -= feeManager.calculateRedeemFee(r.expectedAmount);
+            r.expectedAmountUSDC -= feeManager.calculateRedeemFee(r.expectedAmountUSDC);
         }
 
-        // No batches yet (or no shares in batch), use oracle price
-        IOracle vaultOracle = shareModule.oracle();
-        IOracle.DetailedReport memory report = vaultOracle.getReport(asset);
-
-        if (report.priceD18 > 0) {
-            // assets = shares * 1e18 / priceD18
-            expectedAmounts[0] = Math.mulDiv(lpAmount, 1 ether, report.priceD18);
-            expectedAmountsUSDC[0] = oracle.getValue(asset, USD, expectedAmounts[0]);
-        }
+        r.eta = _findNextTimestamp(
+            report.timestamp, block.timestamp, vaultOracle.securityParams().redeemInterval, config.oracleUpdateInterval
+        );
     }
 }
