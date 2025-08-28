@@ -80,6 +80,7 @@ contract Collector is Ownable {
     }
 
     address public immutable USD = address(bytes20(keccak256("usd-token-address")));
+    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     IPriceOracle public oracle;
     uint256 public bufferSize = 256;
@@ -118,7 +119,11 @@ contract Collector is Ownable {
             r.assetPrices = new uint256[](n);
             for (uint256 i = 0; i < n; i++) {
                 r.assets[i] = vaultOracle.supportedAssetAt(i);
-                r.assetDecimals[i] = IERC20Metadata(r.assets[i]).decimals();
+                if (r.assets[i] == ETH) {
+                    r.assetDecimals[i] = 18;
+                } else {
+                    r.assetDecimals[i] = IERC20Metadata(r.assets[i]).decimals();
+                }
                 r.assetPrices[i] = oracle.priceX96(r.assets[i]);
             }
         }
