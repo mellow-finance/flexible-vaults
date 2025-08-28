@@ -258,25 +258,25 @@ contract Collector is Ownable {
             + Math.max(oracleUpdateInterval, delta * (oracleUpdateInterval - 1) / oracleUpdateInterval);
     }
 
-    function collect(address user, address[] memory vaults, Config calldata config)
+    function collect(address user, address[] memory vaults, Config[] calldata configs)
         public
         view
         returns (Response[] memory responses)
     {
         responses = new Response[](vaults.length);
         for (uint256 i = 0; i < vaults.length; i++) {
-            responses[i] = collect(user, Vault(payable(vaults[i])), config);
+            responses[i] = collect(user, Vault(payable(vaults[i])), configs[i]);
         }
     }
 
-    function multiCollect(address[] calldata users, address[] calldata vaults, Config calldata config)
+    function multiCollect(address[] calldata users, address[] calldata vaults, Config[] calldata configs)
         external
         view
         returns (Response[][] memory responses)
     {
         responses = new Response[][](users.length);
         for (uint256 i = 0; i < users.length; i++) {
-            responses[i] = collect(users[i], vaults, config);
+            responses[i] = collect(users[i], vaults, configs);
         }
     }
 
@@ -293,7 +293,7 @@ contract Collector is Ownable {
         }
         IOracle vaultOracle = shareModule.oracle();
         IOracle.DetailedReport memory report = vaultOracle.getReport(r.asset);
-        if (report.isSuspicious || report.timestmap == 0) {
+        if (report.isSuspicious || report.timestamp == 0) {
             return r;
         }
         r.isDepositPossible = true;
@@ -336,10 +336,10 @@ contract Collector is Ownable {
         r = WithdrawalParams({
             isWithdrawalPossible: !vault.isPausedQueue(queue),
             asset: IRedeemQueue(queue).asset(),
-            expectedLpAmount: shares,
-            expectedLpAmountUSDC: 0,
-            expectedAmount: 0,
-            expectedAmountUSDC: 0,
+            shares: shares,
+            sharesUSDC: 0,
+            assets: 0,
+            assetsUSDC: 0,
             eta: 0
         });
         if (!r.isWithdrawalPossible) {
@@ -347,18 +347,18 @@ contract Collector is Ownable {
         }
         IOracle vaultOracle = vault.oracle();
         IOracle.DetailedReport memory report = vaultOracle.getReport(r.asset);
-        if (report.isSuspicious || report.timestmap == 0) {
+        if (report.isSuspicious || report.timestamp == 0) {
             return r;
         }
 
-        r.expectedAmount = Math.mulDiv(r.expectedLpAmount, 1 ether, report.priceD18);
-        r.expectedAmountUSDC = oracle.getValue(r.asset, USD, r.expectedAmount);
-        r.expectedLpAmountUSDC = r.expectedAmountUSDC;
+        r.assets = Math.mulDiv(r.shares, 1 ether, report.priceD18);
+        r.assetsUSDC = oracle.getValue(r.asset, USD, r.assets);
+        r.sharesUSDC = r.assetsUSDC;
 
         IFeeManager feeManager = vault.feeManager();
         if (feeManager.redeemFeeD6() != 0) {
-            r.expectedAmount -= feeManager.calculateRedeemFee(r.expectedAmount);
-            r.expectedAmountUSDC -= feeManager.calculateRedeemFee(r.expectedAmountUSDC);
+            r.assets -= feeManager.calculateRedeemFee(r.assets);
+            r.assetsUSDC -= feeManager.calculateRedeemFee(r.assetsUSDC);
         }
 
         r.eta = _findNextTimestamp(
