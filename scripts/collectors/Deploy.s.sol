@@ -6,6 +6,5 @@ import "forge-std/Script.sol";
 
 contract Deploy is Script {
     function run() external {
-        Collector c = new Collector(address(1), address(1));
     }
 }

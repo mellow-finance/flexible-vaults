@@ -15,7 +15,7 @@ import "../../src/interfaces/queues/IDepositQueue.sol";
 import "../../src/interfaces/queues/IRedeemQueue.sol";
 import "../../src/interfaces/queues/ISignatureQueue.sol";
 import "../../src/vaults/Vault.sol";
-import "./IPriceOracle.sol";
+import "./oracles/IPriceOracle.sol";
 
 contract Collector is Ownable {
     struct Config {
@@ -85,7 +85,7 @@ contract Collector is Ownable {
     IPriceOracle public oracle;
     uint256 public bufferSize = 256;
 
-    constructor(address oracle_, address owner_) Ownable(owner_) {
+    constructor(address owner_, address oracle_) Ownable(owner_) {
         oracle = IPriceOracle(oracle_);
     }
 
