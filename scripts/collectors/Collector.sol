@@ -324,6 +324,7 @@ contract Collector is Ownable {
     {
         IDepositQueue depositQueue = IDepositQueue(queue);
         address vault = depositQueue.vault();
+        r.asset = depositQueue.asset();
         IShareModule shareModule = IShareModule(vault);
         if (shareModule.isPausedQueue(queue)) {
             return r;
@@ -343,7 +344,6 @@ contract Collector is Ownable {
 
             r.isMerkleProofRequired = shareManager.whitelistMerkleRoot() != bytes32(0);
             r.isDepositorWhitelisted = true;
-            r.asset = depositQueue.asset();
         }
 
         r.assets = assets;
