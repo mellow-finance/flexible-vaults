@@ -32,14 +32,21 @@ contract Collector is Ownable {
         uint256 eta;
     }
 
+    struct QueueInfo {
+        address queue;
+        address asset;
+        bool isDepositQueue;
+        bool isPausedQueue;
+        bool isSignatureQueue;
+    }
+
     struct Response {
         address vault;
         address baseAsset;
         address[] assets;
         uint8[] assetDecimals;
         uint256[] assetPrices;
-        address[] depositQueues;
-        address[] redeemQueues;
+        QueueInfo[] queues;
         uint256 totalLP;
         uint256 limitLP;
         uint256 accountLP;
@@ -130,31 +137,56 @@ contract Collector is Ownable {
 
         r.totalLP = shareManager.totalShares();
         r.accountLP = shareManager.sharesOf(account);
+        {
+            uint224 vaultBasePriceD18 = vaultOracle.getReport(r.baseAsset).priceD18;
+            if (vaultBasePriceD18 > 0) {
+                r.totalBase = Math.mulDiv(r.totalLP, 1 ether, vaultBasePriceD18);
+                r.accountBase = Math.mulDiv(r.accountLP, 1 ether, vaultBasePriceD18);
 
-        uint224 vaultBasePriceD18 = vaultOracle.getReport(r.baseAsset).priceD18;
-        if (vaultBasePriceD18 > 0) {
-            r.totalBase = Math.mulDiv(r.totalLP, 1 ether, vaultBasePriceD18);
-            r.accountBase = Math.mulDiv(r.accountLP, 1 ether, vaultBasePriceD18);
+                r.totalUSD = oracle.getValue(r.baseAsset, USD, r.totalBase);
+                r.accountUSD = oracle.getValue(r.baseAsset, USD, r.accountBase);
+            }
 
-            r.totalUSD = oracle.getValue(r.baseAsset, USD, r.totalBase);
-            r.accountUSD = oracle.getValue(r.baseAsset, USD, r.accountBase);
+            IRiskManager.State memory vaultState = riskManager.vaultState();
+            int256 remainingLimit = vaultState.limit - vaultState.balance;
+            if (remainingLimit < 0) {
+                remainingLimit = 0;
+            }
+            r.limitLP = uint256(remainingLimit) + r.totalLP;
+
+            r.limitBase = Math.mulDiv(r.limitLP, 1 ether, vaultBasePriceD18);
+            r.lpPriceBase = 1e36 / vaultBasePriceD18;
+
+            r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
+            r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
+
+            r.deposits = _collectDeposits(vault, account, config);
+            r.withdrawals = _collectWithdrawals(vault, account, config);
         }
 
-        IRiskManager.State memory vaultState = riskManager.vaultState();
-        int256 remainingLimit = vaultState.limit - vaultState.balance;
-        if (remainingLimit < 0) {
-            remainingLimit = 0;
+        {
+            r.queues = new QueueInfo[](vault.getQueueCount());
+            uint256 iterator = 0;
+            uint256 assetCount = vault.getAssetCount();
+            for (uint256 i = 0; i < assetCount; i++) {
+                address asset = vault.assetAt(i);
+                uint256 queueCount = vault.getQueueCount(asset);
+                for (uint256 j = 0; j < queueCount; j++) {
+                    address queue = vault.queueAt(asset, j);
+                    r.queues[iterator] = QueueInfo({
+                        queue: queue,
+                        asset: asset,
+                        isDepositQueue: vault.isDepositQueue(queue),
+                        isPausedQueue: vault.isPausedQueue(queue),
+                        isSignatureQueue: false
+                    });
+                    try ISignatureQueue(queue).consensus() returns (IConsensus) {
+                        r.queues[iterator].isSignatureQueue = true;
+                    } catch {}
+                    iterator++;
+                }
+            }
         }
-        r.limitLP = uint256(remainingLimit) + r.totalLP;
-
-        r.limitBase = Math.mulDiv(r.limitLP, 1 ether, vaultBasePriceD18);
-        r.lpPriceBase = 1e36 / vaultBasePriceD18;
-
-        r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
-        r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
-
-        r.deposits = _collectDeposits(vault, account, config);
-        r.withdrawals = _collectWithdrawals(vault, account, config);
     }
 
     function _collectDeposits(Vault vault, address account, Config calldata config)
