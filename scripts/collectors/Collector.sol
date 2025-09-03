@@ -14,7 +14,10 @@ import "../../src/interfaces/queues/IDepositQueue.sol";
 
 import "../../src/interfaces/queues/IRedeemQueue.sol";
 import "../../src/interfaces/queues/ISignatureQueue.sol";
+
+import "../../src/libraries/TransferLibrary.sol";
 import "../../src/vaults/Vault.sol";
+
 import "./oracles/IPriceOracle.sol";
 
 contract Collector is Ownable {
@@ -38,6 +41,8 @@ contract Collector is Ownable {
         bool isDepositQueue;
         bool isPausedQueue;
         bool isSignatureQueue;
+        uint256 pendingValue;
+        uint256[] values;
     }
 
     struct Response {
@@ -178,14 +183,37 @@ contract Collector is Ownable {
                         asset: asset,
                         isDepositQueue: vault.isDepositQueue(queue),
                         isPausedQueue: vault.isPausedQueue(queue),
-                        isSignatureQueue: false
+                        isSignatureQueue: false,
+                        pendingValue: 0,
+                        values: new uint256[](0)
                     });
                     try ISignatureQueue(queue).consensus() returns (IConsensus) {
                         r.queues[iterator].isSignatureQueue = true;
-                    } catch {}
+                    } catch {
+                        if (r.queues[iterator].isDepositQueue) {
+                            r.queues[iterator].pendingValue = TransferLibrary.balanceOf(asset, queue);
+                        } else {
+                            (r.queues[iterator].pendingValue, r.queues[iterator].values) =
+                                _collectRedeemQueueData(queue);
+                        }
+                    }
                     iterator++;
                 }
             }
+        }
+    }
+
+    function _collectRedeemQueueData(address queue)
+        internal
+        view
+        returns (uint256 pendingValue, uint256[] memory values)
+    {
+        uint256 limit;
+        uint256 offset;
+        (offset, limit,, pendingValue) = IRedeemQueue(queue).getState();
+        values = new uint256[](limit - offset);
+        for (uint256 i = 0; i < values.length; i++) {
+            (values[i],) = IRedeemQueue(queue).batchAt(offset + i);
         }
     }
 
