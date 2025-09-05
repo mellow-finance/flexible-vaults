@@ -378,7 +378,7 @@ contract Collector is Ownable {
         r.assetsUSDC = oracle.getValue(r.asset, USD, r.assets);
 
         r.shares = Math.mulDiv(assets, report.priceD18, 1 ether);
-        r.sharesUSDC = oracle.getValue(r.asset, USD, r.sharesUSDC);
+        r.sharesUSDC = r.assetsUSDC;
 
         IFeeManager feeManager = shareModule.feeManager();
         if (feeManager.depositFeeD6() != 0) {

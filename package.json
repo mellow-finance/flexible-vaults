@@ -7,6 +7,7 @@
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
     "deploy:base:uni-vault": "forge script ./scripts/base/UniVault.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:base:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
+    "deploy:ethereum": "forge script ./scripts/ethereum/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
