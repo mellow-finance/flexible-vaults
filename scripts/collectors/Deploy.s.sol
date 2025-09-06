@@ -10,11 +10,11 @@ contract Deploy is Script {
         vm.startBroadcast(deployerPk);
 
         Collector collector =
-            new Collector(0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3, 0x3032f5eCf95B2F8FA216Df50d588E2aAe4256f33);
+            new Collector(0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3, 0x7c2ff214dab06cF3Ece494c0b2893219043b500f);
         collector.collect(
-            0x85C205b7Dd8EAd3a288feF72E7e6681E524F1575,
-            Vault(payable(0x85C205b7Dd8EAd3a288feF72E7e6681E524F1575)),
-            Collector.Config(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, 1 hours, 1 hours)
+            0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3,
+            Vault(payable(0xe3143Cfcfa5cB5e438c64B6EB03087445eEaCCDc)),
+            Collector.Config(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0, 1 hours, 1 hours)
         );
     }
 }
