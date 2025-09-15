@@ -2,6 +2,8 @@
 pragma solidity 0.8.25;
 
 library Permissions {
+    bytes32 public constant DEFAULT_ADMIN_ROLE = 0x00;
+
     bytes32 public constant SET_VAULT_LIMIT_ROLE = keccak256("managers.RiskManager.SET_VAULT_LIMIT_ROLE");
     bytes32 public constant SET_SUBVAULT_LIMIT_ROLE = keccak256("managers.RiskManager.SET_SUBVAULT_LIMIT_ROLE");
     bytes32 public constant ALLOW_SUBVAULT_ASSETS_ROLE = keccak256("managers.RiskManager.ALLOW_SUBVAULT_ASSETS_ROLE");
