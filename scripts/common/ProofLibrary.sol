@@ -6,27 +6,35 @@ import {VmSafe} from "forge-std/Vm.sol";
 import "../../src/permissions/BitmaskVerifier.sol";
 import "../../src/permissions/Verifier.sol";
 
-import "forge-std/console2.sol";
-
 library ProofLibrary {
     function _this() private pure returns (VmSafe) {
         return VmSafe(address(uint160(uint256(keccak256("hevm cheat code")))));
     }
 
-    function toString(IVerifier.VerificationPayload[] memory p) internal pure returns (string memory json) {
+    function toString(IVerifier.VerificationPayload[] memory p, string[] memory descriptions)
+        internal
+        pure
+        returns (string memory json)
+    {
         json = "[";
         for (uint256 i = 0; i < p.length; i++) {
-            json = string(abi.encodePacked(json, (i == 0 ? "" : ",\n"), toString(p[i])));
+            json = string(abi.encodePacked(json, (i == 0 ? "" : ",\n"), toString(p[i], descriptions[i])));
         }
         json = string.concat(json, "]");
     }
 
-    function toString(IVerifier.VerificationPayload memory p) internal pure returns (string memory json) {
+    function toString(IVerifier.VerificationPayload memory p, string memory description)
+        internal
+        pure
+        returns (string memory json)
+    {
         json = string(
             abi.encodePacked(
                 '{ "verificationType" : ',
                 _this().toString(uint256(p.verificationType)),
-                ', "verificationData": "',
+                ', "description": "',
+                description,
+                '", "verificationData": "',
                 _this().toString(p.verificationData),
                 '", "proof": ['
             )
@@ -39,7 +47,12 @@ library ProofLibrary {
         return json;
     }
 
-    function storeProofs(string memory title, bytes32 root, IVerifier.VerificationPayload[] memory leaves) internal {
+    function storeProofs(
+        string memory title,
+        bytes32 root,
+        IVerifier.VerificationPayload[] memory leaves,
+        string[] memory descriptions
+    ) internal {
         string memory json = string(
             abi.encodePacked(
                 '{"title": "',
@@ -49,7 +62,7 @@ library ProofLibrary {
                 _this().toString(root),
                 '",\n',
                 '"merkle_proofs": ',
-                toString(leaves),
+                toString(leaves, descriptions),
                 "}"
             )
         );

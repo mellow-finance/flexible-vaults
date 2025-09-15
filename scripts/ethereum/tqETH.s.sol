@@ -1,17 +1,19 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./interfaces/ICowswapSettlement.sol";
-import {IWETH as WETHInterface} from "./interfaces/IWETH.sol";
-import {IWSTETH as WSTETHInterface} from "./interfaces/IWSTETH.sol";
+import "../common/interfaces/ICowswapSettlement.sol";
+import {IWETH as WETHInterface} from "../common/interfaces/IWETH.sol";
+import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 
 import "../../src/vaults/Subvault.sol";
 import "../../src/vaults/VaultConfigurator.sol";
 
-import "./Permissions.sol";
-import "./ProofLibrary.sol";
+import "../common/AcceptanceLibrary.sol";
+import "../common/Permissions.sol";
+import "../common/ProofLibrary.sol";
 import "forge-std/Script.sol";
 
 contract Deploy is Script {
@@ -224,6 +226,8 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
+        AcceptanceLibrary.check(AcceptanceLibrary.Deployment({configurator: vaultConfigurator, vault: vault}));
+
         vm.stopBroadcast();
         revert("ok");
     }
@@ -239,6 +243,8 @@ contract Deploy is Script {
         */
         uint256 i = 0;
         IVerifier.VerificationPayload[] memory leaves = new IVerifier.VerificationPayload[](6);
+        string[] memory descriptions = new string[](6);
+        descriptions[i] = "WETH.deposit{value: any}()";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             curator,
@@ -247,6 +253,7 @@ contract Deploy is Script {
             abi.encodeCall(WETHInterface.deposit, ()),
             ProofLibrary.makeBitmask(true, true, false, true, abi.encodeCall(WETHInterface.deposit, ()))
         );
+        descriptions[i] = "WETH.withdraw(any)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             curator,
@@ -255,6 +262,7 @@ contract Deploy is Script {
             abi.encodeCall(WETHInterface.withdraw, (0)),
             ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(WETHInterface.withdraw, (0)))
         );
+        descriptions[i] = "WETH.approve(CowswapVaultRelayer, any)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             curator,
@@ -265,6 +273,7 @@ contract Deploy is Script {
                 true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
             )
         );
+        descriptions[i] = "WstETH.approve(CowswapVaultRelayer, any)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             curator,
@@ -275,6 +284,7 @@ contract Deploy is Script {
                 true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
             )
         );
+        descriptions[i] = "CowswapSettlement.setPerSignature(anyBytes(56), anyBool)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             curator,
@@ -285,6 +295,7 @@ contract Deploy is Script {
                 true, true, true, true, abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false))
             )
         );
+        descriptions[i] = "CowswapSettlement.invalidateOrder(anyBytes(56))";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             curator,
@@ -297,10 +308,11 @@ contract Deploy is Script {
         );
         assembly {
             mstore(leaves, i)
+            mstore(descriptions, i)
         }
         bytes32 root;
         (root, leaves) = ProofLibrary.generateMerkleProofs(leaves);
-        ProofLibrary.storeProofs("ethereum:tqETH:subvault0", root, leaves);
+        ProofLibrary.storeProofs("ethereum:tqETH:subvault0", root, leaves, descriptions);
         return verifierFactory.create(0, proxyAdmin, abi.encode(vault, root));
     }
 }
