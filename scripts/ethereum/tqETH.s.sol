@@ -3,6 +3,7 @@ pragma solidity 0.8.25;
 
 import "./interfaces/ICowswapSettlement.sol";
 import {IWETH as WETHInterface} from "./interfaces/IWETH.sol";
+import {IWSTETH as WSTETHInterface} from "./interfaces/IWSTETH.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 
@@ -84,6 +85,8 @@ contract Deploy is Script {
             holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, deployer);
             assembly {
                 mstore(holders, i)
             }
@@ -143,6 +146,24 @@ contract Deploy is Script {
         riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
         riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max);
 
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](3);
+            reports[0].asset = TransferLibrary.ETH;
+            reports[0].priceD18 = 1 ether;
+
+            reports[1].asset = WETH;
+            reports[1].priceD18 = 1 ether;
+
+            reports[2].asset = WSTETH;
+            reports[2].priceD18 = uint224(WSTETHInterface(WSTETH).getStETHByWstETH(1 ether));
+            IOracle oracle = vault.oracle();
+            oracle.submitReports(reports);
+            uint256 timestamp = oracle.getReport(TransferLibrary.ETH).timestamp;
+            for (uint256 i = 0; i < reports.length; i++) {
+                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+            }
+        }
+
         // emergency pause setup
         timelockController.schedule(
             address(vault.shareManager()),
@@ -200,6 +221,8 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
+        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
         vm.stopBroadcast();
         revert("ok");
