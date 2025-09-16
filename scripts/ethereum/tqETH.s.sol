@@ -16,20 +16,9 @@ import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
 import "forge-std/Script.sol";
 
+import "./Constants.sol";
+
 contract Deploy is Script {
-    // Constants
-    address public WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    address public WSTETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
-    address public COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
-    address public COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
-
-    // Deployment
-    VaultConfigurator public vaultConfigurator = VaultConfigurator(0x000000028be48f9E62E13403480B60C4822C5aa5);
-    BitmaskVerifier public bitmaskVerifier = BitmaskVerifier(0x0000000263Fb29C3D6B0C5837883519eF05ea20A);
-    address public redirectingDepositHook = 0x00000004d3B17e5391eb571dDb8fDF95646ca827;
-    address public basicRedeemHook = 0x0000000637f1b1ccDA4Af2dB6CDDf5e5Ec45fd93;
-    IFactory public verifierFactory = IFactory(0x04B30b1e98950e6A13550d84e991bE0d734C2c61);
-
     // Actors
     address public proxyAdmin = 0x55d9ecEB5733F72A48C544e20D49859eC92Fba5F;
     address public lazyVaultAdmin = 0x8907D6089fC71AA6a9a7bb9EC5b1170e92489ebf;
@@ -94,73 +83,77 @@ contract Deploy is Script {
             }
         }
         address[] memory assets_ = new address[](3);
-        assets_[0] = TransferLibrary.ETH;
-        assets_[1] = WETH;
-        assets_[2] = WSTETH;
+        assets_[0] = Constants.ETH;
+        assets_[1] = Constants.WETH;
+        assets_[2] = Constants.WSTETH;
 
-        (,,,, address vault_) = vaultConfigurator.create(
-            VaultConfigurator.InitParams({
-                version: 0,
-                proxyAdmin: proxyAdmin,
-                vaultAdmin: lazyVaultAdmin,
-                shareManagerVersion: 0,
-                shareManagerParams: abi.encode(bytes32(0), "Theoriq AlphaVault ETH", "tqETH"),
-                feeManagerVersion: 0,
-                feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(1e5), uint24(0)),
-                riskManagerVersion: 0,
-                riskManagerParams: abi.encode(type(int256).max),
-                oracleVersion: 0,
-                oracleParams: abi.encode(
-                    IOracle.SecurityParams({
-                        maxAbsoluteDeviation: 0.005 ether,
-                        suspiciousAbsoluteDeviation: 0.001 ether,
-                        maxRelativeDeviationD18: 0.005 ether,
-                        suspiciousRelativeDeviationD18: 0.001 ether,
-                        timeout: 12 hours,
-                        depositInterval: 1 hours,
-                        redeemInterval: 2 days
-                    }),
-                    assets_
-                ),
-                defaultDepositHook: redirectingDepositHook,
-                defaultRedeemHook: basicRedeemHook,
-                queueLimit: 6,
-                roleHolders: holders
-            })
-        );
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+        VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
+            version: 0,
+            proxyAdmin: proxyAdmin,
+            vaultAdmin: lazyVaultAdmin,
+            shareManagerVersion: 0,
+            shareManagerParams: abi.encode(bytes32(0), "Theoriq AlphaVault ETH", "tqETH"),
+            feeManagerVersion: 0,
+            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(1e5), uint24(0)),
+            riskManagerVersion: 0,
+            riskManagerParams: abi.encode(type(int256).max),
+            oracleVersion: 0,
+            oracleParams: abi.encode(
+                IOracle.SecurityParams({
+                    maxAbsoluteDeviation: 0.005 ether,
+                    suspiciousAbsoluteDeviation: 0.001 ether,
+                    maxRelativeDeviationD18: 0.005 ether,
+                    suspiciousRelativeDeviationD18: 0.001 ether,
+                    timeout: 12 hours,
+                    depositInterval: 1 hours,
+                    redeemInterval: 2 days
+                }),
+                assets_
+            ),
+            defaultDepositHook: address($.redirectingDepositHook),
+            defaultRedeemHook: address($.basicRedeemHook),
+            queueLimit: 6,
+            roleHolders: holders
+        });
+
+        (,,,, address vault_) = $.vaultConfigurator.create(initParams);
         Vault vault = Vault(payable(vault_));
 
         // queues setup
-        vault.createQueue(0, true, proxyAdmin, TransferLibrary.ETH, new bytes(0));
-        vault.createQueue(0, true, proxyAdmin, WETH, new bytes(0));
-        vault.createQueue(0, true, proxyAdmin, WSTETH, new bytes(0));
-        vault.createQueue(0, false, proxyAdmin, TransferLibrary.ETH, new bytes(0));
-        vault.createQueue(0, false, proxyAdmin, WETH, new bytes(0));
-        vault.createQueue(0, false, proxyAdmin, WSTETH, new bytes(0));
+        vault.createQueue(0, true, proxyAdmin, Constants.ETH, new bytes(0));
+        vault.createQueue(0, true, proxyAdmin, Constants.WETH, new bytes(0));
+        vault.createQueue(0, true, proxyAdmin, Constants.WSTETH, new bytes(0));
+        vault.createQueue(0, false, proxyAdmin, Constants.ETH, new bytes(0));
+        vault.createQueue(0, false, proxyAdmin, Constants.WETH, new bytes(0));
+        vault.createQueue(0, false, proxyAdmin, Constants.WSTETH, new bytes(0));
 
         // fee manager setup
-        vault.feeManager().setBaseAsset(vault_, TransferLibrary.ETH);
+        vault.feeManager().setBaseAsset(vault_, Constants.ETH);
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
         IRiskManager riskManager = vault.riskManager();
-        vault.createSubvault(0, proxyAdmin, _createCowswapVerifier(address(vault))); // eth,weth,wsteth
+        address verifier;
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+        (verifier, calls[0]) = _createCowswapVerifier(address(vault));
+        vault.createSubvault(0, proxyAdmin, verifier); // eth,weth,wsteth
         riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
         riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max);
 
         {
             IOracle.Report[] memory reports = new IOracle.Report[](3);
-            reports[0].asset = TransferLibrary.ETH;
+            reports[0].asset = Constants.ETH;
             reports[0].priceD18 = 1 ether;
 
-            reports[1].asset = WETH;
+            reports[1].asset = Constants.WETH;
             reports[1].priceD18 = 1 ether;
 
-            reports[2].asset = WSTETH;
-            reports[2].priceD18 = uint224(WSTETHInterface(WSTETH).getStETHByWstETH(1 ether));
+            reports[2].asset = Constants.WSTETH;
+            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
-            uint256 timestamp = oracle.getReport(TransferLibrary.ETH).timestamp;
+            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
             for (uint256 i = 0; i < reports.length; i++) {
                 oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
@@ -198,12 +191,12 @@ contract Deploy is Script {
         );
 
         address[6] memory queues = [
-            vault.queueAt(WSTETH, 0),
-            vault.queueAt(WSTETH, 1),
-            vault.queueAt(WETH, 0),
-            vault.queueAt(WETH, 1),
-            vault.queueAt(TransferLibrary.ETH, 0),
-            vault.queueAt(TransferLibrary.ETH, 1)
+            vault.queueAt(Constants.WSTETH, 0),
+            vault.queueAt(Constants.WSTETH, 1),
+            vault.queueAt(Constants.WETH, 0),
+            vault.queueAt(Constants.WETH, 1),
+            vault.queueAt(Constants.ETH, 0),
+            vault.queueAt(Constants.ETH, 1)
         ];
         for (uint256 i = 0; i < queues.length; i++) {
             timelockController.schedule(
@@ -226,80 +219,92 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
-        AcceptanceLibrary.check(AcceptanceLibrary.Deployment({configurator: vaultConfigurator, vault: vault}));
+        AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
+        AcceptanceLibrary.runVaultDeploymentChecks(
+            Constants.protocolDeployment(), VaultDeployment({vault: vault, calls: calls, initParams: initParams})
+        );
 
         vm.stopBroadcast();
         revert("ok");
     }
 
-    function _createCowswapVerifier(address vault) internal returns (address verifier) {
+    function _createCowswapVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
         /*
             1. weth.deposit{value: <any>}();
             2. weth.withdraw(<any>);
             3. weth.approve(cowswapVaultRelayer, <any>);
             4. wsteth.approve(cowswapVaultRelayer, <any>);
-            5. cowswapSettlement.setPreSignature(anyBytes, anyBool); // bytes - fixed length always
-            6. cowswapSettlement.invalidateOrder(anyBytes); // bytes - fixed length always    
+            5. cowswapSettlement.setPreSignature(coswapOrderUid(owner=address(0)), anyBool);
+            6. cowswapSettlement.invalidateOrder(anyBytes); 
         */
         uint256 i = 0;
         IVerifier.VerificationPayload[] memory leaves = new IVerifier.VerificationPayload[](6);
         string[] memory descriptions = new string[](6);
         descriptions[i] = "WETH.deposit{value: any}()";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
+            $.bitmaskVerifier,
             curator,
-            WETH,
+            Constants.WETH,
             0,
             abi.encodeCall(WETHInterface.deposit, ()),
             ProofLibrary.makeBitmask(true, true, false, true, abi.encodeCall(WETHInterface.deposit, ()))
         );
         descriptions[i] = "WETH.withdraw(any)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
+            $.bitmaskVerifier,
             curator,
-            WETH,
+            Constants.WETH,
             0,
             abi.encodeCall(WETHInterface.withdraw, (0)),
             ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(WETHInterface.withdraw, (0)))
         );
         descriptions[i] = "WETH.approve(CowswapVaultRelayer, any)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
+            $.bitmaskVerifier,
             curator,
-            WETH,
+            Constants.WETH,
             0,
-            abi.encodeCall(IERC20.approve, (COWSWAP_VAULT_RELAYER, 0)),
+            abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)),
             ProofLibrary.makeBitmask(
                 true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
             )
         );
         descriptions[i] = "WstETH.approve(CowswapVaultRelayer, any)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
+            $.bitmaskVerifier,
             curator,
-            WSTETH,
+            Constants.WSTETH,
             0,
-            abi.encodeCall(IERC20.approve, (COWSWAP_VAULT_RELAYER, 0)),
+            abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)),
             ProofLibrary.makeBitmask(
                 true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
             )
         );
-        descriptions[i] = "CowswapSettlement.setPerSignature(anyBytes(56), anyBool)";
+
+        bytes memory orderUid = new bytes(56);
+        address subvaultMask = address(type(uint160).max);
+        // src: https://github.com/cowprotocol/contracts/blob/v1.8.0/src/contracts/libraries/GPv2Order.sol#L178
+        assembly {
+            mstore(add(orderUid, 52), subvaultMask)
+        }
+
+        descriptions[i] = "CowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool)";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
+            $.bitmaskVerifier,
             curator,
-            COWSWAP_SETTLEMENT,
+            Constants.COWSWAP_SETTLEMENT,
             0,
             abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
             ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false))
+                true, true, true, true, abi.encodeCall(ICowswapSettlement.setPreSignature, (orderUid, false))
             )
         );
         descriptions[i] = "CowswapSettlement.invalidateOrder(anyBytes(56))";
         leaves[i++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
+            $.bitmaskVerifier,
             curator,
-            COWSWAP_SETTLEMENT,
+            Constants.COWSWAP_SETTLEMENT,
             0,
             abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56))),
             ProofLibrary.makeBitmask(
@@ -313,6 +318,12 @@ contract Deploy is Script {
         bytes32 root;
         (root, leaves) = ProofLibrary.generateMerkleProofs(leaves);
         ProofLibrary.storeProofs("ethereum:tqETH:subvault0", root, leaves, descriptions);
-        return verifierFactory.create(0, proxyAdmin, abi.encode(vault, root));
+
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        // TODO: add calls for verification
+        // calls.calls[0]
+
+        verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, root));
     }
 }
