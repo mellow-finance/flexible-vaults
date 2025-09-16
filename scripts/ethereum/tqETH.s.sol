@@ -95,7 +95,7 @@ contract Deploy is Script {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "Theoriq AlphaVault ETH", "tqETH"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(1e5), uint24(0)),
+            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(0), uint24(1e4)),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max),
             oracleVersion: 0,
@@ -222,11 +222,65 @@ contract Deploy is Script {
         vm.stopBroadcast();
 
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
+        address[] memory verifiers = new address[](1);
+        verifiers[0] = verifier;
         AcceptanceLibrary.runVaultDeploymentChecks(
-            Constants.protocolDeployment(), VaultDeployment({vault: vault, calls: calls, initParams: initParams})
+            Constants.protocolDeployment(),
+            VaultDeployment({
+                vault: vault,
+                calls: calls,
+                initParams: initParams,
+                holders: _getExpectedHolders(address(timelockController)),
+                depositHook: address($.redirectingDepositHook),
+                redeemHook: address($.basicRedeemHook),
+                assets: assets_,
+                depositQueueAssets: assets_,
+                redeemQueueAssets: assets_,
+                subvaultVerifiers: verifiers
+            })
         );
 
         revert("ok");
+    }
+
+    function _getExpectedHolders(address timelockController)
+        internal
+        view
+        returns (Vault.RoleHolder[] memory holders)
+    {
+        holders = new Vault.RoleHolder[](50);
+        uint256 i = 0;
+
+        // lazyVaultAdmin roles:
+        holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
+
+        // activeVaultAdmin roles:
+        holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
+
+        // emergeny pauser roles:
+        holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
+        holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
+
+        // oracle updater roles:
+        holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
+
+        // curator roles:
+        holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
+        holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
+        holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+
+        assembly {
+            mstore(holders, i)
+        }
     }
 
     function _createCowswapVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {

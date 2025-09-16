@@ -4,6 +4,8 @@ pragma solidity 0.8.25;
 import {VmSafe} from "forge-std/Vm.sol";
 
 import "./interfaces/Imports.sol";
+
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 library AcceptanceLibrary {
@@ -492,10 +494,16 @@ library AcceptanceLibrary {
             }
         }
 
+        _verifyPermissions(deployment);
+        require(
+            Ownable(address(deployment.vault.feeManager())).owner() == deployment.initParams.vaultAdmin,
+            "FeeManager: invalid owner"
+        );
+
+        _verifyGetterResults($, deployment);
         // TODO
-        // 1. permissions (OZ ACL)
-        // 2. getters
-        // 3. slots
+        // 1. getters
+        // 2. slots
     }
 
     function _verifyCalls(IVerifier verifier, Call[] memory calls, IVerifier.VerificationPayload memory payload)
@@ -510,5 +518,128 @@ library AcceptanceLibrary {
                 "Verifier: invalid verification result"
             );
         }
+    }
+
+    function _verifyPermissions(VaultDeployment memory deployment) internal view {
+        Vault vault = deployment.vault;
+        Vault.RoleHolder[] memory holders = deployment.holders;
+        bytes32[] memory permissions = new bytes32[](holders.length);
+        uint256[] memory count = new uint256[](holders.length);
+        uint256 cnt = 0;
+        for (uint256 i = 0; i < holders.length; i++) {
+            bool isNew = true;
+            for (uint256 j = 0; j < cnt; j++) {
+                if (permissions[j] == holders[i].role) {
+                    count[j]++;
+                    isNew = false;
+                    break;
+                }
+            }
+            if (isNew) {
+                permissions[cnt] = holders[i].role;
+                count[cnt] = 1;
+                cnt++;
+            }
+        }
+
+        assembly {
+            mstore(permissions, cnt)
+            mstore(count, cnt)
+        }
+
+        require(vault.supportedRoles() == cnt, "Vault: invalid number of supported roles");
+        for (uint256 i = 0; i < cnt; i++) {
+            if (vault.getRoleMemberCount(permissions[i]) != count[i]) {
+                revert("Vault: expected role not supported or number of role holders does not match");
+            }
+            for (uint256 j = 0; j < holders.length; j++) {
+                if (holders[j].role == permissions[i]) {
+                    if (!vault.hasRole(holders[j].role, holders[j].holder)) {
+                        revert("Vault: user does not have an expected role");
+                    }
+                }
+            }
+        }
+    }
+
+    function _verifyGetterResults(ProtocolDeployment memory $, VaultDeployment memory deployment) internal view {
+        Vault vault = deployment.vault;
+
+        require(
+            address(vault.defaultDepositHook()) == deployment.depositHook, "DepositHook: invalid default deposit hook"
+        );
+        require(address(vault.defaultRedeemHook()) == deployment.redeemHook, "RedeemHook: invalid default redeem hook");
+
+        require(
+            deployment.depositHook == address(0) || deployment.depositHook == address($.redirectingDepositHook)
+                || deployment.depositHook == address($.lidoDepositHook),
+            "DepositHook: unsupported deposit hook"
+        );
+
+        require(
+            deployment.redeemHook == address(0) || deployment.redeemHook == address($.basicRedeemHook),
+            "RedeemHook: unsupported deposit hook"
+        );
+        require(
+            address(vault.depositQueueFactory()) == address($.depositQueueFactory),
+            "Vault: invalid deposit queue factory"
+        );
+        require(
+            address(vault.redeemQueueFactory()) == address($.redeemQueueFactory), "Vault: invalid redeem queue factory"
+        );
+        require(address(vault.subvaultFactory()) == address($.subvaultFactory), "Vault: invalid subvault factory");
+        require(address(vault.verifierFactory()) == address($.verifierFactory), "Vault: invalid verifier factory");
+
+        uint256 n = vault.getAssetCount();
+        require(n == deployment.assets.length, "Vault: invalid asset count");
+
+        for (uint256 i = 0; i < n; i++) {
+            require(vault.hasAsset(deployment.assets[i]), "Vault: expected assets does not supported");
+        }
+
+        uint256[] memory depositQueueCount = new uint256[](n);
+        for (uint256 i = 0; i < deployment.depositQueueAssets.length; i++) {
+            require(
+                vault.hasAsset(deployment.depositQueueAssets[i]), "Vault: expected deposit assets does not supported"
+            );
+            for (uint256 index; index < n; index++) {
+                if (deployment.assets[index] == deployment.depositQueueAssets[i]) {
+                    depositQueueCount[index] += 1;
+                    break;
+                }
+            }
+        }
+
+        uint256[] memory redeemQueueCount = new uint256[](n);
+        for (uint256 i = 0; i < deployment.redeemQueueAssets.length; i++) {
+            require(vault.hasAsset(deployment.redeemQueueAssets[i]), "Vault: expected redeem assets does not supported");
+            for (uint256 index; index < n; index++) {
+                if (deployment.assets[index] == deployment.redeemQueueAssets[i]) {
+                    redeemQueueCount[index] += 1;
+                    break;
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < n; i++) {
+            uint256 m = vault.getQueueCount(deployment.assets[i]);
+            if (m != depositQueueCount[i] + redeemQueueCount[i]) {
+                revert("Vault: queue length mismatch");
+            }
+            for (uint256 j = 0; j < m; j++) {
+                address queue = vault.queueAt(deployment.assets[i], j);
+                if (vault.isDepositQueue(queue)) {
+                    depositQueueCount[i] -= 1;
+                } else {
+                    redeemQueueCount[i] -= 1;
+                }
+            }
+            if (depositQueueCount[i] != 0 || redeemQueueCount[i] != 0) {
+                revert("Vault: invalid queue length (invalid state)");
+            }
+        }
+
+        // TODO: check managers, queues, subvault, and oracles againts factories + implementations
+        // address[] subvaultVerifiers;
     }
 }

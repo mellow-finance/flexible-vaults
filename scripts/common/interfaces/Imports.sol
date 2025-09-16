@@ -105,4 +105,11 @@ struct VaultDeployment {
     VaultConfigurator.InitParams initParams;
     Vault vault;
     SubvaultCalls[] calls;
+    Vault.RoleHolder[] holders;
+    address depositHook;
+    address redeemHook;
+    address[] assets;
+    address[] depositQueueAssets;
+    address[] redeemQueueAssets;
+    address[] subvaultVerifiers;
 }
