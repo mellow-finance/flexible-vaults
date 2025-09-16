@@ -219,12 +219,13 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
+        vm.stopBroadcast();
+
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
         AcceptanceLibrary.runVaultDeploymentChecks(
             Constants.protocolDeployment(), VaultDeployment({vault: vault, calls: calls, initParams: initParams})
         );
 
-        vm.stopBroadcast();
         revert("ok");
     }
 
@@ -282,35 +283,43 @@ contract Deploy is Script {
             )
         );
 
-        bytes memory orderUid = new bytes(56);
-        address subvaultMask = address(type(uint160).max);
-        // src: https://github.com/cowprotocol/contracts/blob/v1.8.0/src/contracts/libraries/GPv2Order.sol#L178
-        assembly {
-            mstore(add(orderUid, 52), subvaultMask)
+        descriptions[i] = "CowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool)";
+        {
+            bytes memory orderUid = new bytes(56);
+            address subvaultMask = address(type(uint160).max);
+            // src: https://github.com/cowprotocol/contracts/blob/v1.8.0/src/contracts/libraries/GPv2Order.sol#L178
+            assembly {
+                mstore(add(orderUid, 52), subvaultMask) // validate orderUid.length == 56
+            }
+            bytes memory callData = abi.encodeCall(ICowswapSettlement.setPreSignature, (orderUid, false));
+            assembly {
+                mstore(add(callData, 0x64), not(0))
+            }
+            leaves[i++] = ProofLibrary.makeVerificationPayload(
+                $.bitmaskVerifier,
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
+                ProofLibrary.makeBitmask(true, true, true, true, callData)
+            );
         }
 
-        descriptions[i] = "CowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool)";
-        leaves[i++] = ProofLibrary.makeVerificationPayload(
-            $.bitmaskVerifier,
-            curator,
-            Constants.COWSWAP_SETTLEMENT,
-            0,
-            abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(ICowswapSettlement.setPreSignature, (orderUid, false))
-            )
-        );
         descriptions[i] = "CowswapSettlement.invalidateOrder(anyBytes(56))";
-        leaves[i++] = ProofLibrary.makeVerificationPayload(
-            $.bitmaskVerifier,
-            curator,
-            Constants.COWSWAP_SETTLEMENT,
-            0,
-            abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56))),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56)))
-            )
-        );
+        {
+            bytes memory callData = abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56)));
+            assembly {
+                mstore(add(callData, 0x44), not(0)) // validate orderUid.length == 56
+            }
+            leaves[i++] = ProofLibrary.makeVerificationPayload(
+                $.bitmaskVerifier,
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56))),
+                ProofLibrary.makeBitmask(true, true, true, true, callData)
+            );
+        }
         assembly {
             mstore(leaves, i)
             mstore(descriptions, i)
@@ -321,8 +330,245 @@ contract Deploy is Script {
 
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
-        // TODO: add calls for verification
-        // calls.calls[0]
+
+        // 1. weth.deposit{value: <any>}();
+        {
+            Call[] memory tmp = new Call[](5);
+            tmp[0] = Call(curator, $.weth, 1 ether, abi.encodeCall(WETHInterface.deposit, ()), true);
+            tmp[1] = Call(curator, $.weth, 0, abi.encodeCall(WETHInterface.deposit, ()), true);
+            tmp[2] = Call($.deployer, $.weth, 1 ether, abi.encodeCall(WETHInterface.deposit, ()), false);
+            tmp[3] = Call(curator, $.wsteth, 1 ether, abi.encodeCall(WETHInterface.deposit, ()), false);
+            tmp[4] = Call(curator, $.weth, 1 ether, abi.encodePacked(WETHInterface.deposit.selector, uint256(0)), false);
+            calls.calls[0] = tmp;
+        }
+
+        // 2. weth.withdraw(<any>);
+        {
+            Call[] memory tmp = new Call[](6);
+            tmp[0] = Call(curator, $.weth, 0, abi.encodeCall(WETHInterface.withdraw, (0)), true);
+            tmp[1] = Call(curator, $.weth, 0, abi.encodeCall(WETHInterface.withdraw, (type(uint256).max)), true);
+            tmp[2] = Call($.deployer, $.weth, 0, abi.encodeCall(WETHInterface.withdraw, (0)), false);
+            tmp[3] = Call(curator, $.wsteth, 0, abi.encodeCall(WETHInterface.withdraw, (0)), false);
+            tmp[4] = Call(curator, $.weth, 0, abi.encodePacked(WETHInterface.withdraw.selector), false);
+            tmp[5] = Call(curator, $.weth, 1 ether, abi.encodeCall(WETHInterface.withdraw, (0)), false);
+            calls.calls[1] = tmp;
+        }
+
+        // 3. weth.approve(cowswapVaultRelayer, <any>);
+        {
+            Call[] memory tmp = new Call[](6);
+            tmp[0] =
+                Call(curator, $.weth, 0, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)), true);
+            tmp[1] = Call(
+                curator,
+                $.weth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                true
+            );
+            tmp[2] = Call(
+                $.deployer,
+                $.weth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[3] = Call(
+                curator,
+                $.wsteth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[4] = Call(
+                curator,
+                $.weth,
+                0,
+                abi.encodeCall(IERC20.transfer, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[5] = Call(
+                curator,
+                $.weth,
+                1 ether,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            calls.calls[2] = tmp;
+        }
+
+        //  4. wsteth.approve(cowswapVaultRelayer, <any>);
+        {
+            Call[] memory tmp = new Call[](6);
+            tmp[0] =
+                Call(curator, $.wsteth, 0, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)), true);
+            tmp[1] = Call(
+                curator,
+                $.wsteth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                true
+            );
+            tmp[2] = Call(
+                $.deployer,
+                $.wsteth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[3] = Call(
+                curator,
+                $.weth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[4] = Call(
+                curator,
+                $.wsteth,
+                0,
+                abi.encodeCall(IERC20.transfer, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[5] = Call(
+                curator,
+                $.wsteth,
+                1 ether,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            calls.calls[3] = tmp;
+        }
+
+        // 5. weth.withdraw(<any>);
+        {
+            Call[] memory tmp = new Call[](8);
+            tmp[0] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
+                true
+            );
+            tmp[1] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), true)),
+                true
+            );
+            tmp[2] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(57), true)),
+                false
+            );
+
+            {
+                bytes memory badOrderUid = new bytes(56);
+                address badMask = address(type(uint160).max);
+                assembly {
+                    mstore(add(badOrderUid, 52), badMask)
+                }
+                tmp[3] = Call(
+                    curator,
+                    Constants.COWSWAP_SETTLEMENT,
+                    0,
+                    abi.encodeCall(ICowswapSettlement.setPreSignature, (badOrderUid, false)),
+                    false
+                );
+            }
+
+            tmp[4] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                1 wei,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), true)),
+                false
+            );
+            tmp[5] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodePacked(ICowswapSettlement.setPreSignature.selector, new bytes(56)),
+                false
+            );
+            tmp[6] = Call(
+                $.deployer,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
+                false
+            );
+            tmp[7] = Call(
+                curator, $.weth, 0, abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)), false
+            );
+
+            calls.calls[4] = tmp;
+        }
+
+        // 6. cowswapSettlement.invalidateOrder(anyBytes);
+        {
+            Call[] memory tmp = new Call[](8);
+            tmp[0] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56))),
+                true
+            );
+            bytes memory temp = new bytes(56);
+            temp[0] = bytes1(uint8(1));
+            tmp[1] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (temp)),
+                true
+            );
+            tmp[2] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))),
+                false
+            );
+            tmp[3] = Call(
+                $.deployer,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))),
+                false
+            );
+            tmp[4] =
+                Call(curator, $.weth, 0, abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))), false);
+            tmp[5] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                1 wei,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))),
+                false
+            );
+            temp[25] = bytes1(uint8(1));
+            tmp[6] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (temp)),
+                true
+            );
+            temp[55] = bytes1(uint8(1));
+            tmp[7] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (temp)),
+                true
+            );
+
+            calls.calls[5] = tmp;
+        }
 
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, root));
     }

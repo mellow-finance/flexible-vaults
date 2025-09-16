@@ -473,39 +473,42 @@ library AcceptanceLibrary {
         require($.factory.isEntity(address($.oracleFactory)), "OracleFactory is not Factory Factoy entity");
     }
 
-    function runVaultDeploymentChecks(ProtocolDeployment memory $, VaultDeployment memory deployment) internal {
-        // require(address($.configurator) != address(0), "VaultConfigurator: address zero");
-        // require(address($.vault) != address(0), "Vault: address zero");
-        // require($.configurator.vaultFactory().isEntity(address($.vault)), "Vault is not VaultFactory`s instance");
+    function runVaultDeploymentChecks(ProtocolDeployment memory $, VaultDeployment memory deployment) internal view {
+        require(address($.vaultConfigurator) != address(0), "VaultConfigurator: address zero");
+        require(
+            $.vaultConfigurator.vaultFactory().isEntity(address(deployment.vault)), "Vault: not a VaultFactory entity"
+        );
+        (address implementation, address owner) = getProxyInfo(address(deployment.vault));
+        require(owner == deployment.initParams.proxyAdmin, "Vault: invalid proxyAdmin");
+        require($.vaultFactory.implementationAt(0) == implementation, "Vault: invalid implementation");
+        require(deployment.vault.subvaults() == deployment.calls.length, "Vault: invalid subvault count");
 
-        // // address shareManagerFactory_,
-        // // address feeManagerFactory_,
-        // // address riskManagerFactory_,
-        // // address oracleFactory_,
-        // // address vaultFactory_
-        // compareBytecode(
-        //     "VaultConfigurator",
-        //     address($.configurator),
-        //     address(
-        //         new VaultConfigurator(
-        //             address($.configurator.shareManagerFactory()),
-        //             address($.configurator.feeManagerFactory()),
-        //             address($.configurator.riskManagerFactory()),
-        //             address($.configurator.oracleFactory()),
-        //             address($.configurator.vaultFactory())
-        //         )
-        //     )
-        // );
+        for (uint256 i = 0; i < deployment.calls.length; i++) {
+            Subvault subvault = Subvault(payable(deployment.vault.subvaultAt(i)));
+            IVerifier verifier = subvault.verifier();
+            for (uint256 j = 0; j < deployment.calls[i].payloads.length; j++) {
+                Call[] memory calls = deployment.calls[i].calls[j];
+                _verifyCalls(verifier, calls, deployment.calls[i].payloads[j]);
+            }
+        }
 
-        // compareBytecode(
-        //     "TransparentUpgradeableProxy(Vault)",
-        //     address($.vault),
-        //     address(
-        //         new TransparentUpgradeableProxy(
+        // TODO
+        // 1. permissions (OZ ACL)
+        // 2. getters
+        // 3. slots
+    }
 
-        //         )
-        //     )
-
-        // );
+    function _verifyCalls(IVerifier verifier, Call[] memory calls, IVerifier.VerificationPayload memory payload)
+        internal
+        view
+    {
+        for (uint256 k = 0; k < calls.length; k++) {
+            Call memory call = calls[k];
+            require(
+                verifier.getVerificationResult(call.who, call.where, call.value, call.data, payload)
+                    == call.verificationResult,
+                "Verifier: invalid verification result"
+            );
+        }
     }
 }
