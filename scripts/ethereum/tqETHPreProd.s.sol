@@ -20,11 +20,11 @@ import "./Constants.sol";
 
 contract Deploy is Script {
     // Actors
-    address public proxyAdmin = address(0);
-    address public lazyVaultAdmin = address(0);
-    address public activeVaultAdmin = address(0);
-    address public oracleUpdater = address(0);
-    address public curator = address(0);
+    address public proxyAdmin = 0xC1211878475Cd017fecb922Ae63cc3815FA45652;
+    address public lazyVaultAdmin = 0xE8bEc6Fb52f01e487415D3Ed3797ab92cBfdF498;
+    address public activeVaultAdmin = 0x7885B30F0DC0d8e1aAf0Ed6580caC22d5D09ff4f;
+    address public oracleUpdater = 0x3F1C3Eb0bC499c1A091B635dEE73fF55E19cdCE9;
+    address public curator = 0x55666095cD083a92E368c0CBAA18d8a10D3b65Ec;
     address public pauser1 = 0xFeCeb0255a4B7Cd05995A7d617c0D52c994099CF;
     address public pauser2 = 0x8b7C1b52e2d606a526abD73f326c943c75e45Bd3;
 
