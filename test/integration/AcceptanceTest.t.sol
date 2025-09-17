@@ -9,5 +9,8 @@ import "../../scripts/ethereum/Constants.sol";
 contract Integration is Test {
     function testAcceptanceTest_NO_CI() external {
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
+        AcceptanceLibrary.runVaultDeploymentChecks(
+            Constants.protocolDeployment(), Constants.getTqETHPreProdDeployment()
+        );
     }
 }

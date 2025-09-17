@@ -104,7 +104,7 @@ contract Deploy is Script {
                     suspiciousAbsoluteDeviation: 0.001 ether,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
-                    timeout: 12 hours,
+                    timeout: 1 hours,
                     depositInterval: 1 hours,
                     redeemInterval: 2 days
                 }),
@@ -223,8 +223,24 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
-        vm.stopBroadcast();
+        console2.log("Vault %s", address(vault));
 
+        console2.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
+        console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
+        console2.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
+        console2.log("RedeemQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 1)));
+        console2.log("RedeemQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 1)));
+        console2.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
+
+        console2.log("Oracle %s", address(vault.oracle()));
+        console2.log("ShareManager %s", address(vault.shareManager()));
+        console2.log("FeeManager %s", address(vault.feeManager()));
+        console2.log("RiskManager %s", address(vault.riskManager()));
+
+        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 1 gwei}(
+            1 gwei, address(0), new bytes32[](0)
+        );
+        vm.stopBroadcast();
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
         AcceptanceLibrary.runVaultDeploymentChecks(
             Constants.protocolDeployment(),

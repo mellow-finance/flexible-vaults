@@ -17,7 +17,7 @@
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
     "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv",
-    "test:acceptance:ethereum:base": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23372337 -vvv --match-path ./test/integration/AcceptanceTest.t.sol",
+    "test:acceptance:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23379790 -vvv --match-path ./test/integration/AcceptanceTest.t.sol",
     "coverage:report": "forge coverage --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 22730425 --force --report lcov && genhtml lcov.info -o report --branch-coverage && rm lcov.info",
     "compile": "forge build --use 0.8.25 --cache-path cache",
     "sizes": "forge build --sizes --force",

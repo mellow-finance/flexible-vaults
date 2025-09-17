@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../common/Permissions.sol";
+import "../common/ProofLibrary.sol";
+import "../common/interfaces/ICowswapSettlement.sol";
+import {IWETH as WETHInterface} from "../common/interfaces/IWETH.sol";
+import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
 import "../common/interfaces/Imports.sol";
 
 library Constants {
@@ -72,5 +77,487 @@ library Constants {
             lidoDepositHook: LidoDepositHook(0x000000065d1A7bD71f52886910aaBE6555b7317c),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35)
         });
+    }
+
+    function getTqETHPreProdDeployment() internal pure returns (VaultDeployment memory $) {
+        address proxyAdmin = 0xC1211878475Cd017fecb922Ae63cc3815FA45652;
+        address lazyVaultAdmin = 0xE8bEc6Fb52f01e487415D3Ed3797ab92cBfdF498;
+        address activeVaultAdmin = 0x7885B30F0DC0d8e1aAf0Ed6580caC22d5D09ff4f;
+        address oracleUpdater = 0x3F1C3Eb0bC499c1A091B635dEE73fF55E19cdCE9;
+        address curator = 0x55666095cD083a92E368c0CBAA18d8a10D3b65Ec;
+        address pauser1 = 0xFeCeb0255a4B7Cd05995A7d617c0D52c994099CF;
+        address pauser2 = 0x8b7C1b52e2d606a526abD73f326c943c75e45Bd3;
+
+        address timelockController = 0xFA4B93A6A482dE973cAcFd89e8CB7a425016Fb89;
+        ProtocolDeployment memory pd = protocolDeployment();
+        address deployer = pd.deployer;
+
+        address[] memory assets_ = new address[](3);
+        assets_[0] = Constants.ETH;
+        assets_[1] = Constants.WETH;
+        assets_[2] = Constants.WSTETH;
+
+        {
+            Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
+
+            uint256 i = 0;
+            // activeVaultAdmin roles:
+            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
+
+            // emergeny pauser roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
+            holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
+
+            // oracle updater roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
+
+            // curator roles:
+            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+
+            // deployer roles:
+            holders[i++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, deployer);
+            assembly {
+                mstore(holders, i)
+            }
+
+            $.initParams = VaultConfigurator.InitParams({
+                version: 0,
+                proxyAdmin: proxyAdmin,
+                vaultAdmin: lazyVaultAdmin,
+                shareManagerVersion: 0,
+                shareManagerParams: abi.encode(bytes32(0), "Theoriq AlphaVault ETH", "tqETH"),
+                feeManagerVersion: 0,
+                feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
+                riskManagerVersion: 0,
+                riskManagerParams: abi.encode(type(int256).max),
+                oracleVersion: 0,
+                oracleParams: abi.encode(
+                    IOracle.SecurityParams({
+                        maxAbsoluteDeviation: 0.005 ether,
+                        suspiciousAbsoluteDeviation: 0.001 ether,
+                        maxRelativeDeviationD18: 0.005 ether,
+                        suspiciousRelativeDeviationD18: 0.001 ether,
+                        timeout: 1 hours,
+                        depositInterval: 1 hours,
+                        redeemInterval: 2 days
+                    }),
+                    assets_
+                ),
+                defaultDepositHook: address(pd.redirectingDepositHook),
+                defaultRedeemHook: address(pd.basicRedeemHook),
+                queueLimit: 6,
+                roleHolders: holders
+            });
+        }
+
+        $.vault = Vault(payable(0xf328463fb20d9265C612155F4d023f8cD79916C7));
+
+        {
+            Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](50);
+            uint256 i = 0;
+
+            // lazyVaultAdmin roles:
+            holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
+
+            // activeVaultAdmin roles:
+            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
+
+            // emergeny pauser roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
+            holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
+
+            // oracle updater roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
+
+            // curator roles:
+            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+
+            assembly {
+                mstore(holders, i)
+            }
+            $.holders = holders;
+        }
+
+        $.depositHook = address(pd.redirectingDepositHook);
+        $.redeemHook = address(pd.basicRedeemHook);
+        $.assets = assets_;
+        $.depositQueueAssets = assets_;
+        $.redeemQueueAssets = assets_;
+        $.subvaultVerifiers = new address[](1);
+        $.subvaultVerifiers[0] = 0x972C2c6b0f11dC748635b00dAD36Bf0BdE08Aa82;
+        $.timelockControllers = new address[](1);
+        $.timelockControllers[0] = timelockController;
+
+        $.timelockProposers = new address[](2);
+        $.timelockProposers[0] = lazyVaultAdmin;
+        $.timelockProposers[1] = deployer;
+
+        $.timelockExecutors = new address[](2);
+        $.timelockExecutors[0] = pauser1;
+        $.timelockExecutors[1] = pauser2;
+        $.calls = new SubvaultCalls[](1);
+        $.calls[0] = _getTqETHPreProdCalls(curator);
+    }
+
+    function _getTqETHPreProdCalls(address curator) internal pure returns (SubvaultCalls memory calls) {
+        ProtocolDeployment memory pd = protocolDeployment();
+        uint256 i = 0;
+        IVerifier.VerificationPayload[] memory leaves = new IVerifier.VerificationPayload[](6);
+        string[] memory descriptions = new string[](6);
+        descriptions[i] = "WETH.deposit{value: any}()";
+        leaves[i++] = ProofLibrary.makeVerificationPayload(
+            pd.bitmaskVerifier,
+            curator,
+            Constants.WETH,
+            0,
+            abi.encodeCall(WETHInterface.deposit, ()),
+            ProofLibrary.makeBitmask(true, true, false, true, abi.encodeCall(WETHInterface.deposit, ()))
+        );
+        descriptions[i] = "WETH.withdraw(any)";
+        leaves[i++] = ProofLibrary.makeVerificationPayload(
+            pd.bitmaskVerifier,
+            curator,
+            Constants.WETH,
+            0,
+            abi.encodeCall(WETHInterface.withdraw, (0)),
+            ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(WETHInterface.withdraw, (0)))
+        );
+        descriptions[i] = "WETH.approve(CowswapVaultRelayer, any)";
+        leaves[i++] = ProofLibrary.makeVerificationPayload(
+            pd.bitmaskVerifier,
+            curator,
+            Constants.WETH,
+            0,
+            abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)),
+            ProofLibrary.makeBitmask(
+                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
+            )
+        );
+        descriptions[i] = "WstETH.approve(CowswapVaultRelayer, any)";
+        leaves[i++] = ProofLibrary.makeVerificationPayload(
+            pd.bitmaskVerifier,
+            curator,
+            Constants.WSTETH,
+            0,
+            abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)),
+            ProofLibrary.makeBitmask(
+                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
+            )
+        );
+
+        descriptions[i] = "CowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool)";
+        {
+            bytes memory orderUid = new bytes(56);
+            address subvaultMask = address(type(uint160).max);
+            // src: https://github.com/cowprotocol/contracts/blob/v1.8.0/src/contracts/libraries/GPv2Order.sol#L178
+            assembly {
+                mstore(add(orderUid, 52), subvaultMask) // validate orderUid.length == 56
+            }
+            bytes memory callData = abi.encodeCall(ICowswapSettlement.setPreSignature, (orderUid, false));
+            assembly {
+                mstore(add(callData, 0x64), not(0))
+            }
+            leaves[i++] = ProofLibrary.makeVerificationPayload(
+                pd.bitmaskVerifier,
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
+                ProofLibrary.makeBitmask(true, true, true, true, callData)
+            );
+        }
+
+        descriptions[i] = "CowswapSettlement.invalidateOrder(anyBytes(56))";
+        {
+            bytes memory callData = abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56)));
+            assembly {
+                mstore(add(callData, 0x44), not(0)) // validate orderUid.length == 56
+            }
+            leaves[i++] = ProofLibrary.makeVerificationPayload(
+                pd.bitmaskVerifier,
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56))),
+                ProofLibrary.makeBitmask(true, true, true, true, callData)
+            );
+        }
+        assembly {
+            mstore(leaves, i)
+            mstore(descriptions, i)
+        }
+        bytes32 root;
+        (root, leaves) = ProofLibrary.generateMerkleProofs(leaves);
+
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+
+        // 1. weth.deposit{value: <any>}();
+        {
+            Call[] memory tmp = new Call[](5);
+            tmp[0] = Call(curator, pd.weth, 1 ether, abi.encodeCall(WETHInterface.deposit, ()), true);
+            tmp[1] = Call(curator, pd.weth, 0, abi.encodeCall(WETHInterface.deposit, ()), true);
+            tmp[2] = Call(pd.deployer, pd.weth, 1 ether, abi.encodeCall(WETHInterface.deposit, ()), false);
+            tmp[3] = Call(curator, pd.wsteth, 1 ether, abi.encodeCall(WETHInterface.deposit, ()), false);
+            tmp[4] =
+                Call(curator, pd.weth, 1 ether, abi.encodePacked(WETHInterface.deposit.selector, uint256(0)), false);
+            calls.calls[0] = tmp;
+        }
+
+        // 2. weth.withdraw(<any>);
+        {
+            Call[] memory tmp = new Call[](6);
+            tmp[0] = Call(curator, pd.weth, 0, abi.encodeCall(WETHInterface.withdraw, (0)), true);
+            tmp[1] = Call(curator, pd.weth, 0, abi.encodeCall(WETHInterface.withdraw, (type(uint256).max)), true);
+            tmp[2] = Call(pd.deployer, pd.weth, 0, abi.encodeCall(WETHInterface.withdraw, (0)), false);
+            tmp[3] = Call(curator, pd.wsteth, 0, abi.encodeCall(WETHInterface.withdraw, (0)), false);
+            tmp[4] = Call(curator, pd.weth, 0, abi.encodePacked(WETHInterface.withdraw.selector), false);
+            tmp[5] = Call(curator, pd.weth, 1 ether, abi.encodeCall(WETHInterface.withdraw, (0)), false);
+            calls.calls[1] = tmp;
+        }
+
+        // 3. weth.approve(cowswapVaultRelayer, <any>);
+        {
+            Call[] memory tmp = new Call[](6);
+            tmp[0] =
+                Call(curator, pd.weth, 0, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)), true);
+            tmp[1] = Call(
+                curator,
+                pd.weth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                true
+            );
+            tmp[2] = Call(
+                pd.deployer,
+                pd.weth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[3] = Call(
+                curator,
+                pd.wsteth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[4] = Call(
+                curator,
+                pd.weth,
+                0,
+                abi.encodeCall(IERC20.transfer, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[5] = Call(
+                curator,
+                pd.weth,
+                1 ether,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            calls.calls[2] = tmp;
+        }
+
+        //  4. wsteth.approve(cowswapVaultRelayer, <any>);
+        {
+            Call[] memory tmp = new Call[](6);
+            tmp[0] =
+                Call(curator, pd.wsteth, 0, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)), true);
+            tmp[1] = Call(
+                curator,
+                pd.wsteth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                true
+            );
+            tmp[2] = Call(
+                pd.deployer,
+                pd.wsteth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[3] = Call(
+                curator,
+                pd.weth,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[4] = Call(
+                curator,
+                pd.wsteth,
+                0,
+                abi.encodeCall(IERC20.transfer, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            tmp[5] = Call(
+                curator,
+                pd.wsteth,
+                1 ether,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, type(uint256).max)),
+                false
+            );
+            calls.calls[3] = tmp;
+        }
+
+        // 5. cowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool);
+        {
+            Call[] memory tmp = new Call[](8);
+            tmp[0] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
+                true
+            );
+            tmp[1] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), true)),
+                true
+            );
+            tmp[2] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(57), true)),
+                false
+            );
+
+            {
+                bytes memory badOrderUid = new bytes(56);
+                address badMask = address(type(uint160).max);
+                assembly {
+                    mstore(add(badOrderUid, 52), badMask)
+                }
+                tmp[3] = Call(
+                    curator,
+                    Constants.COWSWAP_SETTLEMENT,
+                    0,
+                    abi.encodeCall(ICowswapSettlement.setPreSignature, (badOrderUid, false)),
+                    false
+                );
+            }
+
+            tmp[4] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                1 wei,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), true)),
+                false
+            );
+            tmp[5] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodePacked(ICowswapSettlement.setPreSignature.selector, new bytes(56)),
+                false
+            );
+            tmp[6] = Call(
+                pd.deployer,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
+                false
+            );
+            tmp[7] = Call(
+                curator, pd.weth, 0, abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)), false
+            );
+
+            calls.calls[4] = tmp;
+        }
+
+        // 6. cowswapSettlement.invalidateOrder(anyBytes);
+        {
+            Call[] memory tmp = new Call[](8);
+            tmp[0] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56))),
+                true
+            );
+            bytes memory temp = new bytes(56);
+            temp[0] = bytes1(uint8(1));
+            tmp[1] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (temp)),
+                true
+            );
+            tmp[2] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))),
+                false
+            );
+            tmp[3] = Call(
+                pd.deployer,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))),
+                false
+            );
+            tmp[4] =
+                Call(curator, pd.weth, 0, abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))), false);
+            tmp[5] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                1 wei,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(57))),
+                false
+            );
+            temp[25] = bytes1(uint8(1));
+            tmp[6] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (temp)),
+                true
+            );
+            temp[55] = bytes1(uint8(1));
+            tmp[7] = Call(
+                curator,
+                Constants.COWSWAP_SETTLEMENT,
+                0,
+                abi.encodeCall(ICowswapSettlement.invalidateOrder, (temp)),
+                true
+            );
+
+            calls.calls[5] = tmp;
+        }
     }
 }
