@@ -112,4 +112,7 @@ struct VaultDeployment {
     address[] depositQueueAssets;
     address[] redeemQueueAssets;
     address[] subvaultVerifiers;
+    address[] timelockControllers;
+    address[] timelockProposers;
+    address[] timelockExecutors;
 }

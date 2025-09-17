@@ -5,7 +5,10 @@ import {VmSafe} from "forge-std/Vm.sol";
 
 import "./interfaces/Imports.sol";
 
+import "./Permissions.sol";
+import "./ProofLibrary.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 library AcceptanceLibrary {
@@ -475,15 +478,8 @@ library AcceptanceLibrary {
         require($.factory.isEntity(address($.oracleFactory)), "OracleFactory is not Factory Factoy entity");
     }
 
-    function runVaultDeploymentChecks(ProtocolDeployment memory $, VaultDeployment memory deployment) internal view {
-        require(address($.vaultConfigurator) != address(0), "VaultConfigurator: address zero");
-        require(
-            $.vaultConfigurator.vaultFactory().isEntity(address(deployment.vault)), "Vault: not a VaultFactory entity"
-        );
-        (address implementation, address owner) = getProxyInfo(address(deployment.vault));
-        require(owner == deployment.initParams.proxyAdmin, "Vault: invalid proxyAdmin");
-        require($.vaultFactory.implementationAt(0) == implementation, "Vault: invalid implementation");
-        require(deployment.vault.subvaults() == deployment.calls.length, "Vault: invalid subvault count");
+    function runVaultDeploymentChecks(ProtocolDeployment memory $, VaultDeployment memory deployment) internal {
+        _verifyImplementations($, deployment);
 
         for (uint256 i = 0; i < deployment.calls.length; i++) {
             Subvault subvault = Subvault(payable(deployment.vault.subvaultAt(i)));
@@ -495,15 +491,62 @@ library AcceptanceLibrary {
         }
 
         _verifyPermissions(deployment);
-        require(
-            Ownable(address(deployment.vault.feeManager())).owner() == deployment.initParams.vaultAdmin,
-            "FeeManager: invalid owner"
-        );
 
-        _verifyGetterResults($, deployment);
-        // TODO
-        // 1. getters
-        // 2. slots
+        _verifyGetters($, deployment);
+        _verifyVerifiersParams(deployment);
+        _verifyTimelockControllers($, deployment);
+    }
+
+    function _verifyVerifiersParams(VaultDeployment memory deployment) internal view {
+        for (uint256 i = 0; i < deployment.subvaultVerifiers.length; i++) {
+            Verifier verifier = Verifier(deployment.subvaultVerifiers[i]);
+            if (address(deployment.vault) != address(verifier.vault())) {
+                revert("Verifier: invalid vault address");
+            }
+            if (verifier.allowedCalls() != 0) {
+                revert("Verifier: allowed calls exist");
+            }
+            (bytes32 merkleRoot,) = ProofLibrary.generateMerkleProofs(deployment.calls[i].payloads);
+            if (merkleRoot != verifier.merkleRoot()) {
+                revert("Verifier: invalid merkle root");
+            }
+        }
+    }
+
+    function _verifyTimelockControllers(ProtocolDeployment memory $, VaultDeployment memory deployment) internal {
+        for (uint256 i = 0; i < deployment.timelockControllers.length; i++) {
+            TimelockController controller = TimelockController(payable(deployment.timelockControllers[i]));
+            require(
+                !controller.hasRole(Permissions.DEFAULT_ADMIN_ROLE, $.deployer),
+                "TimelockController: deployer has DEFAULT_ADMIN_ROLE"
+            );
+            require(
+                !controller.hasRole(controller.EXECUTOR_ROLE(), $.deployer),
+                "TimelockController: deployer has EXECUTOR_ROLE"
+            );
+            require(
+                !controller.hasRole(controller.PROPOSER_ROLE(), $.deployer),
+                "TimelockController: deployer has PROPOSER_ROLE"
+            );
+            require(
+                !controller.hasRole(controller.CANCELLER_ROLE(), $.deployer),
+                "TimelockController: deployer has CANCELLER_ROLE"
+            );
+            require(
+                controller.hasRole(Permissions.DEFAULT_ADMIN_ROLE, deployment.initParams.vaultAdmin),
+                "TimelockController: vault admin does not have DEFAULT_ADMIN_ROLE"
+            );
+            require(controller.getMinDelay() == 0, "TimelockController: non-zero min delay");
+            compareBytecode(
+                "TimelockController",
+                address(controller),
+                address(
+                    new TimelockController(
+                        0, deployment.timelockProposers, deployment.timelockExecutors, deployment.initParams.vaultAdmin
+                    )
+                )
+            );
+        }
     }
 
     function _verifyCalls(IVerifier verifier, Call[] memory calls, IVerifier.VerificationPayload memory payload)
@@ -562,7 +605,43 @@ library AcceptanceLibrary {
         }
     }
 
-    function _verifyGetterResults(ProtocolDeployment memory $, VaultDeployment memory deployment) internal view {
+    function _verifyImplementations(ProtocolDeployment memory $, VaultDeployment memory deployment) internal view {
+        address owner = deployment.initParams.proxyAdmin;
+        Vault vault = deployment.vault;
+        _checkFactoryEntity($.vaultFactory, address(vault), "Vault", owner);
+        _checkFactoryEntity($.shareManagerFactory, address(vault.shareManager()), "ShareManager", owner);
+        _checkFactoryEntity($.riskManagerFactory, address(vault.riskManager()), "RiskManager", owner);
+        _checkFactoryEntity($.feeManagerFactory, address(vault.feeManager()), "FeeManager", owner);
+        _checkFactoryEntity($.oracleFactory, address(vault.oracle()), "Oracle", owner);
+        for (uint256 i = 0; i < deployment.assets.length; i++) {
+            address asset = deployment.assets[i];
+            uint256 m = vault.getQueueCount(asset);
+            for (uint256 j = 0; j < m; j++) {
+                address queue = vault.queueAt(asset, j);
+                if (vault.isDepositQueue(queue)) {
+                    _checkFactoryEntity($.depositQueueFactory, queue, "DepositQueue", owner);
+                } else {
+                    _checkFactoryEntity($.redeemQueueFactory, queue, "RedeemQuee", owner);
+                }
+            }
+        }
+
+        uint256 subvaults = vault.subvaults();
+        require(subvaults == deployment.calls.length, "Vault: invalid subvault count");
+        for (uint256 i = 0; i < subvaults; i++) {
+            Subvault subvault = Subvault(payable(vault.subvaultAt(i)));
+            _checkFactoryEntity($.subvaultFactory, address(subvault), "Subvault", owner);
+            if (address(subvault.verifier()) != deployment.subvaultVerifiers[i]) {
+                revert("Subault: invalid subvault verifier");
+            }
+            _checkFactoryEntity($.verifierFactory, deployment.subvaultVerifiers[i], "Verifier", owner);
+            if (subvault.vault() != address(vault)) {
+                revert("Subvault: invalid vault address");
+            }
+        }
+    }
+
+    function _verifyGetters(ProtocolDeployment memory $, VaultDeployment memory deployment) internal view {
         Vault vault = deployment.vault;
 
         require(
@@ -639,7 +718,110 @@ library AcceptanceLibrary {
             }
         }
 
-        // TODO: check managers, queues, subvault, and oracles againts factories + implementations
-        // address[] subvaultVerifiers;
+        // FeeManager
+        {
+            IFeeManager feeManager = vault.feeManager();
+            (
+                address initialOwner,
+                address feeRecipient,
+                uint24 depositFee,
+                uint24 redeemFee,
+                uint24 performanceFee,
+                uint24 protocolFee
+            ) = abi.decode(deployment.initParams.feeManagerParams, (address, address, uint24, uint24, uint24, uint24));
+            require(feeManager.depositFeeD6() == depositFee, "FeeManager: invalid deposit fee");
+            require(feeManager.redeemFeeD6() == redeemFee, "FeeManager: invalid redeem fee");
+            require(feeManager.performanceFeeD6() == performanceFee, "FeeManager: invalid performance fee");
+            require(feeManager.protocolFeeD6() == protocolFee, "FeeManager: invalid protocol fee");
+            require(
+                Ownable(address(feeManager)).owner() == deployment.initParams.vaultAdmin, "FeeManager: invalid owner"
+            );
+            require(initialOwner == $.deployer, "FeeManager: invalid initial owner");
+            require(feeManager.feeRecipient() == deployment.initParams.vaultAdmin, "FeeManager: invalid fee recipient");
+            require(feeManager.feeRecipient() == feeRecipient, "FeeManager: inalid initial fee recipient");
+            require(
+                feeManager.baseAsset(address(vault)) == address(0)
+                    || vault.hasAsset(feeManager.baseAsset(address(vault))),
+                "FeeManager: invalid base asset"
+            );
+        }
+
+        // RiskManager
+
+        {
+            IRiskManager riskManager = vault.riskManager();
+            require(riskManager.vault() == address(deployment.vault), "RiskManager: invalid vault address");
+        }
+
+        // ShareManager
+        {
+            IShareManager shareManager = vault.shareManager();
+            require(shareManager.vault() == address(deployment.vault), "ShareManager: invalid vault address");
+
+            try IERC20(address(shareManager)).totalSupply() returns (uint256) {
+                // TokenizedShareManager
+                (bytes32 whitelistMerkleRoot_, string memory name_, string memory symbol_) =
+                    abi.decode(deployment.initParams.shareManagerParams, (bytes32, string, string));
+                require(
+                    whitelistMerkleRoot_ == shareManager.whitelistMerkleRoot(),
+                    "TokenizedShareManager: invalid whitelist merkle root"
+                );
+                require(
+                    keccak256(abi.encode(name_)) == keccak256(abi.encode(IERC20Metadata(address(shareManager)).name())),
+                    "TokenizedShareManager: invalid ERC20 name"
+                );
+                require(
+                    keccak256(abi.encode(symbol_))
+                        == keccak256(abi.encode(IERC20Metadata(address(shareManager)).symbol())),
+                    "TokenizedShareManager: invalid ERC20 name"
+                );
+                require(
+                    IERC20Metadata(address(shareManager)).decimals() == 18, "TokenizedShareManager: invalid decimals"
+                );
+            } catch {
+                // BasicShareManager
+                (bytes32 whitelistMerkleRoot_) = abi.decode(deployment.initParams.shareManagerParams, (bytes32));
+                require(
+                    whitelistMerkleRoot_ == shareManager.whitelistMerkleRoot(),
+                    "BasicShareManager: invalid whitelist merkle root"
+                );
+            }
+        }
+
+        // Oracle
+        {
+            IOracle oracle = vault.oracle();
+            require(address(oracle.vault()) == address(deployment.vault), "Oracle: invalid vault address");
+            for (uint256 i = 0; i < deployment.assets.length; i++) {
+                address asset = deployment.assets[i];
+                require(oracle.isSupportedAsset(asset), "Oracle: unsupported assets");
+            }
+            (IOracle.SecurityParams memory securityParams_,) =
+                abi.decode(deployment.initParams.oracleParams, (IOracle.SecurityParams, address[]));
+            require(
+                keccak256(abi.encode(securityParams_)) == keccak256(abi.encode(oracle.securityParams())),
+                "Oracle: invalid security params"
+            );
+        }
+    }
+
+    function _checkFactoryEntity(Factory factory, address entity, string memory name, address expectedOwner)
+        internal
+        view
+    {
+        if (!factory.isEntity(entity)) {
+            revert(string(abi.encodePacked("Contract is not an entity for ", name, " factory")));
+        }
+        (address implementation, address owner) = getProxyInfo(entity);
+        if (owner != expectedOwner) {
+            revert("ProxyAdmin: invalid owner");
+        }
+        uint256 n = factory.implementations();
+        for (uint256 i = 0; i < n; i++) {
+            if (factory.implementationAt(i) == implementation) {
+                return;
+            }
+        }
+        revert(string(abi.encodePacked("Factory: implementation not found for contract ", name)));
     }
 }

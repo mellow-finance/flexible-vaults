@@ -20,11 +20,13 @@ import "./Constants.sol";
 
 contract Deploy is Script {
     // Actors
-    address public proxyAdmin = 0x55d9ecEB5733F72A48C544e20D49859eC92Fba5F;
-    address public lazyVaultAdmin = 0x8907D6089fC71AA6a9a7bb9EC5b1170e92489ebf;
-    address public activeVaultAdmin = 0x2D95cb50F204B8B84606751F262b407C08528c85;
-    address public oracleUpdater = 0xe5Bc509b277f83F2bF771D0dcB16949D4e175f09;
-    address public curator = 0xcca5BafEa783B0Ed8D11FD6D9F97c155332A16b8;
+    address public proxyAdmin = address(0);
+    address public lazyVaultAdmin = address(0);
+    address public activeVaultAdmin = address(0);
+    address public oracleUpdater = address(0);
+    address public curator = address(0);
+    address public pauser1 = 0xFeCeb0255a4B7Cd05995A7d617c0D52c994099CF;
+    address public pauser2 = 0x8b7C1b52e2d606a526abD73f326c943c75e45Bd3;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -36,11 +38,8 @@ contract Deploy is Script {
         TimelockController timelockController;
 
         {
-            address[] memory proposers = new address[](2);
-            proposers[0] = lazyVaultAdmin;
-            proposers[1] = deployer;
-            address[] memory executors = new address[](1);
-            executors[0] = lazyVaultAdmin;
+            address[] memory proposers = _makeArray(lazyVaultAdmin, deployer);
+            address[] memory executors = _makeArray(pauser1, pauser2);
             timelockController = new TimelockController(0, proposers, executors, lazyVaultAdmin);
         }
         {
@@ -242,7 +241,7 @@ contract Deploy is Script {
                 subvaultVerifiers: _makeArray(verifier),
                 timelockControllers: _makeArray(address(timelockController)),
                 timelockProposers: _makeArray(lazyVaultAdmin, deployer),
-                timelockExecutors: _makeArray(lazyVaultAdmin)
+                timelockExecutors: _makeArray(pauser1, pauser2)
             })
         );
 
@@ -397,7 +396,7 @@ contract Deploy is Script {
         }
         bytes32 root;
         (root, leaves) = ProofLibrary.generateMerkleProofs(leaves);
-        ProofLibrary.storeProofs("ethereum:tqETH:subvault0", root, leaves, descriptions);
+        ProofLibrary.storeProofs("ethereum:tqETHPreProd:subvault0", root, leaves, descriptions);
 
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
