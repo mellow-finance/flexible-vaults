@@ -322,7 +322,7 @@ contract Deploy is Script {
             2. weth.withdraw(<any>);
             3. weth.approve(cowswapVaultRelayer, <any>);
             4. wsteth.approve(cowswapVaultRelayer, <any>);
-            5. cowswapSettlement.setPreSignature(coswapOrderUid(owner=address(0)), anyBool);
+            5. cowswapSettlement.setPreSignature(anyBytes(56), anyBool);
             6. cowswapSettlement.invalidateOrder(anyBytes); 
         */
         uint256 i = 0;
@@ -369,25 +369,17 @@ contract Deploy is Script {
             )
         );
 
-        descriptions[i] = "CowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool)";
+        descriptions[i] = "CowswapSettlement.setPerSignature(anyBytes(56), anyBool)";
         {
-            bytes memory orderUid = new bytes(56);
-            address subvaultMask = address(type(uint160).max);
-            // src: https://github.com/cowprotocol/contracts/blob/v1.8.0/src/contracts/libraries/GPv2Order.sol#L178
-            assembly {
-                mstore(add(orderUid, 52), subvaultMask) // validate orderUid.length == 56
-            }
-            bytes memory callData = abi.encodeCall(ICowswapSettlement.setPreSignature, (orderUid, false));
-            assembly {
-                mstore(add(callData, 0x64), not(0))
-            }
             leaves[i++] = ProofLibrary.makeVerificationPayload(
                 $.bitmaskVerifier,
                 curator,
                 Constants.COWSWAP_SETTLEMENT,
                 0,
                 abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
-                ProofLibrary.makeBitmask(true, true, true, true, callData)
+                ProofLibrary.makeBitmask(
+                    true, true, true, true, abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false))
+                )
             );
         }
 
@@ -528,7 +520,7 @@ contract Deploy is Script {
 
         // 5. cowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool);
         {
-            Call[] memory tmp = new Call[](8);
+            Call[] memory tmp = new Call[](7);
             tmp[0] = Call(
                 curator,
                 Constants.COWSWAP_SETTLEMENT,
@@ -550,22 +542,9 @@ contract Deploy is Script {
                 abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(57), true)),
                 false
             );
-
-            {
-                bytes memory badOrderUid = new bytes(56);
-                address badMask = address(type(uint160).max);
-                assembly {
-                    mstore(add(badOrderUid, 52), badMask)
-                }
-                tmp[3] = Call(
-                    curator,
-                    Constants.COWSWAP_SETTLEMENT,
-                    0,
-                    abi.encodeCall(ICowswapSettlement.setPreSignature, (badOrderUid, false)),
-                    false
-                );
-            }
-
+            tmp[3] = Call(
+                curator, $.weth, 0, abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)), false
+            );
             tmp[4] = Call(
                 curator,
                 Constants.COWSWAP_SETTLEMENT,
@@ -586,9 +565,6 @@ contract Deploy is Script {
                 0,
                 abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
                 false
-            );
-            tmp[7] = Call(
-                curator, $.weth, 0, abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)), false
             );
 
             calls.calls[4] = tmp;
