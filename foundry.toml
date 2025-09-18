@@ -22,3 +22,9 @@ quote_style = 'double'
 number_underscore = 'remove'
 sort_imports = true
 ignore=["out/**/*.sol", "lib/**/*.sol"]
+
+
+[lint]
+ignore=["test/**/*.sol"]
+severity=["high", "med"]
+exclude_lints=["unchecked-call"]

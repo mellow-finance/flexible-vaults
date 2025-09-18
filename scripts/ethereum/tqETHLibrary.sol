@@ -95,7 +95,7 @@ library tqETHLibrary {
         descriptions[i++] = "WETH.withdraw(any)";
         descriptions[i++] = "WETH.approve(CowswapVaultRelayer, any)";
         descriptions[i++] = "WstETH.approve(CowswapVaultRelayer, any)";
-        descriptions[i++] = "CowswapSettlement.setPerSignature(anyBytes(56), anyBool)";
+        descriptions[i++] = "CowswapSettlement.setPreSignature(anyBytes(56), anyBool)";
         descriptions[i++] = "CowswapSettlement.invalidateOrder(anyBytes(56))";
     }
 
@@ -216,7 +216,7 @@ library tqETHLibrary {
             calls.calls[3] = tmp;
         }
 
-        // 5. cowswapSettlement.setPerSignature(coswapOrderUid(owner=address(0)), anyBool);
+        // 5. cowswapSettlement.setPreSignature(coswapOrderUid(owner=address(0)), anyBool);
         {
             Call[] memory tmp = new Call[](7);
             tmp[0] = Call(
