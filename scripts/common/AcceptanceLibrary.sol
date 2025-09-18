@@ -10,7 +10,6 @@ import "./ProofLibrary.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-import "forge-std/console2.sol";
 
 library AcceptanceLibrary {
     function _this() private pure returns (VmSafe) {
@@ -487,7 +486,6 @@ library AcceptanceLibrary {
             IVerifier verifier = subvault.verifier();
             for (uint256 j = 0; j < deployment.calls[i].payloads.length; j++) {
                 Call[] memory calls = deployment.calls[i].calls[j];
-                console2.log("subvault=%s, call=%s", i, j);
                 _verifyCalls(verifier, calls, deployment.calls[i].payloads[j]);
             }
         }
@@ -557,7 +555,6 @@ library AcceptanceLibrary {
     {
         for (uint256 k = 0; k < calls.length; k++) {
             Call memory call = calls[k];
-            console2.log("test=%s", k);
             require(
                 verifier.getVerificationResult(call.who, call.where, call.value, call.data, payload)
                     == call.verificationResult,
