@@ -1,15 +1,23 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../../test/Imports.sol";
+import "../common/interfaces/ICowswapSettlement.sol";
+import {IWETH as WETHInterface} from "../common/interfaces/IWETH.sol";
+import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/governance/TimelockController.sol";
+
+import "../../src/vaults/Subvault.sol";
+import "../../src/vaults/VaultConfigurator.sol";
+
+import "../common/AcceptanceLibrary.sol";
+import "../common/Permissions.sol";
+import "../common/ProofLibrary.sol";
 import "forge-std/Script.sol";
 
-import "./Permissions.sol";
-
-import "./ProofLibrary.sol";
-
-import "./interfaces/ICowswapSettlement.sol";
-import {IWETH as WETHInterface} from "./interfaces/IWETH.sol";
+import "./Constants.sol";
+import "./strETHLibrary.sol";
 
 contract Deploy is Script {
     // Constants
@@ -41,6 +49,10 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
+        // Lido pauser
+        // TimelockController
+        // proper permissions
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](4);
         holders[0] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, deployer);
         holders[1] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
@@ -60,7 +72,7 @@ contract Deploy is Script {
                 shareManagerVersion: 0,
                 shareManagerParams: abi.encode(bytes32(0), "stRATEGY", "strETH"),
                 feeManagerVersion: 0,
-                feeManagerParams: abi.encode(vaultAdminLazy, treasury, uint24(0), uint24(0), uint24(1e5), uint24(0)),
+                feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
                 riskManagerVersion: 0,
                 riskManagerParams: abi.encode(int256(40000 ether)),
                 oracleVersion: 0,
@@ -127,43 +139,6 @@ contract Deploy is Script {
             3. cowswapSettlement.setPreSignature(anyBytes, anyBool); // bytes - fixed length always
             4. cowswapSettlement.invalidateOrder(anyBytes); // bytes - fixed length always    
         */
-        IVerifier.VerificationPayload[] memory leaves = new IVerifier.VerificationPayload[](4);
-        leaves[0] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            operator,
-            WETH,
-            0,
-            abi.encodeCall(WETHInterface.deposit, ()),
-            ProofLibrary.makeBitmask(true, true, false, true, new bytes(0))
-        );
-        leaves[1] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            operator,
-            WETH,
-            0,
-            abi.encodeCall(IERC20.approve, (COWSWAP_VAULT_RELAYER, 0)),
-            ProofLibrary.makeBitmask(true, true, true, true, abi.encode(uint256(0)))
-        );
-        leaves[2] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            operator,
-            COWSWAP_SETTLEMENT,
-            0,
-            abi.encodeCall(ICowswapSettlement.setPreSignature, (new bytes(56), false)),
-            ProofLibrary.makeBitmask(true, true, true, true, abi.encode(new bytes(56), false))
-        );
-        leaves[3] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            operator,
-            COWSWAP_SETTLEMENT,
-            0,
-            abi.encodeCall(ICowswapSettlement.invalidateOrder, (new bytes(56))),
-            ProofLibrary.makeBitmask(true, true, true, true, abi.encode(new bytes(56)))
-        );
-        bytes32 root;
-        (root, leaves) = ProofLibrary.generateMerkleProofs(leaves);
-        ProofLibrary.storeProofs("strETH:subvault0:eth,weth->wsteth,cowswap", root, leaves);
-        return verifierFactory.create(0, proxyAdmin, abi.encode(vault, root));
     }
 
     function _createAaveEthenaLoopingVerifiers() internal returns (address verifier0, address verifier1) {
