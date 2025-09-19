@@ -235,7 +235,7 @@ contract Deploy is Script {
             0
         );
         timelockController.schedule(
-            address(Subvault(payable(vault.subvaultAt(2))).verifier()),
+            address(Subvault(payable(vault.subvaultAt(3))).verifier()),
             0,
             abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
             bytes32(0),

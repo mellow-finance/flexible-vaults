@@ -259,7 +259,7 @@
     },
     {
       "verificationType": 3,
-      "description": "IERC20(USDT).approve(CowswapVaultRelayer, anyInt)",
+      "description": "IERC20(USDS).approve(CowswapVaultRelayer, anyInt)",
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0a551bc34d46da4119329ae095b0993560ddbf49e2d94975a0c9a5cfd29533b2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x71beef1a0098eefe3bf628bda80f7db1f823180ca9ff755c96285973bb1fe79d",
