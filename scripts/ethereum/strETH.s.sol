@@ -188,7 +188,6 @@ contract Deploy is Script {
             }
         }
 
-
         // emergency pause setup
         timelockController.schedule(
             address(vault.shareManager()),
@@ -294,9 +293,8 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
-
-        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 1 gwei}(
-            1 gwei, address(0), new bytes32[](0)
+        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 0.001 ether}(
+            0.001 ether, address(0), new bytes32[](0)
         );
         vm.stopBroadcast();
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
