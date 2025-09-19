@@ -6,6 +6,9 @@ evm_version = 'cancun'
 optimizer = true
 optimizer_runs = 200
 
+
+fs_permissions = [{ access = "write", path = "./scripts/jsons/"}]
+
 [fmt]
 line_length = 120
 single_line_statement_blocks = 'multi'
@@ -19,3 +22,9 @@ quote_style = 'double'
 number_underscore = 'remove'
 sort_imports = true
 ignore=["out/**/*.sol", "lib/**/*.sol"]
+
+
+[lint]
+ignore=["test/**/*.sol"]
+severity=["high", "med"]
+exclude_lints=["unchecked-call"]
