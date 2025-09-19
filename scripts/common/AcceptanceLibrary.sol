@@ -670,7 +670,9 @@ library AcceptanceLibrary {
         require(address(vault.verifierFactory()) == address($.verifierFactory), "Vault: invalid verifier factory");
 
         uint256 n = vault.getAssetCount();
-        require(n == deployment.assets.length, "Vault: invalid asset count");
+        // TODO: fix
+        require(n == deployment.depositQueueAssets.length, "Vault: invalid asset count");
+        require(deployment.assets.length == vault.oracle().supportedAssets(), "Oracle: invalid asset count");
 
         for (uint256 i = 0; i < n; i++) {
             require(vault.hasAsset(deployment.assets[i]), "Vault: expected assets does not supported");
