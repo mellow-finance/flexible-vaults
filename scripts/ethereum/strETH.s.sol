@@ -187,21 +187,7 @@ contract Deploy is Script {
                 IVerifier(verifiers[3]).setMerkleRoot(merkleRoot3);
             }
         }
-        {
-            IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);
-            for (uint256 i = 0; i < reports.length; i++) {
-                reports[i].asset = assets_[i];
-            }
-            reports[0].priceD18 = 1 ether;
-            reports[1].priceD18 = 1 ether;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
-            IOracle oracle = vault.oracle();
-            oracle.submitReports(reports);
-            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
-            for (uint256 i = 0; i < reports.length; i++) {
-                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
-            }
-        }
+
 
         // emergency pause setup
         timelockController.schedule(
@@ -268,8 +254,6 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
-        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
         vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
         console2.log("Vault %s", address(vault));
@@ -290,6 +274,26 @@ contract Deploy is Script {
             console2.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
         }
         console2.log("Timelock controller:", address(timelockController));
+
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);
+            for (uint256 i = 0; i < reports.length; i++) {
+                reports[i].asset = assets_[i];
+            }
+            reports[0].priceD18 = 1 ether;
+            reports[1].priceD18 = 1 ether;
+            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
+            IOracle oracle = vault.oracle();
+            oracle.submitReports(reports);
+            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
+            for (uint256 i = 0; i < reports.length; i++) {
+                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+            }
+        }
+
+        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+
 
         IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 1 gwei}(
             1 gwei, address(0), new bytes32[](0)
@@ -317,7 +321,7 @@ contract Deploy is Script {
             })
         );
 
-        revert("ok");
+        // revert("ok");
     }
 
     function _getExpectedHolders(address timelockController)
