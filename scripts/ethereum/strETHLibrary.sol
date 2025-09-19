@@ -379,7 +379,7 @@ library strETHLibrary {
                     cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
                     cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
                     assets: ArraysLibrary.makeAddressArray(
-                        abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDT)
+                        abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDS)
                     )
                 })
             ),

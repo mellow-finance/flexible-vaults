@@ -226,6 +226,22 @@ contract Deploy is Script {
             bytes32(0),
             0
         );
+        timelockController.schedule(
+            address(Subvault(payable(vault.subvaultAt(2))).verifier()),
+            0,
+            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
+            bytes32(0),
+            bytes32(0),
+            0
+        );
+        timelockController.schedule(
+            address(Subvault(payable(vault.subvaultAt(2))).verifier()),
+            0,
+            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
+            bytes32(0),
+            bytes32(0),
+            0
+        );
         {
             address[4] memory queues = [
                 vault.queueAt(Constants.WSTETH, 0),
