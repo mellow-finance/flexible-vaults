@@ -19,6 +19,7 @@ import "../../src/libraries/TransferLibrary.sol";
 import "../../src/vaults/Vault.sol";
 
 import "./oracles/IPriceOracle.sol";
+import "./defi/FEOracle.sol";
 
 contract Collector is Ownable {
     struct Config {
@@ -95,14 +96,20 @@ contract Collector is Ownable {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     IPriceOracle public oracle;
+    FEOracle public feOracle;
     uint256 public bufferSize = 256;
 
-    constructor(address owner_, address oracle_) Ownable(owner_) {
+    constructor(address owner_, address oracle_, address feOracle_) Ownable(owner_) {
         oracle = IPriceOracle(oracle_);
+        feOracle = FEOracle(feOracle_);
     }
 
     function setOracle(address oracle_) external onlyOwner {
         oracle = IPriceOracle(oracle_);
+    }
+
+    function setFEOracle(address feOracle_) external onlyOwner {
+        feOracle = FEOracle(feOracle_);
     }
 
     function setBufferSize(uint256 bufferSize_) external onlyOwner {
@@ -142,28 +149,31 @@ contract Collector is Ownable {
 
         r.totalLP = shareManager.totalShares();
         r.accountLP = shareManager.sharesOf(account);
+
+        
         {
-            uint224 vaultBasePriceD18 = vaultOracle.getReport(r.baseAsset).priceD18;
-            if (vaultBasePriceD18 > 0) {
-                r.totalBase = Math.mulDiv(r.totalLP, 1 ether, vaultBasePriceD18);
-                r.accountBase = Math.mulDiv(r.accountLP, 1 ether, vaultBasePriceD18);
-
+            r.totalBase = feOracle.tvl(address(vault));
+            if (r.totalBase > 0) {
                 r.totalUSD = oracle.getValue(r.baseAsset, USD, r.totalBase);
-                r.accountUSD = oracle.getValue(r.baseAsset, USD, r.accountBase);
             }
+        }
 
+        if (r.totalLP > 0) {
+            r.accountBase = Math.mulDiv(r.accountLP, r.totalBase, r.totalLP);
+            r.accountUSD = Math.mulDiv(r.accountLP, r.totalUSD, r.totalLP);
+            r.limitBase = Math.mulDiv(r.limitLP, r.totalBase, r.totalLP);
+            r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
+            r.lpPriceBase = Math.mulDiv(r.totalBase, 1 ether, r.totalLP);
+            r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
+        }
+        
+        {
             IRiskManager.State memory vaultState = riskManager.vaultState();
             int256 remainingLimit = vaultState.limit - vaultState.balance;
             if (remainingLimit < 0) {
                 remainingLimit = 0;
             }
             r.limitLP = uint256(remainingLimit) + r.totalLP;
-
-            r.limitBase = Math.mulDiv(r.limitLP, 1 ether, vaultBasePriceD18);
-            r.lpPriceBase = 1e36 / vaultBasePriceD18;
-
-            r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
-            r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
 
             r.deposits = _collectDeposits(vault, account, config);
             r.withdrawals = _collectWithdrawals(vault, account, config);
@@ -319,8 +329,11 @@ contract Collector is Ownable {
         uint256 latestOracleUpdate = reportTimestamp == 0 ? block.timestamp : reportTimestamp;
         uint256 minEligibleTimestamp = requestTimestamp + oracleInterval;
         uint256 delta = minEligibleTimestamp < latestOracleUpdate ? 0 : minEligibleTimestamp - latestOracleUpdate;
-        return latestOracleUpdate
-            + Math.max(oracleUpdateInterval, delta * (oracleUpdateInterval - 1) / oracleUpdateInterval);
+        return Math.max(
+            block.timestamp + 1 hours,
+            latestOracleUpdate
+                + Math.max(oracleUpdateInterval, delta * (oracleUpdateInterval - 1) / oracleUpdateInterval)
+        );
     }
 
     function collect(address user, address[] memory vaults, Config[] calldata configs)
