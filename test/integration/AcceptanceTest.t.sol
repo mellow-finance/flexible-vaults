@@ -7,10 +7,15 @@ import "../../scripts/common/AcceptanceLibrary.sol";
 import "../../scripts/ethereum/Constants.sol";
 
 contract Integration is Test {
-    function testAcceptanceTest_NO_CI() external {
+    function testTqETHDeployment_NO_CI() external {
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
         AcceptanceLibrary.runVaultDeploymentChecks(
             Constants.protocolDeployment(), Constants.getTqETHPreProdDeployment()
         );
+    }
+
+    function testStrETHDeployment_NO_CI() external {
+        AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
+        AcceptanceLibrary.runVaultDeploymentChecks(Constants.protocolDeployment(), Constants.getStrETHDeployment());
     }
 }

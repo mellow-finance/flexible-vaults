@@ -1,21 +1,18 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "./Collector.sol";
 import "./defi/FEOracle.sol";
 import "./defi/StrETHOracle.sol";
 import "forge-std/Script.sol";
-import "./Collector.sol";
 
 contract Deploy is Script {
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         vm.startBroadcast(deployerPk);
         Collector prev = Collector(0xE8a012C59c441d1790053bC1df87B23AAb6D1B67);
-        Collector collector = new Collector(
-            prev.owner(),
-            address(prev.oracle()),
-            0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453
-        );
+        Collector collector =
+            new Collector(prev.owner(), address(prev.oracle()), 0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453);
 
         console2.log("Collector: %s", address(collector));
 
@@ -29,7 +26,7 @@ contract Deploy is Script {
         //         baseAssetFallback: address(type(uint160).max / 0xf * 0xe),
         //         oracleUpdateInterval: 24 hours,
         //         redeemHandlingInterval: 1 hours
-        //     })    
+        //     })
         // );
 
         // revert("ok");

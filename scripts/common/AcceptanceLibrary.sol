@@ -5,6 +5,7 @@ import {VmSafe} from "forge-std/Vm.sol";
 
 import "./interfaces/Imports.sol";
 
+import "./ArraysLibrary.sol";
 import "./Permissions.sol";
 import "./ProofLibrary.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -669,21 +670,32 @@ library AcceptanceLibrary {
         require(address(vault.subvaultFactory()) == address($.subvaultFactory), "Vault: invalid subvault factory");
         require(address(vault.verifierFactory()) == address($.verifierFactory), "Vault: invalid verifier factory");
 
-        uint256 n = vault.getAssetCount();
-        // TODO: fix
-        require(n == deployment.depositQueueAssets.length, "Vault: invalid asset count");
-        require(deployment.assets.length == vault.oracle().supportedAssets(), "Oracle: invalid asset count");
+        {
+            address[] memory allQueueAssets =
+                new address[](deployment.depositQueueAssets.length + deployment.redeemQueueAssets.length);
+            ArraysLibrary.insert(allQueueAssets, deployment.depositQueueAssets, 0);
+            ArraysLibrary.insert(allQueueAssets, deployment.redeemQueueAssets, deployment.depositQueueAssets.length);
+            allQueueAssets = ArraysLibrary.unique(allQueueAssets);
 
-        for (uint256 i = 0; i < n; i++) {
-            require(vault.hasAsset(deployment.assets[i]), "Vault: expected assets does not supported");
+            uint256 n = vault.getAssetCount();
+            require(n == allQueueAssets.length, "Vault: invalid asset count");
+            for (uint256 i = 0; i < n; i++) {
+                require(vault.hasAsset(allQueueAssets[i]), "Vault: expected queue asset does not supported");
+            }
+
+            IOracle oracle = vault.oracle();
+            require(deployment.assets.length == oracle.supportedAssets(), "Oracle: invalid asset count");
+            for (uint256 i = 0; i < n; i++) {
+                require(oracle.isSupportedAsset(deployment.assets[i]), "Oracle: expected assets does not supported");
+            }
         }
 
-        uint256[] memory depositQueueCount = new uint256[](n);
+        uint256[] memory depositQueueCount = new uint256[](deployment.assets.length);
         for (uint256 i = 0; i < deployment.depositQueueAssets.length; i++) {
             require(
                 vault.hasAsset(deployment.depositQueueAssets[i]), "Vault: expected deposit assets does not supported"
             );
-            for (uint256 index; index < n; index++) {
+            for (uint256 index = 0; index < deployment.assets.length; index++) {
                 if (deployment.assets[index] == deployment.depositQueueAssets[i]) {
                     depositQueueCount[index] += 1;
                     break;
@@ -691,10 +703,10 @@ library AcceptanceLibrary {
             }
         }
 
-        uint256[] memory redeemQueueCount = new uint256[](n);
+        uint256[] memory redeemQueueCount = new uint256[](deployment.assets.length);
         for (uint256 i = 0; i < deployment.redeemQueueAssets.length; i++) {
             require(vault.hasAsset(deployment.redeemQueueAssets[i]), "Vault: expected redeem assets does not supported");
-            for (uint256 index; index < n; index++) {
+            for (uint256 index = 0; index < deployment.assets.length; index++) {
                 if (deployment.assets[index] == deployment.redeemQueueAssets[i]) {
                     redeemQueueCount[index] += 1;
                     break;
@@ -702,7 +714,7 @@ library AcceptanceLibrary {
             }
         }
 
-        for (uint256 i = 0; i < n; i++) {
+        for (uint256 i = 0; i < deployment.assets.length; i++) {
             uint256 m = vault.getQueueCount(deployment.assets[i]);
             if (m != depositQueueCount[i] + redeemQueueCount[i]) {
                 revert("Vault: queue length mismatch");
@@ -739,7 +751,6 @@ library AcceptanceLibrary {
                 Ownable(address(feeManager)).owner() == deployment.initParams.vaultAdmin, "FeeManager: invalid owner"
             );
             require(initialOwner == $.deployer, "FeeManager: invalid initial owner");
-            require(feeManager.feeRecipient() == deployment.initParams.vaultAdmin, "FeeManager: invalid fee recipient");
             require(feeManager.feeRecipient() == feeRecipient, "FeeManager: inalid initial fee recipient");
             require(
                 feeManager.baseAsset(address(vault)) == address(0)

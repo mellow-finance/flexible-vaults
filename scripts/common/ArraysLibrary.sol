@@ -2,6 +2,7 @@
 pragma solidity 0.8.25;
 
 import "./interfaces/Imports.sol";
+import "@openzeppelin/contracts/utils/Arrays.sol";
 import "forge-std/console2.sol";
 
 library ArraysLibrary {
@@ -10,6 +11,12 @@ library ArraysLibrary {
         a = new address[](n);
         assembly {
             mcopy(add(a, 0x20), add(data, 0x20), mul(n, 0x20))
+        }
+    }
+
+    function insert(address[] memory a, address[] memory b, uint256 from) internal pure {
+        for (uint256 i = 0; i < b.length; i++) {
+            a[from + i] = b[i];
         }
     }
 
@@ -31,6 +38,27 @@ library ArraysLibrary {
     function insert(Call[][] memory a, Call[][] memory b, uint256 from) internal pure {
         for (uint256 i = 0; i < b.length; i++) {
             a[from + i] = b[i];
+        }
+    }
+
+    function unique(address[] memory a) internal pure returns (address[] memory b) {
+        if (a.length == 0) {
+            return b;
+        }
+        b = new address[](a.length);
+        for (uint256 i = 0; i < a.length; i++) {
+            b[i] = a[i];
+        }
+        Arrays.sort(b);
+        uint256 index;
+        for (uint256 i = 0; i < a.length; i++) {
+            if (index > 0 && b[i] == b[index - 1]) {
+                continue;
+            }
+            b[index++] = b[i];
+        }
+        assembly {
+            mstore(b, index)
         }
     }
 }

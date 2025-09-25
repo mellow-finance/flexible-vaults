@@ -18,8 +18,8 @@ import "../../src/interfaces/queues/ISignatureQueue.sol";
 import "../../src/libraries/TransferLibrary.sol";
 import "../../src/vaults/Vault.sol";
 
-import "./oracles/IPriceOracle.sol";
 import "./defi/FEOracle.sol";
+import "./oracles/IPriceOracle.sol";
 
 contract Collector is Ownable {
     struct Config {
@@ -150,7 +150,6 @@ contract Collector is Ownable {
         r.totalLP = shareManager.totalShares();
         r.accountLP = shareManager.sharesOf(account);
 
-        
         {
             r.totalBase = feOracle.tvl(address(vault));
             if (r.totalBase > 0) {
@@ -166,7 +165,7 @@ contract Collector is Ownable {
             r.lpPriceBase = Math.mulDiv(r.totalBase, 1 ether, r.totalLP);
             r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
         }
-        
+
         {
             IRiskManager.State memory vaultState = riskManager.vaultState();
             int256 remainingLimit = vaultState.limit - vaultState.balance;
