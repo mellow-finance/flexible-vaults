@@ -157,15 +157,6 @@ contract Collector is Ownable {
             }
         }
 
-        if (r.totalLP > 0) {
-            r.accountBase = Math.mulDiv(r.accountLP, r.totalBase, r.totalLP);
-            r.accountUSD = Math.mulDiv(r.accountLP, r.totalUSD, r.totalLP);
-            r.limitBase = Math.mulDiv(r.limitLP, r.totalBase, r.totalLP);
-            r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
-            r.lpPriceBase = Math.mulDiv(r.totalBase, 1 ether, r.totalLP);
-            r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
-        }
-
         {
             IRiskManager.State memory vaultState = riskManager.vaultState();
             int256 remainingLimit = vaultState.limit - vaultState.balance;
@@ -176,6 +167,15 @@ contract Collector is Ownable {
 
             r.deposits = _collectDeposits(vault, account, config);
             r.withdrawals = _collectWithdrawals(vault, account, config);
+        }
+
+        if (r.totalLP > 0) {
+            r.accountBase = Math.mulDiv(r.accountLP, r.totalBase, r.totalLP);
+            r.accountUSD = Math.mulDiv(r.accountLP, r.totalUSD, r.totalLP);
+            r.limitBase = Math.mulDiv(r.limitLP, r.totalBase, r.totalLP);
+            r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
+            r.lpPriceBase = Math.mulDiv(r.totalBase, 1 ether, r.totalLP);
+            r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
         }
 
         {
