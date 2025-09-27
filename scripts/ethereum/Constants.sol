@@ -18,6 +18,7 @@ library Constants {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant WSTETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
+    address public constant STETH = 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84;
     address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address public constant USDS = 0xdC035D45d973E3EC169d2276DDab16f1e407384F;
@@ -31,12 +32,16 @@ library Constants {
     address public constant AAVE_CORE = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
     address public constant AAVE_PRIME = 0x4e033931ad43597d96D6bcc25c280717730B58B1;
 
+    address public constant AAVE_V3_ORACLE = 0x54586bE62E3c3580375aE3723C145253060Ca0C2;
+
     address public constant EIGEN_LAYER_DELEGATION_MANAGER = 0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A;
     address public constant EIGEN_LAYER_STRATEGY_MANAGER = 0x858646372CC42E1A627fcE94aa7A7033e7CF075A;
     address public constant EIGEN_LAYER_REWARDS_COORDINATOR = 0x7750d328b314EfFa365A0402CcfD489B80B0adda;
 
     address public constant SYMBIOTIC_VAULT_FACTORY = 0xAEb6bdd95c502390db8f52c8909F703E9Af6a346;
     address public constant SYMBIOTIC_FARM_FACTORY = 0xFEB871581C2ab2e1EEe6f7dDC7e6246cFa087A23;
+
+    address public constant FE_ORACLE = 0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({

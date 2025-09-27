@@ -44,10 +44,10 @@ library RandomLib {
     function randAmountD18(Storage storage s) internal returns (uint256 result) {
         uint256 result_x96 = randFloatX96(s, D18, 10 * D18);
         if (randBool(s)) {
-            uint256 b_x96 = randFloatX96(s, 1, 1e6);
-            result = result_x96.mulDiv(b_x96, Q96) / Q96;
+            uint256 b_x96 = randFloatX96(s, 1, 10);
+            result = result_x96.mulDiv(b_x96, Q96) / Q96 / 10;
         } else {
-            uint256 b_x96 = randFloatX96(s, 1e1, 1e10);
+            uint256 b_x96 = randFloatX96(s, 10, 1e5);
             result = result_x96.mulDiv(Q96, b_x96) / Q96;
         }
     }
