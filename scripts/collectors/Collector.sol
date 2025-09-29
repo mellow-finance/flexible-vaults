@@ -18,8 +18,8 @@ import "../../src/interfaces/queues/ISignatureQueue.sol";
 import "../../src/libraries/TransferLibrary.sol";
 import "../../src/vaults/Vault.sol";
 
-import "./oracles/IPriceOracle.sol";
 import "./defi/FEOracle.sol";
+import "./oracles/IPriceOracle.sol";
 
 contract Collector is Ownable {
     struct Config {
@@ -150,7 +150,6 @@ contract Collector is Ownable {
         r.totalLP = shareManager.totalShares();
         r.accountLP = shareManager.sharesOf(account);
 
-        
         {
             r.totalBase = feOracle.tvl(address(vault));
             if (r.totalBase > 0) {
@@ -158,15 +157,6 @@ contract Collector is Ownable {
             }
         }
 
-        if (r.totalLP > 0) {
-            r.accountBase = Math.mulDiv(r.accountLP, r.totalBase, r.totalLP);
-            r.accountUSD = Math.mulDiv(r.accountLP, r.totalUSD, r.totalLP);
-            r.limitBase = Math.mulDiv(r.limitLP, r.totalBase, r.totalLP);
-            r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
-            r.lpPriceBase = Math.mulDiv(r.totalBase, 1 ether, r.totalLP);
-            r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
-        }
-        
         {
             IRiskManager.State memory vaultState = riskManager.vaultState();
             int256 remainingLimit = vaultState.limit - vaultState.balance;
@@ -177,6 +167,15 @@ contract Collector is Ownable {
 
             r.deposits = _collectDeposits(vault, account, config);
             r.withdrawals = _collectWithdrawals(vault, account, config);
+        }
+
+        if (r.totalLP > 0) {
+            r.accountBase = Math.mulDiv(r.accountLP, r.totalBase, r.totalLP);
+            r.accountUSD = Math.mulDiv(r.accountLP, r.totalUSD, r.totalLP);
+            r.limitBase = Math.mulDiv(r.limitLP, r.totalBase, r.totalLP);
+            r.limitUSD = oracle.getValue(r.baseAsset, USD, r.limitBase);
+            r.lpPriceBase = Math.mulDiv(r.totalBase, 1 ether, r.totalLP);
+            r.lpPriceUSD = oracle.getValue(r.baseAsset, USD, r.lpPriceBase);
         }
 
         {

@@ -7,6 +7,8 @@ import "../common/interfaces/ICowswapSettlement.sol";
 import {IWETH as WETHInterface} from "../common/interfaces/IWETH.sol";
 import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
 import "../common/interfaces/Imports.sol";
+
+import "./strETHLibrary.sol";
 import "./tqETHLibrary.sol";
 
 library Constants {
@@ -16,6 +18,7 @@ library Constants {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant WSTETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
+    address public constant STETH = 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84;
     address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address public constant USDS = 0xdC035D45d973E3EC169d2276DDab16f1e407384F;
@@ -29,12 +32,16 @@ library Constants {
     address public constant AAVE_CORE = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
     address public constant AAVE_PRIME = 0x4e033931ad43597d96D6bcc25c280717730B58B1;
 
+    address public constant AAVE_V3_ORACLE = 0x54586bE62E3c3580375aE3723C145253060Ca0C2;
+
     address public constant EIGEN_LAYER_DELEGATION_MANAGER = 0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A;
     address public constant EIGEN_LAYER_STRATEGY_MANAGER = 0x858646372CC42E1A627fcE94aa7A7033e7CF075A;
     address public constant EIGEN_LAYER_REWARDS_COORDINATOR = 0x7750d328b314EfFa365A0402CcfD489B80B0adda;
 
     address public constant SYMBIOTIC_VAULT_FACTORY = 0xAEb6bdd95c502390db8f52c8909F703E9Af6a346;
     address public constant SYMBIOTIC_FARM_FACTORY = 0xFEB871581C2ab2e1EEe6f7dDC7e6246cFa087A23;
+
+    address public constant FE_ORACLE = 0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -236,5 +243,144 @@ library Constants {
         $.calls = new SubvaultCalls[](1);
         (, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
         $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(pd, curator, leaves);
+    }
+
+    function getStrETHDeployment() internal pure returns (VaultDeployment memory $) {
+        address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
+        address lazyVaultAdmin = 0xAbE20D266Ae54b9Ae30492dEa6B6407bF18fEeb5;
+        address activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
+        address oracleUpdater = 0xd27fFB15Dd00D5E52aC2BFE6d5AFD36caE850081;
+        address curator = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;
+        address lidoPauser = 0xA916fD5252160A7E56A6405741De76dc0Da5A0Cd;
+        address mellowPauser = 0xa6278B726d4AA09D14f9E820D7785FAd82E7196F;
+        address treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
+        address timelockController = 0x8D8b65727729Fb484CB6dc1452D61608a5758596;
+
+        ProtocolDeployment memory pd = protocolDeployment();
+        address deployer = pd.deployer;
+
+        address[] memory assets_ = new address[](6);
+        assets_[0] = Constants.ETH;
+        assets_[1] = Constants.WETH;
+        assets_[2] = Constants.WSTETH;
+        assets_[3] = Constants.USDC;
+        assets_[4] = Constants.USDT;
+        assets_[5] = Constants.USDS;
+
+        {
+            Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
+
+            uint256 i = 0;
+
+            // lazyAdmin
+            holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
+
+            // activeVaultAdmin roles:
+            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
+
+            // emergeny pauser roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
+            holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
+
+            // oracle updater roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
+
+            // curator roles:
+            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+
+            // deployer roles:
+            assembly {
+                mstore(holders, i)
+            }
+
+            $.initParams = VaultConfigurator.InitParams({
+                version: 0,
+                proxyAdmin: proxyAdmin,
+                vaultAdmin: lazyVaultAdmin,
+                shareManagerVersion: 0,
+                shareManagerParams: abi.encode(bytes32(0), "Mellow stRATEGY", "strETH"),
+                feeManagerVersion: 0,
+                feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
+                riskManagerVersion: 0,
+                riskManagerParams: abi.encode(type(int256).max / 2),
+                oracleVersion: 0,
+                oracleParams: abi.encode(
+                    IOracle.SecurityParams({
+                        maxAbsoluteDeviation: 0.005 ether,
+                        suspiciousAbsoluteDeviation: 0.001 ether,
+                        maxRelativeDeviationD18: 0.005 ether,
+                        suspiciousRelativeDeviationD18: 0.001 ether,
+                        timeout: 20 hours,
+                        depositInterval: 1 hours,
+                        redeemInterval: 2 days
+                    }),
+                    assets_
+                ),
+                defaultDepositHook: address(pd.redirectingDepositHook),
+                defaultRedeemHook: address(pd.basicRedeemHook),
+                queueLimit: 4,
+                roleHolders: holders
+            });
+
+            $.holders = holders;
+        }
+
+        $.vault = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
+
+        $.depositHook = address(pd.redirectingDepositHook);
+        $.redeemHook = address(pd.basicRedeemHook);
+        $.assets = assets_;
+        $.depositQueueAssets =
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH));
+        $.redeemQueueAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH));
+        $.subvaultVerifiers = ArraysLibrary.makeAddressArray(
+            abi.encode(
+                0xF4eA276361348b301Ba2296dB909a7c973A15451,
+                0x02e1C91C4D82af454D892FBE2c5De2c4504b2675,
+                0x1616d39a201D246cbD1B3B145234638f7719b53A,
+                0xd662dF7C0FAF0Fe6446638651b05C287806AD1AE
+            )
+        );
+        $.timelockControllers = ArraysLibrary.makeAddressArray(abi.encode(address(timelockController)));
+        $.timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
+        $.timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser));
+
+        address[] memory subvaults = ArraysLibrary.makeAddressArray(
+            abi.encode(
+                0x90c983DC732e65DB6177638f0125914787b8Cb78,
+                0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,
+                0x181cB55f872450D16aE858D532B4e35e50eaA76D,
+                0x9938A09FeA37bA681A1Bd53D33ddDE2dEBEc1dA0
+            )
+        );
+
+        $.calls = new SubvaultCalls[](4);
+        {
+            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator);
+            $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(pd, curator, leaves);
+        }
+        {
+            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault1Proofs(curator, subvaults[1]);
+            $.calls[1] = strETHLibrary.getSubvault1SubvaultCalls(curator, subvaults[1], leaves);
+        }
+        {
+            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault2Proofs(curator, subvaults[2]);
+            $.calls[2] = strETHLibrary.getSubvault2SubvaultCalls(curator, subvaults[2], leaves);
+        }
+        {
+            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault3Proofs(curator, subvaults[3]);
+            $.calls[3] = strETHLibrary.getSubvault3SubvaultCalls(curator, subvaults[3], leaves);
+        }
     }
 }

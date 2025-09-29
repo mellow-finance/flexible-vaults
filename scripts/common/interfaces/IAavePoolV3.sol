@@ -14,4 +14,18 @@ interface IAavePoolV3 {
         returns (uint256);
 
     function setUserEMode(uint8 categoryId) external;
+
+    function getUserAccountData(address user)
+        external
+        view
+        returns (
+            uint256 totalCollateralBase,
+            uint256 totalDebtBase,
+            uint256 availableBorrowsBase,
+            uint256 currentLiquidationThreshold,
+            uint256 ltv,
+            uint256 healthFactor
+        );
+
+    function getUserEMode(address user) external view returns (uint16);
 }
