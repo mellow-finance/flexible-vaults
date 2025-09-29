@@ -20,26 +20,39 @@ import "./Constants.sol";
 library StrETHSolvencyLibrary {
     using RandomLib for RandomLib.Storage;
 
+    uint256 public constant MAX_ERROR = 100 wei;
+
     function _this() private pure returns (Vm) {
         return Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
     }
 
     enum Transitions {
+        NONE,
         CREATE_DEPOSIT_REQUEST,
         CANCEL_DEPOSIT_REQUEST,
         CREATE_REDEEM_REQUEST,
         HANDLE_BATCHES,
-        ORACLE_REPORT,
-        SUPPLY_AAVE,
-        BORROW_AAVE,
-        CREATE_COWSWAP_ORDER,
-        EXECUTE_COWSWAP_ORDER,
-        IGNORE_COWSWAP_ORDER,
-        HANDLE_REDEEMS
+        ORACLE_REPORTS,
+        INCREASE_LEVERAGE,
+        DECREASE_LEVERAGE,
+        FINALIZE
+    }
+
+    struct Transition {
+        Transitions t;
+        bytes data;
     }
 
     struct State {
+        uint256 timestamp;
+        uint256 totalShares;
+        uint256 totalAssets;
         address[] users;
+        uint256[] shares;
+        uint256[] pendingDeposits;
+        uint256[] pendingWithdrawals;
+        Transition latestTransition;
+        uint256 iterator;
     }
 
     function findRoleHolder(VaultDeployment memory d, bytes32 role) internal pure returns (address) {
@@ -74,9 +87,11 @@ library StrETHSolvencyLibrary {
         view
         returns (CowSwapLibrary.Data memory order, bytes memory orderUid)
     {
+        uint256 wethPriceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
+        uint256 wstethPriceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WSTETH);
         uint256 buyAmount = from == Constants.WSTETH
-            ? WSTETHInterface(Constants.WSTETH).getStETHByWstETH(amount)
-            : WSTETHInterface(Constants.WSTETH).getWstETHByStETH(amount);
+            ? Math.mulDiv(amount, wstethPriceD8, wethPriceD8)
+            : Math.mulDiv(amount, wethPriceD8, wstethPriceD8);
         order = CowSwapLibrary.Data({
             sellToken: IERC20(from),
             buyToken: IERC20(to),
@@ -95,6 +110,32 @@ library StrETHSolvencyLibrary {
             CowSwapLibrary.hash(order, ICowswapSettlement(Constants.COWSWAP_SETTLEMENT).domainSeparator());
         orderUid = new bytes(CowSwapLibrary.UID_LENGTH);
         CowSwapLibrary.packOrderUidParams(orderUid, orderDigest, who, deadline);
+    }
+
+    function tvl(Vault vault) internal view returns (uint256) {
+        return FEOracle(Constants.FE_ORACLE).tvl(address(vault));
+    }
+
+    function increaseStETHPrice(uint256 timespan) internal {
+        _this().warp(block.timestamp + timespan);
+        bytes32 slot = 0xa66d35f054e68143c18f32c990ed5cb972bb68a68f500cd2dd3a16bbf3686483;
+        address steth = 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84;
+        uint256 value = uint256(_this().load(steth, slot));
+        uint256 yield = (IERC20(steth).totalSupply() * 27 * timespan) / (1000 * 365 days); // 2.7% apr
+        _this().store(steth, slot, bytes32(value + yield));
+    }
+
+    function hasPendingDeposit(IOracle oracle, address queue, address user) internal view returns (bool) {
+        (uint256 t,) = IDepositQueue(queue).requestOf(user);
+        if (t == 0) {
+            return false;
+        }
+        uint256 reportTimestamp = oracle.getReport(IQueue(queue).asset()).timestamp;
+        uint256 depositInterval = oracle.securityParams().depositInterval;
+        if (t + depositInterval <= reportTimestamp) {
+            return false;
+        }
+        return true;
     }
 
     function executeCowswapOrder(CowSwapLibrary.Data memory order) internal {
@@ -149,13 +190,7 @@ library StrETHSolvencyLibrary {
         _this().stopPrank();
     }
 
-    function swapWETH(
-        RandomLib.Storage storage rnd,
-        State storage $,
-        VaultDeployment memory d,
-        uint256 subvaultIndex,
-        uint256 maxWeth
-    ) internal {
+    function swapWETH(State storage $, VaultDeployment memory d, uint256 subvaultIndex, uint256 maxWeth) internal {
         address curator = findRoleHolder(d, Permissions.CALLER_ROLE);
         _this().startPrank(curator);
         address subvault = d.vault.subvaultAt(subvaultIndex);
@@ -175,8 +210,9 @@ library StrETHSolvencyLibrary {
                 Constants.WETH, 0, call, findPayload(d, subvaultIndex, Constants.WETH, curator, 0, call)
             );
 
+            uint32 deadline = type(uint32).max - uint32($.iterator++);
             (CowSwapLibrary.Data memory order, bytes memory orderUid) =
-                buildCowswapOrderUid(subvault, Constants.WETH, Constants.WSTETH, wethBalance, type(uint32).max);
+                buildCowswapOrderUid(subvault, Constants.WETH, Constants.WSTETH, wethBalance, deadline);
 
             call = abi.encodeCall(ICowswapSettlement.setPreSignature, (orderUid, true));
             Subvault(payable(subvault)).call(
@@ -192,13 +228,7 @@ library StrETHSolvencyLibrary {
         _this().stopPrank();
     }
 
-    function swapWSTETH(
-        RandomLib.Storage storage rnd,
-        State storage $,
-        VaultDeployment memory d,
-        uint256 subvaultIndex,
-        uint256 maxWstETH
-    ) internal {
+    function swapWSTETH(State storage $, VaultDeployment memory d, uint256 subvaultIndex, uint256 maxWstETH) internal {
         address curator = findRoleHolder(d, Permissions.CALLER_ROLE);
         _this().startPrank(curator);
         address subvault = d.vault.subvaultAt(subvaultIndex);
@@ -212,8 +242,9 @@ library StrETHSolvencyLibrary {
                 Constants.WSTETH, 0, call, findPayload(d, subvaultIndex, Constants.WSTETH, curator, 0, call)
             );
 
+            uint32 deadline = type(uint32).max - uint32($.iterator++);
             (CowSwapLibrary.Data memory order, bytes memory orderUid) =
-                buildCowswapOrderUid(subvault, Constants.WSTETH, Constants.WETH, wstethBalance, type(uint32).max);
+                buildCowswapOrderUid(subvault, Constants.WSTETH, Constants.WETH, wstethBalance, deadline);
 
             call = abi.encodeCall(ICowswapSettlement.setPreSignature, (orderUid, true));
             Subvault(payable(subvault)).call(
@@ -229,13 +260,11 @@ library StrETHSolvencyLibrary {
         _this().stopPrank();
     }
 
-    function aaveSupply(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d, uint256 maxValue)
-        internal
-    {
+    function aaveSupply(State storage $, VaultDeployment memory d, uint256 maxValue) internal {
         address subvault1 = d.vault.subvaultAt(1);
         address curator = findRoleHolder(d, Permissions.CALLER_ROLE);
 
-        swapWETH(rnd, $, d, 0, type(uint256).max);
+        swapWETH($, d, 0, type(uint256).max);
         address subvault0 = d.vault.subvaultAt(0);
         uint256 wstethBalance = IERC20(Constants.WSTETH).balanceOf(subvault0);
         if (wstethBalance != 0) {
@@ -262,9 +291,7 @@ library StrETHSolvencyLibrary {
         _this().stopPrank();
     }
 
-    function aaveWithdraw(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d, uint256 maxValue)
-        internal
-    {
+    function aaveWithdraw(VaultDeployment memory d, uint256 maxValue) internal {
         address subvault = d.vault.subvaultAt(1);
         address curator = findRoleHolder(d, Permissions.CALLER_ROLE);
         (,, uint256 availableBorrowsBase,, uint256 ltv,) =
@@ -273,6 +300,9 @@ library StrETHSolvencyLibrary {
 
         uint256 withdrawAmount =
             Math.min(maxValue, Math.mulDiv(availableBorrowsBase * 1e4 / ltv, 1 ether, wstethPriceD8));
+        if (withdrawAmount == 0) {
+            return;
+        }
         bytes memory call = abi.encodeCall(IAavePoolV3.withdraw, (Constants.WSTETH, withdrawAmount, subvault));
         _this().startPrank(curator);
         Subvault(payable(subvault)).call(
@@ -281,9 +311,7 @@ library StrETHSolvencyLibrary {
         _this().stopPrank();
     }
 
-    function aaveRepay(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d, uint256 maxValue)
-        internal
-    {
+    function aaveRepay(VaultDeployment memory d, uint256 maxValue) internal {
         address subvault = d.vault.subvaultAt(1);
         address curator = findRoleHolder(d, Permissions.CALLER_ROLE);
 
@@ -308,18 +336,13 @@ library StrETHSolvencyLibrary {
         _this().stopPrank();
     }
 
-    function aaveBorrow(
-        RandomLib.Storage storage, /* rnd */
-        State storage, /* $ */
-        VaultDeployment memory d,
-        uint256 maxValue
-    ) internal {
+    function aaveBorrow(VaultDeployment memory d, uint256 maxValue) internal {
         address subvault = d.vault.subvaultAt(1);
         address curator = findRoleHolder(d, Permissions.CALLER_ROLE);
 
         (,, uint256 availableBorrowsBase,,,) = IAavePoolV3(Constants.AAVE_PRIME).getUserAccountData(subvault);
         uint256 priceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
-        uint256 borrowAmount = Math.mulDiv(availableBorrowsBase, 1 ether - 1 gwei, priceD8);
+        uint256 borrowAmount = Math.mulDiv(availableBorrowsBase, 0.999 ether, priceD8);
 
         borrowAmount = Math.min(maxValue, borrowAmount);
         if (borrowAmount == 0) {
@@ -343,49 +366,86 @@ library StrETHSolvencyLibrary {
         _this().stopPrank();
     }
 
-    function aaveIncreaseLeverage(
-        RandomLib.Storage storage rnd,
-        State storage $,
-        VaultDeployment memory d,
-        uint256 targetCollateral
-    ) internal {
+    function aaveIncreaseLeverage(State storage $, VaultDeployment memory d, uint256 targetCollateral) internal {
         address subvault = d.vault.subvaultAt(1);
-        swapWETH(rnd, $, d, 1, IERC20(Constants.WETH).balanceOf(subvault));
+        swapWETH($, d, 1, IERC20(Constants.WETH).balanceOf(subvault));
         (uint256 currentCollateral,,,,,) = IAavePoolV3(Constants.AAVE_PRIME).getUserAccountData(subvault);
         uint256 wstethPriceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WSTETH);
         uint256 wethPriceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
         for (uint256 i = 0; i < 20 && currentCollateral < targetCollateral; i++) {
             uint256 supplyAmount = (targetCollateral - currentCollateral) * 1 ether / wstethPriceD8;
-            aaveSupply(rnd, $, d, supplyAmount);
+            aaveSupply($, d, supplyAmount);
             (currentCollateral,,,,,) = IAavePoolV3(Constants.AAVE_PRIME).getUserAccountData(subvault);
             uint256 borrowAmount = (targetCollateral - currentCollateral) * 1 ether / wethPriceD8;
-            aaveBorrow(rnd, $, d, borrowAmount);
-            swapWETH(rnd, $, d, 1, type(uint256).max);
+            aaveBorrow(d, borrowAmount);
+            swapWETH($, d, 1, type(uint256).max);
         }
     }
 
-    function aaveDecreaseLeverage(
-        RandomLib.Storage storage rnd,
-        State storage $,
-        VaultDeployment memory d,
-        uint256 targetCollateral
-    ) internal {
+    function aaveDecreaseLeverage(State storage $, VaultDeployment memory d, uint256 targetCollateral) internal {
         address subvault = d.vault.subvaultAt(1);
-        swapWETH(rnd, $, d, 1, IERC20(Constants.WETH).balanceOf(subvault));
+        swapWETH($, d, 1, IERC20(Constants.WETH).balanceOf(subvault));
         (uint256 currentCollateral,,,,,) = IAavePoolV3(Constants.AAVE_PRIME).getUserAccountData(subvault);
         uint256 wstethPriceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WSTETH);
         uint256 wethPriceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
         for (uint256 i = 0; i < 20 && targetCollateral < currentCollateral; i++) {
-            uint256 leftover = currentCollateral - targetCollateral;
-            uint256 wstethAmount = leftover * 1 ether / wstethPriceD8;
-            aaveWithdraw(rnd, $, d, wstethAmount);
-
+            uint256 wstethAmount = (currentCollateral - targetCollateral) * 1 ether / wstethPriceD8;
+            aaveWithdraw(d, wstethAmount);
             (currentCollateral,,,,,) = IAavePoolV3(Constants.AAVE_PRIME).getUserAccountData(subvault);
-            leftover = currentCollateral - targetCollateral;
-            swapWSTETH(rnd, $, d, 1, type(uint256).max);
+            swapWSTETH($, d, 1, type(uint256).max);
+            uint256 wethAmount = (currentCollateral - targetCollateral) * 1 ether / wethPriceD8;
+            aaveRepay(d, Math.min(wethAmount, IERC20(Constants.WETH).balanceOf(subvault)));
+        }
+    }
 
-            uint256 wethAmount = leftover * 1 ether / wethPriceD8;
-            aaveRepay(rnd, $, d, Math.min(wethAmount, IERC20(Constants.WETH).balanceOf(subvault)));
+    function getDepositQueues(VaultDeployment memory d) internal view returns (address[] memory queues) {
+        queues = new address[](3);
+        queues[0] = d.vault.queueAt(Constants.ETH, 0);
+        queues[1] = d.vault.queueAt(Constants.WETH, 0);
+        queues[2] = d.vault.queueAt(Constants.WSTETH, 0);
+    }
+
+    function pendingDepositsOf(VaultDeployment memory d, address user) internal view returns (uint256 value) {
+        address[] memory queues = getDepositQueues(d);
+        for (uint256 i = 0; i < 3; i++) {
+            if (IDepositQueue(queues[i]).claimableOf(user) > 0) {
+                continue;
+            }
+            (, uint256 assets) = IDepositQueue(queues[i]).requestOf(user);
+            if (IQueue(queues[i]).asset() == Constants.WSTETH) {
+                value += WSTETHInterface(Constants.WSTETH).getStETHByWstETH(assets);
+            } else {
+                value += assets;
+            }
+        }
+    }
+
+    function pendingWithdrawalsOf(VaultDeployment memory d, address user) internal view returns (uint256 value) {
+        IRedeemQueue queue = IRedeemQueue(d.vault.queueAt(Constants.WSTETH, 1));
+        uint256 report = d.vault.oracle().getReport(Constants.WSTETH).priceD18;
+        IRedeemQueue.Request[] memory requests = queue.requestsOf(user, 0, type(uint256).max);
+        for (uint256 j = 0; j < requests.length; j++) {
+            if (requests[j].isClaimable) {
+                continue;
+            }
+            if (requests[j].assets == 0) {
+                value += Math.mulDiv(requests[j].shares, 1 ether, report);
+            } else {
+                value += requests[j].assets;
+            }
+        }
+    }
+
+    function saveSnapshot(State storage $, VaultDeployment memory d) internal {
+        IShareManager shareManager = d.vault.shareManager();
+        $.timestamp = block.timestamp;
+        $.totalShares = shareManager.totalShares();
+        $.totalAssets = FEOracle(Constants.FE_ORACLE).tvl(address(d.vault));
+        for (uint256 i = 0; i < $.users.length; i++) {
+            address user = $.users[i];
+            $.shares[i] = shareManager.sharesOf(user);
+            $.pendingDeposits[i] = pendingDepositsOf(d, user);
+            $.pendingWithdrawals[i] = pendingWithdrawalsOf(d, user);
         }
     }
 
@@ -397,6 +457,9 @@ library StrETHSolvencyLibrary {
         if ($.users.length == 0 || rnd.randBool()) {
             user = rnd.randAddress();
             $.users.push(user);
+            $.shares.push(0);
+            $.pendingDeposits.push(0);
+            $.pendingWithdrawals.push(0);
         } else {
             user = $.users[rnd.randInt($.users.length - 1)];
         }
@@ -433,6 +496,57 @@ library StrETHSolvencyLibrary {
             }
         }
         _this().stopPrank();
+        $.latestTransition = Transition(Transitions.CREATE_DEPOSIT_REQUEST, abi.encode(user, asset, amount));
+    }
+
+    function cancelDepositRequest(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {
+        address[] memory users = new address[]($.users.length);
+        uint256 iterator = 0;
+        address[] memory queues = getDepositQueues(d);
+        IOracle oracle = d.vault.oracle();
+        for (uint256 i = 0; i < users.length; i++) {
+            address user_ = $.users[i];
+            for (uint256 j = 0; j < 3; j++) {
+                if (hasPendingDeposit(oracle, queues[j], user_)) {
+                    users[iterator++] = user_;
+                    break;
+                }
+            }
+        }
+        if (iterator == 0) {
+            return;
+        }
+        assembly {
+            mstore(users, iterator)
+        }
+        address user = users[iterator - 1];
+        uint256 cnt = 0;
+        for (uint256 i = 0; i < 3; i++) {
+            if (hasPendingDeposit(oracle, queues[i], user)) {
+                cnt++;
+            }
+        }
+
+        address queue;
+        uint256 index = rnd.randInt(cnt - 1);
+        for (uint256 i = 0; i < 3; i++) {
+            if (hasPendingDeposit(oracle, queues[i], user)) {
+                if (index == 0) {
+                    queue = queues[i];
+                    break;
+                }
+                index--;
+            }
+        }
+
+        (, uint256 amount) = IDepositQueue(queue).requestOf(user);
+
+        _this().startPrank(user);
+        IDepositQueue(queue).cancelDepositRequest();
+        _this().stopPrank();
+
+        $.latestTransition =
+            Transition(Transitions.CANCEL_DEPOSIT_REQUEST, abi.encode(user, IQueue(queue).asset(), amount));
     }
 
     function createRedeemRequest(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {
@@ -471,19 +585,57 @@ library StrETHSolvencyLibrary {
         _this().startPrank(user);
         queue.redeem(shares);
         _this().stopPrank();
+
+        $.latestTransition =
+            Transition(Transitions.CREATE_REDEEM_REQUEST, abi.encode(user, IQueue(queue).asset(), shares));
     }
 
-    function handleWithdrawals(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {
-        swapWETH(rnd, $, d, 0, type(uint256).max);
-        IRedeemQueue(d.vault.queueAt(Constants.WSTETH, 1)).handleBatches(type(uint256).max);
+    function handleWithdrawals(State storage $, VaultDeployment memory d) internal {
+        IRedeemQueue queue = IRedeemQueue(d.vault.queueAt(Constants.WSTETH, 1));
+
+        (,, uint256 totalDemandAssets,) = queue.getState();
+
+        uint256 fromTimestamp = 0;
+        uint256 toTimestamp = 0;
+        for (uint256 i = 0; i < $.users.length; i++) {
+            IRedeemQueue.Request[] memory rs = queue.requestsOf($.users[i], 0, type(uint256).max);
+            for (uint256 j = 0; j < rs.length; j++) {
+                if (rs[j].isClaimable) {
+                    fromTimestamp = Math.max(fromTimestamp, rs[j].timestamp);
+                }
+            }
+        }
+
+        (uint256 targetCollateral,,,,,) = IAavePoolV3(Constants.AAVE_PRIME).getUserAccountData(d.vault.subvaultAt(1));
+
+        aaveDecreaseLeverage($, d, 0);
+
+        swapWETH($, d, 0, type(uint256).max);
+        swapWETH($, d, 1, type(uint256).max);
+
+        queue.handleBatches(type(uint256).max);
+
+        uint256 tvlWsteth = WSTETHInterface(Constants.WSTETH).getWstETHByStETH(tvl(d.vault));
+        aaveIncreaseLeverage(
+            $, d, Math.mulDiv(targetCollateral, tvlWsteth - Math.min(totalDemandAssets, tvlWsteth), tvlWsteth)
+        );
+
+        for (uint256 i = 0; i < $.users.length; i++) {
+            IRedeemQueue.Request[] memory rs = queue.requestsOf($.users[i], 0, type(uint256).max);
+            for (uint256 j = 0; j < rs.length; j++) {
+                if (rs[j].isClaimable) {
+                    toTimestamp = Math.max(toTimestamp, rs[j].timestamp);
+                }
+            }
+        }
+
+        $.latestTransition =
+            Transition(Transitions.HANDLE_BATCHES, abi.encode(fromTimestamp, toTimestamp, totalDemandAssets));
     }
 
     function submitReports(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {
-        if (rnd.randBool()) {
-            _this().warp(block.timestamp + 2 days);
-        } else {
-            _this().warp(block.timestamp + 1 days);
-        }
+        uint256 timespan = rnd.randInt(1 days, 3 days);
+        increaseStETHPrice(timespan);
 
         OracleHelper oracleHelper = OracleHelper(Constants.protocolDeployment().oracleHelper);
         OracleHelper.AssetPrice[] memory assetPrices = new OracleHelper.AssetPrice[](3);
@@ -495,8 +647,8 @@ library StrETHSolvencyLibrary {
 
         assetPrices[2].asset = Constants.ETH;
 
-        uint256[] memory prices =
-            oracleHelper.getPricesD18(d.vault, FEOracle(Constants.FE_ORACLE).tvl(address(d.vault)), assetPrices);
+        uint256 tvl_ = FEOracle(Constants.FE_ORACLE).tvl(address(d.vault));
+        uint256[] memory prices = oracleHelper.getPricesD18(d.vault, tvl_, assetPrices);
 
         IOracle.Report[] memory reports = new IOracle.Report[](3);
         for (uint256 i = 0; i < 3; i++) {
@@ -509,29 +661,182 @@ library StrETHSolvencyLibrary {
         _this().startPrank(oracleSubmitter);
         oracle.submitReports(reports);
         _this().stopPrank();
+
+        saveSnapshot($, d);
+        handleWithdrawals($, d);
     }
 
     function aaveIncreaseLeverage(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {
-        uint256 tvl = FEOracle(Constants.FE_ORACLE).tvl(address(d.vault));
+        uint256 tvl_ = tvl(d.vault);
         uint256 priceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
-        uint256 tvlBase = Math.mulDiv(tvl, priceD8, 1 ether);
-        uint256 targetCollateral = rnd.randInt(1, tvlBase);
-        aaveIncreaseLeverage(rnd, $, d, targetCollateral);
+        uint256 tvlBase = Math.mulDiv(tvl_, priceD8, 1 ether);
+        uint256 targetCollateral = rnd.randInt(1, tvlBase * 2);
+        aaveIncreaseLeverage($, d, targetCollateral);
+
+        $.latestTransition.t = Transitions.INCREASE_LEVERAGE;
     }
 
     function aaveDecreaseLeverage(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {
-        uint256 tvl = FEOracle(Constants.FE_ORACLE).tvl(address(d.vault));
+        uint256 tvl_ = FEOracle(Constants.FE_ORACLE).tvl(address(d.vault));
         uint256 priceD8 = IAaveOracleV3(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
-        uint256 tvlBase = Math.mulDiv(tvl, priceD8, 1 ether);
-        uint256 targetCollateral = rnd.randInt(1, tvlBase);
-        aaveDecreaseLeverage(rnd, $, d, targetCollateral);
+        uint256 tvlBase = Math.mulDiv(tvl_, priceD8, 1 ether);
+        uint256 targetCollateral = rnd.randInt(1, tvlBase * 2);
+        aaveDecreaseLeverage($, d, targetCollateral);
+
+        $.latestTransition.t = Transitions.DECREASE_LEVERAGE;
     }
 
-    function finalize(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {}
+    function finalize(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {
+        IShareManager shareManager = d.vault.shareManager();
+        IRedeemQueue queue = IRedeemQueue(d.vault.queueAt(Constants.WSTETH, 1));
+
+        // handle pending deposit requests
+        submitReports(rnd, $, d);
+
+        for (uint256 i = 0; i < $.users.length; i++) {
+            uint256 shares = shareManager.sharesOf($.users[i]);
+            if (shares == 0) {
+                continue;
+            }
+            _this().startPrank($.users[i]);
+            queue.redeem(shares);
+            _this().stopPrank();
+        }
+
+        aaveDecreaseLeverage($, d, 0);
+        swapWETH($, d, 0, type(uint256).max);
+        swapWETH($, d, 1, type(uint256).max);
+
+        _this().warp(block.timestamp + 2 days);
+
+        submitReports(rnd, $, d);
+        handleWithdrawals($, d);
+
+        require(queue.canBeRemoved(), "Non-zereo shares");
+
+        for (uint256 i = 0; i < $.users.length; i++) {
+            IRedeemQueue.Request[] memory requests = queue.requestsOf($.users[i], 0, type(uint256).max);
+            if (requests.length == 0) {
+                continue;
+            }
+            uint32[] memory timestamps = new uint32[](requests.length);
+            for (uint256 j = 0; j < timestamps.length; j++) {
+                timestamps[j] = uint32(requests[j].timestamp);
+            }
+            _this().startPrank($.users[i]);
+            queue.claim($.users[i], timestamps);
+            _this().stopPrank();
+        }
+
+        $.latestTransition.t = Transitions.FINALIZE;
+    }
 
     // Checks
 
-    function checkState(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {}
+    function checkState(State storage $, VaultDeployment memory d) internal {
+        Transition memory t = $.latestTransition;
 
-    function checkFinalState(RandomLib.Storage storage rnd, State storage $, VaultDeployment memory d) internal {}
+        if (t.t == Transitions.CREATE_DEPOSIT_REQUEST) {
+            (address depositor, address asset, uint256 amount) = abi.decode(t.data, (address, address, uint256));
+            uint256 ethAmount = asset == Constants.WSTETH ? WSTETHInterface(asset).getStETHByWstETH(amount) : amount;
+            IShareManager shareManager = d.vault.shareManager();
+            require($.timestamp == block.timestamp, "Invalid timestamp");
+            require($.totalShares == shareManager.totalShares(), "Invalid totalShares");
+            require($.totalAssets == FEOracle(Constants.FE_ORACLE).tvl(address(d.vault)), "Invalid totalAssets");
+            for (uint256 i = 0; i < $.users.length; i++) {
+                address user = $.users[i];
+                if (user == depositor) {
+                    require($.shares[i] == shareManager.sharesOf(user), "Invalid sharesOf");
+                    require($.pendingDeposits[i] + ethAmount == pendingDepositsOf(d, user), "Invalid pendingDepositsOf");
+                    require($.pendingWithdrawals[i] == pendingWithdrawalsOf(d, user), "Invalid pendingWithdrawalsOf");
+                } else {
+                    require($.shares[i] == shareManager.sharesOf(user), "Invalid sharesOf");
+                    require($.pendingDeposits[i] == pendingDepositsOf(d, user), "Invalid pendingDepositsOf");
+                    require($.pendingWithdrawals[i] == pendingWithdrawalsOf(d, user), "Invalid pendingWithdrawalsOf");
+                }
+            }
+        } else if (t.t == Transitions.CANCEL_DEPOSIT_REQUEST) {
+            (address depositor, address asset, uint256 amount) = abi.decode(t.data, (address, address, uint256));
+            uint256 ethAmount = asset == Constants.WSTETH ? WSTETHInterface(asset).getStETHByWstETH(amount) : amount;
+            IShareManager shareManager = d.vault.shareManager();
+            require($.timestamp == block.timestamp, "Invalid timestamp");
+            require($.totalShares == shareManager.totalShares(), "Invalid totalShares");
+            require($.totalAssets == FEOracle(Constants.FE_ORACLE).tvl(address(d.vault)), "Invalid totalAssets");
+            for (uint256 i = 0; i < $.users.length; i++) {
+                address user = $.users[i];
+                if (user == depositor) {
+                    require($.shares[i] == shareManager.sharesOf(user), "Invalid sharesOf");
+                    require($.pendingDeposits[i] - ethAmount == pendingDepositsOf(d, user), "Invalid pendingDepositsOf");
+                    require($.pendingWithdrawals[i] == pendingWithdrawalsOf(d, user), "Invalid pendingWithdrawalsOf");
+                } else {
+                    require($.shares[i] == shareManager.sharesOf(user), "Invalid sharesOf");
+                    require($.pendingDeposits[i] == pendingDepositsOf(d, user), "Invalid pendingDepositsOf");
+                    require($.pendingWithdrawals[i] == pendingWithdrawalsOf(d, user), "Invalid pendingWithdrawalsOf");
+                }
+            }
+        } else if (t.t == Transitions.CREATE_REDEEM_REQUEST) {
+            (address withdrawer,, uint256 shares) = abi.decode(t.data, (address, address, uint256));
+            uint256 ethAmount = Math.mulDiv(shares, 1 ether, d.vault.oracle().getReport(Constants.WSTETH).priceD18);
+            IShareManager shareManager = d.vault.shareManager();
+            require($.timestamp == block.timestamp, "Invalid timestamp");
+            require($.totalShares == shareManager.totalShares(), "Invalid totalShares");
+            require($.totalAssets == FEOracle(Constants.FE_ORACLE).tvl(address(d.vault)), "Invalid totalAssets");
+            for (uint256 i = 0; i < $.users.length; i++) {
+                address user = $.users[i];
+                if (user == withdrawer) {
+                    require($.shares[i] - shares == shareManager.sharesOf(user), "Invalid sharesOf");
+                    require($.pendingDeposits[i] == pendingDepositsOf(d, user), "Invalid pendingDepositsOf");
+                    uint256 delta = pendingWithdrawalsOf(d, user) - $.pendingWithdrawals[i] - ethAmount;
+                    require(delta <= MAX_ERROR, "Invalid pendingWithdrawalsOf");
+                } else {
+                    require($.shares[i] == shareManager.sharesOf(user), "Invalid sharesOf");
+                    require($.pendingDeposits[i] == pendingDepositsOf(d, user), "Invalid pendingDepositsOf");
+                    require($.pendingWithdrawals[i] == pendingWithdrawalsOf(d, user), "Invalid pendingWithdrawalsOf");
+                }
+            }
+        } else if (t.t == Transitions.HANDLE_BATCHES) {
+            (uint256 fromTimestamp, uint256 toTimestamp, uint256 assets) =
+                abi.decode(t.data, (uint256, uint256, uint256));
+
+            IRedeemQueue queue = IRedeemQueue(d.vault.queueAt(Constants.WSTETH, 1));
+            uint256 sum = 0;
+            uint256 counter = 0;
+            for (uint256 i = 0; i < $.users.length; i++) {
+                address user = $.users[i];
+                IRedeemQueue.Request[] memory requests = queue.requestsOf(user, 0, type(uint256).max);
+                for (uint256 j = 0; j < requests.length; j++) {
+                    if (fromTimestamp < requests[j].timestamp && requests[j].timestamp <= toTimestamp) {
+                        if (requests[j].assets == 0) {
+                            revert("Unexpected pending withdrawal request");
+                        }
+                        counter++;
+                        sum += requests[j].assets;
+                    }
+                }
+            }
+            require(assets - sum <= MAX_ERROR, "Error overflow (handle batches)");
+        } else if (t.t == Transitions.INCREASE_LEVERAGE || t.t == Transitions.DECREASE_LEVERAGE) {
+            IShareManager shareManager = d.vault.shareManager();
+            require($.timestamp == block.timestamp, "Invalid timestamp");
+            require($.totalShares == shareManager.totalShares(), "Invalid totalShares");
+            int256 diff = int256($.totalAssets) - int256(FEOracle(Constants.FE_ORACLE).tvl(address(d.vault)));
+            if (diff < 0) {
+                diff = -diff;
+            }
+            require(uint256(diff) <= MAX_ERROR, "Invalid totalAssets");
+            for (uint256 i = 0; i < $.users.length; i++) {
+                address user = $.users[i];
+                require($.shares[i] == shareManager.sharesOf(user), "Invalid sharesOf");
+                require($.pendingDeposits[i] == pendingDepositsOf(d, user), "Invalid pendingDepositsOf");
+                require($.pendingWithdrawals[i] == pendingWithdrawalsOf(d, user), "Invalid pendingWithdrawalsOf");
+            }
+        } else if (t.t == Transitions.FINALIZE) {
+            IShareManager shareManager = d.vault.shareManager();
+            require(shareManager.totalShares() <= MAX_ERROR, "Non-dust total shares");
+        } else {
+            // do nothing
+        }
+        saveSnapshot($, d);
+        $.latestTransition.t = Transitions.NONE;
+    }
 }
