@@ -43,6 +43,9 @@ library AcceptanceLibrary {
     }
 
     function compareBytecode(string memory title, address a, address b) internal view {
+        if (a == address(0)) {
+            return;
+        }
         bytes memory aBytecode = removeMetadata(a.code);
         bytes memory bBytecode = removeMetadata(b.code);
         if (keccak256(aBytecode) != keccak256(bBytecode)) {
@@ -191,11 +194,13 @@ library AcceptanceLibrary {
             "RedirectingDepositHook", address($.redirectingDepositHook), address(new RedirectingDepositHook())
         );
 
-        compareBytecode(
-            "LidoDepositHook",
-            address($.lidoDepositHook),
-            address(new LidoDepositHook($.wsteth, $.weth, address($.redirectingDepositHook)))
-        );
+        if (address($.lidoDepositHook) != address(0)) {
+            compareBytecode(
+                "LidoDepositHook",
+                address($.lidoDepositHook),
+                address(new LidoDepositHook($.wsteth, $.weth, address($.redirectingDepositHook)))
+            );
+        }
 
         compareBytecode("OracleHelper", address($.oracleHelper), address(new OracleHelper()));
 
@@ -245,14 +250,16 @@ library AcceptanceLibrary {
                 )
             )
         );
-        require(
-            $.symbioticVerifierFactory.implementations() == 1,
-            "Factory SymbioticVerifier: invalid implementations length"
-        );
-        require(
-            $.symbioticVerifierFactory.implementationAt(0) == address($.symbioticVerifierImplementation),
-            "Factory SymbioticVerifier: invalid implementation at 0"
-        );
+        if (address($.symbioticVerifierFactory) != address(0)) {
+            require(
+                $.symbioticVerifierFactory.implementations() == 1,
+                "Factory SymbioticVerifier: invalid implementations length"
+            );
+            require(
+                $.symbioticVerifierFactory.implementationAt(0) == address($.symbioticVerifierImplementation),
+                "Factory SymbioticVerifier: invalid implementation at 0"
+            );
+        }
 
         compareBytecode(
             "Factory EigenLayerVerifier",
@@ -265,14 +272,16 @@ library AcceptanceLibrary {
                 )
             )
         );
-        require(
-            $.eigenLayerVerifierFactory.implementations() == 1,
-            "Factory EigenLayerVerifier: invalid implementations length"
-        );
-        require(
-            $.eigenLayerVerifierFactory.implementationAt(0) == address($.eigenLayerVerifierImplementation),
-            "Factory EigenLayerVerifier: invalid implementation at 0"
-        );
+        if (address($.eigenLayerVerifierFactory) != address(0)) {
+            require(
+                $.eigenLayerVerifierFactory.implementations() == 1,
+                "Factory EigenLayerVerifier: invalid implementations length"
+            );
+            require(
+                $.eigenLayerVerifierFactory.implementationAt(0) == address($.eigenLayerVerifierImplementation),
+                "Factory EigenLayerVerifier: invalid implementation at 0"
+            );
+        }
 
         compareBytecode(
             "Factory RiskManager",
@@ -461,14 +470,19 @@ library AcceptanceLibrary {
         require(
             $.factory.isEntity(address($.erc20VerifierFactory)), "ERC20VerifierFactory is not Factory Factoy entity"
         );
-        require(
-            $.factory.isEntity(address($.symbioticVerifierFactory)),
-            "SymbioticVerifierFactory is not Factory Factoy entity"
-        );
-        require(
-            $.factory.isEntity(address($.eigenLayerVerifierFactory)),
-            "EigenLayerVerifierFactory is not Factory Factoy entity"
-        );
+        if (address($.symbioticVerifierFactory) != address(0)) {
+            require(
+                $.factory.isEntity(address($.symbioticVerifierFactory)),
+                "SymbioticVerifierFactory is not Factory Factoy entity"
+            );
+        }
+
+        if (address($.eigenLayerVerifierFactory) != address(0)) {
+            require(
+                $.factory.isEntity(address($.eigenLayerVerifierFactory)),
+                "EigenLayerVerifierFactory is not Factory Factoy entity"
+            );
+        }
         require($.factory.isEntity(address($.riskManagerFactory)), "RiskManagerFactory is not Factory Factoy entity");
         require($.factory.isEntity(address($.subvaultFactory)), "SubvaultFactory is not Factory Factoy entity");
         require($.factory.isEntity(address($.verifierFactory)), "VerifierFactory is not Factory Factoy entity");

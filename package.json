@@ -5,6 +5,8 @@
   "repository": "https://github.com/mellow-finance/flexible-vaults",
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
+    "deploy:base": "forge script ./scripts/base/Deploy.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:base:tqeth": "forge script ./scripts/base/tqETH.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base:uni-vault": "forge script ./scripts/base/UniVault.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:base:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum": "forge script ./scripts/ethereum/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
