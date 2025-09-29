@@ -102,7 +102,7 @@ contract Deploy is Script {
             feeManagerVersion: 0,
             feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
             riskManagerVersion: 0,
-            riskManagerParams: abi.encode(type(int256).max),
+            riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
@@ -148,7 +148,7 @@ contract Deploy is Script {
                 (verifiers[0], calls[0]) = _createCowswapVerifier(address(vault));
                 vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth,weth,wsteth
                 riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
-                riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max);
+                riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
             }
             {
                 verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
@@ -159,7 +159,7 @@ contract Deploy is Script {
                 riskManager.allowSubvaultAssets(
                     vault.subvaultAt(1), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
                 );
-                riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max);
+                riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
             }
 
             {
@@ -167,14 +167,14 @@ contract Deploy is Script {
                 verifiers[3] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
                 vault.createSubvault(0, proxyAdmin, verifiers[2]); // wsteth, usdc, usdt, usds
                 vault.createSubvault(0, proxyAdmin, verifiers[3]); // usdc, usdt, usds
-                riskManager.setSubvaultLimit(vault.subvaultAt(2), type(int256).max);
+                riskManager.setSubvaultLimit(vault.subvaultAt(2), type(int256).max / 2);
                 riskManager.allowSubvaultAssets(
                     vault.subvaultAt(2),
                     ArraysLibrary.makeAddressArray(
                         abi.encode(Constants.WSTETH, Constants.USDC, Constants.USDT, Constants.USDS)
                     )
                 );
-                riskManager.setSubvaultLimit(vault.subvaultAt(3), type(int256).max);
+                riskManager.setSubvaultLimit(vault.subvaultAt(3), type(int256).max / 2);
                 riskManager.allowSubvaultAssets(
                     vault.subvaultAt(3),
                     ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS))
