@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "@openzeppelin/contracts/utils/Create2.sol";
+
 import "../../test/Imports.sol";
 import "forge-std/Script.sol";
 
@@ -10,6 +12,7 @@ contract Deploy is Script {
 
     struct Deployment {
         Factory baseFactory;
+        Factory consensusFactory;
         Factory depositQueueFactory;
         Factory feeManagerFactory;
         Factory oracleFactory;
@@ -19,8 +22,18 @@ contract Deploy is Script {
         Factory subvaultFactory;
         Factory vaultFactory;
         Factory verifierFactory;
-        BitmaskVerifier bitmaskVerifier;
-        VaultConfigurator vaultConfigurator;
+        Factory eigenLayerVerifierFactory;
+        Factory erc20VerifierFactory;
+        Factory symbioticVerifierFactory;
+        address bitmaskVerifier;
+        address eigenLayerVerifier;
+        address erc20Verifier;
+        address symbioticVerifier;
+        address vaultConfigurator;
+        address basicRedeemHook;
+        address redirectingDepositHook;
+        address lidoDipositHook;
+        address oracleHelper;
     }
 
     function run() external {
@@ -28,102 +41,197 @@ contract Deploy is Script {
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
-        Deployment memory deployment = deployBase(deployer);
 
-        console2.log("Factory:", address(deployment.baseFactory));
-        console2.log("DepositQueue Factory:", address(deployment.depositQueueFactory));
-        console2.log("FeeManager Factory:", address(deployment.feeManagerFactory));
-        console2.log("Oracle Factory:", address(deployment.oracleFactory));
-        console2.log("RedeemQueue Factory:", address(deployment.redeemQueueFactory));
-        console2.log("RiskManager Factory:", address(deployment.riskManagerFactory));
-        console2.log("ShareManager Factory:", address(deployment.shareManagerFactory));
-        console2.log("Subvault Factory:", address(deployment.subvaultFactory));
-        console2.log("Vault Factory:", address(deployment.vaultFactory));
-        console2.log("Verifier Factory:", address(deployment.verifierFactory));
-        console2.log("BitmaskVerifier:", address(deployment.bitmaskVerifier));
-        console2.log("VaultConfigurator:", address(deployment.vaultConfigurator));
-
+        address proxyAdmin = 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3;
+        deployBase(deployer, proxyAdmin);
         vm.stopBroadcast();
-        // revert("ok");
     }
 
-    function deployBase(address deployer) public returns (Deployment memory $) {
-        Factory factoryImplementation = new Factory(DEPLOYMENT_NAME, DEPLOYMENT_VERSION);
-        $.baseFactory = Factory(
-            address(
-                new TransparentUpgradeableProxy(
-                    address(factoryImplementation),
-                    deployer,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode(deployer)))
+    function _deployWithOptimalSalt(string memory title, bytes memory creationCode, bytes memory constructorParams)
+        internal
+        returns (address a)
+    {
+        a = Create2.deploy(0, bytes32(uint256(0xbeeeeeef)), abi.encodePacked(creationCode, constructorParams));
+        console2.log("%s: %s;", title, a);
+    }
+
+    function deployBase(address deployer, address proxyAdmin) public returns (Deployment memory $) {
+        {
+            Factory implementation = Factory(
+                _deployWithOptimalSalt(
+                    "Factory implementation",
+                    type(Factory).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
                 )
-            )
-        );
+            );
 
-        {
-            $.baseFactory.proposeImplementation(address(factoryImplementation));
-            $.baseFactory.acceptProposedImplementation(address(factoryImplementation));
+            $.baseFactory = Factory(
+                _deployWithOptimalSalt(
+                    "Factory factory",
+                    type(TransparentUpgradeableProxy).creationCode,
+                    abi.encode(
+                        implementation, proxyAdmin, abi.encodeCall(IFactoryEntity.initialize, (abi.encode(deployer)))
+                    )
+                )
+            );
+            $.baseFactory.proposeImplementation(address(implementation));
+            $.baseFactory.acceptProposedImplementation(address(implementation));
+            $.baseFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.depositQueueFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address depositQueueImplementation = address(new DepositQueue(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
-            $.depositQueueFactory.proposeImplementation(depositQueueImplementation);
-            $.depositQueueFactory.acceptProposedImplementation(depositQueueImplementation);
+            $.consensusFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("Consensus factory: %s", address($.consensusFactory));
+            {
+                address implementation = _deployWithOptimalSalt(
+                    "Consensus implementation",
+                    type(Consensus).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+                );
+                $.consensusFactory.proposeImplementation(implementation);
+                $.consensusFactory.acceptProposedImplementation(implementation);
+            }
+            $.consensusFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.feeManagerFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address implementation = address(new FeeManager(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+            $.depositQueueFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("DepositQueue factory: %s", address($.depositQueueFactory));
+            {
+                address implementation = _deployWithOptimalSalt(
+                    "DepositQueue implementation",
+                    type(DepositQueue).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+                );
+                $.depositQueueFactory.proposeImplementation(implementation);
+                $.depositQueueFactory.acceptProposedImplementation(implementation);
+            }
+            {
+                address implementation = _deployWithOptimalSalt(
+                    "SignatureDepositQueue implementation",
+                    type(SignatureDepositQueue).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION, $.consensusFactory)
+                );
+                $.depositQueueFactory.proposeImplementation(implementation);
+                $.depositQueueFactory.acceptProposedImplementation(implementation);
+            }
+            $.depositQueueFactory.transferOwnership(proxyAdmin);
+        }
+
+        {
+            $.feeManagerFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("FeeManager factory: %s", address($.feeManagerFactory));
+            address implementation = _deployWithOptimalSalt(
+                "FeeManager implementation",
+                type(FeeManager).creationCode,
+                abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+            );
             $.feeManagerFactory.proposeImplementation(implementation);
             $.feeManagerFactory.acceptProposedImplementation(implementation);
+            $.feeManagerFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.oracleFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address implementation = address(new Oracle(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+            $.oracleFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("Oracle factory: %s", address($.oracleFactory));
+            address implementation = _deployWithOptimalSalt(
+                "Oracle implementation", type(Oracle).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+            );
             $.oracleFactory.proposeImplementation(implementation);
             $.oracleFactory.acceptProposedImplementation(implementation);
+            $.oracleFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.redeemQueueFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address redeemQueueImplementation = address(new RedeemQueue(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
-            $.redeemQueueFactory.proposeImplementation(redeemQueueImplementation);
-            $.redeemQueueFactory.acceptProposedImplementation(redeemQueueImplementation);
+            $.redeemQueueFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("RedeemQueue factory: %s", address($.redeemQueueFactory));
+            {
+                address implementation = _deployWithOptimalSalt(
+                    "RedeemQueue implementation",
+                    type(RedeemQueue).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+                );
+                $.redeemQueueFactory.proposeImplementation(implementation);
+                $.redeemQueueFactory.acceptProposedImplementation(implementation);
+            }
+            {
+                address implementation = _deployWithOptimalSalt(
+                    "SignatureRedeemQueue implementation",
+                    type(SignatureRedeemQueue).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION, $.consensusFactory)
+                );
+                $.redeemQueueFactory.proposeImplementation(implementation);
+                $.redeemQueueFactory.acceptProposedImplementation(implementation);
+            }
+            $.redeemQueueFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.riskManagerFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address implementation = address(new RiskManager(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+            $.riskManagerFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("RiskManager factory: %s", address($.riskManagerFactory));
+            address implementation = _deployWithOptimalSalt(
+                "RiskManager implementation",
+                type(RiskManager).creationCode,
+                abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+            );
             $.riskManagerFactory.proposeImplementation(implementation);
             $.riskManagerFactory.acceptProposedImplementation(implementation);
+            $.riskManagerFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.shareManagerFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address tokenizedImplementation = address(new TokenizedShareManager(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
-            $.shareManagerFactory.proposeImplementation(tokenizedImplementation);
-            $.shareManagerFactory.acceptProposedImplementation(tokenizedImplementation);
+            $.shareManagerFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("ShareManager factory: %s", address($.shareManagerFactory));
+            {
+                address implementation = _deployWithOptimalSalt(
+                    "TokenizedShareManager implementation",
+                    type(TokenizedShareManager).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+                );
+                $.shareManagerFactory.proposeImplementation(implementation);
+                $.shareManagerFactory.acceptProposedImplementation(implementation);
+            }
+            {
+                address implementation = _deployWithOptimalSalt(
+                    "BasicShareManager implementation",
+                    type(BasicShareManager).creationCode,
+                    abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+                );
+                $.shareManagerFactory.proposeImplementation(implementation);
+                $.shareManagerFactory.acceptProposedImplementation(implementation);
+            }
+            $.shareManagerFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.subvaultFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address implementation = address(new Subvault(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+            $.subvaultFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("Subvault factory: %s", address($.subvaultFactory));
+            address implementation = _deployWithOptimalSalt(
+                "Subvault implementation", type(Subvault).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+            );
             $.subvaultFactory.proposeImplementation(implementation);
             $.subvaultFactory.acceptProposedImplementation(implementation);
+            $.subvaultFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.verifierFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address implementation = address(new Verifier(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
+            $.verifierFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("Verifier factory: %s", address($.verifierFactory));
+            address implementation = _deployWithOptimalSalt(
+                "Verifier implementation", type(Verifier).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+            );
             $.verifierFactory.proposeImplementation(implementation);
             $.verifierFactory.acceptProposedImplementation(implementation);
+            $.verifierFactory.transferOwnership(proxyAdmin);
         }
 
         {
-            $.vaultFactory = Factory($.baseFactory.create(0, deployer, abi.encode(deployer)));
-            address implementation = address(
-                new Vault(
+            $.vaultFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("Vault factory: %s", address($.vaultFactory));
+            address implementation = _deployWithOptimalSalt(
+                "Vault implementation",
+                type(Vault).creationCode,
+                abi.encode(
                     DEPLOYMENT_NAME,
                     DEPLOYMENT_VERSION,
                     address($.depositQueueFactory),
@@ -132,18 +240,43 @@ contract Deploy is Script {
                     address($.verifierFactory)
                 )
             );
+
             $.vaultFactory.proposeImplementation(implementation);
             $.vaultFactory.acceptProposedImplementation(implementation);
+            $.vaultFactory.transferOwnership(proxyAdmin);
         }
 
-        $.bitmaskVerifier = new BitmaskVerifier();
+        $.bitmaskVerifier = _deployWithOptimalSalt("BitmaskVerifier", type(BitmaskVerifier).creationCode, new bytes(0));
 
-        $.vaultConfigurator = new VaultConfigurator(
-            address($.shareManagerFactory),
-            address($.feeManagerFactory),
-            address($.riskManagerFactory),
-            address($.oracleFactory),
-            address($.vaultFactory)
+        {
+            $.erc20VerifierFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console2.log("ERC20Verifier factory: %s", address($.erc20VerifierFactory));
+            address implementation = _deployWithOptimalSalt(
+                "ERC20Verifier", type(ERC20Verifier).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
+            );
+
+            $.erc20VerifierFactory.proposeImplementation(implementation);
+            $.erc20VerifierFactory.acceptProposedImplementation(implementation);
+            $.erc20VerifierFactory.transferOwnership(proxyAdmin);
+        }
+
+        $.vaultConfigurator = _deployWithOptimalSalt(
+            "VaultConfigurator",
+            type(VaultConfigurator).creationCode,
+            abi.encode(
+                address($.shareManagerFactory),
+                address($.feeManagerFactory),
+                address($.riskManagerFactory),
+                address($.oracleFactory),
+                address($.vaultFactory)
+            )
         );
+
+        $.basicRedeemHook = _deployWithOptimalSalt("BasicRedeeHook", type(BasicRedeemHook).creationCode, new bytes(0));
+
+        $.redirectingDepositHook =
+            _deployWithOptimalSalt("RedirectingDepositHook", type(RedirectingDepositHook).creationCode, new bytes(0));
+
+        $.oracleHelper = _deployWithOptimalSalt("OracleHelper", type(OracleHelper).creationCode, new bytes(0));
     }
 }
