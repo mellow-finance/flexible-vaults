@@ -43,7 +43,7 @@ contract StrETHSolvencyTest is Test {
         $.latestTransition.t = StrETHSolvencyLibrary.Transitions.NONE;
     }
 
-    function testSolvencyStrETH() external {
+    function testSolvencyStrETH_NO_CI() external {
         VaultDeployment memory d = Constants.getStrETHDeployment();
 
         rnd.seed = 123;
