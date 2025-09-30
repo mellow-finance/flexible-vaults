@@ -242,7 +242,7 @@ library Constants {
         $.timelockExecutors[1] = pauser2;
         $.calls = new SubvaultCalls[](1);
         (, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
-        $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(pd, curator, leaves);
+        $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
     }
 
     function getStrETHDeployment() internal pure returns (VaultDeployment memory $) {
@@ -368,7 +368,7 @@ library Constants {
         $.calls = new SubvaultCalls[](4);
         {
             (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator);
-            $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(pd, curator, leaves);
+            $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
         }
         {
             (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault1Proofs(curator, subvaults[1]);

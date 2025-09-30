@@ -244,9 +244,8 @@ contract Deploy is Script {
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
             uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
-            for (uint256 i = 0; i < assets.length; i++) {
-                IOracle.DetailedReport memory r = oracle.getReport(assets[i]);
-                oracle.acceptReport(assets[i], r.priceD18, uint32(r.timestamp));
+            for (uint256 i = 0; i < reports.length; i++) {
+                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
         }
 

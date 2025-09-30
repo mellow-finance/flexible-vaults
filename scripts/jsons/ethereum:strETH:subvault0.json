@@ -4,7 +4,24 @@
   "merkle_proofs": [
     {
       "verificationType": 3,
-      "description": "WETH.deposit{value: any}()",
+      "description": {
+        "description": "WETH.deposit{value: any}()",
+        "abi": {
+          "constant": false,
+          "inputs": [],
+          "name": "deposit",
+          "outputs": [],
+          "payable": true,
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5dbf9287787a5825becb0321a276c9c92d570a75",
+          "target": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "any"
+        },
+        "innerParameters": {}
+      },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5914135fdd882f5a49b3be04c5f3eef46224194c0b69f82f92a55ece139dd20300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa991cdeed2219df91bc9474a54a1660a513970427cb2d5ada212702ea3d7b4c2",
@@ -13,7 +30,36 @@
     },
     {
       "verificationType": 3,
-      "description": "CowswapSettlement.setPreSignature(anyBytes(56), anyBool)",
+      "description": {
+        "description": "CowswapSettlement.setPreSignature(anyBytes(56), anyBool)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "orderUid",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bool",
+              "name": "signed",
+              "type": "bool"
+            }
+          ],
+          "name": "setPreSignature",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5dbf9287787a5825becb0321a276c9c92d570a75",
+          "target": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+          "value": "0"
+        },
+        "innerParameters": {
+          "orderUid": "any",
+          "signed": "any"
+        }
+      },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a511ed1df43e1a57ca0efe69c28ac8e1160b780080d6b9ddde16dddcaf1669e1300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x26223b44375f4bb023810262313a9c862666e85f5efbbc646288bc503a56262c",
@@ -22,7 +68,30 @@
     },
     {
       "verificationType": 3,
-      "description": "CowswapSettlement.invalidateOrder(anyBytes(56))",
+      "description": {
+        "description": "CowswapSettlement.invalidateOrder(anyBytes(56))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "orderUid",
+              "type": "bytes"
+            }
+          ],
+          "name": "invalidateOrder",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5dbf9287787a5825becb0321a276c9c92d570a75",
+          "target": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+          "value": "0"
+        },
+        "innerParameters": {
+          "orderUid": "any"
+        }
+      },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a629b79fdf64d8fee63216162c77844c8e6bf0bc4c9bf9e67d1a98cb5e865fd58000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xf281852e04b638285c63c288c0c963166ad94042c1fa1a9f75d6f2b21ebc29f7",
@@ -31,7 +100,42 @@
     },
     {
       "verificationType": 3,
-      "description": "IERC20(WETH).approve(CowswapVaultRelayer, anyInt)",
+      "description": {
+        "description": "IERC20(WETH).approve(CowswapVaultRelayer, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5dbf9287787a5825becb0321a276c9c92d570a75",
+          "target": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xc92e8bdf79f0507f65a392b0ab4667716bfe0110",
+          "amount": "any"
+        }
+      },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8d9ead3e4db046ab450b57cb3f6fca7d44d359ed4b73878a862cec0fdcede841000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x53fd7b8a63c56c1670f40108bd39e177c3090e3c2c078ba91b84ff679c9ab162",
