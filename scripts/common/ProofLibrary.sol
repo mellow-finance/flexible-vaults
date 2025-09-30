@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import {JsonLibrary} from "./JsonLibrary.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
 import "../../src/permissions/BitmaskVerifier.sol";
@@ -11,62 +12,16 @@ library ProofLibrary {
         return VmSafe(address(uint160(uint256(keccak256("hevm cheat code")))));
     }
 
-    function toString(IVerifier.VerificationPayload[] memory p, string[] memory descriptions)
-        internal
-        pure
-        returns (string memory json)
-    {
-        json = "[";
-        for (uint256 i = 0; i < p.length; i++) {
-            json = string(abi.encodePacked(json, (i == 0 ? "" : ",\n"), toString(p[i], descriptions[i])));
-        }
-        json = string.concat(json, "]");
-    }
-
-    function toString(IVerifier.VerificationPayload memory p, string memory description)
-        internal
-        pure
-        returns (string memory json)
-    {
-        json = string(
-            abi.encodePacked(
-                '{ "verificationType" : ',
-                _this().toString(uint256(p.verificationType)),
-                ', "description": "',
-                description,
-                '", "verificationData": "',
-                _this().toString(p.verificationData),
-                '", "proof": ['
-            )
-        );
-
-        for (uint256 i = 0; i < p.proof.length; i++) {
-            json = string(abi.encodePacked(json, (i == 0 ? "" : ", "), '"', _this().toString(p.proof[i]), '"'));
-        }
-        json = string(abi.encodePacked(json, "] }"));
-        return json;
-    }
-
     function storeProofs(
         string memory title,
         bytes32 root,
         IVerifier.VerificationPayload[] memory leaves,
         string[] memory descriptions
     ) internal {
-        string memory json = string(
-            abi.encodePacked(
-                '{"title": "',
-                title,
-                '",\n',
-                '"merkle_root": "',
-                _this().toString(root),
-                '",\n',
-                '"merkle_proofs": ',
-                toString(leaves, descriptions),
-                "}"
-            )
+        _this().writeJson(
+            JsonLibrary.toJson(title, root, leaves, descriptions),
+            string(abi.encodePacked("./scripts/jsons/", title, ".json"))
         );
-        _this().writeJson(json, string(abi.encodePacked("./scripts/jsons/", title, ".json")));
     }
 
     function makeBitmask(bool who, bool where, bool value, bool selector, bytes memory callData)

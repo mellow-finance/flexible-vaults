@@ -326,7 +326,7 @@ contract Deploy is Script {
             5. cowswapSettlement.setPreSignature(anyBytes(56), anyBool);
             6. cowswapSettlement.invalidateOrder(anyBytes); 
         */
-        string[] memory descriptions = tqETHLibrary.getSubvault0Descriptions();
+        string[] memory descriptions = tqETHLibrary.getSubvault0Descriptions(curator);
         (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
         ProofLibrary.storeProofs("ethereum:tqETHPreProd:subvault0", merkleRoot, leaves, descriptions);
         calls = tqETHLibrary.getSubvault0SubvaultCalls($, curator, leaves);

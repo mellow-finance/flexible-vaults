@@ -3,11 +3,16 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+import {ABILibrary} from "./ABILibrary.sol";
+import {JsonLibrary} from "./JsonLibrary.sol";
+import {ParameterLibrary} from "./ParameterLibrary.sol";
 import "./ProofLibrary.sol";
 import "./interfaces/ICowswapSettlement.sol";
 import "./interfaces/Imports.sol";
 
 library CowSwapLibrary {
+    using ParameterLibrary for ParameterLibrary.Parameter[];
+
     struct Info {
         address cowswapSettlement;
         address cowswapVaultRelayer;
@@ -62,11 +67,32 @@ library CowSwapLibrary {
         uint256 length = $.assets.length + 2;
         descriptions = new string[](length);
         uint256 index = 0;
-        descriptions[index++] = string(abi.encodePacked("CowswapSettlement.setPreSignature(anyBytes(56), anyBool)"));
-        descriptions[index++] = string(abi.encodePacked("CowswapSettlement.invalidateOrder(anyBytes(56))"));
+        ParameterLibrary.Parameter[] memory innerParameters;
+        innerParameters = ParameterLibrary.add2("orderUid", "any", "signed", "any");
+        descriptions[index++] = JsonLibrary.toJson(
+            string(abi.encodePacked("CowswapSettlement.setPreSignature(anyBytes(56), anyBool)")),
+            ABILibrary.getABI(ICowswapSettlement.setPreSignature.selector),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.cowswapSettlement), "0"),
+            innerParameters
+        );
+
+        innerParameters = ParameterLibrary.build("orderUid", "any");
+        descriptions[index++] = JsonLibrary.toJson(
+            string(abi.encodePacked("CowswapSettlement.invalidateOrder(anyBytes(56))")),
+            ABILibrary.getABI(ICowswapSettlement.invalidateOrder.selector),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.cowswapSettlement), "0"),
+            innerParameters
+        );
+
         for (uint256 i = 0; i < $.assets.length; i++) {
             string memory asset = IERC20Metadata($.assets[i]).symbol();
-            descriptions[index++] = string(abi.encodePacked("IERC20(", asset, ").approve(CowswapVaultRelayer, anyInt)"));
+            innerParameters = ParameterLibrary.build("to", Strings.toHexString($.cowswapVaultRelayer)).addAny("amount");
+            descriptions[index++] = JsonLibrary.toJson(
+                string(abi.encodePacked("IERC20(", asset, ").approve(CowswapVaultRelayer, anyInt)")),
+                ABILibrary.getABI(IERC20.approve.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.assets[i]), "0"),
+                innerParameters
+            );
         }
     }
 
