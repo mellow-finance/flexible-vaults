@@ -63,11 +63,11 @@ library strETHLibrary {
         );
     }
 
-    function getSubvault0SubvaultCalls(
-        ProtocolDeployment memory $,
-        address curator,
-        IVerifier.VerificationPayload[] memory leaves
-    ) internal pure returns (SubvaultCalls memory calls) {
+    function getSubvault0SubvaultCalls(address curator, IVerifier.VerificationPayload[] memory leaves)
+        internal
+        pure
+        returns (SubvaultCalls memory calls)
+    {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
         calls.calls[0] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));

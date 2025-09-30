@@ -9,7 +9,7 @@ library ParameterLibrary {
 
     function build(string memory caller, string memory target, string memory value)
         internal
-        view
+        pure
         returns (Parameter[] memory result)
     {
         result = new Parameter[](3);

@@ -33,7 +33,7 @@ library WethLibrary {
         );
     }
 
-    function getWethDepositDescription(Info memory $) internal view returns (string memory) {
+    function getWethDepositDescription(Info memory $) internal pure returns (string memory) {
         return JsonLibrary.toJson(
             "WETH.deposit{value: any}()",
             ABILibrary.getABI(IWETH.deposit.selector),
@@ -66,7 +66,7 @@ library WethLibrary {
         );
     }
 
-    function getWethWithdrawDescription(Info memory $) internal view returns (string memory) {
+    function getWethWithdrawDescription(Info memory $) internal pure returns (string memory) {
         return JsonLibrary.toJson(
             "WETH.weth(any)",
             ABILibrary.getABI(IWETH.withdraw.selector),
