@@ -383,7 +383,7 @@ contract Deploy is Script {
         string[] memory descriptions = strETHLibrary.getSubvault0Descriptions(curator);
         (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator);
         ProofLibrary.storeProofs("ethereum:strETH:subvault0", merkleRoot, leaves, descriptions);
-        calls = strETHLibrary.getSubvault0SubvaultCalls($, curator, leaves);
+        calls = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
     }
 
@@ -391,7 +391,7 @@ contract Deploy is Script {
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        string[] memory descriptions = strETHLibrary.getSubvault1Descriptions(subvault, curator);
+        string[] memory descriptions = strETHLibrary.getSubvault1Descriptions(curator, subvault);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = strETHLibrary.getSubvault1Proofs(curator, subvault);
         ProofLibrary.storeProofs("ethereum:strETH:subvault1", merkleRoot, leaves, descriptions);
@@ -403,14 +403,14 @@ contract Deploy is Script {
         returns (bytes32 merkleRoot2, SubvaultCalls memory calls2, bytes32 merkleRoot3, SubvaultCalls memory calls3)
     {
         {
-            string[] memory descriptions = strETHLibrary.getSubvault2Descriptions(subvault2, curator);
+            string[] memory descriptions = strETHLibrary.getSubvault2Descriptions(curator, subvault2);
             IVerifier.VerificationPayload[] memory leaves2;
             (merkleRoot2, leaves2) = strETHLibrary.getSubvault2Proofs(curator, subvault2);
             ProofLibrary.storeProofs("ethereum:strETH:subvault2", merkleRoot2, leaves2, descriptions);
             calls2 = strETHLibrary.getSubvault2SubvaultCalls(curator, subvault2, leaves2);
         }
         {
-            string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(subvault3, curator);
+            string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(curator, subvault3);
             IVerifier.VerificationPayload[] memory leaves3;
             (merkleRoot3, leaves3) = strETHLibrary.getSubvault3Proofs(curator, subvault3);
             ProofLibrary.storeProofs("ethereum:strETH:subvault3", merkleRoot3, leaves3, descriptions);

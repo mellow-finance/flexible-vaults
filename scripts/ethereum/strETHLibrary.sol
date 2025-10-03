@@ -129,7 +129,7 @@ library strETHLibrary {
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault1Descriptions(address subvault, address curator)
+    function getSubvault1Descriptions(address curator, address subvault)
         internal
         view
         returns (string[] memory descriptions)
