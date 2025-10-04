@@ -18,4 +18,5 @@ docs/
 node_modules
 yarn.lock
 
+foundry.lock
 report

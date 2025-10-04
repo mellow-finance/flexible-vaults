@@ -78,5 +78,9 @@ contract Swapper is OwnedCustomVerifier, ReentrancyGuardUpgradeable {
         ) {
             return false;
         }
+        // TODO:
+        // verification againts permissions
+        // prices againts AssetOracle
+        // tests
     }
 }
