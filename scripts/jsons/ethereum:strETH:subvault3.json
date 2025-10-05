@@ -1139,6 +1139,41 @@
         "0x6916df5b85f2abcf1c06e8a2bb7a610cebeaa87d1851e399812fd2ca04fe29ac",
         "0x77ed922de7f4f17244989a36632c5a9f48f3b03bc13fb710de41e3b563c83c57"
       ]
+    },
+    {
+      "verificationType": 0,
+      "description": {
+        "description": "AngleDistributor.toggleOperator(subvault, any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "operator",
+              "type": "address"
+            }
+          ],
+          "name": "toggleOperator",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "value": "0"
+        },
+        "innerParameters": {
+          "user": "0x9938A09FeA37bA681A1Bd53D33ddDE2dEBEc1dA0",
+          "operator": "any"
+        }
+      },
+      "verificationData": "",
+      "proof": []
     }
   ]
 }
