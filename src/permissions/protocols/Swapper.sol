@@ -72,10 +72,11 @@ contract Swapper is OwnedCustomVerifier, ReentrancyGuardUpgradeable {
         bytes calldata callData,
         bytes calldata /* verificationData */
     ) external view override returns (bool) {
-        if (
-            !hasRole(CALLER_ROLE, who) || where != address(this) || callData.length < 4
-                || bytes4(callData[:4]) != Swapper.exchange.selector
-        ) {
+        if (!hasRole(CALLER_ROLE, who) || where != address(this) || callData.length < 4) {
+            return false;
+        }
+        bytes4 selector = bytes4(callData[:4]);
+        if (selector != Swapper.exchange.selector) {
             return false;
         }
         // TODO:

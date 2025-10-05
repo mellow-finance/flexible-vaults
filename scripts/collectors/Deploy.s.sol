@@ -2,7 +2,6 @@
 pragma solidity 0.8.25;
 
 import "./Collector.sol";
-import "./defi/FEOracle.sol";
 import "./defi/StrETHOracle.sol";
 import "forge-std/Script.sol";
 
@@ -10,11 +9,23 @@ contract Deploy is Script {
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         vm.startBroadcast(deployerPk);
-        Collector prev = Collector(0xE8a012C59c441d1790053bC1df87B23AAb6D1B67);
-        Collector collector =
-            new Collector(prev.owner(), address(prev.oracle()), 0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453);
+        // Collector prev = Collector(0xE8a012C59c441d1790053bC1df87B23AAb6D1B67);
+        // Collector collector = new Collector(prev.owner(), address(prev.oracle()));
+        StrETHOracle o = new StrETHOracle();
+        o.getDistributions(Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)), 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+        // console2.log("Collector: %s", address(collector));
+        revert("ok");
 
-        console2.log("Collector: %s", address(collector));
+        // collector.collect(
+        //     0x0000000000000000000000000000000000000000,
+        //     Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)),
+        //     Collector.Config({
+        //         baseAssetFallback: address(0),
+        //         oracleUpdateInterval: 24 hours,
+        //         redeemHandlingInterval: 1 hours
+        //     })
+        // );
+        // revert("ok");
 
         // address user = 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3;
         // address vault = 0x277C6A642564A91ff78b008022D65683cEE5CCC5;
