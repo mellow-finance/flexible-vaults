@@ -65,7 +65,7 @@ contract StrETHOracle is ICustomOracle {
         uint256 assetPriceD8 = AAVE_ORACLE.getAssetPrice(asset);
         uint8 assetDecimals = IERC20Metadata(asset).decimals();
         uint256 denominatorPriceD8 = AAVE_ORACLE.getAssetPrice(denominator);
-        uint8 denominatorDecimals = IERC20Metadata(denominator).decimals();
+        uint8 denominatorDecimals = denominator == address(0) ? 8 : IERC20Metadata(denominator).decimals();
         return Math.mulDiv(amount, assetPriceD8 * 10 ** denominatorDecimals, denominatorPriceD8 * 10 ** assetDecimals);
     }
 
@@ -148,7 +148,7 @@ contract StrETHOracle is ICustomOracle {
                             asset: tokens[i],
                             balance: -int256(debt),
                             value: evaluateSigned(tokens[i], denominator, -int256(debt)),
-                            metadata: "AaveCoreCollateral",
+                            metadata: "AaveCoreDebt",
                             vault: vaults[j]
                         });
                     }
@@ -169,7 +169,7 @@ contract StrETHOracle is ICustomOracle {
                             asset: tokens[i],
                             balance: -int256(debt),
                             value: evaluateSigned(tokens[i], denominator, -int256(debt)),
-                            metadata: "AavePrimeCollateral",
+                            metadata: "AavePrimeDebt",
                             vault: vaults[j]
                         });
                     }

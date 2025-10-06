@@ -12,7 +12,9 @@ contract Deploy is Script {
         // Collector prev = Collector(0xE8a012C59c441d1790053bC1df87B23AAb6D1B67);
         // Collector collector = new Collector(prev.owner(), address(prev.oracle()));
         StrETHOracle o = new StrETHOracle();
-        o.getDistributions(Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)), 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+        o.getDistributions(
+            Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)), 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+        );
         // console2.log("Collector: %s", address(collector));
         revert("ok");
 
