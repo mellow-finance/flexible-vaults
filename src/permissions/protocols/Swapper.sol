@@ -23,6 +23,7 @@ contract Swapper is OwnedCustomVerifier, ReentrancyGuardUpgradeable {
 
     bytes32 public constant VAULT_ROLE = keccak256("permissions.protocols.ERC20Swapper.VAULT_ROLE");
     bytes32 public constant ASSET_ROLE = keccak256("permissions.protocols.ERC20Swapper.ASSET_ROLE");
+    bytes32 public constant ROUTER_ROLE = keccak256("permissions.protocols.ERC20Swapper.ROUTER_ROLE");
     bytes32 public constant CALLER_ROLE = keccak256("permissions.protocols.ERC20Swapper.CALLER_ROLE");
 
     constructor(string memory name_, uint256 version_) OwnedCustomVerifier(name_, version_) {}
@@ -57,6 +58,9 @@ contract Swapper is OwnedCustomVerifier, ReentrancyGuardUpgradeable {
         if (amountOut < params.minAmountOut) {
             revert LimitUnderflow();
         }
+
+        // validate onchain price agains assetOracle
+
         TransferLibrary.sendAssets(params.tokenOut, caller, amountOut);
 
         uint256 leftover = params.amountIn - amountIn;
@@ -79,9 +83,33 @@ contract Swapper is OwnedCustomVerifier, ReentrancyGuardUpgradeable {
         if (selector != Swapper.exchange.selector) {
             return false;
         }
-        // TODO:
-        // verification againts permissions
-        // prices againts AssetOracle
-        // tests
+        ExchangeParams memory params = abi.decode(callData[4:], (ExchangeParams));
+        if (params.tokenIn == TransferLibrary.ETH) {
+            if (value == 0 || value != params.amountIn) {
+                return false;
+            }
+        } else {
+            if (value > 0 || params.amountIn == 0) {
+                return false;
+            }
+        }
+
+        if (params.tokenIn == params.tokenOut) {
+            return false;
+        }
+        if (
+            !hasRole(ASSET_ROLE, params.tokenIn) || !hasRole(ASSET_ROLE, params.tokenOut)
+                || !hasRole(ROUTER_ROLE, params.router)
+        ) {
+            return false;
+        }
+        if (params.minAmountOut == 0) {
+            return false;
+        }
+        if (params.deadline < block.timestamp) {
+            return false;
+        }
+
+        return true;
     }
 }
