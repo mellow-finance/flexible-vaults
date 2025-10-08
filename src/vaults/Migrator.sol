@@ -69,7 +69,8 @@ contract Migrator is Ownable {
         address defaultCollateral = IMultiVault(multiVault).defaultCollateral();
 
         uint256 assetBalance = IERC20(asset).balanceOf(multiVault);
-        uint256 defaultCollateralBalance = IERC20(defaultCollateral).balanceOf(multiVault);
+        uint256 defaultCollateralBalance =
+            defaultCollateral == address(0) ? 0 : IERC20(defaultCollateral).balanceOf(multiVault);
 
         require(
             IMultiVault(multiVault).totalAssets() == assetBalance + defaultCollateralBalance,
@@ -77,13 +78,29 @@ contract Migrator is Ownable {
         );
 
         IMulticall.Call[] memory calls = new IMulticall.Call[](2);
-        calls[0] = IMulticall.Call({target: asset, callData: abi.encodeCall(IERC20.transfer, (vault, assetBalance))});
-        calls[1] = IMulticall.Call({
-            target: defaultCollateral,
-            callData: abi.encodeCall(IERC20.transfer, (vault, defaultCollateralBalance))
-        });
+        uint256 iterator = 0;
+        if (assetBalance > 0) {
+            calls[iterator++] =
+                IMulticall.Call({target: asset, callData: abi.encodeCall(IERC20.transfer, (vault, assetBalance))});
+        }
+        if (defaultCollateralBalance > 0) {
+            calls[iterator++] = IMulticall.Call({
+                target: defaultCollateral,
+                callData: abi.encodeCall(IERC20.transfer, (vault, defaultCollateralBalance))
+            });
+        }
+        assembly {
+            mstore(calls, iterator)
+        }
+
         params.proxyAdmin.upgradeAndCall(
             ITransparentUpgradeableProxy(multiVault), MULTICALL, abi.encodeCall(IMulticall.aggregate, calls)
+        );
+
+        require(IERC20(asset).balanceOf(multiVault) == 0, "Migrator: non-zero asset balance");
+        require(
+            defaultCollateral == address(0) || IERC20(defaultCollateral).balanceOf(multiVault) == 0,
+            "Migrator: non-zero default collateral balance"
         );
 
         params.proxyAdmin.upgradeAndCall(

@@ -26,12 +26,12 @@ contract Unit is Test {
             admin, settlement, 0, abi.encodeCall(GPv2Signing.setPreSignature, (new bytes(56), false)), new bytes(0)
         );
 
-        GPv2Order.Data memory order;
+        // GPv2Order.Data memory order;
         // verifier.setOrderStatus(order, true);
 
-        address subvault = address(uint160(1341234123));
+        // address subvault = address(uint160(1341234123));
 
-        bytes memory orderUid = new bytes(56);
+        // bytes memory orderUid = new bytes(56);
         // GPv2Order.packOrderUidParams(orderUid, orderDigest, subvault, validTo);
 
         // bytes32 digest = abi.encodeCall(GPv2Signing.setPreSignature, (orderUid, true));
