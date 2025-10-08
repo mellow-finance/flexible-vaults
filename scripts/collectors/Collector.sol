@@ -18,7 +18,6 @@ import "../../src/interfaces/queues/ISignatureQueue.sol";
 import "../../src/libraries/TransferLibrary.sol";
 import "../../src/vaults/Vault.sol";
 
-import "./defi/FEOracle.sol";
 import "./oracles/IPriceOracle.sol";
 
 contract Collector is Ownable {
@@ -33,6 +32,7 @@ contract Collector is Ownable {
         address asset;
         uint256 shares;
         uint256 assets;
+        uint256 timestamp;
         uint256 eta;
     }
 
@@ -96,20 +96,14 @@ contract Collector is Ownable {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     IPriceOracle public oracle;
-    FEOracle public feOracle;
     uint256 public bufferSize = 256;
 
-    constructor(address owner_, address oracle_, address feOracle_) Ownable(owner_) {
+    constructor(address owner_, address oracle_) Ownable(owner_) {
         oracle = IPriceOracle(oracle_);
-        feOracle = FEOracle(feOracle_);
     }
 
     function setOracle(address oracle_) external onlyOwner {
         oracle = IPriceOracle(oracle_);
-    }
-
-    function setFEOracle(address feOracle_) external onlyOwner {
-        feOracle = FEOracle(feOracle_);
     }
 
     function setBufferSize(uint256 bufferSize_) external onlyOwner {
@@ -151,7 +145,7 @@ contract Collector is Ownable {
         r.accountLP = shareManager.sharesOf(account);
 
         {
-            r.totalBase = feOracle.tvl(address(vault));
+            r.totalBase = Math.mulDiv(r.totalLP, 1 ether, vault.oracle().getReport(r.baseAsset).priceD18);
             if (r.totalBase > 0) {
                 r.totalUSD = oracle.getValue(r.baseAsset, USD, r.totalBase);
             }
@@ -253,6 +247,7 @@ contract Collector is Ownable {
                     queue: queue,
                     asset: asset,
                     shares: IDepositQueue(queue).claimableOf(account),
+                    timestamp: timestamp,
                     assets: assets,
                     eta: 0
                 });
@@ -297,6 +292,7 @@ contract Collector is Ownable {
                         asset: asset,
                         shares: redeemRequests[k].shares,
                         assets: redeemRequests[k].assets,
+                        timestamp: redeemRequests[k].timestamp,
                         eta: 0
                     });
                     if (redeemRequests[k].isClaimable) {} else if (redeemRequests[k].assets != 0) {
