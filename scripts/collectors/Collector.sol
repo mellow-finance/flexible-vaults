@@ -32,6 +32,7 @@ contract Collector is Ownable {
         address asset;
         uint256 shares;
         uint256 assets;
+        uint256 timestamp;
         uint256 eta;
     }
 
@@ -246,6 +247,7 @@ contract Collector is Ownable {
                     queue: queue,
                     asset: asset,
                     shares: IDepositQueue(queue).claimableOf(account),
+                    timestamp: timestamp,
                     assets: assets,
                     eta: 0
                 });
@@ -290,6 +292,7 @@ contract Collector is Ownable {
                         asset: asset,
                         shares: redeemRequests[k].shares,
                         assets: redeemRequests[k].assets,
+                        timestamp: redeemRequests[k].timestamp,
                         eta: 0
                     });
                     if (redeemRequests[k].isClaimable) {} else if (redeemRequests[k].assets != 0) {

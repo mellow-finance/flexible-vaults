@@ -82,6 +82,10 @@ contract StrETHOracle is ICustomOracle {
         return -int256(evaluate(asset, denominator, uint256(-amount)));
     }
 
+    function tvl(address vault, Data calldata data) public view returns (uint256 value) {
+        return tvl(vault, data.denominator);
+    }
+
     function tvl(address vault, address denominator) public view returns (uint256 value) {
         Balance[] memory response = getDistributions(Vault(payable(vault)), denominator);
         address[] memory tokens = allTokens();
