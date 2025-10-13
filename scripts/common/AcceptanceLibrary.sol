@@ -762,7 +762,9 @@ library AcceptanceLibrary {
             require(feeManager.performanceFeeD6() == performanceFee, "FeeManager: invalid performance fee");
             require(feeManager.protocolFeeD6() == protocolFee, "FeeManager: invalid protocol fee");
             require(
-                Ownable(address(feeManager)).owner() == deployment.initParams.vaultAdmin, "FeeManager: invalid owner"
+                Ownable(address(feeManager)).owner() == deployment.initParams.vaultAdmin
+                    || Ownable(address(feeManager)).owner() == feeRecipient,
+                "FeeManager: invalid owner"
             );
             require(initialOwner == $.deployer, "FeeManager: invalid initial owner");
             require(feeManager.feeRecipient() == feeRecipient, "FeeManager: inalid initial fee recipient");

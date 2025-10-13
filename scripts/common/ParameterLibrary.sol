@@ -66,4 +66,23 @@ library ParameterLibrary {
     function addAny(Parameter[] memory p, string memory name) internal pure returns (Parameter[] memory) {
         return add(p, name, "any");
     }
+
+    function addAnyArray(Parameter[] memory p, string memory name, uint256 n)
+        internal
+        pure
+        returns (Parameter[] memory)
+    {
+        return add(p, name, anyArray(n));
+    }
+
+    function anyArray(uint256 n) internal pure returns (string memory result) {
+        for (uint256 i = 0; i < n; i++) {
+            result = (i == 0 ? "any" : string(abi.encodePacked(result, ", any")));
+        }
+        result = string(abi.encodePacked("[", result, "]"));
+    }
+
+    function buildERC20(string memory to) internal pure returns (Parameter[] memory) {
+        return add2("to", to, "amount", "any");
+    }
 }

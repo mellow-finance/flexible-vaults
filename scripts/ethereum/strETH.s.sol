@@ -19,7 +19,6 @@ import "forge-std/Script.sol";
 import "./Constants.sol";
 import "./strETHLibrary.sol";
 
-import "../common/AaveLibrary.sol";
 import "../common/ArraysLibrary.sol";
 
 contract Deploy is Script {

@@ -59,8 +59,6 @@ contract Swapper is OwnedCustomVerifier, ReentrancyGuardUpgradeable {
             revert LimitUnderflow();
         }
 
-        // validate onchain price agains assetOracle
-
         TransferLibrary.sendAssets(params.tokenOut, caller, amountOut);
 
         uint256 leftover = params.amountIn - amountIn;
