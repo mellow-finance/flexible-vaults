@@ -6,6 +6,12 @@ on:
       - src/**
       - test/**
       - scripts/**
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Which branch to deploy"
+        required: true
+        default: "main"
 
 jobs:
   check-format:
