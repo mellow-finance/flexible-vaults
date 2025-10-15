@@ -82,7 +82,8 @@ contract Integration is Test {
             ),
             depositQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH)),
             redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-            roleHolders: holders
+            roleHolders: holders,
+            verifierMerkleRoot: bytes32(0)
         });
     }
 
@@ -120,8 +121,9 @@ contract Integration is Test {
 
     function getStateAfter() public view returns (State memory $) {
         address coreVault = IShareManager(vault).vault();
+        address subvault = IVaultModule(coreVault).subvaultAt(0);
         $.totalSupply = IShareManager(vault).totalShares();
-        $.totalAssets = IERC20(collateral).balanceOf(coreVault) + IERC20(Constants.WSTETH).balanceOf(coreVault);
+        $.totalAssets = IERC20(collateral).balanceOf(subvault) + IERC20(Constants.WSTETH).balanceOf(subvault);
         address[] memory users = getUsers();
         $.balances = new uint256[](users.length);
         for (uint256 i = 0; i < users.length; i++) {
