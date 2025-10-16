@@ -42,9 +42,12 @@ contract Migrator is Ownable {
     IFactory public constant RISK_MANAGER_FACTORY = IFactory(0xa51E4FA916b939Fa451520D2B7600c740d86E5A0);
     IFactory public constant VAULT_FACTORY = IFactory(0x4E38F679e46B3216f0bd4B314E9C429AFfB1dEE3);
     IFactory public constant ORACLE_FACTORY = IFactory(0x0CdFf250C7a071fdc72340D820C5C8e29507Aaad);
-    address public constant TOKENIZED_SHARE_MANAGER = 0x0000000E8eb7173fA1a3ba60eCA325bcB6aaf378;
 
-    constructor(address owner_) Ownable(owner_) {}
+    address public immutable tokenizedShareManager;
+
+    constructor(address owner_, address tokenizedShareManager_) Ownable(owner_) {
+        tokenizedShareManager = tokenizedShareManager_;
+    }
 
     function migrate(address multiVault, Params memory params) external onlyOwner returns (address vault) {
         require(params.proxyAdmin.owner() == address(this), "Migrator: invalid owner");
@@ -128,9 +131,7 @@ contract Migrator is Ownable {
             "Migrator: non-zero default collateral balance"
         );
 
-        params.proxyAdmin.upgradeAndCall(
-            ITransparentUpgradeableProxy(multiVault), TOKENIZED_SHARE_MANAGER, new bytes(0)
-        );
+        params.proxyAdmin.upgradeAndCall(ITransparentUpgradeableProxy(multiVault), tokenizedShareManager, new bytes(0));
         IShareManager(multiVault).setVault(vault);
 
         params.proxyAdmin.transferOwnership(params.proxyAdminOwner);
