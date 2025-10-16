@@ -15,6 +15,8 @@
     "deploy:ethereum:tqeth:pre-prod": "forge script ./scripts/ethereum/tqETHPreProd.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:streth": "forge script ./scripts/ethereum/strETH.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
+    "deploy:sepolia": "forge script ./scripts/sepolia/Deploy.s.sol:Deploy --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:sepolia:tqeth": "forge script ./scripts/sepolia/tqETH.s.sol:Deploy --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
