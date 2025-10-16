@@ -51,6 +51,7 @@ import "../src/managers/RiskManager.sol";
 import "../src/managers/ShareManager.sol";
 import "../src/managers/TokenizedShareManager.sol";
 
+import "../src/vaults/Migrator.sol";
 import "../src/vaults/Subvault.sol";
 import "../src/vaults/Vault.sol";
 import "../src/vaults/VaultConfigurator.sol";

@@ -5,6 +5,8 @@
   "repository": "https://github.com/mellow-finance/flexible-vaults",
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
+    "deploy:arbitrum": "forge script ./scripts/arbitrum/Deploy.s.sol:Deploy --fork-url $(grep ARBITRUM_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:plasma": "forge script ./scripts/plasma/Deploy.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base": "forge script ./scripts/base/Deploy.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base:tqeth": "forge script ./scripts/base/tqETH.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base:uni-vault": "forge script ./scripts/base/UniVault.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
@@ -21,6 +23,7 @@
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
     "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv",
     "test:acceptance:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/AcceptanceTest.t.sol",
+    "test:migration:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/MigrationTest.t.sol",
     "test:solvency:streth": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/StrETHSolvencyTest.t.sol",
     "coverage:report": "forge coverage --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 22730425 --force --report lcov && genhtml lcov.info -o report --branch-coverage && rm lcov.info",
     "compile": "forge build --use 0.8.25 --cache-path cache",

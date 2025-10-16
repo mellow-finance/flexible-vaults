@@ -2,7 +2,6 @@
 pragma solidity 0.8.25;
 
 import "./Vault.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 
@@ -27,9 +26,14 @@ contract Migrator is Ownable {
         bytes feeManagerParams;
         bytes riskManagerParams;
         bytes oracleParams;
-        uint256 queueLimit;
+        bytes32 verifierMerkleRoot;
+        address[] depositQueueAssets;
+        address[] redeemQueueAssets;
         Vault.RoleHolder[] roleHolders;
     }
+
+    bytes32 public constant CREATE_QUEUE_ROLE = keccak256("modules.ShareModule.CREATE_QUEUE_ROLE");
+    bytes32 public constant CREATE_SUBVAULT_ROLE = keccak256("modules.VaultModule.CREATE_SUBVAULT_ROLE");
 
     address public constant MULTICALL = 0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441;
     address public constant REDIRECTING_DEPOSIT_HOOK = 0x00000004d3B17e5391eb571dDb8fDF95646ca827;
@@ -45,10 +49,12 @@ contract Migrator is Ownable {
     function migrate(address multiVault, Params memory params) external onlyOwner returns (address vault) {
         require(params.proxyAdmin.owner() == address(this), "Migrator: invalid owner");
 
+        address subvault;
         {
             address feeManager = FEE_MANAGER_FACTORY.create(0, params.proxyAdminOwner, params.feeManagerParams);
             address riskManager = RISK_MANAGER_FACTORY.create(0, params.proxyAdminOwner, params.riskManagerParams);
             address oracle = ORACLE_FACTORY.create(0, params.proxyAdminOwner, params.oracleParams);
+
             bytes memory initParams = abi.encode(
                 params.vaultAdmin,
                 multiVault,
@@ -57,12 +63,31 @@ contract Migrator is Ownable {
                 oracle,
                 REDIRECTING_DEPOSIT_HOOK,
                 BASIC_REDEEM_HOOK,
-                params.queueLimit,
+                params.depositQueueAssets.length + params.redeemQueueAssets.length,
                 params.roleHolders
             );
             vault = VAULT_FACTORY.create(0, params.proxyAdminOwner, initParams);
             IRiskManager(riskManager).setVault(vault);
             IOracle(oracle).setVault(vault);
+
+            for (uint256 i = 0; i < params.depositQueueAssets.length; i++) {
+                Vault(payable(vault)).createQueue(
+                    0, true, params.proxyAdminOwner, params.depositQueueAssets[i], new bytes(0)
+                );
+            }
+
+            for (uint256 i = 0; i < params.redeemQueueAssets.length; i++) {
+                Vault(payable(vault)).createQueue(
+                    0, false, params.proxyAdminOwner, params.redeemQueueAssets[i], new bytes(0)
+                );
+            }
+
+            address verifier = Vault(payable(vault)).verifierFactory().create(
+                0, params.proxyAdminOwner, abi.encode(vault, params.verifierMerkleRoot)
+            );
+            subvault = Vault(payable(vault)).createSubvault(0, params.proxyAdminOwner, verifier);
+            IAccessControl(vault).renounceRole(CREATE_QUEUE_ROLE, address(this));
+            IAccessControl(vault).renounceRole(CREATE_SUBVAULT_ROLE, address(this));
         }
 
         address asset = IMultiVault(multiVault).asset();
@@ -81,12 +106,12 @@ contract Migrator is Ownable {
         uint256 iterator = 0;
         if (assetBalance > 0) {
             calls[iterator++] =
-                IMulticall.Call({target: asset, callData: abi.encodeCall(IERC20.transfer, (vault, assetBalance))});
+                IMulticall.Call({target: asset, callData: abi.encodeCall(IERC20.transfer, (subvault, assetBalance))});
         }
         if (defaultCollateralBalance > 0) {
             calls[iterator++] = IMulticall.Call({
                 target: defaultCollateral,
-                callData: abi.encodeCall(IERC20.transfer, (vault, defaultCollateralBalance))
+                callData: abi.encodeCall(IERC20.transfer, (subvault, defaultCollateralBalance))
             });
         }
         assembly {
@@ -109,5 +134,9 @@ contract Migrator is Ownable {
         IShareManager(multiVault).setVault(vault);
 
         params.proxyAdmin.transferOwnership(params.proxyAdminOwner);
+    }
+
+    function restoreOwnership(ProxyAdmin proxyAdmin) external onlyOwner {
+        proxyAdmin.transferOwnership(_msgSender());
     }
 }
