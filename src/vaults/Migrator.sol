@@ -26,6 +26,7 @@ contract Migrator is Ownable {
         bytes feeManagerParams;
         bytes riskManagerParams;
         bytes oracleParams;
+        bytes32 verifierMerkleRoot;
         address[] depositQueueAssets;
         address[] redeemQueueAssets;
         Vault.RoleHolder[] roleHolders;
@@ -48,6 +49,7 @@ contract Migrator is Ownable {
     function migrate(address multiVault, Params memory params) external onlyOwner returns (address vault) {
         require(params.proxyAdmin.owner() == address(this), "Migrator: invalid owner");
 
+        address subvault;
         {
             address feeManager = FEE_MANAGER_FACTORY.create(0, params.proxyAdminOwner, params.feeManagerParams);
             address riskManager = RISK_MANAGER_FACTORY.create(0, params.proxyAdminOwner, params.riskManagerParams);
@@ -80,6 +82,10 @@ contract Migrator is Ownable {
                 );
             }
 
+            address verifier = Vault(payable(vault)).verifierFactory().create(
+                0, params.proxyAdminOwner, abi.encode(vault, params.verifierMerkleRoot)
+            );
+            subvault = Vault(payable(vault)).createSubvault(0, params.proxyAdminOwner, verifier);
             IAccessControl(vault).renounceRole(CREATE_QUEUE_ROLE, address(this));
             IAccessControl(vault).renounceRole(CREATE_SUBVAULT_ROLE, address(this));
         }
@@ -100,12 +106,12 @@ contract Migrator is Ownable {
         uint256 iterator = 0;
         if (assetBalance > 0) {
             calls[iterator++] =
-                IMulticall.Call({target: asset, callData: abi.encodeCall(IERC20.transfer, (vault, assetBalance))});
+                IMulticall.Call({target: asset, callData: abi.encodeCall(IERC20.transfer, (subvault, assetBalance))});
         }
         if (defaultCollateralBalance > 0) {
             calls[iterator++] = IMulticall.Call({
                 target: defaultCollateral,
-                callData: abi.encodeCall(IERC20.transfer, (vault, defaultCollateralBalance))
+                callData: abi.encodeCall(IERC20.transfer, (subvault, defaultCollateralBalance))
             });
         }
         assembly {

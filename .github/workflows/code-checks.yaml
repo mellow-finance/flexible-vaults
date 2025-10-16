@@ -6,6 +6,12 @@ on:
       - src/**
       - test/**
       - scripts/**
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Which branch to deploy"
+        required: true
+        default: "main"
 
 jobs:
   check-format:
@@ -17,7 +23,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: stable
+          version: v1.3.1
  
       - name: Run format check
         run: forge fmt --check
@@ -32,7 +38,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: stable
+          version: v1.3.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -59,7 +65,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: stable
+          version: v1.3.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
