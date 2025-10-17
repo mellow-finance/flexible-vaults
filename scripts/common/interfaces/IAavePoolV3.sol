@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: BUSL-1.1
+pragma solidity 0.8.25;
 
 interface IAavePoolV3 {
     function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;

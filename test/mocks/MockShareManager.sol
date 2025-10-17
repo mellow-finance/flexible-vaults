@@ -11,13 +11,29 @@ contract MockShareManager {
 
     function allocateShares(uint256 /*shares*/ ) external {}
 
-    function mintAllocatedShares(address, /* account */ uint256 /* shares */ ) external {}
+    function mintAllocatedShares(
+        address,
+        /* account */
+        uint256 /* shares */
+    ) external {}
 
-    function mint(address, /* to */ uint256 /* amount */ ) external {}
+    function mint(
+        address,
+        /* to */
+        uint256 /* amount */
+    ) external {}
 
-    function burn(address, /* from */ uint256 /* amount */ ) external {}
+    function burn(
+        address,
+        /* from */
+        uint256 /* amount */
+    ) external {}
 
-    function lock(address, /* account */ uint256 /* shares */ ) external {}
+    function lock(
+        address,
+        /* account */
+        uint256 /* shares */
+    ) external {}
 
     /// -----------------------------------------------------------------------
     /// Custom functions, just for testing purposes.

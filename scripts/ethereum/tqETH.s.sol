@@ -317,7 +317,7 @@ contract Deploy is Script {
             3. weth.approve(cowswapVaultRelayer, <any>);
             4. wsteth.approve(cowswapVaultRelayer, <any>);
             5. cowswapSettlement.setPreSignature(coswapOrderUid(owner=address(0)), anyBool);
-            6. cowswapSettlement.invalidateOrder(anyBytes); 
+            6. cowswapSettlement.invalidateOrder(anyBytes);
         */
         string[] memory descriptions = tqETHLibrary.getSubvault0Descriptions(curator);
         (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);

@@ -178,7 +178,7 @@ library strETHLibrary {
 
             5. weth.approve(AaveV3Prime, anyInt)
             6. wsteth.approve(AaveV3Prime, anyInt)
-          
+
             7. AaveV3Prime.setEMode(category=1)
             8. AaveV3Prime.borrow(weth, anyInt, 2, anyInt, subvault1)
             9. AaveV3Prime.repay(weth, anyInt, 2, subvault1)

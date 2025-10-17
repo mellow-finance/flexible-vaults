@@ -14,9 +14,17 @@ contract MockRiskManager {
         return _limit;
     }
 
-    function modifyPendingAssets(address, /* asset */ int256 /* pendingAssets */ ) external {}
+    function modifyPendingAssets(
+        address,
+        /* asset */
+        int256 /* pendingAssets */
+    ) external {}
 
-    function modifyVaultBalance(address, /* asset */ int256 /* vaultBalance */ ) external {}
+    function modifyVaultBalance(
+        address,
+        /* asset */
+        int256 /* vaultBalance */
+    ) external {}
 
     function isAllowedAsset(address subvault, address asset) external view returns (bool) {
         return !_disallowedAssets[subvault][asset];

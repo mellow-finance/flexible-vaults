@@ -28,7 +28,7 @@ library tqETHLibrary {
             3. weth.approve(cowswapVaultRelayer, <any>);
             4. wsteth.approve(cowswapVaultRelayer, <any>);
             5. cowswapSettlement.setPreSignature(anyBytes(56), anyBool);
-            6. cowswapSettlement.invalidateOrder(anyBytes(56)); 
+            6. cowswapSettlement.invalidateOrder(anyBytes(56));
         */
         leaves = new IVerifier.VerificationPayload[](6);
         leaves[0] = WethLibrary.getWethDepositProof($.bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));

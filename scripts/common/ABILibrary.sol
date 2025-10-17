@@ -11,15 +11,18 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ICurveGauge} from "./interfaces/ICurveGauge.sol";
 import {ICurvePool} from "./interfaces/ICurvePool.sol";
 
+import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function () pure returns (bytes4[] memory,string[] memory)[6] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[7] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
             getWETHInterfaces,
             getCowSwapInterfaces,
-            getCurveInterfaces
+            getCurveInterfaces,
+            getL2GatewayRouter
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -128,5 +131,14 @@ library ABILibrary {
             '{"inputs":[{"internalType":"bytes","name":"orderUid","type":"bytes"},{"internalType":"bool","name":"signed","type":"bool"}],"name":"setPreSignature","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[1] =
             '{"inputs":[{"internalType":"bytes","name":"orderUid","type":"bytes"}],"name":"invalidateOrder","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getL2GatewayRouter() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = IL2GatewayRouter.outboundTransfer.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"l1Token","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"outboundTransfer","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"payable","type":"function"}';
     }
 }

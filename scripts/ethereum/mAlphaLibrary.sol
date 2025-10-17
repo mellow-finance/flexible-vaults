@@ -28,10 +28,10 @@ library AlphapingLibrary {
         2. bracket deposit
         3. cowswap (usdc, usdu)
         4. curve [usdc, usdu], gauge
-        5. 
+        5.
 
         allowed assets: [weth]
-        1. morpho erc4626 
+        1. morpho erc4626
     */
 
     function getSubvault0Proofs(address curator)

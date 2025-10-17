@@ -766,7 +766,10 @@ library AcceptanceLibrary {
                     || Ownable(address(feeManager)).owner() == feeRecipient,
                 "FeeManager: invalid owner"
             );
-            require(initialOwner == $.deployer, "FeeManager: invalid initial owner");
+            require(
+                initialOwner == $.deployer || initialOwner == deployment.initParams.vaultAdmin,
+                "FeeManager: invalid initial owner"
+            );
             require(feeManager.feeRecipient() == feeRecipient, "FeeManager: inalid initial fee recipient");
             require(
                 feeManager.baseAsset(address(vault)) == address(0)
