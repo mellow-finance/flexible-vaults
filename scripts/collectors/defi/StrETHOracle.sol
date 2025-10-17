@@ -26,7 +26,9 @@ contract StrETHOracle is ICustomOracle {
     struct Balance {
         address asset;
         int256 balance;
+        int256 value;
         string metadata;
+        address vault;
     }
 
     function getAaveBalances(address token, address vault, IAavePoolV3 instance)
@@ -63,7 +65,7 @@ contract StrETHOracle is ICustomOracle {
         uint256 assetPriceD8 = AAVE_ORACLE.getAssetPrice(asset);
         uint8 assetDecimals = IERC20Metadata(asset).decimals();
         uint256 denominatorPriceD8 = AAVE_ORACLE.getAssetPrice(denominator);
-        uint8 denominatorDecimals = IERC20Metadata(asset).decimals();
+        uint8 denominatorDecimals = denominator == address(0) ? 8 : IERC20Metadata(denominator).decimals();
         return Math.mulDiv(amount, assetPriceD8 * 10 ** denominatorDecimals, denominatorPriceD8 * 10 ** assetDecimals);
     }
 
@@ -81,7 +83,11 @@ contract StrETHOracle is ICustomOracle {
     }
 
     function tvl(address vault, Data calldata data) public view returns (uint256 value) {
-        Balance[] memory response = getDistributions(Vault(payable(vault)));
+        return tvl(vault, data.denominator);
+    }
+
+    function tvl(address vault, address denominator) public view returns (uint256 value) {
+        Balance[] memory response = getDistributions(Vault(payable(vault)), denominator);
         address[] memory tokens = allTokens();
         int256[] memory balances = new int256[](tokens.length);
         for (uint256 i = 0; i < response.length; i++) {
@@ -96,7 +102,7 @@ contract StrETHOracle is ICustomOracle {
         }
         int256 signedValue = 0;
         for (uint256 i = 0; i < tokens.length; i++) {
-            signedValue += evaluateSigned(tokens[i], data.denominator, balances[i]);
+            signedValue += evaluateSigned(tokens[i], denominator, balances[i]);
         }
         if (signedValue < 0) {
             return 0;
@@ -104,7 +110,7 @@ contract StrETHOracle is ICustomOracle {
         value = uint256(signedValue);
     }
 
-    function getDistributions(Vault vault) public view returns (Balance[] memory response) {
+    function getDistributions(Vault vault, address denominator) public view returns (Balance[] memory response) {
         uint256 subvaults = vault.subvaults();
         address[] memory vaults = new address[](subvaults + 1);
         for (uint256 i = 0; i < subvaults; i++) {
@@ -114,48 +120,66 @@ contract StrETHOracle is ICustomOracle {
 
         address[] memory tokens = allTokens();
 
-        response = new Balance[](tokens.length * 5);
+        response = new Balance[](tokens.length * vaults.length * 5);
         uint256 iterator = 0;
-
         for (uint256 i = 0; i < tokens.length; i++) {
-            Balance memory token = Balance({asset: tokens[i], balance: 0, metadata: "ERC20"});
-
-            Balance memory coreDebt = Balance({asset: tokens[i], balance: 0, metadata: "AaveCoreDebt"});
-            Balance memory coreCollateral = Balance({asset: tokens[i], balance: 0, metadata: "AaveCoreCollateral"});
-
-            Balance memory primeDebt = Balance({asset: tokens[i], balance: 0, metadata: "AavePrimeDebt"});
-            Balance memory primeCollateral = Balance({asset: tokens[i], balance: 0, metadata: "AavePrimeCollateral"});
             for (uint256 j = 0; j < vaults.length; j++) {
-                token.balance += int256(TransferLibrary.balanceOf(tokens[i], vaults[j]));
+                {
+                    int256 balance = int256(TransferLibrary.balanceOf(tokens[i], vaults[j]));
+                    if (balance != 0) {
+                        response[iterator++] = Balance({
+                            asset: tokens[i],
+                            balance: balance,
+                            value: evaluateSigned(tokens[i], denominator, balance),
+                            metadata: "ERC20",
+                            vault: vaults[j]
+                        });
+                    }
+                }
                 {
                     (uint256 collateral, uint256 debt) = getAaveBalances(tokens[i], vaults[j], AAVE_CORE);
-                    coreCollateral.balance += int256(collateral);
-                    coreDebt.balance -= int256(debt);
+                    if (collateral != 0) {
+                        response[iterator++] = Balance({
+                            asset: tokens[i],
+                            balance: int256(collateral),
+                            value: evaluateSigned(tokens[i], denominator, int256(collateral)),
+                            metadata: "AaveCoreCollateral",
+                            vault: vaults[j]
+                        });
+                    }
+                    if (debt != 0) {
+                        response[iterator++] = Balance({
+                            asset: tokens[i],
+                            balance: -int256(debt),
+                            value: evaluateSigned(tokens[i], denominator, -int256(debt)),
+                            metadata: "AaveCoreDebt",
+                            vault: vaults[j]
+                        });
+                    }
                 }
                 {
                     (uint256 collateral, uint256 debt) = getAaveBalances(tokens[i], vaults[j], AAVE_PRIME);
-                    primeCollateral.balance += int256(collateral);
-                    primeDebt.balance -= int256(debt);
+                    if (collateral != 0) {
+                        response[iterator++] = Balance({
+                            asset: tokens[i],
+                            balance: int256(collateral),
+                            value: evaluateSigned(tokens[i], denominator, int256(collateral)),
+                            metadata: "AavePrimeCollateral",
+                            vault: vaults[j]
+                        });
+                    }
+                    if (debt != 0) {
+                        response[iterator++] = Balance({
+                            asset: tokens[i],
+                            balance: -int256(debt),
+                            value: evaluateSigned(tokens[i], denominator, -int256(debt)),
+                            metadata: "AavePrimeDebt",
+                            vault: vaults[j]
+                        });
+                    }
                 }
             }
-
-            if (token.balance != 0) {
-                response[iterator++] = token;
-            }
-            if (coreCollateral.balance != 0) {
-                response[iterator++] = coreCollateral;
-            }
-            if (coreDebt.balance != 0) {
-                response[iterator++] = coreDebt;
-            }
-            if (primeCollateral.balance != 0) {
-                response[iterator++] = primeCollateral;
-            }
-            if (primeDebt.balance != 0) {
-                response[iterator++] = primeDebt;
-            }
         }
-
         assembly {
             mstore(response, iterator)
         }
