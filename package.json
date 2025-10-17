@@ -6,6 +6,7 @@
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
     "deploy:arbitrum": "forge script ./scripts/arbitrum/Deploy.s.sol:Deploy --fork-url $(grep ARBITRUM_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:arbitrum:streth": "forge script ./scripts/arbitrum/ArbitrumstrETH.s.sol:Deploy --fork-url $(grep ARBITRUM_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:plasma": "forge script ./scripts/plasma/Deploy.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base": "forge script ./scripts/base/Deploy.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base:tqeth": "forge script ./scripts/base/tqETH.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
@@ -16,6 +17,7 @@
     "deploy:ethereum:tqeth": "forge script ./scripts/ethereum/tqETH.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:tqeth:pre-prod": "forge script ./scripts/ethereum/tqETHPreProd.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:streth": "forge script ./scripts/ethereum/strETH.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
+    "deploy:ethereum:malpha": "forge script ./scripts/ethereum/mAlpha.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:sepolia": "forge script ./scripts/sepolia/Deploy.s.sol:Deploy --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:purrsec": "forge script ./scripts/hyper/Deploy.s.sol:Deploy --fork-url $(grep PURRSEC_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier sourcify --verifier-url https://sourcify.parsec.finance/verify",

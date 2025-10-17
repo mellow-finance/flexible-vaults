@@ -3,12 +3,12 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-import {ABILibrary} from "./ABILibrary.sol";
-import {JsonLibrary} from "./JsonLibrary.sol";
-import "./ParameterLibrary.sol";
-import "./ProofLibrary.sol";
-import "./interfaces/IAavePoolV3.sol";
-import "./interfaces/Imports.sol";
+import {ABILibrary} from "../ABILibrary.sol";
+import {JsonLibrary} from "../JsonLibrary.sol";
+import "../ParameterLibrary.sol";
+import "../ProofLibrary.sol";
+import "../interfaces/IAavePoolV3.sol";
+import "../interfaces/Imports.sol";
 
 library AaveLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];

@@ -10,9 +10,9 @@ import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
-import {AaveLibrary} from "../common/AaveLibrary.sol";
-import {CowSwapLibrary} from "../common/CowSwapLibrary.sol";
-import {WethLibrary} from "../common/WethLibrary.sol";
+import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
+import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import "./Constants.sol";
@@ -178,7 +178,7 @@ library strETHLibrary {
 
             5. weth.approve(AaveV3Prime, anyInt)
             6. wsteth.approve(AaveV3Prime, anyInt)
-          
+
             7. AaveV3Prime.setEMode(category=1)
             8. AaveV3Prime.borrow(weth, anyInt, 2, anyInt, subvault1)
             9. AaveV3Prime.repay(weth, anyInt, 2, subvault1)

@@ -3,14 +3,14 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-import {ABILibrary} from "./ABILibrary.sol";
-import {JsonLibrary} from "./JsonLibrary.sol";
-import {ParameterLibrary} from "./ParameterLibrary.sol";
+import {ABILibrary} from "../ABILibrary.sol";
+import {JsonLibrary} from "../JsonLibrary.sol";
+import {ParameterLibrary} from "../ParameterLibrary.sol";
 
-import {ProofLibrary} from "./ProofLibrary.sol";
-import {ICowswapSettlement} from "./interfaces/ICowswapSettlement.sol";
-import {IWETH} from "./interfaces/IWETH.sol";
-import {BitmaskVerifier, Call, IVerifier} from "./interfaces/Imports.sol";
+import {ProofLibrary} from "../ProofLibrary.sol";
+import {ICowswapSettlement} from "../interfaces/ICowswapSettlement.sol";
+import {IWETH} from "../interfaces/IWETH.sol";
+import {BitmaskVerifier, Call, IVerifier} from "../interfaces/Imports.sol";
 
 library WethLibrary {
     struct Info {
