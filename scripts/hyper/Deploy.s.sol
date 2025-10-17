@@ -41,9 +41,8 @@ contract Deploy is Script {
         vm.startBroadcast(deployerPk);
         deployBase(deployer, PROXY_ADMIN);
         vm.stopBroadcast();
-       // revert("Done");
+        revert("Done");
     }
-
 
     uint256 saltIterator = 0;
     uint256[21] salts = [
