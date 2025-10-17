@@ -13,16 +13,19 @@ import {ICurvePool} from "./interfaces/ICurvePool.sol";
 
 import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
 
+import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[7] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[8] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
             getWETHInterfaces,
             getCowSwapInterfaces,
             getCurveInterfaces,
-            getL2GatewayRouter
+            getL2GatewayRouter,
+            getCCIPRouter
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -140,5 +143,14 @@ library ABILibrary {
         selectors[0] = IL2GatewayRouter.outboundTransfer.selector;
         abis[0] =
             '{"inputs":[{"internalType":"address","name":"l1Token","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"outboundTransfer","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"payable","type":"function"}';
+    }
+
+    function getCCIPRouter() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = ICCIPRouterClient.ccipSend.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"uint64","name":"destinationChainSelector","type":"uint64"},{"components":[{"internalType":"bytes","name":"receiver","type":"bytes"},{"internalType":"bytes","name":"data","type":"bytes"},{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"structClient.EVMTokenAmount[]","name":"tokenAmounts","type":"tuple[]"},{"internalType":"address","name":"feeToken","type":"address"},{"internalType":"bytes","name":"extraArgs","type":"bytes"}],"internalType":"structClient.EVM2AnyMessage","name":"message","type":"tuple"}],"name":"ccipSend","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"payable","type":"function"}';
     }
 }

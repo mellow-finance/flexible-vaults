@@ -132,8 +132,7 @@ contract Deploy is Script, Test {
             curator: curator,
             ethereumAsset: Constants.WSTETH_ETHEREUM,
             ethereumSubvault: Constants.STRETH_ETHEREUM_SUBVAULT_0,
-            l2GatewayRouter: Constants.L2_GATEWAY_ROUTER,
-            name: "WstETH(ethereum)"
+            l2GatewayRouter: Constants.L2_GATEWAY_ROUTER
         });
 
         string[] memory descriptions = ArbitrumStrETHLibrary.getArbitrumStrETHDescriptions(info);

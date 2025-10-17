@@ -20,7 +20,6 @@ library ArbitrumStrETHLibrary {
         address ethereumAsset;
         address ethereumSubvault;
         address l2GatewayRouter;
-        string name;
     }
 
     function getArbitrumStrETHProofs(Info memory info)
