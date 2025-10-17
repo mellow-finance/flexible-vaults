@@ -22,7 +22,7 @@
     "deploy:sepolia": "forge script ./scripts/sepolia/Deploy.s.sol:Deploy --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:purrsec": "forge script ./scripts/hyper/Deploy.s.sol:Deploy --fork-url $(grep PURRSEC_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier sourcify --verifier-url https://sourcify.parsec.finance/verify",
     "deploy:sepolia:tqeth": "forge script ./scripts/sepolia/tqETH.s.sol:Deploy --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
-    "deploy:purrsec:tqeth": "forge script ./scripts/hyper/tqETH.s.sol:Deploy --fork-url $(grep PURRSEC_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
+    "deploy:purrsec:tqeth": "forge script ./scripts/hyper/tqETH.s.sol:Deploy --fork-url $(grep PURRSEC_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier sourcify --verifier-url https://sourcify.parsec.finance/verify",
     "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
