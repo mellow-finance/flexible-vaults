@@ -250,8 +250,9 @@ contract Deploy is Script {
                 reports[i].asset = assets_[i];
             }
             // abi.encode(Constants.ETH, Constants.WETH, Constants.USDC, Constants.USDT));
-            reports[0].priceD18 = 3871.076544e18;
-            reports[1].priceD18 = 3871.076544e18;
+            uint224 ethPrice = 3890.29 ether;
+            reports[0].priceD18 = ethPrice;
+            reports[1].priceD18 = ethPrice;
             reports[2].priceD18 = 1e30;
             reports[3].priceD18 = 1e30;
 
