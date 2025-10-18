@@ -220,10 +220,17 @@ contract Deploy is Script {
 
         console2.log("Vault %s", address(vault));
 
-        console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
-        console2.log("DepositQueue (USDC) %s", address(vault.queueAt(Constants.USDC, 0)));
-        console2.log("RedeemQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 1)));
-        console2.log("RedeemQueue (USDC) %s", address(vault.queueAt(Constants.USDC, 1)));
+        for (uint256 i = 0; i < assets_.length; i++) {
+            string memory symbol = assets_[i] == Constants.ETH ? "ETH" : IERC20Metadata(assets_[i]).symbol();
+            for (uint256 j = 0; j < vault.getQueueCount(assets_[i]); j++) {
+                address queue = vault.queueAt(assets_[i], j);
+                if (vault.isDepositQueue(queue)) {
+                    console2.log("DepositQueue (%s): %s", symbol, queue);
+                } else {
+                    console2.log("RedeemQueue (%s): %s", symbol, queue);
+                }
+            }
+        }
 
         console2.log("Oracle %s", address(vault.oracle()));
         console2.log("ShareManager %s", address(vault.shareManager()));
