@@ -1,60 +1,60 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import {ICowswapSettlement} from "../common/interfaces/ICowswapSettlement.sol";
-
 import {AcceptanceLibrary} from "../common/AcceptanceLibrary.sol";
-
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
-
-import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
-import {WethLibrary} from "../common/protocols/WethLibrary.sol";
+import {IAavePoolV3} from "../common/interfaces/IAavePoolV3.sol";
+import {ICowswapSettlement} from "../common/interfaces/ICowswapSettlement.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
-import "./Constants.sol";
+import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
+import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+import {WethLibrary} from "../common/protocols/WethLibrary.sol";
+import {Constants} from "./Constants.sol";
 
-library tqETHLibrary {
+library AlphapingLibrary {
+    /*
+        subvault 0:
+        eth, weth, usdc
+
+        weth deposit
+        weth withdrawal
+        swaps [usdc, weth]
+
+        allowed assets: usdc
+        1. morpho erc4626
+        2. bracket deposit
+        3. cowswap (usdc, usdu)
+        4. curve [usdc, usdu], gauge
+        5.
+
+        allowed assets: [weth]
+        1. morpho erc4626
+    */
+
     function getSubvault0Proofs(address curator)
         internal
         pure
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
-        ProtocolDeployment memory $ = Constants.protocolDeployment();
         /*
-            1. weth.deposit{value: <any>}();
-            2. weth.withdraw(<any>);
-            3. weth.approve(cowswapVaultRelayer, <any>);
-            4. wsteth.approve(cowswapVaultRelayer, <any>);
-            5. cowswapSettlement.setPreSignature(anyBytes(56), anyBool);
-            6. cowswapSettlement.invalidateOrder(anyBytes(56));
+            allowed assets: usdc
+            1. morpho deposit
+            2. bracket deposit
+            3. cowswap (usdc, usdu)
+            4. curve usdc, usdu
         */
-        leaves = new IVerifier.VerificationPayload[](6);
-        leaves[0] = WethLibrary.getWethDepositProof($.bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
-        leaves[1] = WethLibrary.getWethWithdrawProof($.bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
-
-        ArraysLibrary.insert(
-            leaves,
-            CowSwapLibrary.getCowSwapProofs(
-                $.bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
-            ),
-            2
-        );
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](4);
 
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
     function getSubvault0Descriptions(address curator) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](6);
+        descriptions = new string[](4);
         descriptions[0] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
-        descriptions[1] = WethLibrary.getWethWithdrawDescription(WethLibrary.Info(curator, Constants.WETH));
         ArraysLibrary.insert(
             descriptions,
             CowSwapLibrary.getCowSwapDescriptions(
@@ -62,10 +62,10 @@ library tqETHLibrary {
                     cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
                     cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
                     curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
                 })
             ),
-            2
+            1
         );
     }
 
@@ -76,9 +76,7 @@ library tqETHLibrary {
     {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
-
         calls.calls[0] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));
-        calls.calls[1] = WethLibrary.getWethWithdrawCalls(WethLibrary.Info(curator, Constants.WETH));
         ArraysLibrary.insert(
             calls.calls,
             CowSwapLibrary.getCowSwapCalls(
@@ -86,10 +84,10 @@ library tqETHLibrary {
                     cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
                     cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
                     curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
                 })
             ),
-            2
+            1
         );
     }
 }

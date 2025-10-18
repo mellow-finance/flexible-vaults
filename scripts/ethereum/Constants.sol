@@ -43,6 +43,16 @@ library Constants {
 
     address public constant FE_ORACLE = 0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453;
 
+    address public constant STRETH_ARBITRUM_SUBVAULT_0 = 0x222fa99C485a088564eb43fAA50Bc10b2497CDB2;
+    address public constant ARBITRUM_L1_GATEWAY_ROUTER = 0x72Ce9c846789fdB6fC1f34aC4AD25Dd9ef7031ef;
+    address public constant ARBITRUM_L1_TOKEN_GATEWAY_WSTETH = 0x0F25c1DC2a9922304f2eac71DCa9B07E310e8E5a;
+
+    address public constant STRETH_PLASMA_SUBVAULT_0 = 0xbbF9400C09B0F649F3156989F1CCb9c016f943bb;
+    address public constant CCIP_PLASMA_ROUTER = 0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3;
+    uint64 public constant CCIP_PLASMA_CHAIN_SELECTOR = 9335212494177455608;
+    address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
+    uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
