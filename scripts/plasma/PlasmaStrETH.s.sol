@@ -29,12 +29,22 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
 
+        TimelockController timelockController = new TimelockController(
+            0,
+            ArraysLibrary.makeAddressArray(abi.encode(deployer, lazyVaultAdmin)),
+            ArraysLibrary.makeAddressArray(abi.encode(curator, activeVaultAdmin)),
+            lazyVaultAdmin
+        );
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](50);
         {
             uint256 i = 0;
 
             // activeVaultAdmin roles:
             holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
+
+            // timelock roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
 
             // curator roles:
             holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
@@ -87,6 +97,19 @@ contract Deploy is Script, Test {
 
         SubvaultCalls[] memory calls = new SubvaultCalls[](1);
         calls[0] = calls_;
+
+        timelockController.schedule(
+            verifier, 0, abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))), bytes32(0), bytes32(0), 0
+        );
+
+        timelockController.renounceRole(timelockController.PROPOSER_ROLE(), deployer);
+        timelockController.renounceRole(timelockController.CANCELLER_ROLE(), deployer);
+
+        console2.log("Vault: %s", address(vault));
+        console2.log("Subvault: %s", address(subvault));
+        console2.log("Verifier: %s", address(verifier));
+        console2.log("TimelockController: %s", address(timelockController));
+
         vm.stopBroadcast();
 
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
@@ -96,27 +119,34 @@ contract Deploy is Script, Test {
                 vault: vault,
                 calls: calls,
                 initParams: initParams,
-                holders: _getExpectedHolders(),
+                holders: _getExpectedHolders(timelockController),
                 depositHook: address(0),
                 redeemHook: address(0),
                 assets: new address[](0),
                 depositQueueAssets: new address[](0),
                 redeemQueueAssets: new address[](0),
                 subvaultVerifiers: ArraysLibrary.makeAddressArray(abi.encode(Subvault(payable(subvault)).verifier())),
-                timelockControllers: new address[](0),
-                timelockProposers: new address[](0),
-                timelockExecutors: new address[](0)
+                timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(timelockController)),
+                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin)),
+                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(curator, activeVaultAdmin))
             })
         );
-        revert("ok");
+        // revert("ok");
     }
 
-    function _getExpectedHolders() internal view returns (Vault.RoleHolder[] memory holders) {
+    function _getExpectedHolders(TimelockController timelockController)
+        internal
+        view
+        returns (Vault.RoleHolder[] memory holders)
+    {
         holders = new Vault.RoleHolder[](50);
         uint256 i = 0;
 
         // lazyVaultAdmin roles:
         holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
+
+        // timelock roles:
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
 
         // activeVaultAdmin roles:
         holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
