@@ -25,6 +25,8 @@ import "../common/protocols/BracketVaultLibrary.sol";
 import "../common/protocols/CurveLibrary.sol";
 import "../common/protocols/ERC4626Library.sol";
 
+import "./mAlphaLibrary.sol";
+
 contract Deploy is Script {
     // Actors
     address public proxyAdmin = 0xEB4Af6fA3AFA08B10d593EC8fF87efB03BC04645;
@@ -93,7 +95,7 @@ contract Deploy is Script {
             }
         }
         address[] memory assets_ =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.USDC));
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.USDC, Constants.USDT));
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -121,7 +123,7 @@ contract Deploy is Script {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 6,
+            queueLimit: 8,
             roleHolders: holders
         });
 
@@ -143,11 +145,10 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(feeManagerAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](2);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
+        address[] memory verifiers = new address[](1);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
 
         IRiskManager riskManager = vault.riskManager();
-
         {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             vault.createSubvault(0, proxyAdmin, verifiers[0]); // wsteth
@@ -158,17 +159,6 @@ contract Deploy is Script {
                 vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
             );
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
-        }
-        {
-            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            vault.createSubvault(0, proxyAdmin, verifiers[1]); // wsteth
-            bytes32 merkleRoot;
-            (merkleRoot, calls[1]) = _createSubvault1Verifier(vault.subvaultAt(1));
-            IVerifier(verifiers[1]).setMerkleRoot(merkleRoot);
-            riskManager.allowSubvaultAssets(
-                vault.subvaultAt(1), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
-            );
-            riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
         }
 
         // emergency pause setup
@@ -252,9 +242,12 @@ contract Deploy is Script {
             for (uint256 i = 0; i < reports.length; i++) {
                 reports[i].asset = assets_[i];
             }
-            reports[0].priceD18 = 1 ether;
-            reports[1].priceD18 = 1 ether;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
+            // abi.encode(Constants.ETH, Constants.WETH, Constants.USDC, Constants.USDT));
+            reports[0].priceD18 = 3871.076544e18;
+            reports[1].priceD18 = 3871.076544e18;
+            reports[2].priceD18 = 1e30;
+            reports[3].priceD18 = 1e30;
+
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
             uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
@@ -336,10 +329,11 @@ contract Deploy is Script {
     function _createSubvault0Verifier(address subvault0)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {}
-
-    function _createSubvault1Verifier(address subvault1)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {}
+    {
+        string[] memory descriptions = mAlphaLibrary.getSubvault0Descriptions(curator, subvault0);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = mAlphaLibrary.getSubvault0Proofs(curator, subvault0);
+        ProofLibrary.storeProofs("ethereum:mAlpha:subvault0", merkleRoot, leaves, descriptions);
+        calls = mAlphaLibrary.getSubvault0SubvaultCalls(curator, subvault0, leaves);
+    }
 }
