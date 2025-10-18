@@ -11,19 +11,21 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ICurveGauge} from "./interfaces/ICurveGauge.sol";
 import {ICurvePool} from "./interfaces/ICurvePool.sol";
 
+import {IL1GatewayRouter} from "./interfaces/IL1GatewayRouter.sol";
 import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
 
 import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[8] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[9] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
             getWETHInterfaces,
             getCowSwapInterfaces,
             getCurveInterfaces,
+            getL1GatewayRouter,
             getL2GatewayRouter,
             getCCIPRouter
         ];
@@ -143,6 +145,15 @@ library ABILibrary {
         selectors[0] = IL2GatewayRouter.outboundTransfer.selector;
         abis[0] =
             '{"inputs":[{"internalType":"address","name":"l1Token","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"outboundTransfer","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"payable","type":"function"}';
+    }
+
+    function getL1GatewayRouter() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = IL1GatewayRouter.outboundTransfer.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"uint256","name":"_maxGas","type":"uint256"},{"internalType":"uint256","name":"_gasPriceBid","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"outboundTransfer","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"payable","type":"function"}';
     }
 
     function getCCIPRouter() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
