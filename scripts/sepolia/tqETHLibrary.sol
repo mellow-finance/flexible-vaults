@@ -9,8 +9,8 @@ import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
-import {CowSwapLibrary} from "../common/CowSwapLibrary.sol";
-import {WethLibrary} from "../common/WethLibrary.sol";
+import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import "./Constants.sol";

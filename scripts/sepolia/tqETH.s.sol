@@ -361,4 +361,3 @@ contract Deploy is Script {
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
     }
 }
-

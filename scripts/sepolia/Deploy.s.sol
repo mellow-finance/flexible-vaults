@@ -325,12 +325,7 @@ contract Deploy is Script {
             address implementation = _deployWithOptimalSalt(
                 "SymbioticVerifier",
                 type(SymbioticVerifier).creationCode,
-                abi.encode(
-                    SYMBIOTIC_VAULT_FACTORY,
-                    SYMBIOTIC_FARM_FACTORY,
-                    DEPLOYMENT_NAME,
-                    DEPLOYMENT_VERSION
-                )
+                abi.encode(SYMBIOTIC_VAULT_FACTORY, SYMBIOTIC_FARM_FACTORY, DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
             );
             $.symbioticVerifierFactory.proposeImplementation(implementation);
             $.symbioticVerifierFactory.acceptProposedImplementation(implementation);
@@ -355,13 +350,7 @@ contract Deploy is Script {
             _deployWithOptimalSalt("RedirectingDepositHook", type(RedirectingDepositHook).creationCode, new bytes(0));
 
         $.lidoDipositHook = _deployWithOptimalSalt(
-            "LidoDepositHook",
-            type(LidoDepositHook).creationCode,
-            abi.encode(
-                WSTETH,
-                WETH,
-                $.redirectingDepositHook
-            )
+            "LidoDepositHook", type(LidoDepositHook).creationCode, abi.encode(WSTETH, WETH, $.redirectingDepositHook)
         );
 
         $.oracleHelper = _deployWithOptimalSalt("OracleHelper", type(OracleHelper).creationCode, new bytes(0));
