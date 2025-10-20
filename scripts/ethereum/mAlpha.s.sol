@@ -111,10 +111,10 @@ contract Deploy is Script {
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
-                    maxAbsoluteDeviation: 0.005 ether,
-                    suspiciousAbsoluteDeviation: 0.001 ether,
-                    maxRelativeDeviationD18: 0.005 ether,
-                    suspiciousRelativeDeviationD18: 0.001 ether,
+                    maxAbsoluteDeviation: 400 ether, // 400 USD
+                    suspiciousAbsoluteDeviation: 120 ether, // 120 USD
+                    maxRelativeDeviationD18: 0.1 ether, // 10 %
+                    suspiciousRelativeDeviationD18: 0.03 ether, // 3 %
                     timeout: 20 hours,
                     depositInterval: 1 hours,
                     redeemInterval: 2 days
@@ -151,12 +151,15 @@ contract Deploy is Script {
         IRiskManager riskManager = vault.riskManager();
         {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            vault.createSubvault(0, proxyAdmin, verifiers[0]); // wsteth
+            vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth, weth, usdc, usdt
             bytes32 merkleRoot;
             (merkleRoot, calls[0]) = _createSubvault0Verifier(vault.subvaultAt(0));
             IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
             riskManager.allowSubvaultAssets(
-                vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
+                vault.subvaultAt(0),
+                ArraysLibrary.makeAddressArray(
+                    abi.encode(Constants.ETH, Constants.WETH, Constants.USDC, Constants.USDT)
+                )
             );
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         }
@@ -250,7 +253,7 @@ contract Deploy is Script {
                 reports[i].asset = assets_[i];
             }
             // abi.encode(Constants.ETH, Constants.WETH, Constants.USDC, Constants.USDT));
-            uint224 ethPrice = 3890.29 ether;
+            uint224 ethPrice = 4029.46 ether;
             reports[0].priceD18 = ethPrice;
             reports[1].priceD18 = ethPrice;
             reports[2].priceD18 = 1e30;
