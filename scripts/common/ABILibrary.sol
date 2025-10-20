@@ -16,15 +16,18 @@ import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
 
 import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
 
+import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[9] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[10] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
             getWETHInterfaces,
             getCowSwapInterfaces,
             getCurveInterfaces,
+            getBracketFinanceInterfaces,
             getL1GatewayRouter,
             getL2GatewayRouter,
             getCCIPRouter
@@ -163,5 +166,21 @@ library ABILibrary {
         selectors[0] = ICCIPRouterClient.ccipSend.selector;
         abis[0] =
             '{"inputs":[{"internalType":"uint64","name":"destinationChainSelector","type":"uint64"},{"components":[{"internalType":"bytes","name":"receiver","type":"bytes"},{"internalType":"bytes","name":"data","type":"bytes"},{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"structClient.EVMTokenAmount[]","name":"tokenAmounts","type":"tuple[]"},{"internalType":"address","name":"feeToken","type":"address"},{"internalType":"bytes","name":"extraArgs","type":"bytes"}],"internalType":"structClient.EVM2AnyMessage","name":"message","type":"tuple"}],"name":"ccipSend","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"payable","type":"function"}';
+    }
+
+    function getBracketFinanceInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](3);
+        abis = new string[](3);
+
+        selectors[0] = IBracketVaultV2.deposit.selector;
+        selectors[1] = IBracketVaultV2.withdraw.selector;
+        selectors[2] = IBracketVaultV2.claimWithdrawal.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"address","name":"destination","type":"address"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"uint16","name":"claimEpoch","type":"uint16"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"claimWithdrawal","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }
