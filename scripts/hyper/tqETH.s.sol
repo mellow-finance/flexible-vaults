@@ -46,12 +46,7 @@ contract Deploy is Script {
         IVerifier verifier = Subvault(payable(subvault0)).verifier();
 
         vault.schedule(
-            address(verifier),
-            0,
-            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
-            bytes32(0),
-            bytes32(0),
-            0
+            address(verifier), 0, abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))), bytes32(0), bytes32(0), 0
         );
 
         vault.renounceRole(vault.PROPOSER_ROLE(), deployer);

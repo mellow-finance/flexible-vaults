@@ -41,8 +41,8 @@ contract Deploy is Script {
         TimelockController timelockController;
 
         {
-            address[] memory proposers = _makeArray(lazyVaultAdmin, deployer);
-            address[] memory executors = _makeArray(pauser1, pauser2);
+            address[] memory proposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
+            address[] memory executors = ArraysLibrary.makeAddressArray(abi.encode(pauser1, pauser2));
             timelockController = new TimelockController(0, proposers, executors, lazyVaultAdmin);
         }
         {
@@ -268,24 +268,13 @@ contract Deploy is Script {
                 depositQueueAssets: assets_,
                 redeemQueueAssets: assets_,
                 subvaultVerifiers: verifiers,
-                timelockControllers: _makeArray(address(timelockController)),
-                timelockProposers: _makeArray(lazyVaultAdmin, deployer),
-                timelockExecutors: _makeArray(pauser1, pauser2)
+                timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(timelockController)),
+                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
+                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(pauser1, pauser2))
             })
         );
 
         revert("ok");
-    }
-
-    function _makeArray(address x) internal pure returns (address[] memory a) {
-        a = new address[](1);
-        a[0] = x;
-    }
-
-    function _makeArray(address x, address y) internal pure returns (address[] memory a) {
-        a = new address[](2);
-        a[0] = x;
-        a[1] = y;
     }
 
     function _getExpectedHolders(address timelockController)

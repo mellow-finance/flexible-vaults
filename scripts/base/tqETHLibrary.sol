@@ -4,8 +4,8 @@ pragma solidity 0.8.25;
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
-import {CowSwapLibrary} from "../common/CowSwapLibrary.sol";
-import {WethLibrary} from "../common/WethLibrary.sol";
+import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 
 import {Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 
