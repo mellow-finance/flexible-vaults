@@ -30,8 +30,7 @@ contract Deploy is Script {
     address public oracleUpdater = address(0xc6f6cAcD39867116929768B93458084aB93554f1);
     address public curator = address(0xc6f6cAcD39867116929768B93458084aB93554f1);
     address public pauser = address(0xc6f6cAcD39867116929768B93458084aB93554f1);
-
-    address public agent = address(1);
+    address public agent = address(0x7096aa3293DEc845235b42c199358D02f497bA58);
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -113,9 +112,9 @@ contract Deploy is Script {
                     suspiciousAbsoluteDeviation: 0.001 ether,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
-                    timeout: 20 hours,
-                    depositInterval: 1 hours,
-                    redeemInterval: 2 days
+                    timeout: 15 seconds,
+                    depositInterval: 15 seconds,
+                    redeemInterval: 15 seconds
                 }),
                 assets_
             ),
@@ -146,19 +145,12 @@ contract Deploy is Script {
         address[] memory verifiers = new address[](2);
         SubvaultCalls[] memory calls = new SubvaultCalls[](2);
 
-        {
+        for (uint256 index = 0; index < 2; index++) {
             IRiskManager riskManager = vault.riskManager();
-            (verifiers[0], calls[0]) = _createCowswapVerifier(address(vault));
-            vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth,weth,wsteth
-            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
-            riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
-        }
-        {
-            IRiskManager riskManager = vault.riskManager();
-            (verifiers[1], calls[1]) = _createCowswapVerifier(address(vault));
-            vault.createSubvault(0, proxyAdmin, verifiers[1]); // eth,weth,wsteth
-            riskManager.allowSubvaultAssets(vault.subvaultAt(1), assets_);
-            riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
+            (verifiers[index], calls[index]) = _createCowswapVerifier(address(vault));
+            vault.createSubvault(0, proxyAdmin, verifiers[index]); // eth,weth,wsteth
+            riskManager.allowSubvaultAssets(vault.subvaultAt(index), assets_);
+            riskManager.setSubvaultLimit(vault.subvaultAt(index), type(int256).max / 2);
         }
 
         // emergency pause setup
@@ -254,6 +246,7 @@ contract Deploy is Script {
             console2.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
         }
         console2.log("Timelock controller:", address(timelockController));
+        console2.log("Agent address:", address(agent));
 
         {
             IOracle.Report[] memory reports = new IOracle.Report[](3);
@@ -274,7 +267,7 @@ contract Deploy is Script {
             oracle.submitReports(reports);
             uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
             for (uint256 i = 0; i < reports.length; i++) {
-                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+                //oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
         }
 
