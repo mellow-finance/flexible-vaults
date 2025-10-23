@@ -30,9 +30,12 @@ contract Deploy is Script {
     // EOA pausers
     address public pauser1 = 0xFeCeb0255a4B7Cd05995A7d617c0D52c994099CF;
     address public pauser2 = 0x8b7C1b52e2d606a526abD73f326c943c75e45Bd3;
+    // strategy contracts
+    address public constant strategySepolia = 0xEA1E80402A483c8F7bC703cd775A88b91b61a71D;
+    address public constant strategyHyper = 0xd0adFA7D51B3314EbbB062a6431DC054F64d1D95;
 
     function run() external {
-        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER_SEPOLIA")));
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
@@ -341,12 +344,15 @@ contract Deploy is Script {
             2. wsteth.approve(cowswapVaultRelayer, <any>);
             3. usdc.approve(cowswapVaultRelayer, <any>);
             4. cowswapSettlement.setPreSignature(anyBytes(56), anyBool);
-            5. cowswapSettlement.invalidateOrder(anyBytes(56)); 
+            5. cowswapSettlement.invalidateOrder(anyBytes(56));
+            6. usdc.approve(tokenMessenger, any);
+            7. tokenMessenger.depositForBurn(any, 19, hyperSubvault, usdc, bytes32(0), any, any);
         */
-        string[] memory descriptions = tqETHLibrary.getSubvault1Descriptions(curator);
-        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault1Proofs(curator);
+        string[] memory descriptions = tqETHLibrary.getSubvault1Descriptions(curator, strategySepolia);
+        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) =
+            tqETHLibrary.getSubvault1Proofs(curator, strategySepolia);
         ProofLibrary.storeProofs("sepolia:tqETHPhase2:subvault1", merkleRoot, leaves, descriptions);
-        calls = tqETHLibrary.getSubvault1SubvaultCalls(curator, leaves);
+        calls = tqETHLibrary.getSubvault1SubvaultCalls(curator, strategySepolia, leaves);
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
     }
 }

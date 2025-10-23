@@ -10,19 +10,21 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {ICurveGauge} from "./interfaces/ICurveGauge.sol";
 import {ICurvePool} from "./interfaces/ICurvePool.sol";
+import {ITokenMessengerV2} from "./interfaces/ITokenMessengerV2.sol";
 
 import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[7] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[8] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
             getWETHInterfaces,
             getCowSwapInterfaces,
             getCurveInterfaces,
-            getL2GatewayRouter
+            getL2GatewayRouter,
+            getCctpV2Interfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -140,5 +142,14 @@ library ABILibrary {
         selectors[0] = IL2GatewayRouter.outboundTransfer.selector;
         abis[0] =
             '{"inputs":[{"internalType":"address","name":"l1Token","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"outboundTransfer","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"payable","type":"function"}';
+    }
+
+    function getCctpV2Interfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = ITokenMessengerV2.depositForBurn.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"},{"internalType":"bytes32","name":"mintRecipient","type":"bytes32"},{"internalType":"address","name":"burnToken","type":"address"},{"internalType":"bytes32","name":"destinationCaller","type":"bytes32"},{"internalType":"uint256","name":"maxFee","type":"uint256"},{"internalType":"uint32","name":"minFinalityThreshold","type":"uint32"}],"name":"depositForBurn","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }

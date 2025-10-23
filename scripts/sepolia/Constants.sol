@@ -30,6 +30,14 @@ library Constants {
     address public constant SYMBIOTIC_VAULT_FACTORY = 0x407A039D94948484D356eFB765b3c74382A050B4;
     address public constant SYMBIOTIC_FARM_FACTORY = 0xE6381EDA7444672da17Cd859e442aFFcE7e170F0;
 
+    // circle bridge constants
+    address public constant DESTINATION_SUBVAULT_HYPER = 0x5A22F6d9C2a735367C33D73530e2D70A72e6D558; // on purrsec
+    address public constant DESTINATION_SUBVAULT_SEPOLIA = 0xFcE16317364EC44620F05528Ce170eDc1c6AD5fD; // on sepolia
+    uint32 public constant DESTINATION_DOMAIN_HYPER = 19; // purrsec domain id
+    uint32 public constant DESTINATION_DOMAIN_SEPOLIA = 0; // sepolia domain id
+    address public constant TOKEN_MESSENGER_SEPOLIA = 0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA; // on sepolia
+    address public constant TOKEN_MESSENGER_HYPER = address(0); // on purrsec
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,

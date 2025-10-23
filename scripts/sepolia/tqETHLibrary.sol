@@ -10,6 +10,8 @@ import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
 import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+
+import {CircleBridgeLibrary} from "../common/protocols/CircleBridgeLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
@@ -93,7 +95,7 @@ library tqETHLibrary {
         );
     }
 
-    function getSubvault1Proofs(address curator)
+    function getSubvault1Proofs(address curator, address strategy)
         internal
         pure
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
@@ -104,9 +106,11 @@ library tqETHLibrary {
             2. wsteth.approve(cowswapVaultRelayer, <any>);
             3. usdc.approve(cowswapVaultRelayer, <any>);
             4. cowswapSettlement.setPreSignature(anyBytes(56), anyBool);
-            5. cowswapSettlement.invalidateOrder(anyBytes(56)); 
+            5. cowswapSettlement.invalidateOrder(anyBytes(56));
+            6. IERC20.approve(tokenMessenger, any);
+            7. ITokenMessengerV2.depositForBurn(any, destinationDomain, mintRecipient, burnToken, bytes32(0), any, any);
         */
-        leaves = new IVerifier.VerificationPayload[](5);
+        leaves = new IVerifier.VerificationPayload[](7);
 
         ArraysLibrary.insert(
             leaves,
@@ -122,11 +126,30 @@ library tqETHLibrary {
             0
         );
 
+        ArraysLibrary.insert(
+            leaves,
+            CircleBridgeLibrary.getCctpV2BridgeProofs(
+                $.bitmaskVerifier,
+                CircleBridgeLibrary.Info({
+                    strategy: strategy,
+                    tokenMessenger: Constants.TOKEN_MESSENGER_SEPOLIA,
+                    destinationSubvault: Constants.DESTINATION_SUBVAULT_HYPER,
+                    destinationDomain: Constants.DESTINATION_DOMAIN_HYPER,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC))
+                })
+            ),
+            5
+        );
+
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault1Descriptions(address curator) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](5);
+    function getSubvault1Descriptions(address curator, address strategy)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](7);
         ArraysLibrary.insert(
             descriptions,
             CowSwapLibrary.getCowSwapDescriptions(
@@ -139,9 +162,23 @@ library tqETHLibrary {
             ),
             0
         );
+
+        ArraysLibrary.insert(
+            descriptions,
+            CircleBridgeLibrary.getCctpV2BridgeDescriptions(
+                CircleBridgeLibrary.Info({
+                    strategy: strategy,
+                    tokenMessenger: Constants.TOKEN_MESSENGER_SEPOLIA,
+                    destinationSubvault: Constants.DESTINATION_SUBVAULT_HYPER,
+                    destinationDomain: Constants.DESTINATION_DOMAIN_HYPER,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC))
+                })
+            ),
+            5
+        );
     }
 
-    function getSubvault1SubvaultCalls(address curator, IVerifier.VerificationPayload[] memory leaves)
+    function getSubvault1SubvaultCalls(address curator, address strategy, IVerifier.VerificationPayload[] memory leaves)
         internal
         pure
         returns (SubvaultCalls memory calls)
@@ -160,6 +197,20 @@ library tqETHLibrary {
                 })
             ),
             0
+        );
+
+        ArraysLibrary.insert(
+            calls.calls,
+            CircleBridgeLibrary.getCctpV2BridgeCalls(
+                CircleBridgeLibrary.Info({
+                    strategy: strategy,
+                    tokenMessenger: Constants.TOKEN_MESSENGER_SEPOLIA,
+                    destinationSubvault: Constants.DESTINATION_SUBVAULT_HYPER,
+                    destinationDomain: Constants.DESTINATION_DOMAIN_HYPER,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC))
+                })
+            ),
+            5
         );
     }
 }
