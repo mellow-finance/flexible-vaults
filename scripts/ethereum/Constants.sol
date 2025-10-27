@@ -18,6 +18,7 @@ library Constants {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant WSTETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
+    address public constant WEETH = 0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee;
     address public constant STETH = 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84;
     address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
@@ -43,6 +44,7 @@ library Constants {
 
     address public constant FE_ORACLE = 0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453;
 
+    address public constant STRETH_ETHEREUM_SUBVAULT_0 = 0x90c983DC732e65DB6177638f0125914787b8Cb78;
     address public constant STRETH_ARBITRUM_SUBVAULT_0 = 0x222fa99C485a088564eb43fAA50Bc10b2497CDB2;
     address public constant ARBITRUM_L1_GATEWAY_ROUTER = 0x72Ce9c846789fdB6fC1f34aC4AD25Dd9ef7031ef;
     address public constant ARBITRUM_L1_TOKEN_GATEWAY_WSTETH = 0x0F25c1DC2a9922304f2eac71DCa9B07E310e8E5a;
@@ -52,6 +54,10 @@ library Constants {
     uint64 public constant CCIP_PLASMA_CHAIN_SELECTOR = 9335212494177455608;
     address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
     uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
+
+    // LayerZero / OFT bridging
+    address public constant WEETH_OFT_ADAPTER = 0xcd2eb13D6831d4602D80E5db9230A57596CDCA63;
+    uint32 public constant LZ_PLASMA_EID = 30383;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -255,7 +261,7 @@ library Constants {
         $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
     }
 
-    function getStrETHDeployment() internal pure returns (VaultDeployment memory $) {
+    function getStrETHDeployment() internal view returns (VaultDeployment memory $) {
         address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
         address lazyVaultAdmin = 0xAbE20D266Ae54b9Ae30492dEa6B6407bF18fEeb5;
         address activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
