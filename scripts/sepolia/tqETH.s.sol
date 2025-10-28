@@ -32,7 +32,6 @@ contract Deploy is Script {
     address public pauser2 = 0x8b7C1b52e2d606a526abD73f326c943c75e45Bd3;
     // strategy contracts
     address public constant strategySepolia = 0xEA1E80402A483c8F7bC703cd775A88b91b61a71D;
-    address public constant strategyHyper = 0xd0adFA7D51B3314EbbB062a6431DC054F64d1D95;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER_SEPOLIA")));
@@ -74,6 +73,9 @@ contract Deploy is Script {
             holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
             holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
             holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+
+            // strategySepolia roles:
+            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, strategySepolia);
 
             // deployer roles:
             holders[i++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, deployer);
@@ -314,6 +316,9 @@ contract Deploy is Script {
         holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
         holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
         holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+
+        // strategySepolia roles:
+        holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, strategySepolia);
 
         assembly {
             mstore(holders, i)

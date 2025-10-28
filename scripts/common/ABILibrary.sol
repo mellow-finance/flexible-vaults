@@ -12,11 +12,12 @@ import {ICurveGauge} from "./interfaces/ICurveGauge.sol";
 import {ICurvePool} from "./interfaces/ICurvePool.sol";
 import {ITokenMessengerV2} from "./interfaces/ITokenMessengerV2.sol";
 
+import {ICoreWriter} from "./interfaces/ICoreWriter.sol";
 import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[8] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[9] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -24,7 +25,8 @@ library ABILibrary {
             getCowSwapInterfaces,
             getCurveInterfaces,
             getL2GatewayRouter,
-            getCctpV2Interfaces
+            getCctpV2Interfaces,
+            getHyperLiquidInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -151,5 +153,14 @@ library ABILibrary {
         selectors[0] = ITokenMessengerV2.depositForBurn.selector;
         abis[0] =
             '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"},{"internalType":"bytes32","name":"mintRecipient","type":"bytes32"},{"internalType":"address","name":"burnToken","type":"address"},{"internalType":"bytes32","name":"destinationCaller","type":"bytes32"},{"internalType":"uint256","name":"maxFee","type":"uint256"},{"internalType":"uint32","name":"minFinalityThreshold","type":"uint32"}],"name":"depositForBurn","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getHyperLiquidInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = ICoreWriter.sendRawAction.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"bytes","name":"rawAction","type":"bytes"}],"name":"sendRawAction","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }
