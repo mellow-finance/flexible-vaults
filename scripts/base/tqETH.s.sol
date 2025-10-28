@@ -147,7 +147,7 @@ contract Deploy is Script {
 
         for (uint256 index = 0; index < 2; index++) {
             IRiskManager riskManager = vault.riskManager();
-            (verifiers[index], calls[index]) = _createCowswapVerifier(address(vault));
+            (verifiers[index], calls[index]) = _createCowswapVerifier(address(vault), index);
             vault.createSubvault(0, proxyAdmin, verifiers[index]); // eth,weth,wsteth
             riskManager.allowSubvaultAssets(vault.subvaultAt(index), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(index), type(int256).max / 2);
@@ -344,7 +344,10 @@ contract Deploy is Script {
         }
     }
 
-    function _createCowswapVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {
+    function _createCowswapVerifier(address vault, uint256 subvaultIndex)
+        internal
+        returns (address verifier, SubvaultCalls memory calls)
+    {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         /*
             curator and agent can perform the following actions:
@@ -358,7 +361,12 @@ contract Deploy is Script {
         string[] memory descriptions = tqETHLibraryV2.getSubvault0Descriptions(curator, agent);
         (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) =
             tqETHLibraryV2.getSubvault0Proofs(curator, agent);
-        ProofLibrary.storeProofs("base:tqETH:subvault0", merkleRoot, leaves, descriptions);
+        ProofLibrary.storeProofs(
+            string(abi.encodePacked("base:tqETH:subvault", Strings.toString(subvaultIndex))),
+            merkleRoot,
+            leaves,
+            descriptions
+        );
         calls = tqETHLibraryV2.getSubvault0SubvaultCalls($, curator, agent, leaves);
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
     }
