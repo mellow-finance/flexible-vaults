@@ -4,6 +4,7 @@ broadcast/
 node_modules/
 
 .env
+.envrc
 
 .vscode
 .DS_Store
@@ -11,3 +12,8 @@ node_modules/
 yarn.lock
 foundry.lock
 report
+
+# Nix
+.direnv/
+result
+result-*
