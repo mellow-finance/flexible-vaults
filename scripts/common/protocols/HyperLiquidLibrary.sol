@@ -73,12 +73,7 @@ library HyperLiquidLibrary {
         leaves = new IVerifier.VerificationPayload[](length);
         uint256 index = 0;
         leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.strategy,
-            $.hype,
-            0,
-            abi.encode(bytes4(0)),
-            ProofLibrary.makeBitmask(true, true, false, true, abi.encode(bytes4(0)))
+            bitmaskVerifier, $.strategy, $.hype, 0, "", ProofLibrary.makeBitmask(true, true, false, true, "")
         );
 
         // 1. withdraw Hype to EVM: CoreWriter spot send to hype with hype token index
@@ -189,10 +184,10 @@ library HyperLiquidLibrary {
         {
             Call[] memory tmp = new Call[](5);
             uint256 idx;
-            tmp[idx++] = Call($.strategy, $.hype, 0, abi.encode(bytes4(0)), true);
-            tmp[idx++] = Call($.strategy, $.hype, 1 ether, abi.encode(bytes4(0)), true);
-            tmp[idx++] = Call(address(0xdead), $.hype, 0, abi.encode(bytes4(0)), false);
-            tmp[idx++] = Call($.strategy, address(0xdead), 0, abi.encode(bytes4(0)), false);
+            tmp[idx++] = Call($.strategy, $.hype, 0, "", true);
+            tmp[idx++] = Call($.strategy, $.hype, 1 ether, "", true);
+            tmp[idx++] = Call(address(0xdead), $.hype, 0, "", false);
+            tmp[idx++] = Call($.strategy, address(0xdead), 0, "", false);
             tmp[idx++] = Call($.strategy, $.hype, 0, abi.encodeWithSelector(bytes4(0x00000001), ""), false);
             calls[index++] = tmp;
         }
@@ -476,8 +471,8 @@ library HyperLiquidLibrary {
 
                 data[i] = abi.encode(systemAddr, $.tokens[i].id);
                 bitmask[i] = abi.encode(address(type(uint160).max), type(uint64).max);
-                forbiddenData[i * $.tokens.length] = abi.encode(address(0xdead), $.tokens[i].id);
-                forbiddenData[i * $.tokens.length + 1] = abi.encode(systemAddr, type(uint32).max - $.tokens[i].id);
+                forbiddenData[i * 2] = abi.encode(address(0xdead), $.tokens[i].id);
+                forbiddenData[i * 2 + 1] = abi.encode(systemAddr, type(uint32).max - $.tokens[i].id);
 
                 innerParameters = innerParameters.add("systemAddr", Strings.toHexString(systemAddr));
                 innerParameters = innerParameters.add("tokenId", Strings.toString($.tokens[i].id));
