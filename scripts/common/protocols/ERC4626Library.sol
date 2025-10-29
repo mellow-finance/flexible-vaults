@@ -176,11 +176,10 @@ library ERC4626Library {
         }
     }
 
-    function getAaveCalls(Info memory $) internal view returns (Call[][] memory calls) {
+    function getERC4626Calls(Info memory $) internal view returns (Call[][] memory calls) {
         uint256 index = 0;
         calls = new Call[][]($.assets.length * 5);
 
-        //
         for (uint256 j = 0; j < $.assets.length; j++) {
             address asset = $.assets[j];
             address underlyingAsset = IERC4626(asset).asset();
