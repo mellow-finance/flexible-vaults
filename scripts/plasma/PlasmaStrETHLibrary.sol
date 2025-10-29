@@ -1,18 +1,22 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../common/ABILibrary.sol";
-
-import "../common/JsonLibrary.sol";
-import "../common/ParameterLibrary.sol";
-import "../common/Permissions.sol";
-import "../common/ProofLibrary.sol";
+import {ABILibrary} from "../common/ABILibrary.sol";
+import {ArraysLibrary} from "../common/ArraysLibrary.sol";
+import {JsonLibrary} from "../common/JsonLibrary.sol";
+import {ParameterLibrary} from "../common/ParameterLibrary.sol";
+import {Permissions} from "../common/Permissions.sol";
+import {ProofLibrary} from "../common/ProofLibrary.sol";
 import {BitmaskVerifier, Call, IVerifier, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import {Constants} from "./Constants.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {ICCIPRouterClient} from "../common/interfaces/ICCIPRouterClient.sol";
 import {CCIPClient} from "../common/libraries/CCIPClient.sol";
+import {IOFT, SendParam, MessagingFee} from "../common/interfaces/IOFT.sol";
+import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
+import {OFTLibrary} from "../common/protocols/OFTLibrary.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 library PlasmaStrETHLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
@@ -23,29 +27,48 @@ library PlasmaStrETHLibrary {
         address asset;
         address ccipRouter;
         uint64 ccipEthereumSelector;
+        address aavePool;
+        address weETH;
+        address wethOFTAdapter;
+        uint32 lzEthereumEid;
     }
 
     function getPlasmaStrETHProofs(Info memory info)
         internal
-        pure
+        view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](2);
 
-        {
-            leaves[0] = ProofLibrary.makeVerificationPayload(
-                bitmaskVerifier,
-                info.curator,
-                info.asset,
-                0,
-                abi.encodeCall(IERC20.approve, (info.ccipRouter, 0)),
-                ProofLibrary.makeBitmask(
-                    true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-                )
-            );
-        }
+        IVerifier.VerificationPayload[] memory aaveLeaves = AaveLibrary.getAaveProofs(
+            bitmaskVerifier,
+            AaveLibrary.Info({
+                subvault: Constants.STRETH_PLASMA_SUBVAULT_0,
+                subvaultName: "subvault0",
+                curator: info.curator,
+                aaveInstance: info.aavePool,
+                aaveInstanceName: "Plasma",
+                collaterals: ArraysLibrary.makeAddressArray(abi.encode(info.weETH)),
+                loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+                categoryId: 1
+            })
+        );
 
+        leaves = new IVerifier.VerificationPayload[](2 + aaveLeaves.length + 3);
+
+        // 0. Approve CCIP router for existing asset (WstETH)
+        leaves[0] = ProofLibrary.makeVerificationPayload(
+            bitmaskVerifier,
+            info.curator,
+            info.asset,
+            0,
+            abi.encodeCall(IERC20.approve, (info.ccipRouter, 0)),
+            ProofLibrary.makeBitmask(
+                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
+            )
+        );
+
+        // 1. CCIP send asset -> Ethereum
         {
             CCIPClient.EVMTokenAmount[] memory tokenAmounts = new CCIPClient.EVMTokenAmount[](1);
             tokenAmounts[0].token = info.asset;
@@ -94,15 +117,63 @@ library PlasmaStrETHLibrary {
                 )
             );
         }
+
+        // 2..8 Aave leaves
+        ArraysLibrary.insert(leaves, aaveLeaves, 2);
+
+        // 9. IOFT.send weETH -> Ethereum
+        leaves[2 + aaveLeaves.length] = OFTLibrary.getSendProof(
+            bitmaskVerifier,
+            OFTLibrary.SendInfo({
+                curator: info.curator,
+                oft: info.weETH,
+                token: info.weETH,
+                dstEid: info.lzEthereumEid,
+                to: info.ethereumSubvault,
+                extraOptions: hex"0003",
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 10. WETH.approve(WETH_OFT_ADAPTER)
+        leaves[3 + aaveLeaves.length] = OFTLibrary.getApproveProof(
+            bitmaskVerifier,
+            OFTLibrary.SendInfo({
+                curator: info.curator,
+                oft: info.wethOFTAdapter,
+                token: Constants.WETH,
+                dstEid: 0,
+                to: address(0),
+                extraOptions: new bytes(0),
+                refundAddress: address(0),
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 11. IOFT.send WETH -> Ethereum (adapter)
+        leaves[4 + aaveLeaves.length] = OFTLibrary.getSendProof(
+            bitmaskVerifier,
+            OFTLibrary.SendInfo({
+                curator: info.curator,
+                oft: info.wethOFTAdapter,
+                token: Constants.WETH,
+                dstEid: info.lzEthereumEid,
+                to: info.ethereumSubvault,
+                extraOptions: new bytes(0),
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
+
         (merkleRoot, leaves) = ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getPlasmaStrETHDescriptions(Info memory info) internal pure returns (string[] memory descriptions) {
-        descriptions = new string[](2);
+    function getPlasmaStrETHDescriptions(Info memory info) internal view returns (string[] memory descriptions) {
+        descriptions = new string[](12);
 
         ParameterLibrary.Parameter[] memory innerParameters;
         innerParameters = ParameterLibrary.add2("to", Strings.toHexString(info.ccipRouter), "amount", "any");
-
         descriptions[0] = JsonLibrary.toJson(
             string(abi.encodePacked("WstETH.approve(ccipRouter, any)")),
             ABILibrary.getABI(IERC20.approve.selector),
@@ -128,7 +199,6 @@ library PlasmaStrETHLibrary {
                 })
             )
         );
-
         descriptions[1] = JsonLibrary.toJson(
             string(
                 abi.encodePacked(
@@ -139,6 +209,65 @@ library PlasmaStrETHLibrary {
             ParameterLibrary.build(Strings.toHexString(info.curator), Strings.toHexString(info.ccipRouter), "any"),
             innerParameters
         );
+
+        ArraysLibrary.insert(
+            descriptions,
+            AaveLibrary.getAaveDescriptions(
+                AaveLibrary.Info({
+                    subvault: Constants.STRETH_PLASMA_SUBVAULT_0,
+                    subvaultName: "subvault0",
+                    curator: info.curator,
+                    aaveInstance: info.aavePool,
+                    aaveInstanceName: "Plasma",
+                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(info.weETH)),
+                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+                    categoryId: 1
+                })
+            ),
+            2
+        );
+
+        // 9. IOFT.send weETH -> Ethereum
+        descriptions[9] = OFTLibrary.getSendDescription(
+            OFTLibrary.SendInfo({
+                curator: info.curator,
+                oft: info.weETH,
+                token: info.weETH,
+                dstEid: info.lzEthereumEid,
+                to: info.ethereumSubvault,
+                extraOptions: hex"0003",
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 10. WETH.approve(WETH_OFT_ADAPTER, any)
+        descriptions[10] = OFTLibrary.getApproveDescription(
+            OFTLibrary.SendInfo({
+                curator: info.curator,
+                oft: info.wethOFTAdapter,
+                token: Constants.WETH,
+                dstEid: 0,
+                to: address(0),
+                extraOptions: new bytes(0),
+                refundAddress: address(0),
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 11. IOFT.send WETH -> Ethereum
+        descriptions[11] = OFTLibrary.getSendDescription(
+            OFTLibrary.SendInfo({
+                curator: info.curator,
+                oft: info.wethOFTAdapter,
+                token: Constants.WETH,
+                dstEid: info.lzEthereumEid,
+                to: info.ethereumSubvault,
+                extraOptions: new bytes(0),
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
     }
 
     function getPlasmaStrETHCalls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
@@ -146,7 +275,7 @@ library PlasmaStrETHLibrary {
         pure
         returns (SubvaultCalls memory calls)
     {
-        calls.calls = new Call[][](2);
+        calls.calls = new Call[][](leaves.length);
         calls.payloads = leaves;
         uint256 index = 0;
         {
@@ -526,5 +655,65 @@ library PlasmaStrETHLibrary {
             }
             calls.calls[index++] = tmp;
         }
+
+        // 2..8 Aave calls (weETH collateral, WETH debt)
+        ArraysLibrary.insert(
+            calls.calls,
+            AaveLibrary.getAaveCalls(
+                AaveLibrary.Info({
+                    subvault: Constants.STRETH_PLASMA_SUBVAULT_0,
+                    subvaultName: "subvault0",
+                    curator: $.curator,
+                    aaveInstance: $.aavePool,
+                    aaveInstanceName: "Plasma",
+                    collaterals: ArraysLibrary.makeAddressArray(abi.encode($.weETH)),
+                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+                    categoryId: 1
+                })
+            ),
+            2
+        );
+
+        // 9. IOFT.send weETH -> Ethereum
+        calls.calls[9] = OFTLibrary.getSendCalls(
+            OFTLibrary.SendInfo({
+                curator: $.curator,
+                oft: $.weETH,
+                token: $.weETH,
+                dstEid: $.lzEthereumEid,
+                to: $.ethereumSubvault,
+                extraOptions: hex"0003",
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 10. WETH.approve(WETH_OFT_ADAPTER)
+        calls.calls[10] = OFTLibrary.getApproveCalls(
+            OFTLibrary.SendInfo({
+                curator: $.curator,
+                oft: $.wethOFTAdapter,
+                token: Constants.WETH,
+                dstEid: 0,
+                to: address(0),
+                extraOptions: new bytes(0),
+                refundAddress: address(0),
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 11. IOFT.send WETH -> Ethereum via adapter
+        calls.calls[11] = OFTLibrary.getSendCalls(
+            OFTLibrary.SendInfo({
+                curator: $.curator,
+                oft: $.wethOFTAdapter,
+                token: Constants.WETH,
+                dstEid: $.lzEthereumEid,
+                to: $.ethereumSubvault,
+                extraOptions: new bytes(0),
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
     }
 }

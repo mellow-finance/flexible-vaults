@@ -17,8 +17,11 @@ import {ProofLibrary} from "../common/ProofLibrary.sol";
 import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
 import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
+import {OFTLibrary} from "../common/protocols/OFTLibrary.sol";
+import {EtherfiLibrary} from "../common/protocols/EtherfiLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
+import {IOFT, SendParam, MessagingFee} from "../common/interfaces/IOFT.sol";
 import "./Constants.sol";
 
 import {ICCIPRouterClient} from "../common/interfaces/ICCIPRouterClient.sol";
@@ -32,7 +35,7 @@ library strETHLibrary {
 
     function getSubvault0Proofs(address curator)
         internal
-        pure
+        view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         /*
@@ -44,7 +47,7 @@ library strETHLibrary {
             8. ccipRouter.ccipSend{value: any}(params...)
         */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](8);
+        leaves = new IVerifier.VerificationPayload[](15);
         leaves[0] = WethLibrary.getWethDepositProof(bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
         ArraysLibrary.insert(
             leaves,
@@ -148,11 +151,70 @@ library strETHLibrary {
             )
         );
 
+        // 8. WstETH.approve(CowswapVaultRelayer, any)
+        leaves[8] = ProofLibrary.makeVerificationPayload(
+            bitmaskVerifier,
+            curator,
+            Constants.WSTETH,
+            0,
+            abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)),
+            ProofLibrary.makeBitmask(
+                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
+            )
+        );
+
+        // 9. weETH.approve(WEETH_OFT_ADAPTER, any)
+        leaves[9] = OFTLibrary.getApproveProof(
+            bitmaskVerifier,
+            OFTLibrary.SendInfo({
+                curator: curator,
+                oft: Constants.WEETH_OFT_ADAPTER,
+                token: Constants.WEETH,
+                dstEid: 0,
+                to: address(0),
+                extraOptions: new bytes(0),
+                refundAddress: address(0),
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 10. IOFT.send weETH -> Plasma (to plasma subvault0)
+        leaves[10] = OFTLibrary.getSendProof(
+            bitmaskVerifier,
+            OFTLibrary.SendInfo({
+                curator: curator,
+                oft: Constants.WEETH_OFT_ADAPTER,
+                token: Constants.WEETH,
+                dstEid: Constants.LZ_PLASMA_EID,
+                to: Constants.STRETH_PLASMA_SUBVAULT_0,
+                extraOptions: hex"0003",
+                refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 11-14. Ether.fi unwind path
+        ArraysLibrary.insert(
+            leaves,
+            EtherfiLibrary.getProofs(
+                bitmaskVerifier,
+                EtherfiLibrary.Info({
+                    curator: curator,
+                    eETH: Constants.EETH,
+                    weETH: Constants.WEETH,
+                    liquidityPool: Constants.ETHERFI_LIQUIDITY_POOL,
+                    withdrawRequestNFT: Constants.ETHERFI_WITHDRAW_REQUEST_NFT,
+                    recipient: Constants.STRETH_ETHEREUM_SUBVAULT_0
+                })
+            ),
+            11
+        );
+
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
     function getSubvault0Descriptions(address curator) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](8);
+        descriptions = new string[](15);
         descriptions[0] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
         ArraysLibrary.insert(
             descriptions,
@@ -237,6 +299,60 @@ library strETHLibrary {
                 Strings.toHexString(curator), Strings.toHexString(Constants.CCIP_ETHEREUM_ROUTER), "any"
             ),
             innerParameters
+        );
+
+        // 8. WstETH.approve(CowswapVaultRelayer, any)
+        innerParameters = ParameterLibrary.build("to", Strings.toHexString(Constants.COWSWAP_VAULT_RELAYER)).addAny(
+            "amount"
+        );
+        descriptions[8] = JsonLibrary.toJson(
+            string(abi.encodePacked("WstETH.approve(CowswapVaultRelayer, any)")),
+            ABILibrary.getABI(IERC20.approve.selector),
+            ParameterLibrary.build(Strings.toHexString(curator), Strings.toHexString(Constants.WSTETH), "0"),
+            innerParameters
+        );
+
+        // 9. weETH.approve(WEETH_OFT_ADAPTER, any)
+        descriptions[9] = OFTLibrary.getApproveDescription(
+            OFTLibrary.SendInfo({
+                curator: curator,
+                oft: Constants.WEETH_OFT_ADAPTER,
+                token: Constants.WEETH,
+                dstEid: 0,
+                to: address(0),
+                extraOptions: new bytes(0),
+                refundAddress: address(0),
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 10. IOFT.send weETH -> Plasma (to plasma subvault0)
+        descriptions[10] = OFTLibrary.getSendDescription(
+            OFTLibrary.SendInfo({
+                curator: curator,
+                oft: Constants.WEETH_OFT_ADAPTER,
+                token: Constants.WEETH,
+                dstEid: Constants.LZ_PLASMA_EID,
+                to: Constants.STRETH_PLASMA_SUBVAULT_0,
+                extraOptions: hex"0003",
+                refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        ArraysLibrary.insert(
+            descriptions,
+            EtherfiLibrary.getDescriptions(
+                EtherfiLibrary.Info({
+                    curator: curator,
+                    eETH: Constants.EETH,
+                    weETH: Constants.WEETH,
+                    liquidityPool: Constants.ETHERFI_LIQUIDITY_POOL,
+                    withdrawRequestNFT: Constants.ETHERFI_WITHDRAW_REQUEST_NFT,
+                    recipient: Constants.STRETH_ETHEREUM_SUBVAULT_0
+                })
+            ),
+            11
         );
     }
 
@@ -751,6 +867,88 @@ library strETHLibrary {
             }
             calls.calls[7] = tmp;
         }
+
+        // 8. WstETH.approve(CowswapVaultRelayer)
+        {
+            Call[] memory tmp = new Call[](7);
+            tmp[0] = Call(
+                curator, Constants.WSTETH, 0, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)), true
+            );
+            tmp[1] = Call(
+                curator, Constants.WSTETH, 0, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 1 ether)),
+                true
+            );
+            tmp[2] = Call(
+                address(0xdead),
+                Constants.WSTETH,
+                0,
+                abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 1 ether)),
+                false
+            );
+            tmp[3] = Call(
+                curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 1 ether)),
+                false
+            );
+            tmp[4] = Call(
+                curator, Constants.WSTETH, 1 wei, abi.encodeCall(IERC20.approve, (Constants.COWSWAP_VAULT_RELAYER, 0)),
+                false
+            );
+            tmp[5] = Call(
+                curator, Constants.WSTETH, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 0)), false
+            );
+            tmp[6] = Call(
+                curator,
+                Constants.WSTETH,
+                0,
+                abi.encode(IERC20.approve.selector, Constants.COWSWAP_VAULT_RELAYER, 0),
+                false
+            );
+            calls.calls[8] = tmp;
+        }
+
+        // 9. weETH.approve(WEETH_OFT_ADAPTER)
+        calls.calls[9] = OFTLibrary.getApproveCalls(
+            OFTLibrary.SendInfo({
+                curator: curator,
+                oft: Constants.WEETH_OFT_ADAPTER,
+                token: Constants.WEETH,
+                dstEid: 0,
+                to: address(0),
+                extraOptions: new bytes(0),
+                refundAddress: address(0),
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        // 10. IOFT.send weETH -> Plasma
+        // 10. weETH OFT send to Plasma
+        calls.calls[10] = OFTLibrary.getSendCalls(
+            OFTLibrary.SendInfo({
+                curator: curator,
+                oft: Constants.WEETH_OFT_ADAPTER,
+                token: Constants.WEETH,
+                dstEid: Constants.LZ_PLASMA_EID,
+                to: Constants.STRETH_PLASMA_SUBVAULT_0,
+                extraOptions: hex"0003",
+                refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0,
+                enforceZeroLzTokenFee: true
+            })
+        );
+
+        ArraysLibrary.insert(
+            calls.calls,
+            EtherfiLibrary.getCalls(
+                EtherfiLibrary.Info({
+                    curator: curator,
+                    eETH: Constants.EETH,
+                    weETH: Constants.WEETH,
+                    liquidityPool: Constants.ETHERFI_LIQUIDITY_POOL,
+                    withdrawRequestNFT: Constants.ETHERFI_WITHDRAW_REQUEST_NFT,
+                    recipient: Constants.STRETH_ETHEREUM_SUBVAULT_0
+                })
+            ),
+            11
+        );
     }
 
     function getSubvault1Proofs(address curator, address subvault)

@@ -53,6 +53,7 @@ library OFTLibrary {
         view
         returns (IVerifier.VerificationPayload memory)
     {
+        require($.oft != $.token, "OFTLibrary: oft must be adapter, not token");
         validateOFT($.oft, $.token);
         return ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
@@ -71,6 +72,7 @@ library OFTLibrary {
     }
 
     function getApproveDescription(SendInfo memory $) internal view returns (string memory desc) {
+        require($.oft != $.token, "OFTLibrary: oft must be adapter, not token");
         string memory symbol = validateOFT($.oft, $.token);
         ParameterLibrary.Parameter[] memory inner =
             ParameterLibrary.build("to", Strings.toHexString($.oft)).addAny("amount");
@@ -91,6 +93,7 @@ library OFTLibrary {
     }
 
     function getApproveCalls(SendInfo memory $) internal pure returns (Call[] memory calls) {
+        require($.oft != $.token, "OFTLibrary: oft must be adapter, not token");
         Call[] memory tmp = new Call[](16);
         uint256 i = 0;
         tmp[i++] = Call($.curator, $.token, 0, abi.encodeCall(IERC20.approve, ($.oft, 0)), true);
@@ -158,37 +161,50 @@ library OFTLibrary {
         );
     }
 
+    function _buildSendInnerParams(SendInfo memory $) private pure returns (ParameterLibrary.Parameter[] memory) {
+        ParameterLibrary.Parameter[] memory inner = ParameterLibrary.build("dstEid", Strings.toString($.dstEid));
+        
+        inner = inner.add("to", Strings.toHexString($.to));
+        inner = inner.add("amountLD", "any");
+        inner = inner.add("minAmountLD", "any");
+        inner = inner.add(
+            "extraOptions", $.extraOptions.length == 0 ? "any" : Strings.toHexString(uint256(bytes32($.extraOptions)))
+        );
+        inner = inner.add("composeMsg", "0x");
+        inner = inner.add("oftCmd", "0x");
+        inner = inner.add("nativeFee", "any");
+        inner = inner.add("lzTokenFee", $.enforceZeroLzTokenFee ? "0" : "any");
+        inner = inner.add("_refundAddress", Strings.toHexString($.refundAddress));
+        
+        return inner;
+    }
+
+    function _buildSendTitle(SendInfo memory $, string memory contractName) private pure returns (string memory) {
+        return string(
+            abi.encodePacked(
+                contractName,
+                ".send(dstEid=",
+                Strings.toString($.dstEid),
+                ", to=",
+                Strings.toHexString($.to),
+                ", extraOptions=",
+                ($.extraOptions.length == 0 ? "any" : Strings.toHexString(uint256(bytes32($.extraOptions)))),
+                ")"
+            )
+        );
+    }
+
     function getSendDescription(SendInfo memory $) internal view returns (string memory desc) {
         string memory symbol = validateOFT($.oft, $.token);
         string memory contractName = $.oft == $.token
             ? string(abi.encodePacked(symbol, "_OFT"))
             : string(abi.encodePacked(symbol, "_OFTAdapter"));
         
-        ParameterLibrary.Parameter[] memory inner = ParameterLibrary.build("dstEid", Strings.toString($.dstEid)).add(
-            "to", Strings.toHexString($.to)
-        ).add("amountLD", "any").add("minAmountLD", "any").add(
-            "extraOptions", $.extraOptions.length == 0 ? "any" : Strings.toHexString(uint256(bytes32($.extraOptions)))
-        ).add("composeMsg", "0x").add("oftCmd", "0x");
-
-        inner = inner.add("nativeFee", "any").add("lzTokenFee", $.enforceZeroLzTokenFee ? "0" : "any");
-        inner = inner.add("_refundAddress", Strings.toHexString($.refundAddress));
-
         desc = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    contractName,
-                    ".send(dstEid=",
-                    Strings.toString($.dstEid),
-                    ", to=",
-                    Strings.toHexString($.to),
-                    ", extraOptions=",
-                    ($.extraOptions.length == 0 ? "any" : Strings.toHexString(uint256(bytes32($.extraOptions)))),
-                    ")"
-                )
-            ),
+            _buildSendTitle($, contractName),
             ABILibrary.getABI(IOFT.send.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.oft), "any"),
-            inner
+            _buildSendInnerParams($)
         );
     }
 

@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../common/VerifySubvaultCallsBase.sol";
+import {VerifySubvaultCallsBase} from "../common/VerifySubvaultCallsBase.sol";
+import {IVerifier} from "../../src/interfaces/modules/IVerifierModule.sol";
+import {SubvaultCalls} from "../common/interfaces/Imports.sol";
 
-import "../common/protocols/OFTLibrary.sol";
-import "./Constants.sol";
-import "./PlasmaStrETHLibrary.sol";
+import {OFTLibrary} from "../common/protocols/OFTLibrary.sol";
+import {Constants} from "./Constants.sol";
+import {PlasmaStrETHLibrary} from "./PlasmaStrETHLibrary.sol";
 
 /// @title VerifyPlasmaStrETHCalls
 /// @notice Verification script for Plasma strETH vault subvault calls

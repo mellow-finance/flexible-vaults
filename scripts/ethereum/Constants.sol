@@ -19,6 +19,7 @@ library Constants {
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant WSTETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
     address public constant WEETH = 0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee;
+    address public constant EETH = 0x35fA164735182de50811E8e2E824cFb9B6118ac2;
     address public constant STETH = 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84;
     address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
@@ -58,6 +59,10 @@ library Constants {
     // LayerZero / OFT bridging
     address public constant WEETH_OFT_ADAPTER = 0xcd2eb13D6831d4602D80E5db9230A57596CDCA63;
     uint32 public constant LZ_PLASMA_EID = 30383;
+
+    // Ether.fi contracts
+    address public constant ETHERFI_LIQUIDITY_POOL = 0x308861A430be4cce5502d0A12724771Fc6DaF216;
+    address public constant ETHERFI_WITHDRAW_REQUEST_NFT = 0x7d5706f6ef3F89B3951E23e557CDFBC3239D4E2c;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({

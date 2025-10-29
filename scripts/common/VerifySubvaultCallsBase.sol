@@ -4,11 +4,14 @@ pragma solidity 0.8.25;
 import "forge-std/Script.sol";
 import "forge-std/console2.sol";
 
-import "./AcceptanceLibrary.sol";
-import "./ArraysLibrary.sol";
-import "./ProofLibrary.sol";
+import {AcceptanceLibrary} from "./AcceptanceLibrary.sol";
+import {ArraysLibrary} from "./ArraysLibrary.sol";
+import {ProofLibrary} from "./ProofLibrary.sol";
+import {Call, SubvaultCalls} from "./interfaces/Imports.sol";
 
-import "../../src/vaults/Subvault.sol";
+import {Subvault} from "../../src/vaults/Subvault.sol";
+import {IVerifier} from "../../src/interfaces/modules/IVerifierModule.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 abstract contract VerifySubvaultCallsBase is Script {
     // ===== CONFIGURATION (Virtual Functions) =====
