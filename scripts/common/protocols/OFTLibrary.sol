@@ -20,9 +20,8 @@ library OFTLibrary {
         address token;
         uint32 dstEid;
         address to;
-        bytes extraOptions; // leave empty to allow any
+        bytes extraOptions;
         address refundAddress;
-        bool enforceZeroLzTokenFee; // when true, requires lzTokenFee == 0
     }
 
     function validateOFT(address oft, address expectedToken) private view returns (string memory symbol) {
@@ -62,10 +61,10 @@ library OFTLibrary {
             0,
             abi.encodeCall(IERC20.approve, ($.oft, 0)),
             ProofLibrary.makeBitmask(
-                true, // who can vary in runtime
-                true, // where is bound via equality in data hashing
-                true, // value not used
-                true, // selector
+                true,
+                true,
+                true,
+                true,
                 abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
             )
         );
@@ -115,7 +114,6 @@ library OFTLibrary {
         returns (IVerifier.VerificationPayload memory)
     {
         validateOFT($.oft, $.token);
-        // data with strict fields set, amount/minAmount left at 0 (ignored by mask)
         bytes memory data = abi.encodeCall(
             IOFT.send,
             (
@@ -128,12 +126,11 @@ library OFTLibrary {
                     composeMsg: new bytes(0),
                     oftCmd: new bytes(0)
                 }),
-                MessagingFee({nativeFee: 0, lzTokenFee: $.enforceZeroLzTokenFee ? 0 : 0}),
+                MessagingFee({nativeFee: 0, lzTokenFee: 0}),
                 $.refundAddress
             )
         );
 
-        // mask: lock dstEid, to, (optionally) lzTokenFee==0, refundAddress; allow amounts and dynamic bytes unless provided
         bytes memory mask = abi.encodeCall(
             IOFT.send,
             (
@@ -142,11 +139,11 @@ library OFTLibrary {
                     to: bytes32(type(uint256).max), // check receiver
                     amountLD: 0, // allow any
                     minAmountLD: 0, // allow any
-                    extraOptions: $.extraOptions, // if non-empty will be enforced byte-for-byte; if empty, not enforced
+                    extraOptions: $.extraOptions,
                     composeMsg: new bytes(0),
                     oftCmd: new bytes(0)
                 }),
-                MessagingFee({nativeFee: 0, lzTokenFee: $.enforceZeroLzTokenFee ? type(uint256).max : 0}),
+                MessagingFee({nativeFee: 0, lzTokenFee: type(uint256).max}),
                 address(type(uint160).max) // check refund
             )
         );
@@ -155,7 +152,7 @@ library OFTLibrary {
             bitmaskVerifier,
             $.curator,
             $.oft,
-            0, // value is not constrained by mask; runtime value may be non-zero
+            0, // may be non-zero
             data,
             ProofLibrary.makeBitmask(true, true, false, true, mask)
         );
@@ -173,7 +170,7 @@ library OFTLibrary {
         inner = inner.add("composeMsg", "0x");
         inner = inner.add("oftCmd", "0x");
         inner = inner.add("nativeFee", "any");
-        inner = inner.add("lzTokenFee", $.enforceZeroLzTokenFee ? "0" : "any");
+        inner = inner.add("lzTokenFee", "0");
         inner = inner.add("_refundAddress", Strings.toHexString($.refundAddress));
         
         return inner;
@@ -228,7 +225,7 @@ library OFTLibrary {
                         composeMsg: new bytes(0),
                         oftCmd: new bytes(0)
                     }),
-                    MessagingFee({nativeFee: 0, lzTokenFee: $.enforceZeroLzTokenFee ? 0 : 0}),
+                    MessagingFee({nativeFee: 0, lzTokenFee: 0}),
                     $.refundAddress
                 )
             ),
@@ -251,7 +248,7 @@ library OFTLibrary {
                         composeMsg: new bytes(0),
                         oftCmd: new bytes(0)
                     }),
-                    MessagingFee({nativeFee: 1, lzTokenFee: $.enforceZeroLzTokenFee ? 0 : 0}),
+                    MessagingFee({nativeFee: 1, lzTokenFee: 0}),
                     $.refundAddress
                 )
             ),
@@ -278,7 +275,7 @@ library OFTLibrary {
                         composeMsg: new bytes(0),
                         oftCmd: new bytes(0)
                     }),
-                    MessagingFee({nativeFee: 0, lzTokenFee: $.enforceZeroLzTokenFee ? 0 : 0}),
+                    MessagingFee({nativeFee: 0, lzTokenFee: 0}),
                     $.refundAddress
                 )
             ),
@@ -301,7 +298,7 @@ library OFTLibrary {
                         composeMsg: new bytes(0),
                         oftCmd: new bytes(0)
                     }),
-                    MessagingFee({nativeFee: 0, lzTokenFee: $.enforceZeroLzTokenFee ? 0 : 0}),
+                    MessagingFee({nativeFee: 0, lzTokenFee: 0}),
                     $.refundAddress
                 )
             ),
@@ -324,7 +321,7 @@ library OFTLibrary {
                         composeMsg: new bytes(0),
                         oftCmd: new bytes(0)
                     }),
-                    MessagingFee({nativeFee: 0, lzTokenFee: $.enforceZeroLzTokenFee ? 0 : 0}),
+                    MessagingFee({nativeFee: 0, lzTokenFee: 0}),
                     address(0xdead)
                 )
             ),
@@ -346,7 +343,7 @@ library OFTLibrary {
                     composeMsg: new bytes(0),
                     oftCmd: new bytes(0)
                 }),
-                MessagingFee({nativeFee: 0, lzTokenFee: $.enforceZeroLzTokenFee ? 0 : 0}),
+                MessagingFee({nativeFee: 0, lzTokenFee: 0}),
                 $.refundAddress
             ),
             false

@@ -131,39 +131,29 @@ library PlasmaStrETHLibrary {
                 dstEid: info.lzEthereumEid,
                 to: info.ethereumSubvault,
                 extraOptions: hex"0003",
-                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0
             })
         );
 
         // 10. WETH.approve(WETH_OFT_ADAPTER)
+        OFTLibrary.SendInfo memory sendInfo = OFTLibrary.SendInfo({
+            curator: info.curator,
+            oft: info.wethOFTAdapter,
+            token: Constants.WETH,
+            dstEid: info.lzEthereumEid,
+            to: info.ethereumSubvault,
+            extraOptions: new bytes(0),
+            refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0
+        });
         leaves[3 + aaveLeaves.length] = OFTLibrary.getApproveProof(
             bitmaskVerifier,
-            OFTLibrary.SendInfo({
-                curator: info.curator,
-                oft: info.wethOFTAdapter,
-                token: Constants.WETH,
-                dstEid: 0,
-                to: address(0),
-                extraOptions: new bytes(0),
-                refundAddress: address(0),
-                enforceZeroLzTokenFee: true
-            })
+            sendInfo
         );
 
         // 11. IOFT.send WETH -> Ethereum (adapter)
         leaves[4 + aaveLeaves.length] = OFTLibrary.getSendProof(
             bitmaskVerifier,
-            OFTLibrary.SendInfo({
-                curator: info.curator,
-                oft: info.wethOFTAdapter,
-                token: Constants.WETH,
-                dstEid: info.lzEthereumEid,
-                to: info.ethereumSubvault,
-                extraOptions: new bytes(0),
-                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
-            })
+            sendInfo
         );
 
         (merkleRoot, leaves) = ProofLibrary.generateMerkleProofs(leaves);
@@ -236,38 +226,24 @@ library PlasmaStrETHLibrary {
                 dstEid: info.lzEthereumEid,
                 to: info.ethereumSubvault,
                 extraOptions: hex"0003",
-                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0
             })
         );
 
         // 10. WETH.approve(WETH_OFT_ADAPTER, any)
-        descriptions[10] = OFTLibrary.getApproveDescription(
-            OFTLibrary.SendInfo({
-                curator: info.curator,
-                oft: info.wethOFTAdapter,
-                token: Constants.WETH,
-                dstEid: 0,
-                to: address(0),
-                extraOptions: new bytes(0),
-                refundAddress: address(0),
-                enforceZeroLzTokenFee: true
-            })
-        );
+        OFTLibrary.SendInfo memory sendInfo = OFTLibrary.SendInfo({
+            curator: info.curator,
+            oft: info.wethOFTAdapter,
+            token: Constants.WETH,
+            dstEid: info.lzEthereumEid,
+            to: info.ethereumSubvault,
+            extraOptions: new bytes(0),
+            refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0
+        });
+        descriptions[10] = OFTLibrary.getApproveDescription(sendInfo);
 
         // 11. IOFT.send WETH -> Ethereum
-        descriptions[11] = OFTLibrary.getSendDescription(
-            OFTLibrary.SendInfo({
-                curator: info.curator,
-                oft: info.wethOFTAdapter,
-                token: Constants.WETH,
-                dstEid: info.lzEthereumEid,
-                to: info.ethereumSubvault,
-                extraOptions: new bytes(0),
-                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
-            })
-        );
+        descriptions[11] = OFTLibrary.getSendDescription(sendInfo);
     }
 
     function getPlasmaStrETHCalls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
@@ -683,37 +659,23 @@ library PlasmaStrETHLibrary {
                 dstEid: $.lzEthereumEid,
                 to: $.ethereumSubvault,
                 extraOptions: hex"0003",
-                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
+                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0
             })
         );
 
         // 10. WETH.approve(WETH_OFT_ADAPTER)
-        calls.calls[10] = OFTLibrary.getApproveCalls(
-            OFTLibrary.SendInfo({
-                curator: $.curator,
-                oft: $.wethOFTAdapter,
-                token: Constants.WETH,
-                dstEid: 0,
-                to: address(0),
-                extraOptions: new bytes(0),
-                refundAddress: address(0),
-                enforceZeroLzTokenFee: true
-            })
-        );
+        OFTLibrary.SendInfo memory sendInfo = OFTLibrary.SendInfo({
+            curator: $.curator,
+            oft: $.wethOFTAdapter,
+            token: Constants.WETH,
+            dstEid: $.lzEthereumEid,
+            to: $.ethereumSubvault,
+            extraOptions: new bytes(0),
+            refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0
+        });
+        calls.calls[10] = OFTLibrary.getApproveCalls(sendInfo);
 
         // 11. IOFT.send WETH -> Ethereum via adapter
-        calls.calls[11] = OFTLibrary.getSendCalls(
-            OFTLibrary.SendInfo({
-                curator: $.curator,
-                oft: $.wethOFTAdapter,
-                token: Constants.WETH,
-                dstEid: $.lzEthereumEid,
-                to: $.ethereumSubvault,
-                extraOptions: new bytes(0),
-                refundAddress: Constants.STRETH_PLASMA_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
-            })
-        );
+        calls.calls[11] = OFTLibrary.getSendCalls(sendInfo);
     }
 }

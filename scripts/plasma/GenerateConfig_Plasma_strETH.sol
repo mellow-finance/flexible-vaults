@@ -44,13 +44,13 @@ contract GenerateConfig_Plasma_strETH is GenerateConfig {
         });
     }
 
-    function getSubvaultCalls(address subvaultAddress) internal view override returns (SubvaultCalls memory calls) {
+    function getSubvaultCalls(address) internal view override returns (SubvaultCalls memory calls) {
         PlasmaStrETHLibrary.Info memory info = getPlasmaStrETHInfo();
         (, IVerifier.VerificationPayload[] memory leaves) = PlasmaStrETHLibrary.getPlasmaStrETHProofs(info);
         calls = PlasmaStrETHLibrary.getPlasmaStrETHCalls(info, leaves);
     }
 
-    function getDescriptions(address subvaultAddress) internal view override returns (string[] memory descriptions) {
+    function getDescriptions(address) internal view override returns (string[] memory descriptions) {
         PlasmaStrETHLibrary.Info memory info = getPlasmaStrETHInfo();
 
         descriptions = PlasmaStrETHLibrary.getPlasmaStrETHDescriptions(info);

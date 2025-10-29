@@ -164,33 +164,24 @@ library strETHLibrary {
         );
 
         // 9. weETH.approve(WEETH_OFT_ADAPTER, any)
+        OFTLibrary.SendInfo memory sendInfo = OFTLibrary.SendInfo({
+            curator: curator,
+            oft: Constants.WEETH_OFT_ADAPTER,
+            token: Constants.WEETH,
+            dstEid: Constants.LZ_PLASMA_EID,
+            to: Constants.STRETH_PLASMA_SUBVAULT_0,
+            extraOptions: hex"0003",
+            refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0
+        });
         leaves[9] = OFTLibrary.getApproveProof(
             bitmaskVerifier,
-            OFTLibrary.SendInfo({
-                curator: curator,
-                oft: Constants.WEETH_OFT_ADAPTER,
-                token: Constants.WEETH,
-                dstEid: 0,
-                to: address(0),
-                extraOptions: new bytes(0),
-                refundAddress: address(0),
-                enforceZeroLzTokenFee: true
-            })
+            sendInfo
         );
 
         // 10. IOFT.send weETH -> Plasma (to plasma subvault0)
         leaves[10] = OFTLibrary.getSendProof(
             bitmaskVerifier,
-            OFTLibrary.SendInfo({
-                curator: curator,
-                oft: Constants.WEETH_OFT_ADAPTER,
-                token: Constants.WEETH,
-                dstEid: Constants.LZ_PLASMA_EID,
-                to: Constants.STRETH_PLASMA_SUBVAULT_0,
-                extraOptions: hex"0003",
-                refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
-            })
+            sendInfo
         );
 
         // 11-14. Ether.fi unwind path
@@ -313,32 +304,19 @@ library strETHLibrary {
         );
 
         // 9. weETH.approve(WEETH_OFT_ADAPTER, any)
-        descriptions[9] = OFTLibrary.getApproveDescription(
-            OFTLibrary.SendInfo({
-                curator: curator,
-                oft: Constants.WEETH_OFT_ADAPTER,
-                token: Constants.WEETH,
-                dstEid: 0,
-                to: address(0),
-                extraOptions: new bytes(0),
-                refundAddress: address(0),
-                enforceZeroLzTokenFee: true
-            })
-        );
+        OFTLibrary.SendInfo memory sendInfo = OFTLibrary.SendInfo({
+            curator: curator,
+            oft: Constants.WEETH_OFT_ADAPTER,
+            token: Constants.WEETH,
+            dstEid: Constants.LZ_PLASMA_EID,
+            to: Constants.STRETH_PLASMA_SUBVAULT_0,
+            extraOptions: hex"0003",
+            refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0
+        });
+        descriptions[9] = OFTLibrary.getApproveDescription(sendInfo);
 
         // 10. IOFT.send weETH -> Plasma (to plasma subvault0)
-        descriptions[10] = OFTLibrary.getSendDescription(
-            OFTLibrary.SendInfo({
-                curator: curator,
-                oft: Constants.WEETH_OFT_ADAPTER,
-                token: Constants.WEETH,
-                dstEid: Constants.LZ_PLASMA_EID,
-                to: Constants.STRETH_PLASMA_SUBVAULT_0,
-                extraOptions: hex"0003",
-                refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
-            })
-        );
+        descriptions[10] = OFTLibrary.getSendDescription(sendInfo);
 
         ArraysLibrary.insert(
             descriptions,
@@ -907,33 +885,19 @@ library strETHLibrary {
         }
 
         // 9. weETH.approve(WEETH_OFT_ADAPTER)
-        calls.calls[9] = OFTLibrary.getApproveCalls(
-            OFTLibrary.SendInfo({
-                curator: curator,
-                oft: Constants.WEETH_OFT_ADAPTER,
-                token: Constants.WEETH,
-                dstEid: 0,
-                to: address(0),
-                extraOptions: new bytes(0),
-                refundAddress: address(0),
-                enforceZeroLzTokenFee: true
-            })
-        );
+        OFTLibrary.SendInfo memory sendInfo = OFTLibrary.SendInfo({
+            curator: curator,
+            oft: Constants.WEETH_OFT_ADAPTER,
+            token: Constants.WEETH,
+            dstEid: Constants.LZ_PLASMA_EID,
+            to: Constants.STRETH_PLASMA_SUBVAULT_0,
+            extraOptions: hex"0003",
+            refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0
+        });
+        calls.calls[9] = OFTLibrary.getApproveCalls(sendInfo);
 
         // 10. IOFT.send weETH -> Plasma
-        // 10. weETH OFT send to Plasma
-        calls.calls[10] = OFTLibrary.getSendCalls(
-            OFTLibrary.SendInfo({
-                curator: curator,
-                oft: Constants.WEETH_OFT_ADAPTER,
-                token: Constants.WEETH,
-                dstEid: Constants.LZ_PLASMA_EID,
-                to: Constants.STRETH_PLASMA_SUBVAULT_0,
-                extraOptions: hex"0003",
-                refundAddress: Constants.STRETH_ETHEREUM_SUBVAULT_0,
-                enforceZeroLzTokenFee: true
-            })
-        );
+        calls.calls[10] = OFTLibrary.getSendCalls(sendInfo);
 
         ArraysLibrary.insert(
             calls.calls,
