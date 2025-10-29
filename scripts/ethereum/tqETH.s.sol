@@ -33,6 +33,15 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
+        {
+            address vault_ = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
+            address verifier_ =
+                Constants.protocolDeployment().verifierFactory.create(0, proxyAdmin, abi.encode(vault_, bytes32(0)));
+            console2.log("Verifier:", verifier_);
+
+            revert("ok");
+        }
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;
 
@@ -324,5 +333,16 @@ contract Deploy is Script {
         ProofLibrary.storeProofs("ethereum:tqETH:subvault0", merkleRoot, leaves, descriptions);
         calls = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
+    }
+
+    function _createStrETHVerifier(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = tqETHLibrary.getSubvault1Descriptions(subvault, curator);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = tqETHLibrary.getSubvault1Proofs(subvault, curator);
+        ProofLibrary.storeProofs("ethereum:tqETH:subvault1", merkleRoot, leaves, descriptions);
+        calls = tqETHLibrary.getSubvault1SubvaultCalls(subvault, curator, leaves);
     }
 }

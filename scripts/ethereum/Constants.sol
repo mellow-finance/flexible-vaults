@@ -53,6 +53,12 @@ library Constants {
     address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
     uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
 
+    address public constant STRETH = 0x277C6A642564A91ff78b008022D65683cEE5CCC5;
+    address public constant STRETH_DEPOSIT_QUEUE_ETH = 0xE707321B887b9da133AC5fCc5eDB78Ab177a152D;
+    address public constant STRETH_DEPOSIT_QUEUE_WETH = 0x2eA268f1018a4767bF5da42D531Ea9e943942A36;
+    address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
+    address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
