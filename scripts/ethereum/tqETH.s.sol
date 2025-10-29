@@ -33,17 +33,6 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
-        {
-            address vault_ = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
-            address verifier_ =
-                Constants.protocolDeployment().verifierFactory.create(0, proxyAdmin, abi.encode(vault_, bytes32(0)));
-            console2.log("Verifier:", verifier_);
-
-            if (true) {
-                revert("ok");
-            }
-        }
-
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;
 
@@ -142,13 +131,23 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address verifier;
-        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+        address[] memory verifiers = new address[](2);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
 
         {
             IRiskManager riskManager = vault.riskManager();
-            (verifier, calls[0]) = _createCowswapVerifier(address(vault));
-            vault.createSubvault(0, proxyAdmin, verifier); // eth,weth,wsteth
+            (verifiers[0], calls[0]) = _createCowswapVerifier(address(vault));
+            vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth,weth,wsteth
+            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
+            riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+        }
+
+        {
+            IRiskManager riskManager = vault.riskManager();
+            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            vault.createSubvault(0, proxyAdmin, verifiers[1]);
+            bytes32 merkleRoot;
+            (merkleRoot, calls[1]) = _createStrETHVerifier(address(vault));
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         }
@@ -177,6 +176,15 @@ contract Deploy is Script {
 
         timelockController.schedule(
             address(Subvault(payable(vault.subvaultAt(0))).verifier()),
+            0,
+            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
+            bytes32(0),
+            bytes32(0),
+            0
+        );
+
+        timelockController.schedule(
+            address(Subvault(payable(vault.subvaultAt(1))).verifier()),
             0,
             abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
             bytes32(0),
@@ -270,7 +278,7 @@ contract Deploy is Script {
                 assets: assets_,
                 depositQueueAssets: assets_,
                 redeemQueueAssets: assets_,
-                subvaultVerifiers: ArraysLibrary.makeAddressArray(abi.encode(verifier)),
+                subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(timelockController)),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
                 timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin))

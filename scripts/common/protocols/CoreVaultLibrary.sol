@@ -117,24 +117,17 @@ library CoreVaultLibrary {
                 innerParameters = innerParameters.add("merkleProof", "[]");
                 descriptions[index++] = JsonLibrary.toJson(
                     string(
-                        abi.encodePacked(
-                            "DepositQueue(",
-                            IERC20Metadata(asset).symbol(),
-                            ").deposit(anyInt==msg.value, anyAddress, new bytes32[](0))"
-                        )
+                        abi.encodePacked("DepositQueue(ETH).deposit(anyInt==msg.value, anyAddress, new bytes32[](0))")
                     ),
                     ABILibrary.getABI(IDepositQueue.deposit.selector),
                     ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(queue), "anyInt"),
                     innerParameters
                 );
             } else {
+                string memory symbol = IERC20Metadata(asset).symbol();
                 innerParameters = ParameterLibrary.build("to", Strings.toHexString(queue)).addAny("amount");
                 descriptions[index++] = JsonLibrary.toJson(
-                    string(
-                        abi.encodePacked(
-                            "IERC20(", asset, ").approve(DepositQueue(", IERC20Metadata(asset).symbol(), "), anyInt)"
-                        )
-                    ),
+                    string(abi.encodePacked("IERC20(", symbol, ").approve(DepositQueue(", symbol, "), anyInt)")),
                     ABILibrary.getABI(IERC20.approve.selector),
                     ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(asset), "0"),
                     innerParameters
@@ -143,13 +136,7 @@ library CoreVaultLibrary {
                 innerParameters = ParameterLibrary.build("assets", "any").addAny("referral");
                 innerParameters = innerParameters.add("merkleProof", "[]");
                 descriptions[index++] = JsonLibrary.toJson(
-                    string(
-                        abi.encodePacked(
-                            "DepositQueue(",
-                            IERC20Metadata(asset).symbol(),
-                            ").deposit(anyInt, anyAddress, new bytes32[](0))"
-                        )
-                    ),
+                    string(abi.encodePacked("DepositQueue(", symbol, ").deposit(anyInt, anyAddress, new bytes32[](0))")),
                     ABILibrary.getABI(IDepositQueue.deposit.selector),
                     ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(queue), "0"),
                     innerParameters
@@ -162,19 +149,18 @@ library CoreVaultLibrary {
             address asset = IRedeemQueue(queue).asset();
 
             innerParameters = ParameterLibrary.build("shares", "any");
+            string memory symbol = asset == TransferLibrary.ETH ? "ETH" : IERC20Metadata(asset).symbol();
             descriptions[index++] = JsonLibrary.toJson(
-                string(abi.encodePacked("RedeemQueue(", IERC20Metadata(asset).symbol(), ").redeem(anyInt)")),
+                string(abi.encodePacked("RedeemQueue(", symbol, ").redeem(anyInt)")),
                 ABILibrary.getABI(IRedeemQueue.redeem.selector),
                 ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(queue), "0"),
                 innerParameters
             );
 
             innerParameters =
-                ParameterLibrary.build("recipient", Strings.toHexString($.subvault)).add("timestamps", "[anyInt]");
+                ParameterLibrary.build("recipient", Strings.toHexString($.subvault)).add("timestamps", "[any]");
             descriptions[index++] = JsonLibrary.toJson(
-                string(
-                    abi.encodePacked("RedeemQueue(", IERC20Metadata(asset).symbol(), ").claim(subvault, [antInt32])")
-                ),
+                string(abi.encodePacked("RedeemQueue(", symbol, ").claim(subvault, [antInt32])")),
                 ABILibrary.getABI(IRedeemQueue.claim.selector),
                 ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(queue), "0"),
                 innerParameters
@@ -291,6 +277,13 @@ library CoreVaultLibrary {
                         abi.encodeCall(IDepositQueue.deposit, (1 ether, address(0), new bytes32[](0))),
                         true
                     );
+                    tmp[i++] = Call(
+                        $.curator,
+                        queue,
+                        0,
+                        abi.encodeCall(IDepositQueue.deposit, (1 ether, address(0xbeaf), new bytes32[](0))),
+                        true
+                    );
 
                     tmp[i++] = Call(
                         address(0xdead),
@@ -384,6 +377,10 @@ library CoreVaultLibrary {
                 }
                 calls[index++] = tmp;
             }
+        }
+
+        assembly {
+            mstore(calls, index)
         }
     }
 }

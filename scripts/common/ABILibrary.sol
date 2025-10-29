@@ -18,9 +18,12 @@ import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
 
 import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
 
+import {IDepositQueue} from "../../src/interfaces/queues/IDepositQueue.sol";
+import {IRedeemQueue} from "../../src/interfaces/queues/IRedeemQueue.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[10] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[11] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -30,7 +33,8 @@ library ABILibrary {
             getBracketFinanceInterfaces,
             getL1GatewayRouter,
             getL2GatewayRouter,
-            getCCIPRouter
+            getCCIPRouter,
+            getCoreVaultInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -182,5 +186,21 @@ library ABILibrary {
             '{"inputs":[{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[2] =
             '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"uint16","name":"claimEpoch","type":"uint16"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"claimWithdrawal","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getCoreVaultInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](3);
+        abis = new string[](3);
+
+        selectors[0] = IDepositQueue.deposit.selector;
+        selectors[1] = IRedeemQueue.redeem.selector;
+        selectors[2] = IRedeemQueue.claim.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"uint224","name":"assets","type":"uint224"},{"internalType":"address","name":"referral","type":"address"},{"internalType":"bytes32[]","name":"merkleProof","type":"bytes32[]"}],"name":"deposit","outputs":[],"stateMutability":"payable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"inputs":[{"internalType":"address","name":"receiver","type":"address"},{"internalType":"uint32[]","name":"timestamps","type":"uint32[]"}],"name":"claim","outputs":[{"internalType":"uint256","name":"assets","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
     }
 }
