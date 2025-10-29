@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import {VerifySubvaultCallsBase} from "../common/VerifySubvaultCallsBase.sol";
+import {GenerateConfig} from "../common/GenerateConfig.sol";
 import {IVerifier} from "../../src/interfaces/modules/IVerifierModule.sol";
 import {SubvaultCalls} from "../common/interfaces/Imports.sol";
 
@@ -9,10 +9,10 @@ import {OFTLibrary} from "../common/protocols/OFTLibrary.sol";
 import {Constants} from "./Constants.sol";
 import {PlasmaStrETHLibrary} from "./PlasmaStrETHLibrary.sol";
 
-/// @title VerifyPlasmaStrETHCalls
+/// @title GenerateConfig_Plasma_strETH
 /// @notice Verification script for Plasma strETH vault subvault calls
 /// @dev Inherits from VerifySubvaultCallsBase and provides Plasma strETH-specific configuration
-contract VerifyPlasmaStrETHCalls is VerifySubvaultCallsBase {
+contract GenerateConfig_Plasma_strETH is GenerateConfig {
     // Plasma strETH vault configuration
     address constant SUBVAULT = Constants.STRETH_PLASMA_SUBVAULT_0;
     address constant CURATOR = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;

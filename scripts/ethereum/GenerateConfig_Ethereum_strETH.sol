@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../common/VerifySubvaultCallsBase.sol";
+import "../common/GenerateConfig.sol";
 
 import "../common/protocols/OFTLibrary.sol";
 import "./Constants.sol";
 import "./strETHLibrary.sol";
 
-/// @title VerifyStrETHCalls
+/// @title GenerateConfig_Ethereum_strETH
 /// @notice Verification script for Ethereum strETH vault subvault calls
 /// @dev Inherits from VerifySubvaultCallsBase and provides strETH-specific configuration
-contract VerifyStrETHCalls is VerifySubvaultCallsBase {
+contract GenerateConfig_Ethereum_strETH is GenerateConfig {
     // Ethereum strETH vault configuration
     // Configure which subvault to test by changing this address
     // Subvault 0: 0x90c983DC732e65DB6177638f0125914787b8Cb78

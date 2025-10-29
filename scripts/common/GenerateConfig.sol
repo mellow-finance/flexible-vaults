@@ -13,7 +13,7 @@ import {Subvault} from "../../src/vaults/Subvault.sol";
 import {IVerifier} from "../../src/interfaces/modules/IVerifierModule.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
-abstract contract VerifySubvaultCallsBase is Script {
+abstract contract GenerateConfig is Script {
     // ===== CONFIGURATION (Virtual Functions) =====
     // Override these in derived contracts
 

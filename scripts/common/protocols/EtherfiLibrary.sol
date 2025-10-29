@@ -87,7 +87,7 @@ library EtherfiLibrary {
         );
     }
 
-    function getDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
+    function getDescriptions(Info memory $) internal pure returns (string[] memory descriptions) {
         descriptions = new string[](4);
 
         // eETH.approve(weETH, any)
