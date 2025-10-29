@@ -74,7 +74,7 @@ library CoreVaultLibrary {
         }
         for (uint256 i = 0; i < $.redeemQueues.length; i++) {
             address queue = $.redeemQueues[i];
-            require(vault.hasQueue(queue) && vault.isDepositQueue(queue), "CoreVaultLibrary: invalid deposit queue");
+            require(vault.hasQueue(queue) && !vault.isDepositQueue(queue), "CoreVaultLibrary: invalid redeem queue");
             leaves[index++] = ProofLibrary.makeVerificationPayload(
                 bitmaskVerifier,
                 $.curator,
