@@ -24,22 +24,32 @@ library tqETHLibrary {
         });
     }
 
-    function getHyperLiquidInfo(address strategy) internal pure returns (HyperLiquidLibrary.Info memory) {
+    function getHypeTokenIndex() internal view returns (uint32) {
+        if (block.chainid == 999) {
+            return 0x451;
+        } else if (block.chainid == 998) {
+            return 0x451;
+        } else {
+            revert("Unsupported chainid for HYPE token index");
+        }
+    }
+
+    function getHyperLiquidInfo(address strategy) internal view returns (HyperLiquidLibrary.Info memory) {
         uint24[] memory actions = ArraysLibrary.makeUint24Array(
             abi.encode(
                 HyperLiquidLibrary.LIMIT_ORDER,
                 HyperLiquidLibrary.SPOT_SEND,
                 HyperLiquidLibrary.USD_CLASS_TRANSFER,
                 HyperLiquidLibrary.CANCEL_ORDER_BY_OID,
-                HyperLiquidLibrary.CANCEL_ORDER_BY_CLOID
+                HyperLiquidLibrary.CANCEL_ORDER_BY_CLOID /*,
+                HyperLiquidLibrary.VAULT_TRANSFER,
+                HyperLiquidLibrary.TOKEN_DELEGATE,
+                HyperLiquidLibrary.STAKING_DEPOSIT,
+                HyperLiquidLibrary.STAKING_WITHDRAW,
+                HyperLiquidLibrary.FINALIZE_EVM_CONTRACT,
+                HyperLiquidLibrary.ADD_API_WALLET */
             )
         );
-        //HyperLiquidLibrary.VAULT_TRANSFER,
-        //HyperLiquidLibrary.TOKEN_DELEGATE,
-        //HyperLiquidLibrary.STAKING_DEPOSIT,
-        //HyperLiquidLibrary.STAKING_WITHDRAW,
-        //HyperLiquidLibrary.FINALIZE_EVM_CONTRACT,
-        //HyperLiquidLibrary.ADD_API_WALLET
 
         HyperLiquidLibrary.Token[] memory tokens = new HyperLiquidLibrary.Token[](2);
         tokens[0] = HyperLiquidLibrary.Token({
@@ -57,6 +67,7 @@ library tqETHLibrary {
         return HyperLiquidLibrary.Info({
             strategy: strategy,
             hype: Constants.HYPE,
+            hypeTokenIndex: getHypeTokenIndex(),
             core: Constants.CORE,
             assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
             systemAddress: Constants.USDC,
@@ -73,24 +84,26 @@ library tqETHLibrary {
 
     function getSubvault0Proofs(address strategy)
         internal
-        pure
+        view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         /*
-            0. hype.call{value: any}("") send to core
-            1. coreWriter.sendRawAction(<version 0x01, Only actions 1,6,7,10,11 supported>)
+            0. IERC20.approve(tokenMessenger, any);
+            1. ITokenMessengerV2.depositForBurn(any, destinationDomain, mintRecipient, burnToken, bytes32(0), any, any);
+            2. hype.call{value: any}("") deposits HYPE to Core
+            3. withdraw Hype to EVM
+            4. token.transfer(systemAddress, any) deposits ERC20 to Core
+            5. coreWriter.sendRawAction(actions + any params)
         */
         uint256 coreActions = HyperLiquidLibrary.getTotalActionsCount(getHyperLiquidInfo(strategy));
         uint256 cctpActions = 2;
         leaves = new IVerifier.VerificationPayload[](coreActions + cctpActions);
-        ArraysLibrary.insert(
+        uint256 iterator = ArraysLibrary.insert(
             leaves, CircleBridgeLibrary.getCctpV2BridgeProofs($.bitmaskVerifier, getCctpInfo(strategy)), 0
         );
         ArraysLibrary.insert(
-            leaves,
-            HyperLiquidLibrary.getHyperLiquidProofs($.bitmaskVerifier, getHyperLiquidInfo(strategy)),
-            cctpActions
+            leaves, HyperLiquidLibrary.getHyperLiquidProofs($.bitmaskVerifier, getHyperLiquidInfo(strategy)), iterator
         );
 
         return ProofLibrary.generateMerkleProofs(leaves);
@@ -100,22 +113,28 @@ library tqETHLibrary {
         uint256 coreActions = HyperLiquidLibrary.getTotalActionsCount(getHyperLiquidInfo(strategy));
         uint256 cctpActions = 2;
         descriptions = new string[](coreActions + cctpActions);
-        ArraysLibrary.insert(descriptions, CircleBridgeLibrary.getCctpV2BridgeDescriptions(getCctpInfo(strategy)), 0);
+
+        uint256 iterator = ArraysLibrary.insert(
+            descriptions, CircleBridgeLibrary.getCctpV2BridgeDescriptions(getCctpInfo(strategy)), 0
+        );
         ArraysLibrary.insert(
-            descriptions, HyperLiquidLibrary.getHyperLiquidDescription(getHyperLiquidInfo(strategy)), cctpActions
+            descriptions, HyperLiquidLibrary.getHyperLiquidDescription(getHyperLiquidInfo(strategy)), iterator
         );
         return descriptions;
     }
 
     function getSubvault0SubvaultCalls(address strategy, IVerifier.VerificationPayload[] memory leaves)
         internal
-        pure
+        view
         returns (SubvaultCalls memory calls)
     {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
 
-        ArraysLibrary.insert(calls.calls, CircleBridgeLibrary.getCctpV2BridgeCalls(getCctpInfo(strategy)), 0);
-        ArraysLibrary.insert(calls.calls, HyperLiquidLibrary.getHyperLiquidCalls(getHyperLiquidInfo(strategy)), 2);
+        uint256 iterator =
+            ArraysLibrary.insert(calls.calls, CircleBridgeLibrary.getCctpV2BridgeCalls(getCctpInfo(strategy)), 0);
+        ArraysLibrary.insert(
+            calls.calls, HyperLiquidLibrary.getHyperLiquidCalls(getHyperLiquidInfo(strategy)), iterator
+        );
     }
 }

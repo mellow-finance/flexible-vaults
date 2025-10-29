@@ -76,7 +76,7 @@ library Constants {
         });
     }
 
-    function getTqETHHyperDeployment() internal pure returns (VaultDeployment memory $) {
+    function getTqETHHyperDeployment() internal view returns (VaultDeployment memory $) {
         /// @dev is not valid: update before deployment
         address proxyAdmin = 0xC1211878475Cd017fecb922Ae63cc3815FA45652;
         address lazyVaultAdmin = 0xE8bEc6Fb52f01e487415D3Ed3797ab92cBfdF498;

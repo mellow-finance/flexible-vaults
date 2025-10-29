@@ -27,12 +27,10 @@ library HyperLiquidLibrary {
     uint24 public constant CANCEL_ORDER_BY_OID = 10; // (assetId, ...)
     uint24 public constant CANCEL_ORDER_BY_CLOID = 11; // (assetId, ...)
 
-    /// @dev max number of params for sendRawAction (LIMIT_ORDER)
-    uint256 public constant MAX_PARAM_LENGTH = 7;
-
     struct Info {
         address strategy;
         address hype;
+        uint32 hypeTokenIndex;
         address core;
         address[] assets;
         uint8 version;
@@ -65,10 +63,12 @@ library HyperLiquidLibrary {
     {
         /*
             0. hype.call{value: any}("") deposits HYPE to Core
-            1. coreWriter.sendRawAction(actions + any params)
+            1. withdraw Hype to EVM
             2. token.transfer(systemAddress, any) deposits ERC20 to Core
+            3. coreWriter.sendRawAction(actions + any params)
         */
-        // all Core actions + ERC20 transfers + hype.call
+
+        // 0. hype native send
         uint256 length = getTotalActionsCount($);
         leaves = new IVerifier.VerificationPayload[](length);
         uint256 index = 0;
@@ -81,7 +81,25 @@ library HyperLiquidLibrary {
             ProofLibrary.makeBitmask(true, true, false, true, abi.encode(bytes4(0)))
         );
 
-        // approves transfers of specified ERC20 tokens to their corresponding Core system addresses
+        // 1. withdraw Hype to EVM: CoreWriter spot send to hype with hype token index
+        leaves[index++] = ProofLibrary.makeVerificationPayload(
+            bitmaskVerifier,
+            $.strategy,
+            $.core,
+            0,
+            _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex, 0)),
+            ProofLibrary.makeBitmask(
+                true,
+                true,
+                true,
+                true,
+                _encodeCoreWriterSendRawAction(
+                    $.version, SPOT_SEND, abi.encode(address(type(uint160).max), type(uint32).max, 0)
+                )
+            )
+        );
+
+        // 2. approves transfers of specified ERC20 tokens to their corresponding Core system addresses
         for (uint256 i = 0; i < $.params.tokens.length; i++) {
             leaves[index++] = ProofLibrary.makeVerificationPayload(
                 bitmaskVerifier,
@@ -99,9 +117,9 @@ library HyperLiquidLibrary {
             );
         }
 
-        // sendRawAction calldata: abi.encodePacked(uint8(0x01), bytes3(actionId), encodedParams);
+        // 3. sendRawAction calldata: abi.encodePacked(uint8(0x01), bytes3(actionId), encodedActionSpecificParams);
         for (uint256 i = 0; i < $.params.actions.length; i++) {
-            (bytes[] memory data, bytes[] memory bitmask,) = getVerificationActionDataBitmask(i, $);
+            (bytes[] memory data, bytes[] memory bitmask,,) = getVerificationActionDataBitmask($.params.actions[i], $);
             for (uint256 j = 0; j < data.length; j++) {
                 leaves[index++] = ProofLibrary.makeVerificationPayload(
                     bitmaskVerifier,
@@ -119,12 +137,29 @@ library HyperLiquidLibrary {
         uint256 length = getTotalActionsCount($);
         descriptions = new string[](length);
         uint256 index;
+
         descriptions[index++] = JsonLibrary.toJson(
             "HYPE.call{value: any}()",
             "null",
             ParameterLibrary.build(Strings.toHexString($.strategy), Strings.toHexString($.hype), "any"),
             new ParameterLibrary.Parameter[](0)
         );
+
+        {
+            uint32 hypeTokenIndex = $.hypeTokenIndex;
+            ParameterLibrary.Parameter[] memory innerParameters =
+                ParameterLibrary.build("version", Strings.toHexString($.version));
+            innerParameters = innerParameters.add("action", Strings.toString(SPOT_SEND));
+            innerParameters = innerParameters.add("hype", Strings.toHexString($.hype));
+            innerParameters = innerParameters.add("tokenId", Strings.toString(hypeTokenIndex));
+            innerParameters = innerParameters.addAny("amount");
+            descriptions[index++] = JsonLibrary.toJson(
+                string(abi.encodePacked("SPOT_SEND HYPE (withdraw to EVM) ", Strings.toString(hypeTokenIndex))),
+                ABILibrary.getABI(ICoreWriter.sendRawAction.selector),
+                ParameterLibrary.build(Strings.toHexString($.strategy), Strings.toHexString($.core), "0"),
+                innerParameters
+            );
+        }
 
         for (uint256 i = 0; i < $.params.tokens.length; i++) {
             string memory assetSymbol = IERC20Metadata($.params.tokens[i].addr).symbol();
@@ -138,8 +173,9 @@ library HyperLiquidLibrary {
                 ParameterLibrary.build("to", Strings.toHexString(coreSystemAddr)).add("amount", "any")
             );
         }
+
         for (uint256 i = 0; i < $.params.actions.length; i++) {
-            (,, string[] memory actionDescriptions) = getVerificationActionDataBitmask(i, $);
+            (,, string[] memory actionDescriptions,) = getVerificationActionDataBitmask($.params.actions[i], $);
             for (uint256 j = 0; j < actionDescriptions.length; j++) {
                 descriptions[index++] = actionDescriptions[j];
             }
@@ -148,9 +184,10 @@ library HyperLiquidLibrary {
 
     function getHyperLiquidCalls(Info memory $) internal pure returns (Call[][] memory calls) {
         uint256 index;
-        calls = new Call[][](42);
+        calls = new Call[][](100);
+        // hype.call{value: any}("")
         {
-            Call[] memory tmp = new Call[](5 + 6 * $.params.tokens.length);
+            Call[] memory tmp = new Call[](5);
             uint256 idx;
             tmp[idx++] = Call($.strategy, $.hype, 0, abi.encode(bytes4(0)), true);
             tmp[idx++] = Call($.strategy, $.hype, 1 ether, abi.encode(bytes4(0)), true);
@@ -159,9 +196,80 @@ library HyperLiquidLibrary {
             tmp[idx++] = Call($.strategy, $.hype, 0, abi.encodeWithSelector(bytes4(0x00000001), ""), false);
             calls[index++] = tmp;
         }
+        // withdraw Hype to EVM: CoreWriter.spotSend(hype, hypeTokenIndex, any)
+        {
+            Call[] memory tmp = new Call[](9);
+            uint256 idx;
+            tmp[idx++] = Call(
+                $.strategy,
+                $.core,
+                0,
+                _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex, 0)),
+                true
+            );
+            tmp[idx++] = Call(
+                $.strategy,
+                $.core,
+                0,
+                _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex, 1 ether)),
+                true
+            );
+            tmp[idx++] = Call(
+                $.strategy,
+                $.core,
+                1 wei,
+                _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex, 0)),
+                false
+            );
+            tmp[idx++] = Call(
+                $.strategy,
+                $.core,
+                0,
+                _encodeCoreWriterSendRawAction($.version, ADD_API_WALLET, abi.encode($.hype, $.hypeTokenIndex, 0)),
+                false
+            );
+            tmp[idx++] = Call(
+                $.strategy,
+                $.core,
+                0,
+                _encodeCoreWriterSendRawAction($.version + 1, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex, 0)),
+                false
+            );
+            tmp[idx++] = Call(
+                $.strategy,
+                $.core,
+                0,
+                _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode(address(0xdead), $.hypeTokenIndex, 0)),
+                false
+            );
+            tmp[idx++] = Call(
+                $.strategy,
+                $.core,
+                0,
+                _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex + 1, 0)),
+                false
+            );
+            tmp[idx++] = Call(
+                address(0xdead),
+                $.core,
+                0,
+                _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex, 0)),
+                false
+            );
+            tmp[idx++] = Call(
+                $.strategy,
+                address(0xdead),
+                0,
+                _encodeCoreWriterSendRawAction($.version, SPOT_SEND, abi.encode($.hype, $.hypeTokenIndex, 0)),
+                false
+            );
+
+            calls[index++] = tmp;
+        }
+        // erc20.transfer(systemAddress, any)
         {
             for (uint256 i = 0; i < $.params.tokens.length; i++) {
-                Call[] memory tmp = new Call[](6);
+                Call[] memory tmp = new Call[](7);
                 uint256 idx;
                 address erc20Address = $.params.tokens[i].addr;
                 address systemAddress = _coreSystemAddress($.params.tokens[i].id);
@@ -207,7 +315,28 @@ library HyperLiquidLibrary {
                     abi.encodeWithSelector(IERC20.transfer.selector, systemAddress, 0),
                     false
                 );
+                tmp[idx++] =
+                    Call($.strategy, erc20Address, 0, abi.encode(IERC20.transfer.selector, systemAddress, 0), false);
                 calls[index++] = tmp;
+            }
+        }
+        // Core.sendRawAction(abi.encodePacked(uint8(0x01), bytes3(actionId), encodedActionSpecificParams))
+        {
+            for (uint256 i = 0; i < $.params.actions.length; i++) {
+                (bytes[] memory validCalldata,,, bytes[] memory forbiddenCallData) =
+                    getVerificationActionDataBitmask($.params.actions[i], $);
+                for (uint256 j = 0; j < validCalldata.length; j++) {
+                    Call[] memory tmp = new Call[](5 + forbiddenCallData.length);
+                    uint256 idx;
+                    tmp[idx++] = Call($.strategy, $.core, 0, validCalldata[j], true);
+                    tmp[idx++] = Call($.strategy, $.core, 1 ether, validCalldata[j], false);
+                    tmp[idx++] = Call(address(0xdead), $.core, 0, validCalldata[j], false);
+                    tmp[idx++] = Call($.strategy, address(0xdead), 0, validCalldata[j], false);
+                    for (uint256 k = 0; k < forbiddenCallData.length; k++) {
+                        tmp[idx++] = Call($.strategy, $.core, 0, forbiddenCallData[k], false);
+                    }
+                    calls[index++] = tmp;
+                }
             }
         }
         assembly {
@@ -215,19 +344,22 @@ library HyperLiquidLibrary {
         }
     }
 
-    function getVerificationActionDataBitmask(uint256 index, Info memory info)
+    function getVerificationActionDataBitmask(uint24 action, Info memory info)
         internal
         pure
-        returns (bytes[] memory data, bytes[] memory bitmask, string[] memory descriptions)
+        returns (
+            bytes[] memory data,
+            bytes[] memory bitmask,
+            string[] memory descriptions,
+            bytes[] memory forbiddenData
+        )
     {
         ActionParams memory $ = info.params;
-        uint24 action = $.actions[index];
-        bytes memory prefix =
-            abi.encodeWithSelector(ICoreWriter.sendRawAction.selector, abi.encodePacked(uint8(0x01), uint24(action)));
         uint256 dummyParamsLength; // remaining params to fill with zeros (that means "any" value)
         ParameterLibrary.Parameter[] memory parameters =
             ParameterLibrary.build(Strings.toHexString(info.strategy), Strings.toHexString(info.core), "0");
-        ParameterLibrary.Parameter[] memory innerParameters = ParameterLibrary.build("version", "0x01");
+        ParameterLibrary.Parameter[] memory innerParameters =
+            ParameterLibrary.build("version", Strings.toHexString(info.version)).add("action", Strings.toString(action));
 
         if (action == LIMIT_ORDER) {
             uint256 assetsCount = _getAssetsCount($.tokens);
@@ -236,11 +368,13 @@ library HyperLiquidLibrary {
             data = new bytes[](assetsCount);
             bitmask = new bytes[](assetsCount);
             descriptions = new string[](assetsCount);
+            forbiddenData = new bytes[](assetsCount);
             uint256 assetIndex;
             for (uint256 i = 0; i < $.tokens.length; i++) {
                 for (uint256 j = 0; j < $.tokens[i].assets.length; j++) {
-                    data[assetIndex] = abi.encodePacked(prefix, abi.encode($.tokens[i].assets[j]));
-                    bitmask[assetIndex] = abi.encodePacked(prefix, abi.encode(type(uint256).max));
+                    data[assetIndex] = abi.encode($.tokens[i].assets[j]);
+                    bitmask[assetIndex] = abi.encode(type(uint256).max);
+                    forbiddenData[assetIndex] = abi.encode(type(uint32).max - $.tokens[i].assets[j]);
 
                     innerParameters = innerParameters.add("assetId", Strings.toString($.tokens[i].assets[j]));
                     innerParameters = innerParameters.addAny("isBuy");
@@ -264,9 +398,11 @@ library HyperLiquidLibrary {
             data = new bytes[]($.vaults.length);
             bitmask = new bytes[]($.vaults.length);
             descriptions = new string[]($.vaults.length);
+            forbiddenData = new bytes[]($.vaults.length);
             for (uint256 i = 0; i < $.vaults.length; i++) {
-                data[i] = abi.encodePacked(prefix, abi.encode($.vaults[i]));
-                bitmask[i] = abi.encodePacked(prefix, abi.encode(address(type(uint160).max)));
+                data[i] = abi.encode($.vaults[i]);
+                bitmask[i] = abi.encode(address(type(uint160).max));
+                forbiddenData[i] = abi.encode(address(0xdead));
                 innerParameters = innerParameters.add("vault", Strings.toHexString($.vaults[i]));
                 innerParameters = innerParameters.addAny("isDeposit");
                 innerParameters = innerParameters.addAny("usdAmount");
@@ -283,9 +419,11 @@ library HyperLiquidLibrary {
             data = new bytes[]($.validators.length);
             bitmask = new bytes[]($.validators.length);
             descriptions = new string[]($.validators.length);
+            forbiddenData = new bytes[]($.validators.length);
             for (uint256 i = 0; i < $.validators.length; i++) {
-                data[i] = abi.encodePacked(prefix, abi.encode($.validators[i]));
-                bitmask[i] = abi.encodePacked(prefix, abi.encode(address(type(uint160).max)));
+                data[i] = abi.encode($.validators[i]);
+                bitmask[i] = abi.encode(address(type(uint160).max));
+                forbiddenData[i] = abi.encode(address(0xdead));
                 innerParameters = innerParameters.add("validator", Strings.toHexString($.validators[i]));
                 innerParameters = innerParameters.addAny("amount");
                 innerParameters = innerParameters.addAny("isUndelegate");
@@ -302,8 +440,9 @@ library HyperLiquidLibrary {
             data = new bytes[](1);
             bitmask = new bytes[](1);
             descriptions = new string[](1);
-            data[0] = prefix;
-            bitmask[0] = prefix;
+            forbiddenData = new bytes[](0);
+            data[0] = "";
+            bitmask[0] = "";
             descriptions[0] = JsonLibrary.toJson(
                 "STAKING_DEPOSIT",
                 ABILibrary.getABI(ICoreWriter.sendRawAction.selector),
@@ -316,8 +455,9 @@ library HyperLiquidLibrary {
             data = new bytes[](1);
             bitmask = new bytes[](1);
             descriptions = new string[](1);
-            data[0] = prefix;
-            bitmask[0] = prefix;
+            forbiddenData = new bytes[](0);
+            data[0] = "";
+            bitmask[0] = "";
             descriptions[0] = JsonLibrary.toJson(
                 "STAKING_WITHDRAW",
                 ABILibrary.getABI(ICoreWriter.sendRawAction.selector),
@@ -330,10 +470,15 @@ library HyperLiquidLibrary {
             data = new bytes[]($.tokens.length);
             bitmask = new bytes[]($.tokens.length);
             descriptions = new string[]($.tokens.length);
+            forbiddenData = new bytes[]($.tokens.length * 2);
             for (uint256 i = 0; i < $.tokens.length; i++) {
                 address systemAddr = _coreSystemAddress($.tokens[i].id);
-                data[i] = abi.encodePacked(prefix, abi.encode(systemAddr, $.tokens[i].id));
-                bitmask[i] = abi.encodePacked(prefix, abi.encode(address(type(uint160).max), type(uint64).max));
+
+                data[i] = abi.encode(systemAddr, $.tokens[i].id);
+                bitmask[i] = abi.encode(address(type(uint160).max), type(uint64).max);
+                forbiddenData[i * $.tokens.length] = abi.encode(address(0xdead), $.tokens[i].id);
+                forbiddenData[i * $.tokens.length + 1] = abi.encode(systemAddr, type(uint32).max - $.tokens[i].id);
+
                 innerParameters = innerParameters.add("systemAddr", Strings.toHexString(systemAddr));
                 innerParameters = innerParameters.add("tokenId", Strings.toString($.tokens[i].id));
                 innerParameters = innerParameters.addAny("amount");
@@ -350,8 +495,9 @@ library HyperLiquidLibrary {
             data = new bytes[](1);
             bitmask = new bytes[](1);
             descriptions = new string[](1);
-            data[0] = prefix;
-            bitmask[0] = prefix;
+            forbiddenData = new bytes[](0);
+            data[0] = "";
+            bitmask[0] = "";
             innerParameters = innerParameters.addAny("ntl");
             innerParameters = innerParameters.addAny("amount");
             descriptions[0] = JsonLibrary.toJson(
@@ -363,8 +509,9 @@ library HyperLiquidLibrary {
             data = new bytes[](1);
             bitmask = new bytes[](1);
             descriptions = new string[](1);
-            data[0] = prefix;
-            bitmask[0] = prefix;
+            forbiddenData = new bytes[](0);
+            data[0] = "";
+            bitmask[0] = "";
             innerParameters = innerParameters.addAny("token");
             innerParameters = innerParameters.addAny("encodedFinalizeEvmContractVariant");
             innerParameters = innerParameters.addAny("createNonce");
@@ -380,9 +527,11 @@ library HyperLiquidLibrary {
             data = new bytes[]($.apiWallets.length);
             bitmask = new bytes[]($.apiWallets.length);
             descriptions = new string[]($.apiWallets.length);
+            forbiddenData = new bytes[]($.apiWallets.length);
             for (uint256 i = 0; i < $.apiWallets.length; i++) {
-                data[i] = abi.encodePacked(prefix, abi.encode($.apiWallets[i]));
-                bitmask[i] = abi.encodePacked(prefix, abi.encode(address(type(uint160).max)));
+                data[i] = abi.encode($.apiWallets[i]);
+                bitmask[i] = abi.encode(address(type(uint160).max));
+                forbiddenData[i] = abi.encode(address(0xdead));
                 innerParameters = innerParameters.add("address", Strings.toHexString($.apiWallets[i]));
                 innerParameters = innerParameters.addAny("name");
                 descriptions[i] = JsonLibrary.toJson(
@@ -399,11 +548,13 @@ library HyperLiquidLibrary {
             data = new bytes[](assetsCount);
             bitmask = new bytes[](assetsCount);
             descriptions = new string[](assetsCount);
+            forbiddenData = new bytes[](assetsCount);
             uint256 assetIndex;
             for (uint256 i = 0; i < $.tokens.length; i++) {
                 for (uint256 j = 0; j < $.tokens[i].assets.length; j++) {
-                    data[assetIndex] = abi.encodePacked(prefix, abi.encode($.tokens[i].assets[j]));
-                    bitmask[assetIndex] = abi.encodePacked(prefix, abi.encode(type(uint32).max));
+                    data[assetIndex] = abi.encode($.tokens[i].assets[j]);
+                    bitmask[assetIndex] = abi.encode(type(uint32).max);
+                    forbiddenData[assetIndex] = abi.encode(type(uint32).max - $.tokens[i].assets[j]);
                     innerParameters = innerParameters.add("assetId", Strings.toString($.tokens[i].assets[j]));
                     innerParameters = innerParameters.addAny("oid");
                     descriptions[assetIndex] = JsonLibrary.toJson(
@@ -424,11 +575,13 @@ library HyperLiquidLibrary {
             data = new bytes[](assetsCount);
             bitmask = new bytes[](assetsCount);
             descriptions = new string[](assetsCount);
+            forbiddenData = new bytes[](assetsCount);
             uint256 assetIndex;
             for (uint256 i = 0; i < $.tokens.length; i++) {
                 for (uint256 j = 0; j < $.tokens[i].assets.length; j++) {
-                    data[assetIndex] = abi.encodePacked(prefix, abi.encode($.tokens[i].assets[j]));
-                    bitmask[assetIndex] = abi.encodePacked(prefix, abi.encode(type(uint32).max));
+                    data[assetIndex] = abi.encode($.tokens[i].assets[j]);
+                    bitmask[assetIndex] = abi.encode(type(uint32).max);
+                    forbiddenData[assetIndex] = abi.encode(type(uint32).max - $.tokens[i].assets[j]);
                     innerParameters = innerParameters.add("assetId", Strings.toString($.tokens[i].assets[j]));
                     innerParameters = innerParameters.addAny("cloid");
                     descriptions[assetIndex] = JsonLibrary.toJson(
@@ -447,13 +600,28 @@ library HyperLiquidLibrary {
         }
 
         for (uint256 i = 0; i < data.length; i++) {
-            data[i] = abi.encodePacked(data[i], _makeDummyZeroCalldata(dummyParamsLength));
-            bitmask[i] = abi.encodePacked(bitmask[i], _makeDummyZeroCalldata(dummyParamsLength));
+            bytes memory padding = _makeDummyZeroCalldata(dummyParamsLength);
+            data[i] = _encodeCoreWriterSendRawAction(info.version, action, abi.encodePacked(data[i], padding));
+            bitmask[i] = _encodeCoreWriterSendRawAction(info.version, action, abi.encodePacked(bitmask[i], padding));
+        }
+
+        for (uint256 i = 0; i < forbiddenData.length; i++) {
+            bytes memory padding = _makeDummyZeroCalldata(dummyParamsLength);
+            forbiddenData[i] =
+                _encodeCoreWriterSendRawAction(info.version, action, abi.encodePacked(forbiddenData[i], padding));
         }
     }
 
+    function _encodeCoreWriterSendRawAction(uint8 version, uint24 action, bytes memory actionParams)
+        internal
+        pure
+        returns (bytes memory)
+    {
+        return abi.encodeCall(ICoreWriter.sendRawAction, abi.encodePacked(version, action, actionParams));
+    }
+
     function getTotalActionsCount(Info memory $) internal pure returns (uint256) {
-        return _getCoreActions($) + $.params.tokens.length + 1;
+        return _getCoreActions($) + $.params.tokens.length + 2;
     }
 
     // creates dummy calldata with zeros of specified length (each param is 32 bytes)
