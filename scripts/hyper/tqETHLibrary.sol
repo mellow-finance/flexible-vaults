@@ -6,13 +6,25 @@ import {AcceptanceLibrary} from "../common/AcceptanceLibrary.sol";
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
+
+import {CircleBridgeLibrary} from "../common/protocols/CircleBridgeLibrary.sol";
 import {HyperLiquidLibrary} from "../common/protocols/HyperLiquidLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import "./Constants.sol";
 
 library tqETHLibrary {
-    function getInfo(address strategy) internal pure returns (HyperLiquidLibrary.Info memory) {
+    function getCctpInfo(address strategy) internal pure returns (CircleBridgeLibrary.Info memory) {
+        return CircleBridgeLibrary.Info({
+            strategy: strategy,
+            tokenMessenger: Constants.TOKEN_MESSENGER_HYPER,
+            destinationSubvault: Constants.DESTINATION_SUBVAULT_SEPOLIA,
+            destinationDomain: Constants.DESTINATION_DOMAIN_SEPOLIA,
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC))
+        });
+    }
+
+    function getHyperLiquidInfo(address strategy) internal pure returns (HyperLiquidLibrary.Info memory) {
         uint24[] memory actions = ArraysLibrary.makeUint24Array(
             abi.encode(
                 HyperLiquidLibrary.LIMIT_ORDER,
@@ -22,11 +34,24 @@ library tqETHLibrary {
                 HyperLiquidLibrary.CANCEL_ORDER_BY_CLOID
             )
         );
-        HyperLiquidLibrary.Token[] memory tokens = new HyperLiquidLibrary.Token[](1);
+        //HyperLiquidLibrary.VAULT_TRANSFER,
+        //HyperLiquidLibrary.TOKEN_DELEGATE,
+        //HyperLiquidLibrary.STAKING_DEPOSIT,
+        //HyperLiquidLibrary.STAKING_WITHDRAW,
+        //HyperLiquidLibrary.FINALIZE_EVM_CONTRACT,
+        //HyperLiquidLibrary.ADD_API_WALLET
+
+        HyperLiquidLibrary.Token[] memory tokens = new HyperLiquidLibrary.Token[](2);
         tokens[0] = HyperLiquidLibrary.Token({
             addr: 0xa9056c15938f9aff34CD497c722Ce33dB0C2fD57, // PURR
             id: 1,
-            assets: ArraysLibrary.makeUint32Array(abi.encode(0)) // PURR/USDC
+            assets: ArraysLibrary.makeUint32Array(abi.encode(123, 456)) //
+        });
+
+        tokens[1] = HyperLiquidLibrary.Token({
+            addr: 0x453b63484b11bbF0b61fC7E854f8DAC7bdE7d458, // MBTC
+            id: 2,
+            assets: ArraysLibrary.makeUint32Array(abi.encode(321, 654)) //
         });
 
         return HyperLiquidLibrary.Info({
@@ -39,9 +64,9 @@ library tqETHLibrary {
             params: HyperLiquidLibrary.ActionParams({
                 actions: actions,
                 tokens: tokens,
-                vaults: new address[](0),
-                validators: new address[](0),
-                apiWallets: new address[](0)
+                vaults: new address[](2),
+                validators: new address[](3),
+                apiWallets: new address[](4)
             })
         });
     }
@@ -56,13 +81,29 @@ library tqETHLibrary {
             0. hype.call{value: any}("") send to core
             1. coreWriter.sendRawAction(<version 0x01, Only actions 1,6,7,10,11 supported>)
         */
-        leaves = HyperLiquidLibrary.getHyperLiquidProofs($.bitmaskVerifier, getInfo(strategy));
+        uint256 coreActions = HyperLiquidLibrary.getTotalActionsCount(getHyperLiquidInfo(strategy));
+        uint256 cctpActions = 2;
+        leaves = new IVerifier.VerificationPayload[](coreActions + cctpActions);
+        ArraysLibrary.insert(
+            leaves, CircleBridgeLibrary.getCctpV2BridgeProofs($.bitmaskVerifier, getCctpInfo(strategy)), 0
+        );
+        ArraysLibrary.insert(
+            leaves,
+            HyperLiquidLibrary.getHyperLiquidProofs($.bitmaskVerifier, getHyperLiquidInfo(strategy)),
+            cctpActions
+        );
 
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
     function getSubvault0Descriptions(address strategy) internal view returns (string[] memory descriptions) {
-        descriptions = HyperLiquidLibrary.getHyperLiquidDescription(getInfo(strategy));
+        uint256 coreActions = HyperLiquidLibrary.getTotalActionsCount(getHyperLiquidInfo(strategy));
+        uint256 cctpActions = 2;
+        descriptions = new string[](coreActions + cctpActions);
+        ArraysLibrary.insert(descriptions, CircleBridgeLibrary.getCctpV2BridgeDescriptions(getCctpInfo(strategy)), 0);
+        ArraysLibrary.insert(
+            descriptions, HyperLiquidLibrary.getHyperLiquidDescription(getHyperLiquidInfo(strategy)), cctpActions
+        );
         return descriptions;
     }
 
@@ -74,6 +115,7 @@ library tqETHLibrary {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
 
-        calls.calls[0] = HyperLiquidLibrary.getHyperLiquidCalls(getInfo(strategy));
+        ArraysLibrary.insert(calls.calls, CircleBridgeLibrary.getCctpV2BridgeCalls(getCctpInfo(strategy)), 0);
+        ArraysLibrary.insert(calls.calls, HyperLiquidLibrary.getHyperLiquidCalls(getHyperLiquidInfo(strategy)), 2);
     }
 }

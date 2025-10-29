@@ -80,7 +80,7 @@ contract Deploy is Script {
 
         (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) =
             tqETHLibrary.getSubvault0Proofs(strategyHyper);
-        ProofLibrary.storeProofs("hyper:tqETHPhase2:subvault1", merkleRoot, leaves, descriptions);
+        ProofLibrary.storeProofs("hyper:tqETHPhase2:subvault0", merkleRoot, leaves, descriptions);
         calls = tqETHLibrary.getSubvault0SubvaultCalls(strategyHyper, leaves);
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
     }

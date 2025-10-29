@@ -19,7 +19,7 @@ library Constants {
     address public constant USDC = 0x2B3370eE501B4a559b57D449569354196457D8Ab;
 
     // circle bridge constants
-    address public constant TOKEN_MESSENGER_HYPER = address(0); // on purrsec
+    address public constant TOKEN_MESSENGER_HYPER = 0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA; // on purrsec
     address public constant DESTINATION_SUBVAULT_SEPOLIA = 0xFcE16317364EC44620F05528Ce170eDc1c6AD5fD; // on sepolia
     uint32 public constant DESTINATION_DOMAIN_SEPOLIA = 0; // sepolia domain id
 
