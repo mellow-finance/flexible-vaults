@@ -157,9 +157,9 @@ library CoreVaultLibrary {
             }
         }
 
-        for (uint256 i = 0; i < $.depositQueues.length; i++) {
-            address queue = $.depositQueues[i];
-            address asset = IDepositQueue(queue).asset();
+        for (uint256 i = 0; i < $.redeemQueues.length; i++) {
+            address queue = $.redeemQueues[i];
+            address asset = IRedeemQueue(queue).asset();
 
             innerParameters = ParameterLibrary.build("shares", "any");
             descriptions[index++] = JsonLibrary.toJson(
@@ -336,8 +336,8 @@ library CoreVaultLibrary {
             }
         }
 
-        for (uint256 j = 0; j < $.depositQueues.length; j++) {
-            address queue = $.depositQueues[j];
+        for (uint256 j = 0; j < $.redeemQueues.length; j++) {
+            address queue = $.redeemQueues[j];
 
             {
                 Call[] memory tmp = new Call[](16);

@@ -39,7 +39,9 @@ contract Deploy is Script {
                 Constants.protocolDeployment().verifierFactory.create(0, proxyAdmin, abi.encode(vault_, bytes32(0)));
             console2.log("Verifier:", verifier_);
 
-            revert("ok");
+            if (true) {
+                revert("ok");
+            }
         }
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
