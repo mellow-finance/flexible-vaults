@@ -6,8 +6,9 @@
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
     "deploy:arbitrum": "forge script ./scripts/arbitrum/Deploy.s.sol:Deploy --fork-url $(grep ARBITRUM_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
-    "deploy:arbitrum:streth": "forge script ./scripts/arbitrum/ArbitrumstrETH.s.sol:Deploy --fork-url $(grep ARBITRUM_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
-    "deploy:plasma": "forge script ./scripts/plasma/Deploy.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:arbitrum:streth": "forge script ./scripts/arbitrum/ArbitrumStrETH.s.sol:Deploy --fork-url $(grep ARBITRUM_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:plasma": "forge script ./scripts/plasma/Deploy.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --verify",
+    "deploy:plasma:streth": "forge script ./scripts/plasma/PlasmaStrETH.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast  --slow",
     "deploy:base": "forge script ./scripts/base/Deploy.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base:tqeth": "forge script ./scripts/base/tqETH.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:base:uni-vault": "forge script ./scripts/base/UniVault.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",

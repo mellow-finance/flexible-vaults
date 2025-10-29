@@ -131,13 +131,23 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address verifier;
-        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+        address[] memory verifiers = new address[](2);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
 
         {
             IRiskManager riskManager = vault.riskManager();
-            (verifier, calls[0]) = _createCowswapVerifier(address(vault));
-            vault.createSubvault(0, proxyAdmin, verifier); // eth,weth,wsteth
+            (verifiers[0], calls[0]) = _createCowswapVerifier(address(vault));
+            vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth,weth,wsteth
+            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
+            riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+        }
+
+        {
+            IRiskManager riskManager = vault.riskManager();
+            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            vault.createSubvault(0, proxyAdmin, verifiers[1]);
+            bytes32 merkleRoot;
+            (merkleRoot, calls[1]) = _createStrETHVerifier(address(vault));
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         }
@@ -166,6 +176,15 @@ contract Deploy is Script {
 
         timelockController.schedule(
             address(Subvault(payable(vault.subvaultAt(0))).verifier()),
+            0,
+            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
+            bytes32(0),
+            bytes32(0),
+            0
+        );
+
+        timelockController.schedule(
+            address(Subvault(payable(vault.subvaultAt(1))).verifier()),
             0,
             abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
             bytes32(0),
@@ -259,7 +278,7 @@ contract Deploy is Script {
                 assets: assets_,
                 depositQueueAssets: assets_,
                 redeemQueueAssets: assets_,
-                subvaultVerifiers: ArraysLibrary.makeAddressArray(abi.encode(verifier)),
+                subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(timelockController)),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
                 timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin))
@@ -324,5 +343,16 @@ contract Deploy is Script {
         ProofLibrary.storeProofs("ethereum:tqETH:subvault0", merkleRoot, leaves, descriptions);
         calls = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
         verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
+    }
+
+    function _createStrETHVerifier(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = tqETHLibrary.getSubvault1Descriptions(subvault, curator);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = tqETHLibrary.getSubvault1Proofs(subvault, curator);
+        ProofLibrary.storeProofs("ethereum:tqETH:subvault1", merkleRoot, leaves, descriptions);
+        calls = tqETHLibrary.getSubvault1SubvaultCalls(subvault, curator, leaves);
     }
 }

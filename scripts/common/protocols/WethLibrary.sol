@@ -84,4 +84,26 @@ library WethLibrary {
         calls[4] = Call($.curator, $.weth, 0, abi.encodePacked(IWETH.withdraw.selector), false);
         calls[5] = Call($.curator, $.weth, 1 ether, abi.encodeCall(IWETH.withdraw, (0)), false);
     }
+
+    function getWethProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
+        internal
+        pure
+        returns (IVerifier.VerificationPayload[] memory leaves)
+    {
+        leaves = new IVerifier.VerificationPayload[](2);
+        leaves[0] = getWethDepositProof(bitmaskVerifier, $);
+        leaves[1] = getWethWithdrawProof(bitmaskVerifier, $);
+    }
+
+    function getWethDescriptions(Info memory $) internal pure returns (string[] memory descriptions) {
+        descriptions = new string[](2);
+        descriptions[0] = getWethDepositDescription($);
+        descriptions[1] = getWethWithdrawDescription($);
+    }
+
+    function getWethCalls(Info memory $) internal pure returns (Call[][] memory calls) {
+        calls = new Call[][](2);
+        calls[0] = getWethDepositCalls($);
+        calls[1] = getWethWithdrawCalls($);
+    }
 }

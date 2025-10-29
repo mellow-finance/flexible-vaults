@@ -2,6 +2,8 @@
 pragma solidity 0.8.25;
 
 import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
+
+import {CCIPClient} from "./libraries/CCIPClient.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
 import "./ParameterLibrary.sol";
@@ -9,6 +11,63 @@ import "./ParameterLibrary.sol";
 library JsonLibrary {
     function _this() private pure returns (VmSafe) {
         return VmSafe(address(uint160(uint256(keccak256("hevm cheat code")))));
+    }
+
+    function toJsonStringArray(ParameterLibrary.Parameter[][] memory parameters)
+        internal
+        pure
+        returns (string memory result)
+    {
+        for (uint256 i = 0; i < parameters.length; i++) {
+            result =
+                (i == 0 ? toJsonMap(parameters[i]) : string(abi.encodePacked(result, ", ", toJsonMap(parameters[i]))));
+        }
+        result = string(abi.encodePacked("[", result, "]"));
+    }
+
+    function toJsonMap(ParameterLibrary.Parameter[] memory parameters) internal pure returns (string memory result) {
+        for (uint256 i = 0; i < parameters.length; i++) {
+            result = (
+                i == 0
+                    ? toString(parameters[i], false)
+                    : string(abi.encodePacked(result, ", ", toString(parameters[i], false)))
+            );
+        }
+        result = string(abi.encodePacked("{", result, "}"));
+    }
+
+    function toString(ParameterLibrary.Parameter memory parameter, bool wrap)
+        internal
+        pure
+        returns (string memory result)
+    {
+        if (wrap) {
+            result = string(abi.encodePacked('{"', parameter.name, '":"', parameter.value, '"}'));
+        } else {
+            result = string(abi.encodePacked('"', parameter.name, '":"', parameter.value, '"'));
+        }
+    }
+
+    function toJson(CCIPClient.EVM2AnyMessage memory message) internal pure returns (string memory json) {
+        ParameterLibrary.Parameter[][] memory tokenAmounts =
+            new ParameterLibrary.Parameter[][](message.tokenAmounts.length);
+        for (uint256 i = 0; i < tokenAmounts.length; i++) {
+            tokenAmounts[i] =
+                ParameterLibrary.add2("token", _this().toString(message.tokenAmounts[i].token), "amount", "any");
+        }
+        json = string(
+            abi.encodePacked(
+                '{"receiver": "',
+                _this().toString(message.receiver),
+                '", ',
+                '"data": "0x",',
+                '"tokenAmounts": ',
+                toJsonStringArray(tokenAmounts),
+                ",",
+                '"feeToken": "0x0000000000000000000000000000000000000000",',
+                '"extraArgs": "0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"}'
+            )
+        );
     }
 
     function toJson(
@@ -36,7 +95,11 @@ library JsonLibrary {
     function toJson(ParameterLibrary.Parameter[] memory p) internal pure returns (string memory json) {
         json = "{";
         for (uint256 i = 0; i < p.length; i++) {
-            json = string(abi.encodePacked(json, (i == 0 ? '"' : ',\n"'), p[i].name, '":"', p[i].value, '"'));
+            if (p[i].isNestedJson) {
+                json = string(abi.encodePacked(json, (i == 0 ? '"' : ',\n"'), p[i].name, '":', p[i].value));
+            } else {
+                json = string(abi.encodePacked(json, (i == 0 ? '"' : ',\n"'), p[i].name, '":"', p[i].value, '"'));
+            }
         }
         json = string(abi.encodePacked(json, "}"));
     }

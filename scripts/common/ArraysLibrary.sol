@@ -30,31 +30,36 @@ library ArraysLibrary {
         }
     }
 
-    function insert(address[] memory a, address[] memory b, uint256 from) internal pure {
+    function insert(address[] memory a, address[] memory b, uint256 from) internal pure returns (uint256) {
         for (uint256 i = 0; i < b.length; i++) {
             a[from + i] = b[i];
         }
+        return from + b.length;
     }
 
-    function insert(string[] memory a, string[] memory b, uint256 from) internal pure {
+    function insert(string[] memory a, string[] memory b, uint256 from) internal pure returns (uint256) {
         for (uint256 i = 0; i < b.length; i++) {
             a[from + i] = b[i];
         }
+        return from + b.length;
     }
 
     function insert(IVerifier.VerificationPayload[] memory a, IVerifier.VerificationPayload[] memory b, uint256 from)
         internal
         pure
+        returns (uint256)
     {
         for (uint256 i = 0; i < b.length; i++) {
             a[from + i] = b[i];
         }
+        return from + b.length;
     }
 
-    function insert(Call[][] memory a, Call[][] memory b, uint256 from) internal pure {
+    function insert(Call[][] memory a, Call[][] memory b, uint256 from) internal pure returns (uint256) {
         for (uint256 i = 0; i < b.length; i++) {
             a[from + i] = b[i];
         }
+        return from + b.length;
     }
 
     function unique(address[] memory a) internal pure returns (address[] memory b) {

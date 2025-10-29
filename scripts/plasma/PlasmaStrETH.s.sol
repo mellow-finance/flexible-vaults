@@ -11,9 +11,11 @@ import "./Constants.sol";
 
 import {AcceptanceLibrary} from "../common/AcceptanceLibrary.sol";
 
-import {ArbitrumStrETHLibrary} from "./ArbitrumStrETHLibrary.sol";
+import {PlasmaStrETHLibrary} from "./PlasmaStrETHLibrary.sol";
 
 import {IL2GatewayRouter} from "../common/interfaces/IL2GatewayRouter.sol";
+
+import "../common/libraries/CCIPClient.sol";
 
 contract Deploy is Script, Test {
     address public immutable proxyAdminOwner = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
@@ -27,12 +29,22 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
 
+        TimelockController timelockController = new TimelockController(
+            0,
+            ArraysLibrary.makeAddressArray(abi.encode(deployer, lazyVaultAdmin)),
+            ArraysLibrary.makeAddressArray(abi.encode(curator, activeVaultAdmin)),
+            lazyVaultAdmin
+        );
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](50);
         {
             uint256 i = 0;
 
             // activeVaultAdmin roles:
             holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
+
+            // timelock roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
 
             // curator roles:
             holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
@@ -85,6 +97,19 @@ contract Deploy is Script, Test {
 
         SubvaultCalls[] memory calls = new SubvaultCalls[](1);
         calls[0] = calls_;
+
+        timelockController.schedule(
+            verifier, 0, abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))), bytes32(0), bytes32(0), 0
+        );
+
+        timelockController.renounceRole(timelockController.PROPOSER_ROLE(), deployer);
+        timelockController.renounceRole(timelockController.CANCELLER_ROLE(), deployer);
+
+        console2.log("Vault: %s", address(vault));
+        console2.log("Subvault: %s", address(subvault));
+        console2.log("Verifier: %s", address(verifier));
+        console2.log("TimelockController: %s", address(timelockController));
+
         vm.stopBroadcast();
 
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
@@ -94,27 +119,34 @@ contract Deploy is Script, Test {
                 vault: vault,
                 calls: calls,
                 initParams: initParams,
-                holders: _getExpectedHolders(),
+                holders: _getExpectedHolders(timelockController),
                 depositHook: address(0),
                 redeemHook: address(0),
                 assets: new address[](0),
                 depositQueueAssets: new address[](0),
                 redeemQueueAssets: new address[](0),
                 subvaultVerifiers: ArraysLibrary.makeAddressArray(abi.encode(Subvault(payable(subvault)).verifier())),
-                timelockControllers: new address[](0),
-                timelockProposers: new address[](0),
-                timelockExecutors: new address[](0)
+                timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(timelockController)),
+                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin)),
+                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(curator, activeVaultAdmin))
             })
         );
-        revert("ok");
+        // revert("ok");
     }
 
-    function _getExpectedHolders() internal view returns (Vault.RoleHolder[] memory holders) {
+    function _getExpectedHolders(TimelockController timelockController)
+        internal
+        view
+        returns (Vault.RoleHolder[] memory holders)
+    {
         holders = new Vault.RoleHolder[](50);
         uint256 i = 0;
 
         // lazyVaultAdmin roles:
         holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
+
+        // timelock roles:
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
 
         // activeVaultAdmin roles:
         holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
@@ -128,19 +160,19 @@ contract Deploy is Script, Test {
     }
 
     function _createVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {
-        ArbitrumStrETHLibrary.Info memory info = ArbitrumStrETHLibrary.Info({
+        PlasmaStrETHLibrary.Info memory info = PlasmaStrETHLibrary.Info({
             curator: curator,
-            ethereumAsset: Constants.WSTETH_ETHEREUM,
+            asset: Constants.WSTETH,
             ethereumSubvault: Constants.STRETH_ETHEREUM_SUBVAULT_0,
-            l2GatewayRouter: Constants.L2_GATEWAY_ROUTER,
-            name: "WstETH(ethereum)"
+            ccipRouter: Constants.CCIP_PLASMA_ROUTER,
+            ccipEthereumSelector: Constants.CCIP_ETHEREUM_CHAIN_SELECTOR
         });
 
-        string[] memory descriptions = ArbitrumStrETHLibrary.getArbitrumStrETHDescriptions(info);
+        string[] memory descriptions = PlasmaStrETHLibrary.getPlasmaStrETHDescriptions(info);
         (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) =
-            ArbitrumStrETHLibrary.getArbitrumStrETHProofs(info);
-        ProofLibrary.storeProofs("arbitrum:strETH:subvault0", merkleRoot, leaves, descriptions);
-        calls = ArbitrumStrETHLibrary.getArbitrumStrETHCalls(info, leaves);
+            PlasmaStrETHLibrary.getPlasmaStrETHProofs(info);
+        ProofLibrary.storeProofs("plasma:strETH:subvault0", merkleRoot, leaves, descriptions);
+        calls = PlasmaStrETHLibrary.getPlasmaStrETHCalls(info, leaves);
 
         verifier =
             Constants.protocolDeployment().verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, merkleRoot));

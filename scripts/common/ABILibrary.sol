@@ -13,18 +13,30 @@ import {ICurvePool} from "./interfaces/ICurvePool.sol";
 import {ITokenMessengerV2} from "./interfaces/ITokenMessengerV2.sol";
 
 import {ICoreWriter} from "./interfaces/ICoreWriter.sol";
+import {IL1GatewayRouter} from "./interfaces/IL1GatewayRouter.sol";
 import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
+
+import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
+
+import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
+
+import {IDepositQueue} from "../../src/interfaces/queues/IDepositQueue.sol";
+import {IRedeemQueue} from "../../src/interfaces/queues/IRedeemQueue.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[9] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[13] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
             getWETHInterfaces,
             getCowSwapInterfaces,
             getCurveInterfaces,
+            getBracketFinanceInterfaces,
+            getL1GatewayRouter,
             getL2GatewayRouter,
+            getCCIPRouter,
+            getCoreVaultInterfaces,
             getCctpV2Interfaces,
             getHyperLiquidInterfaces
         ];
@@ -162,5 +174,55 @@ library ABILibrary {
         selectors[0] = ICoreWriter.sendRawAction.selector;
         abis[0] =
             '{"inputs":[{"internalType":"bytes","name":"rawAction","type":"bytes"}],"name":"sendRawAction","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getL1GatewayRouter() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = IL1GatewayRouter.outboundTransfer.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"uint256","name":"_maxGas","type":"uint256"},{"internalType":"uint256","name":"_gasPriceBid","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"outboundTransfer","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"payable","type":"function"}';
+    }
+
+    function getCCIPRouter() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = ICCIPRouterClient.ccipSend.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"uint64","name":"destinationChainSelector","type":"uint64"},{"components":[{"internalType":"bytes","name":"receiver","type":"bytes"},{"internalType":"bytes","name":"data","type":"bytes"},{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"structClient.EVMTokenAmount[]","name":"tokenAmounts","type":"tuple[]"},{"internalType":"address","name":"feeToken","type":"address"},{"internalType":"bytes","name":"extraArgs","type":"bytes"}],"internalType":"structClient.EVM2AnyMessage","name":"message","type":"tuple"}],"name":"ccipSend","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"payable","type":"function"}';
+    }
+
+    function getBracketFinanceInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](3);
+        abis = new string[](3);
+
+        selectors[0] = IBracketVaultV2.deposit.selector;
+        selectors[1] = IBracketVaultV2.withdraw.selector;
+        selectors[2] = IBracketVaultV2.claimWithdrawal.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"address","name":"destination","type":"address"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"uint16","name":"claimEpoch","type":"uint16"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"claimWithdrawal","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getCoreVaultInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](3);
+        abis = new string[](3);
+
+        selectors[0] = IDepositQueue.deposit.selector;
+        selectors[1] = IRedeemQueue.redeem.selector;
+        selectors[2] = IRedeemQueue.claim.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"uint224","name":"assets","type":"uint224"},{"internalType":"address","name":"referral","type":"address"},{"internalType":"bytes32[]","name":"merkleProof","type":"bytes32[]"}],"name":"deposit","outputs":[],"stateMutability":"payable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"inputs":[{"internalType":"address","name":"receiver","type":"address"},{"internalType":"uint32[]","name":"timestamps","type":"uint32[]"}],"name":"claim","outputs":[{"internalType":"uint256","name":"assets","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
     }
 }
