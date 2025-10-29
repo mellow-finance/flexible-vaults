@@ -96,7 +96,7 @@ library tqETHLibrary {
 
     function getSubvault1CoreVaultInfo(address subvault, address curator)
         internal
-        view
+        pure
         returns (CoreVaultLibrary.Info memory)
     {
         address[] memory depositQueues = ArraysLibrary.makeAddressArray(
@@ -119,7 +119,7 @@ library tqETHLibrary {
 
     function getSubvault1Proofs(address subvault, address curator)
         internal
-        pure
+        view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -156,7 +156,7 @@ library tqETHLibrary {
 
     function getSubvault1SubvaultCalls(address subvault, address curator, IVerifier.VerificationPayload[] memory leaves)
         internal
-        pure
+        view
         returns (SubvaultCalls memory calls)
     {
         calls.payloads = leaves;

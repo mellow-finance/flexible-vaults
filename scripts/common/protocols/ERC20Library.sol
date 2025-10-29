@@ -57,7 +57,7 @@ library ERC20Library {
         }
     }
 
-    function getCowSwapCalls(Info memory $) internal pure returns (Call[][] memory calls) {
+    function getERC20Calls(Info memory $) internal pure returns (Call[][] memory calls) {
         uint256 index = 0;
         calls = new Call[][]($.assets.length);
         for (uint256 j = 0; j < $.assets.length; j++) {

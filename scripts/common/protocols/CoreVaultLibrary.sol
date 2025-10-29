@@ -104,7 +104,7 @@ library CoreVaultLibrary {
         }
     }
 
-    function getAaveDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
+    function getCoreVaultDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
         uint256 length = ($.depositQueues.length + $.redeemQueues.length) * 2;
         descriptions = new string[](length);
         uint256 index = 0;
@@ -186,7 +186,7 @@ library CoreVaultLibrary {
         }
     }
 
-    function getCoreVaultCalls(Info memory $) internal pure returns (Call[][] memory calls) {
+    function getCoreVaultCalls(Info memory $) internal view returns (Call[][] memory calls) {
         uint256 length = ($.depositQueues.length + $.redeemQueues.length) * 2;
         calls = new Call[][](length);
         uint256 index = 0;
