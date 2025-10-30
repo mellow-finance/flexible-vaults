@@ -13,8 +13,8 @@ import {Constants} from "../ethereum/Constants.sol";
 
 contract Deploy is Script {
     function run() external {
-        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        vm.startBroadcast(deployerPk);
+        // uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        // vm.startBroadcast(deployerPk);
         // Collector prev = Collector(0xE8a012C59c441d1790053bC1df87B23AAb6D1B67);
         // Collector collector = new Collector(prev.owner(), address(prev.oracle()));
         // address[] memory protocols_,

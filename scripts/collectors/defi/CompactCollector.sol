@@ -13,6 +13,7 @@ contract CompactCollector {
         uint256 shares = vault.shareManager().sharesOf(holder);
         IOracle oracle = vault.oracle();
         assets = new address[](oracle.supportedAssets());
+        amounts = new uint256[](assets.length);
         uint256 baseAssetIndex = type(uint256).max;
         address baseAsset = vault.feeManager().baseAsset(address(vault));
         for (uint256 i = 0; i < assets.length; i++) {
