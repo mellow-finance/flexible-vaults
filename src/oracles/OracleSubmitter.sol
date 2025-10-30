@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import {IOracle, IShareModule} from "../interfaces/oracles/IOracle.sol";
+import {TransferLibrary} from "../libraries/TransferLibrary.sol";
+import {IOracle, IShareModule} from "../oracles/Oracle.sol";
+
 import {AccessControlEnumerable} from "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 contract OracleSubmitter is AccessControlEnumerable {
     error ZeroBaseAsset();
@@ -10,6 +13,7 @@ contract OracleSubmitter is AccessControlEnumerable {
 
     IOracle public immutable oracle;
     address public immutable baseAsset;
+    uint8 public immutable decimals;
 
     int256 public latestAnswer;
     uint32 public updatedAt;
@@ -24,6 +28,7 @@ contract OracleSubmitter is AccessControlEnumerable {
         if (baseAsset == address(0)) {
             revert ZeroBaseAsset();
         }
+        decimals = baseAsset == TransferLibrary.ETH ? 18 : IERC20Metadata(baseAsset).decimals();
 
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
         _grantRole(oracle.SUBMIT_REPORTS_ROLE(), submitter_);
