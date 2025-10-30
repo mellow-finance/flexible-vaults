@@ -51,7 +51,8 @@ contract CompactCollector {
                 }
                 amounts[baseAssetIndex] += Math.mulDiv(shares, 1 ether, report.priceD18);
             } else {
-                amounts[baseAssetIndex] += Math.mulDiv(shares, uint256(oracleSubmitter.latestAnswer()), 1 ether);
+                amounts[baseAssetIndex] +=
+                    Math.mulDiv(shares, uint256(oracleSubmitter.latestAnswer()), 10 ** oracleSubmitter.decimals());
             }
         }
     }
