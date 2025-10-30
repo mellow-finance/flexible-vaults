@@ -1,21 +1,13 @@
-# Compiler files
 cache/
 out/
+broadcast/
+node_modules/
 
-# Ignores development broadcast logs
-/broadcast
-/broadcast/*/31337/
-/broadcast/**/dry-run/
-
-# Docs
-docs/
-
-# Dotenv file
 .env
 
 .vscode
 .DS_Store
-node_modules
-yarn.lock
 
+yarn.lock
+foundry.lock
 report

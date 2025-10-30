@@ -15,7 +15,10 @@ contract FEOracle is Ownable {
         if (oracle == address(0)) {
             revert("FEOracle: oracle not set");
         }
-        return ICustomOracle(oracle).tvl(vault, data);
+        try ICustomOracle(oracle).tvl(vault, data) returns (uint256 v) {
+            return v;
+        } catch {}
+        return ICustomOracle(oracle).tvl(vault, data.denominator);
     }
 
     function getOracle(address vault) external view returns (ICustomOracle.Data memory) {

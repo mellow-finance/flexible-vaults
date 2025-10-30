@@ -22,6 +22,7 @@ library Constants {
     address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address public constant USDS = 0xdC035D45d973E3EC169d2276DDab16f1e407384F;
+    address public constant USDU = 0xdde3eC717f220Fc6A29D6a4Be73F91DA5b718e55;
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
@@ -42,6 +43,31 @@ library Constants {
     address public constant SYMBIOTIC_FARM_FACTORY = 0xFEB871581C2ab2e1EEe6f7dDC7e6246cFa087A23;
 
     address public constant FE_ORACLE = 0x5250Ae8A29A19DF1A591cB1295ea9bF2B0232453;
+
+    address public constant STRETH_ARBITRUM_SUBVAULT_0 = 0x222fa99C485a088564eb43fAA50Bc10b2497CDB2;
+    address public constant ARBITRUM_L1_GATEWAY_ROUTER = 0x72Ce9c846789fdB6fC1f34aC4AD25Dd9ef7031ef;
+    address public constant ARBITRUM_L1_TOKEN_GATEWAY_WSTETH = 0x0F25c1DC2a9922304f2eac71DCa9B07E310e8E5a;
+
+    address public constant STRETH_PLASMA_SUBVAULT_0 = 0xbbF9400C09B0F649F3156989F1CCb9c016f943bb;
+    address public constant CCIP_PLASMA_ROUTER = 0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3;
+    uint64 public constant CCIP_PLASMA_CHAIN_SELECTOR = 9335212494177455608;
+    address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
+    uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
+
+    address public constant STRETH = 0x277C6A642564A91ff78b008022D65683cEE5CCC5;
+    address public constant STRETH_DEPOSIT_QUEUE_ETH = 0xE707321B887b9da133AC5fCc5eDB78Ab177a152D;
+    address public constant STRETH_DEPOSIT_QUEUE_WETH = 0x2eA268f1018a4767bF5da42D531Ea9e943942A36;
+    address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
+    address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
+
+    address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
+    address public constant CURVE_USDC_USDU_GAUGE = 0x0E2662672adC42Bb73d39196f9f557C11B4FCcf9;
+
+    address public constant MORPHO_USDC_ALPHAPING = 0xb0f05E4De970A1aaf77f8C2F823953a367504BA9;
+    address public constant MORPHO_WETH_ALPHAPING = 0x47fe8Ab9eE47DD65c24df52324181790b9F47EfC;
+
+    address public constant BRACKET_FINANCE_WETH_VAULT = 0x3588e6Cb5DCa99E35bA2E2a5D42cdDb46365e71B;
+    address public constant BRACKET_FINANCE_USDC_VAULT = 0xb8ca40E2c5d77F0Bc1Aa88B2689dddB279F7a5eb;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
