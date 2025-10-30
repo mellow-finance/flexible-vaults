@@ -87,7 +87,7 @@ contract OracleSubmitter is AccessControlEnumerable {
     // Internal functions
 
     function _updateLatestAnswer(uint224 priceD18) internal {
-        latestAnswer = int256(1e30 / uint256(priceD18));
+        latestAnswer = int256(1e36 / uint256(priceD18));
         updatedAt = uint32(block.timestamp);
     }
 }
