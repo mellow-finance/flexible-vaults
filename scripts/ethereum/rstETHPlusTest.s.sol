@@ -145,6 +145,28 @@ contract Deploy is Script {
         SubvaultCalls[] memory calls = new SubvaultCalls[](1);
 
         IRiskManager riskManager = vault.riskManager();
+        /*
+            subvault 0:
+                weth.deposit{any}()
+                cowswap (weth -> wsteth)
+                rsteth -> redeem
+
+            subvault 1:
+                wsteth.approve(capSymbioticVault, any)
+                capSymbioticVault.deposit(subvault1, any)
+                capSymbioticVault.withdraw(subvault1, any)
+                capSymbioticVault.claim(subvault1, any)
+    
+            subvault 2:
+                wsteth.approve(capLender, any)
+                capLender.borrow(USDC, any, subvault2)
+                capLender.repay(USDC, any, subvault2)
+            
+            subvault3:
+                cowswap (USDC <-> wstUSR)
+                mb direct mint/burn of wstUSR
+        */
+
         {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             address subvault = vault.createSubvault(0, proxyAdmin, verifiers[0]);
