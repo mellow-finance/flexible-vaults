@@ -11,6 +11,7 @@ import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
 import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+import {SymbioticLibrary} from "../common/protocols/SymbioticLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import "./Constants.sol";
@@ -154,5 +155,82 @@ library rstETHPlusLibrary {
             }
             calls.calls[iterator++] = tmp;
         }
+    }
+
+    function getSubvault1Proofs(address curator, address subvault, address capSymbioticVault)
+        internal
+        view
+        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+    {
+        leaves = new IVerifier.VerificationPayload[](8);
+        uint256 iterator = 0;
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        iterator = ArraysLibrary.insert(
+            leaves,
+            SymbioticLibrary.getSymbioticProofs(
+                bitmaskVerifier,
+                SymbioticLibrary.Info({
+                    symbioticVault: capSymbioticVault,
+                    subvault: subvault,
+                    subvaultName: "subvault1",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault1Descriptions(address curator, address subvault, address capSymbioticVault)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](8);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            SymbioticLibrary.getSymbioticDescriptions(
+                SymbioticLibrary.Info({
+                    symbioticVault: capSymbioticVault,
+                    subvault: subvault,
+                    subvaultName: "subvault1",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault1Calls(
+        address curator,
+        address subvault,
+        address capSymbioticVault,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal view returns (SubvaultCalls memory calls) {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            calls.calls,
+            SymbioticLibrary.getSymbioticCalls(
+                SymbioticLibrary.Info({
+                    symbioticVault: capSymbioticVault,
+                    subvault: subvault,
+                    subvaultName: "subvault1",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
     }
 }

@@ -156,15 +156,13 @@ contract Deploy is Script {
                 capSymbioticVault.deposit(subvault1, any)
                 capSymbioticVault.withdraw(subvault1, any)
                 capSymbioticVault.claim(subvault1, any)
-    
+
             subvault 2:
                 wsteth.approve(capLender, any)
                 capLender.borrow(USDC, any, subvault2)
                 capLender.repay(USDC, any, subvault2)
-            
-            subvault3:
                 cowswap (USDC <-> wstUSR)
-                mb direct mint/burn of wstUSR
+                + mb direct mint/burn of wstUSR
         */
 
         {

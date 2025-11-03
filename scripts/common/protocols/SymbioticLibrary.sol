@@ -42,7 +42,7 @@ library SymbioticLibrary {
         leaves[index++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             $.curator,
-            asset,
+            $.symbioticVault,
             0,
             abi.encodeCall(IVault.deposit, ($.subvault, 0)),
             ProofLibrary.makeBitmask(
@@ -52,7 +52,7 @@ library SymbioticLibrary {
         leaves[index++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             $.curator,
-            asset,
+            $.symbioticVault,
             0,
             abi.encodeCall(IVault.withdraw, ($.subvault, 0)),
             ProofLibrary.makeBitmask(
@@ -62,7 +62,7 @@ library SymbioticLibrary {
         leaves[index++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             $.curator,
-            asset,
+            $.symbioticVault,
             0,
             abi.encodeCall(IVault.claim, ($.subvault, 0)),
             ProofLibrary.makeBitmask(
@@ -76,14 +76,12 @@ library SymbioticLibrary {
     }
 
     function getSymbioticDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        uint256 length = ($.assets.length * 5);
+        uint256 length = 4;
         descriptions = new string[](length);
         uint256 index = 0;
 
         ParameterLibrary.Parameter[] memory innerParameters;
         address collateral = IVault($.symbioticVault).collateral();
-
-        string memory collateralSymbol = IERC20Metadata(collateral).symbol();
 
         innerParameters = ParameterLibrary.buildERC20(Strings.toHexString($.symbioticVault));
         descriptions[index++] = JsonLibrary.toJson(
@@ -151,154 +149,108 @@ library SymbioticLibrary {
     }
 
     function getSymbioticCalls(Info memory $) internal view returns (Call[][] memory calls) {
-        // uint256 index = 0;
-        // calls = new Call[][]($.assets.length * 5);
+        uint256 index = 0;
+        calls = new Call[][](4);
+        address underlyingAsset = IVault($.symbioticVault).collateral();
+        {
+            Call[] memory tmp = new Call[](16);
+            uint256 i = 0;
+            tmp[i++] = Call($.curator, underlyingAsset, 0, abi.encodeCall(IERC20.approve, ($.symbioticVault, 0)), true);
+            tmp[i++] =
+                Call($.curator, underlyingAsset, 0, abi.encodeCall(IERC20.approve, ($.symbioticVault, 1 ether)), true);
+            tmp[i++] = Call(
+                address(0xdead), underlyingAsset, 0, abi.encodeCall(IERC20.approve, ($.symbioticVault, 1 ether)), false
+            );
+            tmp[i++] =
+                Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, ($.symbioticVault, 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, underlyingAsset, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false);
+            tmp[i++] = Call(
+                $.curator, underlyingAsset, 1 wei, abi.encodeCall(IERC20.approve, ($.symbioticVault, 1 ether)), false
+            );
+            tmp[i++] = Call(
+                $.curator, underlyingAsset, 0, abi.encode(IERC20.approve.selector, $.symbioticVault, 1 ether), false
+            );
+            assembly {
+                mstore(tmp, i)
+            }
+            calls[index++] = tmp;
+        }
 
-        // for (uint256 j = 0; j < $.assets.length; j++) {
-        //     address asset = $.assets[j];
-        //     address underlyingAsset = IERC4626(asset).asset();
-        //     {
-        //         Call[] memory tmp = new Call[](16);
-        //         uint256 i = 0;
-        //         tmp[i++] = Call($.curator, underlyingAsset, 0, abi.encodeCall(IERC20.approve, (asset, 0)), true);
-        //         tmp[i++] = Call($.curator, underlyingAsset, 0, abi.encodeCall(IERC20.approve, (asset, 1 ether)), true);
-        //         tmp[i++] =
-        //             Call(address(0xdead), underlyingAsset, 0, abi.encodeCall(IERC20.approve, (asset, 1 ether)), false);
-        //         tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, (asset, 1 ether)), false);
-        //         tmp[i++] = Call(
-        //             $.curator, underlyingAsset, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false
-        //         );
-        //         tmp[i++] =
-        //             Call($.curator, underlyingAsset, 1 wei, abi.encodeCall(IERC20.approve, (asset, 1 ether)), false);
-        //         tmp[i++] =
-        //             Call($.curator, underlyingAsset, 0, abi.encode(IERC20.approve.selector, asset, 1 ether), false);
-        //         assembly {
-        //             mstore(tmp, i)
-        //         }
-        //         calls[index++] = tmp;
-        //     }
+        // SymbioticVault deposit
+        {
+            Call[] memory tmp = new Call[](16);
+            uint256 i = 0;
+            tmp[i++] = Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.deposit, ($.subvault, 0)), true);
+            tmp[i++] = Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.deposit, ($.subvault, 1 ether)), true);
 
-        //     // ERC4626 deposit
-        //     {
-        //         Call[] memory tmp = new Call[](16);
-        //         uint256 i = 0;
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.deposit, (0, $.subvault)), true);
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.deposit, (1 ether, $.subvault)), true);
-        //         tmp[i++] =
-        //             Call(address(0xdead), asset, 0, abi.encodeCall(IERC4626.deposit, (1 ether, $.subvault)), false);
-        //         tmp[i++] =
-        //             Call($.curator, address(0xdead), 0, abi.encodeCall(IERC4626.deposit, (1 ether, $.subvault)), false);
-        //         tmp[i++] = Call($.curator, asset, 1 wei, abi.encodeCall(IERC4626.deposit, (1 ether, $.subvault)), false);
-        //         tmp[i++] =
-        //             Call($.curator, asset, 0, abi.encodeCall(IERC4626.deposit, (1 ether, address(0xdead))), false);
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encode(IERC4626.deposit.selector, 1 ether, $.subvault), false);
-        //         assembly {
-        //             mstore(tmp, i)
-        //         }
-        //         calls[index++] = tmp;
-        //     }
+            tmp[i++] =
+                Call(address(0xdead), $.symbioticVault, 0, abi.encodeCall(IVault.deposit, ($.subvault, 1 ether)), false);
+            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(IVault.deposit, ($.subvault, 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 1 wei, abi.encodeCall(IVault.deposit, ($.subvault, 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.deposit, (address(0xdead), 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 0, abi.encode(IVault.deposit.selector, $.subvault, 1 ether), false);
 
-        //     // ERC4626 mint
-        //     {
-        //         Call[] memory tmp = new Call[](16);
-        //         uint256 i = 0;
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.mint, (0, $.subvault)), true);
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.mint, (1 ether, $.subvault)), true);
-        //         tmp[i++] = Call(address(0xdead), asset, 0, abi.encodeCall(IERC4626.mint, (1 ether, $.subvault)), false);
-        //         tmp[i++] =
-        //             Call($.curator, address(0xdead), 0, abi.encodeCall(IERC4626.mint, (1 ether, $.subvault)), false);
-        //         tmp[i++] = Call($.curator, asset, 1 wei, abi.encodeCall(IERC4626.mint, (1 ether, $.subvault)), false);
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.mint, (1 ether, address(0xdead))), false);
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encode(IERC4626.mint.selector, 1 ether, $.subvault), false);
-        //         assembly {
-        //             mstore(tmp, i)
-        //         }
-        //         calls[index++] = tmp;
-        //     }
+            assembly {
+                mstore(tmp, i)
+            }
+            calls[index++] = tmp;
+        }
 
-        //     // ERC4626 redeem
-        //     {
-        //         Call[] memory tmp = new Call[](16);
-        //         uint256 i = 0;
-        //         tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (0, $.subvault, $.subvault)), true);
-        //         tmp[i++] =
-        //             Call($.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), true);
-        //         tmp[i++] = Call(
-        //             address(0xdead), asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator,
-        //             address(0xdead),
-        //             0,
-        //             abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)),
-        //             false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator, asset, 1 wei, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, address(0xdead), $.subvault)), false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, address(0xdead))), false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator, asset, 0, abi.encode(IERC4626.redeem.selector, 1 ether, $.subvault, $.subvault), false
-        //         );
-        //         assembly {
-        //             mstore(tmp, i)
-        //         }
-        //         calls[index++] = tmp;
-        //     }
+        // SymbioticVault withdraw
+        {
+            Call[] memory tmp = new Call[](16);
+            uint256 i = 0;
+            tmp[i++] = Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.withdraw, ($.subvault, 0)), true);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.withdraw, ($.subvault, 1 ether)), true);
 
-        //     // ERC4626 withdraw
-        //     {
-        //         Call[] memory tmp = new Call[](16);
-        //         uint256 i = 0;
-        //         tmp[i++] =
-        //             Call($.curator, asset, 0, abi.encodeCall(IERC4626.withdraw, (0, $.subvault, $.subvault)), true);
-        //         tmp[i++] = Call(
-        //             $.curator, asset, 0, abi.encodeCall(IERC4626.withdraw, (1 ether, $.subvault, $.subvault)), true
-        //         );
-        //         tmp[i++] = Call(
-        //             address(0xdead),
-        //             asset,
-        //             0,
-        //             abi.encodeCall(IERC4626.withdraw, (1 ether, $.subvault, $.subvault)),
-        //             false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator,
-        //             address(0xdead),
-        //             0,
-        //             abi.encodeCall(IERC4626.withdraw, (1 ether, $.subvault, $.subvault)),
-        //             false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator, asset, 1 wei, abi.encodeCall(IERC4626.withdraw, (1 ether, $.subvault, $.subvault)), false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator,
-        //             asset,
-        //             0,
-        //             abi.encodeCall(IERC4626.withdraw, (1 ether, address(0xdead), $.subvault)),
-        //             false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator,
-        //             asset,
-        //             0,
-        //             abi.encodeCall(IERC4626.withdraw, (1 ether, $.subvault, address(0xdead))),
-        //             false
-        //         );
-        //         tmp[i++] = Call(
-        //             $.curator, asset, 0, abi.encode(IERC4626.withdraw.selector, 1 ether, $.subvault, $.subvault), false
-        //         );
-        //         assembly {
-        //             mstore(tmp, i)
-        //         }
-        //         calls[index++] = tmp;
-        //     }
-        // }
+            tmp[i++] = Call(
+                address(0xdead), $.symbioticVault, 0, abi.encodeCall(IVault.withdraw, ($.subvault, 1 ether)), false
+            );
+            tmp[i++] =
+                Call($.curator, address(0xdead), 0, abi.encodeCall(IVault.withdraw, ($.subvault, 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 1 wei, abi.encodeCall(IVault.withdraw, ($.subvault, 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.withdraw, (address(0xdead), 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 0, abi.encode(IVault.withdraw.selector, $.subvault, 1 ether), false);
+
+            assembly {
+                mstore(tmp, i)
+            }
+            calls[index++] = tmp;
+        }
+
+        // SymbioticVault claim
+        {
+            Call[] memory tmp = new Call[](16);
+            uint256 i = 0;
+            tmp[i++] = Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.claim, ($.subvault, 0)), true);
+            tmp[i++] = Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.claim, ($.subvault, 1 ether)), true);
+
+            tmp[i++] =
+                Call(address(0xdead), $.symbioticVault, 0, abi.encodeCall(IVault.claim, ($.subvault, 1 ether)), false);
+            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(IVault.claim, ($.subvault, 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 1 wei, abi.encodeCall(IVault.claim, ($.subvault, 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 0, abi.encodeCall(IVault.claim, (address(0xdead), 1 ether)), false);
+            tmp[i++] =
+                Call($.curator, $.symbioticVault, 0, abi.encode(IVault.claim.selector, $.subvault, 1 ether), false);
+
+            assembly {
+                mstore(tmp, i)
+            }
+            calls[index++] = tmp;
+        }
+
+        assembly {
+            mstore(calls, index)
+        }
     }
 }
