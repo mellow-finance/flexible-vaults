@@ -1,0 +1,198 @@
+{
+  "title": "ethereum:rstETH+:subvault0",
+  "merkle_root": "0xa0707046157e2608d368ca04c832fd69dd56c206bf3f908430e2826bb6c88450",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "WETH.deposit{value: any}()",
+        "abi": {
+          "constant": false,
+          "inputs": [],
+          "name": "deposit",
+          "outputs": [],
+          "payable": true,
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "any"
+        },
+        "innerParameters": {}
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afb3de4e3a2706e925db06580a3076cd75d1640fb8c94321bce9ff8a6ae29fed500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xcfde9ac6c00b6f4fbc29f1ffaf32730da8b091872f0da8d4e9c44da277e9df84",
+        "0xe8f14831e5935ce8fef9cd2d960139291582535083fe94694c73f4013f4d114e"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "CowswapSettlement.setPreSignature(anyBytes(56), anyBool)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "orderUid",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bool",
+              "name": "signed",
+              "type": "bool"
+            }
+          ],
+          "name": "setPreSignature",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+          "value": "0"
+        },
+        "innerParameters": {
+          "orderUid": "any",
+          "signed": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a90c07055cfa4aec8b2b43da55609ccb7de74301ce4efd608fb5a35415d704a3100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x91637dc0bc2dd20e526ed6b682e4f46a7777551d84e1faeade61a38bec89414c",
+        "0xe8f14831e5935ce8fef9cd2d960139291582535083fe94694c73f4013f4d114e"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "CowswapSettlement.invalidateOrder(anyBytes(56))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "orderUid",
+              "type": "bytes"
+            }
+          ],
+          "name": "invalidateOrder",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+          "value": "0"
+        },
+        "innerParameters": {
+          "orderUid": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acb1ee1ea8f3a42d4045d4fe040487f7d38634cf28eb7f31b6aa490bb09204ec9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x63df217aa8ccd771f2c06d52cda40f6e6048e306243bd2174c85df961fe30f9e",
+        "0xde751a8076b1b20b5002306bd9c639e29811d76e43aed61bcdb7cf1d81d6b714",
+        "0x2d458d83625734d5b5e4637321713a9583bb645eecd785d517e9f4dba622caca"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(WETH).approve(CowswapVaultRelayer, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xc92e8bdf79f0507f65a392b0ab4667716bfe0110",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a862791b8c58f14620ceee5235aee8becdbbe8bb42552b9cee5de8e0cbf1e2670000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1328a95afcce3f39c8a9e658432ef58d90863d7e94df8dd0d86374ae8440a8e6",
+        "0xde751a8076b1b20b5002306bd9c639e29811d76e43aed61bcdb7cf1d81d6b714",
+        "0x2d458d83625734d5b5e4637321713a9583bb645eecd785d517e9f4dba622caca"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "rstETH.redeem(any, subvault0, subvault0)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "redeem",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0x7a4effd87c2f3c55ca251080b1343b605f327e3a",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0xf575b68f5f6171ed4977f3454840633537dd3633",
+          "owner": "0xf575b68f5f6171ed4977f3454840633537dd3633"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c508afbf05ba5985041e607f9c3be0eb3d54b16900fa5ba38efc678595a9db4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8274f47a300104c7823eee858b6f6f55cece46530fba32c72b59a83ddb9732dc",
+        "0x2d458d83625734d5b5e4637321713a9583bb645eecd785d517e9f4dba622caca"
+      ]
+    }
+  ]
+}

@@ -69,6 +69,9 @@ library Constants {
     address public constant BRACKET_FINANCE_WETH_VAULT = 0x3588e6Cb5DCa99E35bA2E2a5D42cdDb46365e71B;
     address public constant BRACKET_FINANCE_USDC_VAULT = 0xb8ca40E2c5d77F0Bc1Aa88B2689dddB279F7a5eb;
 
+    address public constant RSTETH = 0x7a4EffD87C2f3C55CA251080b1343b605f327E3a;
+    address public constant CAP_LENDER = 0x15622c3dbbc5614E6DFa9446603c1779647f01FC;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
