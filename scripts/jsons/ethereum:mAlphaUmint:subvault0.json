@@ -1,0 +1,735 @@
+{
+  "title": "ethereum:mAlphaUmint:subvault0",
+  "merkle_root": "0x91beff10fbf553783e6dd689439e30521b2af9610d48da42f8b381631ad9503f",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(uMINT).approve(0x3797c46db697c24a983222c335f17ba28e8c5b69, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xc06036793272219179f846ef6bfc3b16e820df0b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x3797c46db697c24a983222c335f17ba28e8c5b69",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1fa4dd16bfa207b2d094740084e4791d9022d3432acaa0ee625ba2e7ade7b8b1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd7c48853fffb4f916ac552492ece1663064c9b70ebf501101e1c2252f7c5af9a",
+        "0xbba6a419ec634bd316a844cdf06877f37baaab7c388bf095193c85a6764cc06f",
+        "0x851fa0cc16bbfe0e65635354be1cd72aaa3b47ad81a75655b7b8dea00956c882",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(USDC).approve(0x3797c46db697c24a983222c335f17ba28e8c5b69, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x3797c46db697c24a983222c335f17ba28e8c5b69",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4b5f6d83d887a6b2c9aad2890f28640272a9fa1b799370bd0d3bd7daf5ca1da0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd942c0bf578cefcb4a3b8def1aaf6f46f609339c64febe60ff3d36febb59c697",
+        "0x6589203140bf759afde0b20b7300612a189b270f27727f92ad2c4923a0d2e6fe",
+        "0x851fa0cc16bbfe0e65635354be1cd72aaa3b47ad81a75655b7b8dea00956c882",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISubRedManagement(SubRedManagement).subscribe(uMINT, USDC, anyInt, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "stToken",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "currencyToken",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "subscribe",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x3797c46db697c24a983222c335f17ba28e8c5b69",
+          "value": "0"
+        },
+        "innerParameters": {
+          "stToken": "0xc06036793272219179f846ef6bfc3b16e820df0b",
+          "currencyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "amount": "any",
+          "deadline": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acd98dbc4ce4a6276e45de1cd6f59457bc7400c2a43ce8aecc3099b345abade59000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1fe00d832fd815afc1793496dc8ba49f4fcedf55ab53510fcb6e01d53eefa6db",
+        "0xf3f9ddb3222c5c814f5e8ae6041861f6c41781b3f450722a6e5fecc437ec012c",
+        "0x684c99fa7a1f1c4d92a6019d6490368a36133c13b41fdc6451e9df9ec4870cb2",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISubRedManagement(SubRedManagement).redeem(uMINT, USDC, anyInt, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "subId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "redeem",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x3797c46db697c24a983222c335f17ba28e8c5b69",
+          "value": "0"
+        },
+        "innerParameters": {
+          "stToken": "0xc06036793272219179f846ef6bfc3b16e820df0b",
+          "currencyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "quantity": "any",
+          "deadline": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8aeefa2631cbb1dc52b724feaabf558aea400a693e72d0f7ad7d9b0d30f67f22000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x9f29aead3f908161693e1c8b29e5352b0d2395cf4f93ab7246f7877027047268",
+        "0x3c9a942d7b496067a6c07932baabe4dfce74207692e09f4c3b5424ce2a02665e",
+        "0xa256441a1512d1210869321e484386a122d2e4a19b1baf81770870e24c8cebb6",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(uMINT).approve(0xc47591f5c023e44931c78d5a993834875b79fb11, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xc06036793272219179f846ef6bfc3b16e820df0b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xc47591f5c023e44931c78d5a993834875b79fb11",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a79bcf194d28b51ca23632e378285e83706b32470009dbde17a2b8f93e8854090000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3bba60ab9f17fea7a6e38a766e83180db48aef12d45bb5657c58dced34808648",
+        "0x78f12906025296943c7c044a23e69cbbaaec5681bbb802e572765ec8ee42b7f7",
+        "0xea808a0709151acfd36d3d90cd1439b8b8b904b328adec9f00b95fcf59ca68ec",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(USDU).approve(0xc47591f5c023e44931c78d5a993834875b79fb11, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xdde3ec717f220fc6a29d6a4be73f91da5b718e55",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xc47591f5c023e44931c78d5a993834875b79fb11",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa202a27c52e2d9966a1db9cb118526c4a4cb0edb9da18775efb1761af1d39bc1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x074ed37b156a56abb3d56123f78da769d0d543646ec35075ffc89ee861394e07",
+        "0x682351245eee3f1ce2bbf928dbb8e5c5e4e2329cb17181eec9c56b877d10931d",
+        "0x684c99fa7a1f1c4d92a6019d6490368a36133c13b41fdc6451e9df9ec4870cb2",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ITermMaxRouter(TermMaxRouter).borrowTokenFromCollateral(0xb73ad23d444b59a02503c96e793bc1557eeef953, 0x1b7f1fb1ac54396b3039a817714d8a7176099328, anyInt, anyArr, anyArr, anyInt, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "collInAmt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address[]",
+              "name": "orders",
+              "type": "address[]"
+            },
+            {
+              "internalType": "uint128[]",
+              "name": "tokenAmtsWantBuy",
+              "type": "uint128[]"
+            },
+            {
+              "internalType": "uint128",
+              "name": "maxDebtAmt",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "borrowTokenFromCollateral",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "gtId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xc47591f5c023e44931c78d5a993834875b79fb11",
+          "value": "0"
+        },
+        "innerParameters": {
+          "subvault": "0xb73ad23d444b59a02503c96e793bc1557eeef953",
+          "0x1b7f1fb1ac54396b3039a817714d8a7176099328": "market",
+          "orders": "[any]",
+          "tokenAmtsWantBuy": "[any]",
+          "maxDebtAmt": "any",
+          "deadline": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aecf1929886351ed8367c2665e7cddaf8c27bc75a04b4d00a2fc762ed14236bd0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1575572cbfd24d318ae95961c479217d4e2505ffe5a1585418e3759f90846f50",
+        "0x682351245eee3f1ce2bbf928dbb8e5c5e4e2329cb17181eec9c56b877d10931d",
+        "0x684c99fa7a1f1c4d92a6019d6490368a36133c13b41fdc6451e9df9ec4870cb2",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ITermMaxRouter(TermMaxRouter).repayGt(0x1b7f1fb1ac54396b3039a817714d8a7176099328, anyInt, maxRepayAmt, true)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "gtId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint128",
+              "name": "maxRepayAmt",
+              "type": "uint128"
+            },
+            {
+              "internalType": "bool",
+              "name": "byDebtToken",
+              "type": "bool"
+            }
+          ],
+          "name": "repayGt",
+          "outputs": [
+            {
+              "internalType": "uint128",
+              "name": "repayAmt",
+              "type": "uint128"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xc47591f5c023e44931c78d5a993834875b79fb11",
+          "value": "0"
+        },
+        "innerParameters": {
+          "0x1b7f1fb1ac54396b3039a817714d8a7176099328": "market",
+          "gtId": "any",
+          "maxRepayAmt": "any",
+          "byDebtToken": "true"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afe56df32e64cb0a4b00e37d8079d341989debe191bfa223c45b318cab7fa21c2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x309046a4f6a485c2a2a06c01d143586925f8831012922186ece3b3007ae036fb",
+        "0xf3f9ddb3222c5c814f5e8ae6041861f6c41781b3f450722a6e5fecc437ec012c",
+        "0x684c99fa7a1f1c4d92a6019d6490368a36133c13b41fdc6451e9df9ec4870cb2",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(USDU).approve(IERC4626(USDU/USDC), any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xdde3ec717f220fc6a29d6a4be73f91da5b718e55",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xdde3ec717f220fc6a29d6a4be73f91da5b718e55",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae1ca8a18d005904426d87bf9b5bb36a8a97592731360a86cb82ade1c9a9cc569000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x75c772dcb2ace78c758474f556cc38685d14d5135dce2861e1a75c59df6eb094",
+        "0x84968b459772431945783b9024f49f58460d1b40bd804e6e95a320cd87fa2227",
+        "0xa256441a1512d1210869321e484386a122d2e4a19b1baf81770870e24c8cebb6",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(USDC).approve(IERC4626(USDU/USDC), any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7eca1e47a946ab79bfdf3ea043c47564fd3f30997f75f107e5631fbca070d6f9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x75c362fda1f6544eec7818bb81a24dae84c6bf5dc171daa6552efcf59a7205bd",
+        "0x84968b459772431945783b9024f49f58460d1b40bd804e6e95a320cd87fa2227",
+        "0xa256441a1512d1210869321e484386a122d2e4a19b1baf81770870e24c8cebb6",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ICurvePool(USDU/USDC).add_liquidity(any[N_COINS], any)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "_amounts",
+              "type": "uint256[]"
+            },
+            {
+              "name": "_min_mint_amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "add_liquidity",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x771c91e699b4b23420de3f81de2aa38c4041632b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_amounts": "[any, any]",
+          "_min_mint_amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a409d5f51bf2f7dda12dd6fda44b4fd8a76cb3a92074e249b69ab6597f0720d1b00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8d43ce3f205e479a8624e838cbaf9b92966af9bf79002999337ad26f71270233",
+        "0x3c9a942d7b496067a6c07932baabe4dfce74207692e09f4c3b5424ce2a02665e",
+        "0xa256441a1512d1210869321e484386a122d2e4a19b1baf81770870e24c8cebb6",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ICurvePool(USDU/USDC).remove_liquidity(any, any[N_COINS])",
+        "abi": {
+          "inputs": [
+            {
+              "name": "_burn_amount",
+              "type": "uint256"
+            },
+            {
+              "name": "_min_amounts",
+              "type": "uint256[]"
+            }
+          ],
+          "name": "remove_liquidity",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x771c91e699b4b23420de3f81de2aa38c4041632b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_burn_amount": "any",
+          "_min_amounts": "[any, any]"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a82b056d7547151b2e08188b9a9038e28ecba60a739e82b478e3f4ad959cd7a6700000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc9732728fcc26689cacc864d005b5a3e2a9cd1a23e8c2c3f23b677b027ec5856",
+        "0xbba6a419ec634bd316a844cdf06877f37baaab7c388bf095193c85a6764cc06f",
+        "0x851fa0cc16bbfe0e65635354be1cd72aaa3b47ad81a75655b7b8dea00956c882",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(USDU/USDC).approve(Curve.fi USDUUSDC Gauge Deposit, any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x771c91e699b4b23420de3f81de2aa38c4041632b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x0e2662672adc42bb73d39196f9f557c11b4fccf9",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8e235e73dc1119ab3a6460de2468f733fa0ce9e3d1ad2095760a53f7f90c3338000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf8d041ae6c6c13fcf69ab21862a0f3875310239b580be0d9a516717544122266",
+        "0x6589203140bf759afde0b20b7300612a189b270f27727f92ad2c4923a0d2e6fe",
+        "0x851fa0cc16bbfe0e65635354be1cd72aaa3b47ad81a75655b7b8dea00956c882",
+        "0xca3a2b5846cb903ab7876265d9f061c2fc18cf16c8d06cf09b5ae0ae6d975496"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ICurveGauge(Curve.fi USDUUSDC Gauge Deposit).deposit(any)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "_value",
+              "type": "uint256"
+            }
+          ],
+          "name": "deposit",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x0e2662672adc42bb73d39196f9f557c11b4fccf9",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa0758b601b4a8a3d5c96bf286a46fe2424f8678197bc528d0af5249e2c613f7700000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4ac57cb127b448275f28c0c75d04739c9b28e6a1a48bdc53a918ff775e4b3c05",
+        "0xd85f6422e67f993378b9a6b781d2b09726be5a9cf390e2158fca3620f7a3cccf",
+        "0xea808a0709151acfd36d3d90cd1439b8b8b904b328adec9f00b95fcf59ca68ec",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ICurveGauge(Curve.fi USDUUSDC Gauge Deposit).withdraw(any)",
+        "abi": {
+          "constant": false,
+          "inputs": [
+            {
+              "name": "wad",
+              "type": "uint256"
+            }
+          ],
+          "name": "withdraw",
+          "outputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x0e2662672adc42bb73d39196f9f557c11b4fccf9",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa00f03d03584a783c1cd645f334b886857de122dbfb2b42de3cc26beaadb02f900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x32ab74cbbf04deb00912776e34ca41d571cd0314920e177f4bad9b2eb521efd8",
+        "0x78f12906025296943c7c044a23e69cbbaaec5681bbb802e572765ec8ee42b7f7",
+        "0xea808a0709151acfd36d3d90cd1439b8b8b904b328adec9f00b95fcf59ca68ec",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ICurveGauge(Curve.fi USDUUSDC Gauge Deposit).claim_rewards()",
+        "abi": {
+          "inputs": [],
+          "name": "claim_rewards",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
+          "target": "0x0e2662672adc42bb73d39196f9f557c11b4fccf9",
+          "value": "0"
+        },
+        "innerParameters": {}
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae2f78b40673f5ae51ddf4cff4a343b32ce8fcfc00f7fef374a586f70b8ac9a9100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x42b9e1be5a50da033c00d134a6deef556da733f61b734101620fad5c09a090a9",
+        "0xd85f6422e67f993378b9a6b781d2b09726be5a9cf390e2158fca3620f7a3cccf",
+        "0xea808a0709151acfd36d3d90cd1439b8b8b904b328adec9f00b95fcf59ca68ec",
+        "0xb0226ab2c709b954967bd7e0c7ee3e87832264ef0264ebdb247f7c083d7d8703"
+      ]
+    }
+  ]
+}

@@ -23,6 +23,7 @@ library Constants {
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address public constant USDS = 0xdC035D45d973E3EC169d2276DDab16f1e407384F;
     address public constant USDU = 0xdde3eC717f220Fc6A29D6a4Be73F91DA5b718e55;
+    address public constant UMINT = 0xC06036793272219179F846eF6bfc3B16E820Df0B;
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
@@ -69,6 +70,10 @@ library Constants {
     address public constant BRACKET_FINANCE_WETH_VAULT = 0x3588e6Cb5DCa99E35bA2E2a5D42cdDb46365e71B;
     address public constant BRACKET_FINANCE_USDC_VAULT = 0xb8ca40E2c5d77F0Bc1Aa88B2689dddB279F7a5eb;
 
+    address public constant SUB_RED_MANAGEMENT = 0x3797C46db697c24a983222c335F17Ba28e8c5b69;
+
+    address public constant TERMMAX_ROUTER = 0xC47591F5c023e44931c78D5A993834875b79FB11;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
@@ -81,7 +86,7 @@ library Constants {
             wsteth: WSTETH,
             weth: WETH,
             proxyAdmin: 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0,
-            deployer: 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3,
+            deployer: 0x4d551d74e851Bd93Ce44D5F588Ba14623249CDda,
             factoryImplementation: Factory(0x0000000397b71C8f3182Fd40D247330D218fdC72),
             factory: Factory(0x0000000f9686896836C39cf721141922Ce42639f),
             consensusFactory: Factory(0xaEEB06CBd91A18b51a2D30b61477eAeE3a9633C3),

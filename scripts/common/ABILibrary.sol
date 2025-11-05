@@ -18,12 +18,15 @@ import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
 
 import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
 
+import {ISubRedManagement} from "./interfaces/ISubRedManagement.sol";
+import {ITermMaxRouter} from "./interfaces/ITermMaxRouter.sol";
+
 import {IDepositQueue} from "../../src/interfaces/queues/IDepositQueue.sol";
 import {IRedeemQueue} from "../../src/interfaces/queues/IRedeemQueue.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[11] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[13] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -34,7 +37,9 @@ library ABILibrary {
             getL1GatewayRouter,
             getL2GatewayRouter,
             getCCIPRouter,
-            getCoreVaultInterfaces
+            getCoreVaultInterfaces,
+            getTermMaxInterfaces,
+            getDigiFTInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -202,5 +207,29 @@ library ABILibrary {
             '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[2] =
             '{"inputs":[{"internalType":"address","name":"receiver","type":"address"},{"internalType":"uint32[]","name":"timestamps","type":"uint32[]"}],"name":"claim","outputs":[{"internalType":"uint256","name":"assets","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getTermMaxInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](2);
+        abis = new string[](2);
+
+        selectors[0] = ITermMaxRouter.borrowTokenFromCollateral.selector;
+        selectors[1] = ITermMaxRouter.repayGt.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"address","name":"market","type":"address"},{"internalType":"uint256","name":"collInAmt","type":"uint256"},{"internalType":"address[]","name":"orders","type":"address[]"},{"internalType":"uint128[]","name":"tokenAmtsWantBuy","type":"uint128[]"},{"internalType":"uint128","name":"maxDebtAmt","type":"uint128"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"borrowTokenFromCollateral","outputs":[{"internalType":"uint256","name":"gtId","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"address","name":"market","type":"address"},{"internalType":"uint256","name":"gtId","type":"uint256"},{"internalType":"uint128","name":"maxRepayAmt","type":"uint128"},{"internalType":"bool","name":"byDebtToken","type":"bool"}],"name":"repayGt","outputs":[{"internalType":"uint128","name":"repayAmt","type":"uint128"}],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getDigiFTInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](2);
+        abis = new string[](2);
+        selectors[0] = ISubRedManagement.subscribe.selector;
+        selectors[1] = ISubRedManagement.redeem.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"stToken","type":"address"},{"internalType":"address","name":"currencyToken","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"_deadline","type":"uint256"}],"name":"subscribe","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"subId","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }
