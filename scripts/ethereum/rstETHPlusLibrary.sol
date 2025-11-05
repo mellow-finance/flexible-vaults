@@ -10,7 +10,9 @@ import {ParameterLibrary} from "../common/ParameterLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
+import {CapLenderLibrary} from "../common/protocols/CapLenderLibrary.sol";
 import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+import {ResolvLibrary} from "../common/protocols/ResolvLibrary.sol";
 import {SymbioticLibrary} from "../common/protocols/SymbioticLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
