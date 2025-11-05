@@ -1,0 +1,92 @@
+{
+  "title": "ethereum:auroBTC.pre:subvault0",
+  "merkle_root": "0x6dc7d04b1badaa197df69735403d3bfe56113347ab1eba94612ba03b4405bc55",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "WBTC.approve(recipient, any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x0000000000000000000000000000000000000005",
+          "target": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x0000000000000000000000000000000000000008",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9b41504a65aebb5e314d6bfc9504261f55e64881c4e098dea89f1a7b51021f80000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf954e9630cb58d65de1cbf1eac5b270915cb3980ac2680a1d82e547f1d0205cd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "WBTC.transfer(recipient, any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "transfer",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x0000000000000000000000000000000000000005",
+          "target": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x0000000000000000000000000000000000000008",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4ea6b005eb0e3177ca5bce7b5926437624f83823358b8158da6a8e8705977bdb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x523a779daddaf50f506ca8f32e5d0f9cfdc25a6c98a78e3ad8b4b563b59b2586"
+      ]
+    }
+  ]
+}
