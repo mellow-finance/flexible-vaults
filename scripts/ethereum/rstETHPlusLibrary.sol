@@ -235,4 +235,180 @@ library rstETHPlusLibrary {
             iterator
         );
     }
+
+    function getSubvault2Proofs(address curator, address subvault)
+        internal
+        pure
+        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+    {
+        leaves = new IVerifier.VerificationPayload[](42);
+        uint256 iterator = 0;
+
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        iterator = ArraysLibrary.insert(
+            leaves,
+            CapLenderLibrary.getCapLenderProofs(
+                bitmaskVerifier,
+                CapLenderLibrary.Info({
+                    asset: Constants.USDC,
+                    lender: Constants.CAP_LENDER,
+                    subvault: subvault,
+                    subvaultName: "subvault2",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        iterator = ArraysLibrary.insert(
+            leaves,
+            ResolvLibrary.getResolvProofs(
+                bitmaskVerifier,
+                ResolvLibrary.Info({
+                    asset: Constants.USDC,
+                    usrRequestManager: Constants.USR_REQUEST_MANAGER,
+                    usr: Constants.USR,
+                    stUsr: Constants.STUSR,
+                    subvault: subvault,
+                    subvaultName: "subvault2",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        iterator = ArraysLibrary.insert(
+            leaves,
+            CowSwapLibrary.getCowSwapProofs(
+                bitmaskVerifier,
+                CowSwapLibrary.Info({
+                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
+                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+                    curator: curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
+                })
+            ),
+            iterator
+        );
+
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault2Descriptions(address curator, address subvault)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](8);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            CapLenderLibrary.getCapLenderDescriptions(
+                CapLenderLibrary.Info({
+                    asset: Constants.USDC,
+                    lender: Constants.CAP_LENDER,
+                    subvault: subvault,
+                    subvaultName: "subvault2",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            ResolvLibrary.getResolvDescriptions(
+                ResolvLibrary.Info({
+                    asset: Constants.USDC,
+                    usrRequestManager: Constants.USR_REQUEST_MANAGER,
+                    usr: Constants.USR,
+                    stUsr: Constants.STUSR,
+                    subvault: subvault,
+                    subvaultName: "subvault2",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            CowSwapLibrary.getCowSwapDescriptions(
+                CowSwapLibrary.Info({
+                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
+                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+                    curator: curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
+                })
+            ),
+            iterator
+        );
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault2Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+        internal
+        pure
+        returns (SubvaultCalls memory calls)
+    {
+        calls.payloads = leaves;
+        Call[][] memory calls_ = new Call[][](leaves.length);
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
+            calls_,
+            CapLenderLibrary.getCapLenderCalls(
+                CapLenderLibrary.Info({
+                    asset: Constants.USDC,
+                    lender: Constants.CAP_LENDER,
+                    subvault: subvault,
+                    subvaultName: "subvault2",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        iterator = ArraysLibrary.insert(
+            calls_,
+            ResolvLibrary.getResolvCalls(
+                ResolvLibrary.Info({
+                    asset: Constants.USDC,
+                    usrRequestManager: Constants.USR_REQUEST_MANAGER,
+                    usr: Constants.USR,
+                    stUsr: Constants.STUSR,
+                    subvault: subvault,
+                    subvaultName: "subvault2",
+                    curator: curator
+                })
+            ),
+            iterator
+        );
+
+        iterator = ArraysLibrary.insert(
+            calls_,
+            CowSwapLibrary.getCowSwapCalls(
+                CowSwapLibrary.Info({
+                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
+                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+                    curator: curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
+                })
+            ),
+            iterator
+        );
+
+        assembly {
+            mstore(calls_, iterator)
+        }
+
+        calls.calls = calls_;
+    }
 }
