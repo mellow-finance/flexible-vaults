@@ -4,9 +4,12 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import {ABILibrary} from "../ABILibrary.sol";
+
+import {ArraysLibrary} from "../ArraysLibrary.sol";
 import {JsonLibrary} from "../JsonLibrary.sol";
 import "../ParameterLibrary.sol";
 import "../ProofLibrary.sol";
+import {ERC20Library} from "./ERC20Library.sol";
 
 import "../interfaces/IStUSR.sol";
 import "../interfaces/IUsrExternalRequestsManager.sol";
@@ -52,26 +55,20 @@ library ResolvLibrary {
         uint256 length = 11;
         leaves = new IVerifier.VerificationPayload[](length);
         uint256 index = 0;
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.asset,
-            0,
-            abi.encodeCall(IERC20.approve, ($.usrRequestManager, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
+
+        index = ArraysLibrary.insert(
+            leaves,
+            ERC20Library.getERC20Proofs(
+                bitmaskVerifier,
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.asset, $.usr)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.usrRequestManager, $.usrRequestManager))
+                })
+            ),
+            index
         );
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.usr,
-            0,
-            abi.encodeCall(IERC20.approve, ($.usrRequestManager, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
-        );
+
         leaves[index++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             $.curator,
@@ -134,15 +131,17 @@ library ResolvLibrary {
                 abi.encodeCall(IUsrExternalRequestsManager.redeem, (0, address(type(uint160).max), 0))
             )
         );
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.usr,
-            0,
-            abi.encodeCall(IERC20.approve, ($.stUsr, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
+        index = ArraysLibrary.insert(
+            leaves,
+            ERC20Library.getERC20Proofs(
+                bitmaskVerifier,
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.usr)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.stUsr))
+                })
+            ),
+            index
         );
         leaves[index++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
@@ -177,36 +176,16 @@ library ResolvLibrary {
 
         ParameterLibrary.Parameter[] memory innerParameters;
 
-        innerParameters = ParameterLibrary.buildERC20(Strings.toHexString($.usrRequestManager));
-        descriptions[index++] = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    "IERC20(",
-                    IERC20Metadata($.asset).symbol(),
-                    ").approve(usrExternalRequestManager(",
-                    Strings.toHexString($.usrRequestManager),
-                    "), anyInt)"
-                )
+        index = ArraysLibrary.insert(
+            descriptions,
+            ERC20Library.getERC20Descriptions(
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.asset, $.usr)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.usrRequestManager, $.usrRequestManager))
+                })
             ),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.asset), "0"),
-            innerParameters
-        );
-
-        innerParameters = ParameterLibrary.buildERC20(Strings.toHexString($.usrRequestManager));
-        descriptions[index++] = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    "IERC20(",
-                    IERC20Metadata($.usr).symbol(),
-                    ").approve(usrExternalRequestManager(",
-                    Strings.toHexString($.usrRequestManager),
-                    "), anyInt)"
-                )
-            ),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.usr), "0"),
-            innerParameters
+            index
         );
 
         innerParameters = ParameterLibrary.build("_depositTokenAddress", Strings.toHexString($.asset)).addAny("_amount")
@@ -298,16 +277,16 @@ library ResolvLibrary {
             innerParameters
         );
 
-        innerParameters = ParameterLibrary.buildERC20(Strings.toHexString($.stUsr));
-        descriptions[index++] = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    "IERC20(", Strings.toHexString($.usr), ").approve(", IERC20Metadata($.stUsr).symbol(), ", anyInt)"
-                )
+        index = ArraysLibrary.insert(
+            descriptions,
+            ERC20Library.getERC20Descriptions(
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.usr)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.stUsr))
+                })
             ),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.usr), "0"),
-            innerParameters
+            index
         );
 
         innerParameters = ParameterLibrary.buildAny("_usrAmount");
@@ -334,54 +313,21 @@ library ResolvLibrary {
         );
     }
 
-    function getCapLenderCalls(Info memory $) internal pure returns (Call[][] memory calls) {
+    function getResolvCalls(Info memory $) internal pure returns (Call[][] memory calls) {
         uint256 index = 0;
         calls = new Call[][](11);
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 0)), true);
 
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), true);
-            tmp[i++] =
-                Call(address(0xdead), $.asset, 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), false);
-            tmp[i++] = Call(
-                $.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), false
-            );
-            tmp[i++] =
-                Call($.curator, $.asset, 1 wei, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false);
-            tmp[i++] =
-                Call($.curator, $.asset, 0, abi.encode(IERC20.approve.selector, $.usrRequestManager, 1 ether), false);
-
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
-
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.usr, 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 0)), true);
-
-            tmp[i++] = Call($.curator, $.usr, 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), true);
-            tmp[i++] =
-                Call(address(0xdead), $.usr, 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), false);
-            tmp[i++] = Call(
-                $.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), false
-            );
-            tmp[i++] =
-                Call($.curator, $.usr, 1 wei, abi.encodeCall(IERC20.approve, ($.usrRequestManager, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.usr, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false);
-            tmp[i++] =
-                Call($.curator, $.usr, 0, abi.encode(IERC20.approve.selector, $.usrRequestManager, 1 ether), false);
-
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
+        index = ArraysLibrary.insert(
+            calls,
+            ERC20Library.getERC20Calls(
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.asset, $.usr)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.usrRequestManager, $.usrRequestManager))
+                })
+            ),
+            index
+        );
 
         {
             Call[] memory tmp = new Call[](16);
@@ -653,23 +599,17 @@ library ResolvLibrary {
             calls[index++] = tmp;
         }
 
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, ($.stUsr, 0)), true);
-
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, ($.stUsr, 1 ether)), true);
-            tmp[i++] = Call(address(0xdead), $.asset, 0, abi.encodeCall(IERC20.approve, ($.stUsr, 1 ether)), false);
-            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, ($.stUsr, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.asset, 1 wei, abi.encodeCall(IERC20.approve, ($.stUsr, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false);
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encode(IERC20.approve.selector, $.stUsr, 1 ether), false);
-
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
+        index = ArraysLibrary.insert(
+            calls,
+            ERC20Library.getERC20Calls(
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.usr)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.stUsr))
+                })
+            ),
+            index
+        );
 
         {
             Call[] memory tmp = new Call[](16);

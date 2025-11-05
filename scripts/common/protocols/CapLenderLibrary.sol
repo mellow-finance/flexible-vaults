@@ -4,9 +4,12 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import {ABILibrary} from "../ABILibrary.sol";
+
+import {ArraysLibrary} from "../ArraysLibrary.sol";
 import {JsonLibrary} from "../JsonLibrary.sol";
 import "../ParameterLibrary.sol";
 import "../ProofLibrary.sol";
+import {ERC20Library} from "./ERC20Library.sol";
 
 import "../interfaces/ICapLender.sol";
 import "../interfaces/Imports.sol";
@@ -30,15 +33,17 @@ library CapLenderLibrary {
         uint256 length = 3;
         leaves = new IVerifier.VerificationPayload[](length);
         uint256 index = 0;
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.asset,
-            0,
-            abi.encodeCall(IERC20.approve, ($.lender, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
+        index = ArraysLibrary.insert(
+            leaves,
+            ERC20Library.getERC20Proofs(
+                bitmaskVerifier,
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.asset)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.lender))
+                })
+            ),
+            index
         );
 
         leaves[index++] = ProofLibrary.makeVerificationPayload(
@@ -75,30 +80,34 @@ library CapLenderLibrary {
     function getCapLenderDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
         uint256 length = 3;
         descriptions = new string[](length);
-        uint256 index = 0;
+        uint256 iterator = ArraysLibrary.insert(
+            descriptions,
+            ERC20Library.getERC20Descriptions(
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.asset)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.lender))
+                })
+            ),
+            0
+        );
 
         ParameterLibrary.Parameter[] memory innerParameters;
         string memory assetSymbol = IERC20Metadata($.asset).symbol();
 
-        innerParameters = ParameterLibrary.build("to", Strings.toHexString($.lender)).addAny("amount");
-        descriptions[index++] = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    "IERC20(", assetSymbol, ").approve(CapLender(", Strings.toHexString($.lender), "), anyInt)"
-                )
-            ),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.asset), "0"),
-            innerParameters
-        );
-
         innerParameters = ParameterLibrary.build("_asset", Strings.toHexString($.asset)).addAny("_amount").add(
             "_receiver", Strings.toHexString($.subvault)
         );
-        descriptions[index++] = JsonLibrary.toJson(
+        descriptions[iterator++] = JsonLibrary.toJson(
             string(
                 abi.encodePacked(
-                    "ICapLender(", assetSymbol, ").borrow(", assetSymbol, ", anyInt, ", $.subvaultName, ")"
+                    "ICapLender(",
+                    Strings.toHexString($.lender),
+                    ").borrow(",
+                    assetSymbol,
+                    ", anyInt, ",
+                    $.subvaultName,
+                    ")"
                 )
             ),
             ABILibrary.getABI(ICapLender.borrow.selector),
@@ -109,7 +118,7 @@ library CapLenderLibrary {
         innerParameters = ParameterLibrary.build("_asset", Strings.toHexString($.asset)).addAny("_amount").add(
             "_agent", Strings.toHexString($.subvault)
         );
-        descriptions[index++] = JsonLibrary.toJson(
+        descriptions[iterator++] = JsonLibrary.toJson(
             string(
                 abi.encodePacked("ICapLender(", assetSymbol, ").repay(", assetSymbol, ", anyInt, ", $.subvaultName, ")")
             ),
@@ -122,22 +131,18 @@ library CapLenderLibrary {
     function getCapLenderCalls(Info memory $) internal pure returns (Call[][] memory calls) {
         uint256 index = 0;
         calls = new Call[][](3);
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, ($.lender, 0)), true);
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, ($.lender, 1 ether)), true);
-            tmp[i++] = Call(address(0xdead), $.asset, 0, abi.encodeCall(IERC20.approve, ($.lender, 1 ether)), false);
-            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, ($.lender, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.asset, 1 wei, abi.encodeCall(IERC20.approve, ($.lender, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false);
-            tmp[i++] = Call($.curator, $.asset, 0, abi.encode(IERC20.approve.selector, $.lender, 1 ether), false);
+        index = ArraysLibrary.insert(
+            calls,
+            ERC20Library.getERC20Calls(
+                ERC20Library.Info({
+                    curator: $.curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode($.asset)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode($.lender))
+                })
+            ),
+            index
+        );
 
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
         {
             Call[] memory tmp = new Call[](16);
             uint256 i = 0;
