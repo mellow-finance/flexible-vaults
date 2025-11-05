@@ -247,18 +247,6 @@ library ResolvLibrary {
             innerParameters
         );
 
-        innerParameters = ParameterLibrary.buildAny("_id");
-        descriptions[index++] = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    "UsrExternalRequestManager(", Strings.toHexString($.usrRequestManager), ").redeem(anyInt)"
-                )
-            ),
-            ABILibrary.getABI(IUsrExternalRequestsManager.cancelBurn.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.usrRequestManager), "0"),
-            innerParameters
-        );
-
         innerParameters = ParameterLibrary.buildAny("_amount").add(
             "_withdrawalTokenAddress", Strings.toHexString($.asset)
         ).addAny("_minExpectedAmount");
