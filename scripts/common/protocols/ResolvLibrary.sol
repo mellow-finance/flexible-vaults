@@ -280,7 +280,7 @@ library ResolvLibrary {
         innerParameters = ParameterLibrary.buildAny("_usrAmount");
         descriptions[index++] = JsonLibrary.toJson(
             string(abi.encodePacked("StUSR(", Strings.toHexString($.stUsr), ").deposit(anyInt)")),
-            ABILibrary.getABI(IERC20.approve.selector),
+            ABILibrary.getABI(IStUSR.deposit.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.stUsr), "0"),
             innerParameters
         );
@@ -288,14 +288,14 @@ library ResolvLibrary {
         innerParameters = ParameterLibrary.buildAny("_usrAmount");
         descriptions[index++] = JsonLibrary.toJson(
             string(abi.encodePacked("StUSR(", Strings.toHexString($.stUsr), ").withdraw(anyInt)")),
-            ABILibrary.getABI(IERC20.approve.selector),
+            ABILibrary.getABI(IStUSR.withdraw.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.stUsr), "0"),
             innerParameters
         );
         innerParameters = new ParameterLibrary.Parameter[](0);
         descriptions[index++] = JsonLibrary.toJson(
             string(abi.encodePacked("StUSR(", Strings.toHexString($.stUsr), ").withdrawAll()")),
-            ABILibrary.getABI(IERC20.approve.selector),
+            ABILibrary.getABI(IStUSR.withdrawAll.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.stUsr), "0"),
             innerParameters
         );
