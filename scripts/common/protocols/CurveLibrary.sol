@@ -7,7 +7,6 @@ import {ParameterLibrary} from "../ParameterLibrary.sol";
 import {ProofLibrary} from "../ProofLibrary.sol";
 import {ICurveGauge} from "../interfaces/ICurveGauge.sol";
 import {ICurvePool} from "../interfaces/ICurvePool.sol";
-import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import "../ArraysLibrary.sol";
@@ -135,7 +134,7 @@ library CurveLibrary {
             descriptions[index++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
-                        "IERC20(", assetSymbol, ").approve(IERC4626(", ICurvePool($.pool).name(), "), any)"
+                        "IERC20(", assetSymbol, ").approve(ICurvePool(", ICurvePool($.pool).name(), "), any)"
                     )
                 ),
                 ABILibrary.getABI(IERC20.approve.selector),
