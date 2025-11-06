@@ -115,10 +115,10 @@ contract Deploy is Script {
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
-                    maxAbsoluteDeviation: 400 ether, // 400 USD
-                    suspiciousAbsoluteDeviation: 120 ether, // 120 USD
-                    maxRelativeDeviationD18: 0.1 ether, // 10 %
-                    suspiciousRelativeDeviationD18: 0.03 ether, // 3 %
+                    maxAbsoluteDeviation: 0.005 ether,
+                    suspiciousAbsoluteDeviation: 0.001 ether,
+                    maxRelativeDeviationD18: 0.005 ether,
+                    suspiciousRelativeDeviationD18: 0.001 ether,
                     timeout: 20 hours,
                     depositInterval: 1 hours,
                     redeemInterval: 2 days
@@ -152,7 +152,7 @@ contract Deploy is Script {
         IRiskManager riskManager = vault.riskManager();
         {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth, weth, usdc, usdt
+            vault.createSubvault(0, proxyAdmin, verifiers[0]);
             bytes32 merkleRoot;
             (merkleRoot, calls[0]) = _createSubvault0Verifier(vault.subvaultAt(0));
             IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
@@ -221,15 +221,13 @@ contract Deploy is Script {
 
         console2.log("Vault %s", address(vault));
 
-        for (uint256 i = 0; i < assets_.length; i++) {
-            string memory symbol = assets_[i] == Constants.ETH ? "ETH" : IERC20Metadata(assets_[i]).symbol();
-            for (uint256 j = 0; j < vault.getQueueCount(assets_[i]); j++) {
-                address queue = vault.queueAt(assets_[i], j);
-                if (vault.isDepositQueue(queue)) {
-                    console2.log("DepositQueue (%s): %s", symbol, queue);
-                } else {
-                    console2.log("RedeemQueue (%s): %s", symbol, queue);
-                }
+        string memory symbol = IERC20Metadata(Constants.USDC).symbol();
+        for (uint256 j = 0; j < vault.getQueueCount(Constants.USDC); j++) {
+            address queue = vault.queueAt(Constants.USDC, j);
+            if (vault.isDepositQueue(queue)) {
+                console2.log("DepositQueue (%s): %s", symbol, queue);
+            } else {
+                console2.log("RedeemQueue (%s): %s", symbol, queue);
             }
         }
 
