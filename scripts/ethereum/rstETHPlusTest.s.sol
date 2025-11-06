@@ -219,9 +219,19 @@ contract Deploy is Script {
             (merkleRoot1, calls[1]) = _createSubvault1Proofs(vault.subvaultAt(1), capSymbioticVault);
             IVerifier(verifiers[1]).setMerkleRoot(merkleRoot1);
 
+            riskManager.allowSubvaultAssets(
+                vault.subvaultAt(1), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
+            );
+            riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
+
             bytes32 merkleRoot2;
             (merkleRoot2, calls[2]) = _createSubvault2Proofs(vault.subvaultAt(2));
             IVerifier(verifiers[2]).setMerkleRoot(merkleRoot2);
+
+            riskManager.allowSubvaultAssets(
+                vault.subvaultAt(2), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
+            );
+            riskManager.setSubvaultLimit(vault.subvaultAt(2), type(int256).max / 2);
         }
 
         // emergency pause setup
