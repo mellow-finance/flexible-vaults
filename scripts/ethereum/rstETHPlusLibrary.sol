@@ -113,7 +113,7 @@ library rstETHPlusLibrary {
         }
     }
 
-    function getSubvault0SubvaultCalls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+    function getSubvault0Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
         internal
         pure
         returns (SubvaultCalls memory calls)
@@ -303,7 +303,7 @@ library rstETHPlusLibrary {
         view
         returns (string[] memory descriptions)
     {
-        descriptions = new string[](8);
+        descriptions = new string[](42);
         uint256 iterator = 0;
         iterator = ArraysLibrary.insert(
             descriptions,

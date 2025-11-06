@@ -21,9 +21,15 @@ import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
 import {IDepositQueue} from "../../src/interfaces/queues/IDepositQueue.sol";
 import {IRedeemQueue} from "../../src/interfaces/queues/IRedeemQueue.sol";
 
+import {ISymbioticVault} from "../../src/interfaces/external/symbiotic/ISymbioticVault.sol";
+import {ICapLender} from "./interfaces/ICapLender.sol";
+
+import {IStUSR} from "./interfaces/IStUSR.sol";
+import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsManager.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[11] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[14] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -34,7 +40,10 @@ library ABILibrary {
             getL1GatewayRouter,
             getL2GatewayRouter,
             getCCIPRouter,
-            getCoreVaultInterfaces
+            getCoreVaultInterfaces,
+            getCapLenderInterfaces,
+            getSymbioticInterfaces,
+            getResolvInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -202,5 +211,66 @@ library ABILibrary {
             '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[2] =
             '{"inputs":[{"internalType":"address","name":"receiver","type":"address"},{"internalType":"uint32[]","name":"timestamps","type":"uint32[]"}],"name":"claim","outputs":[{"internalType":"uint256","name":"assets","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getCapLenderInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](2);
+        abis = new string[](2);
+
+        selectors[0] = ICapLender.repay.selector;
+        selectors[1] = ICapLender.borrow.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"_asset","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"address","name":"_agent","type":"address"}],"name":"repay","outputs":[{"internalType":"uint256","name":"repaid","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"address","name":"_asset","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"address","name":"_receiver","type":"address"}],"name":"borrow","outputs":[{"internalType":"uint256","name":"borrowed","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getSymbioticInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](3);
+        abis = new string[](3);
+
+        selectors[0] = ISymbioticVault.deposit.selector;
+        selectors[1] = ISymbioticVault.withdraw.selector;
+        selectors[2] = ISymbioticVault.claim.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"deposit","outputs":[{"internalType":"uint256","name":"depositedAmount","type":"uint256"},{"internalType":"uint256","name":"mintedShares","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"address","name":"claimer","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"uint256","name":"burnedShares","type":"uint256"},{"internalType":"uint256","name":"mintedShares","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"epoch","type":"uint256"}],"name":"claim","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getResolvInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](8);
+        abis = new string[](8);
+
+        selectors[0] = IUsrExternalRequestsManager.requestMint.selector;
+        selectors[1] = IUsrExternalRequestsManager.requestBurn.selector;
+        selectors[2] = IUsrExternalRequestsManager.cancelMint.selector;
+        selectors[3] = IUsrExternalRequestsManager.cancelBurn.selector;
+        selectors[4] = IUsrExternalRequestsManager.redeem.selector;
+
+        selectors[5] = IStUSR.deposit.selector;
+        selectors[6] = IStUSR.withdraw.selector;
+        selectors[7] = IStUSR.withdrawAll.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"_depositTokenAddress","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"uint256","name":"_minMintAmount","type":"uint256"}],"name":"requestMint","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"_issueTokenAmount","type":"uint256"},{"internalType":"address","name":"_withdrawalTokenAddress","type":"address"},{"internalType":"uint256","name":"_minWithdrawalAmount","type":"uint256"}],"name":"requestBurn","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"cancelMint","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[3] =
+            '{"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"cancelBurn","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[4] =
+            '{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"address","name":"_withdrawalTokenAddress","type":"address"},{"internalType":"uint256","name":"_minExpectedAmount","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+
+        abis[5] =
+            '{"inputs":[{"internalType":"uint256","name":"_usrAmount","type":"uint256"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[6] =
+            '{"inputs":[{"internalType":"uint256","name":"_usrAmount","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[7] = '{"inputs":[],"name":"withdrawAll","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }

@@ -21,6 +21,9 @@ import "./rstETHPlusLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
 
+import "../common/interfaces/ICapFactory.sol";
+import "../common/interfaces/ISymbioticVaultPermissions.sol";
+
 contract Deploy is Script {
     // Actors
 
@@ -141,8 +144,8 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](1);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+        address[] memory verifiers = new address[](3);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](3);
 
         IRiskManager riskManager = vault.riskManager();
         /*
@@ -175,6 +178,45 @@ contract Deploy is Script {
 
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+        }
+
+        {
+            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            vault.createSubvault(0, proxyAdmin, verifiers[1]);
+
+            verifiers[2] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            vault.createSubvault(0, proxyAdmin, verifiers[2]);
+
+            (address capSymbioticVault,,,, address stakerRewards) = ICapFactory(Constants.CAP_FACTORY).createVault(
+                deployer, Constants.WSTETH, vault.subvaultAt(2), Constants.CAP_NETWORK
+            );
+
+            {
+                ISymbioticVaultPermissions sv = ISymbioticVaultPermissions(capSymbioticVault);
+
+                sv.setDepositWhitelist(true);
+                sv.setDepositorWhitelistStatus(vault.subvaultAt(1), true);
+
+                sv.grantRole(0x00, activeVaultAdmin);
+                sv.renounceRole(0x00, deployer);
+                sv.renounceRole(sv.DEPOSIT_WHITELIST_SET_ROLE(), deployer);
+                sv.renounceRole(sv.DEPOSITOR_WHITELIST_ROLE(), deployer);
+                sv.renounceRole(sv.IS_DEPOSIT_LIMIT_SET_ROLE(), deployer);
+                sv.renounceRole(sv.DEPOSIT_LIMIT_SET_ROLE(), deployer);
+            }
+
+            IAccessControl(stakerRewards).grantRole(0x00, activeVaultAdmin);
+            IAccessControl(stakerRewards).renounceRole(0x00, deployer);
+            IAccessControl(stakerRewards).renounceRole(keccak256("ADMIN_FEE_CLAIM_ROLE"), deployer);
+            IAccessControl(stakerRewards).renounceRole(keccak256("ADMIN_FEE_SET_ROLE"), deployer);
+
+            bytes32 merkleRoot1;
+            (merkleRoot1, calls[1]) = _createSubvault1Proofs(vault.subvaultAt(1), capSymbioticVault);
+            IVerifier(verifiers[1]).setMerkleRoot(merkleRoot1);
+
+            bytes32 merkleRoot2;
+            (merkleRoot2, calls[2]) = _createSubvault2Proofs(vault.subvaultAt(2));
+            IVerifier(verifiers[2]).setMerkleRoot(merkleRoot2);
         }
 
         // emergency pause setup
@@ -354,6 +396,28 @@ contract Deploy is Script {
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = rstETHPlusLibrary.getSubvault0Proofs(curator, subvault);
         ProofLibrary.storeProofs("ethereum:rstETH+:subvault0", merkleRoot, leaves, descriptions);
-        calls = rstETHPlusLibrary.getSubvault0SubvaultCalls(curator, subvault, leaves);
+        calls = rstETHPlusLibrary.getSubvault0Calls(curator, subvault, leaves);
+    }
+
+    function _createSubvault1Proofs(address subvault, address capSymbioticVault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = rstETHPlusLibrary.getSubvault1Descriptions(curator, subvault, capSymbioticVault);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = rstETHPlusLibrary.getSubvault1Proofs(curator, subvault, capSymbioticVault);
+        ProofLibrary.storeProofs("ethereum:rstETH+:subvault1", merkleRoot, leaves, descriptions);
+        calls = rstETHPlusLibrary.getSubvault1Calls(curator, subvault, capSymbioticVault, leaves);
+    }
+
+    function _createSubvault2Proofs(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = rstETHPlusLibrary.getSubvault2Descriptions(curator, subvault);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = rstETHPlusLibrary.getSubvault2Proofs(curator, subvault);
+        ProofLibrary.storeProofs("ethereum:rstETH+:subvault2", merkleRoot, leaves, descriptions);
+        calls = rstETHPlusLibrary.getSubvault2Calls(curator, subvault, leaves);
     }
 }
