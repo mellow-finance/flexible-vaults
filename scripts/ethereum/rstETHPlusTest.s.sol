@@ -22,6 +22,8 @@ import "./rstETHPlusLibrary.sol";
 import "../common/ArraysLibrary.sol";
 
 import "../common/interfaces/ICapFactory.sol";
+
+import "../common/interfaces/ISymbioticStakerRewardsPermissions.sol";
 import "../common/interfaces/ISymbioticVaultPermissions.sol";
 
 contract Deploy is Script {
@@ -205,10 +207,13 @@ contract Deploy is Script {
                 sv.renounceRole(sv.DEPOSIT_LIMIT_SET_ROLE(), deployer);
             }
 
-            IAccessControl(stakerRewards).grantRole(0x00, activeVaultAdmin);
-            IAccessControl(stakerRewards).renounceRole(0x00, deployer);
-            IAccessControl(stakerRewards).renounceRole(keccak256("ADMIN_FEE_CLAIM_ROLE"), deployer);
-            IAccessControl(stakerRewards).renounceRole(keccak256("ADMIN_FEE_SET_ROLE"), deployer);
+            {
+                ISymbioticStakerRewardsPermissions sr = ISymbioticStakerRewardsPermissions(stakerRewards);
+                sr.grantRole(0x00, activeVaultAdmin);
+                sr.renounceRole(0x00, deployer);
+                sr.renounceRole(sr.ADMIN_FEE_CLAIM_ROLE(), deployer);
+                sr.renounceRole(sr.ADMIN_FEE_SET_ROLE(), deployer);
+            }
 
             bytes32 merkleRoot1;
             (merkleRoot1, calls[1]) = _createSubvault1Proofs(vault.subvaultAt(1), capSymbioticVault);
