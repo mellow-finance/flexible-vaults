@@ -74,6 +74,8 @@ library Constants {
 
     address public constant TERMMAX_ROUTER = 0xC47591F5c023e44931c78D5A993834875b79FB11;
 
+    address public constant MORPHO_ETHEREUM = 0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,

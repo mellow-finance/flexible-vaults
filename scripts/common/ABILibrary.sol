@@ -18,6 +18,7 @@ import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
 
 import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
 
+import {IMorpho} from "./interfaces/IMorpho.sol";
 import {ISubRedManagement} from "./interfaces/ISubRedManagement.sol";
 import {ITermMaxRouter} from "./interfaces/ITermMaxRouter.sol";
 
@@ -26,7 +27,7 @@ import {IRedeemQueue} from "../../src/interfaces/queues/IRedeemQueue.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[13] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[14] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -39,7 +40,8 @@ library ABILibrary {
             getCCIPRouter,
             getCoreVaultInterfaces,
             getTermMaxInterfaces,
-            getDigiFTInterfaces
+            getDigiFTInterfaces,
+            getMorphoInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -234,5 +236,30 @@ library ABILibrary {
             '{"inputs":[{"internalType":"address","name":"stToken","type":"address"},{"internalType":"address","name":"currencyToken","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"_deadline","type":"uint256"}],"name":"subscribe","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[1] =
             '{"inputs":[{"internalType":"uint256","name":"subId","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getMorphoInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](6);
+        abis = new string[](6);
+
+        selectors[0] = IMorpho.supply.selector;
+        selectors[1] = IMorpho.supplyCollateral.selector;
+        selectors[2] = IMorpho.repay.selector;
+        selectors[3] = IMorpho.borrow.selector;
+        selectors[4] = IMorpho.withdraw.selector;
+        selectors[5] = IMorpho.withdrawCollateral.selector;
+
+        abis[0] =
+            '{"constant":false,"inputs":[{"components":[{"internalType":"address","name":"loanToken","type":"address"},{"internalType":"address","name":"collateralToken","type":"address"},{"internalType":"address","name":"oracle","type":"address"},{"internalType":"address","name":"irm","type":"address"},{"internalType":"uint256","name":"lltv","type":"uint256"}],"internalType":"struct MarketParams","name":"marketParams","type":"tuple"},{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"address","name":"onBehalf","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"supply","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"constant":false,"inputs":[{"components":[{"internalType":"address","name":"loanToken","type":"address"},{"internalType":"address","name":"collateralToken","type":"address"},{"internalType":"address","name":"oracle","type":"address"},{"internalType":"address","name":"irm","type":"address"},{"internalType":"uint256","name":"lltv","type":"uint256"}],"internalType":"struct MarketParams","name":"marketParams","type":"tuple"},{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"address","name":"onBehalf","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"supplyCollateral","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"constant":false,"inputs":[{"components":[{"internalType":"address","name":"loanToken","type":"address"},{"internalType":"address","name":"collateralToken","type":"address"},{"internalType":"address","name":"oracle","type":"address"},{"internalType":"address","name":"irm","type":"address"},{"internalType":"uint256","name":"lltv","type":"uint256"}],"internalType":"struct MarketParams","name":"marketParams","type":"tuple"},{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"address","name":"onBehalf","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"repay","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}';
+        abis[3] =
+            '{"constant":false,"inputs":[{"components":[{"internalType":"address","name":"loanToken","type":"address"},{"internalType":"address","name":"collateralToken","type":"address"},{"internalType":"address","name":"oracle","type":"address"},{"internalType":"address","name":"irm","type":"address"},{"internalType":"uint256","name":"lltv","type":"uint256"}],"internalType":"struct MarketParams","name":"marketParams","type":"tuple"},{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"address","name":"onBehalf","type":"address"},{"internalType":"address","name":"receiver","type":"address"}],"name":"borrow","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}';
+        abis[4] =
+            '{"constant":false,"inputs":[{"components":[{"internalType":"address","name":"loanToken","type":"address"},{"internalType":"address","name":"collateralToken","type":"address"},{"internalType":"address","name":"oracle","type":"address"},{"internalType":"address","name":"irm","type":"address"},{"internalType":"uint256","name":"lltv","type":"uint256"}],"internalType":"struct MarketParams","name":"marketParams","type":"tuple"},{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"address","name":"onBehalf","type":"address"},{"internalType":"address","name":"receiver","type":"address"}],"name":"withdraw","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}';
+        abis[5] =
+            '{"constant":false,"inputs":[{"components":[{"internalType":"address","name":"loanToken","type":"address"},{"internalType":"address","name":"collateralToken","type":"address"},{"internalType":"address","name":"oracle","type":"address"},{"internalType":"address","name":"irm","type":"address"},{"internalType":"uint256","name":"lltv","type":"uint256"}],"internalType":"struct MarketParams","name":"marketParams","type":"tuple"},{"internalType":"uint256","name":"assets","type":"uint256"},{"internalType":"address","name":"onBehalf","type":"address"},{"internalType":"address","name":"receiver","type":"address"}],"name":"withdrawCollateral","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}';
     }
 }

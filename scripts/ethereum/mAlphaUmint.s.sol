@@ -43,7 +43,8 @@ contract Deploy is Script {
     address public feeManagerAdmin = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
     address public treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
 
-    address public constant market = 0x1B7F1Fb1AC54396B3039A817714d8a7176099328;
+    address public constant termmaxMarket = 0x1B7F1Fb1AC54396B3039A817714d8a7176099328;
+    bytes32 public constant morphoMarketId = 0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c; // USDU-USDC/USDU
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -146,10 +147,10 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(feeManagerAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](1);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
-
+        address[] memory verifiers = new address[](2);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
         IRiskManager riskManager = vault.riskManager();
+
         {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             vault.createSubvault(0, proxyAdmin, verifiers[0]);
@@ -160,6 +161,18 @@ contract Deploy is Script {
                 vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC))
             );
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+        }
+
+        {
+            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            vault.createSubvault(0, proxyAdmin, verifiers[1]);
+            bytes32 merkleRoot;
+            (merkleRoot, calls[1]) = _createSubvault1Verifier(vault.subvaultAt(1));
+            IVerifier(verifiers[1]).setMerkleRoot(merkleRoot);
+            riskManager.allowSubvaultAssets(
+                vault.subvaultAt(1), ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC))
+            );
+            riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
         }
 
         // emergency pause setup
@@ -343,16 +356,67 @@ contract Deploy is Script {
             4. TERMMAX_ROUTER.borrowTokenFromCollateral(subvault0, MARKET, ...) (uMINT->USDU)
             5. Swap USDU for USDC on Curve
         */
-        string[] memory descriptions = mAlphaUMINTLibrary.getSubvault0Descriptions(
-            mAlphaUMINTLibrary.Info({curator: curator, subvault: subvault0, market: market})
+        string[] memory descriptions = mAlphaLibrary2.getSubvault0Descriptions(
+            mAlphaLibrary2.Info({
+                curator: curator,
+                subvault: subvault0,
+                termmaxMarket: termmaxMarket,
+                morphoMarketId: morphoMarketId
+            })
         );
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = mAlphaUMINTLibrary.getSubvault0Proofs(
-            mAlphaUMINTLibrary.Info({curator: curator, subvault: subvault0, market: market})
+        (merkleRoot, leaves) = mAlphaLibrary2.getSubvault0Proofs(
+            mAlphaLibrary2.Info({
+                curator: curator,
+                subvault: subvault0,
+                termmaxMarket: termmaxMarket,
+                morphoMarketId: morphoMarketId
+            })
         );
         ProofLibrary.storeProofs("ethereum:mAlphaUmint:subvault0", merkleRoot, leaves, descriptions);
-        calls = mAlphaUMINTLibrary.getSubvault0SubvaultCalls(
-            mAlphaUMINTLibrary.Info({curator: curator, subvault: subvault0, market: market}), leaves
+        calls = mAlphaLibrary2.getSubvault0SubvaultCalls(
+            mAlphaLibrary2.Info({
+                curator: curator,
+                subvault: subvault0,
+                termmaxMarket: termmaxMarket,
+                morphoMarketId: morphoMarketId
+            }),
+            leaves
+        );
+    }
+
+    function _createSubvault1Verifier(address subvault1)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        /*
+        */
+        string[] memory descriptions = mAlphaLibrary2.getSubvault1Descriptions(
+            mAlphaLibrary2.Info({
+                curator: curator,
+                subvault: subvault1,
+                termmaxMarket: termmaxMarket,
+                morphoMarketId: morphoMarketId
+            })
+        );
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = mAlphaLibrary2.getSubvault1Proofs(
+            mAlphaLibrary2.Info({
+                curator: curator,
+                subvault: subvault1,
+                termmaxMarket: termmaxMarket,
+                morphoMarketId: morphoMarketId
+            })
+        );
+        ProofLibrary.storeProofs("ethereum:mAlphaUmint:subvault1", merkleRoot, leaves, descriptions);
+        calls = mAlphaLibrary2.getSubvault1SubvaultCalls(
+            mAlphaLibrary2.Info({
+                curator: curator,
+                subvault: subvault1,
+                termmaxMarket: termmaxMarket,
+                morphoMarketId: morphoMarketId
+            }),
+            leaves
         );
     }
 
@@ -392,7 +456,7 @@ contract Deploy is Script {
         uint128[] memory tokenAmtsWantBuy = new uint128[](1);
         tokenAmtsWantBuy[0] = 2500;
         ITermMaxRouter(Constants.TERMMAX_ROUTER).borrowTokenFromCollateral(
-            deployer, market, 3000, orders, tokenAmtsWantBuy, 2600, block.timestamp + 1 hours
+            deployer, termmaxMarket, 3000, orders, tokenAmtsWantBuy, 2600, block.timestamp + 1 hours
         );
     }
 }
