@@ -221,13 +221,15 @@ contract Deploy is Script {
 
         console2.log("Vault %s", address(vault));
 
-        string memory symbol = IERC20Metadata(Constants.USDC).symbol();
-        for (uint256 j = 0; j < vault.getQueueCount(Constants.USDC); j++) {
-            address queue = vault.queueAt(Constants.USDC, j);
-            if (vault.isDepositQueue(queue)) {
-                console2.log("DepositQueue (%s): %s", symbol, queue);
-            } else {
-                console2.log("RedeemQueue (%s): %s", symbol, queue);
+        {
+            string memory symbol = IERC20Metadata(assets_[0]).symbol();
+            for (uint256 j = 0; j < vault.getQueueCount(assets_[0]); j++) {
+                address queue = vault.queueAt(assets_[0], j);
+                if (vault.isDepositQueue(queue)) {
+                    console2.log("DepositQueue (%s): %s", symbol, queue);
+                } else {
+                    console2.log("RedeemQueue (%s): %s", symbol, queue);
+                }
             }
         }
 
@@ -248,7 +250,6 @@ contract Deploy is Script {
             for (uint256 i = 0; i < reports.length; i++) {
                 reports[i].asset = assets_[i];
             }
-            // abi.encode(Constants.USDC)
             reports[0].priceD18 = 1e30;
 
             IOracle oracle = vault.oracle();
@@ -261,9 +262,10 @@ contract Deploy is Script {
 
         vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
-
-        IERC20(Constants.USDC).approve(address(vault.queueAt(Constants.USDC, 0)), 1e6);
-        IDepositQueue(address(vault.queueAt(Constants.USDC, 0))).deposit(1e6, address(0), new bytes32[](0));
+        {
+            IERC20(Constants.USDC).approve(address(vault.queueAt(Constants.USDC, 0)), 1e6);
+            IDepositQueue(address(vault.queueAt(Constants.USDC, 0))).deposit(1e6, address(0), new bytes32[](0));
+        }
         vm.stopBroadcast();
 
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());

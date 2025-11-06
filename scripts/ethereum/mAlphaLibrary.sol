@@ -86,7 +86,7 @@ library mAlphaUMINTLibrary {
         /// @dev swap USDU <> USDC on Curve
         iterator = ArraysLibrary.insert(
             leaves,
-            CurveLibrary.getCurveProofs(
+            CurveLibrary.getCurveExchangeProofs(
                 bitmaskVerifier,
                 CurveLibrary.Info({
                     subvault: $.subvault,
@@ -139,7 +139,7 @@ library mAlphaUMINTLibrary {
         /// @dev swap USDU <> USDC on Curve
         iterator = ArraysLibrary.insert(
             descriptions,
-            CurveLibrary.getCurveDescriptions(
+            CurveLibrary.getCurveExchangeDescriptions(
                 CurveLibrary.Info({
                     subvault: $.subvault,
                     subvaultName: "subvault0",
@@ -195,7 +195,7 @@ library mAlphaUMINTLibrary {
         /// @dev swap USDU <> USDC on Curve
         iterator = ArraysLibrary.insert(
             calls_,
-            CurveLibrary.getCurveCalls(
+            CurveLibrary.getCurveExchangeCalls(
                 CurveLibrary.Info({
                     subvault: $.subvault,
                     subvaultName: "subvault0",

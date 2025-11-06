@@ -66,13 +66,14 @@ library ABILibrary {
     }
 
     function getCurveInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
-        selectors = new bytes4[](4);
-        abis = new string[](4);
+        selectors = new bytes4[](5);
+        abis = new string[](5);
 
         selectors[0] = ICurvePool.add_liquidity.selector;
         selectors[1] = ICurvePool.remove_liquidity.selector;
         selectors[2] = ICurveGauge.deposit.selector;
         selectors[3] = ICurveGauge.claim_rewards.selector;
+        selectors[4] = ICurvePool.exchange.selector;
 
         abis[0] =
             '{"inputs":[{"name":"_amounts","type":"uint256[]"},{"name":"_min_mint_amount","type":"uint256"}],"name":"add_liquidity","outputs":[{"name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
@@ -82,6 +83,8 @@ library ABILibrary {
         abis[2] =
             '{"inputs":[{"name":"_value","type":"uint256"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[3] = '{"inputs":[],"name":"claim_rewards","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[4] =
+            '{"stateMutability":"nonpayable","type":"function","name":"exchange","inputs":[{"name":"i","type":"int128"},{"name":"j","type":"int128"},{"name":"_dx","type":"uint256"},{"name":"_min_dy","type":"uint256"}],"outputs":[{"name":"","type":"uint256"}]}';
     }
 
     function getERC4626Interfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
