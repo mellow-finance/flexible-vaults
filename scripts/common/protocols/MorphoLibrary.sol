@@ -27,7 +27,7 @@ library MorphoLibrary {
         IMorpho.MarketParams memory marketParams = IMorpho(info.morpho).idToMarketParams(info.marketId);
         string memory loanSymbol = IERC20Metadata(marketParams.loanToken).symbol();
         string memory collateralSymbol = IERC20Metadata(marketParams.collateralToken).symbol();
-        return string(abi.encodePacked("Morpho ", loanSymbol, "/", collateralSymbol));
+        return string(abi.encodePacked(loanSymbol, "/", collateralSymbol));
     }
 
     function getMorphoProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
@@ -36,6 +36,13 @@ library MorphoLibrary {
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
         IMorpho.MarketParams memory marketParams = IMorpho($.morpho).idToMarketParams($.marketId);
+        IMorpho.MarketParams memory marketParamsMask = IMorpho.MarketParams({
+            loanToken: address(type(uint160).max),
+            collateralToken: address(type(uint160).max),
+            oracle: address(type(uint160).max),
+            irm: address(type(uint160).max),
+            lltv: type(uint256).max
+        });
 
         leaves = new IVerifier.VerificationPayload[](50);
         uint256 iterator;
@@ -65,7 +72,7 @@ library MorphoLibrary {
                 true,
                 true,
                 true,
-                abi.encodeCall(IMorpho.supply, (marketParams, 0, 0, address(type(uint160).max), ""))
+                abi.encodeCall(IMorpho.supply, (marketParamsMask, 0, 0, address(type(uint160).max), ""))
             )
         );
         /// @dev supply collateral to Morpho
@@ -80,7 +87,7 @@ library MorphoLibrary {
                 true,
                 true,
                 true,
-                abi.encodeCall(IMorpho.supplyCollateral, (marketParams, 0, address(type(uint160).max), ""))
+                abi.encodeCall(IMorpho.supplyCollateral, (marketParamsMask, 0, address(type(uint160).max), ""))
             )
         );
         /// @dev repay borrow on Morpho
@@ -95,7 +102,7 @@ library MorphoLibrary {
                 true,
                 true,
                 true,
-                abi.encodeCall(IMorpho.repay, (marketParams, 0, 0, address(type(uint160).max), ""))
+                abi.encodeCall(IMorpho.repay, (marketParamsMask, 0, 0, address(type(uint160).max), ""))
             )
         );
         /// @dev borrow from Morpho
@@ -111,7 +118,7 @@ library MorphoLibrary {
                 true,
                 true,
                 abi.encodeCall(
-                    IMorpho.borrow, (marketParams, 0, 0, address(type(uint160).max), address(type(uint160).max))
+                    IMorpho.borrow, (marketParamsMask, 0, 0, address(type(uint160).max), address(type(uint160).max))
                 )
             )
         );
@@ -128,7 +135,7 @@ library MorphoLibrary {
                 true,
                 true,
                 abi.encodeCall(
-                    IMorpho.withdraw, (marketParams, 0, 0, address(type(uint160).max), address(type(uint160).max))
+                    IMorpho.withdraw, (marketParamsMask, 0, 0, address(type(uint160).max), address(type(uint160).max))
                 )
             )
         );
@@ -146,7 +153,7 @@ library MorphoLibrary {
                 true,
                 abi.encodeCall(
                     IMorpho.withdrawCollateral,
-                    (marketParams, 0, address(type(uint160).max), address(type(uint160).max))
+                    (marketParamsMask, 0, address(type(uint160).max), address(type(uint160).max))
                 )
             )
         );
@@ -156,12 +163,27 @@ library MorphoLibrary {
         }
     }
 
+    function getMarketParamsJson(IMorpho.MarketParams memory marketParams)
+        internal
+        pure
+        returns (ParameterLibrary.Parameter[] memory marketParamsJson)
+    {
+        marketParamsJson = ParameterLibrary.build("loanToken", Strings.toHexString(marketParams.loanToken));
+        marketParamsJson = marketParamsJson.add("collateralToken", Strings.toHexString(marketParams.collateralToken));
+        marketParamsJson = marketParamsJson.add("oracle", Strings.toHexString(marketParams.oracle));
+        marketParamsJson = marketParamsJson.add("irm", Strings.toHexString(marketParams.irm));
+        marketParamsJson = marketParamsJson.add("lltv", Strings.toString(marketParams.lltv));
+    }
+
     function getMorphoDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
         uint256 iterator;
         descriptions = new string[](50);
-        ParameterLibrary.Parameter[] memory innerParameters;
         IMorpho.MarketParams memory marketParams = IMorpho($.morpho).idToMarketParams($.marketId);
         string memory marketName = getMorphoMarketName($);
+        ParameterLibrary.Parameter[] memory innerParameters;
+        ParameterLibrary.Parameter[] memory prefixInnerParameters = (new ParameterLibrary.Parameter[](0)).addJson(
+            "marketParams", JsonLibrary.toJson(getMarketParamsJson(marketParams))
+        );
 
         /// @dev approve collateral/borrow to Morpho
         iterator = ArraysLibrary.insert(
@@ -175,9 +197,9 @@ library MorphoLibrary {
             ),
             iterator
         );
-        /// @dev supply to Morpho
-        innerParameters = ParameterLibrary.build("onBehalf", Strings.toHexString($.subvault)).addAny("assets").addAny(
-            "shares"
+        /// @dev supply
+        innerParameters = prefixInnerParameters.addAny("assets").addAny("shares").add(
+            "onBehalf", Strings.toHexString($.subvault)
         ).add("data", "");
         descriptions[iterator++] = JsonLibrary.toJson(
             string(abi.encodePacked("IMorpho(", Strings.toHexString($.morpho), ").supply(", marketName, ")")),
@@ -185,18 +207,18 @@ library MorphoLibrary {
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.morpho), "0"),
             innerParameters
         );
-        /// @dev supply collateral to Morpho
+        /// @dev supplyCollateral
         innerParameters =
-            ParameterLibrary.build("onBehalf", Strings.toHexString($.subvault)).addAny("assets").add("data", "");
+            prefixInnerParameters.addAny("assets").add("onBehalf", Strings.toHexString($.subvault)).add("data", "");
         descriptions[iterator++] = JsonLibrary.toJson(
             string(abi.encodePacked("IMorpho(", Strings.toHexString($.morpho), ").supplyCollateral(", marketName, ")")),
             ABILibrary.getABI(IMorpho.supplyCollateral.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.morpho), "0"),
             innerParameters
         );
-        /// @dev repay borrow on Morpho
-        innerParameters = ParameterLibrary.build("onBehalf", Strings.toHexString($.subvault)).addAny("assets").addAny(
-            "shares"
+        /// @dev repay on Morpho
+        innerParameters = prefixInnerParameters.addAny("assets").addAny("shares").add(
+            "onBehalf", Strings.toHexString($.subvault)
         ).add("data", "");
         descriptions[iterator++] = JsonLibrary.toJson(
             string(abi.encodePacked("IMorpho(", Strings.toHexString($.morpho), ").repay(", marketName, ")")),
@@ -205,9 +227,9 @@ library MorphoLibrary {
             innerParameters
         );
         /// @dev borrow from Morpho
-        innerParameters = ParameterLibrary.build("onBehalf", Strings.toHexString($.subvault)).addAny("assets").addAny(
-            "shares"
-        ).add("data", "");
+        innerParameters = prefixInnerParameters.addAny("assets").addAny("shares").add(
+            "onBehalf", Strings.toHexString($.subvault)
+        ).add("receiver", Strings.toHexString($.subvault));
         descriptions[iterator++] = JsonLibrary.toJson(
             string(abi.encodePacked("IMorpho(", Strings.toHexString($.morpho), ").borrow(", marketName, ")")),
             ABILibrary.getABI(IMorpho.borrow.selector),
@@ -215,17 +237,19 @@ library MorphoLibrary {
             innerParameters
         );
         /// @dev withdraw from Morpho
-        innerParameters = ParameterLibrary.build("to", Strings.toHexString($.subvault)).addAny("assets").addAny(
-            "shares"
-        ).add("data", "");
+        innerParameters = prefixInnerParameters.addAny("assets").addAny("shares").add(
+            "onBehalf", Strings.toHexString($.subvault)
+        ).add("receiver", Strings.toHexString($.subvault));
         descriptions[iterator++] = JsonLibrary.toJson(
             string(abi.encodePacked("IMorpho(", Strings.toHexString($.morpho), ").withdraw(", marketName, ")")),
             ABILibrary.getABI(IMorpho.withdraw.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.morpho), "0"),
             innerParameters
         );
-        /// @dev withdraw collateral from Morpho
-        innerParameters = ParameterLibrary.build("to", Strings.toHexString($.subvault)).addAny("assets").add("data", "");
+        /// @dev withdrawCollateral from Morpho
+        innerParameters = prefixInnerParameters.addAny("assets").add("onBehalf", Strings.toHexString($.subvault)).add(
+            "receiver", Strings.toHexString($.subvault)
+        );
         descriptions[iterator++] = JsonLibrary.toJson(
             string(
                 abi.encodePacked("IMorpho(", Strings.toHexString($.morpho), ").withdrawCollateral(", marketName, ")")
