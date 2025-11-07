@@ -239,6 +239,20 @@ library mAlphaLibrary2 {
             ),
             iterator
         );
+        iterator = ArraysLibrary.insert(
+            leaves,
+            CurveLibrary.getCurveProofs(
+                bitmaskVerifier,
+                CurveLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: "subvault1",
+                    curator: $.curator,
+                    pool: Constants.CURVE_USDC_USDU_POOL,
+                    gauge: Constants.CURVE_USDC_USDU_GAUGE
+                })
+            ),
+            iterator
+        );
 
         assembly {
             mstore(leaves, iterator)
@@ -259,6 +273,19 @@ library mAlphaLibrary2 {
                     subvault: $.subvault,
                     marketId: $.morphoMarketId,
                     morpho: Constants.MORPHO_ETHEREUM
+                })
+            ),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            CurveLibrary.getCurveDescriptions(
+                CurveLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: "subvault1",
+                    curator: $.curator,
+                    pool: Constants.CURVE_USDC_USDU_POOL,
+                    gauge: Constants.CURVE_USDC_USDU_GAUGE
                 })
             ),
             iterator
@@ -285,6 +312,19 @@ library mAlphaLibrary2 {
                     subvault: $.subvault,
                     marketId: $.morphoMarketId,
                     morpho: Constants.MORPHO_ETHEREUM
+                })
+            ),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls_,
+            CurveLibrary.getCurveCalls(
+                CurveLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: "subvault1",
+                    curator: $.curator,
+                    pool: Constants.CURVE_USDC_USDU_POOL,
+                    gauge: Constants.CURVE_USDC_USDU_GAUGE
                 })
             ),
             iterator
