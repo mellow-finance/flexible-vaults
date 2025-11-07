@@ -95,7 +95,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).supply(USDU/USDUUSDC)",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).supply(USDU/USDUUSDC/0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c)",
         "abi": {
           "constant": false,
           "inputs": [
@@ -198,7 +198,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).supplyCollateral(USDU/USDUUSDC)",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).supplyCollateral(USDU/USDUUSDC/0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c)",
         "abi": {
           "constant": false,
           "inputs": [
@@ -284,7 +284,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).repay(USDU/USDUUSDC)",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).repay(USDU/USDUUSDC/0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c)",
         "abi": {
           "constant": false,
           "inputs": [
@@ -387,7 +387,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).borrow(USDU/USDUUSDC)",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).borrow(USDU/USDUUSDC/0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c)",
         "abi": {
           "constant": false,
           "inputs": [
@@ -490,7 +490,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).withdraw(USDU/USDUUSDC)",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).withdraw(USDU/USDUUSDC/0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c)",
         "abi": {
           "constant": false,
           "inputs": [
@@ -593,7 +593,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).withdrawCollateral(USDU/USDUUSDC)",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).withdrawCollateral(USDU/USDUUSDC/0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c)",
         "abi": {
           "constant": false,
           "inputs": [

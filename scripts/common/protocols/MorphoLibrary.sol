@@ -27,7 +27,9 @@ library MorphoLibrary {
         IMorpho.MarketParams memory marketParams = IMorpho(info.morpho).idToMarketParams(info.marketId);
         string memory loanSymbol = IERC20Metadata(marketParams.loanToken).symbol();
         string memory collateralSymbol = IERC20Metadata(marketParams.collateralToken).symbol();
-        return string(abi.encodePacked(loanSymbol, "/", collateralSymbol));
+        return string(
+            abi.encodePacked(loanSymbol, "/", collateralSymbol, "/", Strings.toHexString(uint256(info.marketId)))
+        );
     }
 
     function getMorphoProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
@@ -163,27 +165,14 @@ library MorphoLibrary {
         }
     }
 
-    function getMarketParamsJson(IMorpho.MarketParams memory marketParams)
-        internal
-        pure
-        returns (ParameterLibrary.Parameter[] memory marketParamsJson)
-    {
-        marketParamsJson = ParameterLibrary.build("loanToken", Strings.toHexString(marketParams.loanToken));
-        marketParamsJson = marketParamsJson.add("collateralToken", Strings.toHexString(marketParams.collateralToken));
-        marketParamsJson = marketParamsJson.add("oracle", Strings.toHexString(marketParams.oracle));
-        marketParamsJson = marketParamsJson.add("irm", Strings.toHexString(marketParams.irm));
-        marketParamsJson = marketParamsJson.add("lltv", Strings.toString(marketParams.lltv));
-    }
-
     function getMorphoDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
         uint256 iterator;
         descriptions = new string[](50);
         IMorpho.MarketParams memory marketParams = IMorpho($.morpho).idToMarketParams($.marketId);
         string memory marketName = getMorphoMarketName($);
         ParameterLibrary.Parameter[] memory innerParameters;
-        ParameterLibrary.Parameter[] memory prefixInnerParameters = (new ParameterLibrary.Parameter[](0)).addJson(
-            "marketParams", JsonLibrary.toJson(getMarketParamsJson(marketParams))
-        );
+        ParameterLibrary.Parameter[] memory prefixInnerParameters =
+            (new ParameterLibrary.Parameter[](0)).addJson("marketParams", JsonLibrary.toJson(marketParams));
 
         /// @dev approve collateral/borrow to Morpho
         iterator = ArraysLibrary.insert(
@@ -267,6 +256,7 @@ library MorphoLibrary {
         uint256 index;
         calls = new Call[][](100);
         IMorpho.MarketParams memory marketParams = IMorpho($.morpho).idToMarketParams($.marketId);
+        IMorpho.MarketParams memory params;
         /// @dev approve collateral/borrow tokens to Morpho
         index = ArraysLibrary.insert(
             calls,
@@ -298,6 +288,13 @@ library MorphoLibrary {
                 $.curator, $.morpho, 0, abi.encode(IMorpho.supply.selector, marketParams, 0, 0, $.subvault, ""), false
             );
             tmp[i++] = Call(
+                $.curator,
+                $.morpho,
+                0,
+                abi.encodeCall(IMorpho.supply, (marketParams, 0, 0, $.subvault, "0xdeadbeef")),
+                false
+            );
+            tmp[i++] = Call(
                 address(0xdead),
                 $.morpho,
                 0,
@@ -314,94 +311,26 @@ library MorphoLibrary {
             tmp[i++] = Call(
                 $.curator, $.morpho, 0, abi.encodeCall(IMorpho.supply, (marketParams, 0, 0, address(0xdead), "")), false
             );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supply,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: address(0xdead),
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supply,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: address(0xdead),
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supply,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: address(0xdead),
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supply,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: address(0xdead),
-                            lltv: marketParams.lltv - 1
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.loanToken = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.supply, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.collateralToken = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.supply, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.oracle = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.supply, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.irm = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.supply, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.lltv = marketParams.lltv - 1;
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.supply, (params, 0, 0, $.subvault, "")), false);
             assembly {
                 mstore(tmp, i)
             }
@@ -424,6 +353,13 @@ library MorphoLibrary {
                 0,
                 abi.encodeCall(IMorpho.supplyCollateral, (marketParams, 1 ether, $.subvault, "")),
                 true
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.morpho,
+                0,
+                abi.encodeCall(IMorpho.supplyCollateral, (marketParams, 1 ether, $.subvault, "0xdeadbeef")),
+                false
             );
             tmp[i++] = Call(
                 $.curator,
@@ -460,110 +396,30 @@ library MorphoLibrary {
                 abi.encodeCall(IMorpho.supplyCollateral, (marketParams, 0, address(0xdead), "")),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.loanToken = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supplyCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: address(0xdead),
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.supplyCollateral, (params, 0, $.subvault, "")), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.collateralToken = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supplyCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: address(0xdead),
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.supplyCollateral, (params, 0, $.subvault, "")), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.oracle = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supplyCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: address(0xdead),
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.supplyCollateral, (params, 0, $.subvault, "")), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.irm = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supplyCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: address(0xdead),
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.supplyCollateral, (params, 0, $.subvault, "")), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.lltv = marketParams.lltv - 1;
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.supplyCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv - 1
-                        }),
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.supplyCollateral, (params, 0, $.subvault, "")), false
             );
             assembly {
                 mstore(tmp, i)
@@ -581,6 +437,13 @@ library MorphoLibrary {
             );
             tmp[i++] = Call(
                 $.curator, $.morpho, 0, abi.encodeCall(IMorpho.repay, (marketParams, 0, 1 ether, $.subvault, "")), true
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.morpho,
+                0,
+                abi.encodeCall(IMorpho.repay, (marketParams, 0, 0, $.subvault, "0xdeadbeef")),
+                false
             );
             tmp[i++] = Call(
                 $.curator, $.morpho, 1 wei, abi.encodeCall(IMorpho.repay, (marketParams, 0, 0, $.subvault, "")), false
@@ -601,116 +464,26 @@ library MorphoLibrary {
             tmp[i++] = Call(
                 $.curator, $.morpho, 0, abi.encodeCall(IMorpho.repay, (marketParams, 0, 0, address(0xdead), "")), false
             );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.repay,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: address(0xdead),
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.repay,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: address(0xdead),
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.repay,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: address(0xdead),
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.repay,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: address(0xdead),
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.repay,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv - 1
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        ""
-                    )
-                ),
-                false
-            );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.loanToken = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.repay, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.collateralToken = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.repay, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.oracle = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.repay, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.irm = address(0xdead);
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.repay, (params, 0, 0, $.subvault, "")), false);
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.lltv = params.lltv - 1;
+            tmp[i++] =
+                Call($.curator, $.morpho, 0, abi.encodeCall(IMorpho.repay, (params, 0, 0, $.subvault, "")), false);
             assembly {
                 mstore(tmp, i)
             }
@@ -783,115 +556,30 @@ library MorphoLibrary {
                 abi.encodeCall(IMorpho.borrow, (marketParams, 0, 0, $.subvault, address(0xdead))),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.loanToken = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.borrow,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: address(0xdead),
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.borrow, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.collateralToken = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.borrow,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: address(0xdead),
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.borrow, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.oracle = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.borrow,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: address(0xdead),
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.borrow, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.irm = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.borrow,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: address(0xdead),
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.borrow, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.lltv = params.lltv - 1;
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.borrow,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv - 1
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.borrow, (params, 0, 0, $.subvault, $.subvault)), false
             );
             assembly {
                 mstore(tmp, i)
@@ -965,115 +653,30 @@ library MorphoLibrary {
                 abi.encodeCall(IMorpho.withdraw, (marketParams, 0, 0, $.subvault, address(0xdead))),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.loanToken = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.withdraw,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: address(0xdead),
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.withdraw, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.collateralToken = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.withdraw,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: address(0xdead),
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.withdraw, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.oracle = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.withdraw,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: address(0xdead),
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.withdraw, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.irm = address(0xdead);
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.withdraw,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: address(0xdead),
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.withdraw, (params, 0, 0, $.subvault, $.subvault)), false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.lltv = params.lltv - 1;
             tmp[i++] = Call(
-                $.curator,
-                $.morpho,
-                0,
-                abi.encodeCall(
-                    IMorpho.withdraw,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv - 1
-                        }),
-                        0,
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
-                false
+                $.curator, $.morpho, 0, abi.encodeCall(IMorpho.withdraw, (params, 0, 0, $.subvault, $.subvault)), false
             );
             assembly {
                 mstore(tmp, i)
@@ -1140,109 +743,49 @@ library MorphoLibrary {
                 abi.encodeCall(IMorpho.withdrawCollateral, (marketParams, 0, $.subvault, address(0xdead))),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.loanToken = address(0xdead);
             tmp[i++] = Call(
                 $.curator,
                 $.morpho,
                 0,
-                abi.encodeCall(
-                    IMorpho.withdrawCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: address(0xdead),
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
+                abi.encodeCall(IMorpho.withdrawCollateral, (params, 0, $.subvault, $.subvault)),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.collateralToken = address(0xdead);
             tmp[i++] = Call(
                 $.curator,
                 $.morpho,
                 0,
-                abi.encodeCall(
-                    IMorpho.withdrawCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: address(0xdead),
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
+                abi.encodeCall(IMorpho.withdrawCollateral, (params, 0, $.subvault, $.subvault)),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.oracle = address(0xdead);
             tmp[i++] = Call(
                 $.curator,
                 $.morpho,
                 0,
-                abi.encodeCall(
-                    IMorpho.withdrawCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: address(0xdead),
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
+                abi.encodeCall(IMorpho.withdrawCollateral, (params, 0, $.subvault, $.subvault)),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.irm = address(0xdead);
             tmp[i++] = Call(
                 $.curator,
                 $.morpho,
                 0,
-                abi.encodeCall(
-                    IMorpho.withdrawCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: address(0xdead),
-                            lltv: marketParams.lltv
-                        }),
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
+                abi.encodeCall(IMorpho.withdrawCollateral, (params, 0, $.subvault, $.subvault)),
                 false
             );
+            params = IMorpho($.morpho).idToMarketParams($.marketId);
+            params.lltv = params.lltv - 1;
             tmp[i++] = Call(
                 $.curator,
                 $.morpho,
                 0,
-                abi.encodeCall(
-                    IMorpho.withdrawCollateral,
-                    (
-                        IMorpho.MarketParams({
-                            loanToken: marketParams.loanToken,
-                            collateralToken: marketParams.collateralToken,
-                            oracle: marketParams.oracle,
-                            irm: marketParams.irm,
-                            lltv: marketParams.lltv - 1
-                        }),
-                        0,
-                        $.subvault,
-                        $.subvault
-                    )
-                ),
+                abi.encodeCall(IMorpho.withdrawCollateral, (params, 0, $.subvault, $.subvault)),
                 false
             );
             assembly {

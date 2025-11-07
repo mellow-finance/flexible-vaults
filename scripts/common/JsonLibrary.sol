@@ -2,7 +2,9 @@
 pragma solidity 0.8.25;
 
 import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
+import {IMorpho} from "./interfaces/IMorpho.sol";
 import {CCIPClient} from "./libraries/CCIPClient.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
@@ -179,5 +181,15 @@ library JsonLibrary {
             array[i] = _this().toString(a[i]);
         }
         return toJson(array);
+    }
+
+    function toJson(IMorpho.MarketParams memory marketParams) internal pure returns (string memory json) {
+        ParameterLibrary.Parameter[] memory params;
+        params = ParameterLibrary.build("loanToken", Strings.toHexString(marketParams.loanToken));
+        params = ParameterLibrary.add(params, "collateralToken", Strings.toHexString(marketParams.collateralToken));
+        params = ParameterLibrary.add(params, "oracle", Strings.toHexString(marketParams.oracle));
+        params = ParameterLibrary.add(params, "irm", Strings.toHexString(marketParams.irm));
+        params = ParameterLibrary.add(params, "lltv", Strings.toString(marketParams.lltv));
+        return toJson(params);
     }
 }
