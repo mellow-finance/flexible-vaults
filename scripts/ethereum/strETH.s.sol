@@ -138,8 +138,8 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](4);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](4);
+        address[] memory verifiers = new address[](5);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](5);
 
         {
             IRiskManager riskManager = vault.riskManager();
@@ -185,6 +185,18 @@ contract Deploy is Script {
                 IVerifier(verifiers[2]).setMerkleRoot(merkleRoot2);
                 IVerifier(verifiers[3]).setMerkleRoot(merkleRoot3);
             }
+
+            {
+                verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+                vault.createSubvault(0, proxyAdmin, verifiers[4]); // wsteth
+                bytes32 merkleRoot;
+                (merkleRoot, calls[4]) = _createSparkWstETHLoopingVerifier(vault.subvaultAt(4));
+                IVerifier(verifiers[4]).setMerkleRoot(merkleRoot);
+                riskManager.allowSubvaultAssets(
+                    vault.subvaultAt(4), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
+                );
+                riskManager.setSubvaultLimit(vault.subvaultAt(4), type(int256).max / 2);
+            }
         }
 
         // emergency pause setup
@@ -209,38 +221,16 @@ contract Deploy is Script {
             0
         );
 
-        timelockController.schedule(
-            address(Subvault(payable(vault.subvaultAt(0))).verifier()),
-            0,
-            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
-            bytes32(0),
-            bytes32(0),
-            0
-        );
-        timelockController.schedule(
-            address(Subvault(payable(vault.subvaultAt(1))).verifier()),
-            0,
-            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
-            bytes32(0),
-            bytes32(0),
-            0
-        );
-        timelockController.schedule(
-            address(Subvault(payable(vault.subvaultAt(2))).verifier()),
-            0,
-            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
-            bytes32(0),
-            bytes32(0),
-            0
-        );
-        timelockController.schedule(
-            address(Subvault(payable(vault.subvaultAt(3))).verifier()),
-            0,
-            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
-            bytes32(0),
-            bytes32(0),
-            0
-        );
+        for (uint256 i = 0; i < vault.subvaults(); i++) {
+            timelockController.schedule(
+                address(Subvault(payable(vault.subvaultAt(i))).verifier()),
+                0,
+                abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
+                bytes32(0),
+                bytes32(0),
+                0
+            );
+        }
         {
             address[4] memory queues = [
                 vault.queueAt(Constants.WSTETH, 0),
@@ -415,5 +405,16 @@ contract Deploy is Script {
             ProofLibrary.storeProofs("ethereum:strETH:subvault3", merkleRoot3, leaves3, descriptions);
             calls3 = strETHLibrary.getSubvault3SubvaultCalls(curator, subvault3, leaves3);
         }
+    }
+
+    function _createSparkWstETHLoopingVerifier(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = strETHLibrary.getSubvault4Descriptions(curator, subvault);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = strETHLibrary.getSubvault4Proofs(curator, subvault);
+        ProofLibrary.storeProofs("ethereum:strETH:subvault4", merkleRoot, leaves, descriptions);
+        calls = strETHLibrary.getSubvault4SubvaultCalls(curator, subvault, leaves);
     }
 }
