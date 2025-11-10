@@ -39,6 +39,17 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
+        if (true) {
+            address subvault = 0x3883d8CdCdda03784908cFa2F34ED2cF1604e4d7;
+            address verifier = 0x58C4B6B0d6CFf1d684E4B8Ee899550F4B68A1031;
+            (bytes32 merkleRoot,) = _createSparkWstETHLoopingVerifier(subvault);
+
+            if (true) {
+                revert("ok");
+            }
+            return;
+        }
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;
 
@@ -415,5 +426,16 @@ contract Deploy is Script {
             ProofLibrary.storeProofs("ethereum:strETH:subvault3", merkleRoot3, leaves3, descriptions);
             calls3 = strETHLibrary.getSubvault3SubvaultCalls(curator, subvault3, leaves3);
         }
+    }
+
+    function _createSparkWstETHLoopingVerifier(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = strETHLibrary.getSubvault4Descriptions(curator, subvault);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = strETHLibrary.getSubvault4Proofs(curator, subvault);
+        ProofLibrary.storeProofs("ethereum:strETH:subvault4", merkleRoot, leaves, descriptions);
+        calls = strETHLibrary.getSubvault4SubvaultCalls(curator, subvault, leaves);
     }
 }
