@@ -27,9 +27,11 @@ import {ICapLender} from "./interfaces/ICapLender.sol";
 import {IStUSR} from "./interfaces/IStUSR.sol";
 import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsManager.sol";
 
+import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[14] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[15] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -43,7 +45,8 @@ library ABILibrary {
             getCoreVaultInterfaces,
             getCapLenderInterfaces,
             getSymbioticInterfaces,
-            getResolvInterfaces
+            getResolvInterfaces,
+            getStakeWiseInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -272,5 +275,30 @@ library ABILibrary {
         abis[6] =
             '{"inputs":[{"internalType":"uint256","name":"_usrAmount","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[7] = '{"inputs":[],"name":"withdrawAll","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getStakeWiseInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](6);
+        abis = new string[](6);
+
+        selectors[0] = IStakeWiseEthVault.deposit.selector;
+        selectors[1] = IStakeWiseEthVault.depositAndMintOsToken.selector;
+        selectors[2] = IStakeWiseEthVault.mintOsToken.selector;
+        selectors[3] = IStakeWiseEthVault.burnOsToken.selector;
+        selectors[4] = IStakeWiseEthVault.enterExitQueue.selector;
+        selectors[5] = IStakeWiseEthVault.claimExitedAssets.selector;
+
+        abis[0] =
+            '{"type":"function","name":"deposit","inputs":[{"name":"receiver","type":"address","internalType":"address"},{"name":"referrer","type":"address","internalType":"address"}],"outputs":[{"name":"shares","type":"uint256","internalType":"uint256"}],"stateMutability":"payable"}';
+        abis[1] =
+            '{"type":"function","name":"depositAndMintOsToken","inputs":[{"name":"receiver","type":"address","internalType":"address"},{"name":"osTokenShares","type":"uint256","internalType":"uint256"},{"name":"referrer","type":"address","internalType":"address"}],"outputs":[{"name":"","type":"uint256","internalType":"uint256"}],"stateMutability":"payable"}';
+        abis[2] =
+            '{"type":"function","name":"mintOsToken","inputs":[{"name":"receiver","type":"address","internalType":"address"},{"name":"osTokenShares","type":"uint256","internalType":"uint256"},{"name":"referrer","type":"address","internalType":"address"}],"outputs":[{"name":"assets","type":"uint256","internalType":"uint256"}],"stateMutability":"nonpayable"}';
+        abis[3] =
+            '{"type":"function","name":"burnOsToken","inputs":[{"name":"osTokenShares","type":"uint128","internalType":"uint128"}],"outputs":[{"name":"assets","type":"uint256","internalType":"uint256"}],"stateMutability":"nonpayable"}';
+        abis[4] =
+            '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"address","name":"receiver","type":"address"}],"stateMutability":"nonpayable","type":"function","name":"enterExitQueue","outputs":[{"internalType":"uint256","name":"positionTicket","type":"uint256"}]}';
+        abis[5] =
+            '{"type":"function","name":"claimExitedAssets","inputs":[{"name":"positionTicket","type":"uint256","internalType":"uint256"},{"name":"timestamp","type":"uint256","internalType":"uint256"},{"name":"exitQueueIndex","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"nonpayable"}';
     }
 }
