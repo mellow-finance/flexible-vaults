@@ -11,34 +11,62 @@ import "forge-std/Script.sol";
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants} from "../ethereum/Constants.sol";
 
-import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-
 contract Deploy is Script {
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         vm.startBroadcast(deployerPk);
-        address deployer = vm.addr(deployerPk);
-        Collector prev = Collector(0x94f2377dC4DC59f8641E4c3F9b2082B173d91ABC);
-        Collector collectorImpl = new Collector();
+        address erc20Collector = address(new ERC20Collector());
+        address aaveCollector = address(new AaveCollector());
+        address[] memory protocols = new address[](4);
+        protocols[0] = address(erc20Collector);
+        protocols[1] = address(aaveCollector);
+        protocols[2] = address(aaveCollector);
+        protocols[3] = address(aaveCollector);
 
-        TransparentUpgradeableProxy c = new TransparentUpgradeableProxy(address(collectorImpl), deployer, "");
-        Collector collector = Collector(address(c));
-        collector.initialize(deployer, address(prev.oracle()));
-        collector.collect(
-            0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3,
-            Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)),
-            Collector.Config({
-                baseAssetFallback: address(0),
-                oracleUpdateInterval: 24 hours,
-                redeemHandlingInterval: 1 hours
-            })
+        bytes[] memory protocolDeployments = new bytes[](4);
+        protocolDeployments[1] = abi.encode(
+            AaveCollector.ProtocolDeployment({pool: 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2, metadata: "Core"})
+        );
+        protocolDeployments[2] = abi.encode(
+            AaveCollector.ProtocolDeployment({pool: 0x4e033931ad43597d96D6bcc25c280717730B58B1, metadata: "Prime"})
+        );
+        protocolDeployments[3] =
+            abi.encode(AaveCollector.ProtocolDeployment({pool: Constants.SPARK, metadata: "SparkLend"}));
+
+        address[] memory assets = ArraysLibrary.makeAddressArray(
+            abi.encode(
+                Constants.ETH,
+                Constants.WETH,
+                Constants.WSTETH,
+                Constants.USDC,
+                Constants.USDT,
+                Constants.USDS,
+                Constants.USDE,
+                Constants.SUSDE
+            )
         );
 
-        console2.log("collector: ", address(collector));
+        CustomOracle impl =
+            new CustomOracle(0x54586bE62E3c3580375aE3723C145253060Ca0C2, 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
 
-        if (true) {
-            return;
-        }
+        address o = Clones.cloneWithImmutableArgs(address(impl), abi.encode(protocols, protocolDeployments, assets));
+
+        console2.log("erc20Collector:", erc20Collector);
+        console2.logBytes(erc20Collector.code);
+
+        console2.log("aaveCollector:", aaveCollector);
+        console2.logBytes(aaveCollector.code);
+
+        console2.log("impl:", address(impl));
+        console2.logBytes(address(impl).code);
+
+        console2.log("Collector", address(o));
+        console2.logBytes(o.code);
+
+        // CustomOracle(o).getDistributions(
+        //     0x277C6A642564A91ff78b008022D65683cEE5CCC5, 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+        // );
+        // console2.log("Collector: %s", address(collector));
         revert("ok");
 
         // collector.collect(
