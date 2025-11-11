@@ -145,11 +145,11 @@ contract Deploy is Script {
         {
             IRiskManager riskManager = vault.riskManager();
             verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            vault.createSubvault(0, proxyAdmin, verifiers[1]);
+            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[1]);
             bytes32 merkleRoot;
-            (merkleRoot, calls[1]) = _createStrETHVerifier(address(vault));
-            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
-            riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+            (merkleRoot, calls[1]) = _createStrETHVerifier(subvault);
+            riskManager.allowSubvaultAssets(vault.subvaultAt(1), assets_);
+            riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
         }
 
         // emergency pause setup
