@@ -21,6 +21,9 @@ import {ERC20Library} from "../common/protocols/ERC20Library.sol";
 import {ERC4626Library} from "../common/protocols/ERC4626Library.sol";
 
 import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
+import {MorphoStrategyWrapperLibrary} from "../common/protocols/MorphoStrategyWrapperLibrary.sol";
+
+import {IMorphoStrategyWrapper} from "../common/interfaces/IMorphoStrategyWrapper.sol";
 import {TermMaxLibrary} from "../common/protocols/TermMaxLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 import {Constants} from "./Constants.sol";
@@ -30,7 +33,7 @@ library mAlphaLibrary2 {
         address curator;
         address subvault;
         address termmaxMarket;
-        bytes32 morphoMarketId;
+        address morphoStrategyWrapper;
     }
 
     function getSubvault0Proofs(Info memory $)
@@ -217,42 +220,61 @@ library mAlphaLibrary2 {
         calls.calls = calls_;
     }
 
+    function getInfos(Info memory $)
+        internal
+        view
+        returns (
+            MorphoLibrary.Info memory morphoLibraryInfo,
+            MorphoStrategyWrapperLibrary.Info memory morphoStrategyWrapperLibraryInfo,
+            CurveLibrary.Info memory curveLibraryInfo
+        )
+    {
+        morphoLibraryInfo = MorphoLibrary.Info({
+            curator: $.curator,
+            subvault: $.subvault,
+            marketId: IMorphoStrategyWrapper($.morphoStrategyWrapper).lendingMarketId(),
+            morpho: Constants.MORPHO_ETHEREUM
+        });
+        morphoStrategyWrapperLibraryInfo = MorphoStrategyWrapperLibrary.Info({
+            curator: $.curator,
+            subvault: $.subvault,
+            morphoStrategyWrapper: $.morphoStrategyWrapper,
+            morpho: Constants.MORPHO_ETHEREUM,
+            subvaultName: "subvault1"
+        });
+        curveLibraryInfo = CurveLibrary.Info({
+            subvault: $.subvault,
+            subvaultName: "subvault1",
+            curator: $.curator,
+            pool: Constants.CURVE_USDC_USDU_POOL,
+            gauge: Constants.CURVE_USDC_USDU_GAUGE
+        });
+    }
+
     function getSubvault1Proofs(Info memory $)
         internal
         view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](50);
+        leaves = new IVerifier.VerificationPayload[](100);
+        (
+            MorphoLibrary.Info memory morphoLibraryInfo,
+            MorphoStrategyWrapperLibrary.Info memory morphoStrategyWrapperLibraryInfo,
+            CurveLibrary.Info memory curveLibraryInfo
+        ) = getInfos($);
+
         uint256 iterator;
 
+        iterator =
+            ArraysLibrary.insert(leaves, MorphoLibrary.getMorphoProofs(bitmaskVerifier, morphoLibraryInfo), iterator);
         iterator = ArraysLibrary.insert(
             leaves,
-            MorphoLibrary.getMorphoProofs(
-                bitmaskVerifier,
-                MorphoLibrary.Info({
-                    curator: $.curator,
-                    subvault: $.subvault,
-                    marketId: $.morphoMarketId,
-                    morpho: Constants.MORPHO_ETHEREUM
-                })
-            ),
+            MorphoStrategyWrapperLibrary.getMorphoStrategyProofs(bitmaskVerifier, morphoStrategyWrapperLibraryInfo),
             iterator
         );
-        iterator = ArraysLibrary.insert(
-            leaves,
-            CurveLibrary.getCurveProofs(
-                bitmaskVerifier,
-                CurveLibrary.Info({
-                    subvault: $.subvault,
-                    subvaultName: "subvault1",
-                    curator: $.curator,
-                    pool: Constants.CURVE_USDC_USDU_POOL,
-                    gauge: Constants.CURVE_USDC_USDU_GAUGE
-                })
-            ),
-            iterator
-        );
+        iterator =
+            ArraysLibrary.insert(leaves, CurveLibrary.getCurveProofs(bitmaskVerifier, curveLibraryInfo), iterator);
 
         assembly {
             mstore(leaves, iterator)
@@ -262,34 +284,21 @@ library mAlphaLibrary2 {
     }
 
     function getSubvault1Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](50);
+        descriptions = new string[](100);
+        (
+            MorphoLibrary.Info memory morphoLibraryInfo,
+            MorphoStrategyWrapperLibrary.Info memory morphoStrategyWrapperLibraryInfo,
+            CurveLibrary.Info memory curveLibraryInfo
+        ) = getInfos($);
 
-        uint256 iterator = 0;
+        uint256 iterator;
+        iterator = ArraysLibrary.insert(descriptions, MorphoLibrary.getMorphoDescriptions(morphoLibraryInfo), iterator);
         iterator = ArraysLibrary.insert(
             descriptions,
-            MorphoLibrary.getMorphoDescriptions(
-                MorphoLibrary.Info({
-                    curator: $.curator,
-                    subvault: $.subvault,
-                    marketId: $.morphoMarketId,
-                    morpho: Constants.MORPHO_ETHEREUM
-                })
-            ),
+            MorphoStrategyWrapperLibrary.getMorphoStrategyDescriptions(morphoStrategyWrapperLibraryInfo),
             iterator
         );
-        iterator = ArraysLibrary.insert(
-            descriptions,
-            CurveLibrary.getCurveDescriptions(
-                CurveLibrary.Info({
-                    subvault: $.subvault,
-                    subvaultName: "subvault1",
-                    curator: $.curator,
-                    pool: Constants.CURVE_USDC_USDU_POOL,
-                    gauge: Constants.CURVE_USDC_USDU_GAUGE
-                })
-            ),
-            iterator
-        );
+        iterator = ArraysLibrary.insert(descriptions, CurveLibrary.getCurveDescriptions(curveLibraryInfo), iterator);
 
         assembly {
             mstore(descriptions, iterator)
@@ -302,33 +311,19 @@ library mAlphaLibrary2 {
         returns (SubvaultCalls memory calls)
     {
         calls.payloads = leaves;
-        Call[][] memory calls_ = new Call[][](50);
-        uint256 iterator = 0;
+        Call[][] memory calls_ = new Call[][](100);
+        uint256 iterator;
+        (
+            MorphoLibrary.Info memory morphoLibraryInfo,
+            MorphoStrategyWrapperLibrary.Info memory morphoStrategyWrapperLibraryInfo,
+            CurveLibrary.Info memory curveLibraryInfo
+        ) = getInfos($);
+
+        iterator = ArraysLibrary.insert(calls_, MorphoLibrary.getMorphoCalls(morphoLibraryInfo), iterator);
         iterator = ArraysLibrary.insert(
-            calls_,
-            MorphoLibrary.getMorphoCalls(
-                MorphoLibrary.Info({
-                    curator: $.curator,
-                    subvault: $.subvault,
-                    marketId: $.morphoMarketId,
-                    morpho: Constants.MORPHO_ETHEREUM
-                })
-            ),
-            iterator
+            calls_, MorphoStrategyWrapperLibrary.getMorphoStrategyCalls(morphoStrategyWrapperLibraryInfo), iterator
         );
-        iterator = ArraysLibrary.insert(
-            calls_,
-            CurveLibrary.getCurveCalls(
-                CurveLibrary.Info({
-                    subvault: $.subvault,
-                    subvaultName: "subvault1",
-                    curator: $.curator,
-                    pool: Constants.CURVE_USDC_USDU_POOL,
-                    gauge: Constants.CURVE_USDC_USDU_GAUGE
-                })
-            ),
-            iterator
-        );
+        iterator = ArraysLibrary.insert(calls_, CurveLibrary.getCurveCalls(curveLibraryInfo), iterator);
 
         assembly {
             mstore(calls_, iterator)

@@ -44,7 +44,7 @@ contract Deploy is Script {
     address public treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
 
     address public constant termmaxMarket = 0x1B7F1Fb1AC54396B3039A817714d8a7176099328;
-    bytes32 public constant morphoMarketId = 0xc12387d79d5d7ba35c5d2ed60b71dc4d6341889a30afea50a790c4e8967c209c; // USDU-USDC/USDU
+    address public constant morphoStrategyWrapper = 0xE74dD7525663193B5e5e596b581B5343735a585c; // USDC-USDU Morpho strategy wrapper with USDU/UDSC collateral
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -361,7 +361,7 @@ contract Deploy is Script {
                 curator: curator,
                 subvault: subvault0,
                 termmaxMarket: termmaxMarket,
-                morphoMarketId: morphoMarketId
+                morphoStrategyWrapper: address(0)
             })
         );
         IVerifier.VerificationPayload[] memory leaves;
@@ -370,7 +370,7 @@ contract Deploy is Script {
                 curator: curator,
                 subvault: subvault0,
                 termmaxMarket: termmaxMarket,
-                morphoMarketId: morphoMarketId
+                morphoStrategyWrapper: address(0)
             })
         );
         ProofLibrary.storeProofs("ethereum:mAlphaUmint:subvault0", merkleRoot, leaves, descriptions);
@@ -379,7 +379,7 @@ contract Deploy is Script {
                 curator: curator,
                 subvault: subvault0,
                 termmaxMarket: termmaxMarket,
-                morphoMarketId: morphoMarketId
+                morphoStrategyWrapper: address(0)
             }),
             leaves
         );
@@ -390,13 +390,24 @@ contract Deploy is Script {
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
         /*
+            morphoStrategyWrapper: 
+                - accepts Curve LP tokens as collateral (directly pushes into Morpho)
+                - linked with Morpho USDC-USDU market
+                - borrows USDU against LP tokens collateral on behalf of subvault1
+                - rewardVault is ERC4626 wrapper over Curve LP tokens
+            
+            0. IERC20(USDC).approve(MORPHO, ...)
+            1. IERC20(CURVE_POOL).approve(MORPHO, ...)
+            2. Morpho interactions with market (deposit/redeem/borrow/repay) are done inside MorphoStrategyWrapper
+            3. Morpho market wrapper interactions MorphoStrategyWrapperLibrary
+            4. Swap USDU for USDC on Curve with approves
         */
         string[] memory descriptions = mAlphaLibrary2.getSubvault1Descriptions(
             mAlphaLibrary2.Info({
                 curator: curator,
                 subvault: subvault1,
                 termmaxMarket: termmaxMarket,
-                morphoMarketId: morphoMarketId
+                morphoStrategyWrapper: morphoStrategyWrapper
             })
         );
         IVerifier.VerificationPayload[] memory leaves;
@@ -405,7 +416,7 @@ contract Deploy is Script {
                 curator: curator,
                 subvault: subvault1,
                 termmaxMarket: termmaxMarket,
-                morphoMarketId: morphoMarketId
+                morphoStrategyWrapper: morphoStrategyWrapper
             })
         );
         ProofLibrary.storeProofs("ethereum:mAlphaUmint:subvault1", merkleRoot, leaves, descriptions);
@@ -414,7 +425,7 @@ contract Deploy is Script {
                 curator: curator,
                 subvault: subvault1,
                 termmaxMarket: termmaxMarket,
-                morphoMarketId: morphoMarketId
+                morphoStrategyWrapper: morphoStrategyWrapper
             }),
             leaves
         );

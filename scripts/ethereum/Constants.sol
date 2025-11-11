@@ -61,8 +61,9 @@ library Constants {
     address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
 
-    address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
-    address public constant CURVE_USDC_USDU_GAUGE = 0x0E2662672adC42Bb73d39196f9f557C11B4FCcf9;
+    // https://www.curve.finance/dex/ethereum/pools/factory-stable-ng-596/deposit
+    address public constant CURVE_USDC_USDU_POOL = 0x6C5Ff8DCe52BE77b4eCE6B51996018f0C1713bA9;
+    address public constant CURVE_USDC_USDU_GAUGE = 0xbB6eDb6E10fC89F1032F3c4DdB2e73d1BeDa423f;
 
     address public constant MORPHO_USDC_ALPHAPING = 0xb0f05E4De970A1aaf77f8C2F823953a367504BA9;
     address public constant MORPHO_WETH_ALPHAPING = 0x47fe8Ab9eE47DD65c24df52324181790b9F47EfC;
