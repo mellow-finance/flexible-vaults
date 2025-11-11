@@ -151,7 +151,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IStakeWiseEthVault(Chorus One - MEV Max).burnOstoken(any)",
+        "description": "IStakeWiseEthVault(Chorus One - MEV Max).burnOsToken(any)",
         "abi": {
           "type": "function",
           "name": "burnOsToken",

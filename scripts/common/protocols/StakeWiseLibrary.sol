@@ -171,7 +171,7 @@ library StakeWiseLibrary {
 
         innerParameters = ParameterLibrary.build("osTokenShares", "any");
         descriptions[index++] = JsonLibrary.toJson(
-            string(abi.encodePacked("IStakeWiseEthVault(", $.vaultName, ").burnOstoken(any)")),
+            string(abi.encodePacked("IStakeWiseEthVault(", $.vaultName, ").burnOsToken(any)")),
             ABILibrary.getABI(IStakeWiseEthVault.burnOsToken.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.vault), "0"),
             innerParameters
