@@ -137,7 +137,7 @@ contract Deploy is Script {
         vault.createQueue(0, false, proxyAdmin, Constants.WSTETH, new bytes(0));
 
         // fee manager setup
-        vault.feeManager().setBaseAsset(address(vault), Constants.ETH);
+        vault.feeManager().setBaseAsset(address(vault), Constants.WSTETH);
         Ownable(address(vault.feeManager())).transferOwnership(feeManagerOwner);
 
         // subvault setup
