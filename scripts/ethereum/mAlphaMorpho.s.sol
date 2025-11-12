@@ -253,8 +253,8 @@ contract Deploy is Script {
                 reports[i].asset = assets_[i];
             }
             reports[0].priceD18 = 1e30; // USDC, 6 decimals
-            reports[1].priceD18 = 1e18; // USDU, 18 decimals
-            reports[2].priceD18 = 1e18; // Curve LP USDC/USDU, 18 decimals
+            reports[1].priceD18 = 1 ether; // USDU, 18 decimals
+            reports[2].priceD18 = 1.0003 ether; // Curve LP USDC/USDU, 18 decimals
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
