@@ -189,9 +189,7 @@ contract Deploy is Script {
             (merkleRoot0, calls[0]) = _createSubvault0Proofs(vault.subvaultAt(0), capSymbioticVault);
             IVerifier(verifiers[0]).setMerkleRoot(merkleRoot0);
 
-            riskManager.allowSubvaultAssets(
-                vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH))
-            );
+            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), 2500 ether);
         }
 
@@ -366,7 +364,7 @@ contract Deploy is Script {
         string[] memory descriptions = udlETHLibrary.getSubvault0Descriptions(info);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = udlETHLibrary.getSubvault0Proofs(info);
-        ProofLibrary.storeProofs("ethereum:udlETH+:subvault0", merkleRoot, leaves, descriptions);
+        ProofLibrary.storeProofs("ethereum:udlETH:subvault0", merkleRoot, leaves, descriptions);
         calls = udlETHLibrary.getSubvault0Calls(info, leaves);
     }
 }
