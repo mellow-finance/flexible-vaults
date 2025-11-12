@@ -28,24 +28,25 @@ import {TermMaxLibrary} from "../common/protocols/TermMaxLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 import {Constants} from "./Constants.sol";
 
-library mAlphaLibrary2 {
+library mAlphaUmintLibrary {
     struct Info {
+        string subvaultName;
         address curator;
         address subvault;
         address termmaxMarket;
-        address morphoStrategyWrapper;
     }
     /**
-        subvault 0:
-            - DigiFTI: uMINT <-> USDC
-            - TermMax: borrow/repay USDU using uMINT as collateral
-            - Curve swap: USDU <> USDC
-        subvault 1:
-            - Morpho: supply/withdraw USDC
-            - MorphoStrategyWrapper: borrow/repay USDC using USDU as collateral
-            - rewardVault 4626 interaction
-            - Curve mint/burn liquidity USDU / USDC 
+     * subvault 0:
+     *         - DigiFTI: uMINT <-> USDC
+     *         - TermMax: borrow/repay USDU using uMINT as collateral
+     *         - Curve swap: USDU <> USDC
+     *     subvault 1:
+     *         - Morpho: supply/withdraw USDC
+     *         - MorphoStrategyWrapper: borrow/repay USDC using USDU as collateral
+     *         - rewardVault 4626 interaction
+     *         - Curve mint/burn liquidity USDU / USDC
      */
+
     function getSubvault0Proofs(Info memory $)
         internal
         view
@@ -229,6 +230,15 @@ library mAlphaLibrary2 {
 
         calls.calls = calls_;
     }
+}
+
+library mAlphaMorphoLibrary {
+    struct Info {
+        string subvaultName;
+        address curator;
+        address subvault;
+        address morphoStrategyWrapper;
+    }
 
     function getInfos(Info memory $)
         internal
@@ -250,18 +260,18 @@ library mAlphaLibrary2 {
             subvault: $.subvault,
             morphoStrategyWrapper: $.morphoStrategyWrapper,
             morpho: Constants.MORPHO_ETHEREUM,
-            subvaultName: "subvault1"
+            subvaultName: $.subvaultName
         });
         curveLibraryInfo = CurveLibrary.Info({
             subvault: $.subvault,
-            subvaultName: "subvault1",
+            subvaultName: $.subvaultName,
             curator: $.curator,
             pool: Constants.CURVE_USDC_USDU_POOL,
             gauge: Constants.CURVE_USDC_USDU_GAUGE
         });
     }
 
-    function getSubvault1Proofs(Info memory $)
+    function getSubvault0Proofs(Info memory $)
         internal
         view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
@@ -293,7 +303,7 @@ library mAlphaLibrary2 {
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault1Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
+    function getSubvault0Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
         descriptions = new string[](100);
         (
             MorphoLibrary.Info memory morphoLibraryInfo,
@@ -315,7 +325,7 @@ library mAlphaLibrary2 {
         }
     }
 
-    function getSubvault1SubvaultCalls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
+    function getSubvault0SubvaultCalls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
         internal
         view
         returns (SubvaultCalls memory calls)

@@ -28,7 +28,7 @@ import "../common/protocols/DigiFTILibrary.sol";
 import "../common/protocols/ERC4626Library.sol";
 import "../common/protocols/TermMaxLibrary.sol";
 
-import {mAlphaUmintLibrary} from "./mAlphaLibrary.sol";
+import {mAlphaMorphoLibrary} from "./mAlphaLibrary.sol";
 
 contract Deploy is Script {
     // Actors
@@ -44,6 +44,7 @@ contract Deploy is Script {
     address public treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
 
     address public constant termmaxMarket = 0x1B7F1Fb1AC54396B3039A817714d8a7176099328;
+    address public constant morphoStrategyWrapper = 0xE74dD7525663193B5e5e596b581B5343735a585c; // USDC-USDU Morpho strategy wrapper with USDU/UDSC collateral
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -100,7 +101,7 @@ contract Deploy is Script {
             }
         }
         address[] memory assets_ =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.UMINT, Constants.USDU));
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDU, Constants.CURVE_USDC_USDU_POOL));
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -108,7 +109,7 @@ contract Deploy is Script {
             proxyAdmin: proxyAdmin,
             vaultAdmin: lazyVaultAdmin,
             shareManagerVersion: 0,
-            shareManagerParams: abi.encode(bytes32(0), "uMINT USD", "umUSD"),
+            shareManagerParams: abi.encode(bytes32(0), "USDCUSDU Carry", "mUSDCUSDU"),
             feeManagerVersion: 0,
             feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(0), uint24(1e4)),
             riskManagerVersion: 0,
@@ -252,8 +253,8 @@ contract Deploy is Script {
                 reports[i].asset = assets_[i];
             }
             reports[0].priceD18 = 1e30; // USDC, 6 decimals
-            reports[1].priceD18 = 104.33e18; // UMINT, 18 decimals (104.33 USD)
-            reports[2].priceD18 = 1e18; // USDU, 18 decimals
+            reports[1].priceD18 = 1e18; // USDU, 18 decimals
+            reports[2].priceD18 = 1e18; // Curve LP USDC/USDU, 18 decimals
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
@@ -334,74 +335,33 @@ contract Deploy is Script {
         }
     }
 
-    function _createSubvault0Verifier(address subvault0)
+    function _createSubvault0Verifier(address subvault1)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        mAlphaUmintLibrary.Info memory mAlphaUmintLibraryInfo = mAlphaUmintLibrary.Info({
+        mAlphaMorphoLibrary.Info memory mAlphaMorphoLibraryInfo = mAlphaMorphoLibrary.Info({
             subvaultName: "subvault0",
             curator: curator,
-            subvault: subvault0,
-            termmaxMarket: termmaxMarket
+            subvault: subvault1,
+            morphoStrategyWrapper: morphoStrategyWrapper
         });
         /*
-            0. IERC20(USDC).approve(UMINT_ENTRY, ...)
-            1. IERC20(uMINT).approve(TERMMAX_ROUTER, ...)
-            2. IERC20(USDU).approve(CURVE_POOL, ...)
-            3. UMINT_ENTRY.subscribe(UMINT, USDC, ...) / UMINT_ENTRY.redeem(UMINT, USDC, ...)
-            4. TERMMAX_ROUTER.borrowTokenFromCollateral(subvault0, MARKET, ...) (uMINT->USDU)
-            5. Swap USDU for USDC on Curve
+            morphoStrategyWrapper: 
+                - accepts Curve LP tokens as collateral (directly pushes into Morpho)
+                - linked with Morpho USDC-USDU market
+                - borrows USDU against LP tokens collateral on behalf of subvault1
+                - rewardVault is ERC4626 wrapper over Curve LP tokens
+            
+            0. IERC20(USDC).approve(MORPHO, ...)
+            1. IERC20(CURVE_POOL).approve(MORPHO, ...)
+            2. Morpho interactions with market (deposit/redeem/borrow/repay) are done inside MorphoStrategyWrapper
+            3. Morpho market wrapper interactions MorphoStrategyWrapperLibrary
+            4. Swap USDU for USDC on Curve with approves
         */
-        string[] memory descriptions = mAlphaUmintLibrary.getSubvault0Descriptions(mAlphaUmintLibraryInfo);
+        string[] memory descriptions = mAlphaMorphoLibrary.getSubvault0Descriptions(mAlphaMorphoLibraryInfo);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = mAlphaUmintLibrary.getSubvault0Proofs(mAlphaUmintLibraryInfo);
-        ProofLibrary.storeProofs("ethereum:mAlphaUmint:subvault0", merkleRoot, leaves, descriptions);
-        calls = mAlphaUmintLibrary.getSubvault0SubvaultCalls(mAlphaUmintLibraryInfo, leaves);
-    }
-
-    /// @dev just for testing UMINT token behavior, because it is not verified
-    function testUmintToken() internal {
-        // valid on 23710403 block
-        address holder1 = 0x54b930e2f72472773234B9edaeBA3f7a971fc4a8; // whitelisted user
-        address holder2 = 0x19E42f0fDC345ebC662f0B62D5039e3816cF48f0; // whitelisted user
-
-        uint256 balanceBefore1 = IERC20(Constants.UMINT).balanceOf(holder1);
-        uint256 balanceBefore2 = IERC20(Constants.UMINT).balanceOf(holder2);
-
-        MockSpender spender = new MockSpender();
-
-        vm.startPrank(holder1);
-        IERC20(Constants.UMINT).transfer(holder2, balanceBefore1 / 2);
-        uint256 balanceAfter = IERC20(Constants.UMINT).balanceOf(holder1);
-        require(balanceBefore1 - balanceAfter == balanceBefore1 / 2, "UMINT transfer failed");
-
-        /// @dev approve is not checking that spender is whitelisted
-        IERC20(Constants.UMINT).approve(address(spender), type(uint256).max);
-        vm.stopPrank();
-
-        spender.transferFrom(Constants.UMINT, holder1, holder2, IERC20(Constants.UMINT).balanceOf(holder1));
-        balanceAfter = IERC20(Constants.UMINT).balanceOf(holder2);
-        IERC20(Constants.UMINT).balanceOf(holder1);
-        require(balanceBefore1 + balanceBefore2 == balanceAfter, "UMINT transferFrom failed");
-    }
-
-    function testBorrow() internal {
-        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
-
-        vm.startBroadcast(deployerPk);
-        address[] memory orders = new address[](1);
-        orders[0] = 0xD2ccc855c096FdfEC46FE4A38c04a6F7011B44b7;
-        uint128[] memory tokenAmtsWantBuy = new uint128[](1);
-        tokenAmtsWantBuy[0] = 2500;
-        ITermMaxRouter(Constants.TERMMAX_ROUTER).borrowTokenFromCollateral(
-            deployer, termmaxMarket, 3000, orders, tokenAmtsWantBuy, 2600, block.timestamp + 1 hours
-        );
-    }
-}
-
-contract MockSpender {
-    function transferFrom(address token, address from, address to, uint256 amount) external {
-        IERC20(token).transferFrom(from, to, amount);
+        (merkleRoot, leaves) = mAlphaMorphoLibrary.getSubvault0Proofs(mAlphaMorphoLibraryInfo);
+        ProofLibrary.storeProofs("ethereum:mAlphaMorpho:subvault0", merkleRoot, leaves, descriptions);
+        calls = mAlphaMorphoLibrary.getSubvault0SubvaultCalls(mAlphaMorphoLibraryInfo, leaves);
     }
 }
