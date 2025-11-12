@@ -273,9 +273,10 @@ contract Deploy is Script {
             for (uint256 i = 0; i < reports.length; i++) {
                 reports[i].asset = assets_[i];
             }
-            reports[0].priceD18 = 1 ether;
-            reports[1].priceD18 = 1 ether;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
+            uint256 wstETHPriceD18 = uint256(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
+            reports[0].priceD18 = uint224(1e36 / wstETHPriceD18);
+            reports[1].priceD18 = uint224(1e36 / wstETHPriceD18);
+            reports[2].priceD18 = uint224(1 ether);
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
