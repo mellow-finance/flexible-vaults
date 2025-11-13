@@ -12,6 +12,5 @@ import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants} from "../ethereum/Constants.sol";
 
 contract Deploy is Script {
-    function run() external {
-    }
+    function run() external {}
 }
