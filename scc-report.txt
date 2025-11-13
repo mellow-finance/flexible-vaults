@@ -1,7 +1,7 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 42      4658      632       524     3502        736           784.27
+Solidity                                 42      4668      632       524     3512        747           787.78
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       22        17       92          8             8.70
 src/hooks/BasicRedeemHook.sol                      53        4         1       48         10            20.83
@@ -40,13 +40,13 @@ src/queues/SignatureDepositQueue.sol               27        5         1       2
 src/queues/SignatureQueue.sol                     153       24        17      112         22            19.64
 src/queues/SignatureRedeemQueue.sol                34        8         1       25          2             8.00
 src/strategies/SymbioticStrategy.sol               65        9         2       54          1             1.85
-src/utils/SwapModule.sol                          301       35        33      233         58            24.89
+src/utils/SwapModule.sol                          311       35        33      243         69            28.40
 src/vaults/Migrator.sol                           142       23         1      118         12            10.17
 src/vaults/Subvault.sol                            21        3         1       17          0             0.00
 src/vaults/Vault.sol                               56        5         1       50          1             2.00
 src/vaults/VaultConfigurator.sol                   74        7         2       65          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    42      4658      632       524     3502        736           784.27
+Total                                    42      4668      632       524     3512        747           787.78
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 172742 bytes, 0.173 megabytes (SI)
+Processed 173473 bytes, 0.173 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
