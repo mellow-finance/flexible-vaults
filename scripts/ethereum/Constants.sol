@@ -27,11 +27,17 @@ library Constants {
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
 
+    address public constant USR = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
+    address public constant STUSR = 0x6c8984bc7DBBeDAf4F6b2FD766f16eBB7d10AAb4;
+    address public constant USR_REQUEST_MANAGER = 0xAC85eF29192487E0a109b7f9E40C267a9ea95f2e;
+
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
     address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
 
     address public constant AAVE_CORE = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
     address public constant AAVE_PRIME = 0x4e033931ad43597d96D6bcc25c280717730B58B1;
+
+    address public constant SPARK = 0xC13e21B648A5Ee794902342038FF3aDAB66BE987;
 
     address public constant AAVE_V3_ORACLE = 0x54586bE62E3c3580375aE3723C145253060Ca0C2;
 
@@ -68,6 +74,11 @@ library Constants {
 
     address public constant BRACKET_FINANCE_WETH_VAULT = 0x3588e6Cb5DCa99E35bA2E2a5D42cdDb46365e71B;
     address public constant BRACKET_FINANCE_USDC_VAULT = 0xb8ca40E2c5d77F0Bc1Aa88B2689dddB279F7a5eb;
+
+    address public constant RSTETH = 0x7a4EffD87C2f3C55CA251080b1343b605f327E3a;
+    address public constant CAP_LENDER = 0x15622c3dbbc5614E6DFa9446603c1779647f01FC;
+    address public constant CAP_NETWORK = 0x98e52Ea7578F2088c152E81b17A9a459bF089f2a;
+    address public constant CAP_FACTORY = 0x0B92300C8494833E504Ad7d36a301eA80DbBAE2e;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({

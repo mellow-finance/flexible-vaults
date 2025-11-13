@@ -1,0 +1,192 @@
+{
+  "title": "ethereum:rstETH+:subvault1",
+  "merkle_root": "0xda9468df45d6b1aece33458149e3ccc6acc7c702f3a8c4646e50e4e0fdb533d3",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(wstETH).approve(SymbioticVault(0x9adadbfa5a6da138e419bc2facb42364870ba8dc), anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x9adadbfa5a6da138e419bc2facb42364870ba8dc",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad1b237322aa820961273322d9bc8d97596c22eb1fd9fde9764ff504264ca9172000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb4688839ce9a123d2afc3a6c4cf2b519ce536525934416eda5bf113f94778997",
+        "0x8d1b5d35f6fbc932704afe2e0a2ff1f31383d57a163969e1fa56202cc191f9a5"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISymbioticVault(0x9adadbfa5a6da138e419bc2facb42364870ba8dc).deposit(0x5acc816d46a7e558f2da02e2933a80c25a743c3b, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "onBehalfOf",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "deposit",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "depositedAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "mintedShares",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0x9adadbfa5a6da138e419bc2facb42364870ba8dc",
+          "value": "0"
+        },
+        "innerParameters": {
+          "onBehalfOf": "0x5acc816d46a7e558f2da02e2933a80c25a743c3b",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af0c1a2a5ba974bbd80e95f27a781726e5f17a4386f5faaeca038339144f22a12000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6a05a247901345c64ab98598ff6ae2198c576e0cab7c781715b089e3deb8ff53",
+        "0xab76d66c77a18e94bbad391dcc17988c5167858237fdeeaf91e6d33094ca3b00"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISymbioticVault(0x9adadbfa5a6da138e419bc2facb42364870ba8dc).withdraw(0x5acc816d46a7e558f2da02e2933a80c25a743c3b, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "claimer",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "withdraw",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "burnedShares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "mintedShares",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0x9adadbfa5a6da138e419bc2facb42364870ba8dc",
+          "value": "0"
+        },
+        "innerParameters": {
+          "claimer": "0x5acc816d46a7e558f2da02e2933a80c25a743c3b",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a086d11a17bcf090e114fb56a37109f01316d6795e222cbc8be5ebbde040fee07000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x115d12ba8d66c41cc92e183a729a442220b6d1f88bf29a4a30fbf5cffa4293ac",
+        "0xab76d66c77a18e94bbad391dcc17988c5167858237fdeeaf91e6d33094ca3b00"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISymbioticVault(0x9adadbfa5a6da138e419bc2facb42364870ba8dc).claim(0x5acc816d46a7e558f2da02e2933a80c25a743c3b, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "epoch",
+              "type": "uint256"
+            }
+          ],
+          "name": "claim",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "target": "0x9adadbfa5a6da138e419bc2facb42364870ba8dc",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x5acc816d46a7e558f2da02e2933a80c25a743c3b",
+          "epoch": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad915cdaed00cbb30d683946ff306cfc774709d39b1b22d1c1e00e83613f107da000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc7d59c9655a52dfa974d54d350dae2e06dc50802ba6af24e370bdc075292809b",
+        "0x8d1b5d35f6fbc932704afe2e0a2ff1f31383d57a163969e1fa56202cc191f9a5"
+      ]
+    }
+  ]
+}
