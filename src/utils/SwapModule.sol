@@ -161,7 +161,7 @@ contract SwapModule is ISwapModule, MellowACL {
         bytes memory calculatedOrderUid = new bytes(56);
         GPv2Order.packOrderUidParams(
             calculatedOrderUid,
-            GPv2Order.hash(order, ICowswapSettlement(cowswapSettlement).domainSeparator()),
+            GPv2Order.hash(order, GPv2Settlement(payable(cowswapSettlement)).domainSeparator()),
             address(this),
             order.validTo
         );
@@ -278,13 +278,13 @@ contract SwapModule is ISwapModule, MellowACL {
     {
         checkParams(params);
         checkCowswapOrder(params, order, orderUid);
-        ICowswapSettlement(cowswapSettlement).setPreSignature(orderUid, true);
+        GPv2Settlement(payable(cowswapSettlement)).setPreSignature(orderUid, true);
         emit LimitOrderCreated(params, orderUid);
     }
 
     /// @inheritdoc ISwapModule
     function invalidateOrder(bytes calldata orderUid) external onlyRole(CALLER_ROLE) {
-        ICowswapSettlement(cowswapSettlement).invalidateOrder(orderUid);
+        GPv2Settlement(payable(cowswapSettlement)).invalidateOrder(orderUid);
         emit LimitOrderInvalidated(orderUid);
     }
 
