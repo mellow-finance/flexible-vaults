@@ -34,6 +34,7 @@ contract Deploy is Script {
     address public oracleUpdater = 0x71ECA46aE73727f9038D411146CacFeaE4Da7208;
     address public curator = 0xAb259DEa188d577b2415C879C13A5C4dfD67E0e5;
     address public feeManagerOwner = 0x0a5d1476c47B272Fbc9Aa7CCbFf83DCC77A49729;
+    address public capSubvaultAgent = address(0);
     uint24 public protocolFeeD6 = 1e4; // 1% annual
     uint24 public performanceFeeD6 = 15e4; // 15% of profits
 
@@ -114,7 +115,7 @@ contract Deploy is Script {
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
                     timeout: 24 hours,
-                    depositInterval: 24 hours,
+                    depositInterval: 1 hours,
                     redeemInterval: 14 days
                 }),
                 assets_
@@ -160,7 +161,7 @@ contract Deploy is Script {
             vault.createSubvault(0, proxyAdmin, verifiers[0]);
 
             (address capSymbioticVault,,,, address stakerRewards) = ICapFactory(Constants.CAP_FACTORY).createVault(
-                deployer, Constants.WSTETH, vault.subvaultAt(0), Constants.CAP_NETWORK
+                deployer, Constants.WSTETH, capSubvaultAgent, Constants.CAP_NETWORK
             );
 
             {
@@ -190,7 +191,7 @@ contract Deploy is Script {
             IVerifier(verifiers[0]).setMerkleRoot(merkleRoot0);
 
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
-            riskManager.setSubvaultLimit(vault.subvaultAt(0), 2500 ether);
+            riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         }
 
         // emergency pause setup
@@ -273,9 +274,9 @@ contract Deploy is Script {
             for (uint256 i = 0; i < reports.length; i++) {
                 reports[i].asset = assets_[i];
             }
-            uint256 wstETHPriceD18 = uint256(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
-            reports[0].priceD18 = uint224(1e36 / wstETHPriceD18);
-            reports[1].priceD18 = uint224(1e36 / wstETHPriceD18);
+            uint224 ETHPriceD18 = uint224(WSTETHInterface(Constants.WSTETH).getWstETHByStETH(1 ether));
+            reports[0].priceD18 = ETHPriceD18;
+            reports[1].priceD18 = ETHPriceD18;
             reports[2].priceD18 = uint224(1 ether);
 
             IOracle oracle = vault.oracle();
