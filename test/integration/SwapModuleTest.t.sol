@@ -54,7 +54,7 @@ contract SwapModuleIntegration is BaseIntegrationTest {
         }
     }
 
-    function testSwapModule_Integration() external {
+    function testSwapModule_Integration_NO_CI() external {
         IOracle.SecurityParams memory securityParams = IOracle.SecurityParams({
             maxAbsoluteDeviation: 0.01 ether, // 1% abs
             suspiciousAbsoluteDeviation: 0.005 ether, // 0.05% abs

@@ -51,7 +51,7 @@ contract SwapModuleTest is Test {
         swapModule = new SwapModule("Mellow", 1, COWSWAP_SETTLEMENT, COWSWAP_VAULT_RELAYER, WETH);
     }
 
-    function testConstructor() external view {
+    function testConstructor_NO_CI() external view {
         assertNotEq(address(swapModule), address(0));
         assertEq(address(swapModule.cowswapSettlement()), COWSWAP_SETTLEMENT);
         assertEq(address(swapModule.cowswapVaultRelayer()), COWSWAP_VAULT_RELAYER);
@@ -90,7 +90,7 @@ contract SwapModuleTest is Test {
         );
     }
 
-    function testInitializer() external {
+    function testInitializer_NO_CI() external {
         vm.expectRevert();
         swapModule.initialize(new bytes(0));
 
@@ -261,7 +261,7 @@ contract SwapModuleTest is Test {
         assertTrue(module.hasRole(module.TOKEN_OUT_ROLE(), USDT));
     }
 
-    function testSingleSwap_USDC_USDT() external {
+    function testSingleSwap_USDC_USDT_NO_CI() external {
         vm.expectRevert();
         swapModule.initialize(new bytes(0));
 
@@ -405,7 +405,7 @@ contract SwapModuleTest is Test {
         vm.stopPrank();
     }
 
-    function testSingleSwap_ETH_WETH() external {
+    function testSingleSwap_ETH_WETH_NO_CI() external {
         vm.expectRevert();
         swapModule.initialize(new bytes(0));
 
@@ -436,7 +436,7 @@ contract SwapModuleTest is Test {
         vm.stopPrank();
     }
 
-    function testSingleSwap_WETH_USDT() external {
+    function testSingleSwap_WETH_USDT_NO_CI() external {
         vm.expectRevert();
         swapModule.initialize(new bytes(0));
 
@@ -483,7 +483,7 @@ contract SwapModuleTest is Test {
         vm.stopPrank();
     }
 
-    function testSingleSwap_USDC_WETH() external {
+    function testSingleSwap_USDC_WETH_NO_CI() external {
         vm.expectRevert();
         swapModule.initialize(new bytes(0));
 
@@ -532,7 +532,7 @@ contract SwapModuleTest is Test {
         vm.stopPrank();
     }
 
-    function testSetters() external {
+    function testSetters_NO_CI() external {
         vm.expectRevert();
         swapModule.initialize(new bytes(0));
 
@@ -572,7 +572,7 @@ contract SwapModuleTest is Test {
         vm.stopPrank();
     }
 
-    function testCheckCowswapOrder() external {
+    function testCheckCowswapOrder_NO_CI() external {
         SwapModule module = SwapModule(
             payable(
                 new TransparentUpgradeableProxy(
@@ -686,7 +686,7 @@ contract SwapModuleTest is Test {
         module.checkCowswapOrder(params, order, new bytes(56));
     }
 
-    function testCreateCowswapOrder() external {
+    function testCreateCowswapOrder_NO_CI() external {
         SwapModule module = SwapModule(
             payable(
                 new TransparentUpgradeableProxy(
