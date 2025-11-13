@@ -6,7 +6,7 @@ import "../interfaces/utils/ISwapModule.sol";
 import "../libraries/TransferLibrary.sol";
 import "../permissions/MellowACL.sol";
 
-contract SwapModule is ISwapModule, MellowACL {
+contract SwapModule is ISwapModule, MellowACL, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
 
     /// @inheritdoc ISwapModule
@@ -250,6 +250,7 @@ contract SwapModule is ISwapModule, MellowACL {
     /// @inheritdoc ISwapModule
     function swap(Params calldata params, address router, bytes calldata data)
         external
+        nonReentrant
         onlyRole(CALLER_ROLE)
         returns (bytes memory response)
     {
