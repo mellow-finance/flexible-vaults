@@ -1,7 +1,7 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 40      4215      574       490     3151        666           749.21
+Solidity                                 43      4885      650       660     3575        745           796.60
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       22        17       92          8             8.70
 src/hooks/BasicRedeemHook.sol                      53        4         1       48         10            20.83
@@ -11,6 +11,7 @@ src/libraries/FenwickTreeLibrary.sol              130       11        53       6
 src/libraries/ShareManagerFlagLibrary.sol          67        8        33       26          5            19.23
 src/libraries/SlotLibrary.sol                      20        1         9       10          0             0.00
 src/libraries/TransferLibrary.sol                  61        7        23       31         12            38.71
+src/libraries/external/GPv2Order.sol              227       18       136       73          9            12.33
 src/managers/BasicShareManager.sol                 89       15         7       67         13            19.40
 src/managers/FeeManager.sol                       177       26        20      131         23            17.56
 src/managers/RiskManager.sol                      264       34        24      206         35            16.99
@@ -40,12 +41,13 @@ src/queues/SignatureDepositQueue.sol               27        5         1       2
 src/queues/SignatureQueue.sol                     153       24        17      112         22            19.64
 src/queues/SignatureRedeemQueue.sol                34        8         1       25          2             8.00
 src/strategies/SymbioticStrategy.sol               65        9         2       54          1             1.85
+src/utils/SwapModule.sol                          301       35        33      233         58            24.89
+src/vaults/Migrator.sol                           142       23         1      118         12            10.17
 src/vaults/Subvault.sol                            21        3         1       17          0             0.00
 src/vaults/Vault.sol                               56        5         1       50          1             2.00
 src/vaults/VaultConfigurator.sol                   74        7         2       65          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    40      4215      574       490     3151        666           749.21
+Total                                    43      4885      650       660     3575        745           796.60
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 155710 bytes, 0.156 megabytes (SI)
+Processed 182743 bytes, 0.183 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
