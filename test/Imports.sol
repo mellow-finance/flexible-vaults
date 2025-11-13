@@ -57,6 +57,8 @@ import "../src/vaults/Subvault.sol";
 import "../src/vaults/Vault.sol";
 import "../src/vaults/VaultConfigurator.sol";
 
+import "../src/utils/SwapModule.sol";
+
 import "./mocks/MockACLModule.sol";
 import "./mocks/MockERC20.sol";
 
