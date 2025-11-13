@@ -2,6 +2,8 @@
 pragma solidity 0.8.25;
 
 import "../external/aave/IAaveOracle.sol";
+
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
@@ -75,9 +77,9 @@ interface ISwapModule is IFactoryEntity {
 
     function setCustomMultiplier(address tokenIn, address tokenOut, uint256 multiplier) external;
 
-    function pushAssets(address asset, uint256 amount) external payable;
+    function pushAssets(address asset, uint256 value) external payable;
 
-    function pullAssets(address asset, uint256 amount) external;
+    function pullAssets(address asset, uint256 value) external;
 
     function swap(Params calldata params, address router, bytes calldata data)
         external
@@ -91,6 +93,10 @@ interface ISwapModule is IFactoryEntity {
     function invalidateOrder(bytes calldata orderUid) external;
 
     // Events
+
+    event AssetsPulled(address indexed asset, uint256 value);
+
+    event AssetsPushed(address indexed asset, uint256 value);
 
     event DefaultMultiplierSet(uint256 indexed multiplier);
 

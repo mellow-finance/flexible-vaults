@@ -87,12 +87,20 @@ contract SwapModule is ISwapModule, MellowACL {
 
     /// @inheritdoc ISwapModule
     function evaluate(address tokenIn, address tokenOut, uint256 amountIn) public view returns (uint256) {
+        tokenIn = tokenIn == TransferLibrary.ETH ? weth : tokenIn;
+        tokenOut = tokenOut == TransferLibrary.ETH ? weth : tokenOut;
+        uint8 decimalsIn = IERC20Metadata(tokenIn).decimals();
+        uint8 decimalsOut = IERC20Metadata(tokenOut).decimals();
         IAaveOracle oracle_ = IAaveOracle(oracle());
-        return Math.mulDiv(
-            amountIn,
-            oracle_.getAssetPrice(tokenIn == TransferLibrary.ETH ? weth : tokenIn),
-            oracle_.getAssetPrice(tokenOut == TransferLibrary.ETH ? weth : tokenOut)
-        );
+        uint256 tokenInPrice = oracle_.getAssetPrice(tokenIn);
+        uint256 tokenOutPrice = oracle_.getAssetPrice(tokenOut);
+        if (decimalsIn == decimalsOut) {
+            return Math.mulDiv(amountIn, tokenInPrice, tokenOutPrice);
+        } else if (decimalsIn < decimalsOut) {
+            return Math.mulDiv(amountIn, tokenInPrice * 10 ** (decimalsOut - decimalsIn), tokenOutPrice);
+        } else {
+            return Math.mulDiv(amountIn, tokenInPrice, tokenOutPrice * 10 ** (decimalsIn - decimalsOut));
+        }
     }
 
     /// @inheritdoc ISwapModule
@@ -130,11 +138,11 @@ contract SwapModule is ISwapModule, MellowACL {
         public
         view
     {
-        if (params.tokenIn != address(order.sellToken)) {
-            revert Forbidden("tokenIn != sellToken");
+        if (params.tokenIn != address(order.sellToken) || params.tokenIn == TransferLibrary.ETH) {
+            revert Forbidden("sellToken");
         }
-        if (params.tokenOut != address(order.buyToken)) {
-            revert Forbidden("tokenOut != buyToken");
+        if (params.tokenOut != address(order.buyToken) || params.tokenOut == TransferLibrary.ETH) {
+            revert Forbidden("buyToken");
         }
         if (address(this) != order.receiver) {
             revert Forbidden("receiver");
@@ -228,13 +236,15 @@ contract SwapModule is ISwapModule, MellowACL {
     }
 
     /// @inheritdoc ISwapModule
-    function pushAssets(address asset, uint256 amount) external payable onlySubvault {
-        TransferLibrary.receiveAssets(asset, _msgSender(), amount);
+    function pushAssets(address asset, uint256 value) external payable onlySubvault {
+        TransferLibrary.receiveAssets(asset, _msgSender(), value);
+        emit AssetsPushed(asset, value);
     }
 
     /// @inheritdoc ISwapModule
-    function pullAssets(address asset, uint256 amount) external onlySubvault {
-        TransferLibrary.sendAssets(asset, _msgSender(), amount);
+    function pullAssets(address asset, uint256 value) external onlySubvault {
+        TransferLibrary.sendAssets(asset, _msgSender(), value);
+        emit AssetsPulled(asset, value);
     }
 
     /// @inheritdoc ISwapModule
@@ -264,7 +274,7 @@ contract SwapModule is ISwapModule, MellowACL {
 
     /// @inheritdoc ISwapModule
     function setCowswapApproval(address asset, uint256 amount) external onlyRole(CALLER_ROLE) {
-        if (!hasRole(TOKEN_IN_ROLE, asset)) {
+        if (asset == TransferLibrary.ETH || !hasRole(TOKEN_IN_ROLE, asset)) {
             revert Forbidden("asset");
         }
         IERC20(asset).forceApprove(cowswapVaultRelayer, amount);
