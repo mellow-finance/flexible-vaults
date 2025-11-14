@@ -11,95 +11,89 @@ import {ProofLibrary} from "../common/ProofLibrary.sol";
 
 import {CoreVaultLibrary} from "../common/protocols/CoreVaultLibrary.sol";
 
-import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
 import {StakeWiseLibrary} from "../common/protocols/StakeWiseLibrary.sol";
+import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import "./Constants.sol";
 
 library tqETHLibrary {
-    function getSubvault0Proofs(address curator)
+    function getSubvault0Info(address subvault, address[] memory curators, address swapModule)
+        internal
+        pure
+        returns (SwapModuleLibrary.Info memory)
+    {
+        return SwapModuleLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault0",
+            swapModule: swapModule,
+            curators: curators,
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH))
+        });
+    }
+
+    function getSubvault0Proofs(address subvault, address swapModule, address[] memory curators)
         internal
         pure
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
-        /*
-            1. weth.deposit{value: <any>}();
-            2. weth.withdraw(<any>);
-            3. weth.approve(cowswapVaultRelayer, <any>);
-            4. wsteth.approve(cowswapVaultRelayer, <any>);
-            5. cowswapSettlement.setPreSignature(anyBytes(56), anyBool);
-            6. cowswapSettlement.invalidateOrder(anyBytes(56));
-        */
-        leaves = new IVerifier.VerificationPayload[](6);
-        leaves[0] = WethLibrary.getWethDepositProof($.bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
-        leaves[1] = WethLibrary.getWethWithdrawProof($.bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
 
-        ArraysLibrary.insert(
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
             leaves,
-            CowSwapLibrary.getCowSwapProofs(
-                $.bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
-            ),
-            2
+            SwapModuleLibrary.getSwapModuleProofs($.bitmaskVerifier, getSubvault0Info(subvault, curators, swapModule)),
+            iterator
         );
-
+        assembly {
+            mstore(leaves, iterator)
+        }
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault0Descriptions(address curator) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](6);
-        descriptions[0] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
-        descriptions[1] = WethLibrary.getWethWithdrawDescription(WethLibrary.Info(curator, Constants.WETH));
-        ArraysLibrary.insert(
+    function getSubvault0Descriptions(address subvault, address swapModule, address[] memory curators)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
             descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
-            ),
-            2
+            SwapModuleLibrary.getSwapModuleDescriptions(getSubvault0Info(subvault, curators, swapModule)),
+            iterator
         );
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
     }
 
-    function getSubvault0SubvaultCalls(address curator, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        pure
-        returns (SubvaultCalls memory calls)
-    {
+    function getSubvault0SubvaultCalls(
+        address subvault,
+        address swapModule,
+        address[] memory curators,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal pure returns (SubvaultCalls memory calls) {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
 
-        calls.calls[0] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));
-        calls.calls[1] = WethLibrary.getWethWithdrawCalls(WethLibrary.Info(curator, Constants.WETH));
-        ArraysLibrary.insert(
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
             calls.calls,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
-            ),
-            2
+            SwapModuleLibrary.getSwapModuleCalls(getSubvault0Info(subvault, curators, swapModule)),
+            iterator
         );
     }
 
-    function getSubvault1CoreVaultInfo(address subvault, address curator)
+    function getSubvault1CoreVaultInfo(address subvault, address[] memory curators)
         internal
         pure
-        returns (CoreVaultLibrary.Info memory)
+        returns (CoreVaultLibrary.Info[] memory data)
     {
         address[] memory depositQueues = ArraysLibrary.makeAddressArray(
             abi.encode(
@@ -109,29 +103,99 @@ library tqETHLibrary {
             )
         );
         address[] memory redeemQueues = ArraysLibrary.makeAddressArray(abi.encode(Constants.STRETH_REDEEM_QUEUE_WSTETH));
-        return CoreVaultLibrary.Info({
-            subvault: subvault,
-            subvaultName: "subvault1",
-            curator: curator,
-            vault: Constants.STRETH,
-            depositQueues: depositQueues,
-            redeemQueues: redeemQueues
-        });
+        data = new CoreVaultLibrary.Info[](curators.length);
+        for (uint256 i = 0; i < data.length; i++) {
+            data[i] = CoreVaultLibrary.Info({
+                subvault: subvault,
+                subvaultName: "subvault1",
+                curator: curators[i],
+                vault: Constants.STRETH,
+                depositQueues: depositQueues,
+                redeemQueues: redeemQueues
+            });
+        }
     }
 
-    function getSubvault1Proofs(address subvault, address curator)
+    function getSubvault1Proofs(address subvault, address[] memory curators)
         internal
         view
+        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+    {
+        leaves = new IVerifier.VerificationPayload[](50);
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+        uint256 iterator = 0;
+        CoreVaultLibrary.Info[] memory data = getSubvault1CoreVaultInfo(subvault, curators);
+        for (uint256 i = 0; i < data.length; i++) {
+            iterator =
+                ArraysLibrary.insert(leaves, CoreVaultLibrary.getCoreVaultProofs($.bitmaskVerifier, data[i]), iterator);
+        }
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault1Descriptions(address subvault, address[] memory curators)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+        CoreVaultLibrary.Info[] memory data = getSubvault1CoreVaultInfo(subvault, curators);
+        for (uint256 i = 0; i < data.length; i++) {
+            iterator = ArraysLibrary.insert(descriptions, CoreVaultLibrary.getCoreVaultDescriptions(data[i]), iterator);
+        }
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault1SubvaultCalls(
+        address subvault,
+        address[] memory curators,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal view returns (SubvaultCalls memory calls) {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+        CoreVaultLibrary.Info[] memory data = getSubvault1CoreVaultInfo(subvault, curators);
+        for (uint256 i = 0; i < data.length; i++) {
+            iterator = ArraysLibrary.insert(calls.calls, CoreVaultLibrary.getCoreVaultCalls(data[i]), iterator);
+        }
+    }
+
+    function getSubvault2Info(address subvault, address[] memory curators)
+        internal
+        pure
+        returns (StakeWiseLibrary.Info[] memory data)
+    {
+        data = new StakeWiseLibrary.Info[](curators.length);
+        for (uint256 i = 0; i < data.length; i++) {
+            data[i] = StakeWiseLibrary.Info({
+                curator: curators[i],
+                subvault: subvault,
+                subvaultName: "subvault2",
+                vault: 0xe6d8d8aC54461b1C5eD15740EEe322043F696C08,
+                vaultName: "Chorus One - MEV Max"
+            });
+        }
+    }
+
+    function getSubvault2Proofs(address subvault, address[] memory curators)
+        internal
+        pure
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         leaves = new IVerifier.VerificationPayload[](50);
         uint256 iterator = 0;
-        iterator = ArraysLibrary.insert(
-            leaves,
-            CoreVaultLibrary.getCoreVaultProofs($.bitmaskVerifier, getSubvault1CoreVaultInfo(subvault, curator)),
-            iterator
-        );
+        StakeWiseLibrary.Info[] memory data = getSubvault2Info(subvault, curators);
+        for (uint256 i = 0; i < data.length; i++) {
+            iterator =
+                ArraysLibrary.insert(leaves, StakeWiseLibrary.getStakeWiseProofs($.bitmaskVerifier, data[i]), iterator);
+        }
         assembly {
             mstore(leaves, iterator)
         }
@@ -139,87 +203,33 @@ library tqETHLibrary {
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault1Descriptions(address subvault, address curator)
-        internal
-        view
-        returns (string[] memory descriptions)
-    {
-        descriptions = new string[](50);
-        uint256 iterator = 0;
-        iterator = ArraysLibrary.insert(
-            descriptions,
-            CoreVaultLibrary.getCoreVaultDescriptions(getSubvault1CoreVaultInfo(subvault, curator)),
-            iterator
-        );
-        assembly {
-            mstore(descriptions, iterator)
-        }
-    }
-
-    function getSubvault1SubvaultCalls(address subvault, address curator, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        view
-        returns (SubvaultCalls memory calls)
-    {
-        calls.payloads = leaves;
-        calls.calls = new Call[][](leaves.length);
-        ArraysLibrary.insert(
-            calls.calls, CoreVaultLibrary.getCoreVaultCalls(getSubvault1CoreVaultInfo(subvault, curator)), 0
-        );
-    }
-
-    function getSubvault2Info(address subvault, address curator) internal pure returns (StakeWiseLibrary.Info memory) {
-        return StakeWiseLibrary.Info({
-            curator: curator,
-            subvault: subvault,
-            subvaultName: "subvault2",
-            vault: 0xe6d8d8aC54461b1C5eD15740EEe322043F696C08,
-            vaultName: "Chorus One - MEV Max"
-        });
-    }
-
-    function getSubvault2Proofs(address subvault, address curator)
-        internal
-        pure
-        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
-    {
-        ProtocolDeployment memory $ = Constants.protocolDeployment();
-        leaves = new IVerifier.VerificationPayload[](6);
-        uint256 iterator = 0;
-        iterator = ArraysLibrary.insert(
-            leaves,
-            StakeWiseLibrary.getStakeWiseProofs($.bitmaskVerifier, getSubvault2Info(subvault, curator)),
-            iterator
-        );
-        assembly {
-            mstore(leaves, iterator)
-        }
-
-        return ProofLibrary.generateMerkleProofs(leaves);
-    }
-
-    function getSubvault2Descriptions(address subvault, address curator)
+    function getSubvault2Descriptions(address subvault, address[] memory curators)
         internal
         pure
         returns (string[] memory descriptions)
     {
         descriptions = new string[](50);
         uint256 iterator = 0;
-        iterator = ArraysLibrary.insert(
-            descriptions, StakeWiseLibrary.getStakeWiseDescriptions(getSubvault2Info(subvault, curator)), iterator
-        );
+        StakeWiseLibrary.Info[] memory data = getSubvault2Info(subvault, curators);
+        for (uint256 i = 0; i < data.length; i++) {
+            iterator = ArraysLibrary.insert(descriptions, StakeWiseLibrary.getStakeWiseDescriptions(data[i]), iterator);
+        }
         assembly {
             mstore(descriptions, iterator)
         }
     }
 
-    function getSubvault2SubvaultCalls(address subvault, address curator, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        pure
-        returns (SubvaultCalls memory calls)
-    {
+    function getSubvault2SubvaultCalls(
+        address subvault,
+        address[] memory curators,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal pure returns (SubvaultCalls memory calls) {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
-        ArraysLibrary.insert(calls.calls, StakeWiseLibrary.getStakeWiseCalls(getSubvault2Info(subvault, curator)), 0);
+        uint256 iterator = 0;
+        StakeWiseLibrary.Info[] memory data = getSubvault2Info(subvault, curators);
+        for (uint256 i = 0; i < data.length; i++) {
+            iterator = ArraysLibrary.insert(calls.calls, StakeWiseLibrary.getStakeWiseCalls(data[i]), iterator);
+        }
     }
 }

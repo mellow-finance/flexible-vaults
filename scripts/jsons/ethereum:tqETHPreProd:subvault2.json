@@ -1,6 +1,6 @@
 {
   "title": "ethereum:tqETHPreProd:subvault2",
-  "merkle_root": "0xc197b340b6e63a3295e286a2cb6b82e60bf9949eab142afdda40fff6e08e2d2a",
+  "merkle_root": "0x6e9c95b0f24ba6606411d53c6ffc2a29f135d2c2f10caa2a9b3c892a82f162e6",
   "merkle_proofs": [
     {
       "verificationType": 3,
@@ -42,9 +42,10 @@
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6315e66a38f50799aa0dce983f12598ac4a365e99da2d2ea8f57491c61cbe6f8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x8e800f754efa3126deb6dec43b64c20317c8d75a23ea3875e3c68132af68bf50",
-        "0xade21e78dbdacc2e0bdd6cab5d26a45e4366fee672f05f0e7887204c08e2d569",
-        "0xd5a5ae85de12359435dd786d28eff960b9cfa73fe0483179cfb96dbad6222040"
+        "0xc1f86289b9dc53eb9a12d1c644927107c368769d037b7615f13cda303fcd457c",
+        "0xa7af0ec0afa714cde6199fc8c866d1ca4ff23f8f8e729c6c6c3cd9e83cd20fb2",
+        "0x3fb429a289eed1a69f92a2d3ace5c347fe2d7e00b22d763d00db133a47116323",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
       ]
     },
     {
@@ -93,8 +94,9 @@
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a26d9aff2b6a8e881604ae7524b72d01b39725805293ceeb2c39d041dfd931627000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xc1f86289b9dc53eb9a12d1c644927107c368769d037b7615f13cda303fcd457c",
-        "0xd7ed588e4549f4ef9fb574e68f156a655edb719262f097c487d4037ba5bca0fd"
+        "0xea0e1e08f886edb817f1309b0211196171807d227b0472c93440b0237bc4ea42",
+        "0xb5d08e6cb54f427fdf121a06c22c9d566457731cfb58f7fc9169da9f460b6f10",
+        "0x362f149f001b94cada3aab8c46d3d6af22ab053c12e6c21540c2b7b8641939db"
       ]
     },
     {
@@ -143,9 +145,10 @@
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aec7140ca71574b59b256fcf66d43ed4a3317e997ff28c4eae01b365559a66cab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x058d702f7d530d1fd0edb1fdf0a6d5b7fc5ff739bfd3b35cec52543eb9bd690d",
-        "0xbac59f143e2c9fd261fd3c184174a1529f8d96e8e07dce4e61219fc1ed08af55",
-        "0xd5a5ae85de12359435dd786d28eff960b9cfa73fe0483179cfb96dbad6222040"
+        "0x8101d374a2dd478801cfc1b9cf1a15603d1e6315984f829cf3111612c740c30d",
+        "0xf16d7c78fcd1dc14929de186a556d2dab014b5abb73a06d2efb37429e3a10942",
+        "0x6918e0512d77a8f9a25ff351eb1c64bc4887c038c8c4e6d8c07c5ed03e675e6d",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
       ]
     },
     {
@@ -182,8 +185,10 @@
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae7bb74912986d6d678620175180f628f2dd0b48a472b9996a43756e59170dd2600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xef619f10a844f1724953ce1ec8b73eabd4b3dea12875838d9cd5d1b83c2b62bf",
-        "0xd7ed588e4549f4ef9fb574e68f156a655edb719262f097c487d4037ba5bca0fd"
+        "0xb2fbec2294886953c963dbefc415ae381e4646e48dba681d3b19cfd68e8292be",
+        "0xa7af0ec0afa714cde6199fc8c866d1ca4ff23f8f8e729c6c6c3cd9e83cd20fb2",
+        "0x3fb429a289eed1a69f92a2d3ace5c347fe2d7e00b22d763d00db133a47116323",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
       ]
     },
     {
@@ -226,9 +231,10 @@
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aba6b38d13bf4437b49548c0e8d65ece6934cc924cd2a8d4159f938e6222bc1e4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x4f14d2427d2fde6747ce772bed90cd19320dbefcde59d280affc65584f77ac03",
-        "0xbac59f143e2c9fd261fd3c184174a1529f8d96e8e07dce4e61219fc1ed08af55",
-        "0xd5a5ae85de12359435dd786d28eff960b9cfa73fe0483179cfb96dbad6222040"
+        "0x0987b794dc276dae0aa2d4e0c19235a7c1880fa6a19d9dd4bfb876d13f0100ab",
+        "0x30da83c6a4d206e2deda71c0c42448712e4608161bc455b1766b47e0c1fbfd87",
+        "0x6918e0512d77a8f9a25ff351eb1c64bc4887c038c8c4e6d8c07c5ed03e675e6d",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
       ]
     },
     {
@@ -271,9 +277,289 @@
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1ab42141cd8ce9a97d85b3a1242971e71a0a34c50641c642a3e6c33184c58774000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xb2fbec2294886953c963dbefc415ae381e4646e48dba681d3b19cfd68e8292be",
-        "0xade21e78dbdacc2e0bdd6cab5d26a45e4366fee672f05f0e7887204c08e2d569",
-        "0xd5a5ae85de12359435dd786d28eff960b9cfa73fe0483179cfb96dbad6222040"
+        "0xaa3cbe222e78a7e395b2b697bf789c990f7e5502acc7f7126a1c149474d34b87",
+        "0x6aff2e05f7c9b31ca0d13a280dc5205c04837be46edc68d0aeed4b49b176d09e",
+        "0x3fb429a289eed1a69f92a2d3ace5c347fe2d7e00b22d763d00db133a47116323",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IStakeWiseEthVault(Chorus One - MEV Max).deposit{value: any}(subvault2, any)",
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referrer",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x7096aa3293dec845235b42c199358d02f497ba58",
+          "target": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+          "value": "any"
+        },
+        "innerParameters": {
+          "receiver": "0xa7a3235013735b4893b782f3af402e958e0e3c33",
+          "referrer": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af88a7c74e69ad989fc791eb7215794677d3d5b73e46ebf883a4ca7e53178d16f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xe07c4313dd38de4ed7c3a3cecb971d1817dfe77e9e631f25bebebd08c4c33d6f",
+        "0x7ee82507d5ee2a82ea2bbf66a09f3605b470b9be78067015201c2e6fb95dd753",
+        "0x362f149f001b94cada3aab8c46d3d6af22ab053c12e6c21540c2b7b8641939db"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IStakeWiseEthVault(Chorus One - MEV Max).depositAndMintOsToken{value: any}(subvault2, any, any)",
+        "abi": {
+          "type": "function",
+          "name": "depositAndMintOsToken",
+          "inputs": [
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "osTokenShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "referrer",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x7096aa3293dec845235b42c199358d02f497ba58",
+          "target": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+          "value": "any"
+        },
+        "innerParameters": {
+          "receiver": "0xa7a3235013735b4893b782f3af402e958e0e3c33",
+          "osTokenShares": "any",
+          "referrer": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a561a7a1f4495bc7d328d69b6e8970d3be2196406f9b0ca81dc68b2531223d63f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x058d702f7d530d1fd0edb1fdf0a6d5b7fc5ff739bfd3b35cec52543eb9bd690d",
+        "0x30da83c6a4d206e2deda71c0c42448712e4608161bc455b1766b47e0c1fbfd87",
+        "0x6918e0512d77a8f9a25ff351eb1c64bc4887c038c8c4e6d8c07c5ed03e675e6d",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IStakeWiseEthVault(Chorus One - MEV Max).mintOsToken(subvault2, any, any)",
+        "abi": {
+          "type": "function",
+          "name": "mintOsToken",
+          "inputs": [
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "osTokenShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "referrer",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x7096aa3293dec845235b42c199358d02f497ba58",
+          "target": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+          "value": "0"
+        },
+        "innerParameters": {
+          "receiver": "0xa7a3235013735b4893b782f3af402e958e0e3c33",
+          "osTokenShares": "any",
+          "referrer": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9f306aa60b17b6290e9660a0c090d5fabaac36049299c420a3a138950544de9c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc45a1a67f08e0bceb33e535a5af7c51d316ebac22caeabcc3b1462c52385ca56",
+        "0x7ee82507d5ee2a82ea2bbf66a09f3605b470b9be78067015201c2e6fb95dd753",
+        "0x362f149f001b94cada3aab8c46d3d6af22ab053c12e6c21540c2b7b8641939db"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IStakeWiseEthVault(Chorus One - MEV Max).burnOsToken(any)",
+        "abi": {
+          "type": "function",
+          "name": "burnOsToken",
+          "inputs": [
+            {
+              "name": "osTokenShares",
+              "type": "uint128",
+              "internalType": "uint128"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x7096aa3293dec845235b42c199358d02f497ba58",
+          "target": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+          "value": "0"
+        },
+        "innerParameters": {
+          "osTokenShares": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9163b735a405636109bfc9bc01740a0c58346a2e8922eb9e52ec11992cf8e39f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4f14d2427d2fde6747ce772bed90cd19320dbefcde59d280affc65584f77ac03",
+        "0xf16d7c78fcd1dc14929de186a556d2dab014b5abb73a06d2efb37429e3a10942",
+        "0x6918e0512d77a8f9a25ff351eb1c64bc4887c038c8c4e6d8c07c5ed03e675e6d",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IStakeWiseEthVault(Chorus One - MEV Max).enterExitQueue(any, subvault2)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "enterExitQueue",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "positionTicket",
+              "type": "uint256"
+            }
+          ]
+        },
+        "parameters": {
+          "caller": "0x7096aa3293dec845235b42c199358d02f497ba58",
+          "target": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0xa7a3235013735b4893b782f3af402e958e0e3c33"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a03029f268be52a5f158717eff568bb1453cc0f987dae14907b49865aadb96cd2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8e800f754efa3126deb6dec43b64c20317c8d75a23ea3875e3c68132af68bf50",
+        "0x6aff2e05f7c9b31ca0d13a280dc5205c04837be46edc68d0aeed4b49b176d09e",
+        "0x3fb429a289eed1a69f92a2d3ace5c347fe2d7e00b22d763d00db133a47116323",
+        "0xeac247bf9c3ef80ddd0c4199dcf505e00f88a11e73cddc9f04ad018ba1245699"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IStakeWiseEthVault(Chorus One - MEV Max).claimExitedAssets(any, any, any)",
+        "abi": {
+          "type": "function",
+          "name": "claimExitedAssets",
+          "inputs": [
+            {
+              "name": "positionTicket",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "timestamp",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "exitQueueIndex",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x7096aa3293dec845235b42c199358d02f497ba58",
+          "target": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+          "value": "0"
+        },
+        "innerParameters": {
+          "positionTicket": "any",
+          "timestamp": "any",
+          "exitQueueIndex": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6a4dbdb4e5c4142d3a5654cdefc256d9f888346260a69a05d049b18422b09726000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xef619f10a844f1724953ce1ec8b73eabd4b3dea12875838d9cd5d1b83c2b62bf",
+        "0xb5d08e6cb54f427fdf121a06c22c9d566457731cfb58f7fc9169da9f460b6f10",
+        "0x362f149f001b94cada3aab8c46d3d6af22ab053c12e6c21540c2b7b8641939db"
       ]
     }
   ]

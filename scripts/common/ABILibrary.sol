@@ -29,9 +29,11 @@ import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsMana
 
 import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
 
+import {ISwapModule} from "../../src/interfaces/utils/ISwapModule.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[15] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[16] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -46,7 +48,8 @@ library ABILibrary {
             getCapLenderInterfaces,
             getSymbioticInterfaces,
             getResolvInterfaces,
-            getStakeWiseInterfaces
+            getStakeWiseInterfaces,
+            getSwapModuleInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -300,5 +303,18 @@ library ABILibrary {
             '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"address","name":"receiver","type":"address"}],"stateMutability":"nonpayable","type":"function","name":"enterExitQueue","outputs":[{"internalType":"uint256","name":"positionTicket","type":"uint256"}]}';
         abis[5] =
             '{"type":"function","name":"claimExitedAssets","inputs":[{"name":"positionTicket","type":"uint256","internalType":"uint256"},{"name":"timestamp","type":"uint256","internalType":"uint256"},{"name":"exitQueueIndex","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"nonpayable"}';
+    }
+
+    function getSwapModuleInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](2);
+        abis = new string[](2);
+
+        selectors[0] = ISwapModule.pushAssets.selector;
+        selectors[1] = ISwapModule.pullAssets.selector;
+
+        abis[0] =
+            '{"type":"function","name":"pushAssets","inputs":[{"name":"asset","type":"address","internalType":"address"},{"name":"value","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"payable"}';
+        abis[1] =
+            '{"type":"function","name":"pullAssets","inputs":[{"name":"asset","type":"address","internalType":"address"},{"name":"value","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"nonpayable"}';
     }
 }

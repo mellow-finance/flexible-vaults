@@ -108,6 +108,7 @@ library Constants {
             erc20VerifierFactory: Factory(0x2e234F4E1b7934d5F4bEAE3fF2FDC109f5C42F1d),
             symbioticVerifierFactory: Factory(0x41C443F10a92D597e6c9E271140BC94c10f5159F),
             eigenLayerVerifierFactory: Factory(0x77A83AcBf7A6df20f1D681b4810437d74AE790F8),
+            swapModuleFactory: Factory(0xE3575055a24d8642DFA3a51ec766Ef2db2671659),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
@@ -129,7 +130,8 @@ library Constants {
             basicRedeemHook: BasicRedeemHook(0x0000000637f1b1ccDA4Af2dB6CDDf5e5Ec45fd93),
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(0x000000065d1A7bD71f52886910aaBE6555b7317c),
-            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35)
+            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
+            swapModuleImplementation: SwapModule(payable(0x00000000d681E85e5783588f87A9573Cb97Eda01))
         });
     }
 
@@ -278,8 +280,8 @@ library Constants {
         $.timelockExecutors[0] = pauser1;
         $.timelockExecutors[1] = pauser2;
         $.calls = new SubvaultCalls[](1);
-        (, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
-        $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
+        // (, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
+        // $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
     }
 
     function getStrETHDeployment() internal pure returns (VaultDeployment memory $) {
