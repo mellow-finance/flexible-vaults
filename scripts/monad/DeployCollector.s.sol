@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./Collector.sol";
-import "./defi/CustomOracle.sol";
+import "../../scripts/collectors/Collector.sol";
+import "../../scripts/collectors/defi/CustomOracle.sol";
 
-import "./defi/protocols/AaveCollector.sol";
-import "./defi/protocols/ERC20Collector.sol";
+import "../../scripts/collectors/defi/protocols/AaveCollector.sol";
+import "../../scripts/collectors/defi/protocols/ERC20Collector.sol";
 import "forge-std/Script.sol";
 
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
-import {Constants} from "../ethereum/Constants.sol";
+import {Constants} from "./Constants.sol";
 
 contract Deploy is Script {
     function run() external {
@@ -20,34 +20,16 @@ contract Deploy is Script {
         address[] memory protocols = new address[](4);
         protocols[0] = address(erc20Collector);
         protocols[1] = address(aaveCollector);
-        protocols[2] = address(aaveCollector);
-        protocols[3] = address(aaveCollector);
 
-        bytes[] memory protocolDeployments = new bytes[](4);
-        protocolDeployments[1] = abi.encode(
-            AaveCollector.ProtocolDeployment({pool: 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2, metadata: "Core"})
-        );
-        protocolDeployments[2] = abi.encode(
-            AaveCollector.ProtocolDeployment({pool: 0x4e033931ad43597d96D6bcc25c280717730B58B1, metadata: "Prime"})
-        );
-        protocolDeployments[3] =
-            abi.encode(AaveCollector.ProtocolDeployment({pool: Constants.SPARK, metadata: "SparkLend"}));
+        bytes[] memory protocolDeployments = new bytes[](2);
+        protocolDeployments[1] =
+            abi.encode(AaveCollector.ProtocolDeployment({pool: Constants.AAVE_CORE, metadata: "Core"}));
 
         address[] memory assets = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                Constants.ETH,
-                Constants.WETH,
-                Constants.WSTETH,
-                Constants.USDC,
-                Constants.USDT,
-                Constants.USDS,
-                Constants.USDE,
-                Constants.SUSDE
-            )
+            abi.encode(Constants.ETH, Constants.WETH, Constants.USDC, Constants.USDT, Constants.WBTC)
         );
 
-        CustomOracle impl =
-            new CustomOracle(0x54586bE62E3c3580375aE3723C145253060Ca0C2, 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+        CustomOracle impl = new CustomOracle(Constants.AAVE_V3_ORACLE, Constants.WETH);
 
         address o = Clones.cloneWithImmutableArgs(address(impl), abi.encode(protocols, protocolDeployments, assets));
 
@@ -62,7 +44,6 @@ contract Deploy is Script {
 
         console2.log("Collector", address(o));
         console2.logBytes(o.code);
-
         // CustomOracle(o).getDistributions(
         //     0x277C6A642564A91ff78b008022D65683cEE5CCC5, 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
         // );
