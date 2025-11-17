@@ -15,10 +15,6 @@ interface ISymbioticVault {
 }
 
 contract SymbioticCollector is IDistributionCollector {
-    struct Deployment {
-        address symbioticVault;
-    }
-
     function getDistributions(address holder, bytes memory deployment, address[] memory /* assets */ )
         external
         view

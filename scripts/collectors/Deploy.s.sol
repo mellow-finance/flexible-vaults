@@ -11,6 +11,27 @@ import "forge-std/Script.sol";
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants} from "../ethereum/Constants.sol";
 
+import "./defi/instances/rstETHPlusCustomOracle.sol";
+import "./defi/instances/strETHCustomOracle.sol";
+
 contract Deploy is Script {
-    function run() external {}
+    function _deployStrETHCustomCollector() internal {
+        strETHCustomOracle customOracle = new strETHCustomOracle();
+        customOracle.stateOverrides();
+
+        uint256 tvl = customOracle.tvl(Constants.STRETH, Constants.WETH);
+        console2.log("tvl:", tvl);
+    }
+
+    function _deployRstETHPlusCustomCollector() internal {
+        rstETHPlusCustomOracle customOracle = new rstETHPlusCustomOracle(0x9aDadbFa5A6dA138E419Bc2fACb42364870bA8dC);
+        customOracle.stateOverrides();
+
+        uint256 tvl = customOracle.tvl(Constants.STRETH, Constants.WETH);
+        console2.log("tvl:", tvl);
+    }
+
+    function run() external {
+        _deployRstETHPlusCustomCollector();
+    }
 }

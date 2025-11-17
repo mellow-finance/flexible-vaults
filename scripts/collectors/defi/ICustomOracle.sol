@@ -2,6 +2,14 @@
 pragma solidity 0.8.25;
 
 interface ICustomOracle {
+    struct Balance {
+        address asset;
+        int256 balance;
+        int256 value;
+        string metadata;
+        address holder;
+    }
+
     struct Data {
         address oracle;
         uint256 timestamp;

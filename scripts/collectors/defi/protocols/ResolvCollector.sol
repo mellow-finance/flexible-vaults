@@ -30,15 +30,9 @@ contract ResolvCollector is IDistributionCollector {
         uint256 pendingUSDT = 0;
 
         uint256 mintRequests = requestManager.mintRequestsCounter();
-        for (uint256 id = 0; i < id < mintRequests; i++) {
-            (
-                ,
-                address provider,
-                IUsrExternalRequestsManager.State state,
-                uint256 amount,
-                address token,
-                uint256 minExpectedAmount
-            ) = requestManager.mintRequests(id);
+        for (uint256 id = 0; id < mintRequests; id++) {
+            (, address provider, IUsrExternalRequestsManager.State state, uint256 amount, address token,) =
+                requestManager.mintRequests(id);
             if (state != IUsrExternalRequestsManager.State.CREATED || provider != holder) {
                 continue;
             }
@@ -52,15 +46,9 @@ contract ResolvCollector is IDistributionCollector {
         }
 
         uint256 burnRequests = requestManager.mintRequestsCounter();
-        for (uint256 id = 0; i < id < burnRequests; i++) {
-            (
-                ,
-                address provider,
-                IUsrExternalRequestsManager.State state,
-                uint256 amount,
-                address token,
-                uint256 minExpectedAmount
-            ) = requestManager.burnRequests(id);
+        for (uint256 id = 0; id < burnRequests; id++) {
+            (, address provider, IUsrExternalRequestsManager.State state, uint256 amount,,) =
+                requestManager.burnRequests(id);
             if (state != IUsrExternalRequestsManager.State.CREATED || provider != holder) {
                 continue;
             }
@@ -71,17 +59,17 @@ contract ResolvCollector is IDistributionCollector {
         uint256 iterator = 0;
         if (pendingUSDC != 0) {
             balances[iterator++] =
-                Balance({asset: usdc, balance: pendingUSDC, metadata: "USRPendingMint", holder: holder});
+                Balance({asset: usdc, balance: int256(pendingUSDC), metadata: "USRPendingMint", holder: holder});
         }
 
         if (pendingUSDT != 0) {
             balances[iterator++] =
-                Balance({asset: usdt, balance: pendingUSDT, metadata: "USRPendingMint", holder: holder});
+                Balance({asset: usdt, balance: int256(pendingUSDT), metadata: "USRPendingMint", holder: holder});
         }
 
         if (pendingUSR != 0) {
             balances[iterator++] =
-                Balance({asset: usr, balance: pendingUSR, metadata: "USRPendingBurn", holder: holder});
+                Balance({asset: usr, balance: int256(pendingUSR), metadata: "USRPendingBurn", holder: holder});
         }
 
         assembly {
