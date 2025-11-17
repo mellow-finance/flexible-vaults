@@ -31,7 +31,7 @@ library TermMaxLibrary {
         view
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
-        (,,, address collateral, address borrow) = ITermMaxMarket($.market).tokens();
+        (,, address gt, address collateral, address borrow) = ITermMaxMarket($.market).tokens();
 
         leaves = new IVerifier.VerificationPayload[](50);
         uint256 iterator;
@@ -90,6 +90,15 @@ library TermMaxLibrary {
                 true, true, true, true, abi.encodeCall(ITermMaxRouter.repayGt, (address(type(uint160).max), 0, 0, true))
             )
         );
+        /// @dev merge GTs
+        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+            bitmaskVerifier,
+            $.curator,
+            gt,
+            0,
+            abi.encodeCall(IGearingToken.merge, (new uint256[](1))),
+            ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(IGearingToken.merge, (new uint256[](1))))
+        );
         assembly {
             mstore(leaves, iterator)
         }
@@ -100,7 +109,7 @@ library TermMaxLibrary {
         descriptions = new string[](50);
         ParameterLibrary.Parameter[] memory innerParameters;
 
-        (,,, address collateral, address borrow) = ITermMaxMarket($.market).tokens();
+        (,, address gt, address collateral, address borrow) = ITermMaxMarket($.market).tokens();
 
         /// @dev approve collateral/borrow to router
         iterator = ArraysLibrary.insert(
@@ -155,6 +164,16 @@ library TermMaxLibrary {
                 innerParameters
             );
         }
+        /// @dev merge GTs
+        {
+            innerParameters = ParameterLibrary.build("ids", "anyArr");
+            descriptions[iterator++] = JsonLibrary.toJson(
+                "IGearingToken(GearingToken).merge(anyArr)",
+                ABILibrary.getABI(IGearingToken.merge.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(gt), "0"),
+                innerParameters
+            );
+        }
         assembly {
             mstore(descriptions, iterator)
         }
@@ -163,7 +182,7 @@ library TermMaxLibrary {
     function getTermMaxCalls(Info memory $) internal view returns (Call[][] memory calls) {
         uint256 index;
         calls = new Call[][](100);
-        (,,, address collateral, address borrow) = ITermMaxMarket($.market).tokens();
+        (,, address gt, address collateral, address borrow) = ITermMaxMarket($.market).tokens();
         /// @dev approve collateral/borrow to router
         index = ArraysLibrary.insert(
             calls,
@@ -326,6 +345,21 @@ library TermMaxLibrary {
             tmp[i++] =
                 Call($.curator, $.router, 0, abi.encode(ITermMaxRouter.repayGt.selector, $.market, 0, 0, true), false);
 
+            assembly {
+                mstore(tmp, i)
+            }
+            calls[index++] = tmp;
+        }
+        {
+            Call[] memory tmp = new Call[](8);
+            uint256 i = 0;
+            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), true);
+            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](2))), false);
+            tmp[i++] = Call($.curator, gt, 1 wei, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), false);
+            tmp[i++] = Call(address(0xdead), gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), false);
+            tmp[i++] =
+                Call($.curator, address(0xdead), 0, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), false);
+            tmp[i++] = Call($.curator, gt, 0, abi.encode(IGearingToken.merge.selector, new uint256[](1)), false);
             assembly {
                 mstore(tmp, i)
             }

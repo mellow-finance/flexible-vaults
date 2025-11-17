@@ -20,6 +20,7 @@ import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
 
 import {IMorpho} from "./interfaces/IMorpho.sol";
 
+import {IGearingToken} from "./interfaces/IGearingToken.sol";
 import {IMorphoStrategyWrapper} from "./interfaces/IMorphoStrategyWrapper.sol";
 import {ISubRedManagement} from "./interfaces/ISubRedManagement.sol";
 import {ITermMaxRouter} from "./interfaces/ITermMaxRouter.sol";
@@ -218,16 +219,19 @@ library ABILibrary {
     }
 
     function getTermMaxInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
-        selectors = new bytes4[](2);
-        abis = new string[](2);
+        selectors = new bytes4[](3);
+        abis = new string[](3);
 
         selectors[0] = ITermMaxRouter.borrowTokenFromCollateral.selector;
         selectors[1] = ITermMaxRouter.repayGt.selector;
+        selectors[2] = IGearingToken.merge.selector;
 
         abis[0] =
             '{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"address","name":"market","type":"address"},{"internalType":"uint256","name":"collInAmt","type":"uint256"},{"internalType":"address[]","name":"orders","type":"address[]"},{"internalType":"uint128[]","name":"tokenAmtsWantBuy","type":"uint128[]"},{"internalType":"uint128","name":"maxDebtAmt","type":"uint128"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"borrowTokenFromCollateral","outputs":[{"internalType":"uint256","name":"gtId","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
         abis[1] =
             '{"inputs":[{"internalType":"address","name":"market","type":"address"},{"internalType":"uint256","name":"gtId","type":"uint256"},{"internalType":"uint128","name":"maxRepayAmt","type":"uint128"},{"internalType":"bool","name":"byDebtToken","type":"bool"}],"name":"repayGt","outputs":[{"internalType":"uint128","name":"repayAmt","type":"uint128"}],"stateMutability":"nonpayable","type":"function"}';
+        abis[2] =
+            '{"inputs":[{"internalType":"uint256[]","name":"ids","type":"uint256[]"}],"name":"merge","outputs":[{"internalType":"uint256","name":"newId","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
     }
 
     function getDigiFTInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
