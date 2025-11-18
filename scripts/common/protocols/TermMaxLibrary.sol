@@ -96,8 +96,8 @@ library TermMaxLibrary {
             $.curator,
             gt,
             0,
-            abi.encodeCall(IGearingToken.merge, (new uint256[](1))),
-            ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(IGearingToken.merge, (new uint256[](1))))
+            abi.encodeCall(IGearingToken.merge, (new uint256[](2))),
+            ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(IGearingToken.merge, (new uint256[](2))))
         );
         assembly {
             mstore(leaves, iterator)
@@ -166,9 +166,9 @@ library TermMaxLibrary {
         }
         /// @dev merge GTs
         {
-            innerParameters = ParameterLibrary.build("ids", "anyArr");
+            innerParameters = ParameterLibrary.build("ids", "arr[2]");
             descriptions[iterator++] = JsonLibrary.toJson(
-                "IGearingToken(GearingToken).merge(anyArr)",
+                "IGearingToken(GearingToken).merge(arr[2])",
                 ABILibrary.getABI(IGearingToken.merge.selector),
                 ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(gt), "0"),
                 innerParameters
@@ -353,13 +353,13 @@ library TermMaxLibrary {
         {
             Call[] memory tmp = new Call[](8);
             uint256 i = 0;
-            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), true);
-            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](2))), false);
-            tmp[i++] = Call($.curator, gt, 1 wei, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), false);
-            tmp[i++] = Call(address(0xdead), gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), false);
+            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](2))), true);
+            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), false);
+            tmp[i++] = Call($.curator, gt, 1 wei, abi.encodeCall(IGearingToken.merge, (new uint256[](2))), false);
+            tmp[i++] = Call(address(0xdead), gt, 0, abi.encodeCall(IGearingToken.merge, (new uint256[](2))), false);
             tmp[i++] =
-                Call($.curator, address(0xdead), 0, abi.encodeCall(IGearingToken.merge, (new uint256[](1))), false);
-            tmp[i++] = Call($.curator, gt, 0, abi.encode(IGearingToken.merge.selector, new uint256[](1)), false);
+                Call($.curator, address(0xdead), 0, abi.encodeCall(IGearingToken.merge, (new uint256[](2))), false);
+            tmp[i++] = Call($.curator, gt, 0, abi.encode(IGearingToken.merge.selector, new uint256[](2)), false);
             assembly {
                 mstore(tmp, i)
             }

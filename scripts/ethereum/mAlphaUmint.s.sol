@@ -120,15 +120,15 @@ contract Deploy is Script {
                     suspiciousAbsoluteDeviation: 0.001 ether,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
-                    timeout: 20 hours,
-                    depositInterval: 1 hours,
-                    redeemInterval: 2 days
+                    timeout: 1 minutes,
+                    depositInterval: 1 minutes,
+                    redeemInterval: 1 minutes
                 }),
                 assets_
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 8,
+            queueLimit: 2,
             roleHolders: holders
         });
 
@@ -252,14 +252,14 @@ contract Deploy is Script {
                 reports[i].asset = assets_[i];
             }
             reports[0].priceD18 = 1e30; // USDC, 6 decimals
-            reports[1].priceD18 = 104.33 ether; // UMINT, 18 decimals (104.33 USD)
+            reports[1].priceD18 = 104.10 ether; // UMINT, 18 decimals (104.10 USD)
             reports[2].priceD18 = 1 ether; // USDU, 18 decimals
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
             uint256 timestamp = oracle.getReport(Constants.USDC).timestamp;
             for (uint256 i = 0; i < reports.length; i++) {
-                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+                //oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
         }
 
@@ -267,7 +267,7 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
         {
             IERC20(Constants.USDC).approve(address(vault.queueAt(Constants.USDC, 0)), 1e6);
-            IDepositQueue(address(vault.queueAt(Constants.USDC, 0))).deposit(1e6, address(0), new bytes32[](0));
+            //IDepositQueue(address(vault.queueAt(Constants.USDC, 0))).deposit(1e6, address(0), new bytes32[](0));
         }
         vm.stopBroadcast();
 
@@ -291,7 +291,7 @@ contract Deploy is Script {
             })
         );
 
-        revert("ok");
+        //revert("ok");
     }
 
     function _getExpectedHolders(address timelockController)
