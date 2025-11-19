@@ -23,6 +23,7 @@ library Constants {
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address public constant USDS = 0xdC035D45d973E3EC169d2276DDab16f1e407384F;
     address public constant USDU = 0xdde3eC717f220Fc6A29D6a4Be73F91DA5b718e55;
+    address public constant UMINT = 0xC06036793272219179F846eF6bfc3B16E820Df0B;
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
@@ -66,8 +67,9 @@ library Constants {
     address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
 
-    address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
-    address public constant CURVE_USDC_USDU_GAUGE = 0x0E2662672adC42Bb73d39196f9f557C11B4FCcf9;
+    // https://www.curve.finance/dex/ethereum/pools/factory-stable-ng-596/deposit
+    address public constant CURVE_USDC_USDU_POOL = 0x6C5Ff8DCe52BE77b4eCE6B51996018f0C1713bA9;
+    address public constant CURVE_USDC_USDU_GAUGE = 0xbB6eDb6E10fC89F1032F3c4DdB2e73d1BeDa423f;
 
     address public constant MORPHO_USDC_ALPHAPING = 0xb0f05E4De970A1aaf77f8C2F823953a367504BA9;
     address public constant MORPHO_WETH_ALPHAPING = 0x47fe8Ab9eE47DD65c24df52324181790b9F47EfC;
@@ -79,6 +81,12 @@ library Constants {
     address public constant CAP_LENDER = 0x15622c3dbbc5614E6DFa9446603c1779647f01FC;
     address public constant CAP_NETWORK = 0x98e52Ea7578F2088c152E81b17A9a459bF089f2a;
     address public constant CAP_FACTORY = 0x0B92300C8494833E504Ad7d36a301eA80DbBAE2e;
+
+    address public constant SUB_RED_MANAGEMENT = 0x3797C46db697c24a983222c335F17Ba28e8c5b69;
+
+    address public constant TERMMAX_ROUTER = 0xC47591F5c023e44931c78D5A993834875b79FB11;
+
+    address public constant MORPHO_ETHEREUM = 0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -92,7 +100,7 @@ library Constants {
             wsteth: WSTETH,
             weth: WETH,
             proxyAdmin: 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0,
-            deployer: 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3,
+            deployer: 0x4d551d74e851Bd93Ce44D5F588Ba14623249CDda,
             factoryImplementation: Factory(0x0000000397b71C8f3182Fd40D247330D218fdC72),
             factory: Factory(0x0000000f9686896836C39cf721141922Ce42639f),
             consensusFactory: Factory(0xaEEB06CBd91A18b51a2D30b61477eAeE3a9633C3),

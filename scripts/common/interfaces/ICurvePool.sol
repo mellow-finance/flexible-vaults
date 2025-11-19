@@ -13,4 +13,6 @@ interface ICurvePool is IERC20Metadata {
     function remove_liquidity(uint256 _burn_amount, uint256[] memory _min_amounts)
         external
         returns (uint256[] memory);
+
+    function exchange(int128 i, int128 j, uint256 _dx, uint256 _min_dy) external returns (uint256);
 }

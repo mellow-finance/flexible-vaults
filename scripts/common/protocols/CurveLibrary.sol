@@ -7,10 +7,11 @@ import {ParameterLibrary} from "../ParameterLibrary.sol";
 import {ProofLibrary} from "../ProofLibrary.sol";
 import {ICurveGauge} from "../interfaces/ICurveGauge.sol";
 import {ICurvePool} from "../interfaces/ICurvePool.sol";
-import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
+import "../ArraysLibrary.sol";
 import "../interfaces/Imports.sol";
+import "../protocols/ERC20Library.sol";
 
 library CurveLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
@@ -133,7 +134,7 @@ library CurveLibrary {
             descriptions[index++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
-                        "IERC20(", assetSymbol, ").approve(IERC4626(", ICurvePool($.pool).name(), "), any)"
+                        "IERC20(", assetSymbol, ").approve(ICurvePool(", ICurvePool($.pool).name(), "), any)"
                     )
                 ),
                 ABILibrary.getABI(IERC20.approve.selector),
@@ -349,6 +350,150 @@ library CurveLibrary {
                 mstore(tmp, i)
             }
             calls[index++] = tmp;
+        }
+    }
+
+    function getCurveExchangeProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
+        internal
+        view
+        returns (IVerifier.VerificationPayload[] memory leaves)
+    {
+        uint256 n = ICurvePool($.pool).N_COINS();
+        address[] memory assets = new address[](n);
+        address[] memory to = new address[](n);
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator;
+
+        for (uint256 i = 0; i < n; i++) {
+            assets[i] = ICurvePool($.pool).coins(i);
+            to[i] = $.pool;
+        }
+
+        iterator = ArraysLibrary.insert(
+            leaves,
+            ERC20Library.getERC20Proofs(
+                bitmaskVerifier, ERC20Library.Info({curator: $.curator, assets: assets, to: to})
+            ),
+            iterator
+        );
+
+        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+            bitmaskVerifier,
+            $.curator,
+            $.pool,
+            0,
+            abi.encodeCall(ICurvePool.exchange, (0, 0, 0, 0)),
+            ProofLibrary.makeBitmask(
+                true, true, true, true, abi.encodeCall(ICurvePool.exchange, (int128(0), int128(0), 0, 0))
+            )
+        );
+        assembly {
+            mstore(leaves, iterator)
+        }
+    }
+
+    function getCurveExchangeDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
+        uint256 n = ICurvePool($.pool).N_COINS();
+        address[] memory assets = new address[](n);
+        address[] memory to = new address[](n);
+        descriptions = new string[](50);
+        uint256 iterator;
+
+        for (uint256 i = 0; i < n; i++) {
+            assets[i] = ICurvePool($.pool).coins(i);
+            to[i] = $.pool;
+        }
+
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            ERC20Library.getERC20Descriptions(ERC20Library.Info({curator: $.curator, assets: assets, to: to})),
+            iterator
+        );
+
+        ParameterLibrary.Parameter[] memory innerParameters =
+            (new ParameterLibrary.Parameter[](0)).addAny("i").addAny("j").addAny("_dx").addAny("_min_dy");
+
+        descriptions[iterator++] = JsonLibrary.toJson(
+            string(abi.encodePacked("ICurvePool(", ICurvePool($.pool).name(), ").exchange(any, any, any, any)")),
+            ABILibrary.getABI(ICurvePool.exchange.selector),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.pool), "0"),
+            innerParameters
+        );
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getCurveExchangeCalls(Info memory $) internal view returns (Call[][] memory calls) {
+        uint256 n = ICurvePool($.pool).N_COINS();
+        address[] memory assets = new address[](n);
+        address[] memory to = new address[](n);
+        calls = new Call[][](50);
+        uint256 iterator;
+
+        for (uint256 i = 0; i < n; i++) {
+            assets[i] = ICurvePool($.pool).coins(i);
+            to[i] = $.pool;
+        }
+
+        iterator = ArraysLibrary.insert(
+            calls, ERC20Library.getERC20Calls(ERC20Library.Info({curator: $.curator, assets: assets, to: to})), iterator
+        );
+
+        {
+            Call[] memory tmp = new Call[](16);
+            uint256 i = 0;
+            tmp[i++] =
+                Call($.curator, $.pool, 0, abi.encodeCall(ICurvePool.exchange, (int128(0), int128(0), 0, 0)), true);
+            tmp[i++] =
+                Call($.curator, $.pool, 0, abi.encodeCall(ICurvePool.exchange, (int128(1), int128(0), 0, 0)), true);
+            tmp[i++] =
+                Call($.curator, $.pool, 0, abi.encodeCall(ICurvePool.exchange, (int128(0), int128(1), 0, 0)), true);
+            tmp[i++] =
+                Call($.curator, $.pool, 0, abi.encodeCall(ICurvePool.exchange, (int128(0), int128(0), 0, 0)), true);
+            tmp[i++] = Call(
+                $.curator, $.pool, 0, abi.encodeCall(ICurvePool.exchange, (int128(0), int128(0), 1 ether, 0)), true
+            );
+            tmp[i++] = Call(
+                $.curator, $.pool, 0, abi.encodeCall(ICurvePool.exchange, (int128(0), int128(0), 0, 1 ether)), true
+            );
+
+            tmp[i++] = Call(
+                address(0xdead),
+                $.pool,
+                0,
+                abi.encodeCall(ICurvePool.exchange, (int128(1), int128(0), 1 ether, 1 ether)),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                address(0xdead),
+                0,
+                abi.encodeCall(ICurvePool.exchange, (int128(1), int128(0), 1 ether, 1 ether)),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.pool,
+                1 wei,
+                abi.encodeCall(ICurvePool.exchange, (int128(1), int128(0), 1 ether, 1 ether)),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.pool,
+                0,
+                abi.encode(ICurvePool.exchange.selector, int128(1), int128(0), 1 ether, 1 ether),
+                false
+            );
+            assembly {
+                mstore(tmp, i)
+            }
+            calls[iterator++] = tmp;
+        }
+        assembly {
+            mstore(calls, iterator)
         }
     }
 }
