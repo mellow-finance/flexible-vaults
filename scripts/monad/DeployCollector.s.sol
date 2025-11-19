@@ -70,12 +70,12 @@ contract Deploy is Script {
         Collector Impl = new Collector();
         Collector collector = Collector(payable(new TransparentUpgradeableProxy(address(Impl), deployer, new bytes(0))));
         collector.initialize(deployer, address(oracle));
-        vm.stopBroadcast();
         console2.log("Collector", address(collector));
 
         tokenOracles = new PriceOracle.TokenOracle[](1);
         tokenOracles[0] = PriceOracle.TokenOracle({constValue: 1e8 * Q96, oracle: address(0)}); // USD
         oracle.setOracles(ArraysLibrary.makeAddressArray(abi.encode(collector.USD())), tokenOracles);
+        vm.stopBroadcast();
 
         collector.collect(
             address(0),
@@ -86,6 +86,6 @@ contract Deploy is Script {
                 redeemHandlingInterval: 1 hours
             })
         );
-        // revert("ok");
+        revert("ok");
     }
 }
