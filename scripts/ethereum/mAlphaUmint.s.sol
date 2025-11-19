@@ -252,7 +252,7 @@ contract Deploy is Script {
                 reports[i].asset = assets_[i];
             }
             reports[0].priceD18 = 1e30; // USDC, 6 decimals
-            reports[1].priceD18 = 104.10 ether; // UMINT, 18 decimals (104.10 USD)
+            reports[1].priceD18 = 104.1 ether; // UMINT, 18 decimals (104.10 USD)
             reports[2].priceD18 = 1 ether; // USDU, 18 decimals
 
             IOracle oracle = vault.oracle();

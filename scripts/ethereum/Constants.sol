@@ -78,6 +78,8 @@ library Constants {
     address public constant BRACKET_FINANCE_USDC_VAULT = 0xb8ca40E2c5d77F0Bc1Aa88B2689dddB279F7a5eb;
 
     address public constant RSTETH = 0x7a4EffD87C2f3C55CA251080b1343b605f327E3a;
+    address public constant RSETH = 0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7;
+    address public constant WEETH = 0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee;
     address public constant CAP_LENDER = 0x15622c3dbbc5614E6DFa9446603c1779647f01FC;
     address public constant CAP_NETWORK = 0x98e52Ea7578F2088c152E81b17A9a459bF089f2a;
     address public constant CAP_FACTORY = 0x0B92300C8494833E504Ad7d36a301eA80DbBAE2e;

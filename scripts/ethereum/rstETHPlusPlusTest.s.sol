@@ -17,10 +17,9 @@ import "../common/ProofLibrary.sol";
 import "forge-std/Script.sol";
 
 import "./Constants.sol";
-import "./rstETHPlusLibrary.sol";
+import "./rstETHPlusPlusLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
-import "./rstETHPlusPlusLibrary.sol";
 import "../common/interfaces/ICapFactory.sol";
 
 import "../common/interfaces/ISymbioticStakerRewardsPermissions.sol";
@@ -41,7 +40,6 @@ contract Deploy is Script {
     address public pauser = testWallet;
 
     function run() external {
-
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
@@ -96,7 +94,7 @@ contract Deploy is Script {
             }
         }
         address[] memory assets_ = ArraysLibrary.makeAddressArray(
-            abi.encode(Constants.ETH, Constants.WETH, Constants.STETH, Constants.WSTETH)
+            abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.RSETH, Constants.WEETH)
         );
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -138,7 +136,6 @@ contract Deploy is Script {
         // queues setup
         vault.createQueue(0, true, proxyAdmin, Constants.ETH, new bytes(0));
         vault.createQueue(0, true, proxyAdmin, Constants.WETH, new bytes(0));
-        vault.createQueue(0, true, proxyAdmin, Constants.STETH, new bytes(0));
         vault.createQueue(0, true, proxyAdmin, Constants.WSTETH, new bytes(0));
         vault.createQueue(0, false, proxyAdmin, Constants.WSTETH, new bytes(0));
 
@@ -147,28 +144,16 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](3);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](3);
+        address[] memory verifiers = new address[](1);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
 
         IRiskManager riskManager = vault.riskManager();
         /*
             subvault 0:
                 weth.deposit{any}()
-                cowswap (weth -> wsteth)
-                rsteth -> redeem
-
-            subvault 1:
-                wsteth.approve(capSymbioticVault, any)
-                capSymbioticVault.deposit(subvault1, any)
-                capSymbioticVault.withdraw(subvault1, any)
-                capSymbioticVault.claim(subvault1, any)
-
-            subvault 2:
-                wsteth.approve(capLender, any)
-                capLender.borrow(USDC, any, subvault2)
-                capLender.repay(USDC, any, subvault2)
-                cowswap (USDC <-> wstUSR)
-                + mb direct mint/burn of wstUSR
+                cowswap (ETH/WETH/wstETH -> weETH/rsETH) via SwapModule
+                aave borrow/repay ETH/WETH (weETH/rsETH collateral)
+                morpho borrow/repay ETH/WETH (weETH/rsETH collateral)
         */
 
         {
@@ -176,64 +161,11 @@ contract Deploy is Script {
             address subvault = vault.createSubvault(0, proxyAdmin, verifiers[0]);
 
             bytes32 merkleRoot;
-            address swapModuleSubvault0 = _deploySwapModuleSubvault0();
-            (merkleRoot, calls[0]) = _createSubvault0Proofs(subvault, swapModuleSubvault0);
+            (merkleRoot, calls[0]) = _createSubvault0Proofs(subvault);
             IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
 
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
-        }
-        {
-            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            vault.createSubvault(0, proxyAdmin, verifiers[1]);
-
-            verifiers[2] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            vault.createSubvault(0, proxyAdmin, verifiers[2]);
-
-            (address capSymbioticVault,,,, address stakerRewards) = ICapFactory(Constants.CAP_FACTORY).createVault(
-                deployer, Constants.WSTETH, vault.subvaultAt(2), Constants.CAP_NETWORK
-            );
-
-            {
-                ISymbioticVaultPermissions sv = ISymbioticVaultPermissions(capSymbioticVault);
-
-                sv.setDepositWhitelist(true);
-                sv.setDepositorWhitelistStatus(vault.subvaultAt(1), true);
-
-                sv.grantRole(0x00, activeVaultAdmin);
-                sv.renounceRole(0x00, deployer);
-                sv.renounceRole(sv.DEPOSIT_WHITELIST_SET_ROLE(), deployer);
-                sv.renounceRole(sv.DEPOSITOR_WHITELIST_ROLE(), deployer);
-                sv.renounceRole(sv.IS_DEPOSIT_LIMIT_SET_ROLE(), deployer);
-                sv.renounceRole(sv.DEPOSIT_LIMIT_SET_ROLE(), deployer);
-            }
-
-            {
-                ISymbioticStakerRewardsPermissions sr = ISymbioticStakerRewardsPermissions(stakerRewards);
-                sr.grantRole(0x00, activeVaultAdmin);
-                sr.renounceRole(0x00, deployer);
-                sr.renounceRole(sr.ADMIN_FEE_CLAIM_ROLE(), deployer);
-                sr.renounceRole(sr.ADMIN_FEE_SET_ROLE(), deployer);
-            }
-
-            bytes32 merkleRoot1;
-            (merkleRoot1, calls[1]) = _createSubvault1Proofs(vault.subvaultAt(1), capSymbioticVault);
-            IVerifier(verifiers[1]).setMerkleRoot(merkleRoot1);
-
-            riskManager.allowSubvaultAssets(
-                vault.subvaultAt(1), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
-            );
-            riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
-
-            bytes32 merkleRoot2;
-            address swapModuleSubvault2 = _deploySwapModuleSubvault2();
-            (merkleRoot2, calls[2]) = _createSubvault2Proofs(vault.subvaultAt(2), swapModuleSubvault2);
-            IVerifier(verifiers[2]).setMerkleRoot(merkleRoot2);
-
-            riskManager.allowSubvaultAssets(
-                vault.subvaultAt(2), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
-            );
-            riskManager.setSubvaultLimit(vault.subvaultAt(2), type(int256).max / 2);
         }
 
         // emergency pause setup
@@ -298,7 +230,6 @@ contract Deploy is Script {
         console2.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
         console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
         console2.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
-        console2.log("DepositQueue (RSTETH) %s", address(vault.queueAt(Constants.RSTETH, 0)));
         console2.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
 
         console2.log("Oracle %s", address(vault.oracle()));
@@ -352,7 +283,7 @@ contract Deploy is Script {
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
                 depositQueueAssets: ArraysLibrary.makeAddressArray(
-                    abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.RSTETH)
+                    abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH)
                 ),
                 redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
                 subvaultVerifiers: verifiers,
@@ -405,49 +336,59 @@ contract Deploy is Script {
         }
     }
 
-    function _createSubvault0Proofs(address subvault, address swapModule)
+    function _createSubvault0Proofs(address subvault)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        rstETHPlusLibrary.Info memory info = rstETHPlusLibrary.Info({
+        address swapModuleSubvault0 = _deploySwapModuleSubvault0(subvault);
+
+        rstETHPlusPlusLibrary.Info memory info = rstETHPlusPlusLibrary.Info({
             curator: curator,
             subvault: subvault,
             subvaultName: "subvault0",
-            swapModule: swapModule
+            swapModule: swapModuleSubvault0
         });
-        string[] memory descriptions = rstETHPlusLibrary.getSubvault0Descriptions(info);
+        string[] memory descriptions = rstETHPlusPlusLibrary.getSubvault0Descriptions(info);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = rstETHPlusLibrary.getSubvault0Proofs(info);
-        ProofLibrary.storeProofs("ethereum:rstETH+:subvault0", merkleRoot, leaves, descriptions);
-        calls = rstETHPlusLibrary.getSubvault0Calls(info, leaves);
+        (merkleRoot, leaves) = rstETHPlusPlusLibrary.getSubvault0Proofs(info);
+        ProofLibrary.storeProofs("ethereum:rstETH++:subvault0", merkleRoot, leaves, descriptions);
+        calls = rstETHPlusPlusLibrary.getSubvault0Calls(info, leaves);
     }
 
-    function _createSubvault1Proofs(address subvault, address capSymbioticVault)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        string[] memory descriptions = rstETHPlusLibrary.getSubvault1Descriptions(curator, subvault, capSymbioticVault);
-        IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = rstETHPlusLibrary.getSubvault1Proofs(curator, subvault, capSymbioticVault);
-        ProofLibrary.storeProofs("ethereum:rstETH+:subvault1", merkleRoot, leaves, descriptions);
-        calls = rstETHPlusLibrary.getSubvault1Calls(curator, subvault, capSymbioticVault, leaves);
-    }
+    function _deploySwapModuleSubvault0(address subvault) internal returns (address swapModule) {
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+        /*
+            WETH - router
+            ETH/WETH/wstETH - tokenIn
+            weETH/rsETH - tokenOut
+        */
+        address[] memory holders = ArraysLibrary.makeAddressArray(
+            abi.encode(
+                curator,
+                Constants.WETH,
+                Constants.ETH,
+                Constants.WETH,
+                Constants.WSTETH,
+                Constants.WEETH,
+                Constants.RSTETH
+            )
+        );
+        bytes32[] memory roles = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
+            )
+        );
 
-    function _createSubvault2Proofs(address subvault, address swapModule)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        rstETHPlusLibrary.Info memory info = rstETHPlusLibrary.Info({
-            curator: curator,
-            subvault: subvault,
-            subvaultName: "subvault2",
-            swapModule: swapModule
-        });
-
-        string[] memory descriptions = rstETHPlusLibrary.getSubvault2Descriptions(info);
-        IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = rstETHPlusLibrary.getSubvault2Proofs(info);
-        ProofLibrary.storeProofs("ethereum:rstETH+:subvault2", merkleRoot, leaves, descriptions);
-        calls = rstETHPlusLibrary.getSubvault2Calls(info, leaves);
+        console2.log("SwapModuleFactory %s", address($.swapModuleFactory));
+        swapModule = $.swapModuleFactory.create(
+            0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, holders, roles)
+        );
+        console2.log("Subvault0 SwapModule %s", swapModule);
     }
 }
