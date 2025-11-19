@@ -190,11 +190,7 @@ library SwapModuleLibrary {
                     descriptions[iterator++] = JsonLibrary.toJson(
                         string(
                             abi.encodePacked(
-                                "ISwapModule(",
-                                Strings.toHexString($.swapModule),
-                                ").pushAssets(",
-                                assetName,
-                                ", msg.value)"
+                                "ISwapModule(", Strings.toHexString($.swapModule), ").pushAssets(", assetName, ", any)"
                             )
                         ),
                         ABILibrary.getABI(ISwapModule.pushAssets.selector),
@@ -206,11 +202,7 @@ library SwapModuleLibrary {
                     descriptions[iterator++] = JsonLibrary.toJson(
                         string(
                             abi.encodePacked(
-                                "ISwapModule(",
-                                Strings.toHexString($.swapModule),
-                                ").pullAssets(",
-                                assetName,
-                                ", msg.value)"
+                                "ISwapModule(", Strings.toHexString($.swapModule), ").pullAssets(", assetName, ", any)"
                             )
                         ),
                         ABILibrary.getABI(ISwapModule.pullAssets.selector),
@@ -468,7 +460,6 @@ library SwapModuleLibrary {
                 }
             }
         }
-
         assembly {
             mstore(calls, iterator)
         }

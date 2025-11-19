@@ -13,6 +13,8 @@ import {ProofLibrary} from "../common/ProofLibrary.sol";
 import {CapLenderLibrary} from "../common/protocols/CapLenderLibrary.sol";
 import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
 import {ResolvLibrary} from "../common/protocols/ResolvLibrary.sol";
+
+import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 import {SymbioticLibrary} from "../common/protocols/SymbioticLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
@@ -26,29 +28,52 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 library rstETHPlusLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
 
-    function getSubvault0Proofs(address curator, address subvault)
+    struct Info {
+        address curator;
+        address subvault;
+        string subvaultName;
+        address swapModule;
+    }
+
+    function _getSwapModuleAssets(address payable swapModule) internal view returns (address[] memory uniqueAssets) {
+        uint256 tokenInCount = SwapModule(swapModule).getRoleMemberCount(Permissions.SWAP_MODULE_TOKEN_IN_ROLE);
+        uint256 tokenOutCount = SwapModule(swapModule).getRoleMemberCount(Permissions.SWAP_MODULE_TOKEN_OUT_ROLE);
+        uint256 totalCount = tokenInCount + tokenOutCount;
+        address[] memory assets = new address[](totalCount);
+        for (uint256 i = 0; i < tokenInCount; i++) {
+            assets[i] = SwapModule(swapModule).getRoleMember(Permissions.SWAP_MODULE_TOKEN_IN_ROLE, i);
+        }
+        for (uint256 i = tokenInCount; i < totalCount; i++) {
+            assets[i] = SwapModule(swapModule).getRoleMember(Permissions.SWAP_MODULE_TOKEN_OUT_ROLE, i - tokenInCount);
+        }
+        uniqueAssets = ArraysLibrary.unique(assets);
+    }
+
+    function getSubvault0Proofs(Info memory $)
         internal
-        pure
+        view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         /*
             1. weth.deposit{any}()
-            2. cowswap.swap(weth -> wsteth)
+            2. swapModule<curator, assets>()
             3. rstETH.redeem(shares, subvault0, subvault0)
         */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](8);
+        leaves = new IVerifier.VerificationPayload[](20);
         uint256 iterator = 0;
-        leaves[iterator++] = WethLibrary.getWethDepositProof(bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
+        leaves[iterator++] =
+            WethLibrary.getWethDepositProof(bitmaskVerifier, WethLibrary.Info($.curator, Constants.WETH));
         iterator = ArraysLibrary.insert(
             leaves,
-            CowSwapLibrary.getCowSwapProofs(
+            SwapModuleLibrary.getSwapModuleProofs(
                 bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
+                SwapModuleLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    swapModule: $.swapModule,
+                    curators: ArraysLibrary.makeAddressArray(abi.encode($.curator)),
+                    assets: _getSwapModuleAssets(payable($.swapModule))
                 })
             ),
             iterator
@@ -56,10 +81,10 @@ library rstETHPlusLibrary {
 
         leaves[iterator++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
-            curator,
+            $.curator,
             Constants.RSTETH,
             0,
-            abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)),
+            abi.encodeCall(IERC4626.redeem, (0, $.subvault, $.subvault)),
             ProofLibrary.makeBitmask(
                 true,
                 true,
@@ -76,35 +101,32 @@ library rstETHPlusLibrary {
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault0Descriptions(address curator, address subvault)
-        internal
-        view
-        returns (string[] memory descriptions)
-    {
-        descriptions = new string[](8);
+    function getSubvault0Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
+        descriptions = new string[](20);
         uint256 iterator = 0;
-        descriptions[iterator++] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
+        descriptions[iterator++] = WethLibrary.getWethDepositDescription(WethLibrary.Info($.curator, Constants.WETH));
         iterator = ArraysLibrary.insert(
             descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
+            SwapModuleLibrary.getSwapModuleDescriptions(
+                SwapModuleLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    swapModule: $.swapModule,
+                    curators: ArraysLibrary.makeAddressArray(abi.encode($.curator)),
+                    assets: _getSwapModuleAssets(payable($.swapModule))
                 })
             ),
             iterator
         );
 
         ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters = ParameterLibrary.add2("shares", "any", "receiver", Strings.toHexString(subvault)).add(
-            "owner", Strings.toHexString(subvault)
+        innerParameters = ParameterLibrary.add2("shares", "any", "receiver", Strings.toHexString($.subvault)).add(
+            "owner", Strings.toHexString($.subvault)
         );
         descriptions[iterator++] = JsonLibrary.toJson(
             string(abi.encodePacked("rstETH.redeem(any, subvault0, subvault0)")),
             ABILibrary.getABI(IERC4626.redeem.selector),
-            ParameterLibrary.build(Strings.toHexString(curator), Strings.toHexString(Constants.RSTETH), "0"),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(Constants.RSTETH), "0"),
             innerParameters
         );
 
@@ -113,23 +135,24 @@ library rstETHPlusLibrary {
         }
     }
 
-    function getSubvault0Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+    function getSubvault0Calls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
         internal
-        pure
+        view
         returns (SubvaultCalls memory calls)
     {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
         uint256 iterator = 0;
-        calls.calls[iterator++] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));
+        calls.calls[iterator++] = WethLibrary.getWethDepositCalls(WethLibrary.Info($.curator, Constants.WETH));
         iterator = ArraysLibrary.insert(
             calls.calls,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
+            SwapModuleLibrary.getSwapModuleCalls(
+                SwapModuleLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    swapModule: $.swapModule,
+                    curators: ArraysLibrary.makeAddressArray(abi.encode($.curator)),
+                    assets: _getSwapModuleAssets(payable($.swapModule))
                 })
             ),
             iterator
@@ -139,19 +162,25 @@ library rstETHPlusLibrary {
             address asset = Constants.RSTETH;
             Call[] memory tmp = new Call[](16);
             uint256 i = 0;
-            tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)), true);
-            tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), true);
+            tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (0, $.subvault, $.subvault)), true);
             tmp[i++] =
-                Call(address(0xdead), asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
+                Call($.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), true);
+            tmp[i++] = Call(
+                address(0xdead), asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false
+            );
+            tmp[i++] = Call(
+                $.curator, address(0xdead), 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false
+            );
             tmp[i++] =
-                Call(curator, address(0xdead), 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
+                Call($.curator, asset, 1 wei, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false);
+            tmp[i++] = Call(
+                $.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, address(0xdead), $.subvault)), false
+            );
+            tmp[i++] = Call(
+                $.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, address(0xdead))), false
+            );
             tmp[i++] =
-                Call(curator, asset, 1 wei, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, address(0xdead), subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, address(0xdead))), false);
-            tmp[i++] = Call(curator, asset, 0, abi.encode(IERC4626.redeem.selector, 1 ether, subvault, subvault), false);
+                Call($.curator, asset, 0, abi.encode(IERC4626.redeem.selector, 1 ether, $.subvault, $.subvault), false);
             assembly {
                 mstore(tmp, i)
             }
@@ -236,12 +265,12 @@ library rstETHPlusLibrary {
         );
     }
 
-    function getSubvault2Proofs(address curator, address subvault)
+    function getSubvault2Proofs(Info memory $)
         internal
-        pure
+        view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
-        leaves = new IVerifier.VerificationPayload[](42);
+        leaves = new IVerifier.VerificationPayload[](100);
         uint256 iterator = 0;
 
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
@@ -252,9 +281,9 @@ library rstETHPlusLibrary {
                 CapLenderLibrary.Info({
                     asset: Constants.USDC,
                     lender: Constants.CAP_LENDER,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator
                 })
             ),
             iterator
@@ -269,23 +298,23 @@ library rstETHPlusLibrary {
                     usrRequestManager: Constants.USR_REQUEST_MANAGER,
                     usr: Constants.USR,
                     stUsr: Constants.STUSR,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator
                 })
             ),
             iterator
         );
-
         iterator = ArraysLibrary.insert(
             leaves,
-            CowSwapLibrary.getCowSwapProofs(
+            SwapModuleLibrary.getSwapModuleProofs(
                 bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
+                SwapModuleLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    swapModule: $.swapModule,
+                    curators: ArraysLibrary.makeAddressArray(abi.encode($.curator)),
+                    assets: _getSwapModuleAssets(payable($.swapModule))
                 })
             ),
             iterator
@@ -298,12 +327,8 @@ library rstETHPlusLibrary {
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault2Descriptions(address curator, address subvault)
-        internal
-        view
-        returns (string[] memory descriptions)
-    {
-        descriptions = new string[](42);
+    function getSubvault2Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
+        descriptions = new string[](100);
         uint256 iterator = 0;
         iterator = ArraysLibrary.insert(
             descriptions,
@@ -311,14 +336,13 @@ library rstETHPlusLibrary {
                 CapLenderLibrary.Info({
                     asset: Constants.USDC,
                     lender: Constants.CAP_LENDER,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator
                 })
             ),
             iterator
         );
-
         iterator = ArraysLibrary.insert(
             descriptions,
             ResolvLibrary.getResolvDescriptions(
@@ -327,22 +351,22 @@ library rstETHPlusLibrary {
                     usrRequestManager: Constants.USR_REQUEST_MANAGER,
                     usr: Constants.USR,
                     stUsr: Constants.STUSR,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator
                 })
             ),
             iterator
         );
-
         iterator = ArraysLibrary.insert(
             descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
+            SwapModuleLibrary.getSwapModuleDescriptions(
+                SwapModuleLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    swapModule: $.swapModule,
+                    curators: ArraysLibrary.makeAddressArray(abi.encode($.curator)),
+                    assets: _getSwapModuleAssets(payable($.swapModule))
                 })
             ),
             iterator
@@ -353,9 +377,9 @@ library rstETHPlusLibrary {
         }
     }
 
-    function getSubvault2Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+    function getSubvault2Calls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
         internal
-        pure
+        view
         returns (SubvaultCalls memory calls)
     {
         calls.payloads = leaves;
@@ -368,9 +392,9 @@ library rstETHPlusLibrary {
                 CapLenderLibrary.Info({
                     asset: Constants.USDC,
                     lender: Constants.CAP_LENDER,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator
                 })
             ),
             iterator
@@ -384,22 +408,22 @@ library rstETHPlusLibrary {
                     usrRequestManager: Constants.USR_REQUEST_MANAGER,
                     usr: Constants.USR,
                     stUsr: Constants.STUSR,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator
                 })
             ),
             iterator
         );
-
         iterator = ArraysLibrary.insert(
             calls_,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
+            SwapModuleLibrary.getSwapModuleCalls(
+                SwapModuleLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    swapModule: $.swapModule,
+                    curators: ArraysLibrary.makeAddressArray(abi.encode($.curator)),
+                    assets: _getSwapModuleAssets(payable($.swapModule))
                 })
             ),
             iterator
