@@ -73,7 +73,7 @@ contract Deploy is Script {
         console2.log("Collector", address(collector));
 
         tokenOracles = new PriceOracle.TokenOracle[](1);
-        tokenOracles[0] = PriceOracle.TokenOracle({constValue: 1e8 * Q96, oracle: address(0)}); // USD
+        tokenOracles[0] = PriceOracle.TokenOracle({constValue: 1e18 * Q96, oracle: address(0)}); // USD
         oracle.setOracles(ArraysLibrary.makeAddressArray(abi.encode(collector.USD())), tokenOracles);
         vm.stopBroadcast();
 
