@@ -33,7 +33,10 @@ contract Deploy is Script {
     address public curator = testEOA;
     address public pauser = testEOA;
 
+    Vault public vault = Vault(payable(0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe));
+
     function run() external {
+        //pushReport();
         makeSupply();
         //return;
         revert("ok");
@@ -154,15 +157,21 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address verifier;
+        address[] memory verifiers = new address[](1);
         SubvaultCalls[] memory calls = new SubvaultCalls[](1);
 
         {
             IRiskManager riskManager = vault.riskManager();
-            (verifier, calls[0]) = _createVerifier(address(vault));
-            vault.createSubvault(0, proxyAdmin, verifier); // mon,wmon,usdc,usdt
-            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
-            riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+
+            verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[0]); // mon,wmon,usdc,usdt
+
+            bytes32 merkleRoot;
+            (merkleRoot, calls[0]) = _createSubvault0Proofs(subvault);
+            IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
+
+            riskManager.allowSubvaultAssets(subvault, assets_);
+            riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
         }
 
         // emergency pause setup
@@ -286,7 +295,7 @@ contract Deploy is Script {
                 assets: assets_,
                 depositQueueAssets: depositAssets,
                 redeemQueueAssets: withdrawAssets,
-                subvaultVerifiers: ArraysLibrary.makeAddressArray(abi.encode(verifier)),
+                subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(timelockController)),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
                 timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin))
@@ -334,15 +343,19 @@ contract Deploy is Script {
         }
     }
 
-    function _createVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {
+    function _createSubvault0Proofs(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
+        IVerifier.VerificationPayload[] memory leaves;
         /*
             1. weth.deposit{value: <any>}();
             2. weth.withdraw(<any>);
             3. aave proofs
         */
         monLibrary.Info memory info = monLibrary.Info({
-            subvault: vault,
+            subvault: subvault,
             subvaultName: "subvault0",
             curator: curator,
             aaveInstance: Constants.AAVE_CORE,
@@ -351,10 +364,9 @@ contract Deploy is Script {
             loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WBTC, Constants.USDC, Constants.USDT))
         });
         string[] memory descriptions = monLibrary.getSubvault0Descriptions(info);
-        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = monLibrary.getSubvault0Proofs(info);
+        (merkleRoot, leaves) = monLibrary.getSubvault0Proofs(info);
         ProofLibrary.storeProofs("monad:mon:subvault0", merkleRoot, leaves, descriptions);
         calls = monLibrary.getSubvault0SubvaultCalls(info, leaves);
-        verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
     }
 
     function getSymbol(address token) internal view returns (string memory) {
@@ -365,57 +377,21 @@ contract Deploy is Script {
         }
     }
 
-    function action() internal {
-        /*
-            Vault 0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe
-            DepositQueue (MON) 0xDaC0Fc37994Af060b2a13D7F2E2f45cCc9a7AE4F
-            DepositQueue (WMON) 0x45023d2CbbcC62B8B05347a652E195cb8A0F6aB6
-            RedeemQueue (WMON) 0x74820486AE498AEF97C7Af6Bc4017c1312EfebE1
-            Oracle 0x31E92B97a3EAC3a33b579a83D38C75519A71D6F7
-            ShareManager 0xD031137112Af2969892ea66764ED447317f6489F
-            FeeManager 0x2Dbc6584d82F649c698215876e771Df691420977
-            RiskManager 0x725F5c87BE5f12bb26346694590d254EA0330593
-            Subvault 0 0x8e2D23E6A59EffD2fd55CE3020c28eC650F2fbc5
-            Verifier 0 0xf99362EEAc9d3597608f58FefD83b3cB8BAA39CD
-            Timelock controller: 0x5283C7B1d1569EfCF8A35dD16c9e7253911b5afa
-        */
-        Vault vault = Vault(payable(0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe));
-        IOracle oracle = vault.oracle();
-        address[] memory assets = ArraysLibrary.makeAddressArray(
-            abi.encode(Constants.ETH, Constants.WETH, Constants.WBTC, Constants.USDC, Constants.USDT)
-        );
-
-        uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
-
-        uint256 deployerPK = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        uint256 adminPK = uint256(bytes32(vm.envBytes("MONAD_TEST_ADMIN")));
-        address admin = vm.addr(adminPK);
-
-        vm.startBroadcast(adminPK);
-        for (uint256 i = 0; i < assets.length; i++) {
-            IOracle.DetailedReport memory report = oracle.getReport(assets[i]);
-            if (report.isSuspicious) {
-                oracle.acceptReport(assets[i], report.priceD18, uint32(report.timestamp));
-            }
-        }
-        vm.stopBroadcast();
-
-        vm.startBroadcast(deployerPK);
-        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 0.001 ether}(
-            0.001 ether, address(0), new bytes32[](0)
-        );
-        vm.stopBroadcast();
-    }
-
+    /*
+        Vault 0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe
+        DepositQueue (MON) 0xDaC0Fc37994Af060b2a13D7F2E2f45cCc9a7AE4F
+        DepositQueue (WMON) 0x45023d2CbbcC62B8B05347a652E195cb8A0F6aB6
+        RedeemQueue (WMON) 0x74820486AE498AEF97C7Af6Bc4017c1312EfebE1
+        Oracle 0x31E92B97a3EAC3a33b579a83D38C75519A71D6F7
+        ShareManager 0xD031137112Af2969892ea66764ED447317f6489F
+        FeeManager 0x2Dbc6584d82F649c698215876e771Df691420977
+        RiskManager 0x725F5c87BE5f12bb26346694590d254EA0330593
+        Subvault 0 0x8e2D23E6A59EffD2fd55CE3020c28eC650F2fbc5
+        Verifier 0 0xf99362EEAc9d3597608f58FefD83b3cB8BAA39CD
+        Timelock controller: 0x5283C7B1d1569EfCF8A35dD16c9e7253911b5afa
+    */
     function pushReport() internal {
-        Vault vault = Vault(payable(0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe));
-
         uint256 deployerPK = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        /*         vm.startBroadcast(deployerPK);
-        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 0.001 ether}(
-            0.001 ether, address(0), new bytes32[](0)
-        );
-        vm.stopBroadcast(); */
 
         IOracle oracle = vault.oracle();
         address[] memory assets = ArraysLibrary.makeAddressArray(
@@ -435,38 +411,13 @@ contract Deploy is Script {
         vm.stopBroadcast();
     }
 
-    function makeDepositCall() internal {
-        /* Collector(0x20Cc87d330400DC051b7dcA2Ae8d2005cb4894D6).collect(
-            address(0),
-            Vault(payable(0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe)),
-            Collector.Config({baseAssetFallback: Constants.WETH, oracleUpdateInterval: 60, redeemHandlingInterval: 60})
-        ); */
-
+    function _updateMerkleRoot() internal {
         uint256 adminPK = uint256(bytes32(vm.envBytes("MONAD_TEST_ADMIN")));
-        address admin = vm.addr(adminPK);
-
-        Vault vault = Vault(payable(0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe));
         address subvault = vault.subvaultAt(0);
-        bytes memory verificationData =
-            hex"0000000000000000000000007eba8f20eba1b62e894c6877de5fa48ac85d6ee46daeda26d0c877ec0c1ec8663856c7d6727976954295c462e71224d47bc1bca600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000";
-        bytes32[] memory proof = new bytes32[](5);
-        proof[0] = 0x469b06fde976ddccfb355cf49c423cd217ba25c9553567d2eb2af585ddc5f665;
-        proof[1] = 0xd42b361e96964f59ea2053a3ac26f6d6e3b2ae073e0a390d4a79d1a02d704aca;
-        proof[2] = 0xe9f7b63e759c6eeb65ced8a29daa38174ec273d9b6ad9763f196d05db84e4731;
-        proof[3] = 0x59fc257cf3960d377df9bebb00103269d4fdae9fd205275906e27805e1d66001;
-        proof[4] = 0x0caa6966f935e3de9d5afa753ee3dda575e47dfb8e21d427384c1efa71fca16c;
+        (bytes32 merkleRoot,) = _createSubvault0Proofs(subvault);
+
         vm.startBroadcast(adminPK);
-        bytes memory data = abi.encodeCall(WETHInterface.deposit, ());
-        CallModule(payable(subvault)).call(
-            Constants.WETH,
-            0.001 ether,
-            data,
-            IVerifier.VerificationPayload({
-                verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
-                verificationData: verificationData,
-                proof: proof
-            })
-        );
+        IVerifier(IVerifierModule(subvault).verifier()).setMerkleRoot(merkleRoot);
         vm.stopBroadcast();
     }
 
@@ -474,27 +425,70 @@ contract Deploy is Script {
         uint256 adminPK = uint256(bytes32(vm.envBytes("MONAD_TEST_ADMIN")));
         address admin = vm.addr(adminPK);
 
-        Vault vault = Vault(payable(0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe));
         address subvault = vault.subvaultAt(0);
-        bytes memory verificationData =
-            hex"0000000000000000000000007eba8f20eba1b62e894c6877de5fa48ac85d6ee41639bbb8aafe508654ed48f1d4e33036da64ce80216aadfa89e0909b6471e309000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-        bytes32[] memory proof = new bytes32[](4);
-        proof[0] = 0xbcecc9d1a41f8ae2cd1c6df18b948334d27d8d1780da606edfa872fb4aa85707;
-        proof[1] = 0xa88b15b9f364c371f5d3c052545f9a8cefa14eb66b3e0de52a8f06f23730585e;
-        proof[2] = 0xc9f37d019f9f7d1939dca0f2304982735fec1f1a028de191bc47c0dea575af24;
-        proof[3] = 0xfcbfe9567c49a6753a0275bd6b6a3fbf1fa0821ebc1dc940c300f7ff79132f99;
         vm.startBroadcast(adminPK);
-        bytes memory data = abi.encodeCall(IAavePoolV3.supply, (Constants.WETH, 0.001 ether, subvault, 0));
-        CallModule(payable(subvault)).call(
-            Constants.WETH,
-            0,
-            data,
-            IVerifier.VerificationPayload({
-                verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
-                verificationData: verificationData,
-                proof: proof
-            })
-        );
+
+        {
+            bytes memory verificationData =
+                hex"0000000000000000000000007eba8f20eba1b62e894c6877de5fa48ac85d6ee46daeda26d0c877ec0c1ec8663856c7d6727976954295c462e71224d47bc1bca600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000";
+            bytes32[] memory proof = new bytes32[](5);
+            proof[0] = 0x37eec4837cb68a75e6ad23290b0e05e0e4eb4ed1215259d66039f262e5557e2c;
+            proof[1] = 0xfd99be757de094ebde253e5f53804e585c814da9e1cc6c7860c9b150c6c5f3d9;
+            proof[2] = 0xa00393c607d6ffb5cad4ad80e9e0fba553137d6c27970210bccd520094b7ea13;
+            proof[3] = 0x6a57de125572d3fc6f30247e34add93d27ee26e0b6d44b96be705f679544a266;
+            proof[4] = 0x70fe9d5ab96c14c42c59f46bf0606a3383507b8aad969c961ce193423e024567;
+            CallModule(payable(subvault)).call(
+                Constants.WETH,
+                subvault.balance,
+                abi.encodeCall(WETHInterface.deposit, ()),
+                IVerifier.VerificationPayload({
+                    verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+                    verificationData: verificationData,
+                    proof: proof
+                })
+            );
+        }
+        {
+            bytes memory verificationData =
+                hex"0000000000000000000000007eba8f20eba1b62e894c6877de5fa48ac85d6ee409b1c6a8a278701d638c7eb85a98d4ab7b1cc3fc8bc3ecf31cfb6cf97b27c6f3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+            bytes32[] memory proof = new bytes32[](4);
+            proof[0] = 0xb476a958280367125e7a90f813fc207177c58690e38f07c9c44d7bfea6e31087;
+            proof[1] = 0x7360c69f45a1dd7aede7eb85a6ce442fe67b9c40199d10ba645378111bb64f41;
+            proof[2] = 0x939f5441b66e404002e22355ffd3ad803426144cf004935e177e78de5cfe6f0c;
+            proof[3] = 0xfae8853a4b2ca4e3c3316556a8d3c85c55b83b0f0218f2ff250733a75e32a859;
+            CallModule(payable(subvault)).call(
+                Constants.WETH,
+                subvault.balance,
+                abi.encodeCall(IERC20.approve, (Constants.AAVE_CORE, IERC20(Constants.WETH).balanceOf(subvault))),
+                IVerifier.VerificationPayload({
+                    verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+                    verificationData: verificationData,
+                    proof: proof
+                })
+            );
+        }
+
+        {
+            bytes memory verificationData =
+                hex"0000000000000000000000007eba8f20eba1b62e894c6877de5fa48ac85d6ee4ce3d35717cc2b6b885625b4b22aebc4e7d07f3aca4e1689a96dc8a797881c4be000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+            bytes32[] memory proof = new bytes32[](4);
+            proof[0] = 0xe8d8562e01ed744c717b1e862d980c398c053028be71958106278095c3f52330;
+            proof[1] = 0x12ef0fcdf95b9fabd675dcae2b879e3f640b13023eb0aa3b912dd255eef5f5a7;
+            proof[2] = 0x3a0cb308c96d84019c0119f7c1d6a936f374867197b1951e75bd718e2cedd685;
+            proof[3] = 0x70fe9d5ab96c14c42c59f46bf0606a3383507b8aad969c961ce193423e024567;
+            CallModule(payable(subvault)).call(
+                Constants.AAVE_CORE,
+                0,
+                abi.encodeCall(
+                    IAavePoolV3.supply, (Constants.WETH, IERC20(Constants.WETH).balanceOf(subvault), subvault, 0)
+                ),
+                IVerifier.VerificationPayload({
+                    verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+                    verificationData: verificationData,
+                    proof: proof
+                })
+            );
+        }
         vm.stopBroadcast();
     }
 }
