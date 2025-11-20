@@ -10,9 +10,9 @@ import {ParameterLibrary} from "../common/ParameterLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
-import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
-import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
 import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
+import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
+import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import "./Constants.sol";
@@ -24,12 +24,18 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 library rstETHPlusPlusLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
+    using ArraysLibrary for IVerifier.VerificationPayload[];
+    using ArraysLibrary for string[];
+    using ArraysLibrary for Call[][];
 
     struct Info {
         address curator;
         address subvault;
         string subvaultName;
         address swapModule;
+        bytes32[] morphoMarketId;
+        address[] aaveCollaterals;
+        address[] aaveLoans;
     }
 
     function _getSwapModuleAssets(address payable swapModule) internal view returns (address[] memory uniqueAssets) {
@@ -58,12 +64,13 @@ library rstETHPlusPlusLibrary {
             4. morpho borrow/repay ETH/WETH (weETH/rsETH collateral)
         */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](20);
+        leaves = new IVerifier.VerificationPayload[](50);
         uint256 iterator = 0;
+
         leaves[iterator++] =
             WethLibrary.getWethDepositProof(bitmaskVerifier, WethLibrary.Info($.curator, Constants.WETH));
-        iterator = ArraysLibrary.insert(
-            leaves,
+
+        iterator = leaves.insert(
             SwapModuleLibrary.getSwapModuleProofs(
                 bitmaskVerifier,
                 SwapModuleLibrary.Info({
@@ -77,20 +84,37 @@ library rstETHPlusPlusLibrary {
             iterator
         );
 
-        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            Constants.RSTETH,
-            0,
-            abi.encodeCall(IERC4626.redeem, (0, $.subvault, $.subvault)),
-            ProofLibrary.makeBitmask(
-                true,
-                true,
-                true,
-                true,
-                abi.encodeCall(IERC4626.redeem, (0, address(type(uint160).max), address(type(uint160).max)))
-            )
+        iterator = leaves.insert(
+            AaveLibrary.getAaveProofs(
+                bitmaskVerifier,
+                AaveLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator,
+                    aaveInstance: Constants.AAVE_CORE,
+                    aaveInstanceName: "Core",
+                    collaterals: $.aaveCollaterals,
+                    loans: $.aaveLoans,
+                    categoryId: 1
+                })
+            ),
+            iterator
         );
+
+        for (uint256 i = 0; i < $.morphoMarketId.length; i++) {
+            iterator = leaves.insert(
+                MorphoLibrary.getMorphoProofs(
+                    bitmaskVerifier,
+                    MorphoLibrary.Info({
+                        morpho: Constants.MORPHO_ETHEREUM,
+                        marketId: $.morphoMarketId[i],
+                        subvault: $.subvault,
+                        curator: $.curator
+                    })
+                ),
+                iterator
+            );
+        }
 
         assembly {
             mstore(leaves, iterator)
@@ -100,11 +124,11 @@ library rstETHPlusPlusLibrary {
     }
 
     function getSubvault0Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](20);
+        descriptions = new string[](50);
         uint256 iterator = 0;
         descriptions[iterator++] = WethLibrary.getWethDepositDescription(WethLibrary.Info($.curator, Constants.WETH));
-        iterator = ArraysLibrary.insert(
-            descriptions,
+
+        iterator = descriptions.insert(
             SwapModuleLibrary.getSwapModuleDescriptions(
                 SwapModuleLibrary.Info({
                     subvault: $.subvault,
@@ -117,16 +141,34 @@ library rstETHPlusPlusLibrary {
             iterator
         );
 
-        ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters = ParameterLibrary.add2("shares", "any", "receiver", Strings.toHexString($.subvault)).add(
-            "owner", Strings.toHexString($.subvault)
+        iterator = descriptions.insert(
+            AaveLibrary.getAaveDescriptions(
+                AaveLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator,
+                    aaveInstance: Constants.AAVE_CORE,
+                    aaveInstanceName: "Core",
+                    collaterals: $.aaveCollaterals,
+                    loans: $.aaveLoans,
+                    categoryId: 1
+                })
+            ),
+            iterator
         );
-        descriptions[iterator++] = JsonLibrary.toJson(
-            string(abi.encodePacked("rstETH.redeem(any, subvault0, subvault0)")),
-            ABILibrary.getABI(IERC4626.redeem.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(Constants.RSTETH), "0"),
-            innerParameters
-        );
+        for (uint256 i = 0; i < $.morphoMarketId.length; i++) {
+            iterator = descriptions.insert(
+                MorphoLibrary.getMorphoDescriptions(
+                    MorphoLibrary.Info({
+                        morpho: Constants.MORPHO_ETHEREUM,
+                        marketId: $.morphoMarketId[i],
+                        subvault: $.subvault,
+                        curator: $.curator
+                    })
+                ),
+                iterator
+            );
+        }
 
         assembly {
             mstore(descriptions, iterator)
@@ -139,11 +181,11 @@ library rstETHPlusPlusLibrary {
         returns (SubvaultCalls memory calls)
     {
         calls.payloads = leaves;
-        calls.calls = new Call[][](leaves.length);
+        Call[][] memory calls_ = new Call[][](leaves.length);
+
         uint256 iterator = 0;
-        calls.calls[iterator++] = WethLibrary.getWethDepositCalls(WethLibrary.Info($.curator, Constants.WETH));
-        iterator = ArraysLibrary.insert(
-            calls.calls,
+        calls_[iterator++] = WethLibrary.getWethDepositCalls(WethLibrary.Info($.curator, Constants.WETH));
+        iterator = calls_.insert(
             SwapModuleLibrary.getSwapModuleCalls(
                 SwapModuleLibrary.Info({
                     subvault: $.subvault,
@@ -155,34 +197,39 @@ library rstETHPlusPlusLibrary {
             ),
             iterator
         );
-
-        {
-            address asset = Constants.RSTETH;
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (0, $.subvault, $.subvault)), true);
-            tmp[i++] =
-                Call($.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), true);
-            tmp[i++] = Call(
-                address(0xdead), asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false
+        iterator = calls_.insert(
+            AaveLibrary.getAaveCalls(
+                AaveLibrary.Info({
+                    subvault: $.subvault,
+                    subvaultName: $.subvaultName,
+                    curator: $.curator,
+                    aaveInstance: Constants.AAVE_CORE,
+                    aaveInstanceName: "Core",
+                    collaterals: $.aaveCollaterals,
+                    loans: $.aaveLoans,
+                    categoryId: 1
+                })
+            ),
+            iterator
+        );
+        for (uint256 i = 0; i < $.morphoMarketId.length; i++) {
+            iterator = calls_.insert(
+                MorphoLibrary.getMorphoCalls(
+                    MorphoLibrary.Info({
+                        morpho: Constants.MORPHO_ETHEREUM,
+                        marketId: $.morphoMarketId[i],
+                        subvault: $.subvault,
+                        curator: $.curator
+                    })
+                ),
+                iterator
             );
-            tmp[i++] = Call(
-                $.curator, address(0xdead), 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false
-            );
-            tmp[i++] =
-                Call($.curator, asset, 1 wei, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, $.subvault)), false);
-            tmp[i++] = Call(
-                $.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, address(0xdead), $.subvault)), false
-            );
-            tmp[i++] = Call(
-                $.curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, $.subvault, address(0xdead))), false
-            );
-            tmp[i++] =
-                Call($.curator, asset, 0, abi.encode(IERC4626.redeem.selector, 1 ether, $.subvault, $.subvault), false);
-            assembly {
-                mstore(tmp, i)
-            }
-            calls.calls[iterator++] = tmp;
         }
+
+        assembly {
+            mstore(calls_, iterator)
+        }
+
+        calls.calls = calls_;
     }
 }

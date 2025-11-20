@@ -39,6 +39,11 @@ contract Deploy is Script {
 
     address public pauser = testWallet;
 
+    bytes32 public constant MORPHO_WEWETH_WETH_MARKET_ID =
+        0x37e7484d642d90f14451f1910ba4b7b8e4c3ccdd0ec28f8b2bdb35479e472ba7;
+    bytes32 public constant MORPHO_RSETH_WETH_MARKET_ID =
+        0xba761af4134efb0855adfba638945f454f0a704af11fc93439e20c7c5ebab942;
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
@@ -245,16 +250,19 @@ contract Deploy is Script {
         console2.log("Timelock controller:", address(timelockController));
 
         {
+            uint256 ETHUSDPriceD8 = IAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
+            uint256 rsETHUSDPriceD8 = IAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.RSETH);
+            uint256 weETHUSDPriceD8 = IAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WEETH);
+
             IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);
             for (uint256 i = 0; i < reports.length; i++) {
                 reports[i].asset = assets_[i];
             }
             reports[0].priceD18 = 1 ether;
             reports[1].priceD18 = 1 ether;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
-            reports[3].priceD18 = uint224(
-                WSTETHInterface(Constants.WSTETH).getStETHByWstETH(IERC4626(Constants.RSTETH).convertToAssets(1 ether))
-            );
+            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether)); // WSTETH
+            reports[3].priceD18 = uint224(rsETHUSDPriceD8 * 1e18 / ETHUSDPriceD8); // rsETH
+            reports[4].priceD18 = uint224(weETHUSDPriceD8 * 1e18 / ETHUSDPriceD8); // weETH
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
@@ -346,7 +354,12 @@ contract Deploy is Script {
             curator: curator,
             subvault: subvault,
             subvaultName: "subvault0",
-            swapModule: swapModuleSubvault0
+            swapModule: swapModuleSubvault0,
+            aaveCollaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WEETH, Constants.RSETH)),
+            aaveLoans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+            morphoMarketId: ArraysLibrary.makeBytes32Array(
+                abi.encode(MORPHO_WEWETH_WETH_MARKET_ID, MORPHO_RSETH_WETH_MARKET_ID)
+            )
         });
         string[] memory descriptions = rstETHPlusPlusLibrary.getSubvault0Descriptions(info);
         IVerifier.VerificationPayload[] memory leaves;
@@ -370,7 +383,7 @@ contract Deploy is Script {
                 Constants.WETH,
                 Constants.WSTETH,
                 Constants.WEETH,
-                Constants.RSTETH
+                Constants.RSETH
             )
         );
         bytes32[] memory roles = ArraysLibrary.makeBytes32Array(
