@@ -122,8 +122,8 @@ contract Deploy is Script {
                     suspiciousAbsoluteDeviation: 0.001 ether,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
-                    timeout: 20 hours,
-                    depositInterval: 1 hours,
+                    timeout: 15 minutes,
+                    depositInterval: 1 seconds,
                     redeemInterval: 2 days
                 }),
                 assets_
@@ -379,11 +379,22 @@ contract Deploy is Script {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         /*
             WETH - router
-            ETH/WETH/wstETH - tokenIn
-            weETH/rsETH - tokenOut
+            WETH/wstETH/weETH/rsETH - tokenIn
+            WETH/wstETH/weETH/rsETH - tokenOut
         */
         address[] memory holders = ArraysLibrary.makeAddressArray(
-            abi.encode(curator, Constants.WETH, Constants.WETH, Constants.WSTETH, Constants.WEETH, Constants.RSETH)
+            abi.encode(
+                curator,
+                Constants.WETH,
+                Constants.WETH,
+                Constants.WSTETH,
+                Constants.WEETH,
+                Constants.RSETH,
+                Constants.WETH,
+                Constants.WSTETH,
+                Constants.WEETH,
+                Constants.RSETH
+            )
         );
         bytes32[] memory roles = ArraysLibrary.makeBytes32Array(
             abi.encode(
@@ -391,6 +402,10 @@ contract Deploy is Script {
                 Permissions.SWAP_MODULE_ROUTER_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
             )
