@@ -99,7 +99,9 @@ contract Deploy is Script {
             }
         }
         address[] memory assets_ = ArraysLibrary.makeAddressArray(
-            abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.RSETH, Constants.WEETH)
+            abi.encode(
+                Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.RSETH, Constants.WEETH, Constants.RSTETH
+            )
         );
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -142,6 +144,7 @@ contract Deploy is Script {
         vault.createQueue(0, true, proxyAdmin, Constants.ETH, new bytes(0));
         vault.createQueue(0, true, proxyAdmin, Constants.WETH, new bytes(0));
         vault.createQueue(0, true, proxyAdmin, Constants.WSTETH, new bytes(0));
+        vault.createQueue(0, true, proxyAdmin, Constants.RSTETH, new bytes(0));
         vault.createQueue(0, false, proxyAdmin, Constants.WSTETH, new bytes(0));
 
         // fee manager setup
@@ -235,6 +238,7 @@ contract Deploy is Script {
         console2.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
         console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
         console2.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
+        console2.log("DepositQueue (RSTETH) %s", address(vault.queueAt(Constants.RSTETH, 0)));
         console2.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
 
         console2.log("Oracle %s", address(vault.oracle()));
@@ -263,6 +267,9 @@ contract Deploy is Script {
             reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether)); // WSTETH
             reports[3].priceD18 = uint224(rsETHUSDPriceD8 * 1e18 / ETHUSDPriceD8); // rsETH
             reports[4].priceD18 = uint224(weETHUSDPriceD8 * 1e18 / ETHUSDPriceD8); // weETH
+            reports[5].priceD18 = uint224(
+                WSTETHInterface(Constants.WSTETH).getStETHByWstETH(IERC4626(Constants.RSTETH).convertToAssets(1 ether))
+            );
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
@@ -291,7 +298,7 @@ contract Deploy is Script {
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
                 depositQueueAssets: ArraysLibrary.makeAddressArray(
-                    abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH)
+                    abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.RSTETH)
                 ),
                 redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
                 subvaultVerifiers: verifiers,
@@ -376,21 +383,12 @@ contract Deploy is Script {
             weETH/rsETH - tokenOut
         */
         address[] memory holders = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                curator,
-                Constants.WETH,
-                Constants.ETH,
-                Constants.WETH,
-                Constants.WSTETH,
-                Constants.WEETH,
-                Constants.RSETH
-            )
+            abi.encode(curator, Constants.WETH, Constants.WETH, Constants.WSTETH, Constants.WEETH, Constants.RSETH)
         );
         bytes32[] memory roles = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
                 Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
