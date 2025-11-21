@@ -36,8 +36,6 @@ contract Deploy is Script {
         address oracleHelper;
     }
 
-    uint256 constant SALT = 6666;
-
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
