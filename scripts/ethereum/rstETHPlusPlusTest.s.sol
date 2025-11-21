@@ -385,6 +385,7 @@ contract Deploy is Script {
         address[] memory holders = ArraysLibrary.makeAddressArray(
             abi.encode(
                 curator,
+                Constants.KYBERSWAP_ROUTER,
                 Constants.WETH,
                 Constants.WETH,
                 Constants.WSTETH,
@@ -399,6 +400,7 @@ contract Deploy is Script {
         bytes32[] memory roles = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
                 Permissions.SWAP_MODULE_ROUTER_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
