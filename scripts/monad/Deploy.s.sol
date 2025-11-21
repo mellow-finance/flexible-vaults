@@ -55,23 +55,23 @@ contract Deploy is Script {
     uint256 saltIterator = 0;
     uint256[21] salts = [
         27754309,
-        100600298,
+        32828413,
         98255098,
         170869071,
-        158405665,
+        467289359,
         162525475,
         29091107,
         115634659,
-        391260558,
+        216815195,
         127631498,
         74425679,
         276828091,
         134581626,
         61166419,
-        62158314,
+        186146935,
         325050372,
         322540166,
-        580771013,
+        41995837,
         765838899,
         374889047,
         12267928
@@ -82,8 +82,9 @@ contract Deploy is Script {
         returns (address a)
     {
         bytes32 salt = bytes32(salts[saltIterator++]);
+
         a = Create2.deploy(0, salt, abi.encodePacked(creationCode, constructorParams));
-        console2.log("%s: %s ", title, a);
+        console2.log("%s: %s", title, a);
     }
 
     function deployMonad(address deployer, address proxyAdmin) public returns (Deployment memory $) {

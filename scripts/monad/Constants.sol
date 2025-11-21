@@ -13,14 +13,10 @@ library Constants {
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE; // MON
-    address public constant WETH = 0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701; // WMON
+    address public constant WETH = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A; // WMON
 
-    address public constant WBTC = 0xcf5a6076cfa32686c0Df13aBaDa2b40dec133F1d;
-    address public constant USDC = 0xf817257fed379853cDe0fa4F97AB987181B1E5Ea;
-    address public constant USDT = 0x88b8E2161DEDC77EF4ab7585569D2415a1C1055D;
-
-    address public constant AAVE_CORE = 0x9861f6a26050e02Ff0C079657F5a3AFcD8D4af52;
-    address public constant AAVE_V3_ORACLE = 0x58207F48394a02c933dec4Ee45feC8A55e9cdf38;
+    address public constant AAVE_CORE = 0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585;
+    address public constant AAVE_V3_ORACLE = 0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -33,50 +29,50 @@ library Constants {
             symbioticFarmFactory: address(0),
             wsteth: address(0),
             weth: WETH,
-            proxyAdmin: 0xEcA63DEc77E59EFB15196A610aefF3229Ecd44Ec,
+            proxyAdmin: 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0,
             deployer: 0x4d551d74e851Bd93Ce44D5F588Ba14623249CDda,
             // --- factories ---
-            factoryImplementation: Factory(0x883F7dDC499567c9F69f6571F068F948b1000f65),
-            factory: Factory(0x24F8DB193AbBf35cdD7fA8f8B9c7CDa57FBdA6cb),
-            erc20VerifierFactory: Factory(0xEFCA74C9e8010d2c3f4401f93d6F47bE7395DCB2),
+            factoryImplementation: Factory(0x0000000834bD05fe8A94b5e0bFeC2A58A4C9171E),
+            factory: Factory(0x000000049057E402f46800CDC08199b1358a7691),
+            erc20VerifierFactory: Factory(0x95d92a89f3Da7E872Ce4fd387790251F32551833),
             symbioticVerifierFactory: Factory(address(0)),
             eigenLayerVerifierFactory: Factory(address(0)),
-            riskManagerFactory: Factory(0xfA38a77C3dBD3Bbaf7458B41d4528A52a012b322),
-            subvaultFactory: Factory(0xb6B2d346E5C5F4654128cd0A6096301f2c1E5f58),
-            verifierFactory: Factory(0x20677cDa0d63dE8964DEFa2cc33081877C178574),
-            vaultFactory: Factory(0x6122A87Dc95D7ef867235A1c9560402B713Db7Db),
-            shareManagerFactory: Factory(0x65228e2A1ef99Ebf55F5B445E86B4e41D9134C30),
-            consensusFactory: Factory(0x68e7318b0c6E5B3e159159eefA956efA3a531894),
-            depositQueueFactory: Factory(0x8D90a1BA62038B0eD2Ee2d7079f371F98b8f286C),
-            redeemQueueFactory: Factory(0x8772dc6F5d8979F700F06972aeCA28126b8f6D40),
-            feeManagerFactory: Factory(0xD7C222Df98aeAc757C66B60E8e150F0C82Df419b),
-            oracleFactory: Factory(0x90637d2Fe2BEE554b0BfeAaaB90066c8EdD04A21),
+            riskManagerFactory: Factory(0xE9165b0A6cd7B0ecDb61824B84E8F41b6A8E1eEb),
+            subvaultFactory: Factory(0x68098106703ffFb19E8eE8E5f9E351AAaeFEc030),
+            verifierFactory: Factory(0x0E77e57b45f457ef4E361c7A0f0913Ea711e038e),
+            vaultFactory: Factory(0xb160AE10331F8a21dDB254398F4619c687634371),
+            shareManagerFactory: Factory(0x1b0E750CBEa45640622BC2F27885Fa6eD3B5BB3e),
+            consensusFactory: Factory(0x416Ef6b7cD1949C3c441831A711D46DA9aF32E4d),
+            depositQueueFactory: Factory(0xC51702dd4D3e57cf70411D630c6A7E05beC0D15E),
+            redeemQueueFactory: Factory(0x4e8647d0381dE364322c7E6E26e78fbeCA3f646C),
+            feeManagerFactory: Factory(0xd54D6CadEB9B8bBF99814f4bBF54424086Db41fE),
+            oracleFactory: Factory(0x4226677696289D4c6713186a5815efA981Ac7445),
             swapModuleFactory: Factory(address(0)),
             // --- implementations ---
-            consensusImplementation: Consensus(0x488E16F9f1c2230Fac0984Adc72468b5B598e9A6),
-            depositQueueImplementation: DepositQueue(payable(0x20fd179c46A0cc97b4F26d7397EE9C33E17F7A76)),
-            signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x890b9b544b8e398eF83a9e44850dC26C928F07d8)),
-            redeemQueueImplementation: RedeemQueue(payable(0x8705090340b934C6C54b65b59f25E8aeBa6FEB93)),
-            signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x92a4780547046aC7F49ec233BA47B17d8F2d1fdB)),
-            feeManagerImplementation: FeeManager(0x50e155409F5E01E2655c2D82c983A1813813D205),
-            oracleImplementation: Oracle(0x556d88d93ca699e7a7302969FEA722f1588aC2b2),
-            riskManagerImplementation: RiskManager(0x98768d02F68661Cb50E8D382EB44b55534009C10),
-            tokenizedShareManagerImplementation: TokenizedShareManager(0xf8bA91e88e799BEaFE201C16cD36bCd051E743e2),
-            basicShareManagerImplementation: BasicShareManager(0xccB1289ee47E9C12F483406fB610a186b49ea8Ec),
-            subvaultImplementation: Subvault(payable(0x02aF525aa34C7C24f029750EB4133a0b0e44CF86)),
-            verifierImplementation: Verifier(0xA9792b6a5E81Eb3De60391d48f5037C02d2913d1),
-            vaultImplementation: Vault(payable(0xb5CbBE856eFf518702B903D8DDfEff948b12192A)),
-            bitmaskVerifier: BitmaskVerifier(0x7EBa8f20eBA1b62e894c6877dE5FA48AC85D6ee4),
-            erc20VerifierImplementation: ERC20Verifier(0x86419C7fd95cEAeb25596a596B5c12008938bFDb),
+            consensusImplementation: Consensus(0x000000005AB29dAA855DfA661d8D9D25cD88c103),
+            depositQueueImplementation: DepositQueue(payable(0x00000004F672aA091EbF44545cb8aE75143d8F4c)),
+            signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000008D840ca76629607583C697FEdFA5fdd49)),
+            redeemQueueImplementation: RedeemQueue(payable(0x00000004051f95d5836fF4149ca4a26B5Cfb8784)),
+            signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x00000002CB862cEdD58B73B24996f54E43a3E00f)),
+            feeManagerImplementation: FeeManager(0x00000005e070fE45D9bc67A4E3201994347Ec9F5),
+            oracleImplementation: Oracle(0x0000000cCDCc8A633bC9738fD8D3129e70f7a049),
+            riskManagerImplementation: RiskManager(0x00000004d3A91Eb46d4F405bf539EeaE30A01782),
+            tokenizedShareManagerImplementation: TokenizedShareManager(0x0000000F017D7077E34F4292E034478c371EB2C3),
+            basicShareManagerImplementation: BasicShareManager(0x00000001198a8ac01F183Cfc340FdBF01b441C83),
+            subvaultImplementation: Subvault(payable(0x000000019aEA95f32aCcBD160B12Dc39C3b6c0A7)),
+            verifierImplementation: Verifier(0x00000001eA707eC337425AEB128d5C92EbAc3dA0),
+            vaultImplementation: Vault(payable(0x000000061Cf24abc52E54BA275579e21E96e7716)),
+            bitmaskVerifier: BitmaskVerifier(0x000000019a3e622ee54B1F6e155fB740D1fd9F0F),
+            erc20VerifierImplementation: ERC20Verifier(0x00000009710AebAE63B94487a7d4A0B07e6c4837),
             symbioticVerifierImplementation: SymbioticVerifier(address(0)),
             eigenLayerVerifierImplementation: EigenLayerVerifier(address(0)),
             swapModuleImplementation: SwapModule(payable(address(0))),
             // --- helpers / hooks ---
-            vaultConfigurator: VaultConfigurator(0xB356b8150967FFea2f6Ab5fE3418F72266a33ee2),
-            basicRedeemHook: BasicRedeemHook(0xCb238e06e5753316cbD7799486B5B47004Fa868D),
-            redirectingDepositHook: RedirectingDepositHook(0x3E4d14CE26284CF8837a75f32c42EB476D5B4ae6),
+            vaultConfigurator: VaultConfigurator(0x0000000594E51babd99Dae398E877C474201F1a5),
+            basicRedeemHook: BasicRedeemHook(0x00000001D757B0554F564d88C6855ccD9BaB5B6c),
+            redirectingDepositHook: RedirectingDepositHook(0x0000000Ef1A84Ae7D455249D61d33e6397C46D72),
             lidoDepositHook: LidoDepositHook(address(0)),
-            oracleHelper: OracleHelper(0x4c8379699E5A0B404cE2ba111ab87eDB9C9De783)
+            oracleHelper: OracleHelper(0x00000002449a991F159727e9AA64583a560e5efD)
         });
     }
 }
