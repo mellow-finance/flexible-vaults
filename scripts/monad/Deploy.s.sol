@@ -46,21 +46,47 @@ contract Deploy is Script {
 
         address proxyAdmin = deployer;
 
-        deployMonadTestnet(deployer, proxyAdmin);
+        deployMonad(deployer, proxyAdmin);
 
         vm.stopBroadcast();
-        //revert("ok");
+        revert("ok");
     }
+
+    uint256 saltIterator = 0;
+    uint256[21] salts = [
+        27754309,
+        100600298,
+        98255098,
+        170869071,
+        158405665,
+        162525475,
+        29091107,
+        115634659,
+        391260558,
+        127631498,
+        74425679,
+        276828091,
+        134581626,
+        61166419,
+        62158314,
+        325050372,
+        322540166,
+        580771013,
+        765838899,
+        374889047,
+        12267928
+    ];
 
     function _deployWithOptimalSalt(string memory title, bytes memory creationCode, bytes memory constructorParams)
         internal
         returns (address a)
     {
-        a = Create2.deploy(0, bytes32(SALT), abi.encodePacked(creationCode, constructorParams));
-        console2.log("%s: %s;", title, a);
+        bytes32 salt = bytes32(salts[saltIterator++]);
+        a = Create2.deploy(0, salt, abi.encodePacked(creationCode, constructorParams));
+        console2.log("%s: %s ", title, a);
     }
 
-    function deployMonadTestnet(address deployer, address proxyAdmin) public returns (Deployment memory $) {
+    function deployMonad(address deployer, address proxyAdmin) public returns (Deployment memory $) {
         {
             Factory implementation = Factory(
                 _deployWithOptimalSalt(
