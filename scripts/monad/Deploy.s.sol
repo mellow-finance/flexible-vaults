@@ -44,7 +44,7 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
-        address proxyAdmin = deployer;
+        address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
 
         deployMonad(deployer, proxyAdmin);
 
