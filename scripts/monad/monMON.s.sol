@@ -26,6 +26,7 @@ contract Deploy is Script {
     // Actors
     address public deployer;
     address public testEOA = address(0xEcA63DEc77E59EFB15196A610aefF3229Ecd44Ec);
+    address public testMSIG = 0xBeCb9D6bbd035749724F99EC432EbD8f071544c5; // 1/1 testEOA
     address public proxyAdmin = testEOA;
     address public lazyVaultAdmin = testEOA;
     address public activeVaultAdmin = testEOA;
@@ -36,9 +37,10 @@ contract Deploy is Script {
     Vault public vault = Vault(payable(0x8769b724e264D38d0d70eD16F965FA9Fa680EcDe));
 
     function run() external {
+        _updateCuratorAndMerkleRoot(testMSIG);
         //pushReport();
-        makeSupply();
-        //return;
+        //makeSupply();
+        return;
         revert("ok");
 
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -411,13 +413,27 @@ contract Deploy is Script {
         vm.stopBroadcast();
     }
 
-    function _updateMerkleRoot() internal {
+    function _updateCuratorAndMerkleRoot(address newCurator) internal {
         uint256 adminPK = uint256(bytes32(vm.envBytes("MONAD_TEST_ADMIN")));
+        bytes32[] memory merkleRoot = new bytes32[](1);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+
+        curator = newCurator;
+
         address subvault = vault.subvaultAt(0);
-        (bytes32 merkleRoot,) = _createSubvault0Proofs(subvault);
+        (merkleRoot[0], calls[0]) = _createSubvault0Proofs(subvault);
 
         vm.startBroadcast(adminPK);
-        IVerifier(IVerifierModule(subvault).verifier()).setMerkleRoot(merkleRoot);
+        for (uint256 i = 0; i < calls.length; i++) {
+            Subvault subvault = Subvault(payable(IVaultModule(vault).subvaultAt(i)));
+            IVerifier verifier = Subvault(payable(subvault)).verifier();
+            verifier.setMerkleRoot(merkleRoot[i]);
+
+            for (uint256 j = 0; j < calls[i].payloads.length; j++) {
+                AcceptanceLibrary._verifyCalls(verifier, calls[i].calls[j], calls[i].payloads[j]);
+            }
+        }
+        vault.grantRole(Permissions.CALLER_ROLE, newCurator);
         vm.stopBroadcast();
     }
 
