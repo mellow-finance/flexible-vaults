@@ -96,9 +96,9 @@ contract Deploy is Script {
                 mstore(holders, i)
             }
         }
-        address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH));
-        address[] memory depositAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH));
-        address[] memory withdrawAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH));
+        address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
+        address[] memory depositAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
+        address[] memory withdrawAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.WMON));
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -147,14 +147,14 @@ contract Deploy is Script {
         }
 
         // fee manager setup
-        vault.feeManager().setBaseAsset(address(vault), Constants.ETH);
+        vault.feeManager().setBaseAsset(address(vault), Constants.MON);
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](1);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+        address[] memory verifiers = new address[](0);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](0);
 
-        {
+        /*     {
             IRiskManager riskManager = vault.riskManager();
 
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
@@ -166,7 +166,7 @@ contract Deploy is Script {
 
             riskManager.allowSubvaultAssets(subvault, assets_);
             riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
-        }
+        } */
 
         // emergency pause setup
         timelockController.schedule(
@@ -190,14 +190,14 @@ contract Deploy is Script {
             0
         );
 
-        timelockController.schedule(
+        /* timelockController.schedule(
             address(Subvault(payable(vault.subvaultAt(0))).verifier()),
             0,
             abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
             bytes32(0),
             bytes32(0),
             0
-        );
+        ); */
 
         for (uint256 i = 0; i < assets_.length; i++) {
             if (vault.getQueueCount(assets_[i]) > 0) {
@@ -257,7 +257,7 @@ contract Deploy is Script {
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
-            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
+            uint256 timestamp = oracle.getReport(Constants.MON).timestamp;
             for (uint256 i = 0; i < reports.length; i++) {
                 oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
@@ -330,10 +330,15 @@ contract Deploy is Script {
     function _createSubvault0Proofs(address subvault)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {}
+    {
+        merkleRoot = bytes32(0);
+        calls.calls = new Call[][](1);
+        calls.calls[0] = new Call[](0);
+        calls.payloads = new IVerifier.VerificationPayload[](0);
+    }
 
     function getSymbol(address token) internal view returns (string memory) {
-        if (token == Constants.ETH) {
+        if (token == Constants.MON) {
             return "MON";
         } else {
             return IERC20Metadata(token).symbol();
@@ -342,7 +347,7 @@ contract Deploy is Script {
 
     function pushReport() internal {
         IOracle oracle = vault.oracle();
-        address[] memory assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH));
+        address[] memory assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
 
         IOracle.Report[] memory reports = new IOracle.Report[](assets.length);
         for (uint256 i = 0; i < assets.length; i++) {

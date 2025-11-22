@@ -39,6 +39,7 @@ contract Deploy is Script {
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
+        console2.log("Deployer: %s", deployer);
 
         vm.startBroadcast(deployerPk);
 
@@ -47,7 +48,7 @@ contract Deploy is Script {
         deployMonad(deployer, proxyAdmin);
 
         vm.stopBroadcast();
-        revert("ok");
+        //revert("ok");
     }
 
     uint256 saltIterator = 0;

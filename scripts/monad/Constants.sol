@@ -12,8 +12,8 @@ library Constants {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
-    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE; // MON
-    address public constant WETH = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A; // WMON
+    address public constant MON = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE; // MON
+    address public constant WMON = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A; // WMON
 
     address public constant AAVE_CORE = 0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585;
     address public constant AAVE_V3_ORACLE = 0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4;
@@ -28,25 +28,25 @@ library Constants {
             symbioticVaultFactory: address(0),
             symbioticFarmFactory: address(0),
             wsteth: address(0),
-            weth: WETH,
+            weth: WMON,
             proxyAdmin: 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0,
             deployer: 0x4d551d74e851Bd93Ce44D5F588Ba14623249CDda,
             // --- factories ---
             factoryImplementation: Factory(0x0000000834bD05fe8A94b5e0bFeC2A58A4C9171E),
             factory: Factory(0x000000049057E402f46800CDC08199b1358a7691),
-            erc20VerifierFactory: Factory(0x95d92a89f3Da7E872Ce4fd387790251F32551833),
+            erc20VerifierFactory: Factory(0xC14BCd44686EE3eAF483EdC5436d93e97Ac50D71),
             symbioticVerifierFactory: Factory(address(0)),
             eigenLayerVerifierFactory: Factory(address(0)),
-            riskManagerFactory: Factory(0xE9165b0A6cd7B0ecDb61824B84E8F41b6A8E1eEb),
-            subvaultFactory: Factory(0x68098106703ffFb19E8eE8E5f9E351AAaeFEc030),
-            verifierFactory: Factory(0x0E77e57b45f457ef4E361c7A0f0913Ea711e038e),
-            vaultFactory: Factory(0xb160AE10331F8a21dDB254398F4619c687634371),
-            shareManagerFactory: Factory(0x1b0E750CBEa45640622BC2F27885Fa6eD3B5BB3e),
-            consensusFactory: Factory(0x416Ef6b7cD1949C3c441831A711D46DA9aF32E4d),
-            depositQueueFactory: Factory(0xC51702dd4D3e57cf70411D630c6A7E05beC0D15E),
-            redeemQueueFactory: Factory(0x4e8647d0381dE364322c7E6E26e78fbeCA3f646C),
-            feeManagerFactory: Factory(0xd54D6CadEB9B8bBF99814f4bBF54424086Db41fE),
-            oracleFactory: Factory(0x4226677696289D4c6713186a5815efA981Ac7445),
+            riskManagerFactory: Factory(0x195b23BA895ed8c951A093D295a33ecbE2BD8EDD),
+            subvaultFactory: Factory(0x5e11c97dB901EdD8932fdaA77b015da89F3f289E),
+            verifierFactory: Factory(0x48766B2e6B321f6550988d1A2e09b42E91708759),
+            vaultFactory: Factory(0x04c0287DEdE16e0C04A1C2A52F31400a88f1dF4c),
+            shareManagerFactory: Factory(0xFA6CD2822912f86f17429683334F2B79FB5cd7E7),
+            consensusFactory: Factory(0x2e84d9E713610d7eAFcDF7f998ce1Bdb835F5668),
+            depositQueueFactory: Factory(0xa67330bb89668bA66502a6D6670dACf5F334eb53),
+            redeemQueueFactory: Factory(0xA92CeA07d6009DE8F2AA377a4298dECCF94d942a),
+            feeManagerFactory: Factory(0xDC40601EeE986E739831A96669F931EB818F43d2),
+            oracleFactory: Factory(0x2c2ca09e5511bd69fFe9f156254b901DdC4f7FC5),
             swapModuleFactory: Factory(address(0)),
             // --- implementations ---
             consensusImplementation: Consensus(0x000000005AB29dAA855DfA661d8D9D25cD88c103),
