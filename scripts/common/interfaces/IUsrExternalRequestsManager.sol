@@ -29,4 +29,32 @@ interface IUsrExternalRequestsManager {
     function cancelBurn(uint256 _id) external;
 
     function redeem(uint256 _amount, address _withdrawalTokenAddress, uint256 _minExpectedAmount) external;
+
+    function mintRequestsCounter() external view returns (uint256);
+
+    function mintRequests(uint256 id)
+        external
+        view
+        returns (
+            uint256, /* id */
+            address provider,
+            State state,
+            uint256 amount,
+            address token,
+            uint256 minExpectedAmount
+        );
+
+    function burnRequestsCounter() external view returns (uint256);
+
+    function burnRequests(uint256 id)
+        external
+        view
+        returns (
+            uint256, /* id */
+            address provider,
+            State state,
+            uint256 amount,
+            address token,
+            uint256 minExpectedAmount
+        );
 }

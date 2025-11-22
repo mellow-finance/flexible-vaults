@@ -11,14 +11,6 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract CustomOracle is ICustomOracle {
-    struct Balance {
-        address asset;
-        int256 balance;
-        int256 value;
-        string metadata;
-        address holder;
-    }
-
     IAaveOracleV3 public immutable AAVE_ORACLE;
     address public immutable nativeWrapper; // WETH
 

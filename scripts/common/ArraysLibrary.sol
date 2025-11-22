@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./interfaces/Imports.sol";
+import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
+import {Call} from "./interfaces/Imports.sol";
 import "@openzeppelin/contracts/utils/Arrays.sol";
-import "forge-std/console2.sol";
 
 library ArraysLibrary {
     function makeAddressArray(bytes memory data) internal pure returns (address[] memory a) {
