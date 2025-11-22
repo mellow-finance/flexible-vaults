@@ -9,7 +9,7 @@ interface IDistributionCollector {
         address holder;
     }
 
-    function getDistributions(address holder, bytes memory protocolDeployment, address[] calldata assets)
+    function getDistributions(address holder, bytes calldata protocolDeployment, address[] calldata assets)
         external
         view
         returns (Balance[] memory balances);
