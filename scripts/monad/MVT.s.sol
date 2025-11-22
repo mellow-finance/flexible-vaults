@@ -62,10 +62,10 @@ contract Deploy is Script {
 
             // activeVaultAdmin roles:
             holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, lazyVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, lazyVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, lazyVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, lazyVaultAdmin);
             holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
             holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
             holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
@@ -98,7 +98,7 @@ contract Deploy is Script {
         }
         address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
         address[] memory depositAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
-        address[] memory withdrawAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.WMON));
+        address[] memory withdrawAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -118,9 +118,9 @@ contract Deploy is Script {
                     suspiciousAbsoluteDeviation: 0.001 ether,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
-                    timeout: 1 minutes,
-                    depositInterval: 1 minutes,
-                    redeemInterval: 1 minutes
+                    timeout: 20 hours,
+                    depositInterval: 1 hours,
+                    redeemInterval: 2 days
                 }),
                 assets_
             ),
@@ -300,10 +300,10 @@ contract Deploy is Script {
 
         // activeVaultAdmin roles:
         holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
-        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
-        holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
-        holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
-        holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, lazyVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, lazyVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, lazyVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, lazyVaultAdmin);
         holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
         holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
         holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
