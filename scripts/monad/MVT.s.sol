@@ -35,6 +35,7 @@ contract Deploy is Script {
     address public oracleUpdater = 0xEdeD5b7EB44Cc76083f5759Bf1B6a396b49096B6;
     address public curator = 0x6e8532d7a5C597b9463a87F6ce51009b27874BbC;
     address public pauser = 0x8176Ce5927Abad5EC15a2c92AeB3A8E6E7e74801;
+    address public feeManagerOwner = 0x5523462B0dDA6F6D9a26d0d088160995c0332Bf3;
 
     Vault public vault = Vault(payable(address(0)));
 
@@ -108,7 +109,7 @@ contract Deploy is Script {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "Monad Vault", "MVT"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
+            feeManagerParams: abi.encode(deployer, feeManagerOwner, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
@@ -148,7 +149,7 @@ contract Deploy is Script {
 
         // fee manager setup
         vault.feeManager().setBaseAsset(address(vault), Constants.MON);
-        Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
+        Ownable(address(vault.feeManager())).transferOwnership(feeManagerOwner);
 
         // subvault setup
         address[] memory verifiers = new address[](0);
