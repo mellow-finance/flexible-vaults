@@ -37,7 +37,7 @@ contract Deploy is Script {
     address public pauser = 0x8176Ce5927Abad5EC15a2c92AeB3A8E6E7e74801;
     address public feeManagerOwner = 0x5523462B0dDA6F6D9a26d0d088160995c0332Bf3;
 
-    Vault public vault = Vault(payable(address(0)));
+    Vault public vault = Vault(payable(0x912644cdFadA93469b8aB5b4351bDCFf61691613));
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -260,7 +260,7 @@ contract Deploy is Script {
             oracle.submitReports(reports);
             uint256 timestamp = oracle.getReport(Constants.MON).timestamp;
             for (uint256 i = 0; i < reports.length; i++) {
-                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+                //  oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
         }
 
@@ -344,6 +344,27 @@ contract Deploy is Script {
         } else {
             return IERC20Metadata(token).symbol();
         }
+    }
+
+    function acceptReport() internal {
+        IOracle oracle = vault.oracle();
+        address[] memory assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
+
+        for (uint256 i = 0; i < assets.length; i++) {
+            IOracle.DetailedReport memory report = oracle.getReport(assets[i]);
+            vm.prank(activeVaultAdmin);
+            oracle.acceptReport(assets[i], report.priceD18, uint32(report.timestamp));
+            console2.log("asset %s priceD18 %s timestamp %s", assets[i], report.priceD18, report.timestamp);
+        }
+
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        deployer = vm.addr(deployerPk);
+
+        vm.startBroadcast(deployerPk);
+        IDepositQueue(address(vault.queueAt(Constants.MON, 0))).deposit{value: 1 ether}(
+            1 ether, address(0), new bytes32[](0)
+        );
+        vm.stopBroadcast();
     }
 
     function pushReport() internal {
