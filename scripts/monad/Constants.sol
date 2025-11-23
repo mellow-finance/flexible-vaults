@@ -12,8 +12,9 @@ library Constants {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
-    address public constant MON = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE; // MON
-    address public constant WMON = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A; // WMON
+    address public constant MON = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address public constant WMON = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A;
+    address public constant SHMON = 0x1B68626dCa36c7fE922fD2d55E4f631d962dE19c;
 
     address public constant AAVE_CORE = 0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585;
     address public constant AAVE_V3_ORACLE = 0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4;

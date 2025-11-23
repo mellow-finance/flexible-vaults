@@ -10,6 +10,7 @@ import "forge-std/Script.sol";
 
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants} from "./Constants.sol";
+import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
 contract AaveOracle is ICustomPriceOracle {
     uint256 public immutable Q96 = 2 ** 96;
@@ -23,6 +24,11 @@ contract AaveOracle is ICustomPriceOracle {
     }
 
     function priceX96() public view returns (uint256) {
+        if (asset == Constants.SHMON) {
+            uint256 assetPrice = IAaveOracleV3(aaveOracle).getAssetPrice(Constants.WMON);
+            uint256 shmonPrice = IERC4626(address(Constants.SHMON)).convertToAssets(1 ether);
+            return (assetPrice * shmonPrice / 1 ether) * Q96;
+        }
         return IAaveOracleV3(aaveOracle).getAssetPrice(asset) * Q96;
     }
 }
@@ -30,8 +36,33 @@ contract AaveOracle is ICustomPriceOracle {
 contract Deploy is Script {
     uint256 constant Q96 = 2 ** 96;
     address public vault = 0x912644cdFadA93469b8aB5b4351bDCFf61691613;
+    address public collectorAddress = 0x3228e80512eC98A23430Ee9c3feC937b351D1427;
 
     function run() external {
+        addPriceOracle();
+        //revert("ok");
+    }
+
+    function addPriceOracle() internal {
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        PriceOracle oracle = PriceOracle(address(Collector(payable(collectorAddress)).oracle()));
+
+        PriceOracle.TokenOracle[] memory tokenOracles = new PriceOracle.TokenOracle[](1);
+        tokenOracles[0] = PriceOracle.TokenOracle({
+            constValue: 0,
+            oracle: address(new AaveOracle(Constants.AAVE_V3_ORACLE, Constants.SHMON))
+        }); // SHMON
+
+        vm.startBroadcast(deployerPk);
+        address deployer = vm.addr(deployerPk);
+
+        oracle.setOracles(ArraysLibrary.makeAddressArray(abi.encode(Constants.SHMON)), tokenOracles);
+
+        vm.stopBroadcast();
+        oracle.priceX96(Constants.SHMON);
+    }
+
+    function deployCollector() internal {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         vm.startBroadcast(deployerPk);
         address deployer = vm.addr(deployerPk);
@@ -69,6 +100,5 @@ contract Deploy is Script {
                 redeemHandlingInterval: 1 hours
             })
         );
-        //revert("ok");
     }
 }
