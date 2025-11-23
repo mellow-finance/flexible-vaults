@@ -8,12 +8,19 @@ import "./uniswap-v3/libraries/PositionLibrary.sol";
 import "./uniswap-v3/libraries/PositionValue.sol";
 
 contract UniswapV3Collector is IDistributionCollector {
+    struct Stack {
+        address[] whitelistedPools;
+        bytes[] securityParams;
+    }
+
     uint16 public constant MIN_OBSERVATION_CARDINALITY = 100;
 
     INonfungiblePositionManager public immutable positionManager;
+    IUniswapV3Factory public immutable factory;
 
     constructor(address positionManager_) {
         positionManager = INonfungiblePositionManager(positionManager_);
+        factory = IUniswapV3Factory(positionManager.factory());
     }
 
     function getDistributions(address holder, bytes calldata deployment, address[] calldata assets)
@@ -22,21 +29,20 @@ contract UniswapV3Collector is IDistributionCollector {
         returns (Balance[] memory balances)
     {
         balances = new Balance[](assets.length);
-        (address[] memory whitelistedPools, bytes memory securityParams) = abi.decode(deployment, (address[], bytes));
+        (address[] memory whitelistedPools, bytes[] memory securityParams) =
+            abi.decode(deployment, (address[], bytes[]));
         uint256 positions = positionManager.balanceOf(holder);
         for (uint256 i = 0; i < assets.length; i++) {
             balances[i] = Balance({asset: assets[i], balance: 0, metadata: "UniswapV3", holder: holder});
         }
-
-        IUniswapV3Factory factory = IUniswapV3Factory(positionManager.factory());
 
         for (uint256 index = 0; index < positions; index++) {
             uint256 tokenId = positionManager.tokenOfOwnerByIndex(holder, index);
             PositionLibrary.Position memory position = PositionLibrary.getPosition(address(positionManager), tokenId);
 
             address pool = factory.getPool(position.token0, position.token1, position.fee);
-
-            if (indexOf(whitelistedPools, pool) == type(uint256).max) {
+            uint256 poolIndex = indexOf(whitelistedPools, pool);
+            if (poolIndex == type(uint256).max) {
                 continue;
             }
 
@@ -46,7 +52,7 @@ contract UniswapV3Collector is IDistributionCollector {
                 revert("UniswapV3Collector: whitelisted pool has unsupported tokens");
             }
 
-            uint160 sqrtPriceX96 = getCheckedPrice(IUniswapV3Pool(pool), securityParams);
+            uint160 sqrtPriceX96 = getCheckedPrice(IUniswapV3Pool(pool), securityParams[poolIndex]);
             (uint256 amount0, uint256 amount1) = PositionValue.principal(positionManager, tokenId, sqrtPriceX96);
             {
                 (uint256 fee0, uint256 fee1) = PositionValue.fees(positionManager, tokenId);

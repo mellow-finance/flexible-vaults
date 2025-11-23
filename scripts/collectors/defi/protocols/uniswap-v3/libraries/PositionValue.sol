@@ -1,15 +1,21 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity >=0.6.8 <0.9.0;
+// SPDX-License-Identifier: BUSL-1.1
+pragma solidity 0.8.25;
+
+import {LiquidityAmounts} from "./LiquidityAmounts.sol";
+import {TickMath} from "./TickMath.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+
+import "./PositionLibrary.sol";
 
 import "../interfaces/INonfungiblePositionManager.sol";
+
 import "../interfaces/IUniswapV3Factory.sol";
 import "../interfaces/IUniswapV3Pool.sol";
 
-import "./LiquidityAmounts.sol";
-import "./TickMath.sol";
-
 /// @title Returns information about the token value held in a Uniswap V3 NFT
 library PositionValue {
+    uint256 private constant Q128 = 1 << 128;
+
     /// @notice Returns the total amounts of token0 and token1, i.e. the sum of fees and principal
     /// that a given nonfungible position manager token is worth
     /// @param positionManager The Uniswap V3 NonfungiblePositionManager
@@ -113,18 +119,15 @@ library PositionValue {
             feeParams.tickLower,
             feeParams.tickUpper
         );
+        unchecked {
+            amount0 = Math.mulDiv(
+                poolFeeGrowthInside0LastX128 - feeParams.positionFeeGrowthInside0LastX128, feeParams.liquidity, Q128
+            ) + feeParams.tokensOwed0;
 
-        amount0 = Math.mulDiv(
-            poolFeeGrowthInside0LastX128 - feeParams.positionFeeGrowthInside0LastX128,
-            feeParams.liquidity,
-            0x100000000000000000000000000000000
-        ) + feeParams.tokensOwed0;
-
-        amount1 = Math.mulDiv(
-            poolFeeGrowthInside1LastX128 - feeParams.positionFeeGrowthInside1LastX128,
-            feeParams.liquidity,
-            0x100000000000000000000000000000000
-        ) + feeParams.tokensOwed1;
+            amount1 = Math.mulDiv(
+                poolFeeGrowthInside1LastX128 - feeParams.positionFeeGrowthInside1LastX128, feeParams.liquidity, Q128
+            ) + feeParams.tokensOwed1;
+        }
     }
 
     function _getFeeGrowthInside(IUniswapV3Pool pool, int24 tickLower, int24 tickUpper)
@@ -136,17 +139,19 @@ library PositionValue {
         (,, uint256 lowerFeeGrowthOutside0X128, uint256 lowerFeeGrowthOutside1X128,,,,) = pool.ticks(tickLower);
         (,, uint256 upperFeeGrowthOutside0X128, uint256 upperFeeGrowthOutside1X128,,,,) = pool.ticks(tickUpper);
 
-        if (tickCurrent < tickLower) {
-            feeGrowthInside0X128 = lowerFeeGrowthOutside0X128 - upperFeeGrowthOutside0X128;
-            feeGrowthInside1X128 = lowerFeeGrowthOutside1X128 - upperFeeGrowthOutside1X128;
-        } else if (tickCurrent < tickUpper) {
-            uint256 feeGrowthGlobal0X128 = pool.feeGrowthGlobal0X128();
-            uint256 feeGrowthGlobal1X128 = pool.feeGrowthGlobal1X128();
-            feeGrowthInside0X128 = feeGrowthGlobal0X128 - lowerFeeGrowthOutside0X128 - upperFeeGrowthOutside0X128;
-            feeGrowthInside1X128 = feeGrowthGlobal1X128 - lowerFeeGrowthOutside1X128 - upperFeeGrowthOutside1X128;
-        } else {
-            feeGrowthInside0X128 = upperFeeGrowthOutside0X128 - lowerFeeGrowthOutside0X128;
-            feeGrowthInside1X128 = upperFeeGrowthOutside1X128 - lowerFeeGrowthOutside1X128;
+        unchecked {
+            if (tickCurrent < tickLower) {
+                feeGrowthInside0X128 = lowerFeeGrowthOutside0X128 - upperFeeGrowthOutside0X128;
+                feeGrowthInside1X128 = lowerFeeGrowthOutside1X128 - upperFeeGrowthOutside1X128;
+            } else if (tickCurrent < tickUpper) {
+                uint256 feeGrowthGlobal0X128 = pool.feeGrowthGlobal0X128();
+                uint256 feeGrowthGlobal1X128 = pool.feeGrowthGlobal1X128();
+                feeGrowthInside0X128 = feeGrowthGlobal0X128 - lowerFeeGrowthOutside0X128 - upperFeeGrowthOutside0X128;
+                feeGrowthInside1X128 = feeGrowthGlobal1X128 - lowerFeeGrowthOutside1X128 - upperFeeGrowthOutside1X128;
+            } else {
+                feeGrowthInside0X128 = upperFeeGrowthOutside0X128 - lowerFeeGrowthOutside0X128;
+                feeGrowthInside1X128 = upperFeeGrowthOutside1X128 - lowerFeeGrowthOutside1X128;
+            }
         }
     }
 }

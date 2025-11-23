@@ -15,6 +15,13 @@ import {rstETHPlusCustomOracle} from "./defi/instances/rstETHPlusCustomOracle.so
 import {strETHCustomOracle} from "./defi/instances/strETHCustomOracle.sol";
 import {tqETHCustomOracle} from "./defi/instances/tqETHCustomOracle.sol";
 
+import {CoreVaultsCollector} from "./defi/protocols/CoreVaultsCollector.sol";
+import {UniswapV3Collector} from "./defi/protocols/UniswapV3Collector.sol";
+
+import {DistributionOracle} from "./defi/DistributionOracle.sol";
+
+import {Deployment} from "./defi/Deployment.sol";
+
 contract Deploy is Script {
     function _deployStrETHCustomCollector() internal {
         strETHCustomOracle customOracle = new strETHCustomOracle();
@@ -45,6 +52,28 @@ contract Deploy is Script {
     }
 
     function run() external {
-        _deployTqETHCustomCollector();
+        DistributionOracle.Protocol[] memory protocols = new DistributionOracle.Protocol[](2);
+        protocols[0] = DistributionOracle.Protocol({
+            collector: Deployment.CORE_VAULTS_COLLECTOR,
+            skipVault: true,
+            params: abi.encode(Constants.STRETH, Constants.WSTETH)
+        });
+        protocols[1] = DistributionOracle.Protocol({
+            collector: Deployment.UNISWAP_V3_COLLECTOR,
+            skipVault: true,
+            params: abi.encode(new address[](0), new bytes[](0))
+        });
+        DistributionOracle oracle = DistributionOracle(
+            Clones.cloneWithImmutableArgs(
+                Deployment.DISTRIBUTION_ORACLE,
+                abi.encode(
+                    protocols,
+                    ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH, Constants.WETH, Constants.USDC))
+                )
+            )
+        );
+
+        console2.log(address(oracle));
+        console2.logBytes(address(oracle).code);
     }
 }
