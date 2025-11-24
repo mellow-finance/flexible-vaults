@@ -70,6 +70,9 @@ library ProofLibrary {
         returns (bytes32 root, IVerifier.VerificationPayload[] memory)
     {
         uint256 n = leaves.length;
+        if (n == 0) {
+            return (bytes32(0), leaves);
+        }
         bytes32[] memory tree = new bytes32[](n * 2 - 1);
         bytes32[] memory cache = new bytes32[](n);
         bytes32[] memory sortedHashes = new bytes32[](n);
