@@ -311,6 +311,36 @@ contract Deploy is Script {
         revert("ok");
     }
 
+    function acceptReport() internal {
+        Vault vault = Vault(payable(address(0x5E77D4497f34E5Cb51150A7cc4aBFc84f1F145Da)));
+
+        IOracle oracle = vault.oracle();
+        address[] memory assets = ArraysLibrary.makeAddressArray(
+            abi.encode(
+                Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.RSETH, Constants.WEETH, Constants.RSTETH
+            )
+        );
+
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+
+        vm.startBroadcast(deployerPk);
+        for (uint256 i = 0; i < assets.length; i++) {
+            IOracle.DetailedReport memory report = oracle.getReport(assets[i]);
+            oracle.acceptReport(assets[i], report.priceD18, uint32(report.timestamp));
+            console2.log("asset %s priceD18 %s timestamp %s", assets[i], report.priceD18, report.timestamp);
+        }
+
+        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 0.001 ether}(
+            0.001 ether, address(0), new bytes32[](0)
+        );
+
+        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+
+        vm.stopBroadcast();
+    }
+
     function _getExpectedHolders(address timelockController)
         internal
         view
