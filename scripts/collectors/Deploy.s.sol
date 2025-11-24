@@ -11,8 +11,16 @@ import "forge-std/Script.sol";
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants} from "../ethereum/Constants.sol";
 
-import "./defi/instances/rstETHPlusCustomOracle.sol";
-import "./defi/instances/strETHCustomOracle.sol";
+import {rstETHPlusCustomOracle} from "./defi/instances/rstETHPlusCustomOracle.sol";
+import {strETHCustomOracle} from "./defi/instances/strETHCustomOracle.sol";
+import {tqETHCustomOracle} from "./defi/instances/tqETHCustomOracle.sol";
+
+import {CoreVaultsCollector} from "./defi/protocols/CoreVaultsCollector.sol";
+import {UniswapV3Collector} from "./defi/protocols/UniswapV3Collector.sol";
+
+import {DistributionOracle} from "./defi/DistributionOracle.sol";
+
+import {Deployment} from "./defi/Deployment.sol";
 
 contract Deploy is Script {
     function _deployStrETHCustomCollector() internal {
@@ -31,7 +39,17 @@ contract Deploy is Script {
         console2.log("tvl:", tvl);
     }
 
-    function run() external {
-        _deployRstETHPlusCustomCollector();
+    function _deployTqETHCustomCollector() internal {
+        tqETHCustomOracle customOracle = new tqETHCustomOracle();
+        customOracle.stateOverrides();
+
+        ICustomOracle.Balance[] memory response =
+            customOracle.getDistributions(0x2669a8B27B6f957ddb92Dc0ebdec1f112E6079E4, Constants.WETH);
+
+        for (uint256 i = 0; i < response.length; i++) {
+            console2.log(response[i].metadata, response[i].balance);
+        }
     }
+
+    function run() external {}
 }
