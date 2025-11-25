@@ -35,7 +35,8 @@ contract AaveOracle is ICustomPriceOracle {
 
 contract Deploy is Script {
     uint256 constant Q96 = 2 ** 96;
-    address public vault = 0x912644cdFadA93469b8aB5b4351bDCFf61691613;
+    address public vaultMON = 0x912644cdFadA93469b8aB5b4351bDCFf61691613;
+    address public vaultSHMON = 0xd7441a389Df504D2124529157152AaAD766456da;
     address public collectorAddress = 0x3228e80512eC98A23430Ee9c3feC937b351D1427;
 
     function run() external {
@@ -45,21 +46,31 @@ contract Deploy is Script {
 
     function addPriceOracle() internal {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        PriceOracle oracle = PriceOracle(address(Collector(payable(collectorAddress)).oracle()));
+        Collector collector = Collector(payable(collectorAddress));
+        PriceOracle oracle = PriceOracle(address(collector.oracle()));
 
         PriceOracle.TokenOracle[] memory tokenOracles = new PriceOracle.TokenOracle[](1);
+        vm.startBroadcast(deployerPk);
         tokenOracles[0] = PriceOracle.TokenOracle({
             constValue: 0,
             oracle: address(new AaveOracle(Constants.AAVE_V3_ORACLE, Constants.SHMON))
         }); // SHMON
 
-        vm.startBroadcast(deployerPk);
         address deployer = vm.addr(deployerPk);
 
         oracle.setOracles(ArraysLibrary.makeAddressArray(abi.encode(Constants.SHMON)), tokenOracles);
 
         vm.stopBroadcast();
         oracle.priceX96(Constants.SHMON);
+        collector.collect(
+            address(0),
+            Vault(payable(vaultSHMON)),
+            Collector.Config({
+                baseAssetFallback: Constants.SHMON,
+                oracleUpdateInterval: 20 hours,
+                redeemHandlingInterval: 1 hours
+            })
+        );
     }
 
     function deployCollector() internal {
@@ -93,7 +104,7 @@ contract Deploy is Script {
 
         collector.collect(
             address(0),
-            Vault(payable(vault)),
+            Vault(payable(vaultMON)),
             Collector.Config({
                 baseAssetFallback: Constants.WMON,
                 oracleUpdateInterval: 20 hours,
