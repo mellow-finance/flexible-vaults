@@ -9,8 +9,11 @@ import "./defi/protocols/ERC20Collector.sol";
 import "forge-std/Script.sol";
 
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
-import {Constants} from "../ethereum/Constants.sol";
+import {Constants as EthereumConstants} from "../ethereum/Constants.sol";
 
+import {Constants as MonadConstants} from "../monad/Constants.sol";
+
+import {MVTCustomOracle} from "./defi/instances/MVTCustomOracle.sol";
 import {rstETHPlusCustomOracle} from "./defi/instances/rstETHPlusCustomOracle.sol";
 import {strETHCustomOracle} from "./defi/instances/strETHCustomOracle.sol";
 import {tqETHCustomOracle} from "./defi/instances/tqETHCustomOracle.sol";
@@ -27,7 +30,7 @@ contract Deploy is Script {
         strETHCustomOracle customOracle = new strETHCustomOracle();
         customOracle.stateOverrides();
 
-        uint256 tvl = customOracle.tvl(Constants.STRETH, Constants.WETH);
+        uint256 tvl = customOracle.tvl(EthereumConstants.STRETH, EthereumConstants.WETH);
         console2.log("tvl:", tvl);
     }
 
@@ -35,7 +38,7 @@ contract Deploy is Script {
         rstETHPlusCustomOracle customOracle = new rstETHPlusCustomOracle(0x9aDadbFa5A6dA138E419Bc2fACb42364870bA8dC);
         customOracle.stateOverrides();
 
-        uint256 tvl = customOracle.tvl(Constants.STRETH, Constants.WETH);
+        uint256 tvl = customOracle.tvl(EthereumConstants.STRETH, EthereumConstants.WETH);
         console2.log("tvl:", tvl);
     }
 
@@ -44,12 +47,19 @@ contract Deploy is Script {
         customOracle.stateOverrides();
 
         ICustomOracle.Balance[] memory response =
-            customOracle.getDistributions(0x2669a8B27B6f957ddb92Dc0ebdec1f112E6079E4, Constants.WETH);
+            customOracle.getDistributions(0x2669a8B27B6f957ddb92Dc0ebdec1f112E6079E4, EthereumConstants.WETH);
 
         for (uint256 i = 0; i < response.length; i++) {
             console2.log(response[i].metadata, response[i].balance);
         }
     }
 
-    function run() external {}
+    function _deployMVTCustomCollector() internal {
+        MVTCustomOracle customOracle = new MVTCustomOracle();
+        customOracle.stateOverrides();
+    }
+
+    function run() external {
+        _deployMVTCustomCollector();
+    }
 }

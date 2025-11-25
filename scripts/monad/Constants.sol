@@ -16,6 +16,15 @@ library Constants {
     address public constant WMON = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A;
     address public constant SHMON = 0x1B68626dCa36c7fE922fD2d55E4f631d962dE19c;
 
+    address public constant USDC = 0x754704Bc059F8C67012fEd69BC8A327a5aafb603;
+    address public constant USDT0 = 0xe7cd86e13AC4309349F30B3435a9d337750fC82D;
+    address public constant AUSD = 0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a;
+
+    address public constant MORPHO_STEAKHOUSE_MON = 0x80bDee8E6a274AE08F89a4A59Ba68046612a76eb;
+    address public constant MORPHO_STEAKHOUSE_USDC = 0x802c91d807A8DaCA257c4708ab264B6520964e44;
+    address public constant MORPHO_STEAKHOUSE_USDT = 0x961a59Fe249b9795FAE7fA35f9E89629689D5278;
+    address public constant MORPHO_STEAKHOUSE_AUSD = 0xBC03E505EE65f9fAa68a2D7e5A74452858C16D29;
+
     address public constant AAVE_CORE = 0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585;
     address public constant AAVE_V3_ORACLE = 0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4;
 

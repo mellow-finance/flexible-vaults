@@ -6,6 +6,19 @@ import {Call} from "./interfaces/Imports.sol";
 import "@openzeppelin/contracts/utils/Arrays.sol";
 
 library ArraysLibrary {
+    function indexOf(address[] memory array, address value) internal pure returns (uint256) {
+        for (uint256 i = 0; i < array.length; i++) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+        return type(uint256).max;
+    }
+
+    function has(address[] memory array, address value) internal pure returns (bool) {
+        return indexOf(array, value) != type(uint256).max;
+    }
+
     function makeAddressArray(bytes memory data) internal pure returns (address[] memory a) {
         uint256 n = data.length / 32;
         a = new address[](n);
