@@ -66,6 +66,8 @@ library Constants {
     address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
 
+    address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
+
     address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
     address public constant CURVE_USDC_USDU_GAUGE = 0x0E2662672adC42Bb73d39196f9f557C11B4FCcf9;
 
