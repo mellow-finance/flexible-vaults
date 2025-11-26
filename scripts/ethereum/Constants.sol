@@ -27,6 +27,7 @@ library Constants {
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
+    address public constant REUSD = 0x5086bf358635B81D8C47C66d1C8b9E567Db70c72;
 
     address public constant USR = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
     address public constant STUSR = 0x6c8984bc7DBBeDAf4F6b2FD766f16eBB7d10AAb4;
