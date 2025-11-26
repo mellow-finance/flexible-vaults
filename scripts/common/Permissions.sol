@@ -68,4 +68,10 @@ library Permissions {
     bytes32 public constant CALLER_ROLE = keccak256("permissions.Verifier.CALLER_ROLE");
     bytes32 public constant ALLOW_CALL_ROLE = keccak256("permissions.Verifier.ALLOW_CALL_ROLE");
     bytes32 public constant DISALLOW_CALL_ROLE = keccak256("permissions.Verifier.DISALLOW_CALL_ROLE");
+
+    bytes32 public constant SWAP_MODULE_TOKEN_IN_ROLE = keccak256("utils.SwapModule.TOKEN_IN_ROLE");
+    bytes32 public constant SWAP_MODULE_TOKEN_OUT_ROLE = keccak256("utils.SwapModule.TOKEN_OUT_ROLE");
+    bytes32 public constant SWAP_MODULE_ROUTER_ROLE = keccak256("utils.SwapModule.ROUTER_ROLE");
+    bytes32 public constant SWAP_MODULE_CALLER_ROLE = keccak256("utils.SwapModule.CALLER_ROLE");
+    bytes32 public constant SWAP_MODULE_SET_SLIPPAGE_ROLE = keccak256("utils.SwapModule.SET_SLIPPAGE_ROLE");
 }

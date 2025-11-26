@@ -37,6 +37,8 @@ import "../../../src/vaults/Subvault.sol";
 import "../../../src/vaults/Vault.sol";
 import "../../../src/vaults/VaultConfigurator.sol";
 
+import "../../../src/utils/SwapModule.sol";
+
 struct ProtocolDeployment {
     string deploymentName;
     uint256 deploymentVersion;
@@ -64,6 +66,7 @@ struct ProtocolDeployment {
     Factory redeemQueueFactory;
     Factory feeManagerFactory;
     Factory oracleFactory;
+    Factory swapModuleFactory;
     Consensus consensusImplementation;
     DepositQueue depositQueueImplementation;
     SignatureDepositQueue signatureDepositQueueImplementation;
@@ -81,6 +84,7 @@ struct ProtocolDeployment {
     ERC20Verifier erc20VerifierImplementation;
     SymbioticVerifier symbioticVerifierImplementation;
     EigenLayerVerifier eigenLayerVerifierImplementation;
+    SwapModule swapModuleImplementation;
     VaultConfigurator vaultConfigurator;
     BasicRedeemHook basicRedeemHook;
     RedirectingDepositHook redirectingDepositHook;

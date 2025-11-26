@@ -28,11 +28,17 @@ library Constants {
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
 
+    address public constant USR = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
+    address public constant STUSR = 0x6c8984bc7DBBeDAf4F6b2FD766f16eBB7d10AAb4;
+    address public constant USR_REQUEST_MANAGER = 0xAC85eF29192487E0a109b7f9E40C267a9ea95f2e;
+
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
     address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
 
     address public constant AAVE_CORE = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
     address public constant AAVE_PRIME = 0x4e033931ad43597d96D6bcc25c280717730B58B1;
+
+    address public constant SPARK = 0xC13e21B648A5Ee794902342038FF3aDAB66BE987;
 
     address public constant AAVE_V3_ORACLE = 0x54586bE62E3c3580375aE3723C145253060Ca0C2;
 
@@ -61,6 +67,8 @@ library Constants {
     address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
 
+    address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
+
     // https://www.curve.finance/dex/ethereum/pools/factory-stable-ng-596/deposit
     address public constant CURVE_USDC_USDU_POOL = 0x6C5Ff8DCe52BE77b4eCE6B51996018f0C1713bA9;
     address public constant CURVE_USDC_USDU_GAUGE = 0xbB6eDb6E10fC89F1032F3c4DdB2e73d1BeDa423f;
@@ -76,6 +84,11 @@ library Constants {
     address public constant TERMMAX_ROUTER = 0xC47591F5c023e44931c78D5A993834875b79FB11;
 
     address public constant MORPHO_ETHEREUM = 0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb;
+
+    address public constant RSTETH = 0x7a4EffD87C2f3C55CA251080b1343b605f327E3a;
+    address public constant CAP_LENDER = 0x15622c3dbbc5614E6DFa9446603c1779647f01FC;
+    address public constant CAP_NETWORK = 0x98e52Ea7578F2088c152E81b17A9a459bF089f2a;
+    address public constant CAP_FACTORY = 0x0B92300C8494833E504Ad7d36a301eA80DbBAE2e;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -105,6 +118,7 @@ library Constants {
             erc20VerifierFactory: Factory(0x2e234F4E1b7934d5F4bEAE3fF2FDC109f5C42F1d),
             symbioticVerifierFactory: Factory(0x41C443F10a92D597e6c9E271140BC94c10f5159F),
             eigenLayerVerifierFactory: Factory(0x77A83AcBf7A6df20f1D681b4810437d74AE790F8),
+            swapModuleFactory: Factory(0xE3575055a24d8642DFA3a51ec766Ef2db2671659),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
@@ -126,7 +140,8 @@ library Constants {
             basicRedeemHook: BasicRedeemHook(0x0000000637f1b1ccDA4Af2dB6CDDf5e5Ec45fd93),
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(0x000000065d1A7bD71f52886910aaBE6555b7317c),
-            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35)
+            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
+            swapModuleImplementation: SwapModule(payable(0x00000000d681E85e5783588f87A9573Cb97Eda01))
         });
     }
 
@@ -275,8 +290,8 @@ library Constants {
         $.timelockExecutors[0] = pauser1;
         $.timelockExecutors[1] = pauser2;
         $.calls = new SubvaultCalls[](1);
-        (, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
-        $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
+        // (, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
+        // $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
     }
 
     function getStrETHDeployment() internal pure returns (VaultDeployment memory $) {

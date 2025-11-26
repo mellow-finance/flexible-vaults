@@ -64,9 +64,13 @@ contract Deploy is Script {
             holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
 
             // curator roles:
-            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+            address[] memory curators = getCurators();
+
+            for (uint256 j = 0; j < curators.length; j++) {
+                holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curators[j]);
+                holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curators[j]);
+                holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curators[j]);
+            }
 
             // deployer roles:
             holders[i++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, deployer);
@@ -91,7 +95,7 @@ contract Deploy is Script {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "Theoriq AlphaVault ETH", "tqETH"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
+            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(0), uint24(0)),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
@@ -131,25 +135,96 @@ contract Deploy is Script {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](2);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
+        address[] memory verifiers = new address[](3);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](3);
 
         {
             IRiskManager riskManager = vault.riskManager();
-            (verifiers[0], calls[0]) = _createCowswapVerifier(address(vault));
-            vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth,weth,wsteth
+            verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[0]);
+            bytes32 merkleRoot;
+
+            address swapModule = $.swapModuleFactory.create(
+                0,
+                proxyAdmin,
+                abi.encode(
+                    lazyVaultAdmin,
+                    subvault,
+                    Constants.AAVE_V3_ORACLE,
+                    0.995e8,
+                    ArraysLibrary.makeAddressArray(
+                        abi.encode(
+                            curator,
+                            Constants.ETH,
+                            Constants.WETH,
+                            Constants.WSTETH,
+                            Constants.ETH,
+                            Constants.WETH,
+                            Constants.WSTETH,
+                            Constants.WETH
+                        )
+                    ),
+                    ArraysLibrary.makeBytes32Array(
+                        abi.encode(
+                            Permissions.SWAP_MODULE_CALLER_ROLE,
+                            Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                            Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                            Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                            Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                            Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                            Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                            Permissions.SWAP_MODULE_ROUTER_ROLE
+                        )
+                    )
+                )
+            );
+
+            (merkleRoot, calls[0]) = _createCowswapVerifier(subvault, swapModule);
+            IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+        }
+        {
+            IRiskManager riskManager = vault.riskManager();
+            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[1]);
+            bytes32 merkleRoot;
+            (merkleRoot, calls[1]) = _createStrETHVerifier(subvault);
+            IVerifier(verifiers[1]).setMerkleRoot(merkleRoot);
+            riskManager.allowSubvaultAssets(vault.subvaultAt(1), assets_);
+            riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
         }
 
         {
             IRiskManager riskManager = vault.riskManager();
-            verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            vault.createSubvault(0, proxyAdmin, verifiers[1]);
+            verifiers[2] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[2]);
             bytes32 merkleRoot;
-            (merkleRoot, calls[1]) = _createStrETHVerifier(address(vault));
-            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
-            riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+            (merkleRoot, calls[2]) = _createOsETHVerifier(subvault);
+            IVerifier(verifiers[2]).setMerkleRoot(merkleRoot);
+
+            riskManager.allowSubvaultAssets(
+                vault.subvaultAt(2), ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH))
+            );
+            riskManager.setSubvaultLimit(vault.subvaultAt(2), type(int256).max / 2);
+        }
+
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](3);
+            reports[0].asset = Constants.ETH;
+            reports[0].priceD18 = 1 ether;
+
+            reports[1].asset = Constants.WETH;
+            reports[1].priceD18 = 1 ether;
+
+            reports[2].asset = Constants.WSTETH;
+            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
+            IOracle oracle = vault.oracle();
+            oracle.submitReports(reports);
+            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
+            for (uint256 i = 0; i < reports.length; i++) {
+                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+            }
         }
 
         // emergency pause setup
@@ -174,41 +249,31 @@ contract Deploy is Script {
             0
         );
 
-        timelockController.schedule(
-            address(Subvault(payable(vault.subvaultAt(0))).verifier()),
-            0,
-            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
-            bytes32(0),
-            bytes32(0),
-            0
-        );
-
-        timelockController.schedule(
-            address(Subvault(payable(vault.subvaultAt(1))).verifier()),
-            0,
-            abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
-            bytes32(0),
-            bytes32(0),
-            0
-        );
-
-        address[6] memory queues = [
-            vault.queueAt(Constants.WSTETH, 0),
-            vault.queueAt(Constants.WSTETH, 1),
-            vault.queueAt(Constants.WETH, 0),
-            vault.queueAt(Constants.WETH, 1),
-            vault.queueAt(Constants.ETH, 0),
-            vault.queueAt(Constants.ETH, 1)
-        ];
-        for (uint256 i = 0; i < queues.length; i++) {
+        for (uint256 i = 0; i < vault.subvaults(); i++) {
             timelockController.schedule(
-                address(vault),
+                address(Subvault(payable(vault.subvaultAt(i))).verifier()),
                 0,
-                abi.encodeCall(IShareModule.setQueueStatus, (queues[i], true)),
+                abi.encodeCall(IVerifier.setMerkleRoot, (bytes32(0))),
                 bytes32(0),
                 bytes32(0),
                 0
             );
+        }
+
+        for (uint256 i = 0; i < vault.getAssetCount(); i++) {
+            address asset = vault.assetAt(i);
+            for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
+                address queue = vault.queueAt(asset, j);
+
+                timelockController.schedule(
+                    address(vault),
+                    0,
+                    abi.encodeCall(IShareModule.setQueueStatus, (queue, true)),
+                    bytes32(0),
+                    bytes32(0),
+                    0
+                );
+            }
         }
 
         timelockController.renounceRole(timelockController.PROPOSER_ROLE(), deployer);
@@ -219,13 +284,15 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
+        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
         console2.log("Vault %s", address(vault));
 
         console2.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
         console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
         console2.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
-
         console2.log("RedeemQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 1)));
         console2.log("RedeemQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 1)));
         console2.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
@@ -235,36 +302,10 @@ contract Deploy is Script {
         console2.log("FeeManager %s", address(vault.feeManager()));
         console2.log("RiskManager %s", address(vault.riskManager()));
 
-        for (uint256 i = 0; i < vault.subvaults(); i++) {
-            address subvault = vault.subvaultAt(i);
-            console2.log("Subvault %s %s", i, subvault);
-            console2.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
-        }
-        console2.log("Timelock controller:", address(timelockController));
-
-        {
-            IOracle.Report[] memory reports = new IOracle.Report[](3);
-            reports[0].asset = Constants.ETH;
-            reports[0].priceD18 = 1 ether;
-
-            reports[1].asset = Constants.WETH;
-            reports[1].priceD18 = 1 ether;
-
-            reports[2].asset = Constants.WSTETH;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
-            IOracle oracle = vault.oracle();
-            oracle.submitReports(reports);
-            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
-            for (uint256 i = 0; i < reports.length; i++) {
-                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
-            }
-        }
-
-        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
-
+        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 1 gwei}(
+            1 gwei, address(0), new bytes32[](0)
+        );
         vm.stopBroadcast();
-
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
         AcceptanceLibrary.runVaultDeploymentChecks(
             Constants.protocolDeployment(),
@@ -319,40 +360,53 @@ contract Deploy is Script {
         holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
 
         // curator roles:
-        holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
-        holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
-        holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+        address[] memory curators = getCurators();
+
+        for (uint256 j = 0; j < curators.length; j++) {
+            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curators[j]);
+            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curators[j]);
+            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curators[j]);
+        }
 
         assembly {
             mstore(holders, i)
         }
     }
 
-    function _createCowswapVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {
-        ProtocolDeployment memory $ = Constants.protocolDeployment();
-        /*
-            1. weth.deposit{value: <any>}();
-            2. weth.withdraw(<any>);
-            3. weth.approve(cowswapVaultRelayer, <any>);
-            4. wsteth.approve(cowswapVaultRelayer, <any>);
-            5. cowswapSettlement.setPreSignature(coswapOrderUid(owner=address(0)), anyBool);
-            6. cowswapSettlement.invalidateOrder(anyBytes);
-        */
-        string[] memory descriptions = tqETHLibrary.getSubvault0Descriptions(curator);
-        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
+    function getCurators() public view returns (address[] memory) {
+        return ArraysLibrary.makeAddressArray(abi.encode(curator));
+    }
+
+    function _createCowswapVerifier(address subvault, address swapModule)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        address[] memory curators = getCurators();
+        string[] memory descriptions = tqETHLibrary.getSubvault0Descriptions(subvault, swapModule, curators);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = tqETHLibrary.getSubvault0Proofs(subvault, swapModule, curators);
         ProofLibrary.storeProofs("ethereum:tqETH:subvault0", merkleRoot, leaves, descriptions);
-        calls = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
-        verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
+        calls = tqETHLibrary.getSubvault0SubvaultCalls(subvault, swapModule, curators, leaves);
     }
 
     function _createStrETHVerifier(address subvault)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        string[] memory descriptions = tqETHLibrary.getSubvault1Descriptions(subvault, curator);
+        address[] memory curators = getCurators();
+        string[] memory descriptions = tqETHLibrary.getSubvault1Descriptions(subvault, curators);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = tqETHLibrary.getSubvault1Proofs(subvault, curator);
+        (merkleRoot, leaves) = tqETHLibrary.getSubvault1Proofs(subvault, curators);
         ProofLibrary.storeProofs("ethereum:tqETH:subvault1", merkleRoot, leaves, descriptions);
-        calls = tqETHLibrary.getSubvault1SubvaultCalls(subvault, curator, leaves);
+        calls = tqETHLibrary.getSubvault1SubvaultCalls(subvault, curators, leaves);
+    }
+
+    function _createOsETHVerifier(address subvault) internal returns (bytes32 merkleRoot, SubvaultCalls memory calls) {
+        address[] memory curators = getCurators();
+        string[] memory descriptions = tqETHLibrary.getSubvault2Descriptions(subvault, curators);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = tqETHLibrary.getSubvault2Proofs(subvault, curators);
+        ProofLibrary.storeProofs("ethereum:tqETH:subvault2", merkleRoot, leaves, descriptions);
+        calls = tqETHLibrary.getSubvault2SubvaultCalls(subvault, curators, leaves);
     }
 }

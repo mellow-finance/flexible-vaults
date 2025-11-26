@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
 import "./interfaces/Imports.sol";
@@ -49,7 +50,15 @@ library AcceptanceLibrary {
         bytes memory aBytecode = removeMetadata(a.code);
         bytes memory bBytecode = removeMetadata(b.code);
         if (keccak256(aBytecode) != keccak256(bBytecode)) {
-            revert(string.concat(title, ": invalid bytecode"));
+            revert(
+                string.concat(
+                    title,
+                    ": invalid bytecode. Impl: ",
+                    Strings.toHexString(a),
+                    " vs Instance: ",
+                    Strings.toHexString(b)
+                )
+            );
         }
     }
 

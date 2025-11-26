@@ -1,14 +1,35 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./interfaces/Imports.sol";
+import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
+import {Call} from "./interfaces/Imports.sol";
 import "@openzeppelin/contracts/utils/Arrays.sol";
-import "forge-std/console2.sol";
 
 library ArraysLibrary {
+    function indexOf(address[] memory array, address value) internal pure returns (uint256) {
+        for (uint256 i = 0; i < array.length; i++) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+        return type(uint256).max;
+    }
+
+    function has(address[] memory array, address value) internal pure returns (bool) {
+        return indexOf(array, value) != type(uint256).max;
+    }
+
     function makeAddressArray(bytes memory data) internal pure returns (address[] memory a) {
         uint256 n = data.length / 32;
         a = new address[](n);
+        assembly {
+            mcopy(add(a, 0x20), add(data, 0x20), mul(n, 0x20))
+        }
+    }
+
+    function makeBytes32Array(bytes memory data) internal pure returns (bytes32[] memory a) {
+        uint256 n = data.length / 32;
+        a = new bytes32[](n);
         assembly {
             mcopy(add(a, 0x20), add(data, 0x20), mul(n, 0x20))
         }

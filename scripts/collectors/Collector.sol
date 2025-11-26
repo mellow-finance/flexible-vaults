@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
@@ -20,7 +20,7 @@ import "../../src/vaults/Vault.sol";
 
 import "./oracles/IPriceOracle.sol";
 
-contract Collector is Ownable {
+contract Collector is OwnableUpgradeable {
     struct Config {
         address baseAssetFallback;
         uint256 oracleUpdateInterval;
@@ -96,10 +96,16 @@ contract Collector is Ownable {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     IPriceOracle public oracle;
-    uint256 public bufferSize = 256;
+    uint256 public bufferSize;
 
-    constructor(address owner_, address oracle_) Ownable(owner_) {
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address owner_, address oracle_) external initializer {
+        __Ownable_init(owner_);
         oracle = IPriceOracle(oracle_);
+        bufferSize = 256;
     }
 
     function setOracle(address oracle_) external onlyOwner {
@@ -203,6 +209,26 @@ contract Collector is Ownable {
                     iterator++;
                 }
             }
+        }
+
+        for (uint256 i = 0; i < r.queues.length; i++) {
+            if (!r.queues[i].isDepositQueue) {
+                continue;
+            }
+            address queue = r.queues[i].queue;
+            address asset = r.queues[i].asset;
+            uint256 pendingValue = TransferLibrary.balanceOf(asset, queue);
+            if (pendingValue == 0) {
+                continue;
+            }
+            if (asset != r.baseAsset) {
+                r.totalBase += oracle.getValue(asset, r.baseAsset, pendingValue);
+            } else {
+                r.totalBase += pendingValue;
+            }
+        }
+        if (r.totalBase > 0) {
+            r.totalUSD = oracle.getValue(r.baseAsset, USD, r.totalBase);
         }
     }
 

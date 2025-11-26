@@ -1078,4 +1078,96 @@ library strETHLibrary {
             16
         );
     }
+
+    function _getSubvault4SparkParams(address subvault, address curator)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault4",
+            curator: curator,
+            aaveInstance: Constants.SPARK,
+            aaveInstanceName: "SparkLend",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+            categoryId: 1
+        });
+    }
+
+    function getSubvault4Proofs(address curator, address subvault)
+        internal
+        pure
+        returns (bytes32 merkleProof, IVerifier.VerificationPayload[] memory leaves)
+    {
+        /*
+            1-4. cowswap (assets=[weth, wsteth])
+            5-11. spark (collaterals=[wsteth], loans=[weth], categoryId=1)
+        */
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](11);
+        ArraysLibrary.insert(
+            leaves,
+            CowSwapLibrary.getCowSwapProofs(
+                bitmaskVerifier,
+                CowSwapLibrary.Info({
+                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
+                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+                    curator: curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+                })
+            ),
+            0
+        );
+        ArraysLibrary.insert(
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault4SparkParams(subvault, curator)), 4
+        );
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault4Descriptions(address curator, address subvault)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](11);
+        ArraysLibrary.insert(
+            descriptions,
+            CowSwapLibrary.getCowSwapDescriptions(
+                CowSwapLibrary.Info({
+                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
+                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+                    curator: curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+                })
+            ),
+            0
+        );
+        ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault4SparkParams(subvault, curator)), 4
+        );
+    }
+
+    function getSubvault4SubvaultCalls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+        internal
+        pure
+        returns (SubvaultCalls memory calls)
+    {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        ArraysLibrary.insert(
+            calls.calls,
+            CowSwapLibrary.getCowSwapCalls(
+                CowSwapLibrary.Info({
+                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
+                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+                    curator: curator,
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+                })
+            ),
+            4
+        );
+        ArraysLibrary.insert(calls.calls, AaveLibrary.getAaveCalls(_getSubvault4SparkParams(subvault, curator)), 4);
+    }
 }
