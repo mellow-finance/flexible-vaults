@@ -45,6 +45,8 @@ contract Deploy is Script {
         0xba761af4134efb0855adfba638945f454f0a704af11fc93439e20c7c5ebab942;
 
     function run() external {
+        _updateMerkleRoot();
+        revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
@@ -167,9 +169,10 @@ contract Deploy is Script {
         {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             address subvault = vault.createSubvault(0, proxyAdmin, verifiers[0]);
+            address swapModuleSubvault0 = _deploySwapModuleSubvault0(subvault);
 
             bytes32 merkleRoot;
-            (merkleRoot, calls[0]) = _createSubvault0Proofs(subvault);
+            (merkleRoot, calls[0]) = _createSubvault0Proofs(subvault, swapModuleSubvault0);
             IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
 
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
@@ -381,17 +384,17 @@ contract Deploy is Script {
         }
     }
 
-    function _createSubvault0Proofs(address subvault)
+    function _createSubvault0Proofs(address subvault, address swapModuleSubvault)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        address swapModuleSubvault0 = _deploySwapModuleSubvault0(subvault);
-
         rstETHPlusPlusLibrary.Info memory info = rstETHPlusPlusLibrary.Info({
             curator: curator,
             subvault: subvault,
             subvaultName: "subvault0",
-            swapModule: swapModuleSubvault0,
+            swapModule: swapModuleSubvault,
+            claimDistributor: Constants.ANGLE_DISTRIBUTOR,
+            claimOperators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
             aaveCollaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WEETH, Constants.RSETH)),
             aaveLoans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
             morphoMarketId: ArraysLibrary.makeBytes32Array(
@@ -448,5 +451,28 @@ contract Deploy is Script {
             0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, holders, roles)
         );
         console2.log("Subvault0 SwapModule %s", swapModule);
+    }
+
+    function _updateMerkleRoot() internal {
+        Vault vault = Vault(payable(address(0x5E77D4497f34E5Cb51150A7cc4aBFc84f1F145Da)));
+        address swapModuleSubvault = 0xA0Ca8fA2D18E59BFc3E104C7e727557B9565e9C2;
+        
+        bytes32[] memory merkleRoot = new bytes32[](1);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+
+        address subvault = vault.subvaultAt(0);
+        (merkleRoot[0], calls[0]) = _createSubvault0Proofs(subvault, swapModuleSubvault);
+
+        for (uint256 i = 0; i < calls.length; i++) {
+            Subvault subvault = Subvault(payable(IVaultModule(vault).subvaultAt(i)));
+            IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+            vm.prank(lazyVaultAdmin);
+            verifier.setMerkleRoot(merkleRoot[i]);
+
+            for (uint256 j = 0; j < calls[i].payloads.length; j++) {
+                AcceptanceLibrary._verifyCalls(verifier, calls[i].calls[j], calls[i].payloads[j]);
+            }
+        }
     }
 }

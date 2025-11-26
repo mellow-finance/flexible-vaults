@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import {IAngleDistributor} from "../common/interfaces/IAngleDistributor.sol";
 import {IAavePoolV3} from "./interfaces/IAavePoolV3.sol";
 import {ICowswapSettlement} from "./interfaces/ICowswapSettlement.sol";
 import {IWETH} from "./interfaces/IWETH.sol";
@@ -40,7 +41,7 @@ import {ISwapModule} from "../../src/interfaces/utils/ISwapModule.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[20] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[21] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -60,7 +61,8 @@ library ABILibrary {
             getTermMaxInterfaces,
             getDigiFTInterfaces,
             getMorphoInterfaces,
-            getMorphoStrategyWrapperInterfaces
+            getMorphoStrategyWrapperInterfaces,
+            getAngleDistributorInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -405,5 +407,15 @@ library ABILibrary {
             '{"constant":false,"inputs":[],"name":"claim","outputs":[{"name":"amount","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}';
         abis[3] =
             '{"constant":false,"inputs":[],"name":"claimExtraRewards","outputs":[{"name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getAngleDistributorInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = IAngleDistributor.toggleOperator.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"toggleOperator","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }

@@ -10,6 +10,7 @@ import {ParameterLibrary} from "../common/ParameterLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
+import {IAngleDistributor} from "../common/interfaces/IAngleDistributor.sol";
 import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
 import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
 import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
@@ -33,6 +34,8 @@ library rstETHPlusPlusLibrary {
         address subvault;
         string subvaultName;
         address swapModule;
+        address claimDistributor;
+        address[] claimOperators;
         bytes32[] morphoMarketId;
         address[] aaveCollaterals;
         address[] aaveLoans;
@@ -101,6 +104,26 @@ library rstETHPlusPlusLibrary {
             ),
             iterator
         );
+
+        /// @dev Add Angle Distributor toggleOperator proofs
+        for (uint256 i = 0; i < $.claimOperators.length; i++) {
+            leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.claimDistributor,
+                0,
+                abi.encodeCall(IAngleDistributor.toggleOperator, ($.subvault, $.claimOperators[i])),
+                ProofLibrary.makeBitmask(
+                    true,
+                    true,
+                    true,
+                    true,
+                    abi.encodeCall(
+                        IAngleDistributor.toggleOperator, (address(type(uint160).max), address(type(uint160).max))
+                    )
+                )
+            );
+        }
 
         for (uint256 i = 0; i < $.morphoMarketId.length; i++) {
             iterator = leaves.insert(
@@ -172,6 +195,19 @@ library rstETHPlusPlusLibrary {
             ),
             iterator
         );
+
+        /// @dev Add Angle Distributor toggleOperator descriptions
+        for (uint256 i = 0; i < $.claimOperators.length; i++) {
+            descriptions[iterator++] = JsonLibrary.toJson(
+                string(abi.encodePacked("angleDistributor.toggleOperator(subvault0, claimOperator)")),
+                ABILibrary.getABI(IAngleDistributor.toggleOperator.selector),
+                ParameterLibrary.build(Strings.toHexString($.subvault), Strings.toHexString($.claimDistributor), "0"),
+                ParameterLibrary.build("user", Strings.toHexString($.subvault)).add(
+                    "operator", Strings.toHexString($.claimOperators[i])
+                )
+            );
+        }
+
         for (uint256 i = 0; i < $.morphoMarketId.length; i++) {
             iterator = descriptions.insert(
                 MorphoLibrary.getMorphoDescriptions(
@@ -240,6 +276,47 @@ library rstETHPlusPlusLibrary {
             ),
             iterator
         );
+
+        {
+            Call[] memory tmp = new Call[](16);
+            uint256 index;
+            for (uint256 i = 0; i < $.claimOperators.length; i++) {
+                tmp[index++] = Call(
+                    $.curator,
+                    $.claimDistributor,
+                    0,
+                    abi.encodeCall(IAngleDistributor.toggleOperator, ($.subvault, $.claimOperators[i])),
+                    true
+                );
+                tmp[index++] = Call(
+                    $.curator,
+                    $.claimDistributor,
+                    1 wei,
+                    abi.encodeCall(IAngleDistributor.toggleOperator, ($.subvault, $.claimOperators[i])),
+                    false
+                );
+
+                tmp[index++] = Call(
+                    $.curator,
+                    $.claimDistributor,
+                    0,
+                    abi.encodeCall(IAngleDistributor.toggleOperator, (address(0xdead), $.claimOperators[i])),
+                    false
+                );
+
+                tmp[index++] = Call(
+                    $.curator,
+                    $.claimDistributor,
+                    0,
+                    abi.encodeCall(IAngleDistributor.toggleOperator, ($.subvault, address(0xdead))),
+                    false
+                );
+            }
+            assembly {
+                mstore(tmp, index)
+            }
+            calls_[iterator++] = tmp;
+        }
 
         for (uint256 i = 0; i < $.morphoMarketId.length; i++) {
             iterator = calls_.insert(
