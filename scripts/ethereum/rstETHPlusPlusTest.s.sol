@@ -454,21 +454,28 @@ contract Deploy is Script {
     }
 
     function _updateMerkleRoot() internal {
-        Vault vault = Vault(payable(address(0x5E77D4497f34E5Cb51150A7cc4aBFc84f1F145Da)));
+        IVaultModule vault = IVaultModule(payable(address(0x5E77D4497f34E5Cb51150A7cc4aBFc84f1F145Da)));
         address swapModuleSubvault = 0xA0Ca8fA2D18E59BFc3E104C7e727557B9565e9C2;
-        
+
         bytes32[] memory merkleRoot = new bytes32[](1);
         SubvaultCalls[] memory calls = new SubvaultCalls[](1);
 
         address subvault = vault.subvaultAt(0);
         (merkleRoot[0], calls[0]) = _createSubvault0Proofs(subvault, swapModuleSubvault);
 
-        for (uint256 i = 0; i < calls.length; i++) {
-            Subvault subvault = Subvault(payable(IVaultModule(vault).subvaultAt(i)));
+        for (uint256 i = 0; i < vault.subvaults(); i++) {
+            Subvault subvault = Subvault(payable(vault.subvaultAt(i)));
             IVerifier verifier = Subvault(payable(subvault)).verifier();
 
             vm.prank(lazyVaultAdmin);
             verifier.setMerkleRoot(merkleRoot[i]);
+
+            console2.log(
+                "Updated Merkle root for Subvault %s Verifier %s to %s",
+                address(subvault),
+                address(verifier),
+                Strings.toHexString(uint256(merkleRoot[i]))
+            );
 
             for (uint256 j = 0; j < calls[i].payloads.length; j++) {
                 AcceptanceLibrary._verifyCalls(verifier, calls[i].calls[j], calls[i].payloads[j]);
