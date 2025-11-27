@@ -346,6 +346,17 @@ contract Deploy is Script {
         }
     }
 
+    function setSecurityParams() internal {
+        IOracle.SecurityParams memory params = vault.oracle().securityParams();
+        params.suspiciousAbsoluteDeviation *= 2;
+        params.suspiciousRelativeDeviationD18 *= 2;
+
+        vm.startPrank(lazyVaultAdmin);
+        vault.grantRole(Permissions.SET_SECURITY_PARAMS_ROLE, lazyVaultAdmin);
+        vault.oracle().setSecurityParams(params);
+        vm.stopPrank();
+    }
+
     function acceptReport() internal {
         IOracle oracle = vault.oracle();
         address[] memory assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MON, Constants.WMON));
