@@ -35,16 +35,16 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
             revert ZeroValue();
         }
         address caller = _msgSender();
-        address vault_ = vault();
-        if (IShareModule(vault_).isPausedQueue(address(this))) {
+        IShareModule vault_ = IShareModule(vault());
+        if (vault_.isPausedQueue(address(this))) {
             revert QueuePaused();
         }
-        if (!IShareModule(vault_).shareManager().isDepositorWhitelisted(caller, merkleProof)) {
+        if (!vault_.shareManager().isDepositorWhitelisted(caller, merkleProof)) {
             revert DepositNotAllowed();
         }
 
         address asset_ = asset();
-        IOracle.DetailedReport memory report = IOracle(IShareModule(vault_).oracle()).getReport(asset_);
+        IOracle.DetailedReport memory report = IOracle(vault_.oracle()).getReport(asset_);
         if (report.isSuspicious || report.priceD18 == 0) {
             revert InvalidReport();
         }
@@ -52,8 +52,8 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
         TransferLibrary.receiveAssets(asset_, caller, assets);
         TransferLibrary.sendAssets(asset_, address(vault_), assets);
 
-        IFeeManager feeManager = IShareModule(vault_).feeManager();
-        IShareManager shareManager_ = IShareModule(vault_).shareManager();
+        IFeeManager feeManager = vault_.feeManager();
+        IShareManager shareManager_ = vault_.shareManager();
         uint256 shares = Math.mulDiv(assets, report.priceD18, 1 ether);
         uint256 feeShares = feeManager.calculateDepositFee(shares);
         if (feeShares > 0) {
@@ -66,7 +66,7 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
 
         IRiskManager riskManager = IVaultModule(address(vault_)).riskManager();
         riskManager.modifyVaultBalance(asset_, int256(uint256(assets)));
-        IShareModule(vault_).callHook(assets);
+        vault_.callHook(assets);
 
         emit Deposited(caller, referral, assets);
     }
