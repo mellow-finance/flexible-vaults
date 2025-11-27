@@ -15,6 +15,9 @@ interface ISyncDepositQueue is IQueue {
     /// @notice Thrown when a user is not allowed to deposit.
     error DepositNotAllowed();
 
+    /// @dev Returns the name of the queue.
+    function name() external view returns (string memory);
+
     /// @notice Submits a new deposit request into the queue.
     /// @dev Reverts if a previous pending (not yet claimable) request exists.
     /// @param assets Amount of assets to deposit.

@@ -16,6 +16,11 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
     }
 
     /// @inheritdoc ISyncDepositQueue
+    function name() external pure override returns (string memory) {
+        return "SyncDepositQueue";
+    }
+
+    /// @inheritdoc ISyncDepositQueue
     function claim(address /* account */ ) external pure returns (bool) {}
 
     function initialize(bytes calldata data) external initializer {
