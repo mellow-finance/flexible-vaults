@@ -163,7 +163,11 @@ contract DepositQueueTest is FixtureTest {
 
             priceD18 = _applyDeltaX16Price(priceD18, deltaPrice[i], securityParams);
 
-            assertEq(deployment.shareManager.activeSharesOf(user[i]), shareExpected[i], "User should have shares after claiming");
+            assertEq(
+                deployment.shareManager.activeSharesOf(user[i]),
+                shareExpected[i],
+                "User should have shares after claiming"
+            );
             assertEq(
                 deployment.shareManager.activeShares(), shareTotal, "Vault should have active shares after claiming"
             );
@@ -173,10 +177,7 @@ contract DepositQueueTest is FixtureTest {
         }
     }
 
-    function testFuzzDepositMultipleQueuesSingleAsset(
-        int16[100] calldata amountDeviation,
-        uint16 priceD6
-    ) external {
+    function testFuzzDepositMultipleQueuesSingleAsset(int16[100] calldata amountDeviation, uint16 priceD6) external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
 
         vm.prank(deployment.vaultAdmin);
@@ -366,7 +367,11 @@ contract DepositQueueTest is FixtureTest {
             feeShares,
             "Fee recipient should have shares based on deposit fee"
         );
-        assertEq(deployment.shareManager.activeSharesOf(user), 2 * amount - feeShares, "User should have shares based on deposit fee");
+        assertEq(
+            deployment.shareManager.activeSharesOf(user),
+            2 * amount - feeShares,
+            "User should have shares based on deposit fee"
+        );
     }
 
     function testMultipleDeposit() external {
@@ -384,7 +389,9 @@ contract DepositQueueTest is FixtureTest {
         }
 
         for (uint256 i = 0; i < users.length; i++) {
-            assertEq(deployment.shareManager.activeSharesOf(users[i]), amount, "User should have shares based on deposit fee");
+            assertEq(
+                deployment.shareManager.activeSharesOf(users[i]), amount, "User should have shares based on deposit fee"
+            );
         }
     }
 }

@@ -10,7 +10,7 @@ import "./IQueue.sol";
 /// # Overview
 /// A `SyncDepositQueue` manages deposits for a specific asset with no delay.
 /// Assets are deposited instantly and converted into vault shares at the latest (non-suspicious) oracle price.
-/// 
+///
 interface ISyncDepositQueue is IQueue {
     /// @notice Thrown when a user is not allowed to deposit.
     error DepositNotAllowed();

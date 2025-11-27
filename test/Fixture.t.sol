@@ -117,7 +117,10 @@ abstract contract FixtureTest is Test {
         return deployment.vault.queueAt(asset, index - 1);
     }
 
-    function addSyncDepositQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
+    function addSyncDepositQueue(Deployment memory deployment, address owner, address asset)
+        internal
+        returns (address)
+    {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
         deployment.vault.createQueue(2, true, owner, asset, new bytes(0));

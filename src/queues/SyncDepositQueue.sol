@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/queues/ISyncDepositQueue.sol";
 import "../interfaces/oracles/IOracle.sol";
+import "../interfaces/queues/ISyncDepositQueue.sol";
 import "../libraries/TransferLibrary.sol";
 
 import "./Queue.sol";
 
 contract SyncDepositQueue is ISyncDepositQueue, Queue {
-
     constructor(string memory name_, uint256 version_) Queue(name_, version_) {}
 
     /// @inheritdoc IQueue
@@ -17,7 +16,7 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
     }
 
     /// @inheritdoc ISyncDepositQueue
-    function claim(address /* account */) external pure returns (bool) {}
+    function claim(address /* account */ ) external pure returns (bool) {}
 
     function initialize(bytes calldata data) external initializer {
         (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
@@ -52,8 +51,8 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
         IShareManager shareManager_ = IShareModule(vault_).shareManager();
         uint256 shares = Math.mulDiv(assets, report.priceD18, 1 ether);
         uint256 feeShares = feeManager.calculateDepositFee(shares);
-        if (feeShares > 0)  {
-            shareManager_.mint(feeManager.feeRecipient(), feeShares);            
+        if (feeShares > 0) {
+            shareManager_.mint(feeManager.feeRecipient(), feeShares);
             shares -= feeShares;
         }
         if (shares > 0) {
