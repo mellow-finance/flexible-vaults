@@ -1,31 +1,34 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/oracles/IOracle.sol";
 import "../interfaces/queues/ISyncDepositQueue.sol";
 import "../libraries/TransferLibrary.sol";
 
-import "./Queue.sol";
+import "./SyncQueue.sol";
 
-contract SyncDepositQueue is ISyncDepositQueue, Queue {
-    constructor(string memory name_, uint256 version_) Queue(name_, version_) {}
+contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
+    constructor(string memory name_, uint256 version_) SyncQueue(name_, version_) {}
 
-    /// @inheritdoc IQueue
-    function canBeRemoved() external pure returns (bool) {
-        return true;
-    }
+    // View functions
 
-    /// @inheritdoc ISyncDepositQueue
+    /// @inheritdoc ISyncQueue
     function name() external pure override returns (string memory) {
         return "SyncDepositQueue";
     }
 
     /// @inheritdoc ISyncDepositQueue
-    function claim(address /* account */ ) external pure returns (bool) {}
+    function claimableOf(address account) external pure returns (uint256 claimable) {}
 
+    /// @inheritdoc ISyncDepositQueue
+    function claim(address account) external pure returns (bool success) {}
+
+    // Mutable functions
+
+    /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
         (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
-        __Queue_init(asset_, shareModule_);
+        __SyncQueue_init(asset_, shareModule_);
+
         emit Initialized(data);
     }
 
@@ -54,6 +57,9 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
 
         IFeeManager feeManager = vault_.feeManager();
         IShareManager shareManager_ = vault_.shareManager();
+        /*
+            TODO: replace `1 ether` with more complex logic with time-weighted coefficients (?)
+        */
         uint256 shares = Math.mulDiv(assets, report.priceD18, 1 ether);
         uint256 feeShares = feeManager.calculateDepositFee(shares);
         if (feeShares > 0) {
@@ -70,6 +76,4 @@ contract SyncDepositQueue is ISyncDepositQueue, Queue {
 
         emit Deposited(caller, referral, assets);
     }
-
-    function _handleReport(uint224 priceD18, uint32 timestamp) internal override {}
 }

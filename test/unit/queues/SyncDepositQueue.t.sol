@@ -86,7 +86,9 @@ contract DepositQueueTest is FixtureTest {
         queue.deposit(amount, address(0), new bytes32[](0));
     }
 
-    function testFuzzDepositsOneUser(int16[100] calldata amountDeviation, int16[100] calldata deltaPrice) external {
+    function testFuzzDepositsOneUser_NO_CI(int16[100] calldata amountDeviation, int16[100] calldata deltaPrice)
+        external
+    {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         SyncDepositQueue queue = SyncDepositQueue(addSyncDepositQueue(deployment, vaultProxyAdmin, asset));
         IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
@@ -128,7 +130,7 @@ contract DepositQueueTest is FixtureTest {
         }
     }
 
-    function testFuzzDepositsMultipleUsers(int16[256] calldata amountDeviation, int16[256] calldata deltaPrice)
+    function testFuzzDepositsMultipleUsers_NO_CI(int16[256] calldata amountDeviation, int16[256] calldata deltaPrice)
         external
     {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
@@ -177,7 +179,9 @@ contract DepositQueueTest is FixtureTest {
         }
     }
 
-    function testFuzzDepositMultipleQueuesSingleAsset(int16[100] calldata amountDeviation, uint16 priceD6) external {
+    function testFuzzDepositMultipleQueuesSingleAsset_NO_CI(int16[100] calldata amountDeviation, uint16 priceD6)
+        external
+    {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
 
         vm.prank(deployment.vaultAdmin);
@@ -207,7 +211,7 @@ contract DepositQueueTest is FixtureTest {
         }
     }
 
-    function testFuzzDepositMultipleQueuesMultipleAssets(int16[10] calldata amountDeviation) external {
+    function testFuzzDepositMultipleQueuesMultipleAssets_NO_CI(int16[10] calldata amountDeviation) external {
         uint256 assetsLength = amountDeviation.length;
         address[] memory assets = new address[](assetsLength);
         uint224[] memory priceInit = new uint224[](assetsLength);
