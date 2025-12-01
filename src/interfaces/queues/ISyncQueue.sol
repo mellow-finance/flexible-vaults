@@ -14,7 +14,6 @@ interface ISyncQueue is IFactoryEntity {
     struct SyncQueueStorage {
         address vault;
         address asset;
-        uint256 coefficient;
     }
 
     // Errors
