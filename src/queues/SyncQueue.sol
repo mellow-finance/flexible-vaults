@@ -5,10 +5,11 @@ import "../interfaces/queues/ISyncQueue.sol";
 import "../libraries/SlotLibrary.sol";
 
 abstract contract SyncQueue is ISyncQueue, ReentrancyGuardUpgradeable, ContextUpgradeable {
-    bytes32 private immutable syncQueueStorageSlot_;
+    bytes32 private immutable _syncQueueStorageSlot;
 
     constructor(string memory name_, uint256 version_) {
-        syncQueueStorageSlot_ = SlotLibrary.getSlot("SyncQueue", name_, version_);
+        _syncQueueStorageSlot = SlotLibrary.getSlot("SyncQueue", name_, version_);
+        _disableInitializers();
     }
 
     // View functions
@@ -44,7 +45,7 @@ abstract contract SyncQueue is ISyncQueue, ReentrancyGuardUpgradeable, ContextUp
     }
 
     function _syncQueueStorage() internal view returns (SyncQueueStorage storage $) {
-        bytes32 slot = syncQueueStorageSlot_;
+        bytes32 slot = _syncQueueStorageSlot;
         assembly {
             $.slot := slot
         }

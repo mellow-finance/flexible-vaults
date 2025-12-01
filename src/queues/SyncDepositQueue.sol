@@ -2,18 +2,31 @@
 pragma solidity 0.8.25;
 
 import "../interfaces/queues/ISyncDepositQueue.sol";
+
+import "../libraries/SlotLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 
 import "./SyncQueue.sol";
 
 contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
-    constructor(string memory name_, uint256 version_) SyncQueue(name_, version_) {}
+    bytes32 private _syncDepositQueueStorageSlot;
+
+    bytes32 public constant SET_SYNC_DEPOSIT_PENALTY_ROLE =
+        keccak256("queues.SyncDepositQueue.SET_SYNC_DEPOSIT_PENALTY_ROLE");
+
+    constructor(string memory name_, uint256 version_) SyncQueue(name_, version_) {
+        _syncDepositQueueStorageSlot = SlotLibrary.getSlot("SyncDepositQueue", name_, version_);
+    }
 
     // View functions
 
     /// @inheritdoc ISyncQueue
     function name() external pure override returns (string memory) {
         return "SyncDepositQueue";
+    }
+
+    function syncDepositPenaltyD6() public view returns (uint256) {
+        return _syncDepositQueueStorage().syncDepositPenaltyD6;
     }
 
     /// @inheritdoc ISyncDepositQueue
@@ -26,10 +39,17 @@ contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        (address asset_, address shareModule_,) = abi.decode(data, (address, address, bytes));
+        (address asset_, address shareModule_, bytes memory data_) = abi.decode(data, (address, address, bytes));
         __SyncQueue_init(asset_, shareModule_);
-
+        _setSyncDepositPenaltyD6(abi.decode(data_, (uint256)));
         emit Initialized(data);
+    }
+
+    function setSyncDepositPenaltyD6(uint256 syncDepositPenaltyD6_) external {
+        if (!IAccessControl(vault()).hasRole(SET_SYNC_DEPOSIT_PENALTY_ROLE, _msgSender())) {
+            revert Forbidden();
+        }
+        _setSyncDepositPenaltyD6(syncDepositPenaltyD6_);
     }
 
     /// @inheritdoc ISyncDepositQueue
@@ -57,10 +77,7 @@ contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
 
         IFeeManager feeManager = vault_.feeManager();
         IShareManager shareManager_ = vault_.shareManager();
-        /*
-            TODO: replace `1 ether` with more complex logic with time-weighted coefficients (?)
-        */
-        uint256 shares = Math.mulDiv(assets, report.priceD18, 1 ether);
+        uint256 shares = Math.mulDiv(assets, (report.priceD18 * (1e6 - syncDepositPenaltyD6())) / 1e6, 1 ether);
         uint256 feeShares = feeManager.calculateDepositFee(shares);
         if (feeShares > 0) {
             shareManager_.mint(feeManager.feeRecipient(), feeShares);
@@ -75,5 +92,22 @@ contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
         vault_.callHook(assets);
 
         emit Deposited(caller, referral, assets);
+    }
+
+    // Internal functions
+
+    function _setSyncDepositPenaltyD6(uint256 syncDepositPenaltyD6_) internal {
+        if (syncDepositPenaltyD6_ > 5e5) {
+            revert TooLarge();
+        }
+        _syncDepositQueueStorage().syncDepositPenaltyD6 = syncDepositPenaltyD6_;
+        emit SyncDepositPenaltySet(syncDepositPenaltyD6_);
+    }
+
+    function _syncDepositQueueStorage() internal view returns (SyncDepositQueueStorage storage $) {
+        bytes32 slot = _syncDepositQueueStorageSlot;
+        assembly {
+            $.slot := slot
+        }
     }
 }
