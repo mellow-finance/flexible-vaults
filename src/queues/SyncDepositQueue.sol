@@ -11,6 +11,7 @@ import "./SyncQueue.sol";
 contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
     bytes32 private _syncDepositQueueStorageSlot;
 
+    /// @inheritdoc ISyncDepositQueue
     bytes32 public constant SET_SYNC_DEPOSIT_PENALTY_ROLE =
         keccak256("queues.SyncDepositQueue.SET_SYNC_DEPOSIT_PENALTY_ROLE");
 
@@ -25,6 +26,7 @@ contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
         return "SyncDepositQueue";
     }
 
+    /// @inheritdoc ISyncDepositQueue
     function syncDepositPenaltyD6() public view returns (uint256) {
         return _syncDepositQueueStorage().syncDepositPenaltyD6;
     }
@@ -45,6 +47,7 @@ contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
         emit Initialized(data);
     }
 
+    /// @inheritdoc ISyncDepositQueue
     function setSyncDepositPenaltyD6(uint256 syncDepositPenaltyD6_) external {
         if (!IAccessControl(vault()).hasRole(SET_SYNC_DEPOSIT_PENALTY_ROLE, _msgSender())) {
             revert Forbidden();
