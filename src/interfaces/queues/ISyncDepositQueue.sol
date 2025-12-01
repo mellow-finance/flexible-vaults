@@ -9,11 +9,13 @@ interface ISyncDepositQueue is ISyncQueue {
 
     error Forbidden();
     error TooLarge();
+    error StaleReport();
 
     // Structs
 
     struct SyncDepositQueueStorage {
-        uint256 syncDepositPenaltyD6;
+        uint256 penaltyD6;
+        uint32 maxAge;
     }
 
     // Errors
@@ -22,15 +24,15 @@ interface ISyncDepositQueue is ISyncQueue {
 
     // View functions
 
-    function SET_SYNC_DEPOSIT_PENALTY_ROLE() external view returns (bytes32);
+    function SET_SYNC_DEPOSIT_PARAMS_ROLE() external view returns (bytes32);
 
-    function syncDepositPenaltyD6() external view returns (uint256);
+    function syncDepositParams() external view returns (uint256 penaltyD6, uint32 maxAge);
 
     function claimableOf(address account) external view returns (uint256 claimable);
 
     // Mutable functions
 
-    function setSyncDepositPenaltyD6(uint256 syncDepositPenalty_) external;
+    function setSyncDepositParams(uint256 syncDepositPenalty_, uint32 maxAge_) external;
 
     function deposit(uint224 assets, address referral, bytes32[] calldata merkleProof) external payable;
 
@@ -38,7 +40,9 @@ interface ISyncDepositQueue is ISyncQueue {
 
     // Events
 
-    event Deposited(address indexed account, address indexed referral, uint224 assets);
+    event Deposited(
+        address indexed account, address indexed referral, uint224 assets, uint256 shares, uint256 feeShares
+    );
 
-    event SyncDepositPenaltySet(uint256 syncDepositPenalty);
+    event SyncDepositParamsSet(uint256 penaltyD6, uint32 maxAge);
 }

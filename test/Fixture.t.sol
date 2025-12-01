@@ -123,7 +123,7 @@ abstract contract FixtureTest is Test {
     {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
-        deployment.vault.createQueue(2, true, owner, asset, abi.encode(0));
+        deployment.vault.createQueue(2, true, owner, asset, abi.encode(0, 365 days));
         vm.stopPrank();
 
         uint256 index = deployment.vault.getQueueCount(asset);
