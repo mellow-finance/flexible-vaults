@@ -24,6 +24,8 @@ interface ISyncDepositQueue is ISyncQueue {
 
     function SET_SYNC_DEPOSIT_PENALTY_ROLE() external view returns (bytes32);
 
+    function syncDepositPenaltyD6() external view returns (uint256);
+
     function claimableOf(address account) external view returns (uint256 claimable);
 
     // Mutable functions
