@@ -169,13 +169,13 @@ library SwapModuleLibrary {
                     );
                 } else {
                     string memory assetName = IERC20Metadata($.assets[j]).symbol();
-                    innerParameters = ParameterLibrary.add2("to", Strings.toHexString($.swapModule), "value", "any");
+                    innerParameters = ParameterLibrary.add2("to", Strings.toHexString($.swapModule), "amount", "any");
                     descriptions[iterator++] = JsonLibrary.toJson(
                         string(
                             abi.encodePacked(
                                 "IERC20(",
                                 assetName,
-                                ").approve( ISwapModule(",
+                                ").approve(ISwapModule(",
                                 Strings.toHexString($.swapModule),
                                 "), any)"
                             )

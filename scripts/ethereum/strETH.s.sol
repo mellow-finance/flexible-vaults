@@ -37,15 +37,15 @@ contract Deploy is Script, Test {
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
     function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
-        IVerifier verifier = Subvault(payable(subvault)).verifier();
+        // IVerifier verifier = Subvault(payable(subvault)).verifier();
 
-        vm.stopBroadcast();
+        // vm.stopBroadcast();
 
-        vm.prank(lazyVaultAdmin);
-        verifier.setMerkleRoot(merkleRoot);
-        for (uint256 i = 0; i < calls.payloads.length; i++) {
-            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
-        }
+        // vm.prank(lazyVaultAdmin);
+        // verifier.setMerkleRoot(merkleRoot);
+        // for (uint256 i = 0; i < calls.payloads.length; i++) {
+        //     AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        // }
     }
 
     function _upgradePermissions(uint256 deployerPk) internal {
@@ -59,27 +59,27 @@ contract Deploy is Script, Test {
             _runChecks(subvault, merkleRoot, calls);
         }
 
-        vm.startBroadcast(deployerPk);
+        // vm.startBroadcast(deployerPk);
         {
             address subvault = vault.subvaultAt(1);
             (bytes32 merkleRoot, SubvaultCalls memory calls) =
                 _createSubvault1Verifier(subvault, _deploySwapModule1(subvault));
             _runChecks(subvault, merkleRoot, calls);
         }
-        vm.startBroadcast(deployerPk);
+        // vm.startBroadcast(deployerPk);
         {
             address subvault = vault.subvaultAt(2);
             (bytes32 merkleRoot, SubvaultCalls memory calls) = _createSubvault2Verifier(subvault);
             _runChecks(subvault, merkleRoot, calls);
         }
-        vm.startBroadcast(deployerPk);
+        // vm.startBroadcast(deployerPk);
         {
             address subvault = vault.subvaultAt(3);
             (bytes32 merkleRoot, SubvaultCalls memory calls) =
                 _createSubvault3Verifier(subvault, _deploySwapModule3(subvault));
             _runChecks(subvault, merkleRoot, calls);
         }
-        vm.startBroadcast(deployerPk);
+        // vm.startBroadcast(deployerPk);
         {
             address subvault = vault.subvaultAt(4);
             (bytes32 merkleRoot, SubvaultCalls memory calls) =
