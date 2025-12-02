@@ -36,66 +36,9 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
-    function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
-        // IVerifier verifier = Subvault(payable(subvault)).verifier();
-
-        // vm.stopBroadcast();
-
-        // vm.prank(lazyVaultAdmin);
-        // verifier.setMerkleRoot(merkleRoot);
-        // for (uint256 i = 0; i < calls.payloads.length; i++) {
-        //     AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
-        // }
-    }
-
-    function _upgradePermissions(uint256 deployerPk) internal {
-        Vault vault = Vault(payable(Constants.STRETH));
-
-        vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(0);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) =
-                _createSubvault0Verifier(subvault, _deploySwapModule0(subvault));
-            _runChecks(subvault, merkleRoot, calls);
-        }
-
-        // vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(1);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) =
-                _createSubvault1Verifier(subvault, _deploySwapModule1(subvault));
-            _runChecks(subvault, merkleRoot, calls);
-        }
-        // vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(2);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createSubvault2Verifier(subvault);
-            _runChecks(subvault, merkleRoot, calls);
-        }
-        // vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(3);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) =
-                _createSubvault3Verifier(subvault, _deploySwapModule3(subvault));
-            _runChecks(subvault, merkleRoot, calls);
-        }
-        // vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(4);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) =
-                _createSubvault4Verifier(subvault, _deploySwapModule4(subvault));
-            _runChecks(subvault, merkleRoot, calls);
-        }
-    }
-
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
-
-        if (true) {
-            _upgradePermissions(deployerPk);
-            revert("ok");
-        }
 
         vm.startBroadcast(deployerPk);
 
@@ -451,6 +394,7 @@ contract Deploy is Script, Test {
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
+        console2.log("SwapModule 0: %s", swapModule);
         string[] memory descriptions = strETHLibrary.getSubvault0Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = strETHLibrary.getSubvault0Proofs(curator, subvault, swapModule);
@@ -462,6 +406,7 @@ contract Deploy is Script, Test {
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
+        console2.log("SwapModule 1: %s", swapModule);
         string[] memory descriptions = strETHLibrary.getSubvault1Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = strETHLibrary.getSubvault1Proofs(curator, subvault, swapModule);
@@ -484,6 +429,7 @@ contract Deploy is Script, Test {
         internal
         returns (bytes32 merkleRoot3, SubvaultCalls memory calls3)
     {
+        console2.log("SwapModule 3: %s", swapModule);
         string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves3;
         (merkleRoot3, leaves3) = strETHLibrary.getSubvault3Proofs(curator, subvault, swapModule);
@@ -495,6 +441,7 @@ contract Deploy is Script, Test {
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
+        console2.log("SwapModule 4: %s", swapModule);
         string[] memory descriptions = strETHLibrary.getSubvault4Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = strETHLibrary.getSubvault4Proofs(curator, subvault, swapModule);
