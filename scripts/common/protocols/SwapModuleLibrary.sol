@@ -169,13 +169,13 @@ library SwapModuleLibrary {
                     );
                 } else {
                     string memory assetName = IERC20Metadata($.assets[j]).symbol();
-                    innerParameters = ParameterLibrary.add2("to", Strings.toHexString($.swapModule), "value", "any");
+                    innerParameters = ParameterLibrary.add2("to", Strings.toHexString($.swapModule), "amount", "any");
                     descriptions[iterator++] = JsonLibrary.toJson(
                         string(
                             abi.encodePacked(
                                 "IERC20(",
                                 assetName,
-                                ").approve( ISwapModule(",
+                                ").approve(ISwapModule(",
                                 Strings.toHexString($.swapModule),
                                 "), any)"
                             )
@@ -190,11 +190,7 @@ library SwapModuleLibrary {
                     descriptions[iterator++] = JsonLibrary.toJson(
                         string(
                             abi.encodePacked(
-                                "ISwapModule(",
-                                Strings.toHexString($.swapModule),
-                                ").pushAssets(",
-                                assetName,
-                                ", msg.value)"
+                                "ISwapModule(", Strings.toHexString($.swapModule), ").pushAssets(", assetName, ", any)"
                             )
                         ),
                         ABILibrary.getABI(ISwapModule.pushAssets.selector),
@@ -206,11 +202,7 @@ library SwapModuleLibrary {
                     descriptions[iterator++] = JsonLibrary.toJson(
                         string(
                             abi.encodePacked(
-                                "ISwapModule(",
-                                Strings.toHexString($.swapModule),
-                                ").pullAssets(",
-                                assetName,
-                                ", msg.value)"
+                                "ISwapModule(", Strings.toHexString($.swapModule), ").pullAssets(", assetName, ", any)"
                             )
                         ),
                         ABILibrary.getABI(ISwapModule.pullAssets.selector),

@@ -397,31 +397,31 @@ library Constants {
         $.timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
         $.timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser));
 
-        address[] memory subvaults = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                0x90c983DC732e65DB6177638f0125914787b8Cb78,
-                0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,
-                0x181cB55f872450D16aE858D532B4e35e50eaA76D,
-                0x9938A09FeA37bA681A1Bd53D33ddDE2dEBEc1dA0
-            )
-        );
+        // address[] memory subvaults = ArraysLibrary.makeAddressArray(
+        //     abi.encode(
+        //         0x90c983DC732e65DB6177638f0125914787b8Cb78,
+        //         0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,
+        //         0x181cB55f872450D16aE858D532B4e35e50eaA76D,
+        //         0x9938A09FeA37bA681A1Bd53D33ddDE2dEBEc1dA0
+        //     )
+        // );
 
         $.calls = new SubvaultCalls[](4);
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator);
-            $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
-        }
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault1Proofs(curator, subvaults[1]);
-            $.calls[1] = strETHLibrary.getSubvault1SubvaultCalls(curator, subvaults[1], leaves);
-        }
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault2Proofs(curator, subvaults[2]);
-            $.calls[2] = strETHLibrary.getSubvault2SubvaultCalls(curator, subvaults[2], leaves);
-        }
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault3Proofs(curator, subvaults[3]);
-            $.calls[3] = strETHLibrary.getSubvault3SubvaultCalls(curator, subvaults[3], leaves);
-        }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator, subvaults[0], swapModules[0]);
+        //     $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
+        // }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault1Proofs(curator, subvaults[1], address(0));
+        //     $.calls[1] = strETHLibrary.getSubvault1SubvaultCalls(curator, subvaults[1], leaves);
+        // }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault2Proofs(curator, subvaults[2], swapModules[3]);
+        //     $.calls[2] = strETHLibrary.getSubvault2SubvaultCalls(curator, subvaults[2], leaves);
+        // }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault3Proofs(curator, subvaults[3], swapModules[4]);
+        //     $.calls[3] = strETHLibrary.getSubvault3SubvaultCalls(curator, subvaults[3], leaves);
+        // }
     }
 }

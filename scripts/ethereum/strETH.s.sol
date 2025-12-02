@@ -15,13 +15,14 @@ import "../common/AcceptanceLibrary.sol";
 import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
 import "forge-std/Script.sol";
+import "forge-std/Test.sol";
 
 import "./Constants.sol";
 import "./strETHLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
 
-contract Deploy is Script {
+contract Deploy is Script, Test {
     // Actors
     address public proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
     address public lazyVaultAdmin = 0xAbE20D266Ae54b9Ae30492dEa6B6407bF18fEeb5;
@@ -32,6 +33,8 @@ contract Deploy is Script {
 
     address public lidoPauser = 0xA916fD5252160A7E56A6405741De76dc0Da5A0Cd;
     address public mellowPauser = 0xa6278B726d4AA09D14f9E820D7785FAd82E7196F;
+
+    uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -144,58 +147,78 @@ contract Deploy is Script {
         {
             IRiskManager riskManager = vault.riskManager();
             {
-                (verifiers[0], calls[0]) = _createCowswapVerifier(address(vault));
-                vault.createSubvault(0, proxyAdmin, verifiers[0]); // eth,weth,wsteth
-                riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
-                riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
+                uint256 subvaultIndex = 0;
+                verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+                address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]); // eth,weth,wsteth
+
+                address swapModule = _deploySwapModule0(subvault);
+                bytes32 merkleRoot;
+                (merkleRoot, calls[subvaultIndex]) = _createSubvault0Verifier(vault.subvaultAt(0), swapModule);
+                IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
+                riskManager.allowSubvaultAssets(subvault, assets_);
+                riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
             }
             {
-                verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-                vault.createSubvault(0, proxyAdmin, verifiers[1]); // wsteth
+                uint256 subvaultIndex = 1;
+                verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+                address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]); // wsteth, weth
+
+                address swapModule = _deploySwapModule1(subvault);
                 bytes32 merkleRoot;
-                (merkleRoot, calls[1]) = _createAaveWstETHLoopingVerifier(vault.subvaultAt(1));
-                IVerifier(verifiers[1]).setMerkleRoot(merkleRoot);
+                (merkleRoot, calls[subvaultIndex]) = _createSubvault1Verifier(subvault, swapModule);
+                IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
                 riskManager.allowSubvaultAssets(
-                    vault.subvaultAt(1), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
+                    subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
                 );
-                riskManager.setSubvaultLimit(vault.subvaultAt(1), type(int256).max / 2);
+                riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
             }
 
             {
-                verifiers[2] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-                verifiers[3] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-                vault.createSubvault(0, proxyAdmin, verifiers[2]); // wsteth, usdc, usdt, usds
-                vault.createSubvault(0, proxyAdmin, verifiers[3]); // usdc, usdt, usds
-                riskManager.setSubvaultLimit(vault.subvaultAt(2), type(int256).max / 2);
+                uint256 subvaultIndex = 2;
+                verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+                address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]); // wsteth, usdc, usdt, usds, usdce
+                bytes32 merkleRoot2;
+                (merkleRoot2, calls[subvaultIndex]) = _createSubvault2Verifier(subvault);
+                IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot2);
+                riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
                 riskManager.allowSubvaultAssets(
-                    vault.subvaultAt(2),
+                    subvault,
                     ArraysLibrary.makeAddressArray(
-                        abi.encode(Constants.WSTETH, Constants.USDC, Constants.USDT, Constants.USDS)
+                        abi.encode(Constants.WSTETH, Constants.USDC, Constants.USDT, Constants.USDS, Constants.USDE)
                     )
                 );
-                riskManager.setSubvaultLimit(vault.subvaultAt(3), type(int256).max / 2);
-                riskManager.allowSubvaultAssets(
-                    vault.subvaultAt(3),
-                    ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS))
-                );
-                bytes32 merkleRoot2;
-                bytes32 merkleRoot3;
-                (merkleRoot2, calls[2], merkleRoot3, calls[3]) =
-                    _createAaveEthenaLoopingVerifiers(vault.subvaultAt(2), vault.subvaultAt(3));
-                IVerifier(verifiers[2]).setMerkleRoot(merkleRoot2);
-                IVerifier(verifiers[3]).setMerkleRoot(merkleRoot3);
             }
 
             {
-                verifiers[1] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-                vault.createSubvault(0, proxyAdmin, verifiers[4]); // wsteth
-                bytes32 merkleRoot;
-                (merkleRoot, calls[4]) = _createSparkWstETHLoopingVerifier(vault.subvaultAt(4));
-                IVerifier(verifiers[4]).setMerkleRoot(merkleRoot);
+                uint256 subvaultIndex = 3;
+                verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+                address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]); // usdc, usdt, usds, usde
+
+                address swapModule = _deploySwapModule3(subvault);
+                bytes32 merkleRoot3;
+                (merkleRoot3, calls[subvaultIndex]) = _createSubvault3Verifier(subvault, swapModule);
+                IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot3);
+                riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
                 riskManager.allowSubvaultAssets(
-                    vault.subvaultAt(4), ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH))
+                    subvault,
+                    ArraysLibrary.makeAddressArray(
+                        abi.encode(Constants.USDC, Constants.USDT, Constants.USDS, Constants.USDE)
+                    )
                 );
-                riskManager.setSubvaultLimit(vault.subvaultAt(4), type(int256).max / 2);
+            }
+
+            {
+                uint256 subvaultIndex = 4;
+                verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+                address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]); // weth, wsteth
+                address swapModule = _deploySwapModule4(subvault);
+                bytes32 merkleRoot;
+                (merkleRoot, calls[subvaultIndex]) = _createSubvault4Verifier(subvault, swapModule);
+                IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
+                riskManager.allowSubvaultAssets(
+                    subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+                );
+                riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
             }
         }
 
@@ -324,7 +347,7 @@ contract Deploy is Script {
             })
         );
 
-        // revert("ok");
+        revert("ok");
     }
 
     function _getExpectedHolders(address timelockController)
@@ -367,54 +390,154 @@ contract Deploy is Script {
         }
     }
 
-    function _createCowswapVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {
-        ProtocolDeployment memory $ = Constants.protocolDeployment();
-        string[] memory descriptions = strETHLibrary.getSubvault0Descriptions(curator);
-        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator);
+    function _createSubvault0Verifier(address subvault, address swapModule)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        console2.log("SwapModule 0: %s", swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault0Descriptions(curator, subvault, swapModule);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = strETHLibrary.getSubvault0Proofs(curator, subvault, swapModule);
         ProofLibrary.storeProofs("ethereum:strETH:subvault0", merkleRoot, leaves, descriptions);
-        calls = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
-        verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, merkleRoot));
+        calls = strETHLibrary.getSubvault0SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
-    function _createAaveWstETHLoopingVerifier(address subvault)
+    function _createSubvault1Verifier(address subvault, address swapModule)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        string[] memory descriptions = strETHLibrary.getSubvault1Descriptions(curator, subvault);
+        console2.log("SwapModule 1: %s", swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault1Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = strETHLibrary.getSubvault1Proofs(curator, subvault);
+        (merkleRoot, leaves) = strETHLibrary.getSubvault1Proofs(curator, subvault, swapModule);
         ProofLibrary.storeProofs("ethereum:strETH:subvault1", merkleRoot, leaves, descriptions);
-        calls = strETHLibrary.getSubvault1SubvaultCalls(curator, subvault, leaves);
+        calls = strETHLibrary.getSubvault1SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
-    function _createAaveEthenaLoopingVerifiers(address subvault2, address subvault3)
+    function _createSubvault2Verifier(address subvault)
         internal
-        returns (bytes32 merkleRoot2, SubvaultCalls memory calls2, bytes32 merkleRoot3, SubvaultCalls memory calls3)
+        returns (bytes32 merkleRoot2, SubvaultCalls memory calls2)
     {
-        {
-            string[] memory descriptions = strETHLibrary.getSubvault2Descriptions(curator, subvault2);
-            IVerifier.VerificationPayload[] memory leaves2;
-            (merkleRoot2, leaves2) = strETHLibrary.getSubvault2Proofs(curator, subvault2);
-            ProofLibrary.storeProofs("ethereum:strETH:subvault2", merkleRoot2, leaves2, descriptions);
-            calls2 = strETHLibrary.getSubvault2SubvaultCalls(curator, subvault2, leaves2);
-        }
-        {
-            string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(curator, subvault3);
-            IVerifier.VerificationPayload[] memory leaves3;
-            (merkleRoot3, leaves3) = strETHLibrary.getSubvault3Proofs(curator, subvault3);
-            ProofLibrary.storeProofs("ethereum:strETH:subvault3", merkleRoot3, leaves3, descriptions);
-            calls3 = strETHLibrary.getSubvault3SubvaultCalls(curator, subvault3, leaves3);
-        }
+        string[] memory descriptions = strETHLibrary.getSubvault2Descriptions(curator, subvault);
+        IVerifier.VerificationPayload[] memory leaves2;
+        (merkleRoot2, leaves2) = strETHLibrary.getSubvault2Proofs(curator, subvault);
+        ProofLibrary.storeProofs("ethereum:strETH:subvault2", merkleRoot2, leaves2, descriptions);
+        calls2 = strETHLibrary.getSubvault2SubvaultCalls(curator, subvault, leaves2);
     }
 
-    function _createSparkWstETHLoopingVerifier(address subvault)
+    function _createSubvault3Verifier(address subvault, address swapModule)
+        internal
+        returns (bytes32 merkleRoot3, SubvaultCalls memory calls3)
+    {
+        console2.log("SwapModule 3: %s", swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(curator, subvault, swapModule);
+        IVerifier.VerificationPayload[] memory leaves3;
+        (merkleRoot3, leaves3) = strETHLibrary.getSubvault3Proofs(curator, subvault, swapModule);
+        ProofLibrary.storeProofs("ethereum:strETH:subvault3", merkleRoot3, leaves3, descriptions);
+        calls3 = strETHLibrary.getSubvault3SubvaultCalls(curator, subvault, swapModule, leaves3);
+    }
+
+    function _createSubvault4Verifier(address subvault, address swapModule)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        string[] memory descriptions = strETHLibrary.getSubvault4Descriptions(curator, subvault);
+        console2.log("SwapModule 4: %s", swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault4Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = strETHLibrary.getSubvault4Proofs(curator, subvault);
+        (merkleRoot, leaves) = strETHLibrary.getSubvault4Proofs(curator, subvault, swapModule);
         ProofLibrary.storeProofs("ethereum:strETH:subvault4", merkleRoot, leaves, descriptions);
-        calls = strETHLibrary.getSubvault4SubvaultCalls(curator, subvault, leaves);
+        calls = strETHLibrary.getSubvault4SubvaultCalls(curator, subvault, swapModule, leaves);
+    }
+
+    function _routers() internal pure returns (address[5] memory result) {
+        result = [
+            address(0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE),
+            address(0x2C0552e5dCb79B064Fd23E358A86810BC5994244),
+            address(0xF6801D319497789f934ec7F83E142a9536312B08),
+            address(0x6131B5fae19EA4f9D964eAc0408E4408b66337b5),
+            address(0x179dC3fb0F2230094894317f307241A52CdB38Aa)
+        ];
+    }
+
+    function _deploySwapModule0(address subvault) internal returns (address) {
+        return _deployLidoLeverageSwapModule(subvault);
+    }
+
+    function _deploySwapModule1(address subvault) internal returns (address swapModule) {
+        return _deployLidoLeverageSwapModule(subvault);
+    }
+
+    function _deploySwapModule3(address subvault) internal returns (address swapModule) {
+        return _deployEthenaLeverageSwapModule(subvault);
+    }
+
+    function _deploySwapModule4(address subvault) internal returns (address swapModule) {
+        return _deployLidoLeverageSwapModule(subvault);
+    }
+
+    function _deployLidoLeverageSwapModule(address subvault) internal returns (address) {
+        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+        address[2] memory lidoLeverage = [Constants.WETH, Constants.WSTETH];
+        address[] memory actors =
+            ArraysLibrary.makeAddressArray(abi.encode(curator, lidoLeverage, lidoLeverage, _routers()));
+        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE
+            )
+        );
+        return swapModuleFactory.create(
+            0,
+            proxyAdmin,
+            abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+        );
+    }
+
+    function _deployEthenaLeverageSwapModule(address subvault) internal returns (address) {
+        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+        address[5] memory ethenaLeverage =
+            [Constants.USDC, Constants.USDT, Constants.USDS, Constants.USDE, Constants.SUSDE];
+        address[] memory actors =
+            ArraysLibrary.makeAddressArray(abi.encode(curator, ethenaLeverage, ethenaLeverage, _routers()));
+
+        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                [Permissions.SWAP_MODULE_CALLER_ROLE],
+                [
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE
+                ],
+                [
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
+                ],
+                [
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE
+                ]
+            )
+        );
+        return swapModuleFactory.create(
+            0,
+            proxyAdmin,
+            abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+        );
     }
 }
