@@ -157,13 +157,13 @@ library strETHLibrary {
 
         ParameterLibrary.Parameter[] memory innerParameters;
         innerParameters = ParameterLibrary.add2(
-            "token_",
+            "_token",
             Strings.toHexString(Constants.WSTETH),
-            "to_",
+            "_to",
             Strings.toHexString(Constants.STRETH_ARBITRUM_SUBVAULT_0)
         );
-        innerParameters = innerParameters.add2("amount_", "any", "maxGas_", "any");
-        innerParameters = innerParameters.add2("gasPriceBid_", "any", "data_", "any");
+        innerParameters = innerParameters.add2("_amount", "any", "_maxGas", "any");
+        innerParameters = innerParameters.add2("_gasPriceBid", "any", "_data", "any");
         descriptions[iterator++] = JsonLibrary.toJson(
             string(
                 abi.encodePacked(
