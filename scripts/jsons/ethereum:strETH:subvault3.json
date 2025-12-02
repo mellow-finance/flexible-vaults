@@ -887,7 +887,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDe, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDe, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -928,7 +928,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDe, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDe, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -1016,7 +1016,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(sUSDe, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(sUSDe, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -1057,7 +1057,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(sUSDe, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(sUSDe, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -1145,7 +1145,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDC, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDC, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -1186,7 +1186,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDC, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDC, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -1274,7 +1274,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDT, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDT, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -1315,7 +1315,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDT, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDT, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -1403,7 +1403,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDS, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pushAssets(USDS, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -1444,7 +1444,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDS, msg.value)",
+        "description": "ISwapModule(0xc95b806ac073df930014ac476d26c8ad918f14e0).pullAssets(USDS, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",

@@ -51,7 +51,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pushAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pushAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -91,7 +91,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pullAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pullAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -177,7 +177,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pushAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pushAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -217,7 +217,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pullAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x35d482d0bbbb1c2f25d9b12f234883f3224f3198).pullAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",

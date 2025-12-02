@@ -78,7 +78,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pushAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pushAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -118,7 +118,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pullAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pullAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -203,7 +203,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pushAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pushAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -242,7 +242,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pullAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x25091725982e83f6afdf6a17705feeca5866b864).pullAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
