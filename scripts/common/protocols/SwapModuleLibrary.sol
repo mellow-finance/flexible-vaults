@@ -194,7 +194,7 @@ library SwapModuleLibrary {
                                 Strings.toHexString($.swapModule),
                                 ").pushAssets(",
                                 assetName,
-                                ", msg.value)"
+                                ", any)"
                             )
                         ),
                         ABILibrary.getABI(ISwapModule.pushAssets.selector),
@@ -210,7 +210,7 @@ library SwapModuleLibrary {
                                 Strings.toHexString($.swapModule),
                                 ").pullAssets(",
                                 assetName,
-                                ", msg.value)"
+                                ", any)"
                             )
                         ),
                         ABILibrary.getABI(ISwapModule.pullAssets.selector),
