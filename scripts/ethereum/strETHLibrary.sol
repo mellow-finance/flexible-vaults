@@ -2,7 +2,6 @@
 pragma solidity 0.8.25;
 
 import {IAavePoolV3} from "../common/interfaces/IAavePoolV3.sol";
-import {ICowswapSettlement} from "../common/interfaces/ICowswapSettlement.sol";
 import {IL1GatewayRouter} from "../common/interfaces/IL1GatewayRouter.sol";
 
 import {AcceptanceLibrary} from "../common/AcceptanceLibrary.sol";
@@ -15,7 +14,10 @@ import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
 import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
-import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+
+import {CCIPLibrary} from "../common/protocols/CCIPLibrary.sol";
+import {ERC20Library} from "../common/protocols/ERC20Library.sol";
+import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
@@ -30,47 +32,71 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 library strETHLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
 
-    function getSubvault0Proofs(address curator)
+    function _getSubvault0WethParams(address curator) internal pure returns (WethLibrary.Info memory) {
+        return WethLibrary.Info(curator, Constants.WETH);
+    }
+
+    function _getSubvault0SwapModuleParams(address curator, address subvault, address swapModule)
+        internal
+        pure
+        returns (SwapModuleLibrary.Info memory)
+    {
+        return SwapModuleLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault0",
+            swapModule: swapModule,
+            curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+        });
+    }
+
+    function _getSubvault0CCIPPlasmaParams(address curator, address subvault)
+        internal
+        pure
+        returns (CCIPLibrary.Info memory)
+    {
+        return CCIPLibrary.Info({
+            curator: curator,
+            subvault: subvault,
+            asset: Constants.WSTETH,
+            ccipRouter: Constants.CCIP_ETHEREUM_ROUTER,
+            targetChainSelector: Constants.CCIP_PLASMA_CHAIN_SELECTOR,
+            targetChainReceiver: Constants.STRETH_PLASMA_SUBVAULT_0,
+            targetChainName: "plasma"
+        });
+    }
+
+    function getSubvault0Proofs(address curator, address subvault, address swapModule)
         internal
         pure
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
-        /*
-            1. weth.deposit{value: <any>}();
-            2-4. cowswap (assets=[weth])
-            5. wsteth.approve(ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, any)
-            6. ARBITRUM_L1_GATEWAY_ROUTER.outboundTransfer{value: any}(params...)
-            7. wsteth.approve(ccipRouter, any)
-            8. ccipRouter.ccipSend{value: any}(params...)
-        */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](8);
-        leaves[0] = WethLibrary.getWethDepositProof(bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
-        ArraysLibrary.insert(
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+        leaves[iterator++] = WethLibrary.getWethDepositProof(bitmaskVerifier, _getSubvault0WethParams(curator));
+        iterator = ArraysLibrary.insert(
             leaves,
-            CowSwapLibrary.getCowSwapProofs(
+            SwapModuleLibrary.getSwapModuleProofs(
+                bitmaskVerifier, _getSubvault0SwapModuleParams(curator, subvault, swapModule)
+            ),
+            iterator
+        );
+
+        iterator = ArraysLibrary.insert(
+            leaves,
+            ERC20Library.getERC20Proofs(
                 bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+                ERC20Library.Info({
                     curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode(Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH))
                 })
             ),
-            1
+            iterator
         );
 
-        leaves[4] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            curator,
-            Constants.WSTETH,
-            0,
-            abi.encodeCall(IERC20.approve, (Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
-        );
-
+        // arbitrum native bridge
         {
             bytes memory data =
                 hex"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000";
@@ -78,7 +104,7 @@ library strETHLibrary {
                 IL1GatewayRouter.outboundTransfer,
                 (address(type(uint160).max), address(type(uint160).max), 0, 0, 0, data)
             );
-            leaves[5] = ProofLibrary.makeVerificationPayload(
+            leaves[iterator++] = ProofLibrary.makeVerificationPayload(
                 bitmaskVerifier,
                 curator,
                 Constants.ARBITRUM_L1_GATEWAY_ROUTER,
@@ -90,94 +116,46 @@ library strETHLibrary {
                 ProofLibrary.makeBitmask(true, true, false, true, encodedCall)
             );
         }
-        leaves[6] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            curator,
-            Constants.WSTETH,
-            0,
-            abi.encodeCall(IERC20.approve, (Constants.CCIP_ETHEREUM_ROUTER, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
+
+        iterator = ArraysLibrary.insert(
+            leaves,
+            CCIPLibrary.getCCIPProofs(bitmaskVerifier, _getSubvault0CCIPPlasmaParams(curator, subvault)),
+            iterator
         );
 
-        CCIPClient.EVMTokenAmount[] memory tokenAmounts = new CCIPClient.EVMTokenAmount[](1);
-        tokenAmounts[0].token = Constants.WSTETH;
-        CCIPClient.EVMTokenAmount[] memory tokenAmountsMask = new CCIPClient.EVMTokenAmount[](1);
-        tokenAmountsMask[0].token = address(type(uint160).max);
-        leaves[7] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            curator,
-            Constants.CCIP_ETHEREUM_ROUTER,
-            0,
-            abi.encodeCall(
-                ICCIPRouterClient.ccipSend,
-                (
-                    Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                    CCIPClient.EVM2AnyMessage({
-                        receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                        data: new bytes(0),
-                        tokenAmounts: tokenAmounts,
-                        feeToken: address(0),
-                        extraArgs: CCIPClient._argsToBytes(
-                            CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                        )
-                    })
-                )
-            ),
-            ProofLibrary.makeBitmask(
-                true,
-                true,
-                false,
-                true,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        type(uint64).max,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(address(type(uint160).max)),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmountsMask,
-                            feeToken: address(type(uint160).max),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: type(uint256).max, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                )
-            )
-        );
+        assembly {
+            mstore(leaves, iterator)
+        }
 
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault0Descriptions(address curator) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](8);
-        descriptions[0] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
-        ArraysLibrary.insert(
+    function getSubvault0Descriptions(address curator, address subvault, address swapModule)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+        descriptions[iterator++] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
+        iterator = ArraysLibrary.insert(
             descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+            SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            ERC20Library.getERC20Descriptions(
+                ERC20Library.Info({
                     curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode(Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH))
                 })
             ),
-            1
+            iterator
         );
 
         ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters = ParameterLibrary.add2(
-            "to", Strings.toHexString(Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH), "amount", "any"
-        );
-        descriptions[4] = JsonLibrary.toJson(
-            string(abi.encodePacked("WstETH.approve(L1TokenGatewayWstETH, any)")),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString(curator), Strings.toHexString(Constants.WSTETH), "0"),
-            innerParameters
-        );
-
         innerParameters = ParameterLibrary.add2(
             "token_",
             Strings.toHexString(Constants.WSTETH),
@@ -186,7 +164,7 @@ library strETHLibrary {
         );
         innerParameters = innerParameters.add2("amount_", "any", "maxGas_", "any");
         innerParameters = innerParameters.add2("gasPriceBid_", "any", "data_", "any");
-        descriptions[5] = JsonLibrary.toJson(
+        descriptions[iterator++] = JsonLibrary.toJson(
             string(
                 abi.encodePacked(
                     "L1GatewayRouter.outboundTransfer{value: any}(WstETH, strETH_Subvault0_arbitrum, any, any, any, any)"
@@ -199,119 +177,41 @@ library strETHLibrary {
             innerParameters
         );
 
-        innerParameters =
-            ParameterLibrary.add2("to", Strings.toHexString(Constants.CCIP_ETHEREUM_ROUTER), "amount", "any");
-        descriptions[6] = JsonLibrary.toJson(
-            string(abi.encodePacked("WstETH.approve(CCIPRouterClient, any)")),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString(curator), Strings.toHexString(Constants.WSTETH), "0"),
-            innerParameters
+        iterator = ArraysLibrary.insert(
+            descriptions, CCIPLibrary.getCCIPDescriptions(_getSubvault0CCIPPlasmaParams(curator, subvault)), iterator
         );
-
-        CCIPClient.EVMTokenAmount[] memory tokenAmounts = new CCIPClient.EVMTokenAmount[](1);
-        tokenAmounts[0].token = Constants.WSTETH;
-        innerParameters = ParameterLibrary.build(
-            "destinationChainSelector", Strings.toString(Constants.CCIP_PLASMA_CHAIN_SELECTOR)
-        ).addJson(
-            "message",
-            JsonLibrary.toJson(
-                CCIPClient.EVM2AnyMessage({
-                    receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                    data: new bytes(0),
-                    tokenAmounts: tokenAmounts,
-                    feeToken: address(0),
-                    extraArgs: CCIPClient._argsToBytes(
-                        CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                    )
-                })
-            )
-        );
-        descriptions[7] = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    "CCIPRouterClient.ccipSend(CCIP_PLASMA_CHAIN_SELECTOR, [abi.encode(arbitrumSubvault0), 0x, [[WstETH, any]], 0x0000000000000000000000000000000000000000, 0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001])"
-                )
-            ),
-            ABILibrary.getABI(ICCIPRouterClient.ccipSend.selector),
-            ParameterLibrary.build(
-                Strings.toHexString(curator), Strings.toHexString(Constants.CCIP_ETHEREUM_ROUTER), "any"
-            ),
-            innerParameters
-        );
+        assembly {
+            mstore(descriptions, iterator)
+        }
     }
 
-    function getSubvault0SubvaultCalls(address curator, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        pure
-        returns (SubvaultCalls memory calls)
-    {
+    function getSubvault0SubvaultCalls(
+        address curator,
+        address subvault,
+        address swapModule,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal pure returns (SubvaultCalls memory calls) {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
-        calls.calls[0] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));
-        ArraysLibrary.insert(
+        uint256 iterator = 0;
+
+        calls.calls[iterator++] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));
+        iterator = ArraysLibrary.insert(
             calls.calls,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
+            SwapModuleLibrary.getSwapModuleCalls(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls,
+            ERC20Library.getERC20Calls(
+                ERC20Library.Info({
                     curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
+                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+                    to: ArraysLibrary.makeAddressArray(abi.encode(Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH))
                 })
             ),
-            1
+            iterator
         );
-
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call(
-                curator,
-                Constants.WSTETH,
-                0,
-                abi.encodeCall(IERC20.approve, (Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, 0)),
-                true
-            );
-            tmp[i++] = Call(
-                curator,
-                Constants.WSTETH,
-                0,
-                abi.encodeCall(IERC20.approve, (Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, 1 ether)),
-                true
-            );
-            tmp[i++] = Call(
-                address(0xdead),
-                Constants.WSTETH,
-                0,
-                abi.encodeCall(IERC20.approve, (Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, 0)),
-                false
-            );
-            tmp[i++] = Call(
-                curator,
-                address(0xdead),
-                0,
-                abi.encodeCall(IERC20.approve, (Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, 0)),
-                false
-            );
-            tmp[i++] = Call(
-                curator,
-                Constants.WSTETH,
-                1 wei,
-                abi.encodeCall(IERC20.approve, (Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, 0)),
-                false
-            );
-            tmp[i++] = Call(curator, Constants.WSTETH, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 0)), false);
-            tmp[i++] = Call(
-                curator,
-                Constants.WSTETH,
-                0,
-                abi.encode(IERC20.approve.selector, Constants.ARBITRUM_L1_TOKEN_GATEWAY_WSTETH, 0),
-                false
-            );
-            assembly {
-                mstore(tmp, i)
-            }
-            calls.calls[4] = tmp;
-        }
 
         {
             bytes memory data =
@@ -409,480 +309,125 @@ library strETHLibrary {
                 mstore(tmp, i)
             }
 
-            calls.calls[5] = tmp;
+            calls.calls[iterator++] = tmp;
         }
 
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call(
-                curator, Constants.WSTETH, 0, abi.encodeCall(IERC20.approve, (Constants.CCIP_ETHEREUM_ROUTER, 0)), true
-            );
-            tmp[i++] = Call(
-                curator,
-                Constants.WSTETH,
-                0,
-                abi.encodeCall(IERC20.approve, (Constants.CCIP_ETHEREUM_ROUTER, 1 ether)),
-                true
-            );
-            tmp[i++] = Call(
-                address(0xdead),
-                Constants.WSTETH,
-                0,
-                abi.encodeCall(IERC20.approve, (Constants.CCIP_ETHEREUM_ROUTER, 0)),
-                false
-            );
-            tmp[i++] = Call(
-                curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, (Constants.CCIP_ETHEREUM_ROUTER, 0)), false
-            );
-            tmp[i++] = Call(
-                curator,
-                Constants.WSTETH,
-                1 wei,
-                abi.encodeCall(IERC20.approve, (Constants.CCIP_ETHEREUM_ROUTER, 0)),
-                false
-            );
-            tmp[i++] = Call(curator, Constants.WSTETH, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 0)), false);
-            tmp[i++] = Call(
-                curator,
-                Constants.WSTETH,
-                0,
-                abi.encode(IERC20.approve.selector, Constants.CCIP_ETHEREUM_ROUTER, 0),
-                false
-            );
-            assembly {
-                mstore(tmp, i)
-            }
-            calls.calls[6] = tmp;
-        }
-
-        {
-            CCIPClient.EVMTokenAmount[] memory tokenAmounts = new CCIPClient.EVMTokenAmount[](1);
-            tokenAmounts[0].token = Constants.WSTETH;
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                0,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                true
-            );
-            tokenAmounts[0].amount = 1 ether;
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                true
-            );
-
-            tmp[i++] = Call(
-                address(0xdead),
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                address(0xdead),
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        uint64(0xdead),
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(address(0xdead)),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(100),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: new CCIPClient.EVMTokenAmount[](2),
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0xdead),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0xdead, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: false})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encode(
-                    ICCIPRouterClient.ccipSend.selector,
-                    Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                    CCIPClient.EVM2AnyMessage({
-                        receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                        data: new bytes(0),
-                        tokenAmounts: tokenAmounts,
-                        feeToken: address(0),
-                        extraArgs: CCIPClient._argsToBytes(
-                            CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                        )
-                    })
-                ),
-                false
-            );
-
-            tokenAmounts[0].token = address(0xdead);
-            tmp[i++] = Call(
-                curator,
-                Constants.CCIP_ETHEREUM_ROUTER,
-                1 wei,
-                abi.encodeCall(
-                    ICCIPRouterClient.ccipSend,
-                    (
-                        Constants.CCIP_PLASMA_CHAIN_SELECTOR,
-                        CCIPClient.EVM2AnyMessage({
-                            receiver: abi.encode(Constants.STRETH_PLASMA_SUBVAULT_0),
-                            data: new bytes(0),
-                            tokenAmounts: tokenAmounts,
-                            feeToken: address(0),
-                            extraArgs: CCIPClient._argsToBytes(
-                                CCIPClient.EVMExtraArgsV2({gasLimit: 0, allowOutOfOrderExecution: true})
-                            )
-                        })
-                    )
-                ),
-                false
-            );
-
-            assembly {
-                mstore(tmp, i)
-            }
-            calls.calls[7] = tmp;
-        }
+        iterator = ArraysLibrary.insert(
+            calls.calls, CCIPLibrary.getCCIPCalls(_getSubvault0CCIPPlasmaParams(curator, subvault)), iterator
+        );
     }
 
-    function getSubvault1Proofs(address curator, address subvault)
+    function _getSubvault1SwapModuleParams(address curator, address subvault, address swapModule)
+        internal
+        pure
+        returns (SwapModuleLibrary.Info memory)
+    {
+        return SwapModuleLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault1",
+            swapModule: swapModule,
+            curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+        });
+    }
+
+    function _getSubvault1AaveParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault1",
+            curator: curator,
+            aaveInstance: Constants.AAVE_PRIME,
+            aaveInstanceName: "Prime",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+            categoryId: 1
+        });
+    }
+
+    function getSubvault1Proofs(address curator, address subvault, address swapModule)
         internal
         pure
         returns (bytes32 merkleProof, IVerifier.VerificationPayload[] memory leaves)
     {
-        /*
-            1-4. cowswap (assets=[weth, wsteth])
-            5-11. aave (collaterals=[wsteth], loans=[weth], categoryId=1)
-        */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](11);
-        ArraysLibrary.insert(
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
             leaves,
-            CowSwapLibrary.getCowSwapProofs(
-                bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
+            SwapModuleLibrary.getSwapModuleProofs(
+                bitmaskVerifier, _getSubvault1SwapModuleParams(curator, subvault, swapModule)
             ),
-            0
+            iterator
         );
-        ArraysLibrary.insert(
-            leaves,
-            AaveLibrary.getAaveProofs(
-                bitmaskVerifier,
-                AaveLibrary.Info({
-                    subvault: subvault,
-                    subvaultName: "subvault1",
-                    curator: curator,
-                    aaveInstance: Constants.AAVE_PRIME,
-                    aaveInstanceName: "Prime",
-                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
-                    categoryId: 1
-                })
-            ),
-            4
+        iterator = ArraysLibrary.insert(
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault1AaveParams(curator, subvault)), iterator
         );
+        assembly {
+            mstore(leaves, iterator)
+        }
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault1Descriptions(address curator, address subvault)
+    function getSubvault1Descriptions(address curator, address subvault, address swapModule)
         internal
         view
         returns (string[] memory descriptions)
     {
-        descriptions = new string[](11);
-        ArraysLibrary.insert(
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
             descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
-            ),
-            0
+            SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault1SwapModuleParams(curator, subvault, swapModule)),
+            iterator
         );
-        ArraysLibrary.insert(
-            descriptions,
-            AaveLibrary.getAaveDescriptions(
-                AaveLibrary.Info({
-                    subvault: subvault,
-                    subvaultName: "subvault1",
-                    curator: curator,
-                    aaveInstance: Constants.AAVE_PRIME,
-                    aaveInstanceName: "Prime",
-                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
-                    categoryId: 1
-                })
-            ),
-            4
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault1AaveParams(curator, subvault)), iterator
+        );
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault1SubvaultCalls(
+        address curator,
+        address subvault,
+        address swapModule,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal pure returns (SubvaultCalls memory calls) {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            calls.calls,
+            SwapModuleLibrary.getSwapModuleCalls(_getSubvault1SwapModuleParams(curator, subvault, swapModule)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault1AaveParams(curator, subvault)), iterator
         );
     }
 
-    function getSubvault1SubvaultCalls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+    function _getSubvault2AaveParams(address curator, address subvault)
         internal
         pure
-        returns (SubvaultCalls memory calls)
+        returns (AaveLibrary.Info memory)
     {
-        /*
-            1. weth.approve(cowswap, anyInt)
-            2. wsteth.approve(cowswap, anyInt)
-            3. cowswap.setPreSignature(anyBytes(56), anyBool)
-            4. cowswap.invalidateOrder(anyBytes(56))
-
-            5. weth.approve(AaveV3Prime, anyInt)
-            6. wsteth.approve(AaveV3Prime, anyInt)
-
-            7. AaveV3Prime.setEMode(category=1)
-            8. AaveV3Prime.borrow(weth, anyInt, 2, anyInt, subvault1)
-            9. AaveV3Prime.repay(weth, anyInt, 2, subvault1)
-            10. AaveV3Prime.supply(wsteth, anyInt, subvault1, anyInt)
-            11. AaveV3Prime.withdraw(wsteth, anyInt, subvault1)
-        */
-        calls.payloads = leaves;
-        calls.calls = new Call[][](leaves.length);
-        ArraysLibrary.insert(
-            calls.calls,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault2",
+            curator: curator,
+            aaveInstance: Constants.AAVE_CORE,
+            aaveInstanceName: "Core",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+            loans: ArraysLibrary.makeAddressArray(
+                abi.encode(Constants.USDC, Constants.USDT, Constants.USDS, Constants.USDE)
             ),
-            4
-        );
-        ArraysLibrary.insert(
-            calls.calls,
-            AaveLibrary.getAaveCalls(
-                AaveLibrary.Info({
-                    subvault: subvault,
-                    subvaultName: "subvault1",
-                    curator: curator,
-                    aaveInstance: Constants.AAVE_PRIME,
-                    aaveInstanceName: "Prime",
-                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
-                    categoryId: 1
-                })
-            ),
-            4
-        );
+            categoryId: 0
+        });
     }
 
     function getSubvault2Proofs(address curator, address subvault)
@@ -890,40 +435,14 @@ library strETHLibrary {
         pure
         returns (bytes32 merkleProof, IVerifier.VerificationPayload[] memory leaves)
     {
-        /*
-            1-7. aave (collaterals=[wsteth], loans=[usdc, usdt, usds], categoryId=0)
-        */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
         return ProofLibrary.generateMerkleProofs(
-            AaveLibrary.getAaveProofs(
-                bitmaskVerifier,
-                AaveLibrary.Info({
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator,
-                    aaveInstance: Constants.AAVE_CORE,
-                    aaveInstanceName: "Core",
-                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS)),
-                    categoryId: 0
-                })
-            )
+            AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault2AaveParams(curator, subvault))
         );
     }
 
     function getSubvault2Descriptions(address curator, address subvault) internal view returns (string[] memory) {
-        return AaveLibrary.getAaveDescriptions(
-            AaveLibrary.Info({
-                subvault: subvault,
-                subvaultName: "subvault2",
-                curator: curator,
-                aaveInstance: Constants.AAVE_CORE,
-                aaveInstanceName: "Core",
-                collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-                loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS)),
-                categoryId: 0
-            })
-        );
+        return AaveLibrary.getAaveDescriptions(_getSubvault2AaveParams(curator, subvault));
     }
 
     function getSubvault2SubvaultCalls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
@@ -932,150 +451,105 @@ library strETHLibrary {
         returns (SubvaultCalls memory calls)
     {
         calls.payloads = leaves;
-        calls.calls = AaveLibrary.getAaveCalls(
-            AaveLibrary.Info({
-                subvault: subvault,
-                subvaultName: "subvault2",
-                curator: curator,
-                aaveInstance: Constants.AAVE_CORE,
-                aaveInstanceName: "Core",
-                collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-                loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS)),
-                categoryId: 0
-            })
-        );
+        calls.calls = AaveLibrary.getAaveCalls(_getSubvault2AaveParams(curator, subvault));
     }
 
-    function getSubvault3Proofs(address curator, address subvault)
+    function _getSubvault3AaveParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault3",
+            curator: curator,
+            aaveInstance: Constants.AAVE_CORE,
+            aaveInstanceName: "Core",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDE, Constants.SUSDE)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS)),
+            categoryId: 2
+        });
+    }
+
+    function _getSubvault3SwapModuleParams(address curator, address subvault, address swapModule)
+        internal
+        pure
+        returns (SwapModuleLibrary.Info memory)
+    {
+        return SwapModuleLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault3",
+            swapModule: swapModule,
+            curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+            assets: ArraysLibrary.makeAddressArray(
+                abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDS)
+            )
+        });
+    }
+
+    function getSubvault3Proofs(address curator, address subvault, address swapModule)
         internal
         pure
         returns (bytes32 merkleProof, IVerifier.VerificationPayload[] memory leaves)
     {
-        /*
-            1-16. aave (collaterals=[usde, susde], loans=[usdc, usdt, usds], categoryId=2)
-            17-23. cowswap(assets=[usde, susde, usdc, usdt, usds])
-        */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault3AaveParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves,
+            SwapModuleLibrary.getSwapModuleProofs(
+                bitmaskVerifier, _getSubvault3SwapModuleParams(curator, subvault, swapModule)
+            ),
+            iterator
+        );
 
-        leaves = new IVerifier.VerificationPayload[](23);
-        ArraysLibrary.insert(
-            leaves,
-            AaveLibrary.getAaveProofs(
-                bitmaskVerifier,
-                AaveLibrary.Info({
-                    subvault: subvault,
-                    subvaultName: "subvault3",
-                    curator: curator,
-                    aaveInstance: Constants.AAVE_CORE,
-                    aaveInstanceName: "Core",
-                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDE, Constants.SUSDE)),
-                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS)),
-                    categoryId: 2
-                })
-            ),
-            0
-        );
-        ArraysLibrary.insert(
-            leaves,
-            CowSwapLibrary.getCowSwapProofs(
-                bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    curator: curator,
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    assets: ArraysLibrary.makeAddressArray(
-                        abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDS)
-                    )
-                })
-            ),
-            16
-        );
+        assembly {
+            mstore(leaves, iterator)
+        }
 
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault3Descriptions(address curator, address subvault)
+    function getSubvault3Descriptions(address curator, address subvault, address swapModule)
         internal
         view
         returns (string[] memory descriptions)
     {
-        /*
-            1-16. aave (collaterals=[usde, susde], loans=[usdc, usdt, usds], categoryId=2)
-            17-23. cowswap(assets=[usde, susde, usdc, usdt, usds])
-        */
-        descriptions = new string[](23);
-        ArraysLibrary.insert(
-            descriptions,
-            AaveLibrary.getAaveDescriptions(
-                AaveLibrary.Info({
-                    subvault: subvault,
-                    subvaultName: "subvault3",
-                    curator: curator,
-                    aaveInstance: Constants.AAVE_CORE,
-                    aaveInstanceName: "Core",
-                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDE, Constants.SUSDE)),
-                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS)),
-                    categoryId: 2
-                })
-            ),
-            0
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault3AaveParams(curator, subvault)), iterator
         );
-        ArraysLibrary.insert(
+        iterator = ArraysLibrary.insert(
             descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    curator: curator,
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    assets: ArraysLibrary.makeAddressArray(
-                        abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDS)
-                    )
-                })
-            ),
-            16
+            SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault3SwapModuleParams(curator, subvault, swapModule)),
+            iterator
         );
+        assembly {
+            mstore(descriptions, iterator)
+        }
     }
 
-    function getSubvault3SubvaultCalls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        pure
-        returns (SubvaultCalls memory calls)
-    {
-        /*
-            1-16. aave (collaterals=[usde, susde], loans=[usdc, usdt, usds], categoryId=2)
-            17-23. cowswap(assets=[usde, susde, usdc, usdt, usds])
-        */
+    function getSubvault3SubvaultCalls(
+        address curator,
+        address subvault,
+        address swapModule,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal pure returns (SubvaultCalls memory calls) {
         calls.payloads = leaves;
-        calls.calls = new Call[][](23);
-        ArraysLibrary.insert(
-            calls.calls,
-            AaveLibrary.getAaveCalls(
-                AaveLibrary.Info({
-                    subvault: subvault,
-                    subvaultName: "subvault3",
-                    curator: curator,
-                    aaveInstance: Constants.AAVE_CORE,
-                    aaveInstanceName: "Core",
-                    collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDE, Constants.SUSDE)),
-                    loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDS)),
-                    categoryId: 2
-                })
-            ),
-            0
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault3AaveParams(curator, subvault)), iterator
         );
-        ArraysLibrary.insert(
+        iterator = ArraysLibrary.insert(
             calls.calls,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    curator: curator,
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    assets: ArraysLibrary.makeAddressArray(
-                        abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDS)
-                    )
-                })
-            ),
-            16
+            SwapModuleLibrary.getSwapModuleCalls(_getSubvault3SwapModuleParams(curator, subvault, swapModule)),
+            iterator
         );
     }
 
@@ -1096,78 +570,80 @@ library strETHLibrary {
         });
     }
 
-    function getSubvault4Proofs(address curator, address subvault)
+    function _getSubvault4SwapModuleParams(address subvault, address curator, address swapModule)
+        internal
+        pure
+        returns (SwapModuleLibrary.Info memory)
+    {
+        return SwapModuleLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault4",
+            swapModule: swapModule,
+            curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+        });
+    }
+
+    function getSubvault4Proofs(address curator, address subvault, address swapModule)
         internal
         pure
         returns (bytes32 merkleProof, IVerifier.VerificationPayload[] memory leaves)
     {
-        /*
-            1-4. cowswap (assets=[weth, wsteth])
-            5-11. spark (collaterals=[wsteth], loans=[weth], categoryId=1)
-        */
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](11);
-        ArraysLibrary.insert(
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
             leaves,
-            CowSwapLibrary.getCowSwapProofs(
-                bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
+            SwapModuleLibrary.getSwapModuleProofs(
+                bitmaskVerifier, _getSubvault4SwapModuleParams(curator, subvault, swapModule)
             ),
-            0
+            iterator
         );
-        ArraysLibrary.insert(
-            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault4SparkParams(subvault, curator)), 4
+        iterator = ArraysLibrary.insert(
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault4SparkParams(subvault, curator)), iterator
         );
+        assembly {
+            mstore(leaves, iterator)
+        }
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getSubvault4Descriptions(address curator, address subvault)
+    function getSubvault4Descriptions(address curator, address subvault, address swapModule)
         internal
         view
         returns (string[] memory descriptions)
     {
-        descriptions = new string[](11);
-        ArraysLibrary.insert(
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
             descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
-            ),
-            0
+            SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault4SwapModuleParams(curator, subvault, swapModule)),
+            iterator
         );
-        ArraysLibrary.insert(
-            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault4SparkParams(subvault, curator)), 4
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault4SparkParams(subvault, curator)), iterator
         );
+        assembly {
+            mstore(descriptions, iterator)
+        }
     }
 
-    function getSubvault4SubvaultCalls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        pure
-        returns (SubvaultCalls memory calls)
-    {
+    function getSubvault4SubvaultCalls(
+        address curator,
+        address subvault,
+        address swapModule,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal pure returns (SubvaultCalls memory calls) {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
-        ArraysLibrary.insert(
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
             calls.calls,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-                })
-            ),
-            4
+            SwapModuleLibrary.getSwapModuleCalls(_getSubvault4SwapModuleParams(curator, subvault, swapModule)),
+            iterator
         );
-        ArraysLibrary.insert(calls.calls, AaveLibrary.getAaveCalls(_getSubvault4SparkParams(subvault, curator)), 4);
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault4SparkParams(subvault, curator)), iterator
+        );
     }
 }
