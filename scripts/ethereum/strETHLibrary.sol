@@ -553,7 +553,7 @@ library strETHLibrary {
         );
     }
 
-    function _getSubvault4SparkParams(address subvault, address curator)
+    function _getSubvault4SparkParams(address curator, address subvault)
         internal
         pure
         returns (AaveLibrary.Info memory)
@@ -570,7 +570,7 @@ library strETHLibrary {
         });
     }
 
-    function _getSubvault4SwapModuleParams(address subvault, address curator, address swapModule)
+    function _getSubvault4SwapModuleParams(address curator, address subvault, address swapModule)
         internal
         pure
         returns (SwapModuleLibrary.Info memory)
@@ -600,7 +600,7 @@ library strETHLibrary {
             iterator
         );
         iterator = ArraysLibrary.insert(
-            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault4SparkParams(subvault, curator)), iterator
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault4SparkParams(curator, subvault)), iterator
         );
         assembly {
             mstore(leaves, iterator)
@@ -621,7 +621,7 @@ library strETHLibrary {
             iterator
         );
         iterator = ArraysLibrary.insert(
-            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault4SparkParams(subvault, curator)), iterator
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault4SparkParams(curator, subvault)), iterator
         );
         assembly {
             mstore(descriptions, iterator)
@@ -643,7 +643,7 @@ library strETHLibrary {
             iterator
         );
         iterator = ArraysLibrary.insert(
-            calls.calls, AaveLibrary.getAaveCalls(_getSubvault4SparkParams(subvault, curator)), iterator
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault4SparkParams(curator, subvault)), iterator
         );
     }
 }

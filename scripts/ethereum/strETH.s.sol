@@ -469,26 +469,26 @@ contract Deploy is Script, Test {
         calls = strETHLibrary.getSubvault1SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
-    function _createSubvault2Verifier(address subvault2)
+    function _createSubvault2Verifier(address subvault)
         internal
         returns (bytes32 merkleRoot2, SubvaultCalls memory calls2)
     {
-        string[] memory descriptions = strETHLibrary.getSubvault2Descriptions(curator, subvault2);
+        string[] memory descriptions = strETHLibrary.getSubvault2Descriptions(curator, subvault);
         IVerifier.VerificationPayload[] memory leaves2;
-        (merkleRoot2, leaves2) = strETHLibrary.getSubvault2Proofs(curator, subvault2);
+        (merkleRoot2, leaves2) = strETHLibrary.getSubvault2Proofs(curator, subvault);
         ProofLibrary.storeProofs("ethereum:strETH:subvault2", merkleRoot2, leaves2, descriptions);
-        calls2 = strETHLibrary.getSubvault2SubvaultCalls(curator, subvault2, leaves2);
+        calls2 = strETHLibrary.getSubvault2SubvaultCalls(curator, subvault, leaves2);
     }
 
-    function _createSubvault3Verifier(address subvault3, address swapModule)
+    function _createSubvault3Verifier(address subvault, address swapModule)
         internal
         returns (bytes32 merkleRoot3, SubvaultCalls memory calls3)
     {
-        string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(curator, subvault3, swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves3;
-        (merkleRoot3, leaves3) = strETHLibrary.getSubvault3Proofs(curator, subvault3, swapModule);
+        (merkleRoot3, leaves3) = strETHLibrary.getSubvault3Proofs(curator, subvault, swapModule);
         ProofLibrary.storeProofs("ethereum:strETH:subvault3", merkleRoot3, leaves3, descriptions);
-        calls3 = strETHLibrary.getSubvault3SubvaultCalls(curator, subvault3, swapModule, leaves3);
+        calls3 = strETHLibrary.getSubvault3SubvaultCalls(curator, subvault, swapModule, leaves3);
     }
 
     function _createSubvault4Verifier(address subvault, address swapModule)
