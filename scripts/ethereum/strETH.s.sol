@@ -15,13 +15,14 @@ import "../common/AcceptanceLibrary.sol";
 import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
 import "forge-std/Script.sol";
+import "forge-std/Test.sol";
 
 import "./Constants.sol";
 import "./strETHLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
 
-contract Deploy is Script {
+contract Deploy is Script, Test {
     // Actors
     address public proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
     address public lazyVaultAdmin = 0xAbE20D266Ae54b9Ae30492dEa6B6407bF18fEeb5;
@@ -35,9 +36,66 @@ contract Deploy is Script {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
+    function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        vm.stopBroadcast();
+
+        vm.prank(lazyVaultAdmin);
+        verifier.setMerkleRoot(merkleRoot);
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
+    }
+
+    function _upgradePermissions(uint256 deployerPk) internal {
+        Vault vault = Vault(payable(Constants.STRETH));
+
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(0);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) =
+                _createSubvault0Verifier(subvault, _deploySwapModule0(subvault));
+            _runChecks(subvault, merkleRoot, calls);
+        }
+
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(1);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) =
+                _createSubvault1Verifier(subvault, _deploySwapModule1(subvault));
+            _runChecks(subvault, merkleRoot, calls);
+        }
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(2);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createSubvault2Verifier(subvault);
+            _runChecks(subvault, merkleRoot, calls);
+        }
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(3);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) =
+                _createSubvault3Verifier(subvault, _deploySwapModule3(subvault));
+            _runChecks(subvault, merkleRoot, calls);
+        }
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(4);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) =
+                _createSubvault4Verifier(subvault, _deploySwapModule4(subvault));
+            _runChecks(subvault, merkleRoot, calls);
+        }
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
+
+        if (true) {
+            _upgradePermissions(deployerPk);
+            revert("ok");
+        }
 
         vm.startBroadcast(deployerPk);
 
@@ -210,7 +268,7 @@ contract Deploy is Script {
                 uint256 subvaultIndex = 4;
                 verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
                 address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]); // weth, wsteth
-                address swapModule = _deploySwapModule3(subvault);
+                address swapModule = _deploySwapModule4(subvault);
                 bytes32 merkleRoot;
                 (merkleRoot, calls[subvaultIndex]) = _createSubvault4Verifier(subvault, swapModule);
                 IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
