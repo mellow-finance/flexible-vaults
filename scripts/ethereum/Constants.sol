@@ -82,6 +82,10 @@ library Constants {
     address public constant CAP_NETWORK = 0x98e52Ea7578F2088c152E81b17A9a459bF089f2a;
     address public constant CAP_FACTORY = 0x0B92300C8494833E504Ad7d36a301eA80DbBAE2e;
 
+    address public constant USDT_CHAINLINK_ORACLE = 0x3E7d1eAB13ad0104d2750B8863b489D65364e32D;
+    address public constant USDC_CHAINLINK_ORACLE = 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6;
+    address public constant USR_CHAINLINK_ORACLE = 0x34ad75691e25A8E9b681AAA85dbeB7ef6561B42c;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
