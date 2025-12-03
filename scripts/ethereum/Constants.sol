@@ -28,6 +28,8 @@ library Constants {
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
     address public constant REUSD = 0x5086bf358635B81D8C47C66d1C8b9E567Db70c72;
+    address public constant REUSD_REDEMPTION_GATEWAY = 0x8aEb9453EF22Cb38abC7a3Af9c208F65C1BfE31e;
+    address public constant REUSD_ICL = 0x4691C475bE804Fa85f91c2D6D0aDf03114de3093; // InsuranceCapitalLayer
 
     address public constant USR = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
     address public constant STUSR = 0x6c8984bc7DBBeDAf4F6b2FD766f16eBB7d10AAb4;
@@ -69,6 +71,8 @@ library Constants {
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
 
     address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
+
+    address public constant CURVE_ROUTER = 0x45312ea0eFf7E09C83CBE249fa1d7598c4C8cd4e;
 
     // https://www.curve.finance/dex/ethereum/pools/factory-stable-ng-596/deposit
     address public constant CURVE_USDC_USDU_POOL = 0x6C5Ff8DCe52BE77b4eCE6B51996018f0C1713bA9;

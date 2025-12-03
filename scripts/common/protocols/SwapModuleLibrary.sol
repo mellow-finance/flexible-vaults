@@ -4,6 +4,9 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "../../../src/interfaces/utils/ISwapModule.sol";
+
+import {ArraysLibrary} from "../../common/ArraysLibrary.sol";
+import {Permissions} from "../../common/Permissions.sol";
 import {ABILibrary} from "../ABILibrary.sol";
 import {JsonLibrary} from "../JsonLibrary.sol";
 import {ParameterLibrary} from "../ParameterLibrary.sol";
@@ -19,6 +22,20 @@ library SwapModuleLibrary {
         address swapModule;
         address[] curators;
         address[] assets;
+    }
+
+    function getSwapModuleAssets(address payable swapModule) internal view returns (address[] memory uniqueAssets) {
+        uint256 tokenInCount = SwapModule(swapModule).getRoleMemberCount(Permissions.SWAP_MODULE_TOKEN_IN_ROLE);
+        uint256 tokenOutCount = SwapModule(swapModule).getRoleMemberCount(Permissions.SWAP_MODULE_TOKEN_OUT_ROLE);
+        uint256 totalCount = tokenInCount + tokenOutCount;
+        address[] memory assets = new address[](totalCount);
+        for (uint256 i = 0; i < tokenInCount; i++) {
+            assets[i] = SwapModule(swapModule).getRoleMember(Permissions.SWAP_MODULE_TOKEN_IN_ROLE, i);
+        }
+        for (uint256 i = tokenInCount; i < totalCount; i++) {
+            assets[i] = SwapModule(swapModule).getRoleMember(Permissions.SWAP_MODULE_TOKEN_OUT_ROLE, i - tokenInCount);
+        }
+        uniqueAssets = ArraysLibrary.unique(assets);
     }
 
     function getSwapModuleProofs(BitmaskVerifier bitmaskVerifier, Info memory $)

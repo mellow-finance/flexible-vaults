@@ -28,7 +28,7 @@ import "../common/protocols/DigiFTILibrary.sol";
 import "../common/protocols/ERC4626Library.sol";
 import "../common/protocols/TermMaxLibrary.sol";
 
-import {mAlphaUmintLibrary} from "./mAlphaLibrary.sol";
+import {reUSDUSDLibrary} from "./reUSDUSDLibrary.sol";
 
 contract Deploy is Script {
     // Actors
@@ -43,11 +43,17 @@ contract Deploy is Script {
     address public feeManagerAdmin = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
     address public treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
 
-    address public constant termmaxMarket = 0x7fa18408f5D0528d1706B6138113BCA446131531;
+    address public swapModuleOracle = 0x5dad47A49558708173c2150B0D0652018842fa03;
+
+    address public deployer;
+
+    address public constant termmaxMarket = 0x7fa18408f5D0528d1706B6138113BCA446131531; // reUSD/USDU
 
     function run() external {
+        updateMerkleRoot(0x483B00e3b34057D84CF4fF425eBFa7bAdA9f02de);
+        revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
+        deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
 
@@ -99,8 +105,9 @@ contract Deploy is Script {
                 mstore(holders, i)
             }
         }
-        address[] memory assets_ =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.UMINT, Constants.USDU));
+        address[] memory assets_ = ArraysLibrary.makeAddressArray(
+            abi.encode(Constants.USDC, Constants.USDU, Constants.USDE, Constants.SUSDE, Constants.REUSD)
+        );
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -108,7 +115,7 @@ contract Deploy is Script {
             proxyAdmin: proxyAdmin,
             vaultAdmin: lazyVaultAdmin,
             shareManagerVersion: 0,
-            shareManagerParams: abi.encode(bytes32(0), "uMINT USD", "umUSD"),
+            shareManagerParams: abi.encode(bytes32(0), "reUSD USD", "reUSDUSD"),
             feeManagerVersion: 0,
             feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(0), uint24(1e4)),
             riskManagerVersion: 0,
@@ -128,7 +135,7 @@ contract Deploy is Script {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 2,
+            queueLimit: 3,
             roleHolders: holders
         });
 
@@ -141,6 +148,7 @@ contract Deploy is Script {
         // queues setup
         vault.createQueue(0, true, proxyAdmin, Constants.USDC, new bytes(0));
         vault.createQueue(0, false, proxyAdmin, Constants.USDC, new bytes(0));
+        vault.createQueue(0, false, proxyAdmin, Constants.REUSD, new bytes(0));
 
         // fee manager setup
         vault.feeManager().setBaseAsset(address(vault), Constants.USDC);
@@ -155,11 +163,9 @@ contract Deploy is Script {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             vault.createSubvault(0, proxyAdmin, verifiers[0]);
             bytes32 merkleRoot;
-            (merkleRoot, calls[0]) = _createSubvault0Verifier(vault.subvaultAt(0));
-            IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
-            riskManager.allowSubvaultAssets(
-                vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC))
-            );
+            //(merkleRoot, calls[0]) = _createSubvault0Verifier(vault.subvaultAt(0));
+            //IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
+            riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         }
 
@@ -223,13 +229,15 @@ contract Deploy is Script {
         console2.log("Vault %s", address(vault));
 
         {
-            string memory symbol = IERC20Metadata(assets_[0]).symbol();
-            for (uint256 j = 0; j < vault.getQueueCount(assets_[0]); j++) {
-                address queue = vault.queueAt(assets_[0], j);
-                if (vault.isDepositQueue(queue)) {
-                    console2.log("DepositQueue (%s): %s", symbol, queue);
-                } else {
-                    console2.log("RedeemQueue (%s): %s", symbol, queue);
+            for (uint256 i = 0; i < assets_.length; i++) {
+                string memory symbol = IERC20Metadata(assets_[i]).symbol();
+                for (uint256 j = 0; j < vault.getQueueCount(assets_[i]); j++) {
+                    address queue = vault.queueAt(assets_[i], j);
+                    if (vault.isDepositQueue(queue)) {
+                        console2.log("DepositQueue (%s): %s", symbol, queue);
+                    } else {
+                        console2.log("RedeemQueue (%s): %s", symbol, queue);
+                    }
                 }
             }
         }
@@ -251,9 +259,12 @@ contract Deploy is Script {
             for (uint256 i = 0; i < reports.length; i++) {
                 reports[i].asset = assets_[i];
             }
+
             reports[0].priceD18 = 1e30; // USDC, 6 decimals
-            reports[1].priceD18 = 104.10 ether; // UMINT, 18 decimals (104.10 USD)
-            reports[2].priceD18 = 1 ether; // USDU, 18 decimals
+            reports[1].priceD18 = 1 ether; // USDU, 18 decimals
+            reports[2].priceD18 = 1 ether; // USDE, 18 decimals
+            reports[3].priceD18 = 1.21 ether; // SUSDE, 18 decimals (1.21 USD)
+            reports[4].priceD18 = 1.045 ether; // REUSD, 18 decimals (1.045 USD)
 
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
@@ -263,12 +274,8 @@ contract Deploy is Script {
             }
         }
 
-        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
-        {
-            IERC20(Constants.USDC).approve(address(vault.queueAt(Constants.USDC, 0)), 1e6);
-            //IDepositQueue(address(vault.queueAt(Constants.USDC, 0))).deposit(1e6, address(0), new bytes32[](0));
-        }
+        //acceptReport(vault);
+
         vm.stopBroadcast();
 
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
@@ -283,7 +290,7 @@ contract Deploy is Script {
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
                 depositQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
-                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
+                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.REUSD)),
                 subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
@@ -329,79 +336,124 @@ contract Deploy is Script {
         holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
         holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
 
+        holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+
         assembly {
             mstore(holders, i)
         }
     }
 
-    function _createSubvault0Verifier(address subvault0)
+    function _createSubvault0Proofs(address subvault0)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        mAlphaUmintLibrary.Info memory mAlphaUmintLibraryInfo = mAlphaUmintLibrary.Info({
+        address swapModule = _deploySwapModuleSubvault0(subvault0);
+        reUSDUSDLibrary.Info memory reUSDUSDLibraryInfo = reUSDUSDLibrary.Info({
             subvaultName: "subvault0",
             curator: curator,
             subvault: subvault0,
-            termmaxMarket: termmaxMarket
+            termmaxMarket: termmaxMarket,
+            swapModule: swapModule
         });
         /*
-            0. IERC20(USDC).approve(UMINT_ENTRY, ...)
-            1. IERC20(uMINT).approve(TERMMAX_ROUTER, ...)
-            2. IERC20(USDU).approve(CURVE_POOL, ...)
-            3. UMINT_ENTRY.subscribe(UMINT, USDC, ...) / UMINT_ENTRY.redeem(UMINT, USDC, ...)
-            4. TERMMAX_ROUTER.borrowTokenFromCollateral(subvault0, MARKET, ...) (uMINT->USDU)
-            5. Swap USDU for USDC on Curve
+            0. IERC20(USDC).approve(reUSD, ...)
+            1. IERC20(RedemptionGateway).approve(reUSD, ...)
+            2. InsuranceCapitalLayer.deposit(USDC, ..., ...) -> reUSD
+            3. RedemptionGateway.redeemInstant(..., ...) reUSD -> sUSDe
+            4. ITermMax calls
+            5. SwapModule sUSDe, USDC, USDU on Curve
         */
-        string[] memory descriptions = mAlphaUmintLibrary.getSubvault0Descriptions(mAlphaUmintLibraryInfo);
+        string[] memory descriptions = reUSDUSDLibrary.getSubvault0Descriptions(reUSDUSDLibraryInfo);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = mAlphaUmintLibrary.getSubvault0Proofs(mAlphaUmintLibraryInfo);
-        ProofLibrary.storeProofs("ethereum:mAlphaUmint:subvault0", merkleRoot, leaves, descriptions);
-        calls = mAlphaUmintLibrary.getSubvault0SubvaultCalls(mAlphaUmintLibraryInfo, leaves);
+        (merkleRoot, leaves) = reUSDUSDLibrary.getSubvault0Proofs(reUSDUSDLibraryInfo);
+        ProofLibrary.storeProofs("ethereum:reUSDUSD:subvault0", merkleRoot, leaves, descriptions);
+        calls = reUSDUSDLibrary.getSubvault0SubvaultCalls(reUSDUSDLibraryInfo, leaves);
     }
 
-    /// @dev just for testing UMINT token behavior, because it is not verified
-    function testUmintToken() internal {
-        // valid on 23710403 block
-        address holder1 = 0x54b930e2f72472773234B9edaeBA3f7a971fc4a8; // whitelisted user
-        address holder2 = 0x19E42f0fDC345ebC662f0B62D5039e3816cF48f0; // whitelisted user
+    function _deploySwapModuleSubvault0(address subvault) internal returns (address swapModule) {
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+        /*
+            CURVE - router
+            USDC/USDU/SUSDE - tokenIn
+            USDC/USDU/SUSDE - tokenOut
+        */
+        address[] memory holders = ArraysLibrary.makeAddressArray(
+            abi.encode(
+                curator,
+                Constants.CURVE_ROUTER,
+                Constants.USDC,
+                Constants.USDU,
+                Constants.SUSDE,
+                Constants.USDC,
+                Constants.USDU,
+                Constants.SUSDE
+            )
+        );
+        bytes32[] memory roles = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
+            )
+        );
 
-        uint256 balanceBefore1 = IERC20(Constants.UMINT).balanceOf(holder1);
-        uint256 balanceBefore2 = IERC20(Constants.UMINT).balanceOf(holder2);
-
-        MockSpender spender = new MockSpender();
-
-        vm.startPrank(holder1);
-        IERC20(Constants.UMINT).transfer(holder2, balanceBefore1 / 2);
-        uint256 balanceAfter = IERC20(Constants.UMINT).balanceOf(holder1);
-        require(balanceBefore1 - balanceAfter == balanceBefore1 / 2, "UMINT transfer failed");
-
-        /// @dev approve is not checking that spender is whitelisted
-        IERC20(Constants.UMINT).approve(address(spender), type(uint256).max);
-        vm.stopPrank();
-
-        spender.transferFrom(Constants.UMINT, holder1, holder2, IERC20(Constants.UMINT).balanceOf(holder1));
-        balanceAfter = IERC20(Constants.UMINT).balanceOf(holder2);
-        IERC20(Constants.UMINT).balanceOf(holder1);
-        require(balanceBefore1 + balanceBefore2 == balanceAfter, "UMINT transferFrom failed");
+        console2.log("SwapModuleFactory %s", address($.swapModuleFactory));
+        swapModule = $.swapModuleFactory.create(
+            0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, swapModuleOracle, 0.995e8, holders, roles)
+        );
+        console2.log("Subvault0 SwapModule %s", swapModule);
     }
 
-    function testBorrow() internal {
+    function updateMerkleRoot(address subvault) internal {
+        bytes32[] memory merkleRoot = new bytes32[](1);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+
+        (merkleRoot[0], calls[0]) = _createSubvault0Proofs(subvault);
+
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        vm.prank(lazyVaultAdmin);
+        verifier.setMerkleRoot(merkleRoot[0]);
+
+        console2.log(
+            "Updated Merkle root for Subvault %s Verifier %s to %s",
+            address(subvault),
+            address(verifier),
+            Strings.toHexString(uint256(merkleRoot[0]))
+        );
+
+        for (uint256 j = 0; j < calls[0].payloads.length; j++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls[0].calls[j], calls[0].payloads[j]);
+        }
+    }
+
+    function acceptReport(Vault vault) internal {
+        IOracle oracle = vault.oracle();
+        address[] memory assets = ArraysLibrary.makeAddressArray(
+            abi.encode(Constants.USDC, Constants.USDU, Constants.USDE, Constants.SUSDE, Constants.REUSD)
+        );
+
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
+        deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
-        address[] memory orders = new address[](1);
-        orders[0] = 0xD2ccc855c096FdfEC46FE4A38c04a6F7011B44b7;
-        uint128[] memory tokenAmtsWantBuy = new uint128[](1);
-        tokenAmtsWantBuy[0] = 2500;
-        ITermMaxRouter(Constants.TERMMAX_ROUTER).borrowTokenFromCollateral(
-            deployer, termmaxMarket, 3000, orders, tokenAmtsWantBuy, 2600, block.timestamp + 1 hours
-        );
-    }
-}
 
-contract MockSpender {
-    function transferFrom(address token, address from, address to, uint256 amount) external {
-        IERC20(token).transferFrom(from, to, amount);
+        for (uint256 i = 0; i < assets.length; i++) {
+            IOracle.DetailedReport memory report = oracle.getReport(assets[i]);
+            oracle.acceptReport(assets[i], report.priceD18, uint32(report.timestamp));
+            console2.log("asset %s priceD18 %s timestamp %s", assets[i], report.priceD18, report.timestamp);
+        }
+        IERC20(Constants.USDC).approve(address(vault.queueAt(Constants.USDC, 0)), 1e6);
+        IDepositQueue(address(vault.queueAt(Constants.USDC, 0))).deposit(1e6, address(0), new bytes32[](0));
+
+        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        vm.stopBroadcast();
     }
 }

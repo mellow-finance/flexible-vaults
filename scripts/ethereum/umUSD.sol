@@ -28,7 +28,7 @@ import "../common/protocols/DigiFTILibrary.sol";
 import "../common/protocols/ERC4626Library.sol";
 import "../common/protocols/TermMaxLibrary.sol";
 
-import {mAlphaUmintLibrary} from "./mAlphaLibrary.sol";
+import {umUSDLibrary} from "./umUSDLibrary.sol";
 
 contract Deploy is Script {
     // Actors
@@ -252,7 +252,7 @@ contract Deploy is Script {
                 reports[i].asset = assets_[i];
             }
             reports[0].priceD18 = 1e30; // USDC, 6 decimals
-            reports[1].priceD18 = 104.10 ether; // UMINT, 18 decimals (104.10 USD)
+            reports[1].priceD18 = 104.1 ether; // UMINT, 18 decimals (104.10 USD)
             reports[2].priceD18 = 1 ether; // USDU, 18 decimals
 
             IOracle oracle = vault.oracle();
@@ -338,7 +338,7 @@ contract Deploy is Script {
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        mAlphaUmintLibrary.Info memory mAlphaUmintLibraryInfo = mAlphaUmintLibrary.Info({
+        umUSDLibrary.Info memory umUSDLibraryInfo = umUSDLibrary.Info({
             subvaultName: "subvault0",
             curator: curator,
             subvault: subvault0,
@@ -352,11 +352,11 @@ contract Deploy is Script {
             4. TERMMAX_ROUTER.borrowTokenFromCollateral(subvault0, MARKET, ...) (uMINT->USDU)
             5. Swap USDU for USDC on Curve
         */
-        string[] memory descriptions = mAlphaUmintLibrary.getSubvault0Descriptions(mAlphaUmintLibraryInfo);
+        string[] memory descriptions = umUSDLibrary.getSubvault0Descriptions(umUSDLibraryInfo);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = mAlphaUmintLibrary.getSubvault0Proofs(mAlphaUmintLibraryInfo);
+        (merkleRoot, leaves) = umUSDLibrary.getSubvault0Proofs(umUSDLibraryInfo);
         ProofLibrary.storeProofs("ethereum:mAlphaUmint:subvault0", merkleRoot, leaves, descriptions);
-        calls = mAlphaUmintLibrary.getSubvault0SubvaultCalls(mAlphaUmintLibraryInfo, leaves);
+        calls = umUSDLibrary.getSubvault0SubvaultCalls(umUSDLibraryInfo, leaves);
     }
 
     /// @dev just for testing UMINT token behavior, because it is not verified

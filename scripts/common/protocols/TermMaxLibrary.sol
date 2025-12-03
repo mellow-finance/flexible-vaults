@@ -99,6 +99,18 @@ library TermMaxLibrary {
             abi.encodeCall(IGearingToken.merge, (new uint256[](2))),
             ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(IGearingToken.merge, (new uint256[](2))))
         );
+        /// @dev remove collateral
+        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+            bitmaskVerifier,
+            $.curator,
+            gt,
+            0,
+            abi.encodeCall(IGearingToken.removeCollateral, (0, new bytes(32))),
+            ProofLibrary.makeBitmask(
+                true, true, true, true, abi.encodeCall(IGearingToken.removeCollateral, (0, new bytes(32)))
+            )
+        );
+
         assembly {
             mstore(leaves, iterator)
         }
@@ -126,7 +138,7 @@ library TermMaxLibrary {
         /// @dev borrow from router
         {
             innerParameters = ParameterLibrary.build("subvault", Strings.toHexString($.subvault));
-            innerParameters = innerParameters.add(Strings.toHexString($.market), "market");
+            innerParameters = innerParameters.add("market", Strings.toHexString($.market));
             innerParameters = innerParameters.addAnyArray("orders", 1);
             innerParameters = innerParameters.addAnyArray("tokenAmtsWantBuy", 1);
             innerParameters = innerParameters.addAny("maxDebtAmt");
@@ -148,9 +160,9 @@ library TermMaxLibrary {
         }
         /// @dev repay to router
         {
-            innerParameters = ParameterLibrary.build(Strings.toHexString($.market), "market").addAny("gtId").addAny(
-                "maxRepayAmt"
-            ).add("byDebtToken", "true");
+            innerParameters = ParameterLibrary.build("market", Strings.toHexString($.market));
+            innerParameters = innerParameters.addAny("gtId").addAny("maxRepayAmt");
+            innerParameters = innerParameters.add("byDebtToken", "true");
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
@@ -170,6 +182,16 @@ library TermMaxLibrary {
             descriptions[iterator++] = JsonLibrary.toJson(
                 "IGearingToken(GearingToken).merge(arr[2])",
                 ABILibrary.getABI(IGearingToken.merge.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(gt), "0"),
+                innerParameters
+            );
+        }
+        /// @dev remove collateral
+        {
+            innerParameters = ParameterLibrary.build("id", "anyInt").add("collateralData", "anyBytes");
+            descriptions[iterator++] = JsonLibrary.toJson(
+                "IGearingToken(GearingToken).removeCollateral(id,bytes)",
+                ABILibrary.getABI(IGearingToken.removeCollateral.selector),
                 ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(gt), "0"),
                 innerParameters
             );
@@ -360,6 +382,32 @@ library TermMaxLibrary {
             tmp[i++] =
                 Call($.curator, address(0xdead), 0, abi.encodeCall(IGearingToken.merge, (new uint256[](2))), false);
             tmp[i++] = Call($.curator, gt, 0, abi.encode(IGearingToken.merge.selector, new uint256[](2)), false);
+            assembly {
+                mstore(tmp, i)
+            }
+            calls[index++] = tmp;
+        }
+
+        /// @dev remove collateral
+        {
+            Call[] memory tmp = new Call[](8);
+            uint256 i = 0;
+            bytes memory collateralData = hex"000000000000000000000000000000000000000000000001158e460913d00000";
+            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.removeCollateral, (1, collateralData)), true);
+            tmp[i++] = Call($.curator, gt, 0, abi.encodeCall(IGearingToken.removeCollateral, (2, collateralData)), true);
+            tmp[i++] =
+                Call($.curator, gt, 1 wei, abi.encodeCall(IGearingToken.removeCollateral, (1, collateralData)), false);
+            tmp[i++] =
+                Call(address(0xdead), gt, 0, abi.encodeCall(IGearingToken.removeCollateral, (1, collateralData)), false);
+            tmp[i++] = Call(
+                $.curator,
+                address(0xdead),
+                0,
+                abi.encodeCall(IGearingToken.removeCollateral, (1, collateralData)),
+                false
+            );
+            tmp[i++] =
+                Call($.curator, gt, 0, abi.encode(IGearingToken.removeCollateral.selector, 1, collateralData), false);
             assembly {
                 mstore(tmp, i)
             }

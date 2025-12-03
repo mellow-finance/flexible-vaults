@@ -28,7 +28,7 @@ import {TermMaxLibrary} from "../common/protocols/TermMaxLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 import {Constants} from "./Constants.sol";
 
-library mAlphaUmintLibrary {
+library umUSDLibrary {
     struct Info {
         string subvaultName;
         address curator;

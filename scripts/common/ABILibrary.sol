@@ -22,6 +22,8 @@ import {IMorpho} from "./interfaces/IMorpho.sol";
 
 import {IGearingToken} from "./interfaces/IGearingToken.sol";
 import {IMorphoStrategyWrapper} from "./interfaces/IMorphoStrategyWrapper.sol";
+import {IInsuranceCapitalLayer, IRedemptionGateway} from "./interfaces/IReUSD.sol";
+import {IStakedUSDeV2} from "./interfaces/IStakedUSDeV2.sol";
 import {ISubRedManagement} from "./interfaces/ISubRedManagement.sol";
 import {ITermMaxRouter} from "./interfaces/ITermMaxRouter.sol";
 
@@ -40,7 +42,7 @@ import {ISwapModule} from "../../src/interfaces/utils/ISwapModule.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[20] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[22] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -60,7 +62,9 @@ library ABILibrary {
             getSymbioticInterfaces,
             getResolvInterfaces,
             getStakeWiseInterfaces,
-            getSwapModuleInterfaces
+            getSwapModuleInterfaces,
+            getReUSDInterfaces,
+            getStakedUSDeV2Interfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -234,12 +238,13 @@ library ABILibrary {
     }
 
     function getTermMaxInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
-        selectors = new bytes4[](3);
-        abis = new string[](3);
+        selectors = new bytes4[](4);
+        abis = new string[](4);
 
         selectors[0] = ITermMaxRouter.borrowTokenFromCollateral.selector;
         selectors[1] = ITermMaxRouter.repayGt.selector;
         selectors[2] = IGearingToken.merge.selector;
+        selectors[3] = IGearingToken.removeCollateral.selector;
 
         abis[0] =
             '{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"address","name":"market","type":"address"},{"internalType":"uint256","name":"collInAmt","type":"uint256"},{"internalType":"address[]","name":"orders","type":"address[]"},{"internalType":"uint128[]","name":"tokenAmtsWantBuy","type":"uint128[]"},{"internalType":"uint128","name":"maxDebtAmt","type":"uint128"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"borrowTokenFromCollateral","outputs":[{"internalType":"uint256","name":"gtId","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
@@ -247,6 +252,8 @@ library ABILibrary {
             '{"inputs":[{"internalType":"address","name":"market","type":"address"},{"internalType":"uint256","name":"gtId","type":"uint256"},{"internalType":"uint128","name":"maxRepayAmt","type":"uint128"},{"internalType":"bool","name":"byDebtToken","type":"bool"}],"name":"repayGt","outputs":[{"internalType":"uint128","name":"repayAmt","type":"uint128"}],"stateMutability":"nonpayable","type":"function"}';
         abis[2] =
             '{"inputs":[{"internalType":"uint256[]","name":"ids","type":"uint256[]"}],"name":"merge","outputs":[{"internalType":"uint256","name":"newId","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+        abis[3] =
+            '{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"bytes","name":"collateralData","type":"bytes"}],"name":"removeCollateral","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 
     function getDigiFTInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
@@ -405,5 +412,27 @@ library ABILibrary {
             '{"type":"function","name":"pushAssets","inputs":[{"name":"asset","type":"address","internalType":"address"},{"name":"value","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"payable"}';
         abis[1] =
             '{"type":"function","name":"pullAssets","inputs":[{"name":"asset","type":"address","internalType":"address"},{"name":"value","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"nonpayable"}';
+    }
+
+    function getReUSDInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](2);
+        abis = new string[](2);
+
+        selectors[0] = IInsuranceCapitalLayer.deposit.selector;
+        selectors[1] = IRedemptionGateway.redeemInstant.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"minShares","type":"uint256"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"},{"internalType":"uint256","name":"minPayout","type":"uint256"}],"name":"redeemInstant","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getStakedUSDeV2Interfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+        selectors[0] = IStakedUSDeV2.cooldownShares.selector;
+
+        abis[0] =
+            '{"inputs":[{"internalType":"uint256","name":"shares","type":"uint256"}],"name":"cooldownShares","outputs":[{"internalType":"uint256","name":"assets","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
     }
 }
