@@ -15,17 +15,65 @@ import "../common/AcceptanceLibrary.sol";
 import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
 import "forge-std/Script.sol";
+import "forge-std/Test.sol";
 
 import "./Constants.sol";
 import "./tqETHLibrary.sol";
 
-contract Deploy is Script {
+contract Deploy is Script, Test {
     // Actors
     address public proxyAdmin = 0x55d9ecEB5733F72A48C544e20D49859eC92Fba5F;
     address public lazyVaultAdmin = 0x8907D6089fC71AA6a9a7bb9EC5b1170e92489ebf;
     address public activeVaultAdmin = 0x2D95cb50F204B8B84606751F262b407C08528c85;
     address public oracleUpdater = 0xe5Bc509b277f83F2bF771D0dcB16949D4e175f09;
     address public curator = 0xcca5BafEa783B0Ed8D11FD6D9F97c155332A16b8;
+    address public agent1 = 0xfcBEe74406415c0Cbe556317B1aeF8D9950D515D;
+
+    // functions to add agent 1:
+    function _runChecks(IVerifier verifier, SubvaultCalls memory calls) internal view {
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
+    }
+
+    function _updatePermissions() internal {
+        Vault vault = Vault(payable(Constants.TQETH));
+
+        vm.startPrank(lazyVaultAdmin);
+
+        vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, lazyVaultAdmin);
+        vault.grantRole(Permissions.CALLER_ROLE, agent1);
+        vault.grantRole(Permissions.PULL_LIQUIDITY_ROLE, agent1);
+        vault.grantRole(Permissions.PUSH_LIQUIDITY_ROLE, agent1);
+
+        {
+            uint256 subvaultIndex = 0;
+            address subvault = vault.subvaultAt(subvaultIndex);
+            address swapModule = 0x1cb790068c9a08392BeA1E47Ca53396fA7811BB6;
+            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createCowswapVerifier(subvault, swapModule);
+            IVerifier verifier = Subvault(payable(subvault)).verifier();
+            verifier.setMerkleRoot(merkleRoot);
+            _runChecks(verifier, calls);
+        }
+        {
+            uint256 subvaultIndex = 1;
+            address subvault = vault.subvaultAt(subvaultIndex);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createStrETHVerifier(subvault);
+            IVerifier verifier = Subvault(payable(subvault)).verifier();
+            verifier.setMerkleRoot(merkleRoot);
+            _runChecks(verifier, calls);
+        }
+        {
+            uint256 subvaultIndex = 2;
+            address subvault = vault.subvaultAt(subvaultIndex);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createOsETHVerifier(subvault);
+            IVerifier verifier = Subvault(payable(subvault)).verifier();
+            verifier.setMerkleRoot(merkleRoot);
+            _runChecks(verifier, calls);
+        }
+
+        vm.stopPrank();
+    }
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -374,7 +422,7 @@ contract Deploy is Script {
     }
 
     function getCurators() public view returns (address[] memory) {
-        return ArraysLibrary.makeAddressArray(abi.encode(curator));
+        return ArraysLibrary.makeAddressArray(abi.encode(curator, agent1));
     }
 
     function _createCowswapVerifier(address subvault, address swapModule)
