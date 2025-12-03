@@ -16,41 +16,24 @@ contract strETHCustomOracle {
     CustomOracle public immutable customOracle;
     ERC20Collector public immutable erc20Collector;
     AaveCollector public immutable aaveCollector;
-    strETHCustomAaveOracle public immutable customAaveOracleImpl;
-    strETHCustomAaveOracle public immutable customAaveOracle;
+    strETHCustomAaveOracle public immutable strETHOracle;
 
     function stateOverrides() public view returns (address[] memory contracts, bytes[] memory bytecodes) {
         contracts = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                impl, customOracle, erc20Collector, aaveCollector, customAaveOracleImpl, customAaveOracle, address(this)
-            )
+            abi.encode(impl, customOracle, erc20Collector, aaveCollector, strETHOracle, address(this))
         );
-        bytecodes = new bytes[](7);
+        bytecodes = new bytes[](6);
         bytecodes[0] = address(impl).code;
         bytecodes[1] = address(customOracle).code;
         bytecodes[2] = address(erc20Collector).code;
         bytecodes[3] = address(aaveCollector).code;
-        bytecodes[4] = address(customAaveOracleImpl).code;
-        bytecodes[5] = address(customAaveOracle).code;
-        bytecodes[6] = address(this).code;
+        bytecodes[4] = address(strETHOracle).code;
+        bytecodes[5] = address(this).code;
     }
 
     constructor() {
-        {
-            customAaveOracleImpl = new strETHCustomAaveOracle(Constants.AAVE_V3_ORACLE);
-            address[] memory aggregatedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC));
-            address[] memory aggregators = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDT_CHAINLINK_ORACLE));
-            address[][] memory aggregatedSources = new address[][](aggregatedAssets.length);
-            for (uint256 i = 0; i < aggregatedSources.length; i++) {
-                aggregatedSources[i] = aggregators;
-            }
-            customAaveOracle = strETHCustomAaveOracle(
-                Clones.cloneWithImmutableArgs(
-                    address(customAaveOracleImpl), abi.encode(aggregatedAssets, aggregatedSources)
-                )
-            );
-        }
-        impl = new CustomOracle(address(customAaveOracle), Constants.WETH);
+        strETHOracle = new strETHCustomAaveOracle();
+        impl = new CustomOracle(address(strETHOracle), Constants.WETH);
         erc20Collector = new ERC20Collector();
         aaveCollector = new AaveCollector();
 
