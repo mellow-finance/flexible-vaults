@@ -117,6 +117,19 @@ abstract contract FixtureTest is Test {
         return deployment.vault.queueAt(asset, index - 1);
     }
 
+    function addSyncDepositQueue(Deployment memory deployment, address owner, address asset)
+        internal
+        returns (address)
+    {
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
+        deployment.vault.createQueue(2, true, owner, asset, abi.encode(0, 365 days));
+        vm.stopPrank();
+
+        uint256 index = deployment.vault.getQueueCount(asset);
+        return deployment.vault.queueAt(asset, index - 1);
+    }
+
     function addRedeemQueue(Deployment memory deployment, address owner, address asset) internal returns (address) {
         vm.startPrank(deployment.vaultAdmin);
         deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
@@ -153,6 +166,13 @@ abstract contract FixtureTest is Test {
     }
 
     function makeDeposit(address account, uint256 amount, DepositQueue queue) internal {
+        giveAssetsToUserAndApprove(account, uint224(amount), address(queue));
+        uint256 value = queue.asset() == TransferLibrary.ETH ? amount : 0;
+        vm.prank(account);
+        queue.deposit{value: value}(uint224(amount), address(0), new bytes32[](0));
+    }
+
+    function makeSyncDeposit(address account, uint256 amount, SyncDepositQueue queue) internal {
         giveAssetsToUserAndApprove(account, uint224(amount), address(queue));
         uint256 value = queue.asset() == TransferLibrary.ETH ? amount : 0;
         vm.prank(account);
@@ -372,6 +392,10 @@ abstract contract FixtureTest is Test {
                 address(new SignatureDepositQueue("Mellow", 1, address(consensusFactory)));
             deployment.depositQueueFactory.proposeImplementation(signatureDepositQueueImplementation);
             deployment.depositQueueFactory.acceptProposedImplementation(signatureDepositQueueImplementation);
+
+            address syncDepositQueueImplementation = address(new SyncDepositQueue("Mellow", 1));
+            deployment.depositQueueFactory.proposeImplementation(syncDepositQueueImplementation);
+            deployment.depositQueueFactory.acceptProposedImplementation(syncDepositQueueImplementation);
 
             address redeemQueueImplementation = address(new RedeemQueue("Mellow", 1));
             deployment.redeemQueueFactory.proposeImplementation(redeemQueueImplementation);

@@ -44,6 +44,7 @@ import "../src/queues/RedeemQueue.sol";
 import "../src/queues/SignatureDepositQueue.sol";
 import "../src/queues/SignatureQueue.sol";
 import "../src/queues/SignatureRedeemQueue.sol";
+import "../src/queues/SyncDepositQueue.sol";
 
 import "../src/managers/BasicShareManager.sol";
 
