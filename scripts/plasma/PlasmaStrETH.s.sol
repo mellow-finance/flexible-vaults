@@ -23,6 +23,8 @@ contract Deploy is Script, Test {
     address public immutable curator = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;
     address public immutable activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
 
+    function _upgradePermissions(uint256 deployerPk) internal {}
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
@@ -91,8 +93,11 @@ contract Deploy is Script, Test {
             vault = Vault(payable(vault_));
         }
 
-        (address verifier, SubvaultCalls memory calls_) = _createVerifier(address(vault));
+        address verifier =
+            Constants.protocolDeployment().verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
         address subvault = vault.createSubvault(0, proxyAdminOwner, verifier);
+        (bytes32 merkleRoot, SubvaultCalls memory calls_) = _createVerifier(address(vault));
+        IVerifier(verifier).setMerkleRoot(merkleRoot);
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
 
         SubvaultCalls[] memory calls = new SubvaultCalls[](1);
@@ -159,22 +164,20 @@ contract Deploy is Script, Test {
         }
     }
 
-    function _createVerifier(address vault) internal returns (address verifier, SubvaultCalls memory calls) {
+    function _createVerifier(address subvault) internal returns (bytes32 merkleRoot, SubvaultCalls memory calls) {
         PlasmaStrETHLibrary.Info memory info = PlasmaStrETHLibrary.Info({
             curator: curator,
+            subvault: subvault,
             asset: Constants.WSTETH,
             ethereumSubvault: Constants.STRETH_ETHEREUM_SUBVAULT_0,
             ccipRouter: Constants.CCIP_PLASMA_ROUTER,
             ccipEthereumSelector: Constants.CCIP_ETHEREUM_CHAIN_SELECTOR
         });
 
-        string[] memory descriptions = PlasmaStrETHLibrary.getPlasmaStrETHDescriptions(info);
-        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) =
-            PlasmaStrETHLibrary.getPlasmaStrETHProofs(info);
+        string[] memory descriptions = PlasmaStrETHLibrary.getSubvault0Descriptions(info);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = PlasmaStrETHLibrary.getSubvault0Proofs(info);
         ProofLibrary.storeProofs("plasma:strETH:subvault0", merkleRoot, leaves, descriptions);
-        calls = PlasmaStrETHLibrary.getPlasmaStrETHCalls(info, leaves);
-
-        verifier =
-            Constants.protocolDeployment().verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, merkleRoot));
+        calls = PlasmaStrETHLibrary.getSubvault0SubvaultCalls(info, leaves);
     }
 }

@@ -1,39 +1,33 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import {IAavePoolV3} from "./interfaces/IAavePoolV3.sol";
-import {ICowswapSettlement} from "./interfaces/ICowswapSettlement.sol";
-import {IWETH} from "./interfaces/IWETH.sol";
-
-import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
-import {ICurveGauge} from "./interfaces/ICurveGauge.sol";
-import {ICurvePool} from "./interfaces/ICurvePool.sol";
-
-import {IL1GatewayRouter} from "./interfaces/IL1GatewayRouter.sol";
-import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
-
-import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
-
-import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
-
+import {ISymbioticVault} from "../../src/interfaces/external/symbiotic/ISymbioticVault.sol";
 import {IDepositQueue} from "../../src/interfaces/queues/IDepositQueue.sol";
 import {IRedeemQueue} from "../../src/interfaces/queues/IRedeemQueue.sol";
 
-import {ISymbioticVault} from "../../src/interfaces/external/symbiotic/ISymbioticVault.sol";
-import {ICapLender} from "./interfaces/ICapLender.sol";
-
-import {IStUSR} from "./interfaces/IStUSR.sol";
-import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsManager.sol";
-
-import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
-
 import {ISwapModule} from "../../src/interfaces/utils/ISwapModule.sol";
+import {IAavePoolV3} from "./interfaces/IAavePoolV3.sol";
+import {IBracketVaultV2} from "./interfaces/IBracketVaultV2.sol";
+import {ICCIPRouterClient} from "./interfaces/ICCIPRouterClient.sol";
+
+import {ICapLender} from "./interfaces/ICapLender.sol";
+import {ICowswapSettlement} from "./interfaces/ICowswapSettlement.sol";
+import {ICurveGauge} from "./interfaces/ICurveGauge.sol";
+import {ICurvePool} from "./interfaces/ICurvePool.sol";
+import {IL1GatewayRouter} from "./interfaces/IL1GatewayRouter.sol";
+import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
+
+import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
+import {IStUSR} from "./interfaces/IStUSR.sol";
+import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
+import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsManager.sol";
+import {IWETH} from "./interfaces/IWETH.sol";
+import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[16] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[17] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -49,7 +43,8 @@ library ABILibrary {
             getSymbioticInterfaces,
             getResolvInterfaces,
             getStakeWiseInterfaces,
-            getSwapModuleInterfaces
+            getSwapModuleInterfaces,
+            getOFTInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -316,5 +311,14 @@ library ABILibrary {
             '{"type":"function","name":"pushAssets","inputs":[{"name":"asset","type":"address","internalType":"address"},{"name":"value","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"payable"}';
         abis[1] =
             '{"type":"function","name":"pullAssets","inputs":[{"name":"asset","type":"address","internalType":"address"},{"name":"value","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"nonpayable"}';
+    }
+
+    function getOFTInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = ILayerZeroOFT.send.selector;
+        abis[0] =
+            '{"type":"function","name":"send","inputs":[{"name":"_sendParam","type":"tuple","internalType":"structILayerZeroOFT.SendParam","components":[{"name":"dstEid","type":"uint32","internalType":"uint32"},{"name":"to","type":"bytes32","internalType":"bytes32"},{"name":"amountLD","type":"uint256","internalType":"uint256"},{"name":"minAmountLD","type":"uint256","internalType":"uint256"},{"name":"extraOptions","type":"bytes","internalType":"bytes"},{"name":"composeMsg","type":"bytes","internalType":"bytes"},{"name":"oftCmd","type":"bytes","internalType":"bytes"}]},{"name":"_fee","type":"tuple","internalType":"structILayerZeroOFT.MessagingFee","components":[{"name":"nativeFee","type":"uint256","internalType":"uint256"},{"name":"lzTokenFee","type":"uint256","internalType":"uint256"}]},{"name":"_refundAddress","type":"address","internalType":"address"}],"outputs":[{"name":"","type":"tuple","internalType":"structILayerZeroOFT.MessagingReceipt","components":[{"name":"guid","type":"bytes32","internalType":"bytes32"},{"name":"nonce","type":"uint64","internalType":"uint64"},{"name":"fee","type":"tuple","internalType":"structILayerZeroOFT.MessagingFee","components":[{"name":"nativeFee","type":"uint256","internalType":"uint256"},{"name":"lzTokenFee","type":"uint256","internalType":"uint256"}]}]},{"name":"","type":"tuple","internalType":"structILayerZeroOFT.OFTReceipt","components":[{"name":"amountSentLD","type":"uint256","internalType":"uint256"},{"name":"amountReceivedLD","type":"uint256","internalType":"uint256"}]}],"stateMutability":"payable"}';
     }
 }

@@ -36,9 +36,46 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
+    function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        vm.stopBroadcast();
+
+        vm.prank(lazyVaultAdmin);
+        verifier.setMerkleRoot(merkleRoot);
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
+    }
+
+    function _upgradePermissions(uint256 deployerPk) internal {
+        Vault vault = Vault(payable(Constants.STRETH));
+
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(3);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) =
+                _createSubvault3Verifier(subvault, 0xc95b806aC073Df930014ac476d26c8ad918f14e0);
+            _runChecks(subvault, merkleRoot, calls);
+        }
+
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(5);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) =
+                _createSubvault5Verifier(subvault, _deploySwapModule5(subvault));
+            _runChecks(subvault, merkleRoot, calls);
+        }
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
+
+        if (true) {
+            _upgradePermissions(deployerPk);
+            revert("ok");
+        }
 
         vm.startBroadcast(deployerPk);
 
@@ -449,6 +486,18 @@ contract Deploy is Script, Test {
         calls = strETHLibrary.getSubvault4SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
+    function _createSubvault5Verifier(address subvault, address swapModule)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        console2.log("SwapModule 5: %s", swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault5Descriptions(curator, subvault, swapModule);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = strETHLibrary.getSubvault5Proofs(curator, subvault, swapModule);
+        ProofLibrary.storeProofs("ethereum:strETH:subvault5", merkleRoot, leaves, descriptions);
+        calls = strETHLibrary.getSubvault5SubvaultCalls(curator, subvault, swapModule, leaves);
+    }
+
     function _routers() internal pure returns (address[5] memory result) {
         result = [
             address(0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE),
@@ -473,6 +522,10 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule4(address subvault) internal returns (address swapModule) {
         return _deployLidoLeverageSwapModule(subvault);
+    }
+
+    function _deploySwapModule5(address subvault) internal returns (address swapModule) {
+        return _deployEthenaLeverageSwapModule(subvault);
     }
 
     function _deployLidoLeverageSwapModule(address subvault) internal returns (address) {

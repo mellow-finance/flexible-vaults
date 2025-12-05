@@ -17,12 +17,25 @@ library Constants {
     address public constant WSTETH_ETHEREUM = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
 
     address public constant STRETH_ETHEREUM_SUBVAULT_0 = 0x90c983DC732e65DB6177638f0125914787b8Cb78;
+    address public constant STRETH_ETHEREUM_SUBVAULT_5 = 0xECf3BDE9f50F71edE67E05050123b64b519DF55C;
 
     address public constant CCIP_PLASMA_ROUTER = 0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3;
     uint64 public constant CCIP_PLASMA_CHAIN_SELECTOR = 9335212494177455608;
 
     address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
     uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
+
+    uint256 public constant PLASMA_FLUID_WSTUSR_USDT_NFT_ID = 2048;
+    address public constant PLASMA_FLUID_WSTUSR_USDT_VAULT = 0xBc345229C1b52e4c30530C614BB487323BA38Da5;
+
+    uint32 public constant LAYER_ZERO_PLASMA_EID = 30383;
+    uint32 public constant LAYER_ZERO_ETHEREUM_EID = 30101;
+
+    address public constant ETHEREUM_USDT_OFT_ADAPTER = 0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee;
+    address public constant PLASMA_USDT_OFT_ADAPTER = 0x02ca37966753bDdDf11216B73B16C1dE756A7CF9;
+
+    address public constant ETHEREUM_WSTUSR_OFT_ADAPTER = 0xab17c1fE647c37ceb9b96d1c27DD189bf8451978;
+    address public constant PLASMA_WSTUSR_OFT_ADAPTER = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -50,6 +63,7 @@ library Constants {
             vaultFactory: Factory(0x4E38F679e46B3216f0bd4B314E9C429AFfB1dEE3),
             verifierFactory: Factory(0x04B30b1e98950e6A13550d84e991bE0d734C2c61),
             erc20VerifierFactory: Factory(0x77A83AcBf7A6df20f1D681b4810437d74AE790F8),
+            swapModuleFactory: Factory(address(0)),
             symbioticVerifierFactory: Factory(address(0)),
             eigenLayerVerifierFactory: Factory(address(0)),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
@@ -73,7 +87,8 @@ library Constants {
             basicRedeemHook: BasicRedeemHook(0x0000000637f1b1ccDA4Af2dB6CDDf5e5Ec45fd93),
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(address(0)),
-            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35)
+            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
+            swapModuleImplementation: SwapModule(payable(address(0)))
         });
     }
 }
