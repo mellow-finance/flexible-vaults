@@ -23,11 +23,37 @@ contract Deploy is Script, Test {
     address public immutable curator = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;
     address public immutable activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
 
-    function _upgradePermissions(uint256 deployerPk) internal {}
+    function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        vm.stopBroadcast();
+
+        vm.prank(lazyVaultAdmin);
+        verifier.setMerkleRoot(merkleRoot);
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
+    }
+
+    function _upgradePermissions(uint256 deployerPk) internal {
+        Vault vault = Vault(payable(Constants.STRETH));
+
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(0);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createSubvault0Verifier(subvault);
+            // _runChecks(subvault, merkleRoot, calls);
+        }
+    }
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
+
+        if (true) {
+            _upgradePermissions(deployerPk);
+            revert("ok");
+        }
 
         vm.startBroadcast(deployerPk);
 
@@ -96,7 +122,7 @@ contract Deploy is Script, Test {
         address verifier =
             Constants.protocolDeployment().verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
         address subvault = vault.createSubvault(0, proxyAdminOwner, verifier);
-        (bytes32 merkleRoot, SubvaultCalls memory calls_) = _createVerifier(address(vault));
+        (bytes32 merkleRoot, SubvaultCalls memory calls_) = _createSubvault0Verifier(address(vault));
         IVerifier(verifier).setMerkleRoot(merkleRoot);
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
 
@@ -164,7 +190,10 @@ contract Deploy is Script, Test {
         }
     }
 
-    function _createVerifier(address subvault) internal returns (bytes32 merkleRoot, SubvaultCalls memory calls) {
+    function _createSubvault0Verifier(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
         PlasmaStrETHLibrary.Info memory info = PlasmaStrETHLibrary.Info({
             curator: curator,
             subvault: subvault,

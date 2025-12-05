@@ -98,7 +98,7 @@ library FluidLibrary {
     }
 
     function getFluidCalls(Info memory $) internal view returns (Call[][] memory calls) {
-        calls = new Call[][](2);
+        calls = new Call[][](3);
 
         IFluidVault.ConstantViews memory data = IFluidVault($.fluidVault).constantsView();
         uint256 iterator = 0;

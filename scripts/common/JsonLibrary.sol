@@ -69,7 +69,7 @@ library JsonLibrary {
     }
 
     function toJson(ILayerZeroOFT.MessagingFee memory /* params */ ) internal pure returns (string memory json) {
-        json = string(abi.encodePacked("{", '"nativeFee": "any",', ' "lzTokenFee": "0",', "}"));
+        json = string(abi.encodePacked("{", '"nativeFee": "any",', ' "lzTokenFee": "0"}'));
     }
 
     function toJson(CCIPClient.EVM2AnyMessage memory message) internal pure returns (string memory json) {

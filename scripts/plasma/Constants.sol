@@ -37,6 +37,8 @@ library Constants {
     address public constant ETHEREUM_WSTUSR_OFT_ADAPTER = 0xab17c1fE647c37ceb9b96d1c27DD189bf8451978;
     address public constant PLASMA_WSTUSR_OFT_ADAPTER = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
 
+    address public constant STRETH = 0x841e213864046111E43d237703d71FaBe91Ef9e0;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,

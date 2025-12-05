@@ -118,7 +118,8 @@ library OFTLibrary {
             );
         }
 
-        ParameterLibrary.Parameter[] memory innerParameters = ParameterLibrary.build(
+        ParameterLibrary.Parameter[] memory innerParameters;
+        innerParameters.addJson(
             "_sendParam",
             JsonLibrary.toJson(
                 ILayerZeroOFT.SendParam({
@@ -133,7 +134,7 @@ library OFTLibrary {
             )
         );
 
-        innerParameters = innerParameters.add(
+        innerParameters = innerParameters.addJson(
             "_fee", JsonLibrary.toJson(ILayerZeroOFT.MessagingFee({nativeFee: 0, lzTokenFee: type(uint256).max}))
         );
         innerParameters = innerParameters.add("_refundAddress", $.subvaultName);

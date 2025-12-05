@@ -119,6 +119,7 @@ library PlasmaStrETHLibrary {
         assembly {
             mstore(descriptions, iterator)
         }
+        console2.log(descriptions.length);
     }
 
     function getSubvault0SubvaultCalls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
@@ -129,7 +130,7 @@ library PlasmaStrETHLibrary {
         calls.calls = new Call[][](leaves.length);
         calls.payloads = leaves;
         uint256 iterator = 0;
-
+        console2.log(calls.calls.length);
         iterator = ArraysLibrary.insert(calls.calls, CCIPLibrary.getCCIPCalls(_getWSTETH_CCIP_Params($)), iterator);
         iterator = ArraysLibrary.insert(calls.calls, OFTLibrary.getOFTCalls(_getUSDT_OFT_Params($)), iterator);
         iterator = ArraysLibrary.insert(calls.calls, OFTLibrary.getOFTCalls(_getWSTUSR_OFT_Params($)), iterator);
@@ -137,3 +138,5 @@ library PlasmaStrETHLibrary {
             ArraysLibrary.insert(calls.calls, FluidLibrary.getFluidCalls(_getFluid_WSTUSR_USDT0_Params($)), iterator);
     }
 }
+
+import "forge-std/console2.sol";
