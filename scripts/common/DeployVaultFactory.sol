@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "src/vaults/Subvault.sol";
 import "src/vaults/VaultConfigurator.sol";
 
-import "scripts/common/Permissions.sol";
-import "scripts/common/interfaces/Imports.sol";
+import "./Permissions.sol";
+import "./interfaces/Imports.sol";
 
 contract DeployVaultFactory {
     error ZeroAddress();

@@ -7,7 +7,7 @@ import "forge-std/Test.sol";
 import "../../src/vaults/Subvault.sol";
 import "../common/AcceptanceLibrary.sol";
 import "./Constants.sol";
-import "src/utils/DeployVaultFactory.sol";
+import "scripts/common/DeployVaultFactory.sol";
 
 abstract contract DeployAbstractScript is Test {
     error ZeroLength();
