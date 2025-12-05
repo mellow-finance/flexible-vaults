@@ -135,7 +135,7 @@ library CCIPLibrary {
                     "CCIPRouterClient.ccipSend(ChainSelector(",
                     $.targetChainName,
                     "), [abi.encode(",
-                    Strings.toHexString($.subvault),
+                    Strings.toHexString($.targetChainReceiver),
                     "), 0x, [[",
                     IERC20Metadata($.asset).symbol(),
                     ", any]], 0x0000000000000000000000000000000000000000, 0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001])"

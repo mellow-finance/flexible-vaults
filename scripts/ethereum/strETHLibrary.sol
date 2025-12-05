@@ -17,6 +17,8 @@ import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
 
 import {CCIPLibrary} from "../common/protocols/CCIPLibrary.sol";
 import {ERC20Library} from "../common/protocols/ERC20Library.sol";
+import {OFTLibrary} from "../common/protocols/OFTLibrary.sol";
+import {ResolvLibrary} from "../common/protocols/ResolvLibrary.sol";
 import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 import {WethLibrary} from "../common/protocols/WethLibrary.sol";
 
@@ -482,7 +484,7 @@ library strETHLibrary {
             swapModule: swapModule,
             curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
             assets: ArraysLibrary.makeAddressArray(
-                abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDS)
+                abi.encode(Constants.USDE, Constants.SUSDE, Constants.USDC, Constants.USDT, Constants.USDS, Constants.WETH)
             )
         });
     }
@@ -644,6 +646,162 @@ library strETHLibrary {
         );
         iterator = ArraysLibrary.insert(
             calls.calls, AaveLibrary.getAaveCalls(_getSubvault4SparkParams(curator, subvault)), iterator
+        );
+    }
+
+    function _getSubvault5SwapModuleParams(address curator, address subvault, address swapModule)
+        internal
+        pure
+        returns (SwapModuleLibrary.Info memory)
+    {
+        return SwapModuleLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault5",
+            swapModule: swapModule,
+            curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDE))
+        });
+    }
+
+    function _getSubvault5ResolvParams(address curator, address subvault)
+        internal
+        pure
+        returns (ResolvLibrary.Info memory)
+    {
+        return ResolvLibrary.Info({
+            asset: Constants.USDT,
+            usrRequestManager: Constants.USR_REQUEST_MANAGER,
+            usr: Constants.USR,
+            wstUSR: Constants.WSTUSR,
+            subvault: subvault,
+            subvaultName: "subvault5",
+            curator: curator
+        });
+    }
+
+    function _getSubvault5_USDT_OFT_Params(address curator, address subvault)
+        internal
+        pure
+        returns (OFTLibrary.Info memory)
+    {
+        return OFTLibrary.Info({
+            curator: curator,
+            subvault: subvault,
+            targetSubvault: Constants.STRETH_PLASMA_SUBVAULT_0,
+            approveRequired: true,
+            sourceOFT: Constants.ETHEREUM_USDT_OFT_ADAPTER,
+            dstEid: Constants.LAYER_ZERO_PLASMA_EID,
+            subvaultName: "subvault5",
+            targetSubvaultName: "subvault0-plasma",
+            targetChainName: "plasma"
+        });
+    }
+
+    function _getSubvault5_WSTUSR_OFT_Params(address curator, address subvault)
+        internal
+        pure
+        returns (OFTLibrary.Info memory)
+    {
+        return OFTLibrary.Info({
+            curator: curator,
+            subvault: subvault,
+            targetSubvault: Constants.STRETH_PLASMA_SUBVAULT_0,
+            approveRequired: true,
+            sourceOFT: Constants.ETHEREUM_WSTUSR_OFT_ADAPTER,
+            dstEid: Constants.LAYER_ZERO_PLASMA_EID,
+            subvaultName: "subvault5",
+            targetSubvaultName: "subvault0-plasma",
+            targetChainName: "plasma"
+        });
+    }
+
+    function getSubvault5Proofs(address curator, address subvault, address swapModule)
+        internal
+        view
+        returns (bytes32 merkleProof, IVerifier.VerificationPayload[] memory leaves)
+    {
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
+            leaves,
+            SwapModuleLibrary.getSwapModuleProofs(
+                bitmaskVerifier, _getSubvault5SwapModuleParams(curator, subvault, swapModule)
+            ),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves,
+            ResolvLibrary.getResolvProofs(bitmaskVerifier, _getSubvault5ResolvParams(curator, subvault)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves, OFTLibrary.getOFTProofs(bitmaskVerifier, _getSubvault5_USDT_OFT_Params(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves,
+            OFTLibrary.getOFTProofs(bitmaskVerifier, _getSubvault5_WSTUSR_OFT_Params(curator, subvault)),
+            iterator
+        );
+
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault5Descriptions(address curator, address subvault, address swapModule)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault5SwapModuleParams(curator, subvault, swapModule)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, ResolvLibrary.getResolvDescriptions(_getSubvault5ResolvParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, OFTLibrary.getOFTDescriptions(_getSubvault5_USDT_OFT_Params(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, OFTLibrary.getOFTDescriptions(_getSubvault5_WSTUSR_OFT_Params(curator, subvault)), iterator
+        );
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault5SubvaultCalls(
+        address curator,
+        address subvault,
+        address swapModule,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal view returns (SubvaultCalls memory calls) {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            calls.calls,
+            SwapModuleLibrary.getSwapModuleCalls(_getSubvault5SwapModuleParams(curator, subvault, swapModule)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, ResolvLibrary.getResolvCalls(_getSubvault5ResolvParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, OFTLibrary.getOFTCalls(_getSubvault5_USDT_OFT_Params(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, OFTLibrary.getOFTCalls(_getSubvault5_WSTUSR_OFT_Params(curator, subvault)), iterator
         );
     }
 }

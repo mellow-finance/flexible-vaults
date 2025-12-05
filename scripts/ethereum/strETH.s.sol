@@ -449,6 +449,18 @@ contract Deploy is Script, Test {
         calls = strETHLibrary.getSubvault4SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
+    function _createSubvault5Verifier(address subvault, address swapModule)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        console2.log("SwapModule 5: %s", swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault5Descriptions(curator, subvault, swapModule);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = strETHLibrary.getSubvault5Proofs(curator, subvault, swapModule);
+        ProofLibrary.storeProofs("ethereum:strETH:subvault5", merkleRoot, leaves, descriptions);
+        calls = strETHLibrary.getSubvault5SubvaultCalls(curator, subvault, swapModule, leaves);
+    }
+
     function _routers() internal pure returns (address[5] memory result) {
         result = [
             address(0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE),
@@ -473,6 +485,10 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule4(address subvault) internal returns (address swapModule) {
         return _deployLidoLeverageSwapModule(subvault);
+    }
+
+    function _deploySwapModule5(address subvault) internal returns (address swapModule) {
+        return _deployEthenaLeverageSwapModule(subvault);
     }
 
     function _deployLidoLeverageSwapModule(address subvault) internal returns (address) {
