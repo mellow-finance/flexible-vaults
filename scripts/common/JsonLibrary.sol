@@ -62,7 +62,7 @@ library JsonLibrary {
                 ' "minAmountLD": "any",',
                 ' "extraOptions": "0x",',
                 ' "composeMsg": "0x",',
-                ' "oftCmd": "0x",',
+                ' "oftCmd": "0x"',
                 "}"
             )
         );

@@ -1117,6 +1117,15 @@
           "value": "any"
         },
         "innerParameters": {
+          "_sendParam": {
+            "dstEid": "30383",
+            "to": "0x000000000000000000000000bbf9400c09b0f649f3156989f1ccb9c016f943bb",
+            "amountLD": "any",
+            "minAmountLD": "any",
+            "extraOptions": "0x",
+            "composeMsg": "0x",
+            "oftCmd": "0x"
+          },
           "_fee": {
             "nativeFee": "any",
             "lzTokenFee": "0"
@@ -1313,6 +1322,15 @@
           "value": "any"
         },
         "innerParameters": {
+          "_sendParam": {
+            "dstEid": "30383",
+            "to": "0x000000000000000000000000bbf9400c09b0f649f3156989f1ccb9c016f943bb",
+            "amountLD": "any",
+            "minAmountLD": "any",
+            "extraOptions": "0x",
+            "composeMsg": "0x",
+            "oftCmd": "0x"
+          },
           "_fee": {
             "nativeFee": "any",
             "lzTokenFee": "0"

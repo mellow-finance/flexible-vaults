@@ -119,7 +119,7 @@ library OFTLibrary {
         }
 
         ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters.addJson(
+        innerParameters = innerParameters.addJson(
             "_sendParam",
             JsonLibrary.toJson(
                 ILayerZeroOFT.SendParam({
