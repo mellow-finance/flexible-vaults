@@ -36,46 +36,9 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
-    function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
-        IVerifier verifier = Subvault(payable(subvault)).verifier();
-
-        vm.stopBroadcast();
-
-        vm.prank(lazyVaultAdmin);
-        verifier.setMerkleRoot(merkleRoot);
-        for (uint256 i = 0; i < calls.payloads.length; i++) {
-            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
-        }
-    }
-
-    function _upgradePermissions(uint256 deployerPk) internal {
-        Vault vault = Vault(payable(Constants.STRETH));
-
-        vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(3);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) =
-                _createSubvault3Verifier(subvault, 0xc95b806aC073Df930014ac476d26c8ad918f14e0);
-            _runChecks(subvault, merkleRoot, calls);
-        }
-
-        vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(5);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) =
-                _createSubvault5Verifier(subvault, _deploySwapModule5(subvault));
-            _runChecks(subvault, merkleRoot, calls);
-        }
-    }
-
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
-
-        if (true) {
-            _upgradePermissions(deployerPk);
-            revert("ok");
-        }
 
         vm.startBroadcast(deployerPk);
 

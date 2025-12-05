@@ -23,38 +23,9 @@ contract Deploy is Script, Test {
     address public immutable curator = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;
     address public immutable activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
 
-    function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
-        IVerifier verifier = Subvault(payable(subvault)).verifier();
-
-        vm.stopBroadcast();
-
-        vm.prank(lazyVaultAdmin);
-        verifier.setMerkleRoot(merkleRoot);
-        for (uint256 i = 0; i < calls.payloads.length; i++) {
-            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
-        }
-    }
-
-    function _upgradePermissions(uint256 deployerPk) internal {
-        Vault vault = Vault(payable(Constants.STRETH));
-
-        vm.startBroadcast(deployerPk);
-        {
-            address subvault = vault.subvaultAt(0);
-            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createSubvault0Verifier(subvault);
-            // _runChecks(subvault, merkleRoot, calls);
-        }
-    }
-
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
-
-        if (true) {
-            _upgradePermissions(deployerPk);
-            revert("ok");
-        }
-
         vm.startBroadcast(deployerPk);
 
         TimelockController timelockController = new TimelockController(
