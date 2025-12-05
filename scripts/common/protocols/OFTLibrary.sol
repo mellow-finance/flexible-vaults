@@ -137,7 +137,7 @@ library OFTLibrary {
         innerParameters = innerParameters.addJson(
             "_fee", JsonLibrary.toJson(ILayerZeroOFT.MessagingFee({nativeFee: 0, lzTokenFee: type(uint256).max}))
         );
-        innerParameters = innerParameters.add("_refundAddress", $.subvaultName);
+        innerParameters = innerParameters.add("_refundAddress", Strings.toHexString($.subvault));
 
         descriptions[iterator++] = JsonLibrary.toJson(
             string(
