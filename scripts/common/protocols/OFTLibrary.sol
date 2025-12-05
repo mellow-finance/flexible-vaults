@@ -345,5 +345,9 @@ library OFTLibrary {
             }
             calls[iterator++] = tmp;
         }
+
+        assembly {
+            mstore(calls, iterator)
+        }
     }
 }
