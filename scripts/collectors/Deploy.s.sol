@@ -33,7 +33,8 @@ import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
 
 contract Deploy is Script {
     function _deployStrETHCustomCollector() internal {
-        strETHCustomOracle customOracle = new strETHCustomOracle();
+        strETHCustomOracle customOracle =
+            new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
         (address[] memory contracts, bytes[] memory bytecodes) = customOracle.stateOverrides();
 
         for (uint256 i = 0; i < contracts.length; i++) {

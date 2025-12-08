@@ -333,7 +333,7 @@ library strETHLibrary {
         });
     }
 
-    function _getSubvault1AaveParams(address curator, address subvault)
+    function _getSubvault1AavePrimeParams(address curator, address subvault)
         internal
         pure
         returns (AaveLibrary.Info memory)
@@ -344,6 +344,23 @@ library strETHLibrary {
             curator: curator,
             aaveInstance: Constants.AAVE_PRIME,
             aaveInstanceName: "Prime",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+            categoryId: 1
+        });
+    }
+
+    function _getSubvault1AaveCoreParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault1",
+            curator: curator,
+            aaveInstance: Constants.AAVE_CORE,
+            aaveInstanceName: "Core",
             collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
             loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
             categoryId: 1
@@ -366,7 +383,12 @@ library strETHLibrary {
             iterator
         );
         iterator = ArraysLibrary.insert(
-            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault1AaveParams(curator, subvault)), iterator
+            leaves,
+            AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault1AavePrimeParams(curator, subvault)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault1AaveCoreParams(curator, subvault)), iterator
         );
         assembly {
             mstore(leaves, iterator)
@@ -387,7 +409,10 @@ library strETHLibrary {
             iterator
         );
         iterator = ArraysLibrary.insert(
-            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault1AaveParams(curator, subvault)), iterator
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault1AavePrimeParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault1AaveCoreParams(curator, subvault)), iterator
         );
         assembly {
             mstore(descriptions, iterator)
@@ -409,7 +434,10 @@ library strETHLibrary {
             iterator
         );
         iterator = ArraysLibrary.insert(
-            calls.calls, AaveLibrary.getAaveCalls(_getSubvault1AaveParams(curator, subvault)), iterator
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault1AavePrimeParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault1AaveCoreParams(curator, subvault)), iterator
         );
     }
 

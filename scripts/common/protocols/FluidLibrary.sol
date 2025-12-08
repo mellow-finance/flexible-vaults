@@ -56,7 +56,7 @@ library FluidLibrary {
             ProofLibrary.makeBitmask(
                 true,
                 true,
-                false,
+                true,
                 true,
                 abi.encodeCall(IFluidVault.operate, (type(uint256).max, 0, 0, address(type(uint160).max)))
             )

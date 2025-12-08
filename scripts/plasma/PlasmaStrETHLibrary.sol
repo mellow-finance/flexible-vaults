@@ -13,6 +13,7 @@ import {Constants} from "./Constants.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {CCIPLibrary} from "../common/protocols/CCIPLibrary.sol";
+import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 
 import {FluidLibrary} from "../common/protocols/FluidLibrary.sol";
 import {OFTLibrary} from "../common/protocols/OFTLibrary.sol";
@@ -23,10 +24,12 @@ library PlasmaStrETHLibrary {
     struct Info {
         address curator;
         address subvault;
+        string subvaultName;
         address ethereumSubvault;
         address asset;
         address ccipRouter;
         uint64 ccipEthereumSelector;
+        address swapModule;
     }
 
     function _getWSTETH_CCIP_Params(Info memory $) internal pure returns (CCIPLibrary.Info memory) {
@@ -79,6 +82,16 @@ library PlasmaStrETHLibrary {
         });
     }
 
+    function _getSubvault0_SwapModule_Params(Info memory $) internal pure returns (SwapModuleLibrary.Info memory) {
+        return SwapModuleLibrary.Info({
+            subvault: $.subvault,
+            subvaultName: $.subvaultName,
+            swapModule: $.swapModule,
+            curators: ArraysLibrary.makeAddressArray(abi.encode($.curator)),
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WXPL, Constants.USDT0))
+        });
+    }
+
     function getSubvault0Proofs(Info memory $)
         internal
         view
@@ -98,7 +111,9 @@ library PlasmaStrETHLibrary {
         iterator = ArraysLibrary.insert(
             leaves, FluidLibrary.getFluidProofs(bitmaskVerifier, _getFluid_WSTUSR_USDT0_Params($)), iterator
         );
-
+        iterator = ArraysLibrary.insert(
+            leaves, SwapModuleLibrary.getSwapModuleProofs(bitmaskVerifier, _getSubvault0_SwapModule_Params($)), iterator
+        );
         assembly {
             mstore(leaves, iterator)
         }
@@ -115,6 +130,9 @@ library PlasmaStrETHLibrary {
         iterator = ArraysLibrary.insert(descriptions, OFTLibrary.getOFTDescriptions(_getWSTUSR_OFT_Params($)), iterator);
         iterator = ArraysLibrary.insert(
             descriptions, FluidLibrary.getFluidDescriptions(_getFluid_WSTUSR_USDT0_Params($)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault0_SwapModule_Params($)), iterator
         );
         assembly {
             mstore(descriptions, iterator)
@@ -134,5 +152,8 @@ library PlasmaStrETHLibrary {
         iterator = ArraysLibrary.insert(calls.calls, OFTLibrary.getOFTCalls(_getWSTUSR_OFT_Params($)), iterator);
         iterator =
             ArraysLibrary.insert(calls.calls, FluidLibrary.getFluidCalls(_getFluid_WSTUSR_USDT0_Params($)), iterator);
+        iterator = ArraysLibrary.insert(
+            calls.calls, SwapModuleLibrary.getSwapModuleCalls(_getSubvault0_SwapModule_Params($)), iterator
+        );
     }
 }

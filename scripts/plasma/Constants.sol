@@ -12,9 +12,15 @@ library Constants {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
+    address public constant WXPL = 0x6100E367285b01F48D07953803A2d8dCA5D19873;
+    address public constant WSTUSR = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
+    address public constant USDT0 = 0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb;
     address public constant WETH = 0x9895D81bB462A195b4922ED7De0e3ACD007c32CB;
     address public constant WSTETH = 0xe48D935e6C9e735463ccCf29a7F11e32bC09136E;
+
     address public constant WSTETH_ETHEREUM = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
+
+    address public constant AAVE_V3_ORACLE = 0x33E0b3fc976DC9C516926BA48CfC0A9E10a2aAA5;
 
     address public constant STRETH_ETHEREUM_SUBVAULT_0 = 0x90c983DC732e65DB6177638f0125914787b8Cb78;
     address public constant STRETH_ETHEREUM_SUBVAULT_5 = 0xECf3BDE9f50F71edE67E05050123b64b519DF55C;
@@ -38,6 +44,11 @@ library Constants {
     address public constant PLASMA_WSTUSR_OFT_ADAPTER = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
 
     address public constant STRETH = 0x841e213864046111E43d237703d71FaBe91Ef9e0;
+
+    address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
+    address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
+
+    address public constant KYBERSWAP_ROUTER = 0x6131B5fae19EA4f9D964eAc0408E4408b66337b5;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -65,7 +76,7 @@ library Constants {
             vaultFactory: Factory(0x4E38F679e46B3216f0bd4B314E9C429AFfB1dEE3),
             verifierFactory: Factory(0x04B30b1e98950e6A13550d84e991bE0d734C2c61),
             erc20VerifierFactory: Factory(0x77A83AcBf7A6df20f1D681b4810437d74AE790F8),
-            swapModuleFactory: Factory(address(0)),
+            swapModuleFactory: Factory(0x8471a3BC64f14c5272368FDD8FdD197EeD964FEf),
             symbioticVerifierFactory: Factory(address(0)),
             eigenLayerVerifierFactory: Factory(address(0)),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
@@ -90,7 +101,7 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(address(0)),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
-            swapModuleImplementation: SwapModule(payable(address(0)))
+            swapModuleImplementation: SwapModule(payable(0x00000000fF13abe88Ff02DC80d53D1d3B89b2E0F))
         });
     }
 }

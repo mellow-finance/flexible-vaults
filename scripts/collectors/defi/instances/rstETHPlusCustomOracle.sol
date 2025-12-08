@@ -44,7 +44,7 @@ contract rstETHPlusCustomOracle {
     constructor(address symbioticVault) {
         impl = new CustomOracle(Constants.AAVE_V3_ORACLE, Constants.WETH);
 
-        erc20Collector = new ERC20Collector();
+        erc20Collector = new ERC20Collector(address(Constants.protocolDeployment().swapModuleFactory));
         symbioticCollector = new SymbioticCollector();
         resolvCollector =
             new ResolvCollector(Constants.USDC, Constants.USDT, Constants.USR, Constants.USR_REQUEST_MANAGER);
@@ -57,7 +57,7 @@ contract rstETHPlusCustomOracle {
         bytes[] memory protocolDeployments = new bytes[](4);
         protocolDeployments[1] = abi.encode(symbioticVault);
         address[] memory assets = ArraysLibrary.makeAddressArray(
-            abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.USDC, Constants.USR, Constants.STUSR)
+            abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.USDC, Constants.USR, Constants.WSTUSR)
         );
 
         customOracle = CustomOracle(
