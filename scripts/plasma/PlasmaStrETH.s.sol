@@ -23,9 +23,42 @@ contract Deploy is Script, Test {
     address public immutable curator = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;
     address public immutable activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
 
+    uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
+
+    function _runChecks(address subvault, bytes32 merkleRoot, SubvaultCalls memory calls) internal {
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        vm.stopBroadcast();
+
+        vm.prank(activeVaultAdmin);
+        verifier.setMerkleRoot(merkleRoot);
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
+    }
+
+    function _upgradePermissions(uint256 deployerPk) internal {
+        Vault vault = Vault(payable(Constants.STRETH));
+
+        vm.startBroadcast(deployerPk);
+        {
+            address subvault = vault.subvaultAt(0);
+            address swapModule0 = _deployResolvPlasmaLeverage(subvault);
+            console2.log("SwapModule0:", swapModule0);
+            (bytes32 merkleRoot, SubvaultCalls memory calls) = _createSubvault0Verifier(subvault, swapModule0);
+            _runChecks(subvault, merkleRoot, calls);
+        }
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
+
+        if (true) {
+            _upgradePermissions(deployerPk);
+            revert("ok");
+        }
+
         vm.startBroadcast(deployerPk);
 
         TimelockController timelockController = new TimelockController(
@@ -93,7 +126,8 @@ contract Deploy is Script, Test {
         address verifier =
             Constants.protocolDeployment().verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
         address subvault = vault.createSubvault(0, proxyAdminOwner, verifier);
-        (bytes32 merkleRoot, SubvaultCalls memory calls_) = _createSubvault0Verifier(address(vault));
+        (bytes32 merkleRoot, SubvaultCalls memory calls_) =
+            _createSubvault0Verifier(address(vault), _deployResolvPlasmaLeverage(subvault));
         IVerifier(verifier).setMerkleRoot(merkleRoot);
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
 
@@ -161,23 +195,44 @@ contract Deploy is Script, Test {
         }
     }
 
-    function _createSubvault0Verifier(address subvault)
+    function _createSubvault0Verifier(address subvault, address swapModule)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
         PlasmaStrETHLibrary.Info memory info = PlasmaStrETHLibrary.Info({
             curator: curator,
             subvault: subvault,
+            subvaultName: "subvault0",
             asset: Constants.WSTETH,
             ethereumSubvault: Constants.STRETH_ETHEREUM_SUBVAULT_0,
             ccipRouter: Constants.CCIP_PLASMA_ROUTER,
-            ccipEthereumSelector: Constants.CCIP_ETHEREUM_CHAIN_SELECTOR
+            ccipEthereumSelector: Constants.CCIP_ETHEREUM_CHAIN_SELECTOR,
+            swapModule: swapModule
         });
-
         string[] memory descriptions = PlasmaStrETHLibrary.getSubvault0Descriptions(info);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = PlasmaStrETHLibrary.getSubvault0Proofs(info);
         ProofLibrary.storeProofs("plasma:strETH:subvault0", merkleRoot, leaves, descriptions);
         calls = PlasmaStrETHLibrary.getSubvault0SubvaultCalls(info, leaves);
+    }
+
+    function _deployResolvPlasmaLeverage(address subvault) internal returns (address) {
+        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+        address[] memory actors = ArraysLibrary.makeAddressArray(
+            abi.encode(curator, Constants.WXPL, Constants.USDT0, Constants.KYBERSWAP_ROUTER)
+        );
+        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE
+            )
+        );
+        return swapModuleFactory.create(
+            0,
+            proxyAdminOwner,
+            abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+        );
     }
 }
