@@ -55,7 +55,7 @@ contract Deploy is Script, Test {
         {
             address subvault = vault.subvaultAt(1);
             (bytes32 merkleRoot, SubvaultCalls memory calls) =
-                _createSubvault0Verifier(subvault, 0x7a57d62b1217Ce5685E26C333741e61b99233E65);
+                _createSubvault1Verifier(subvault, 0x7a57d62b1217Ce5685E26C333741e61b99233E65);
             _runChecks(subvault, merkleRoot, calls);
         }
     }
