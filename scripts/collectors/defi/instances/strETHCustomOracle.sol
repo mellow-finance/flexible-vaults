@@ -31,10 +31,10 @@ contract strETHCustomOracle {
         bytecodes[5] = address(this).code;
     }
 
-    constructor() {
+    constructor(address swapModuleFactory) {
         strETHOracle = new strETHCustomAaveOracle();
         impl = new CustomOracle(address(strETHOracle), Constants.WETH);
-        erc20Collector = new ERC20Collector();
+        erc20Collector = new ERC20Collector(swapModuleFactory);
         aaveCollector = new AaveCollector();
 
         address[] memory protocols = new address[](4);
@@ -60,7 +60,8 @@ contract strETHCustomOracle {
                 Constants.USDT,
                 Constants.USDS,
                 Constants.USDE,
-                Constants.SUSDE
+                Constants.SUSDE,
+                Constants.WSTUSR
             )
         );
 
