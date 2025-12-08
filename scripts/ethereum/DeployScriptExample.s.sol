@@ -40,6 +40,9 @@ contract Deploy is DeployAbstractScript {
         feeManagerOwner = testWallet;
         pauser = testWallet;
 
+        timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin));
+        timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin));
+
         /// @dev fill fee parameters
         depositFeeD6 = 0;
         redeemFeeD6 = 0;
@@ -62,6 +65,19 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill default hooks
         defaultDepositHook = address($.redirectingDepositHook);
         defaultRedeemHook = address($.basicRedeemHook);
+
+        /// @dev fill share manager params
+        shareManagerWhitelistMerkleRoot = bytes32(0);
+
+        /// @dev fill risk manager params
+        riskManagerLimit = type(int256).max / 2;
+
+        /// @dev fill versions
+        vaultVersion = 0;
+        shareManagerVersion = 0;
+        feeManagerVersion = 0;
+        riskManagerVersion = 0;
+        oracleVersion = 0;
     }
 
     /// @dev fill in subvault parameters

@@ -9,7 +9,6 @@ import "./Permissions.sol";
 import "./interfaces/Imports.sol";
 
 contract DeployVaultFactory is IDeployVaultFactory {
-    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     VaultConfigurator public vaultConfigurator;
     Factory public verifierFactory;
 
@@ -90,7 +89,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         _pushReports(vault, $.allowedAssets, $.allowedAssetsPrices);
 
         // set actual security params
-        vault.oracle().setSecurityParams($.securityParams);
+        vault.oracle().setSecurityParams(abi.decode($.securityParamsEncoded, (IOracle.SecurityParams)));
 
         // set subvault merkle roots
         _setSubvaultRoots(vault, subvaultRoots);
@@ -107,7 +106,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
 
     /// @inheritdoc IDeployVaultFactory
     function getInitVaultParams(DeployVaultConfig memory $) public view returns (VaultConfigurator.InitParams memory) {
-        return _getInitVaultParams($, $.securityParams);
+        return _getInitVaultParams($, abi.decode($.securityParamsEncoded, (IOracle.SecurityParams)));
     }
 
     function _getInitVaultParams(DeployVaultConfig memory $, IOracle.SecurityParams memory securityParams)
@@ -116,12 +115,12 @@ contract DeployVaultFactory is IDeployVaultFactory {
         returns (VaultConfigurator.InitParams memory)
     {
         return VaultConfigurator.InitParams({
-            version: 0,
+            version: $.vaultVersion,
             proxyAdmin: $.proxyAdmin,
             vaultAdmin: $.lazyVaultAdmin,
-            shareManagerVersion: 0,
-            shareManagerParams: abi.encode(bytes32(0), $.vaultName, $.vaultSymbol),
-            feeManagerVersion: 0,
+            shareManagerVersion: $.shareManagerVersion,
+            shareManagerParams: abi.encode($.shareManagerWhitelistMerkleRoot, $.vaultName, $.vaultSymbol),
+            feeManagerVersion: $.feeManagerVersion,
             feeManagerParams: abi.encode(
                 address(this),
                 $.feeManagerParams.owner,
@@ -130,9 +129,9 @@ contract DeployVaultFactory is IDeployVaultFactory {
                 $.feeManagerParams.performanceFeeD6,
                 $.feeManagerParams.protocolFeeD6
             ),
-            riskManagerVersion: 0,
-            riskManagerParams: abi.encode(type(int256).max / 2),
-            oracleVersion: 0,
+            riskManagerVersion: $.riskManagerVersion,
+            riskManagerParams: abi.encode($.riskManagerLimit),
+            oracleVersion: $.oracleVersion,
             oracleParams: abi.encode(securityParams, $.allowedAssets),
             defaultDepositHook: $.defaultDepositHook,
             defaultRedeemHook: $.defaultRedeemHook,
@@ -182,14 +181,14 @@ contract DeployVaultFactory is IDeployVaultFactory {
         internal
         returns (TimelockController timelockController)
     {
-        address[] memory proposers = new address[](2);
-        address[] memory executors = new address[](1);
+        address[] memory proposers = new address[]($.timelockProposers.length + 1);
 
-        proposers[0] = $.lazyVaultAdmin;
-        proposers[1] = address(this);
-        executors[0] = $.lazyVaultAdmin;
+        proposers[0] = address(this);
+        for (uint256 i = 0; i < $.timelockProposers.length; i++) {
+            proposers[i + 1] = $.timelockProposers[i];
+        }
 
-        timelockController = new TimelockController(0, proposers, executors, $.lazyVaultAdmin);
+        timelockController = new TimelockController(0, proposers, $.timelockExecutors, $.lazyVaultAdmin);
 
         timelockController.schedule(
             address(vault.shareManager()),

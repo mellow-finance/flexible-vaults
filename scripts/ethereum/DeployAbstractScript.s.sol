@@ -53,6 +53,8 @@ abstract contract DeployAbstractScript is Test {
     address public curator;
     address public feeManagerOwner;
     address public pauser;
+    address[] timelockProposers;
+    address[] timelockExecutors;
 
     uint24 public depositFeeD6;
     uint24 public redeemFeeD6;
@@ -63,6 +65,16 @@ abstract contract DeployAbstractScript is Test {
 
     address defaultDepositHook;
     address defaultRedeemHook;
+
+    bytes32 shareManagerWhitelistMerkleRoot;
+
+    int256 riskManagerLimit;
+
+    uint256 vaultVersion = 0;
+    uint256 shareManagerVersion = 0;
+    uint256 feeManagerVersion = 0;
+    uint256 riskManagerVersion = 0;
+    uint256 oracleVersion = 0;
 
     /// @dev fill after step one and run script again to finalize deployment
     Vault internal vault;
@@ -181,6 +193,8 @@ abstract contract DeployAbstractScript is Test {
             oracleUpdater: oracleUpdater,
             curator: curator,
             pauser: pauser,
+            timelockProposers: timelockProposers,
+            timelockExecutors: timelockExecutors,
             feeManagerParams: IDeployVaultFactory.FeeManagerParams({
                 owner: feeManagerOwner,
                 depositFeeD6: depositFeeD6,
@@ -188,14 +202,21 @@ abstract contract DeployAbstractScript is Test {
                 performanceFeeD6: performanceFeeD6,
                 protocolFeeD6: protocolFeeD6
             }),
+            shareManagerWhitelistMerkleRoot: shareManagerWhitelistMerkleRoot,
             allowedAssets: allowedAssets,
             allowedAssetsPrices: allowedAssetsPrices,
             subvaultParams: getSubvaultParams(),
             queues: queues,
-            securityParams: securityParams,
+            securityParamsEncoded: abi.encode(securityParams),
             defaultDepositHook: defaultDepositHook,
             defaultRedeemHook: defaultRedeemHook,
-            queueLimit: queueLimit
+            queueLimit: queueLimit,
+            riskManagerLimit: riskManagerLimit,
+            riskManagerVersion: riskManagerVersion,
+            vaultVersion: vaultVersion,
+            shareManagerVersion: shareManagerVersion,
+            feeManagerVersion: feeManagerVersion,
+            oracleVersion: oracleVersion
         });
 
         validateDeployConfig(config);

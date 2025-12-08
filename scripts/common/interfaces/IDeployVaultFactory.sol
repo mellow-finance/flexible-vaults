@@ -50,18 +50,31 @@ interface IDeployVaultFactory {
         address oracleUpdater;
         address curator;
         address pauser;
+        // Fee manager
         FeeManagerParams feeManagerParams;
+        // Share manager
+        bytes32 shareManagerWhitelistMerkleRoot;
+        // Risk manager
+        int256 riskManagerLimit;
         // Assets
         address[] allowedAssets; // [0] is assumed to be the base asset
         uint256[] allowedAssetsPrices;
         SubvaultParams[] subvaultParams;
         QueueParams[] queues;
         // security
-        IOracle.SecurityParams securityParams;
+        bytes securityParamsEncoded; //IOracle.SecurityParams
+        address[] timelockProposers;
+        address[] timelockExecutors;
         // other params can be added here as needed
         address defaultDepositHook;
         address defaultRedeemHook;
         uint256 queueLimit;
+        // Versions
+        uint256 vaultVersion;
+        uint256 shareManagerVersion;
+        uint256 feeManagerVersion;
+        uint256 riskManagerVersion;
+        uint256 oracleVersion;
     }
 
     struct VaultDeployment {
