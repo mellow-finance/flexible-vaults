@@ -1,107 +1,36 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/governance/TimelockController.sol";
+import "scripts/common/interfaces/IDeployVaultFactory.sol";
 
 import "src/vaults/Subvault.sol";
-import "src/vaults/VaultConfigurator.sol";
 
 import "./Permissions.sol";
 import "./interfaces/Imports.sol";
 
-contract DeployVaultFactory {
-    error ZeroAddress();
-    error ZeroValue();
-    error SubvaultNotAllowed(address);
-    error AlreadyInitialized();
-    error NotYetDeployed();
-    error Forbidden();
-
-    struct SubvaultRoot {
-        address subvault;
-        bytes32 merkleRoot;
-    }
-
-    struct FeeManagerParams {
-        address owner;
-        uint24 depositFeeD6;
-        uint24 redeemFeeD6;
-        uint24 performanceFeeD6;
-        uint24 protocolFeeD6;
-    }
-
-    struct DeployVaultConfig {
-        string vaultName;
-        string vaultSymbol;
-        // Actors
-        address proxyAdmin;
-        address lazyVaultAdmin;
-        address activeVaultAdmin;
-        address oracleUpdater;
-        address curator;
-        address pauser;
-        FeeManagerParams feeManagerParams;
-        // Assets
-        address[] allowedAssets; // [0] is assumed to be the base asset
-        uint224[] allowedAssetsPrices;
-        address[][] allowedSubvaultAssets; // assumption: subvault count == allowedSubvaultAssets.length
-        address[] depositQueueAssets;
-        address[] redeemQueueAssets;
-        // security
-        IOracle.SecurityParams securityParams;
-    }
-
-    struct VaultDeployment {
-        Vault vault;
-        TimelockController timelockController;
-        IOracle oracle;
-        IShareManager shareManager;
-        IFeeManager feeManager;
-        IRiskManager riskManager;
-        address[] subvaults;
-        address[] verifiers;
-        address[] depositQueues;
-        address[] redeemQueues;
-    }
-
-    address public immutable ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-    VaultConfigurator public immutable vaultConfigurator;
-    Factory public immutable verifierFactory;
-    address public immutable defaultDepositHook;
-    address public immutable defaultRedeemHook;
+contract DeployVaultFactory is IDeployVaultFactory {
+    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    VaultConfigurator public vaultConfigurator;
+    Factory public verifierFactory;
 
     mapping(address => TimelockController) public timelockControllers;
     mapping(address => DeployVaultConfig) internal deployVaultConfig;
     mapping(address => address) internal deployer;
 
-    constructor(
-        address vaultConfigurator_,
-        address verifierFactory_,
-        address defaultDepositHook_,
-        address defaultRedeemHook_
-    ) {
-        if (
-            vaultConfigurator_ == address(0) || verifierFactory_ == address(0) || defaultDepositHook_ == address(0)
-                || defaultRedeemHook_ == address(0)
-        ) {
+    constructor(address vaultConfigurator_, address verifierFactory_) {
+        if (vaultConfigurator_ == address(0) || verifierFactory_ == address(0)) {
             revert ZeroAddress();
         }
 
         vaultConfigurator = VaultConfigurator(vaultConfigurator_);
         verifierFactory = Factory(verifierFactory_);
-        defaultDepositHook = defaultDepositHook_;
-        defaultRedeemHook = defaultRedeemHook_;
     }
 
-    receive() external payable {}
-
-    /**
-     * @notice Deploys a new Vault with the given configuration.
-     * @param $ The configuration parameters for the Vault deployment.
-     * @return vault The address of the newly deployed Vault.
-     */
+    /// @inheritdoc IDeployVaultFactory
     function deployVault(DeployVaultConfig calldata $) external returns (Vault vault) {
+        if ($.queueLimit < $.queues.length) {
+            revert LengthMismatch();
+        }
         VaultConfigurator.InitParams memory initParams = _getInitVaultParams(
             $,
             IOracle.SecurityParams({
@@ -122,22 +51,15 @@ contract DeployVaultFactory {
         // create subvaults
         _createSubvaults(vault, $);
 
-        address baseAsset = $.allowedAssets[0];
-
-        // create the base asset deposit queue
-        vault.createQueue(0, true, $.proxyAdmin, baseAsset, new bytes(0));
-
         // initial price reports
         _pushReports(vault, $.allowedAssets, $.allowedAssetsPrices);
-
-        // make initial deposit of all base asset balance
-        _makeInitialDeposit(vault, baseAsset);
 
         // save config and allowed deployer for finalizeDeployment
         deployVaultConfig[address(vault)] = $;
         deployer[address(vault)] = msg.sender;
     }
 
+    /// @inheritdoc IDeployVaultFactory
     function finalizeDeployment(Vault vault, SubvaultRoot[] memory subvaultRoots, Vault.RoleHolder[] memory holders)
         external
     {
@@ -162,7 +84,7 @@ contract DeployVaultFactory {
         Ownable(address(vault.feeManager())).transferOwnership($.feeManagerParams.owner);
 
         // create the rest of the queues
-        _createQueues(vault, $.proxyAdmin, $.depositQueueAssets, $.redeemQueueAssets);
+        _createQueues(vault, $.proxyAdmin, $.queues);
 
         // initial price reports
         _pushReports(vault, $.allowedAssets, $.allowedAssetsPrices);
@@ -183,6 +105,7 @@ contract DeployVaultFactory {
         delete deployVaultConfig[address(vault)];
     }
 
+    /// @inheritdoc IDeployVaultFactory
     function getInitVaultParams(DeployVaultConfig memory $) public view returns (VaultConfigurator.InitParams memory) {
         return _getInitVaultParams($, $.securityParams);
     }
@@ -211,9 +134,9 @@ contract DeployVaultFactory {
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
             oracleParams: abi.encode(securityParams, $.allowedAssets),
-            defaultDepositHook: defaultDepositHook,
-            defaultRedeemHook: defaultRedeemHook,
-            queueLimit: $.depositQueueAssets.length + $.redeemQueueAssets.length,
+            defaultDepositHook: $.defaultDepositHook,
+            defaultRedeemHook: $.defaultRedeemHook,
+            queueLimit: $.queueLimit,
             /// @dev give full control to this for now
             roleHolders: _getTemporaryRoleHolders()
         });
@@ -224,37 +147,29 @@ contract DeployVaultFactory {
         vault = Vault(payable(vault_));
     }
 
-    function _createQueues(
-        Vault vault,
-        address proxyAdmin,
-        address[] memory depositQueueAssets,
-        address[] memory redeemQueueAssets
-    ) internal {
-        // deposit queues setup, skip base asset (assumed to be at index 0) and was created it in deployVault()
-        for (uint256 i = 1; i < depositQueueAssets.length; i++) {
-            vault.createQueue(0, true, proxyAdmin, depositQueueAssets[i], new bytes(0));
-        }
-        // redeem queues setup
-        for (uint256 i = 0; i < redeemQueueAssets.length; i++) {
-            vault.createQueue(0, false, proxyAdmin, redeemQueueAssets[i], new bytes(0));
+    function _createQueues(Vault vault, address proxyAdmin, QueueParams[] memory queues) internal {
+        for (uint256 i = 0; i < queues.length; i++) {
+            QueueParams memory params = queues[i];
+            vault.createQueue(params.version, params.isDeposit == 1, proxyAdmin, params.asset, params.data);
         }
     }
 
     function _createSubvaults(Vault vault, DeployVaultConfig memory $) internal {
         IRiskManager riskManager = vault.riskManager();
 
-        for (uint256 i = 0; i < $.allowedSubvaultAssets.length; i++) {
-            address verifier = verifierFactory.create(0, $.proxyAdmin, abi.encode(vault, bytes32(0)));
-            address subvault = vault.createSubvault(0, $.proxyAdmin, verifier);
+        for (uint256 i = 0; i < $.subvaultParams.length; i++) {
+            address verifier =
+                verifierFactory.create($.subvaultParams[i].verifierVersion, $.proxyAdmin, abi.encode(vault, bytes32(0)));
+            address subvault = vault.createSubvault($.subvaultParams[i].version, $.proxyAdmin, verifier);
 
-            riskManager.allowSubvaultAssets(subvault, $.allowedSubvaultAssets[i]);
-            riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
+            riskManager.allowSubvaultAssets(subvault, $.subvaultParams[i].assets);
+            riskManager.setSubvaultLimit(subvault, $.subvaultParams[i].limit);
         }
     }
 
     function _setSubvaultRoots(Vault vault, SubvaultRoot[] memory subvaultRoots) internal {
         for (uint256 i = 0; i < subvaultRoots.length; i++) {
-            if (!vault.hasSubvault(subvaultRoots[i].subvault)) {
+            if (vault.subvaultAt(i) != subvaultRoots[i].subvault) {
                 revert SubvaultNotAllowed(subvaultRoots[i].subvault);
             }
             Subvault subvault = Subvault(payable(subvaultRoots[i].subvault));
@@ -322,11 +237,11 @@ contract DeployVaultFactory {
         }
     }
 
-    function _pushReports(Vault vault, address[] memory allowedAssets, uint224[] memory allowedAssetsPrices) internal {
+    function _pushReports(Vault vault, address[] memory allowedAssets, uint256[] memory allowedAssetsPrices) internal {
         IOracle.Report[] memory reports = new IOracle.Report[](allowedAssets.length);
         for (uint256 i = 0; i < allowedAssets.length; i++) {
             reports[i].asset = allowedAssets[i];
-            reports[i].priceD18 = allowedAssetsPrices[i];
+            reports[i].priceD18 = uint224(allowedAssetsPrices[i]);
         }
 
         IOracle oracle = vault.oracle();
@@ -339,40 +254,19 @@ contract DeployVaultFactory {
         }
     }
 
-    function _makeInitialDeposit(Vault vault, address asset) internal {
-        address depositQueue = address(vault.queueAt(asset, 0));
-        if (depositQueue == address(0)) {
-            revert ZeroAddress();
-        }
-        uint256 assetAmount;
-        if (asset == ETH) {
-            assetAmount = address(this).balance;
-        } else {
-            assetAmount = IERC20(asset).balanceOf(address(this));
-            IERC20(asset).approve(depositQueue, assetAmount);
-        }
-
-        if (assetAmount == 0) {
-            revert ZeroValue();
-        }
-        IDepositQueue(depositQueue).deposit{value: asset == ETH ? assetAmount : 0}(
-            uint224(assetAmount), address(0), new bytes32[](0)
-        );
-    }
-
     function _getTemporaryRoleHolders() public view returns (Vault.RoleHolder[] memory holders) {
         uint256 index;
-        holders = new Vault.RoleHolder[](10);
+        address this_ = address(this);
+        holders = new Vault.RoleHolder[](9);
         holders[index++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.SET_SECURITY_PARAMS_ROLE, address(this));
-        holders[index++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(this));
+        holders[index++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, this_);
+        holders[index++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, this_);
+        holders[index++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, this_);
+        holders[index++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, this_);
+        holders[index++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, this_);
+        holders[index++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, this_);
+        holders[index++] = Vault.RoleHolder(Permissions.SET_SECURITY_PARAMS_ROLE, this_);
+        holders[index++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, this_);
     }
 
     function _transferRoleHolders(Vault vault, Vault.RoleHolder[] memory holders) internal {

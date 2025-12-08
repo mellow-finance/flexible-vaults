@@ -7,9 +7,19 @@ import "forge-std/Test.sol";
 import "../../src/vaults/Subvault.sol";
 import "../common/AcceptanceLibrary.sol";
 import "./Constants.sol";
-import "scripts/common/DeployVaultFactory.sol";
+
+import "scripts/common/interfaces/IDeployVaultFactory.sol";
 
 abstract contract DeployAbstractScript is Test {
+    enum SubvaultVersion {
+        DEFAULT
+    }
+    enum QueueVersion {
+        DEFAULT,
+        SIGNATURE,
+        SYNC
+    }
+
     error ZeroLength();
     error ZeroAddress();
     error ZeroValue();
@@ -20,8 +30,7 @@ abstract contract DeployAbstractScript is Test {
     error NotYetDeployed();
     error Forbidden();
 
-    DeployVaultFactory internal deployVault =
-        DeployVaultFactory(payable(address(0x74338478b0E0Fa515bB2169011B7C260407d04ce)));
+    IDeployVaultFactory internal deployVault = IDeployVaultFactory(payable(address(0)));
 
     /**
      * @dev STEP 0:
@@ -52,6 +61,9 @@ abstract contract DeployAbstractScript is Test {
 
     IOracle.SecurityParams public securityParams;
 
+    address defaultDepositHook;
+    address defaultRedeemHook;
+
     /// @dev fill after step one and run script again to finalize deployment
     Vault internal vault;
 
@@ -65,40 +77,44 @@ abstract contract DeployAbstractScript is Test {
         internal
         pure
         virtual
-        returns (
-            address[] memory allowedAssets,
-            address[][] memory allowedSubvaultAssets,
-            address[] memory depositQueueAssets,
-            address[] memory redeemQueueAssets,
-            uint224[] memory allowedAssetsPrices
-        );
+        returns (address[] memory allowedAssets, uint256[] memory allowedAssetsPrices);
+
+    function getSubvaultParams()
+        internal
+        view
+        virtual
+        returns (IDeployVaultFactory.SubvaultParams[] memory subvaultParams);
+
+    function getQueues()
+        internal
+        virtual
+        returns (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit);
 
     function setUp() public virtual;
 
     function getSubvaultMerkleRoot(Vault vault, uint256 index) internal view virtual returns (bytes32 merkleRoot);
-
-    function makeInitialBaseAssetFunding() internal virtual;
 
     function _run() internal {
         setUp();
 
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         vm.startBroadcast(deployerPk);
-        /*
+
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
-        deployVault = new DeployVaultFactory(
+        defaultDepositHook = address($.redirectingDepositHook);
+        defaultRedeemHook = address($.basicRedeemHook);
+
+        /* deployVault = new IDeployVaultFactory(
             address($.vaultConfigurator),
             address($.verifierFactory),
             address($.redirectingDepositHook),
             address($.basicRedeemHook)
         ); */
 
-        DeployVaultFactory.DeployVaultConfig memory config = getConfig();
+        IDeployVaultFactory.DeployVaultConfig memory config = getConfig();
 
         if (vault == Vault(payable(address(0)))) {
-            makeInitialBaseAssetFunding();
-
             // step one: deploy vault with one queue for base asset, push report and make initial deposit
             vault = stepOne(config);
             vm.stopBroadcast();
@@ -112,9 +128,8 @@ abstract contract DeployAbstractScript is Test {
 
     /// @dev simulate the full deployment in one go
     function _simulate() internal {
-        DeployVaultFactory.DeployVaultConfig memory config = getConfig();
+        IDeployVaultFactory.DeployVaultConfig memory config = getConfig();
 
-        makeInitialBaseAssetFunding();
         Vault vault_ = stepOne(config);
         skip(1 seconds);
         SubvaultCalls[] memory calls = stepTwo(vault_);
@@ -128,7 +143,7 @@ abstract contract DeployAbstractScript is Test {
      *   - set assets at getAssetsWithPrices() and holders at getVaultRoleHolders()
      *   - set logic for merkle roots in getSubvaultMerkleRoot()
      */
-    function stepOne(DeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
+    function stepOne(IDeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
         vault = deployVault.deployVault(config);
         console2.log("Deployed vault at:", address(vault));
     }
@@ -138,9 +153,9 @@ abstract contract DeployAbstractScript is Test {
     *   - Vault vault is set to the deployed vault address
     */
     function stepTwo(Vault vault) internal virtual returns (SubvaultCalls[] memory calls) {
-        DeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(address(vault));
-        DeployVaultFactory.SubvaultRoot[] memory subvaultRoots =
-            new DeployVaultFactory.SubvaultRoot[](deployment.subvaults.length);
+        IDeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(address(vault));
+        IDeployVaultFactory.SubvaultRoot[] memory subvaultRoots =
+            new IDeployVaultFactory.SubvaultRoot[](deployment.subvaults.length);
 
         calls = new SubvaultCalls[](deployment.subvaults.length);
         for (uint256 i = 0; i < deployment.subvaults.length; i++) {
@@ -152,16 +167,12 @@ abstract contract DeployAbstractScript is Test {
         deployVault.finalizeDeployment(vault, subvaultRoots, holders);
     }
 
-    function getConfig() internal view returns (DeployVaultFactory.DeployVaultConfig memory config) {
-        (
-            address[] memory allowedAssets,
-            address[][] memory allowedSubvaultAssets, // per subvault
-            address[] memory depositQueueAssets,
-            address[] memory redeemQueueAssets,
-            uint224[] memory allowedAssetsPrices
-        ) = getAssetsWithPrices();
+    function getConfig() internal returns (IDeployVaultFactory.DeployVaultConfig memory config) {
+        (address[] memory allowedAssets, uint256[] memory allowedAssetsPrices) = getAssetsWithPrices();
 
-        config = DeployVaultFactory.DeployVaultConfig({
+        (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit) = getQueues();
+
+        config = IDeployVaultFactory.DeployVaultConfig({
             vaultName: vaultName,
             vaultSymbol: vaultSymbol,
             proxyAdmin: proxyAdmin,
@@ -170,7 +181,7 @@ abstract contract DeployAbstractScript is Test {
             oracleUpdater: oracleUpdater,
             curator: curator,
             pauser: pauser,
-            feeManagerParams: DeployVaultFactory.FeeManagerParams({
+            feeManagerParams: IDeployVaultFactory.FeeManagerParams({
                 owner: feeManagerOwner,
                 depositFeeD6: depositFeeD6,
                 redeemFeeD6: redeemFeeD6,
@@ -179,22 +190,48 @@ abstract contract DeployAbstractScript is Test {
             }),
             allowedAssets: allowedAssets,
             allowedAssetsPrices: allowedAssetsPrices,
-            allowedSubvaultAssets: allowedSubvaultAssets,
-            depositQueueAssets: depositQueueAssets,
-            redeemQueueAssets: redeemQueueAssets,
-            securityParams: securityParams
+            subvaultParams: getSubvaultParams(),
+            queues: queues,
+            securityParams: securityParams,
+            defaultDepositHook: defaultDepositHook,
+            defaultRedeemHook: defaultRedeemHook,
+            queueLimit: queueLimit
         });
 
         validateDeployConfig(config);
     }
 
+    function getQueueAssets()
+        internal
+        returns (address[] memory depositQueueAssets, address[] memory redeemQueueAssets)
+    {
+        (IDeployVaultFactory.QueueParams[] memory queues,) = getQueues();
+        depositQueueAssets = new address[](queues.length);
+        redeemQueueAssets = new address[](queues.length);
+        uint256 depositIndex;
+        uint256 redeemIndex;
+        for (uint256 i = 0; i < queues.length; i++) {
+            if (queues[i].isDeposit == 1) {
+                depositQueueAssets[depositIndex++] = queues[i].asset;
+            } else {
+                redeemQueueAssets[redeemIndex++] = queues[i].asset;
+            }
+        }
+
+        assembly {
+            mstore(depositQueueAssets, depositIndex)
+            mstore(redeemQueueAssets, redeemIndex)
+        }
+    }
+
     function checkDeployment(
         address vaultAddress,
         SubvaultCalls[] memory calls,
-        DeployVaultFactory.DeployVaultConfig memory config,
+        IDeployVaultFactory.DeployVaultConfig memory config,
         ProtocolDeployment memory $
     ) internal {
-        DeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(vaultAddress);
+        IDeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(vaultAddress);
+        (address[] memory depositQueueAssets, address[] memory redeemQueueAssets) = getQueueAssets();
 
         $.deployer = address(deployVault);
         AcceptanceLibrary.runProtocolDeploymentChecks($);
@@ -208,8 +245,8 @@ abstract contract DeployAbstractScript is Test {
                 depositHook: address($.redirectingDepositHook),
                 redeemHook: address($.basicRedeemHook),
                 assets: config.allowedAssets,
-                depositQueueAssets: config.depositQueueAssets,
-                redeemQueueAssets: config.redeemQueueAssets,
+                depositQueueAssets: depositQueueAssets,
+                redeemQueueAssets: redeemQueueAssets,
                 subvaultVerifiers: deployment.verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(deployment.timelockController))),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin)),
@@ -219,7 +256,7 @@ abstract contract DeployAbstractScript is Test {
     }
 
     function logDeployment(address vault) internal view {
-        DeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(vault);
+        IDeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(vault);
         console2.log("-------------------------------------------------------------");
         console2.log("Deployment details %s (%s) chain ID %s", vaultName, vaultSymbol, block.chainid);
         console2.log("-------------------------------------------------------------");
@@ -258,7 +295,7 @@ abstract contract DeployAbstractScript is Test {
         return IERC20Metadata(token).symbol();
     }
 
-    function validateDeployConfig(DeployVaultFactory.DeployVaultConfig memory $) public pure {
+    function validateDeployConfig(IDeployVaultFactory.DeployVaultConfig memory $) public view {
         if (bytes($.vaultName).length == 0) {
             revert ZeroLength();
         }
@@ -269,7 +306,7 @@ abstract contract DeployAbstractScript is Test {
         _checkAssets($);
     }
 
-    function _checkAddressRoles(DeployVaultFactory.DeployVaultConfig memory $) internal pure {
+    function _checkAddressRoles(IDeployVaultFactory.DeployVaultConfig memory $) internal pure {
         if ($.proxyAdmin == address(0)) {
             revert ZeroAddress();
         }
@@ -293,7 +330,7 @@ abstract contract DeployAbstractScript is Test {
         }
     }
 
-    function _checkAssets(DeployVaultFactory.DeployVaultConfig memory $) internal pure {
+    function _checkAssets(IDeployVaultFactory.DeployVaultConfig memory $) internal view {
         if ($.allowedAssets.length == 0) {
             revert ZeroLength();
         }
@@ -302,57 +339,43 @@ abstract contract DeployAbstractScript is Test {
                 revert ZeroAddress();
             }
         }
-        if ($.depositQueueAssets.length == 0) {
+        if ($.queues.length == 0) {
             revert ZeroLength();
         }
-        if ($.redeemQueueAssets.length == 0) {
-            revert ZeroLength();
-        }
-        for (uint256 i = 0; i < $.depositQueueAssets.length; i++) {
+
+        for (uint256 i = 0; i < $.queues.length; i++) {
             bool found;
             for (uint256 j = 0; j < $.allowedAssets.length; j++) {
-                if ($.depositQueueAssets[i] == $.allowedAssets[j]) {
+                if ($.queues[i].asset == $.allowedAssets[j]) {
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                revert AssetNotAllowed($.depositQueueAssets[i]);
-            }
-        }
-        for (uint256 i = 0; i < $.redeemQueueAssets.length; i++) {
-            bool found;
-            for (uint256 j = 0; j < $.allowedAssets.length; j++) {
-                if ($.redeemQueueAssets[i] == $.allowedAssets[j]) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                revert AssetNotAllowed($.redeemQueueAssets[i]);
+                revert AssetNotAllowed($.queues[i].asset);
             }
         }
 
-        if ($.allowedSubvaultAssets.length == 0) {
+        if ($.subvaultParams.length == 0) {
             revert ZeroLength();
         }
 
-        for (uint256 i = 0; i < $.allowedSubvaultAssets.length; i++) {
-            if ($.allowedSubvaultAssets[i].length == 0) {
+        for (uint256 i = 0; i < $.subvaultParams.length; i++) {
+            if ($.subvaultParams[i].assets.length == 0) {
                 revert ZeroLength();
             }
         }
-        for (uint256 i = 0; i < $.allowedSubvaultAssets.length; i++) {
-            for (uint256 j = 0; j < $.allowedSubvaultAssets[i].length; j++) {
+        for (uint256 i = 0; i < $.subvaultParams.length; i++) {
+            for (uint256 j = 0; j < $.subvaultParams[i].assets.length; j++) {
                 bool found;
                 for (uint256 k = 0; k < $.allowedAssets.length; k++) {
-                    if ($.allowedSubvaultAssets[i][j] == $.allowedAssets[k]) {
+                    if ($.subvaultParams[i].assets[j] == $.allowedAssets[k]) {
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
-                    revert AssetNotAllowed($.allowedSubvaultAssets[i][j]);
+                    revert AssetNotAllowed($.subvaultParams[i].assets[j]);
                 }
             }
         }
@@ -370,7 +393,7 @@ abstract contract DeployAbstractScript is Test {
     function getVaultDeployment(address vaultAddress)
         internal
         view
-        returns (DeployVaultFactory.VaultDeployment memory deployment)
+        returns (IDeployVaultFactory.VaultDeployment memory deployment)
     {
         Vault vault = Vault(payable(vaultAddress));
         deployment.vault = vault;

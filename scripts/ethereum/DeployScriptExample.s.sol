@@ -4,12 +4,16 @@ pragma solidity 0.8.25;
 import "../common/ArraysLibrary.sol";
 import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
+import "scripts/common/DeployVaultFactory.sol";
 
 contract Deploy is DeployAbstractScript {
     bytes32 public testWalletPk = keccak256("testWalletPk");
     address public testWallet = vm.addr(uint256(testWalletPk));
 
     function run() external {
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+
+        deployVault = new DeployVaultFactory(address($.vaultConfigurator), address($.verifierFactory));
         _simulate();
         revert("ok");
         /*
@@ -52,11 +56,64 @@ contract Deploy is DeployAbstractScript {
             depositInterval: 1 hours,
             redeemInterval: 2 days
         });
+
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+
+        /// @dev fill default hooks
+        defaultDepositHook = address($.redirectingDepositHook);
+        defaultRedeemHook = address($.basicRedeemHook);
     }
 
-    // fund deployVault contract to be able to pay for initial deposit
-    function makeInitialBaseAssetFunding() internal override {
-        address(deployVault).call{value: 1 gwei}("");
+    /// @dev fill in subvault parameters
+    function getSubvaultParams()
+        internal
+        view
+        override
+        returns (IDeployVaultFactory.SubvaultParams[] memory subvaultParams)
+    {
+        subvaultParams = new IDeployVaultFactory.SubvaultParams[](2);
+
+        subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH));
+        subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
+        subvaultParams[0].verifierVersion = 0;
+        subvaultParams[0].limit = type(int256).max / 2;
+
+        subvaultParams[1].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.STETH, Constants.WSTETH));
+        subvaultParams[1].version = uint256(SubvaultVersion.DEFAULT);
+        subvaultParams[1].verifierVersion = 0;
+        subvaultParams[1].limit = type(int256).max / 2;
+    }
+
+    /// @dev fill in queue parameters
+    function getQueues()
+        internal
+        override
+        returns (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit)
+    {
+        address[] memory depositQueueAssets =
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.STETH, Constants.WSTETH));
+        address[] memory redeemQueueAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH));
+
+        queues = new IDeployVaultFactory.QueueParams[](depositQueueAssets.length + redeemQueueAssets.length);
+        for (uint256 i = 0; i < depositQueueAssets.length; i++) {
+            queues[i] = IDeployVaultFactory.QueueParams({
+                version: uint256(QueueVersion.DEFAULT),
+                isDeposit: 1,
+                asset: depositQueueAssets[i],
+                data: ""
+            });
+        }
+        for (uint256 i = 0; i < redeemQueueAssets.length; i++) {
+            queues[depositQueueAssets.length + i] = IDeployVaultFactory.QueueParams({
+                version: uint256(QueueVersion.DEFAULT),
+                isDeposit: 0,
+                asset: redeemQueueAssets[i],
+                data: ""
+            });
+        }
+
+        /// @dev fill, override if needed
+        queueLimit = queues.length;
     }
 
     /// @dev fill in allowed assets/base asset and subvault assets
@@ -64,26 +121,12 @@ contract Deploy is DeployAbstractScript {
         internal
         pure
         override
-        returns (
-            address[] memory allowedAssets,
-            address[][] memory allowedSubvaultAssets,
-            address[] memory depositQueueAssets,
-            address[] memory redeemQueueAssets,
-            uint224[] memory allowedAssetsPrices
-        )
+        returns (address[] memory allowedAssets, uint256[] memory allowedAssetsPrices)
     {
         allowedAssets =
             ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.STETH, Constants.WSTETH));
 
-        // length of allowedSubvaultAssets should match the number of subvaults
-        allowedSubvaultAssets = new address[][](2);
-        allowedSubvaultAssets[0] = ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH));
-        allowedSubvaultAssets[1] = ArraysLibrary.makeAddressArray(abi.encode(Constants.STETH, Constants.WSTETH));
-        depositQueueAssets =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.STETH, Constants.WSTETH));
-        redeemQueueAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH));
-
-        allowedAssetsPrices = new uint224[](allowedAssets.length);
+        allowedAssetsPrices = new uint256[](allowedAssets.length);
         allowedAssetsPrices[0] = 1 ether;
         allowedAssetsPrices[1] = 1 ether;
         allowedAssetsPrices[2] = 1 ether;
