@@ -85,7 +85,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(WETH).approve( ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
+        "description": "IERC20(WETH).approve(ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
         "abi": {
           "inputs": [
             {
@@ -117,7 +117,7 @@
         },
         "innerParameters": {
           "to": "0x17aeabfd3cb214a8757bf07d2e248d526c8c4809",
-          "value": "any"
+          "amount": "any"
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad62b375a01ecdbeba2bc7e17ce17ce4b28b4a85fcb7b8ef43db8e60bd305a3d4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -131,7 +131,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -171,7 +171,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -211,7 +211,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(wstETH).approve( ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
+        "description": "IERC20(wstETH).approve(ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
         "abi": {
           "inputs": [
             {
@@ -243,7 +243,7 @@
         },
         "innerParameters": {
           "to": "0x17aeabfd3cb214a8757bf07d2e248d526c8c4809",
-          "value": "any"
+          "amount": "any"
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6bea9d49a1c0057389f47fa82f6cb57f637f221d5932a82567bbf5f56517cc4a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -257,7 +257,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -297,7 +297,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -417,7 +417,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(WETH).approve( ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
+        "description": "IERC20(WETH).approve(ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
         "abi": {
           "inputs": [
             {
@@ -449,7 +449,7 @@
         },
         "innerParameters": {
           "to": "0x17aeabfd3cb214a8757bf07d2e248d526c8c4809",
-          "value": "any"
+          "amount": "any"
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20addd2f3355adea283a6ac8bb12f7421b4b3e974970ba52878d2c483d24fd32dc1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -463,7 +463,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -503,7 +503,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(WETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -543,7 +543,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(wstETH).approve( ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
+        "description": "IERC20(wstETH).approve(ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809), any)",
         "abi": {
           "inputs": [
             {
@@ -575,7 +575,7 @@
         },
         "innerParameters": {
           "to": "0x17aeabfd3cb214a8757bf07d2e248d526c8c4809",
-          "value": "any"
+          "amount": "any"
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a21034c28ccadaedfc875276fa356521912edeebbb0a6208a5df2bc91e3710fc9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -589,7 +589,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pushAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -629,7 +629,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(wstETH, msg.value)",
+        "description": "ISwapModule(0x17aeabfd3cb214a8757bf07d2e248d526c8c4809).pullAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",

@@ -32,9 +32,21 @@ contract Deploy is Script {
     address public pauser1 = 0xFeCeb0255a4B7Cd05995A7d617c0D52c994099CF;
     address public pauser2 = 0x8b7C1b52e2d606a526abD73f326c943c75e45Bd3;
 
+    function _upgradePermissions(uint256 deployerPk) internal {
+        Vault vault = Vault(payable(0x2669a8B27B6f957ddb92Dc0ebdec1f112E6079E4));
+        _createCowswapVerifier(vault.subvaultAt(0), 0x17aeAbfD3cB214A8757bF07D2E248d526c8C4809);
+        _createStrETHVerifier(vault.subvaultAt(1));
+        _createOsETHVerifier(vault.subvaultAt(2));
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
+
+        if (true) {
+            _upgradePermissions(deployerPk);
+            revert("ok");
+        }
 
         vm.startBroadcast(deployerPk);
 

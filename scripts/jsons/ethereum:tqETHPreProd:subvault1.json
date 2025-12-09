@@ -300,7 +300,7 @@
           "value": "0"
         },
         "innerParameters": {
-          "recipient": "0xcc69fb6345c33f90f128884d1fe8817fde123555",
+          "receiver": "0xcc69fb6345c33f90f128884d1fe8817fde123555",
           "timestamps": "[any]"
         }
       },
@@ -608,7 +608,7 @@
           "value": "0"
         },
         "innerParameters": {
-          "recipient": "0xcc69fb6345c33f90f128884d1fe8817fde123555",
+          "receiver": "0xcc69fb6345c33f90f128884d1fe8817fde123555",
           "timestamps": "[any]"
         }
       },
