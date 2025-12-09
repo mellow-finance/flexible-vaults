@@ -267,7 +267,7 @@ contract Deploy is Script {
             oracle.submitReports(reports);
             uint256 timestamp = oracle.getReport(Constants.USDC).timestamp;
             for (uint256 i = 0; i < reports.length; i++) {
-                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+                //oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
         }
 
@@ -295,7 +295,7 @@ contract Deploy is Script {
             })
         );
 
-        revert("ok");
+        //revert("ok");
     }
 
     function _getExpectedHolders(address timelockController)
