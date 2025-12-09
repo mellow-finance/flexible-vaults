@@ -40,8 +40,8 @@ contract Deploy is Script {
 
     address public curator = 0x6788c8ad65E85CCa7224a0B46D061EF7D81F9Da5;
 
-    address public feeManagerAdmin = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
-    address public treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
+    address public feeManagerAdmin = 0xB0eb0CB21B951a646Ec3723a5e130E5e8f8A32c7;
+    address public treasury = 0xB0eb0CB21B951a646Ec3723a5e130E5e8f8A32c7;
 
     address public swapModuleOracle = 0x5dad47A49558708173c2150B0D0652018842fa03;
 
@@ -50,8 +50,6 @@ contract Deploy is Script {
     address public constant termmaxMarket = 0x7fa18408f5D0528d1706B6138113BCA446131531; // reUSD/USDU
 
     function run() external {
-        updateMerkleRoot(0x483B00e3b34057D84CF4fF425eBFa7bAdA9f02de);
-        revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         deployer = vm.addr(deployerPk);
 
@@ -117,7 +115,7 @@ contract Deploy is Script {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "reUSD USD", "reUSDUSD"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(0), uint24(1e4)),
+            feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(2e5), uint24(5e3)),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
@@ -127,15 +125,15 @@ contract Deploy is Script {
                     suspiciousAbsoluteDeviation: 0.001 ether,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
-                    timeout: 1 minutes,
-                    depositInterval: 1 minutes,
-                    redeemInterval: 1 minutes
+                    timeout: 20 hours,
+                    depositInterval: 1 hours,
+                    redeemInterval: 2 days
                 }),
                 assets_
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 3,
+            queueLimit: 2,
             roleHolders: holders
         });
 
@@ -147,8 +145,7 @@ contract Deploy is Script {
 
         // queues setup
         vault.createQueue(0, true, proxyAdmin, Constants.USDC, new bytes(0));
-        vault.createQueue(0, false, proxyAdmin, Constants.USDC, new bytes(0));
-        vault.createQueue(0, false, proxyAdmin, Constants.REUSD, new bytes(0));
+        vault.createQueue(0, false, proxyAdmin, Constants.SUSDE, new bytes(0));
 
         // fee manager setup
         vault.feeManager().setBaseAsset(address(vault), Constants.USDC);
@@ -163,8 +160,8 @@ contract Deploy is Script {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             vault.createSubvault(0, proxyAdmin, verifiers[0]);
             bytes32 merkleRoot;
-            //(merkleRoot, calls[0]) = _createSubvault0Verifier(vault.subvaultAt(0));
-            //IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
+            (merkleRoot, calls[0]) = _createSubvault0Proofs(vault.subvaultAt(0));
+            IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
             riskManager.allowSubvaultAssets(vault.subvaultAt(0), assets_);
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         }
@@ -270,7 +267,7 @@ contract Deploy is Script {
             oracle.submitReports(reports);
             uint256 timestamp = oracle.getReport(Constants.USDC).timestamp;
             for (uint256 i = 0; i < reports.length; i++) {
-                //oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
             }
         }
 
@@ -290,7 +287,7 @@ contract Deploy is Script {
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
                 depositQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
-                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.REUSD)),
+                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.SUSDE)),
                 subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
@@ -298,7 +295,7 @@ contract Deploy is Script {
             })
         );
 
-        //revert("ok");
+        revert("ok");
     }
 
     function _getExpectedHolders(address timelockController)

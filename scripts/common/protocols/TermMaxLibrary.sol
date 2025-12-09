@@ -137,8 +137,9 @@ library TermMaxLibrary {
         );
         /// @dev borrow from router
         {
-            innerParameters = ParameterLibrary.build("subvault", Strings.toHexString($.subvault));
+            innerParameters = ParameterLibrary.build("recipient", Strings.toHexString($.subvault));
             innerParameters = innerParameters.add("market", Strings.toHexString($.market));
+            innerParameters = innerParameters.addAny("collInAmt");
             innerParameters = innerParameters.addAnyArray("orders", 1);
             innerParameters = innerParameters.addAnyArray("tokenAmtsWantBuy", 1);
             innerParameters = innerParameters.addAny("maxDebtAmt");
