@@ -531,7 +531,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(sUSDe).approve( ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576), any)",
+        "description": "IERC20(sUSDe).approve( ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8), any)",
         "abi": {
           "inputs": [
             {
@@ -562,7 +562,7 @@
           "value": "0"
         },
         "innerParameters": {
-          "to": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "to": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "any"
         }
       },
@@ -577,7 +577,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576).pushAssets(sUSDe, msg.value)",
+        "description": "ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8).pushAssets(sUSDe, msg.value)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -598,7 +598,7 @@
         },
         "parameters": {
           "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
-          "target": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "target": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "0"
         },
         "innerParameters": {
@@ -617,7 +617,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576).pullAssets(sUSDe, msg.value)",
+        "description": "ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8).pullAssets(sUSDe, msg.value)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -638,7 +638,7 @@
         },
         "parameters": {
           "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
-          "target": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "target": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "0"
         },
         "innerParameters": {
@@ -658,7 +658,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(USDC).approve( ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576), any)",
+        "description": "IERC20(USDC).approve( ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8), any)",
         "abi": {
           "inputs": [
             {
@@ -689,7 +689,7 @@
           "value": "0"
         },
         "innerParameters": {
-          "to": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "to": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "any"
         }
       },
@@ -705,7 +705,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576).pushAssets(USDC, msg.value)",
+        "description": "ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8).pushAssets(USDC, msg.value)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -726,7 +726,7 @@
         },
         "parameters": {
           "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
-          "target": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "target": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "0"
         },
         "innerParameters": {
@@ -746,7 +746,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576).pullAssets(USDC, msg.value)",
+        "description": "ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8).pullAssets(USDC, msg.value)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -767,7 +767,7 @@
         },
         "parameters": {
           "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
-          "target": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "target": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "0"
         },
         "innerParameters": {
@@ -787,7 +787,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(USDU).approve( ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576), any)",
+        "description": "IERC20(USDU).approve( ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8), any)",
         "abi": {
           "inputs": [
             {
@@ -818,7 +818,7 @@
           "value": "0"
         },
         "innerParameters": {
-          "to": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "to": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "any"
         }
       },
@@ -833,7 +833,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576).pushAssets(USDU, msg.value)",
+        "description": "ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8).pushAssets(USDU, msg.value)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -854,7 +854,7 @@
         },
         "parameters": {
           "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
-          "target": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "target": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "0"
         },
         "innerParameters": {
@@ -874,7 +874,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0x6a152bd8a7a2968d18dbde1aebc7125c80d71576).pullAssets(USDU, msg.value)",
+        "description": "ISwapModule(0x456F0826f9107900C2338eF17a7A81acDc710FD8).pullAssets(USDU, msg.value)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -895,7 +895,7 @@
         },
         "parameters": {
           "caller": "0x6788c8ad65e85cca7224a0b46d061ef7d81f9da5",
-          "target": "0x6a152bd8a7a2968d18dbde1aebc7125c80d71576",
+          "target": "0x456F0826f9107900C2338eF17a7A81acDc710FD8",
           "value": "0"
         },
         "innerParameters": {
