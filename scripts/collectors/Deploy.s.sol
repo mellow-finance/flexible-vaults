@@ -7,6 +7,7 @@ import "./defi/CustomOracle.sol";
 import "./defi/protocols/AaveCollector.sol";
 import "./defi/protocols/ERC20Collector.sol";
 import "forge-std/Script.sol";
+import "forge-std/Test.sol";
 
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants as EthereumConstants} from "../ethereum/Constants.sol";
@@ -31,7 +32,7 @@ import {rsETHOracle} from "./oracles/custom/rsETHOracle.sol";
 import {rstETHOracle} from "./oracles/custom/rstETHOracle.sol";
 import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
 
-contract Deploy is Script {
+contract Deploy is Script, Test {
     function _deployStrETHCustomCollector() internal {
         strETHCustomOracle customOracle =
             new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
@@ -75,8 +76,6 @@ contract Deploy is Script {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
-
-        _deployStrETHCustomCollector();
 
         revert("ok");
     }
