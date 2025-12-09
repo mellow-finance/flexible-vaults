@@ -14,3 +14,13 @@ contract UsdEthOracle is ICustomPriceOracle {
         return Math.mulDiv(1 ether, 2 ** 96, priceD8);
     }
 }
+
+contract UsdEthOracleEthereum is ICustomPriceOracle {
+    // ethereum
+    address public constant aggregatorV3 = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419; // ETH/USD
+
+    function priceX96() external view returns (uint256) {
+        uint256 priceD8 = uint256(IAggregatorV3(aggregatorV3).latestAnswer());
+        return Math.mulDiv(10**8, 2 ** 96, priceD8); 
+    }
+}
