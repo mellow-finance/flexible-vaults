@@ -6,6 +6,8 @@ import "forge-std/Script.sol";
 
 import "@openzeppelin/contracts/utils/Create2.sol";
 
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 contract Deploy is Script {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;

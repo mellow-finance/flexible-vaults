@@ -158,7 +158,7 @@ library CoreVaultLibrary {
             );
 
             innerParameters =
-                ParameterLibrary.build("recipient", Strings.toHexString($.subvault)).add("timestamps", "[any]");
+                ParameterLibrary.build("receiver", Strings.toHexString($.subvault)).add("timestamps", "[any]");
             descriptions[index++] = JsonLibrary.toJson(
                 string(abi.encodePacked("RedeemQueue(", symbol, ").claim(subvault, [antInt32])")),
                 ABILibrary.getABI(IRedeemQueue.claim.selector),

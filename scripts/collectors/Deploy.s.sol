@@ -25,13 +25,25 @@ import {DistributionOracle} from "./defi/DistributionOracle.sol";
 
 import {Deployment} from "./defi/Deployment.sol";
 
+import {PriceOracle} from "./oracles/PriceOracle.sol";
+
+import {rsETHOracle} from "./oracles/custom/rsETHOracle.sol";
+import {rstETHOracle} from "./oracles/custom/rstETHOracle.sol";
+import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
+
 contract Deploy is Script {
     function _deployStrETHCustomCollector() internal {
-        strETHCustomOracle customOracle = new strETHCustomOracle();
-        customOracle.stateOverrides();
+        strETHCustomOracle customOracle =
+            new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
+        (address[] memory contracts, bytes[] memory bytecodes) = customOracle.stateOverrides();
 
-        uint256 tvl = customOracle.tvl(EthereumConstants.STRETH, EthereumConstants.WETH);
-        console2.log("tvl:", tvl);
+        for (uint256 i = 0; i < contracts.length; i++) {
+            string memory line =
+                string(abi.encodePacked('"', vm.toString(contracts[i]), '": "', vm.toString(bytecodes[i]), '",'));
+            console2.log(line);
+        }
+        // uint256 tvl = customOracle.tvl(EthereumConstants.STRETH, EthereumConstants.WETH);
+        // console2.log("tvl:", tvl);
     }
 
     function _deployRstETHPlusCustomCollector() internal {
@@ -60,6 +72,12 @@ contract Deploy is Script {
     }
 
     function run() external {
-        _deployMVTCustomCollector();
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+        vm.startBroadcast(deployerPk);
+
+        _deployStrETHCustomCollector();
+
+        revert("ok");
     }
 }

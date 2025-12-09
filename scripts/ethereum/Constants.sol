@@ -32,7 +32,7 @@ library Constants {
     address public constant REUSD_ICL = 0x4691C475bE804Fa85f91c2D6D0aDf03114de3093; // InsuranceCapitalLayer
 
     address public constant USR = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
-    address public constant STUSR = 0x6c8984bc7DBBeDAf4F6b2FD766f16eBB7d10AAb4;
+    address public constant WSTUSR = 0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055;
     address public constant USR_REQUEST_MANAGER = 0xAC85eF29192487E0a109b7f9E40C267a9ea95f2e;
 
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
@@ -59,10 +59,20 @@ library Constants {
     address public constant ARBITRUM_L1_TOKEN_GATEWAY_WSTETH = 0x0F25c1DC2a9922304f2eac71DCa9B07E310e8E5a;
 
     address public constant STRETH_PLASMA_SUBVAULT_0 = 0xbbF9400C09B0F649F3156989F1CCb9c016f943bb;
+
     address public constant CCIP_PLASMA_ROUTER = 0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3;
     uint64 public constant CCIP_PLASMA_CHAIN_SELECTOR = 9335212494177455608;
     address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
     uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
+
+    uint32 public constant LAYER_ZERO_PLASMA_EID = 30383;
+    uint32 public constant LAYER_ZERO_ETHEREUM_EID = 30101;
+
+    address public constant ETHEREUM_USDT_OFT_ADAPTER = 0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee;
+    address public constant PLASMA_USDT_OFT_ADAPTER = 0x02ca37966753bDdDf11216B73B16C1dE756A7CF9;
+
+    address public constant ETHEREUM_WSTUSR_OFT_ADAPTER = 0xab17c1fE647c37ceb9b96d1c27DD189bf8451978;
+    address public constant PLASMA_WSTUSR_OFT_ADAPTER = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
 
     address public constant STRETH = 0x277C6A642564A91ff78b008022D65683cEE5CCC5;
     address public constant STRETH_DEPOSIT_QUEUE_ETH = 0xE707321B887b9da133AC5fCc5eDB78Ab177a152D;
@@ -94,6 +104,10 @@ library Constants {
     address public constant CAP_LENDER = 0x15622c3dbbc5614E6DFa9446603c1779647f01FC;
     address public constant CAP_NETWORK = 0x98e52Ea7578F2088c152E81b17A9a459bF089f2a;
     address public constant CAP_FACTORY = 0x0B92300C8494833E504Ad7d36a301eA80DbBAE2e;
+
+    address public constant USDT_CHAINLINK_ORACLE = 0x3E7d1eAB13ad0104d2750B8863b489D65364e32D;
+    address public constant USDC_CHAINLINK_ORACLE = 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6;
+    address public constant USR_CHAINLINK_ORACLE = 0x34ad75691e25A8E9b681AAA85dbeB7ef6561B42c;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -410,31 +424,31 @@ library Constants {
         $.timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
         $.timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser));
 
-        address[] memory subvaults = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                0x90c983DC732e65DB6177638f0125914787b8Cb78,
-                0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,
-                0x181cB55f872450D16aE858D532B4e35e50eaA76D,
-                0x9938A09FeA37bA681A1Bd53D33ddDE2dEBEc1dA0
-            )
-        );
+        // address[] memory subvaults = ArraysLibrary.makeAddressArray(
+        //     abi.encode(
+        //         0x90c983DC732e65DB6177638f0125914787b8Cb78,
+        //         0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,
+        //         0x181cB55f872450D16aE858D532B4e35e50eaA76D,
+        //         0x9938A09FeA37bA681A1Bd53D33ddDE2dEBEc1dA0
+        //     )
+        // );
 
         $.calls = new SubvaultCalls[](4);
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator);
-            $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
-        }
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault1Proofs(curator, subvaults[1]);
-            $.calls[1] = strETHLibrary.getSubvault1SubvaultCalls(curator, subvaults[1], leaves);
-        }
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault2Proofs(curator, subvaults[2]);
-            $.calls[2] = strETHLibrary.getSubvault2SubvaultCalls(curator, subvaults[2], leaves);
-        }
-        {
-            (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault3Proofs(curator, subvaults[3]);
-            $.calls[3] = strETHLibrary.getSubvault3SubvaultCalls(curator, subvaults[3], leaves);
-        }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator, subvaults[0], swapModules[0]);
+        //     $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
+        // }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault1Proofs(curator, subvaults[1], address(0));
+        //     $.calls[1] = strETHLibrary.getSubvault1SubvaultCalls(curator, subvaults[1], leaves);
+        // }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault2Proofs(curator, subvaults[2], swapModules[3]);
+        //     $.calls[2] = strETHLibrary.getSubvault2SubvaultCalls(curator, subvaults[2], leaves);
+        // }
+        // {
+        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault3Proofs(curator, subvaults[3], swapModules[4]);
+        //     $.calls[3] = strETHLibrary.getSubvault3SubvaultCalls(curator, subvaults[3], leaves);
+        // }
     }
 }

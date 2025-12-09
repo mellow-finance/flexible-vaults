@@ -24,15 +24,17 @@ import "../common/ArraysLibrary.sol";
 
 contract Deploy is Script, Test {
     // Actors
-    address public proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
-    address public lazyVaultAdmin = 0xAbE20D266Ae54b9Ae30492dEa6B6407bF18fEeb5;
-    address public activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
-    address public oracleUpdater = 0xd27fFB15Dd00D5E52aC2BFE6d5AFD36caE850081;
-    address public curator = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;
-    address public treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
+    address public test = 0x28D55817f358F7BE7505C918DaeCaA86366403f5;
 
-    address public lidoPauser = 0xA916fD5252160A7E56A6405741De76dc0Da5A0Cd;
-    address public mellowPauser = 0xa6278B726d4AA09D14f9E820D7785FAd82E7196F;
+    address public proxyAdmin = test;
+    address public lazyVaultAdmin = test;
+    address public activeVaultAdmin = test;
+    address public oracleUpdater = test;
+    address public curator = test;
+    address public treasury = test;
+
+    address public lidoPauser = test;
+    address public mellowPauser = test;
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
@@ -47,7 +49,7 @@ contract Deploy is Script, Test {
 
         {
             address[] memory proposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
-            address[] memory executors = ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser));
+            address[] memory executors = ArraysLibrary.makeAddressArray(abi.encode(mellowPauser));
             timelockController = new TimelockController(0, proposers, executors, lazyVaultAdmin);
         }
         {
@@ -100,7 +102,7 @@ contract Deploy is Script, Test {
             proxyAdmin: proxyAdmin,
             vaultAdmin: lazyVaultAdmin,
             shareManagerVersion: 0,
-            shareManagerParams: abi.encode(bytes32(0), "Mellow stRATEGY", "strETH"),
+            shareManagerParams: abi.encode(bytes32(0), "EC-Test", "ECT"),
             feeManagerVersion: 0,
             feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
             riskManagerVersion: 0,
@@ -112,9 +114,9 @@ contract Deploy is Script, Test {
                     suspiciousAbsoluteDeviation: 0.001 ether,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
-                    timeout: 20 hours,
+                    timeout: 1 hours,
                     depositInterval: 1 hours,
-                    redeemInterval: 2 days
+                    redeemInterval: 1 hours
                 }),
                 assets_
             ),
@@ -312,42 +314,42 @@ contract Deploy is Script, Test {
             reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
-            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
-            for (uint256 i = 0; i < reports.length; i++) {
-                oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
-            }
+            // uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
+            // for (uint256 i = 0; i < reports.length; i++) {
+            //     oracle.acceptReport(reports[i].asset, reports[i].priceD18, uint32(timestamp));
+            // }
         }
 
-        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        // vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        // vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
-        IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 0.001 ether}(
-            0.001 ether, address(0), new bytes32[](0)
-        );
+        // IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 0.001 ether}(
+        //     0.001 ether, address(0), new bytes32[](0)
+        // );
         vm.stopBroadcast();
-        AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
-        AcceptanceLibrary.runVaultDeploymentChecks(
-            Constants.protocolDeployment(),
-            VaultDeployment({
-                vault: vault,
-                calls: calls,
-                initParams: initParams,
-                holders: _getExpectedHolders(address(timelockController)),
-                depositHook: address($.redirectingDepositHook),
-                redeemHook: address($.basicRedeemHook),
-                assets: assets_,
-                depositQueueAssets: ArraysLibrary.makeAddressArray(
-                    abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH)
-                ),
-                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
-                subvaultVerifiers: verifiers,
-                timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
-                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
-                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser))
-            })
-        );
+        // AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
+        // AcceptanceLibrary.runVaultDeploymentChecks(
+        //     Constants.protocolDeployment(),
+        //     VaultDeployment({
+        //         vault: vault,
+        //         calls: calls,
+        //         initParams: initParams,
+        //         holders: _getExpectedHolders(address(timelockController)),
+        //         depositHook: address($.redirectingDepositHook),
+        //         redeemHook: address($.basicRedeemHook),
+        //         assets: assets_,
+        //         depositQueueAssets: ArraysLibrary.makeAddressArray(
+        //             abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH)
+        //         ),
+        //         redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+        //         subvaultVerifiers: verifiers,
+        //         timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
+        //         timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
+        //         timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(mellowPauser))
+        //     })
+        // );
 
-        revert("ok");
+        // revert("ok");
     }
 
     function _getExpectedHolders(address timelockController)
@@ -398,7 +400,7 @@ contract Deploy is Script, Test {
         string[] memory descriptions = strETHLibrary.getSubvault0Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = strETHLibrary.getSubvault0Proofs(curator, subvault, swapModule);
-        ProofLibrary.storeProofs("ethereum:strETH:subvault0", merkleRoot, leaves, descriptions);
+        ProofLibrary.storeProofs("ethereum:ECT:subvault0", merkleRoot, leaves, descriptions);
         calls = strETHLibrary.getSubvault0SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
@@ -410,7 +412,7 @@ contract Deploy is Script, Test {
         string[] memory descriptions = strETHLibrary.getSubvault1Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = strETHLibrary.getSubvault1Proofs(curator, subvault, swapModule);
-        ProofLibrary.storeProofs("ethereum:strETH:subvault1", merkleRoot, leaves, descriptions);
+        ProofLibrary.storeProofs("ethereum:ECT:subvault1", merkleRoot, leaves, descriptions);
         calls = strETHLibrary.getSubvault1SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
@@ -421,7 +423,7 @@ contract Deploy is Script, Test {
         string[] memory descriptions = strETHLibrary.getSubvault2Descriptions(curator, subvault);
         IVerifier.VerificationPayload[] memory leaves2;
         (merkleRoot2, leaves2) = strETHLibrary.getSubvault2Proofs(curator, subvault);
-        ProofLibrary.storeProofs("ethereum:strETH:subvault2", merkleRoot2, leaves2, descriptions);
+        ProofLibrary.storeProofs("ethereum:ECT:subvault2", merkleRoot2, leaves2, descriptions);
         calls2 = strETHLibrary.getSubvault2SubvaultCalls(curator, subvault, leaves2);
     }
 
@@ -433,7 +435,7 @@ contract Deploy is Script, Test {
         string[] memory descriptions = strETHLibrary.getSubvault3Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves3;
         (merkleRoot3, leaves3) = strETHLibrary.getSubvault3Proofs(curator, subvault, swapModule);
-        ProofLibrary.storeProofs("ethereum:strETH:subvault3", merkleRoot3, leaves3, descriptions);
+        ProofLibrary.storeProofs("ethereum:ECT:subvault3", merkleRoot3, leaves3, descriptions);
         calls3 = strETHLibrary.getSubvault3SubvaultCalls(curator, subvault, swapModule, leaves3);
     }
 
@@ -445,20 +447,8 @@ contract Deploy is Script, Test {
         string[] memory descriptions = strETHLibrary.getSubvault4Descriptions(curator, subvault, swapModule);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = strETHLibrary.getSubvault4Proofs(curator, subvault, swapModule);
-        ProofLibrary.storeProofs("ethereum:strETH:subvault4", merkleRoot, leaves, descriptions);
+        ProofLibrary.storeProofs("ethereum:ECT:subvault4", merkleRoot, leaves, descriptions);
         calls = strETHLibrary.getSubvault4SubvaultCalls(curator, subvault, swapModule, leaves);
-    }
-
-    function _createSubvault5Verifier(address subvault, address swapModule)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        console2.log("SwapModule 5: %s", swapModule);
-        string[] memory descriptions = strETHLibrary.getSubvault5Descriptions(curator, subvault, swapModule);
-        IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = strETHLibrary.getSubvault5Proofs(curator, subvault, swapModule);
-        ProofLibrary.storeProofs("ethereum:strETH:subvault5", merkleRoot, leaves, descriptions);
-        calls = strETHLibrary.getSubvault5SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
     function _routers() internal pure returns (address[5] memory result) {
@@ -485,10 +475,6 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule4(address subvault) internal returns (address swapModule) {
         return _deployLidoLeverageSwapModule(subvault);
-    }
-
-    function _deploySwapModule5(address subvault) internal returns (address swapModule) {
-        return _deployEthenaLeverageSwapModule(subvault);
     }
 
     function _deployLidoLeverageSwapModule(address subvault) internal returns (address) {

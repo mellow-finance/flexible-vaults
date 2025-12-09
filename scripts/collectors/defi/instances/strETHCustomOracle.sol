@@ -9,27 +9,32 @@ import "../protocols/ERC20Collector.sol";
 import "../../../common/ArraysLibrary.sol";
 import {Constants} from "../../../ethereum/Constants.sol";
 
+import {strETHCustomAaveOracle} from "../strETHCustomAaveOracle.sol";
+
 contract strETHCustomOracle {
     CustomOracle public immutable impl;
     CustomOracle public immutable customOracle;
     ERC20Collector public immutable erc20Collector;
     AaveCollector public immutable aaveCollector;
+    strETHCustomAaveOracle public immutable strETHOracle;
 
     function stateOverrides() public view returns (address[] memory contracts, bytes[] memory bytecodes) {
-        contracts =
-            ArraysLibrary.makeAddressArray(abi.encode(impl, customOracle, erc20Collector, aaveCollector, address(this)));
-        bytecodes = new bytes[](5);
+        contracts = ArraysLibrary.makeAddressArray(
+            abi.encode(impl, customOracle, erc20Collector, aaveCollector, strETHOracle, address(this))
+        );
+        bytecodes = new bytes[](6);
         bytecodes[0] = address(impl).code;
         bytecodes[1] = address(customOracle).code;
         bytecodes[2] = address(erc20Collector).code;
         bytecodes[3] = address(aaveCollector).code;
-        bytecodes[4] = address(this).code;
+        bytecodes[4] = address(strETHOracle).code;
+        bytecodes[5] = address(this).code;
     }
 
-    constructor() {
-        impl = new CustomOracle(Constants.AAVE_V3_ORACLE, Constants.WETH);
-
-        erc20Collector = new ERC20Collector();
+    constructor(address swapModuleFactory) {
+        strETHOracle = new strETHCustomAaveOracle();
+        impl = new CustomOracle(address(strETHOracle), Constants.WETH);
+        erc20Collector = new ERC20Collector(swapModuleFactory);
         aaveCollector = new AaveCollector();
 
         address[] memory protocols = new address[](4);
@@ -55,7 +60,8 @@ contract strETHCustomOracle {
                 Constants.USDT,
                 Constants.USDS,
                 Constants.USDE,
-                Constants.SUSDE
+                Constants.SUSDE,
+                Constants.WSTUSR
             )
         );
 
