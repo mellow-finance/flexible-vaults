@@ -2,7 +2,8 @@
 pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/governance/TimelockController.sol";
+
+import "scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
 import "src/vaults/VaultConfigurator.sol";
 
 interface IDeployVaultFactory {
@@ -57,12 +58,12 @@ interface IDeployVaultFactory {
         // Risk manager
         int256 riskManagerLimit;
         // Assets
-        address[] allowedAssets; // [0] is assumed to be the base asset
+        address[] allowedAssets;
         uint256[] allowedAssetsPrices;
         SubvaultParams[] subvaultParams;
         QueueParams[] queues;
         // security
-        bytes securityParamsEncoded; //IOracle.SecurityParams
+        IOracle.SecurityParams securityParams;
         address[] timelockProposers;
         address[] timelockExecutors;
         // other params can be added here as needed
@@ -75,19 +76,8 @@ interface IDeployVaultFactory {
         uint256 feeManagerVersion;
         uint256 riskManagerVersion;
         uint256 oracleVersion;
-    }
-
-    struct VaultDeployment {
-        Vault vault;
-        TimelockController timelockController;
-        IOracle oracle;
-        IShareManager shareManager;
-        IFeeManager feeManager;
-        IRiskManager riskManager;
-        address[] subvaults;
-        address[] verifiers;
-        address[] depositQueues;
-        address[] redeemQueues;
+        address timelockController;
+        address deployer;
     }
 
     /**
@@ -117,10 +107,5 @@ interface IDeployVaultFactory {
         view
         returns (VaultConfigurator.InitParams memory);
 
-    /**
-     * @notice Returns the TimelockController associated with a given Vault.
-     * @param vault The Vault to query.
-     * @return The TimelockController of the Vault.
-     */
-    function timelockControllers(address vault) external view returns (TimelockController);
+    function getRegistry() external view returns (IDeployVaultFactoryRegistry);
 }

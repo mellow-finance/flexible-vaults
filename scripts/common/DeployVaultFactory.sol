@@ -5,24 +5,26 @@ import "scripts/common/interfaces/IDeployVaultFactory.sol";
 
 import "src/vaults/Subvault.sol";
 
+import "./DeployVaultFactoryRegistry.sol";
 import "./Permissions.sol";
 import "./interfaces/Imports.sol";
 
 contract DeployVaultFactory is IDeployVaultFactory {
+    event VaultDeployed(address indexed vault, address indexed deployer);
+
     VaultConfigurator public vaultConfigurator;
     Factory public verifierFactory;
+    DeployVaultFactoryRegistry public registry;
 
-    mapping(address => TimelockController) public timelockControllers;
-    mapping(address => DeployVaultConfig) internal deployVaultConfig;
-    mapping(address => address) internal deployer;
-
-    constructor(address vaultConfigurator_, address verifierFactory_) {
-        if (vaultConfigurator_ == address(0) || verifierFactory_ == address(0)) {
+    constructor(address vaultConfigurator_, address verifierFactory_, address registry_) {
+        if (vaultConfigurator_ == address(0) || verifierFactory_ == address(0) || registry_ == address(0)) {
             revert ZeroAddress();
         }
 
         vaultConfigurator = VaultConfigurator(vaultConfigurator_);
         verifierFactory = Factory(verifierFactory_);
+        registry = DeployVaultFactoryRegistry(registry_);
+        registry.initialize(address(this));
     }
 
     /// @inheritdoc IDeployVaultFactory
@@ -54,27 +56,27 @@ contract DeployVaultFactory is IDeployVaultFactory {
         _pushReports(vault, $.allowedAssets, $.allowedAssetsPrices);
 
         // save config and allowed deployer for finalizeDeployment
-        deployVaultConfig[address(vault)] = $;
-        deployer[address(vault)] = msg.sender;
+        registry.saveVaultConfig(address(vault), msg.sender, $);
     }
 
     /// @inheritdoc IDeployVaultFactory
     function finalizeDeployment(Vault vault, SubvaultRoot[] memory subvaultRoots, Vault.RoleHolder[] memory holders)
         external
     {
-        bool isDeployed = address(timelockControllers[address(vault)]) != address(0);
-        if (isDeployed) {
+        address deployer = msg.sender;
+        
+        if (registry.isEntity(address(vault))) {
             revert AlreadyInitialized();
         }
 
-        DeployVaultConfig memory $ = deployVaultConfig[address(vault)];
+        DeployVaultConfig memory $ = registry.getDeployVaultConfig(address(vault));
         address baseAsset = $.allowedAssets[0];
 
         if (baseAsset == address(0)) {
             revert NotYetDeployed();
         }
 
-        if (msg.sender != deployer[address(vault)]) {
+        if (deployer != registry.getVaultDeployer(address(vault))) {
             revert Forbidden();
         }
 
@@ -82,31 +84,33 @@ contract DeployVaultFactory is IDeployVaultFactory {
         vault.feeManager().setBaseAsset(address(vault), baseAsset);
         Ownable(address(vault.feeManager())).transferOwnership($.feeManagerParams.owner);
 
-        // create the rest of the queues
+        // create all queues
         _createQueues(vault, $.proxyAdmin, $.queues);
 
         // initial price reports
         _pushReports(vault, $.allowedAssets, $.allowedAssetsPrices);
 
         // set actual security params
-        vault.oracle().setSecurityParams(abi.decode($.securityParamsEncoded, (IOracle.SecurityParams)));
+        vault.oracle().setSecurityParams($.securityParams);
 
         // set subvault merkle roots
         _setSubvaultRoots(vault, subvaultRoots);
 
         // emergency pause setup
         TimelockController timelockController = _scheduleEmergencyPauses(vault, $);
-        timelockControllers[address(vault)] = timelockController;
+        registry.setTimelockController(address(vault), address(timelockController));
 
         // give roles to actual vault role holders
         _transferRoleHolders(vault, holders);
 
-        delete deployVaultConfig[address(vault)];
+        registry.addDeployedVault(address(vault));
+
+        emit VaultDeployed(address(vault), deployer);
     }
 
     /// @inheritdoc IDeployVaultFactory
     function getInitVaultParams(DeployVaultConfig memory $) public view returns (VaultConfigurator.InitParams memory) {
-        return _getInitVaultParams($, abi.decode($.securityParamsEncoded, (IOracle.SecurityParams)));
+        return _getInitVaultParams($, $.securityParams);
     }
 
     function _getInitVaultParams(DeployVaultConfig memory $, IOracle.SecurityParams memory securityParams)
@@ -139,6 +143,10 @@ contract DeployVaultFactory is IDeployVaultFactory {
             /// @dev give full control to this for now
             roleHolders: _getTemporaryRoleHolders()
         });
+    }
+
+    function getRegistry() external view returns (IDeployVaultFactoryRegistry) {
+        return registry;
     }
 
     function _createVault(VaultConfigurator.InitParams memory initParams) internal returns (Vault vault) {
@@ -257,7 +265,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         uint256 index;
         address this_ = address(this);
         holders = new Vault.RoleHolder[](9);
-        holders[index++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, address(this));
+        holders[index++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, this_);
         holders[index++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, this_);
         holders[index++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, this_);
         holders[index++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, this_);
@@ -269,7 +277,8 @@ contract DeployVaultFactory is IDeployVaultFactory {
     }
 
     function _transferRoleHolders(Vault vault, Vault.RoleHolder[] memory holders) internal {
-        TimelockController timelockController = timelockControllers[address(vault)];
+        TimelockController timelockController =
+            TimelockController(payable(registry.getVaultTimelockController(address(vault))));
 
         // give roles to actual vault role holders
         for (uint256 i = 0; i < holders.length; i++) {

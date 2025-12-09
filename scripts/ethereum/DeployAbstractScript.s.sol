@@ -9,6 +9,7 @@ import "../common/AcceptanceLibrary.sol";
 import "./Constants.sol";
 
 import "scripts/common/interfaces/IDeployVaultFactory.sol";
+import "scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
 
 abstract contract DeployAbstractScript is Test {
     enum SubvaultVersion {
@@ -165,7 +166,8 @@ abstract contract DeployAbstractScript is Test {
     *   - Vault vault is set to the deployed vault address
     */
     function stepTwo(Vault vault) internal virtual returns (SubvaultCalls[] memory calls) {
-        IDeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(address(vault));
+        IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
+            deployVault.getRegistry().getVaultDeployment(address(vault));
         IDeployVaultFactory.SubvaultRoot[] memory subvaultRoots =
             new IDeployVaultFactory.SubvaultRoot[](deployment.subvaults.length);
 
@@ -207,7 +209,7 @@ abstract contract DeployAbstractScript is Test {
             allowedAssetsPrices: allowedAssetsPrices,
             subvaultParams: getSubvaultParams(),
             queues: queues,
-            securityParamsEncoded: abi.encode(securityParams),
+            securityParams: securityParams,
             defaultDepositHook: defaultDepositHook,
             defaultRedeemHook: defaultRedeemHook,
             queueLimit: queueLimit,
@@ -216,10 +218,12 @@ abstract contract DeployAbstractScript is Test {
             vaultVersion: vaultVersion,
             shareManagerVersion: shareManagerVersion,
             feeManagerVersion: feeManagerVersion,
-            oracleVersion: oracleVersion
+            oracleVersion: oracleVersion,
+            timelockController: address(0),
+            deployer: address(0)
         });
 
-        validateDeployConfig(config);
+        deployVault.getRegistry().validateDeployConfig(config);
     }
 
     function getQueueAssets()
@@ -251,7 +255,8 @@ abstract contract DeployAbstractScript is Test {
         IDeployVaultFactory.DeployVaultConfig memory config,
         ProtocolDeployment memory $
     ) internal {
-        IDeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(vaultAddress);
+        IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
+            deployVault.getRegistry().getVaultDeployment(vaultAddress);
         (address[] memory depositQueueAssets, address[] memory redeemQueueAssets) = getQueueAssets();
 
         $.deployer = address(deployVault);
@@ -277,7 +282,8 @@ abstract contract DeployAbstractScript is Test {
     }
 
     function logDeployment(address vault) internal view {
-        IDeployVaultFactory.VaultDeployment memory deployment = getVaultDeployment(vault);
+        IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
+            deployVault.getRegistry().getVaultDeployment(vault);
         console2.log("-------------------------------------------------------------");
         console2.log("Deployment details %s (%s) chain ID %s", vaultName, vaultSymbol, block.chainid);
         console2.log("-------------------------------------------------------------");
@@ -314,151 +320,5 @@ abstract contract DeployAbstractScript is Test {
             return "ETH";
         }
         return IERC20Metadata(token).symbol();
-    }
-
-    function validateDeployConfig(IDeployVaultFactory.DeployVaultConfig memory $) public view {
-        if (bytes($.vaultName).length == 0) {
-            revert ZeroLength();
-        }
-        if (bytes($.vaultSymbol).length == 0) {
-            revert ZeroLength();
-        }
-        _checkAddressRoles($);
-        _checkAssets($);
-    }
-
-    function _checkAddressRoles(IDeployVaultFactory.DeployVaultConfig memory $) internal pure {
-        if ($.proxyAdmin == address(0)) {
-            revert ZeroAddress();
-        }
-        if ($.lazyVaultAdmin == address(0)) {
-            revert ZeroAddress();
-        }
-        if ($.activeVaultAdmin == address(0)) {
-            revert ZeroAddress();
-        }
-        if ($.oracleUpdater == address(0)) {
-            revert ZeroAddress();
-        }
-        if ($.curator == address(0)) {
-            revert ZeroAddress();
-        }
-        if ($.pauser == address(0)) {
-            revert ZeroAddress();
-        }
-        if ($.feeManagerParams.owner == address(0)) {
-            revert ZeroAddress();
-        }
-    }
-
-    function _checkAssets(IDeployVaultFactory.DeployVaultConfig memory $) internal view {
-        if ($.allowedAssets.length == 0) {
-            revert ZeroLength();
-        }
-        for (uint256 i = 0; i < $.allowedAssets.length; i++) {
-            if ($.allowedAssets[i] == address(0)) {
-                revert ZeroAddress();
-            }
-        }
-        if ($.queues.length == 0) {
-            revert ZeroLength();
-        }
-
-        for (uint256 i = 0; i < $.queues.length; i++) {
-            bool found;
-            for (uint256 j = 0; j < $.allowedAssets.length; j++) {
-                if ($.queues[i].asset == $.allowedAssets[j]) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                revert AssetNotAllowed($.queues[i].asset);
-            }
-        }
-
-        if ($.subvaultParams.length == 0) {
-            revert ZeroLength();
-        }
-
-        for (uint256 i = 0; i < $.subvaultParams.length; i++) {
-            if ($.subvaultParams[i].assets.length == 0) {
-                revert ZeroLength();
-            }
-        }
-        for (uint256 i = 0; i < $.subvaultParams.length; i++) {
-            for (uint256 j = 0; j < $.subvaultParams[i].assets.length; j++) {
-                bool found;
-                for (uint256 k = 0; k < $.allowedAssets.length; k++) {
-                    if ($.subvaultParams[i].assets[j] == $.allowedAssets[k]) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    revert AssetNotAllowed($.subvaultParams[i].assets[j]);
-                }
-            }
-        }
-        if ($.allowedAssetsPrices.length != $.allowedAssets.length) {
-            revert LengthMismatch();
-        }
-
-        for (uint256 i = 0; i < $.allowedAssetsPrices.length; i++) {
-            if ($.allowedAssetsPrices[i] == 0) {
-                revert ZeroValue();
-            }
-        }
-    }
-
-    function getVaultDeployment(address vaultAddress)
-        internal
-        view
-        returns (IDeployVaultFactory.VaultDeployment memory deployment)
-    {
-        Vault vault = Vault(payable(vaultAddress));
-        deployment.vault = vault;
-        deployment.timelockController = deployVault.timelockControllers(address(vault));
-        deployment.oracle = vault.oracle();
-        deployment.shareManager = vault.shareManager();
-        deployment.feeManager = vault.feeManager();
-        deployment.riskManager = vault.riskManager();
-
-        uint256 subvaultsCount = vault.subvaults();
-        deployment.subvaults = new address[](subvaultsCount);
-        deployment.verifiers = new address[](subvaultsCount);
-        for (uint256 i = 0; i < subvaultsCount; i++) {
-            deployment.subvaults[i] = vault.subvaultAt(i);
-            deployment.verifiers[i] = address(Subvault(payable(deployment.subvaults[i])).verifier());
-        }
-
-        uint256 totalQueues;
-        for (uint256 i = 0; i < vault.getAssetCount(); i++) {
-            totalQueues += vault.getQueueCount(vault.assetAt(i));
-        }
-
-        address[] memory depositQueues = new address[](totalQueues);
-        address[] memory redeemQueues = new address[](totalQueues);
-
-        uint256 depositIndex;
-        uint256 redeemIndex;
-        for (uint256 i = 0; i < vault.getAssetCount(); i++) {
-            address asset = vault.assetAt(i);
-            uint256 queueCount = vault.getQueueCount(asset);
-            for (uint256 j = 0; j < queueCount; j++) {
-                address queue = vault.queueAt(asset, j);
-                if (vault.isDepositQueue(queue)) {
-                    depositQueues[depositIndex++] = queue;
-                } else {
-                    redeemQueues[redeemIndex++] = queue;
-                }
-            }
-        }
-        assembly {
-            mstore(depositQueues, depositIndex)
-            mstore(redeemQueues, redeemIndex)
-        }
-        deployment.depositQueues = depositQueues;
-        deployment.redeemQueues = redeemQueues;
     }
 }
