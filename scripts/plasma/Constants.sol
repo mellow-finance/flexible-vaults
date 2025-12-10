@@ -12,6 +12,7 @@ library Constants {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
+    address public constant XPL = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WXPL = 0x6100E367285b01F48D07953803A2d8dCA5D19873;
     address public constant WSTUSR = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
     address public constant USDT0 = 0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb;
@@ -20,7 +21,10 @@ library Constants {
 
     address public constant WSTETH_ETHEREUM = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
 
+    address public constant FLUID_VAULT_T1_RESOLVER = 0x704625f79c83c3e1828fbb732642d30eBc8663e6;
+    address public constant FLUID_WSTUSR_USDT0_EXCHANGE_ORACLE = 0x0eaA355bcD10ddDe3255911D1A234748a1043b0E;
     address public constant AAVE_V3_ORACLE = 0x33E0b3fc976DC9C516926BA48CfC0A9E10a2aAA5;
+    uint256 public constant STRETH_FLUID_WSTUSR_USDT0_NFT_ID = 2048;
 
     address public constant STRETH_ETHEREUM_SUBVAULT_0 = 0x90c983DC732e65DB6177638f0125914787b8Cb78;
     address public constant STRETH_ETHEREUM_SUBVAULT_5 = 0xECf3BDE9f50F71edE67E05050123b64b519DF55C;

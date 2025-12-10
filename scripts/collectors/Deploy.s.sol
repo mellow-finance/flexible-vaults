@@ -11,12 +11,13 @@ import "forge-std/Test.sol";
 
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants as EthereumConstants} from "../ethereum/Constants.sol";
-
 import {Constants as MonadConstants} from "../monad/Constants.sol";
+import {Constants as PlasmaConstants} from "../plasma/Constants.sol";
 
 import {MVTCustomOracle} from "./defi/instances/MVTCustomOracle.sol";
 import {rstETHPlusCustomOracle} from "./defi/instances/rstETHPlusCustomOracle.sol";
 import {strETHCustomOracle} from "./defi/instances/strETHCustomOracle.sol";
+import {strETHPlasmaCustomOracle} from "./defi/instances/strETHPlasmaCustomOracle.sol";
 import {tqETHCustomOracle} from "./defi/instances/tqETHCustomOracle.sol";
 
 import {CoreVaultsCollector} from "./defi/protocols/CoreVaultsCollector.sol";
@@ -47,6 +48,21 @@ contract Deploy is Script, Test {
         // console2.log("tvl:", tvl);
     }
 
+    function _deployStrETHPlasmaCustomCollector() internal {
+        strETHPlasmaCustomOracle customOracle =
+            new strETHPlasmaCustomOracle(address(PlasmaConstants.protocolDeployment().swapModuleFactory));
+        // (address[] memory contracts, bytes[] memory bytecodes) = customOracle.stateOverrides();
+
+        // for (uint256 i = 0; i < contracts.length; i++) {
+        //     string memory line =
+        //         string(abi.encodePacked('"', vm.toString(contracts[i]), '": "', vm.toString(bytecodes[i]), '",'));
+        //     console2.log(line);
+        // }
+        // uint256 tvl =
+        customOracle.getDistributions(PlasmaConstants.STRETH, PlasmaConstants.WETH);
+        // console2.log("tvl:", tvl);
+    }
+
     function _deployRstETHPlusCustomCollector() internal {
         rstETHPlusCustomOracle customOracle = new rstETHPlusCustomOracle(0x9aDadbFa5A6dA138E419Bc2fACb42364870bA8dC);
         customOracle.stateOverrides();
@@ -74,8 +90,10 @@ contract Deploy is Script, Test {
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
+        // address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
+
+        _deployStrETHPlasmaCustomCollector();
 
         revert("ok");
     }
