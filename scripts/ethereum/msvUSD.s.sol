@@ -7,6 +7,7 @@ import "forge-std/Test.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 
+import "../../src/oracles/OracleSubmitter.sol";
 import "../../src/vaults/Subvault.sol";
 import "../../src/vaults/VaultConfigurator.sol";
 
@@ -29,11 +30,24 @@ contract Deploy is Script, Test {
 
     address public pauser = 0x2EE0AB05EB659E0681DC5f2EabFf1F4D284B3Ef7;
 
+    function _x() internal {
+        OracleSubmitter submitter = new OracleSubmitter(
+            lazyVaultAdmin, oracleUpdater, activeVaultAdmin, 0xccB10707cc3105178CBef8ee5b7DC84D5d1b277F
+        );
+
+        console2.log("submitter: %s", address(submitter));
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
+
+        if (true) {
+            _x();
+            return;
+        }
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;

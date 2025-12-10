@@ -25,6 +25,7 @@
     "deploy:ethereum:malpha": "forge script ./scripts/ethereum/mAlpha.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:msvusd": "forge script ./scripts/ethereum/msvUSD.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
+    "deploy:plasma:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:monad:test:core": "forge script ./scripts/monad/Deploy.s.sol:Deploy --fork-url $(grep MONAD_TESTNET_RPC .env | cut -d '=' -f2,3,4,5) --gas-estimate-multiplier 200 --broadcast --slow --verify --verifier sourcify",
     "deploy:monad:test": "forge script ./scripts/monad/MVTtest.s.sol:Deploy -vvvv --fork-url $(grep MONAD_TESTNET_RPC .env | cut -d '=' -f2,3,4,5) --gas-estimate-multiplier 300 --broadcast --slow --verify --verifier sourcify",
     "deploy:monad:core": "forge script ./scripts/monad/Deploy.s.sol:Deploy --fork-url $(grep MONAD_RPC .env | cut -d '=' -f2,3,4,5) --gas-estimate-multiplier 200 --broadcast --slow --verify --verifier sourcify --verifier-url https://sourcify-api-monad.blockvision.org/",
