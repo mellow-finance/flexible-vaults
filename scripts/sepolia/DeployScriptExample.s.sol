@@ -12,9 +12,8 @@ contract Deploy is DeployAbstractScript {
 
     function run() external {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
+        deployVault = DeployVaultFactory(0xB184DDe7B954Af44EAA2317583b38acC7AebA41f);
 
-        address registry = address(new DeployVaultFactoryRegistry());
-        deployVault = new DeployVaultFactory(address($.vaultConfigurator), address($.verifierFactory), registry);
         _simulate();
         revert("ok");
         /*

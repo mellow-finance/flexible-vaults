@@ -118,13 +118,6 @@ abstract contract DeployAbstractScript is Test {
         defaultDepositHook = address($.redirectingDepositHook);
         defaultRedeemHook = address($.basicRedeemHook);
 
-        /* deployVault = new IDeployVaultFactory(
-            address($.vaultConfigurator),
-            address($.verifierFactory),
-            address($.redirectingDepositHook),
-            address($.basicRedeemHook)
-        ); */
-
         IDeployVaultFactory.DeployVaultConfig memory config = getConfig();
 
         if (vault == Vault(payable(address(0)))) {

@@ -90,7 +90,7 @@ interface IDeployVaultFactoryRegistry {
     // ----------------------------------------------------------------------------------------------
     //                                      View functions
     // ----------------------------------------------------------------------------------------------
-    
+
     /// @notice Checks if a given address is a registered vault in the registry.
     /// @param vault Address to check.
     /// @return True if the address is a registered vault, false otherwise.

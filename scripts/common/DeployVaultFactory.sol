@@ -64,7 +64,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         external
     {
         address deployer = msg.sender;
-        
+
         if (registry.isEntity(address(vault))) {
             revert AlreadyInitialized();
         }
