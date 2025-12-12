@@ -44,23 +44,39 @@ contract Deploy is Script, Test {
                 string(abi.encodePacked('"', vm.toString(contracts[i]), '": "', vm.toString(bytecodes[i]), '",'));
             console2.log(line);
         }
-        // uint256 tvl = customOracle.tvl(EthereumConstants.STRETH, EthereumConstants.WETH);
+
+        // ICustomOracle.Balance[] memory balances =
+        //     customOracle.getDistributions(EthereumConstants.STRETH, EthereumConstants.WETH);
+        // for (uint256 i = 0; i < balances.length; i++) {
+        //     console2.log(
+        //         "subvault=%s, asset=%s, balance=%s",
+        //         balances[i].holder,
+        //         balances[i].asset,
+        //         vm.toString(balances[i].balance)
+        //     );
+        // }
         // console2.log("tvl:", tvl);
     }
 
     function _deployStrETHPlasmaCustomCollector() internal {
         strETHPlasmaCustomOracle customOracle =
             new strETHPlasmaCustomOracle(address(PlasmaConstants.protocolDeployment().swapModuleFactory));
-        // (address[] memory contracts, bytes[] memory bytecodes) = customOracle.stateOverrides();
 
-        // for (uint256 i = 0; i < contracts.length; i++) {
-        //     string memory line =
-        //         string(abi.encodePacked('"', vm.toString(contracts[i]), '": "', vm.toString(bytecodes[i]), '",'));
-        //     console2.log(line);
-        // }
-        // uint256 tvl =
-        customOracle.getDistributions(PlasmaConstants.STRETH, PlasmaConstants.WETH);
-        // console2.log("tvl:", tvl);
+        // console2.log(
+        //     customOracle.tvl(
+        //         PlasmaConstants.STRETH, PlasmaConstants.WETH)
+        // );
+
+        ICustomOracle.Balance[] memory balances =
+            customOracle.getDistributions(PlasmaConstants.STRETH, PlasmaConstants.WETH);
+        for (uint256 i = 0; i < balances.length; i++) {
+            console2.log(
+                "subvault=%s, asset=%s, balance=%s",
+                balances[i].holder,
+                balances[i].asset,
+                vm.toString(balances[i].balance)
+            );
+        }
     }
 
     function _deployRstETHPlusCustomCollector() internal {
@@ -93,7 +109,8 @@ contract Deploy is Script, Test {
         // address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
 
-        _deployStrETHPlasmaCustomCollector();
+        // _deployStrETHCustomCollector();
+        // _deployStrETHPlasmaCustomCollector();
 
         revert("ok");
     }

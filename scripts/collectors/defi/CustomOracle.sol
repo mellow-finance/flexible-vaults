@@ -83,6 +83,38 @@ contract CustomOracle is ICustomOracle {
         value = uint256(signedValue);
     }
 
+    function tvlMultiChain(
+        address vault,
+        address denominator,
+        address[] calldata otherAssets,
+        int256[] calldata otherBalances
+    ) public view returns (uint256 value) {
+        Balance[] memory response = getDistributions(vault, denominator);
+        address[] memory tokens = allTokens();
+        int256[] memory balances = new int256[](tokens.length);
+        for (uint256 i = 0; i < response.length; i++) {
+            uint256 index;
+            for (uint256 j = 0; j < tokens.length; j++) {
+                if (tokens[j] == response[i].asset) {
+                    index = j;
+                    break;
+                }
+            }
+            balances[index] += response[i].balance;
+        }
+        int256 signedValue = 0;
+        for (uint256 i = 0; i < tokens.length; i++) {
+            signedValue += evaluateSigned(tokens[i], denominator, balances[i]);
+        }
+        for (uint256 i = 0; i < otherAssets.length; i++) {
+            signedValue += evaluateSigned(otherAssets[i], denominator, otherBalances[i]);
+        }
+        if (signedValue < 0) {
+            return 0;
+        }
+        value = uint256(signedValue);
+    }
+
     function getDistributions(address vault_, address denominator) public view returns (Balance[] memory response) {
         Vault vault = Vault(payable(vault_));
         uint256 subvaults = vault.subvaults();

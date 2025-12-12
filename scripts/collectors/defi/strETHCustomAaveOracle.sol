@@ -10,6 +10,9 @@ contract strETHCustomAaveOracle {
         if (asset == Constants.WSTUSR) {
             return IERC4626(asset).convertToAssets(1e8);
         }
+        if (asset == Constants.USR || asset == Constants.STUSR) {
+            return 1e8;
+        }
         price = strETHCustomAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(asset);
         if (asset == Constants.USDC || asset == Constants.USDT || asset == Constants.USDE) {
             price = Math.min(price, 1e8);

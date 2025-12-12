@@ -13,12 +13,13 @@ interface IFluidGenericOracle {
 contract strETHPlasmaCustomAaveOracle {
     function getAssetPrice(address asset) public view returns (uint256 price) {
         if (asset == Constants.WSTUSR) {
-            price = getAssetPrice(Constants.USDT0);
-            return Math.mulDiv(
-                IFluidGenericOracle(Constants.FLUID_WSTUSR_USDT0_EXCHANGE_ORACLE).getExchangeRate(),
-                price,
-                10 ** IFluidGenericOracle(Constants.FLUID_WSTUSR_USDT0_EXCHANGE_ORACLE).targetDecimals()
-            );
+            return 112277013;
+            // price = getAssetPrice(Constants.USDT0);
+            // return Math.mulDiv(
+            //     IFluidGenericOracle(Constants.FLUID_WSTUSR_USDT0_EXCHANGE_ORACLE).getExchangeRate(),
+            //     price,
+            //     10 ** IFluidGenericOracle(Constants.FLUID_WSTUSR_USDT0_EXCHANGE_ORACLE).targetDecimals()
+            // );
         }
         price = strETHPlasmaCustomAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(asset);
         if (asset == Constants.USDT0) {
