@@ -21,6 +21,6 @@ contract UsdEthOracleEthereum is ICustomPriceOracle {
 
     function priceX96() external view returns (uint256) {
         uint256 priceD8 = uint256(IAggregatorV3(aggregatorV3).latestAnswer());
-        return Math.mulDiv(10**8, 2 ** 96, priceD8); 
+        return Math.mulDiv(10 ** 8, 2 ** 96, priceD8);
     }
 }

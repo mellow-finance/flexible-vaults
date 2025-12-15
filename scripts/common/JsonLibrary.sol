@@ -4,8 +4,8 @@ pragma solidity 0.8.25;
 import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-import {IMorpho} from "./interfaces/IMorpho.sol";
 import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
+import {IMorpho} from "./interfaces/IMorpho.sol";
 import {CCIPClient} from "./libraries/CCIPClient.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
