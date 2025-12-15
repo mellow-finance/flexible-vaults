@@ -182,6 +182,7 @@ contract Deploy is Script {
         }
 
         {
+            // The subvault 2 is an agent in the Cap deployment for the symbiotic vault, that is used by the subvault 1.
             (address capSymbioticVault,,,, address stakerRewards) = ICapFactory(Constants.CAP_FACTORY).createVault(
                 deployer, Constants.WSTETH, vault.subvaultAt(2), Constants.CAP_NETWORK
             );
@@ -196,7 +197,7 @@ contract Deploy is Script {
                 // God, fix stack-too-deep please
                 sv.setDepositorWhitelistStatus(vault.subvaultAt(1), true);
 
-                sv.grantRole(0x00, activeVaultAdmin);
+                sv.grantRole(0x00, lazyVaultAdmin);
                 sv.renounceRole(0x00, deployer);
                 sv.renounceRole(sv.DEPOSIT_WHITELIST_SET_ROLE(), deployer);
                 sv.renounceRole(sv.DEPOSITOR_WHITELIST_ROLE(), deployer);
@@ -206,7 +207,7 @@ contract Deploy is Script {
 
             {
                 ISymbioticStakerRewardsPermissions sr = ISymbioticStakerRewardsPermissions(stakerRewards);
-                sr.grantRole(0x00, activeVaultAdmin);
+                sr.grantRole(0x00, lazyVaultAdmin);
                 sr.renounceRole(0x00, deployer);
                 sr.renounceRole(sr.ADMIN_FEE_CLAIM_ROLE(), deployer);
                 sr.renounceRole(sr.ADMIN_FEE_SET_ROLE(), deployer);
