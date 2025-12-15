@@ -80,7 +80,7 @@ abstract contract DeployAbstractScript is Test {
     /// @dev fill after step one and run script again to finalize deployment
     Vault internal vault;
 
-    function getVaultRoleHolders(address timelockController)
+    function getVaultRoleHolders(address timelockController, address oracleSubmitter)
         internal
         view
         virtual
@@ -170,7 +170,7 @@ abstract contract DeployAbstractScript is Test {
             subvaultRoots[i].merkleRoot = getSubvaultMerkleRoot(vault, i);
         }
 
-        Vault.RoleHolder[] memory holders = getVaultRoleHolders(address(0));
+        Vault.RoleHolder[] memory holders = getVaultRoleHolders(address(0), address(0));
         deployVault.finalizeDeployment(vault, subvaultRoots, holders);
     }
 
@@ -202,6 +202,7 @@ abstract contract DeployAbstractScript is Test {
             allowedAssetsPrices: allowedAssetsPrices,
             subvaultParams: getSubvaultParams(),
             queues: queues,
+            addOracleSubmitter: 1,
             securityParams: securityParams,
             defaultDepositHook: defaultDepositHook,
             defaultRedeemHook: defaultRedeemHook,
@@ -213,6 +214,7 @@ abstract contract DeployAbstractScript is Test {
             feeManagerVersion: feeManagerVersion,
             oracleVersion: oracleVersion,
             timelockController: address(0),
+            oracleSubmitter: address(0),
             deployer: address(0)
         });
 
@@ -260,7 +262,7 @@ abstract contract DeployAbstractScript is Test {
                 vault: deployment.vault,
                 calls: calls,
                 initParams: deployVault.getInitVaultParams(config),
-                holders: getVaultRoleHolders(address(deployment.timelockController)),
+                holders: getVaultRoleHolders(address(deployment.timelockController), address(deployment.oracleSubmitter)),
                 depositHook: address($.redirectingDepositHook),
                 redeemHook: address($.basicRedeemHook),
                 assets: config.allowedAssets,

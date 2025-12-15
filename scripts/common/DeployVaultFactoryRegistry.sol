@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "./interfaces/IDeployVaultFactory.sol";
+import "./interfaces/IDeployVaultFactoryRegistry.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "scripts/common/interfaces/IDeployVaultFactory.sol";
-import "scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
 
 contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -78,6 +78,17 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
         deployVaultConfig[vault].timelockController = timelockController;
     }
 
+    /// @inheritdoc IDeployVaultFactoryRegistry
+    function setOracleSubmitter(address vault, address oracleSubmitter) external onlyDeployVaultFactory {
+        if (oracleSubmitter == address(0)) {
+            revert ZeroAddress();
+        }
+        if (deployVaultConfig[vault].oracleSubmitter != address(0)) {
+            revert AlreadyInitialized();
+        }
+        deployVaultConfig[vault].oracleSubmitter = oracleSubmitter;
+    }
+
     // -----------------------------------------------------------------------------------------------
     //                              View functions
     // -----------------------------------------------------------------------------------------------
@@ -139,6 +150,7 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
         deployment.vault = vault;
         deployment.timelockController =
             TimelockController(payable(deployVaultConfig[address(vault)].timelockController));
+        deployment.oracleSubmitter = OracleSubmitter(payable(deployVaultConfig[address(vault)].oracleSubmitter));
         deployment.oracle = vault.oracle();
         deployment.shareManager = vault.shareManager();
         deployment.feeManager = vault.feeManager();

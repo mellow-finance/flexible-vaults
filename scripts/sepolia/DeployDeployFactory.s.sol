@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../common/ArraysLibrary.sol";
-import "../common/ProofLibrary.sol";
-import "./DeployAbstractScript.s.sol";
-
 import "forge-std/Script.sol";
-import "src/utils/DeployVaultFactory.sol";
+import "src/DeployVaultFactory.sol";
+import "src/DeployVaultFactoryRegistry.sol";
+import "scripts/sepolia/Constants.sol";
 
 contract Deploy is Script {
     function run() external {
@@ -14,9 +12,15 @@ contract Deploy is Script {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         vm.startBroadcast(deployerPk);
+
         DeployVaultFactoryRegistry registry = new DeployVaultFactoryRegistry();
-        DeployVaultFactory deployVaultFactory =
-            new DeployVaultFactory(address($.vaultConfigurator), address($.verifierFactory), address(registry));
+        OracleSubmitterFactory oracleSubmitterFactory = new OracleSubmitterFactory();
+        DeployVaultFactory deployVaultFactory = new DeployVaultFactory(
+            address($.vaultConfigurator),
+            address($.verifierFactory),
+            address(oracleSubmitterFactory),
+            address(registry)
+        );
         vm.stopBroadcast();
 
         console2.log("DeployVaultFactoryRegistry deployed at:", address(registry));

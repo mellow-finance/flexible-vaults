@@ -1,29 +1,52 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "scripts/common/interfaces/IDeployVaultFactory.sol";
+import "./Permissions.sol";
 
+import "./interfaces/IDeployVaultFactory.sol";
+import "./interfaces/IDeployVaultFactoryRegistry.sol";
+import "./interfaces/Imports.sol";
+import {OracleSubmitter} from "src/oracles/OracleSubmitter.sol";
 import "src/vaults/Subvault.sol";
 
-import "./DeployVaultFactoryRegistry.sol";
-import "./Permissions.sol";
-import "./interfaces/Imports.sol";
+contract OracleSubmitterFactory {
+    event OracleSubmitterDeployed(address indexed oracleSubmitter, address indexed deployer);
+
+    function deployOracleSubmitter(address admin_, address submitter_, address accepter_, address oracle_)
+        external
+        returns (address)
+    {
+        OracleSubmitter oracleSubmitter = new OracleSubmitter(admin_, submitter_, accepter_, oracle_);
+        emit OracleSubmitterDeployed(address(oracleSubmitter), msg.sender);
+        return address(oracleSubmitter);
+    }
+}
 
 contract DeployVaultFactory is IDeployVaultFactory {
     event VaultDeployed(address indexed vault, address indexed deployer);
 
     VaultConfigurator public vaultConfigurator;
     Factory public verifierFactory;
-    DeployVaultFactoryRegistry public registry;
+    IDeployVaultFactoryRegistry public registry;
+    OracleSubmitterFactory public oracleSubmitterFactory;
 
-    constructor(address vaultConfigurator_, address verifierFactory_, address registry_) {
-        if (vaultConfigurator_ == address(0) || verifierFactory_ == address(0) || registry_ == address(0)) {
+    constructor(
+        address vaultConfigurator_,
+        address verifierFactory_,
+        address oracleSubmitterFactory_,
+        address registry_
+    ) {
+        if (
+            vaultConfigurator_ == address(0) || verifierFactory_ == address(0) || oracleSubmitterFactory_ == address(0)
+                || registry_ == address(0)
+        ) {
             revert ZeroAddress();
         }
 
         vaultConfigurator = VaultConfigurator(vaultConfigurator_);
         verifierFactory = Factory(verifierFactory_);
-        registry = DeployVaultFactoryRegistry(registry_);
+        oracleSubmitterFactory = OracleSubmitterFactory(oracleSubmitterFactory_);
+        registry = IDeployVaultFactoryRegistry(registry_);
         registry.initialize(address(this));
     }
 
@@ -35,10 +58,10 @@ contract DeployVaultFactory is IDeployVaultFactory {
         VaultConfigurator.InitParams memory initParams = _getInitVaultParams(
             $,
             IOracle.SecurityParams({
-                maxAbsoluteDeviation: 0.005 ether,
-                suspiciousAbsoluteDeviation: 0.001 ether,
-                maxRelativeDeviationD18: 0.005 ether,
-                suspiciousRelativeDeviationD18: 0.001 ether,
+                maxAbsoluteDeviation: 1 wei,
+                suspiciousAbsoluteDeviation: 1 wei,
+                maxRelativeDeviationD18: 1 wei,
+                suspiciousRelativeDeviationD18: 1 wei,
                 /// @dev set very low timeouts for now
                 timeout: 1 seconds,
                 depositInterval: 1 seconds,
@@ -53,7 +76,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         _createSubvaults(vault, $);
 
         // initial price reports
-        _pushReports(vault, $.allowedAssets, $.allowedAssetsPrices);
+        _pushReports(vault.oracle(), $.allowedAssets, $.allowedAssetsPrices);
 
         // save config and allowed deployer for finalizeDeployment
         registry.saveVaultConfig(address(vault), msg.sender, $);
@@ -80,18 +103,21 @@ contract DeployVaultFactory is IDeployVaultFactory {
             revert Forbidden();
         }
 
+        IFeeManager feeManager = vault.feeManager();
+        IOracle oracle = vault.oracle();
+
         // fee manager setup
-        vault.feeManager().setBaseAsset(address(vault), baseAsset);
-        Ownable(address(vault.feeManager())).transferOwnership($.feeManagerParams.owner);
+        feeManager.setBaseAsset(address(vault), baseAsset);
+        Ownable(address(feeManager)).transferOwnership($.feeManagerParams.owner);
 
         // create all queues
         _createQueues(vault, $.proxyAdmin, $.queues);
 
         // initial price reports
-        _pushReports(vault, $.allowedAssets, $.allowedAssetsPrices);
+        _pushReports(oracle, $.allowedAssets, $.allowedAssetsPrices);
 
         // set actual security params
-        vault.oracle().setSecurityParams($.securityParams);
+        oracle.setSecurityParams($.securityParams);
 
         // set subvault merkle roots
         _setSubvaultRoots(vault, subvaultRoots);
@@ -100,8 +126,17 @@ contract DeployVaultFactory is IDeployVaultFactory {
         TimelockController timelockController = _scheduleEmergencyPauses(vault, $);
         registry.setTimelockController(address(vault), address(timelockController));
 
+        address oracleSubmitter;
+        if ($.addOracleSubmitter == 1) {
+            // deploy oracle submitter
+            oracleSubmitter = oracleSubmitterFactory.deployOracleSubmitter(
+                $.proxyAdmin, $.oracleUpdater, $.activeVaultAdmin, address(oracle)
+            );
+            registry.setOracleSubmitter(address(vault), oracleSubmitter);
+        }
+
         // give roles to actual vault role holders
-        _transferRoleHolders(vault, holders);
+        _transferRoleHolders(vault, oracleSubmitter, holders);
 
         registry.addDeployedVault(address(vault));
 
@@ -179,9 +214,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
             if (vault.subvaultAt(i) != subvaultRoots[i].subvault) {
                 revert SubvaultNotAllowed(subvaultRoots[i].subvault);
             }
-            Subvault subvault = Subvault(payable(subvaultRoots[i].subvault));
-            IVerifier verifier = subvault.verifier();
-            verifier.setMerkleRoot(subvaultRoots[i].merkleRoot);
+            Subvault(payable(subvaultRoots[i].subvault)).verifier().setMerkleRoot(subvaultRoots[i].merkleRoot);
         }
     }
 
@@ -244,14 +277,15 @@ contract DeployVaultFactory is IDeployVaultFactory {
         }
     }
 
-    function _pushReports(Vault vault, address[] memory allowedAssets, uint256[] memory allowedAssetsPrices) internal {
+    function _pushReports(IOracle oracle, address[] memory allowedAssets, uint256[] memory allowedAssetsPrices)
+        internal
+    {
         IOracle.Report[] memory reports = new IOracle.Report[](allowedAssets.length);
         for (uint256 i = 0; i < allowedAssets.length; i++) {
             reports[i].asset = allowedAssets[i];
             reports[i].priceD18 = uint224(allowedAssetsPrices[i]);
         }
 
-        IOracle oracle = vault.oracle();
         oracle.submitReports(reports);
         for (uint256 i = 0; i < reports.length; i++) {
             IOracle.DetailedReport memory report = oracle.getReport(reports[i].asset);
@@ -276,19 +310,33 @@ contract DeployVaultFactory is IDeployVaultFactory {
         holders[index++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, this_);
     }
 
-    function _transferRoleHolders(Vault vault, Vault.RoleHolder[] memory holders) internal {
-        TimelockController timelockController =
-            TimelockController(payable(registry.getVaultTimelockController(address(vault))));
+    function _transferRoleHolders(Vault vault, address oracleSubmitter, Vault.RoleHolder[] memory holders) internal {
+        address timelockController = registry.getVaultTimelockController(address(vault));
+
+        /// @dev cache role constants for size contract reduction
+        bytes32 ACCEPT_REPORT_ROLE = Permissions.ACCEPT_REPORT_ROLE;
+        bytes32 SUBMIT_REPORTS_ROLE = Permissions.SUBMIT_REPORTS_ROLE;
 
         // give roles to actual vault role holders
         for (uint256 i = 0; i < holders.length; i++) {
+            if (oracleSubmitter != address(0)) {
+                if (holders[i].role == SUBMIT_REPORTS_ROLE || holders[i].role == ACCEPT_REPORT_ROLE) {
+                    continue;
+                }
+            }
             vault.grantRole(holders[i].role, holders[i].holder);
         }
 
+        // oracle submitter roles:
+        if (oracleSubmitter != address(0)) {
+            vault.grantRole(SUBMIT_REPORTS_ROLE, oracleSubmitter);
+            vault.grantRole(ACCEPT_REPORT_ROLE, oracleSubmitter);
+        }
+
         // emergency pauser roles:
-        vault.grantRole(Permissions.SET_FLAGS_ROLE, address(timelockController));
-        vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
-        vault.grantRole(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
+        vault.grantRole(Permissions.SET_FLAGS_ROLE, timelockController);
+        vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, timelockController);
+        vault.grantRole(Permissions.SET_QUEUE_STATUS_ROLE, timelockController);
 
         // renounce roles from this contract
         Vault.RoleHolder[] memory temporaryHolders = _getTemporaryRoleHolders();
@@ -296,7 +344,11 @@ contract DeployVaultFactory is IDeployVaultFactory {
             vault.renounceRole(temporaryHolders[i].role, address(this));
         }
 
-        timelockController.renounceRole(timelockController.PROPOSER_ROLE(), address(this));
-        timelockController.renounceRole(timelockController.CANCELLER_ROLE(), address(this));
+        TimelockController(payable(timelockController)).renounceRole(
+            Permissions.TIMELOCK_CONTROLLER_PROPOSER_ROLE, address(this)
+        );
+        TimelockController(payable(timelockController)).renounceRole(
+            Permissions.TIMELOCK_CONTROLLER_CANCELLER_ROLE, address(this)
+        );
     }
 }

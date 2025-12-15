@@ -5,6 +5,7 @@ import "../interfaces/Imports.sol";
 
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "scripts/common/interfaces/IDeployVaultFactory.sol";
+import {OracleSubmitter} from "src/oracles/OracleSubmitter.sol";
 
 /// @title DeployVaultFactoryRegistry interface
 /// @notice Interface for registry that stores configuration and metadata for vaults deployed via DeployVaultFactory.
@@ -13,6 +14,7 @@ interface IDeployVaultFactoryRegistry {
         Vault vault;
         TimelockController timelockController;
         IOracle oracle;
+        OracleSubmitter oracleSubmitter;
         IShareManager shareManager;
         IFeeManager feeManager;
         IRiskManager riskManager;
@@ -86,6 +88,12 @@ interface IDeployVaultFactoryRegistry {
     /// @param vault Address of the vault.
     /// @param timelockController Address of the timelock controller contract.
     function setTimelockController(address vault, address timelockController) external;
+
+    /// @notice Sets the oracle submitter address for a given vault.
+    /// @dev Can only be called by the DeployVaultFactory.
+    /// @param vault Address of the vault.
+    /// @param oracleSubmitter Address of the oracle submitter contract.
+    function setOracleSubmitter(address vault, address oracleSubmitter) external;
 
     // ----------------------------------------------------------------------------------------------
     //                                      View functions

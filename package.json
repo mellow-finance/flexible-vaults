@@ -22,7 +22,7 @@
     "deploy:ethereum:rsteth+": "forge script ./scripts/ethereum/rstETHPlusTest.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:malpha": "forge script ./scripts/ethereum/mAlpha.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
-    "deploy:sepolia:example": "forge script ./scripts/sepolia/DeployScriptExample.s.sol:Deploy -vvvv --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --fork-block-number 9809445",
+    "deploy:sepolia:example": "forge script ./scripts/sepolia/DeployScriptExample.s.sol:Deploy -vvvv --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:sepolia:deployfactory": "forge script ./scripts/sepolia/DeployDeployFactory.s.sol:Deploy -vvvv --fork-url $(grep SEPOLIA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:monad:test:core": "forge script ./scripts/monad/Deploy.s.sol:Deploy --fork-url $(grep MONAD_TESTNET_RPC .env | cut -d '=' -f2,3,4,5) --gas-estimate-multiplier 200 --broadcast --slow --verify --verifier sourcify",
     "deploy:monad:test": "forge script ./scripts/monad/MVTtest.s.sol:Deploy -vvvv --fork-url $(grep MONAD_TESTNET_RPC .env | cut -d '=' -f2,3,4,5) --gas-estimate-multiplier 300 --broadcast --slow --verify --verifier sourcify",

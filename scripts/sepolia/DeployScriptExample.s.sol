@@ -5,6 +5,7 @@ import "../common/ArraysLibrary.sol";
 import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
 import "scripts/common/DeployVaultFactory.sol";
+import "scripts/common/DeployVaultFactoryRegistry.sol";
 
 contract Deploy is DeployAbstractScript {
     bytes32 public testWalletPk = keccak256("testWalletPk");
@@ -12,18 +13,19 @@ contract Deploy is DeployAbstractScript {
 
     function run() external {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
-        deployVault = DeployVaultFactory(0xB184DDe7B954Af44EAA2317583b38acC7AebA41f);
+        deployVault = DeployVaultFactory(0x99EfBeac7EE10B330fFb038A883740E6EC57f111);
 
-        _simulate();
-        revert("ok");
-        /*
-            if vault == address(0) -> step one
-            else -> step two
-        */
+        /// @dev just on-chain simulation
+        //_simulate();
+        //revert("ok");
+        
+        /// @dev on-chain transaction
+        //  if vault == address(0) -> step one
+        //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0)));
         _run();
-        revert("ok");
+       // revert("ok");
     }
 
     function setUp() public override {
@@ -150,7 +152,7 @@ contract Deploy is DeployAbstractScript {
     }
 
     /// @dev fill in vault role holders
-    function getVaultRoleHolders(address timelockController)
+    function getVaultRoleHolders(address timelockController, address oracleSubmitter)
         internal
         view
         override
@@ -168,7 +170,6 @@ contract Deploy is DeployAbstractScript {
         holders[index++] = Vault.RoleHolder(Permissions.SET_SECURITY_PARAMS_ROLE, lazyVaultAdmin);
 
         // activeVaultAdmin roles:
-        holders[index++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
@@ -182,8 +183,14 @@ contract Deploy is DeployAbstractScript {
             holders[index++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, timelockController);
         }
 
-        // oracle updater roles:
-        holders[index++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
+        // oracle submitter roles:
+        if (oracleSubmitter != address(0)) {
+            holders[index++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, oracleSubmitter);
+            holders[index++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleSubmitter);
+        } else {
+            holders[index++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
+            holders[index++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
+        }
 
         // curator roles:
         holders[index++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);

@@ -62,8 +62,9 @@ interface IDeployVaultFactory {
         uint256[] allowedAssetsPrices;
         SubvaultParams[] subvaultParams;
         QueueParams[] queues;
-        // security
+        // oracle
         IOracle.SecurityParams securityParams;
+        uint256 addOracleSubmitter; // 0 = no, 1 = yes
         address[] timelockProposers;
         address[] timelockExecutors;
         // other params can be added here as needed
@@ -77,6 +78,7 @@ interface IDeployVaultFactory {
         uint256 riskManagerVersion;
         uint256 oracleVersion;
         address timelockController;
+        address oracleSubmitter;
         address deployer;
     }
 
