@@ -13,21 +13,23 @@ library Constants {
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-    address public constant WETH = 0xf531B8F309Be94191af87605CfBf600D71C2cFe0;
-    address public constant WSTETH = 0x9b87Ea90FDb55e1A0f17FBEdDcF7EB0ac4d50493;
-    address public constant STETH = 0xF5465B70Af90AEb26Aa13b1000a8CbEA53a5f4cf;
+    address public constant WETH = 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9;
+    address public constant WSTETH = 0xB82381A3fBD3FaFA77B3a7bE693342618240067b;
+    address public constant STETH = 0x3e3FE7dBc6B4C189E7128855dD526361c49b40Af;
     address public constant USDC = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
     address public constant USDT = 0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0;
+    address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
+    address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
             deploymentVersion: DEPLOYMENT_VERSION,
-            eigenLayerDelegationManager: address(0),
-            eigenLayerStrategyManager: address(0),
-            eigenLayerRewardsCoordinator: address(0),
-            symbioticVaultFactory: address(0),
-            symbioticFarmFactory: address(0),
+            eigenLayerDelegationManager: 0xD4A7E1Bd8015057293f0D0A557088c286942e84b,
+            eigenLayerStrategyManager: 0x2E3D6c0744b10eb0A4e6F679F71554a39Ec47a5D,
+            eigenLayerRewardsCoordinator: 0x5ae8152fb88c26ff9ca5C014c94fca3c68029349,
+            symbioticVaultFactory: 0x407A039D94948484D356eFB765b3c74382A050B4,
+            symbioticFarmFactory: 0xE6381EDA7444672da17Cd859e442aFFcE7e170F0,
             wsteth: WSTETH,
             weth: WETH,
             proxyAdmin: 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0,
@@ -47,7 +49,7 @@ library Constants {
             erc20VerifierFactory: Factory(0x0691DF4Ab69051fBb553Da5F47ffcF5c20b31D96),
             symbioticVerifierFactory: Factory(0xeA88c57d2C58Ba53381B6a01Ca0674F8c99C65b4),
             eigenLayerVerifierFactory: Factory(0x3277Ecd21c0feF399Dfb37A7EDC2D7E55d61fFBd),
-            swapModuleFactory: Factory(address(0)),
+            swapModuleFactory: Factory(0xDBb6C4A74De381554c07A01205DeC2028D59Fe85),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x7914747E912d420e90a29D4D917c0435AEe6eDdc)),
@@ -70,7 +72,7 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(0xd3b4a229c8074bcF596f6750e50147B5b4c46063),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
-            swapModuleImplementation: SwapModule(payable(address(0)))
+            swapModuleImplementation: SwapModule(payable(0x29AD55F8E302022E6861a4e7072f094090190A63))
         });
     }
 }
