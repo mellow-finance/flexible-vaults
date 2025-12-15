@@ -234,7 +234,7 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
         }
     }
 
-    function _checkAssets(IDeployVaultFactory.DeployVaultConfig calldata $) internal view {
+    function _checkAssets(IDeployVaultFactory.DeployVaultConfig calldata $) internal pure {
         if ($.allowedAssets.length == 0) {
             revert ZeroLength();
         }

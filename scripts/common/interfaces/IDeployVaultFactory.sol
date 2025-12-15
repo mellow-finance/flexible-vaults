@@ -2,8 +2,9 @@
 pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-
 import "scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
+
+import "scripts/common/interfaces/IOracleSubmitterFactory.sol";
 import "src/vaults/VaultConfigurator.sol";
 
 interface IDeployVaultFactory {
@@ -109,5 +110,27 @@ interface IDeployVaultFactory {
         view
         returns (VaultConfigurator.InitParams memory);
 
-    function getRegistry() external view returns (IDeployVaultFactoryRegistry);
+    /**
+     * @notice Returns the DeployVaultFactoryRegistry associated with this factory.
+     * @return registry The DeployVaultFactoryRegistry instance.
+     */
+    function registry() external view returns (IDeployVaultFactoryRegistry);
+
+    /**
+     * @notice Returns the VaultConfigurator used by this factory.
+     * @return vaultConfigurator The VaultConfigurator instance.
+     */
+    function vaultConfigurator() external view returns (VaultConfigurator);
+
+    /**
+     * @notice Returns the Factory used by this factory.
+     * @return verifierFactory The Factory instance.
+     */
+    function verifierFactory() external view returns (Factory);
+
+    /**
+     * @notice Returns the OracleSubmitterFactory used by this factory.
+     * @return oracleSubmitterFactory The OracleSubmitterFactory instance.
+     */
+    function oracleSubmitterFactory() external view returns (IOracleSubmitterFactory);
 }

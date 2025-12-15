@@ -2,9 +2,10 @@
 pragma solidity 0.8.25;
 
 import "forge-std/Script.sol";
+
+import "scripts/sepolia/Constants.sol";
 import "src/DeployVaultFactory.sol";
 import "src/DeployVaultFactoryRegistry.sol";
-import "scripts/sepolia/Constants.sol";
 
 contract Deploy is Script {
     function run() external {
@@ -16,10 +17,7 @@ contract Deploy is Script {
         DeployVaultFactoryRegistry registry = new DeployVaultFactoryRegistry();
         OracleSubmitterFactory oracleSubmitterFactory = new OracleSubmitterFactory();
         DeployVaultFactory deployVaultFactory = new DeployVaultFactory(
-            address($.vaultConfigurator),
-            address($.verifierFactory),
-            address(oracleSubmitterFactory),
-            address(registry)
+            address($.vaultConfigurator), address($.verifierFactory), address(oracleSubmitterFactory), address(registry)
         );
         vm.stopBroadcast();
 

@@ -12,20 +12,20 @@ contract Deploy is DeployAbstractScript {
     address public testWallet = vm.addr(uint256(testWalletPk));
 
     function run() external {
-        ProtocolDeployment memory $ = Constants.protocolDeployment();
+        //ProtocolDeployment memory $ = Constants.protocolDeployment();
         deployVault = DeployVaultFactory(0x99EfBeac7EE10B330fFb038A883740E6EC57f111);
 
         /// @dev just on-chain simulation
         //_simulate();
         //revert("ok");
-        
+
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0)));
         _run();
-       // revert("ok");
+        revert("ok");
     }
 
     function setUp() public override {
@@ -85,7 +85,7 @@ contract Deploy is DeployAbstractScript {
     /// @dev fill in subvault parameters
     function getSubvaultParams()
         internal
-        view
+        pure
         override
         returns (IDeployVaultFactory.SubvaultParams[] memory subvaultParams)
     {
@@ -105,6 +105,7 @@ contract Deploy is DeployAbstractScript {
     /// @dev fill in queue parameters
     function getQueues()
         internal
+        pure
         override
         returns (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit)
     {

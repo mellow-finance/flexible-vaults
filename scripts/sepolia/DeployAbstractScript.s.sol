@@ -160,7 +160,7 @@ abstract contract DeployAbstractScript is Test {
     */
     function stepTwo(Vault vault) internal virtual returns (SubvaultCalls[] memory calls) {
         IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
-            deployVault.getRegistry().getVaultDeployment(address(vault));
+            deployVault.registry().getVaultDeployment(address(vault));
         IDeployVaultFactory.SubvaultRoot[] memory subvaultRoots =
             new IDeployVaultFactory.SubvaultRoot[](deployment.subvaults.length);
 
@@ -218,7 +218,7 @@ abstract contract DeployAbstractScript is Test {
             deployer: address(0)
         });
 
-        deployVault.getRegistry().validateDeployConfig(config);
+        deployVault.registry().validateDeployConfig(config);
     }
 
     function getQueueAssets()
@@ -251,7 +251,7 @@ abstract contract DeployAbstractScript is Test {
         ProtocolDeployment memory $
     ) internal {
         IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
-            deployVault.getRegistry().getVaultDeployment(vaultAddress);
+            deployVault.registry().getVaultDeployment(vaultAddress);
         (address[] memory depositQueueAssets, address[] memory redeemQueueAssets) = getQueueAssets();
 
         $.deployer = address(deployVault);
@@ -277,8 +277,7 @@ abstract contract DeployAbstractScript is Test {
     }
 
     function logDeployment(address vault) internal view {
-        IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
-            deployVault.getRegistry().getVaultDeployment(vault);
+        IDeployVaultFactoryRegistry.VaultDeployment memory deployment = deployVault.registry().getVaultDeployment(vault);
         console2.log("-------------------------------------------------------------");
         console2.log("Deployment details %s (%s) chain ID %s", vaultName, vaultSymbol, block.chainid);
         console2.log("-------------------------------------------------------------");
