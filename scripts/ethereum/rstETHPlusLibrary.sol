@@ -1,414 +1,374 @@
-// SPDX-License-Identifier: BUSL-1.1
-pragma solidity 0.8.25;
+// // SPDX-License-Identifier: BUSL-1.1
+// pragma solidity 0.8.25;
 
-import {AcceptanceLibrary} from "../common/AcceptanceLibrary.sol";
+// import {AcceptanceLibrary} from "../common/AcceptanceLibrary.sol";
 
-import {ABILibrary} from "../common/ABILibrary.sol";
-import {ArraysLibrary} from "../common/ArraysLibrary.sol";
-import {JsonLibrary} from "../common/JsonLibrary.sol";
-import {ParameterLibrary} from "../common/ParameterLibrary.sol";
-import {Permissions} from "../common/Permissions.sol";
-import {ProofLibrary} from "../common/ProofLibrary.sol";
+// import {ABILibrary} from "../common/ABILibrary.sol";
+// import {ArraysLibrary} from "../common/ArraysLibrary.sol";
+// import {JsonLibrary} from "../common/JsonLibrary.sol";
+// import {ParameterLibrary} from "../common/ParameterLibrary.sol";
+// import {Permissions} from "../common/Permissions.sol";
+// import {ProofLibrary} from "../common/ProofLibrary.sol";
 
-import {CapLenderLibrary} from "../common/protocols/CapLenderLibrary.sol";
-import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
-import {ResolvLibrary} from "../common/protocols/ResolvLibrary.sol";
-import {SymbioticLibrary} from "../common/protocols/SymbioticLibrary.sol";
+// import {CapLenderLibrary} from "../common/protocols/CapLenderLibrary.sol";
+// import {CowSwapLibrary} from "../common/protocols/CowSwapLibrary.sol";
+// import {ResolvLibrary} from "../common/protocols/ResolvLibrary.sol";
 
-import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
-import "./Constants.sol";
+// import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
+// import {SymbioticLibrary} from "../common/protocols/SymbioticLibrary.sol";
+// import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
 
-import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
+// import "./Constants.sol";
 
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+// import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
+// import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-library rstETHPlusLibrary {
-    using ParameterLibrary for ParameterLibrary.Parameter[];
+// import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-    function getSubvault0Proofs(address curator, address subvault)
-        internal
-        pure
-        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
-    {
-        /*
-            1. weth.deposit{any}()
-            2. cowswap.swap(weth -> wsteth)
-            3. rstETH.redeem(shares, subvault0, subvault0)
-        */
-        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](8);
-        uint256 iterator = 0;
-        leaves[iterator++] = WethLibrary.getWethDepositProof(bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
-        iterator = ArraysLibrary.insert(
-            leaves,
-            CowSwapLibrary.getCowSwapProofs(
-                bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
-                })
-            ),
-            iterator
-        );
+// library rstETHPlusLibrary {
+//     using ParameterLibrary for ParameterLibrary.Parameter[];
 
-        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            curator,
-            Constants.RSTETH,
-            0,
-            abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)),
-            ProofLibrary.makeBitmask(
-                true,
-                true,
-                true,
-                true,
-                abi.encodeCall(IERC4626.redeem, (0, address(type(uint160).max), address(type(uint160).max)))
-            )
-        );
+//     function _getSubvault0SwapModuleParams(address curator, address subvault, address swapModule)
+//         internal
+//         view
+//         returns (SwapModuleLibrary.Info memory)
+//     {
+//         return SwapModuleLibrary.Info({
+//             subvault: subvault,
+//             subvaultName: "subvault0",
+//             swapModule: swapModule,
+//             curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+//             assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
+//         });
+//     }
 
-        assembly {
-            mstore(leaves, iterator)
-        }
+//     function getSubvault0Proofs(address curator, address subvault, address swapModule)
+//         internal
+//         view
+//         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+//     {
+//         /*
+//             1. weth.deposit{any}()
+//             2. cowswap.swap(weth -> wsteth)
+//             3. rstETH.redeem(shares, subvault0, subvault0)
+//         */
+//         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+//         leaves = new IVerifier.VerificationPayload[](50);
+//         uint256 iterator = 0;
+//         leaves[iterator++] = WethLibrary.getWethDepositProof(bitmaskVerifier, WethLibrary.Info(curator, Constants.WETH));
+//         iterator = ArraysLibrary.insert(
+//             leaves,
+//             SwapModuleLibrary.getSwapModuleProofs(
+//                 bitmaskVerifier, _getSubvault0SwapModuleParams(curator, subvault, swapModule)
+//             ),
+//             iterator
+//         );
 
-        return ProofLibrary.generateMerkleProofs(leaves);
-    }
+//         leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+//             bitmaskVerifier,
+//             curator,
+//             Constants.RSTETH,
+//             0,
+//             abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)),
+//             ProofLibrary.makeBitmask(
+//                 true,
+//                 true,
+//                 true,
+//                 true,
+//                 abi.encodeCall(IERC4626.redeem, (0, address(type(uint160).max), address(type(uint160).max)))
+//             )
+//         );
 
-    function getSubvault0Descriptions(address curator, address subvault)
-        internal
-        view
-        returns (string[] memory descriptions)
-    {
-        descriptions = new string[](8);
-        uint256 iterator = 0;
-        descriptions[iterator++] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
-        iterator = ArraysLibrary.insert(
-            descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
-                })
-            ),
-            iterator
-        );
+//         assembly {
+//             mstore(leaves, iterator)
+//         }
 
-        ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters = ParameterLibrary.add2("shares", "any", "receiver", Strings.toHexString(subvault)).add(
-            "owner", Strings.toHexString(subvault)
-        );
-        descriptions[iterator++] = JsonLibrary.toJson(
-            string(abi.encodePacked("rstETH.redeem(any, subvault0, subvault0)")),
-            ABILibrary.getABI(IERC4626.redeem.selector),
-            ParameterLibrary.build(Strings.toHexString(curator), Strings.toHexString(Constants.RSTETH), "0"),
-            innerParameters
-        );
+//         return ProofLibrary.generateMerkleProofs(leaves);
+//     }
 
-        assembly {
-            mstore(descriptions, iterator)
-        }
-    }
+//     function getSubvault0Descriptions(address curator, address subvault, address swapModule)
+//         internal
+//         view
+//         returns (string[] memory descriptions)
+//     {
+//         descriptions = new string[](50);
+//         uint256 iterator = 0;
+//         descriptions[iterator++] = WethLibrary.getWethDepositDescription(WethLibrary.Info(curator, Constants.WETH));
+//         iterator = ArraysLibrary.insert(
+//             descriptions,
+//             SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
+//             iterator
+//         );
 
-    function getSubvault0Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        pure
-        returns (SubvaultCalls memory calls)
-    {
-        calls.payloads = leaves;
-        calls.calls = new Call[][](leaves.length);
-        uint256 iterator = 0;
-        calls.calls[iterator++] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));
-        iterator = ArraysLibrary.insert(
-            calls.calls,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH))
-                })
-            ),
-            iterator
-        );
+//         ParameterLibrary.Parameter[] memory innerParameters;
+//         innerParameters = ParameterLibrary.add2("shares", "any", "receiver", Strings.toHexString(subvault)).add(
+//             "owner", Strings.toHexString(subvault)
+//         );
+//         descriptions[iterator++] = JsonLibrary.toJson(
+//             string(abi.encodePacked("rstETH.redeem(any, subvault0, subvault0)")),
+//             ABILibrary.getABI(IERC4626.redeem.selector),
+//             ParameterLibrary.build(Strings.toHexString(curator), Strings.toHexString(Constants.RSTETH), "0"),
+//             innerParameters
+//         );
 
-        {
-            address asset = Constants.RSTETH;
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)), true);
-            tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), true);
-            tmp[i++] =
-                Call(address(0xdead), asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
-            tmp[i++] =
-                Call(curator, address(0xdead), 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 1 wei, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, address(0xdead), subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, address(0xdead))), false);
-            tmp[i++] = Call(curator, asset, 0, abi.encode(IERC4626.redeem.selector, 1 ether, subvault, subvault), false);
-            assembly {
-                mstore(tmp, i)
-            }
-            calls.calls[iterator++] = tmp;
-        }
-    }
+//         assembly {
+//             mstore(descriptions, iterator)
+//         }
+//     }
 
-    function getSubvault1Proofs(address curator, address subvault, address capSymbioticVault)
-        internal
-        view
-        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
-    {
-        leaves = new IVerifier.VerificationPayload[](8);
-        uint256 iterator = 0;
-        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        iterator = ArraysLibrary.insert(
-            leaves,
-            SymbioticLibrary.getSymbioticProofs(
-                bitmaskVerifier,
-                SymbioticLibrary.Info({
-                    symbioticVault: capSymbioticVault,
-                    subvault: subvault,
-                    subvaultName: "subvault1",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//     function getSubvault0Calls(
+//         address curator,
+//         address subvault,
+//         address swapModule,
+//         IVerifier.VerificationPayload[] memory leaves
+//     ) internal view returns (SubvaultCalls memory calls) {
+//         calls.payloads = leaves;
+//         calls.calls = new Call[][](leaves.length);
+//         uint256 iterator = 0;
+//         calls.calls[iterator++] = WethLibrary.getWethDepositCalls(WethLibrary.Info(curator, Constants.WETH));
+//         iterator = ArraysLibrary.insert(
+//             calls.calls,
+//             SwapModuleLibrary.getSwapModuleCalls(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
+//             iterator
+//         );
 
-        assembly {
-            mstore(leaves, iterator)
-        }
+//         {
+//             address asset = Constants.RSTETH;
+//             Call[] memory tmp = new Call[](16);
+//             uint256 i = 0;
+//             tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)), true);
+//             tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), true);
+//             tmp[i++] =
+//                 Call(address(0xdead), asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
+//             tmp[i++] =
+//                 Call(curator, address(0xdead), 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
+//             tmp[i++] =
+//                 Call(curator, asset, 1 wei, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
+//             tmp[i++] =
+//                 Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, address(0xdead), subvault)), false);
+//             tmp[i++] =
+//                 Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, address(0xdead))), false);
+//             tmp[i++] = Call(curator, asset, 0, abi.encode(IERC4626.redeem.selector, 1 ether, subvault, subvault), false);
+//             assembly {
+//                 mstore(tmp, i)
+//             }
+//             calls.calls[iterator++] = tmp;
+//         }
+//     }
 
-        return ProofLibrary.generateMerkleProofs(leaves);
-    }
+//     function _getSubvault1SymbioticParams(address curator, address subvault, address symbioticVault)
+//         internal
+//         view
+//         returns (SymbioticLibrary.Info memory)
+//     {
+//         return SymbioticLibrary.Info({
+//             symbioticVault: symbioticVault,
+//             subvault: subvault,
+//             subvaultName: "subvault1",
+//             curator: curator
+//         });
+//     }
 
-    function getSubvault1Descriptions(address curator, address subvault, address capSymbioticVault)
-        internal
-        view
-        returns (string[] memory descriptions)
-    {
-        descriptions = new string[](8);
-        uint256 iterator = 0;
-        iterator = ArraysLibrary.insert(
-            descriptions,
-            SymbioticLibrary.getSymbioticDescriptions(
-                SymbioticLibrary.Info({
-                    symbioticVault: capSymbioticVault,
-                    subvault: subvault,
-                    subvaultName: "subvault1",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//     function getSubvault1Proofs(address curator, address subvault, address capSymbioticVault)
+//         internal
+//         view
+//         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+//     {
+//         leaves = new IVerifier.VerificationPayload[](8);
+//         uint256 iterator = 0;
+//         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+//         iterator = ArraysLibrary.insert(
+//             leaves,
+//             SymbioticLibrary.getSymbioticProofs(
+//                 bitmaskVerifier, _getSubvault1SymbioticParams(curator, subvault, capSymbioticVault)
+//             ),
+//             iterator
+//         );
 
-        assembly {
-            mstore(descriptions, iterator)
-        }
-    }
+//         assembly {
+//             mstore(leaves, iterator)
+//         }
 
-    function getSubvault1Calls(
-        address curator,
-        address subvault,
-        address capSymbioticVault,
-        IVerifier.VerificationPayload[] memory leaves
-    ) internal view returns (SubvaultCalls memory calls) {
-        calls.payloads = leaves;
-        calls.calls = new Call[][](leaves.length);
-        uint256 iterator = 0;
-        iterator = ArraysLibrary.insert(
-            calls.calls,
-            SymbioticLibrary.getSymbioticCalls(
-                SymbioticLibrary.Info({
-                    symbioticVault: capSymbioticVault,
-                    subvault: subvault,
-                    subvaultName: "subvault1",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
-    }
+//         return ProofLibrary.generateMerkleProofs(leaves);
+//     }
 
-    function getSubvault2Proofs(address curator, address subvault)
-        internal
-        pure
-        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
-    {
-        leaves = new IVerifier.VerificationPayload[](42);
-        uint256 iterator = 0;
+//     function getSubvault1Descriptions(address curator, address subvault, address capSymbioticVault)
+//         internal
+//         view
+//         returns (string[] memory descriptions)
+//     {
+//         descriptions = new string[](8);
+//         uint256 iterator = 0;
+//         iterator = ArraysLibrary.insert(
+//             descriptions,
+//             SymbioticLibrary.getSymbioticDescriptions(
+//                 _getSubvault1SymbioticParams(curator, subvault, capSymbioticVault)
+//             ),
+//             iterator
+//         );
 
-        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        iterator = ArraysLibrary.insert(
-            leaves,
-            CapLenderLibrary.getCapLenderProofs(
-                bitmaskVerifier,
-                CapLenderLibrary.Info({
-                    asset: Constants.USDC,
-                    lender: Constants.CAP_LENDER,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//         assembly {
+//             mstore(descriptions, iterator)
+//         }
+//     }
 
-        iterator = ArraysLibrary.insert(
-            leaves,
-            ResolvLibrary.getResolvProofs(
-                bitmaskVerifier,
-                ResolvLibrary.Info({
-                    asset: Constants.USDC,
-                    usrRequestManager: Constants.USR_REQUEST_MANAGER,
-                    usr: Constants.USR,
-                    stUsr: Constants.STUSR,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//     function getSubvault1Calls(
+//         address curator,
+//         address subvault,
+//         address capSymbioticVault,
+//         IVerifier.VerificationPayload[] memory leaves
+//     ) internal view returns (SubvaultCalls memory calls) {
+//         calls.payloads = leaves;
+//         calls.calls = new Call[][](leaves.length);
+//         uint256 iterator = 0;
+//         iterator = ArraysLibrary.insert(
+//             calls.calls,
+//             SymbioticLibrary.getSymbioticCalls(_getSubvault1SymbioticParams(curator, subvault, capSymbioticVault)),
+//             iterator
+//         );
+//     }
 
-        iterator = ArraysLibrary.insert(
-            leaves,
-            CowSwapLibrary.getCowSwapProofs(
-                bitmaskVerifier,
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
-                })
-            ),
-            iterator
-        );
+//     function _getSubvault2CapLenderParams(address curator, address subvault)
+//         internal
+//         view
+//         returns (CapLenderLibrary.Info memory)
+//     {
+//         return CapLenderLibrary.Info({
+//             asset: Constants.USDC,
+//             lender: Constants.CAP_LENDER,
+//             subvault: subvault,
+//             subvaultName: "subvault2",
+//             curator: curator
+//         });
+//     }
 
-        assembly {
-            mstore(leaves, iterator)
-        }
+//     function _getSubvault2ResolvParams(address curator, address subvault)
+//         internal
+//         view
+//         returns (ResolvLibrary.Info memory)
+//     {
+//         return ResolvLibrary.Info({
+//             asset: Constants.USDC,
+//             usrRequestManager: Constants.USR_REQUEST_MANAGER,
+//             usr: Constants.USR,
+//             wstUSR: Constants.WSTUSR,
+//             subvault: subvault,
+//             subvaultName: "subvault2",
+//             curator: curator
+//         });
+//     }
 
-        return ProofLibrary.generateMerkleProofs(leaves);
-    }
+//     function _getSubvault2SwapModuleParams(address curator, address subvault, address swapModule)
+//         internal
+//         view
+//         returns (SwapModuleLibrary.Info memory)
+//     {
+//         return SwapModuleLibrary.Info({
+//             subvault: subvault,
+//             subvaultName: "subvault2",
+//             swapModule: swapModule,
+//             curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+//             assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USR))
+//         });
+//     }
 
-    function getSubvault2Descriptions(address curator, address subvault)
-        internal
-        view
-        returns (string[] memory descriptions)
-    {
-        descriptions = new string[](42);
-        uint256 iterator = 0;
-        iterator = ArraysLibrary.insert(
-            descriptions,
-            CapLenderLibrary.getCapLenderDescriptions(
-                CapLenderLibrary.Info({
-                    asset: Constants.USDC,
-                    lender: Constants.CAP_LENDER,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//     function getSubvault2Proofs(address curator, address subvault, address swapModule)
+//         internal
+//         view
+//         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+//     {
+//         leaves = new IVerifier.VerificationPayload[](42);
+//         uint256 iterator = 0;
 
-        iterator = ArraysLibrary.insert(
-            descriptions,
-            ResolvLibrary.getResolvDescriptions(
-                ResolvLibrary.Info({
-                    asset: Constants.USDC,
-                    usrRequestManager: Constants.USR_REQUEST_MANAGER,
-                    usr: Constants.USR,
-                    stUsr: Constants.STUSR,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+//         iterator = ArraysLibrary.insert(
+//             leaves,
+//             CapLenderLibrary.getCapLenderProofs(bitmaskVerifier, _getSubvault2CapLenderParams(curator, subvault)),
+//             iterator
+//         );
 
-        iterator = ArraysLibrary.insert(
-            descriptions,
-            CowSwapLibrary.getCowSwapDescriptions(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
-                })
-            ),
-            iterator
-        );
+//         iterator = ArraysLibrary.insert(
+//             leaves,
+//             ResolvLibrary.getResolvProofs(bitmaskVerifier, _getSubvault2ResolvParams(curator, subvault)),
+//             iterator
+//         );
 
-        assembly {
-            mstore(descriptions, iterator)
-        }
-    }
+//         iterator = ArraysLibrary.insert(
+//             leaves,
+//             SwapModuleLibrary.getSwapModuleProofs(
+//                 bitmaskVerifier, _getSubvault2SwapModuleParams(curator, subvault, swapModule)
+//             ),
+//             iterator
+//         );
 
-    function getSubvault2Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
-        internal
-        pure
-        returns (SubvaultCalls memory calls)
-    {
-        calls.payloads = leaves;
-        Call[][] memory calls_ = new Call[][](leaves.length);
-        uint256 iterator = 0;
+//         assembly {
+//             mstore(leaves, iterator)
+//         }
 
-        iterator = ArraysLibrary.insert(
-            calls_,
-            CapLenderLibrary.getCapLenderCalls(
-                CapLenderLibrary.Info({
-                    asset: Constants.USDC,
-                    lender: Constants.CAP_LENDER,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//         return ProofLibrary.generateMerkleProofs(leaves);
+//     }
 
-        iterator = ArraysLibrary.insert(
-            calls_,
-            ResolvLibrary.getResolvCalls(
-                ResolvLibrary.Info({
-                    asset: Constants.USDC,
-                    usrRequestManager: Constants.USR_REQUEST_MANAGER,
-                    usr: Constants.USR,
-                    stUsr: Constants.STUSR,
-                    subvault: subvault,
-                    subvaultName: "subvault2",
-                    curator: curator
-                })
-            ),
-            iterator
-        );
+//     function getSubvault2Descriptions(address curator, address subvault, address swapModule)
+//         internal
+//         view
+//         returns (string[] memory descriptions)
+//     {
+//         descriptions = new string[](42);
+//         uint256 iterator = 0;
+//         iterator = ArraysLibrary.insert(
+//             descriptions,
+//             CapLenderLibrary.getCapLenderDescriptions(_getSubvault2CapLenderParams(curator, subvault)),
+//             iterator
+//         );
 
-        iterator = ArraysLibrary.insert(
-            calls_,
-            CowSwapLibrary.getCowSwapCalls(
-                CowSwapLibrary.Info({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    curator: curator,
-                    assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USR))
-                })
-            ),
-            iterator
-        );
+//         iterator = ArraysLibrary.insert(
+//             descriptions, ResolvLibrary.getResolvDescriptions(_getSubvault2ResolvParams(curator, subvault)), iterator
+//         );
 
-        assembly {
-            mstore(calls_, iterator)
-        }
+//         iterator = ArraysLibrary.insert(
+//             descriptions,
+//             SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault2SwapModuleParams(curator, subvault, swapModule)),
+//             iterator
+//         );
 
-        calls.calls = calls_;
-    }
-}
+//         assembly {
+//             mstore(descriptions, iterator)
+//         }
+//     }
+
+//     function getSubvault2Calls(
+//         address curator,
+//         address subvault,
+//         address swapModule,
+//         IVerifier.VerificationPayload[] memory leaves
+//     ) internal view returns (SubvaultCalls memory calls) {
+//         calls.payloads = leaves;
+//         Call[][] memory calls_ = new Call[][](leaves.length);
+//         uint256 iterator = 0;
+
+//         iterator = ArraysLibrary.insert(
+//             calls_, CapLenderLibrary.getCapLenderCalls(_getSubvault2CapLenderParams(curator, subvault)), iterator
+//         );
+
+//         iterator = ArraysLibrary.insert(
+//             calls_, ResolvLibrary.getResolvCalls(_getSubvault2ResolvParams(curator, subvault)), iterator
+//         );
+
+//         iterator = ArraysLibrary.insert(
+//             calls_,
+//             SwapModuleLibrary.getSwapModuleCalls(_getSubvault2SwapModuleParams(curator, subvault, swapModule)),
+//             iterator
+//         );
+
+//         assembly {
+//             mstore(calls_, iterator)
+//         }
+
+//         calls.calls = calls_;
+//     }
+
+//     function _getSubvault3MorphoParams(address curator, address subvault) internal view returns (MorphoLibrary.Info memory) {
+
+//     }
+// }

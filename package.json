@@ -15,6 +15,7 @@
     "deploy:base:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep BASE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum": "forge script ./scripts/ethereum/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:ethereum:swap": "forge script ./scripts/ethereum/DeploySwapModule.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:ethereum:sync-deposit-queue": "forge script ./scripts/ethereum/DeploySyncDepositQueue.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:plasma:swap": "forge script ./scripts/plasma/DeploySwapModule.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:ethereum:test": "forge script ./scripts/ethereum/MainnetTest.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:tqeth": "forge script ./scripts/ethereum/tqETH.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
