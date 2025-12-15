@@ -41,6 +41,7 @@
     "test:acceptance:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/AcceptanceTest.t.sol",
     "test:migration:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/MigrationTest.t.sol",
     "test:solvency:streth": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/StrETHSolvencyTest.t.sol",
+    "test:sync-deposit-queue-impl": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 24018640 -vvv --match-path ./test/unit/queues/SyncDepositQueueImpl.t.sol",
     "test:swap": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/unit/utils/SwapModule.t.sol",
     "test:swap:integration": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/SwapModuleTest.t.sol",
     "coverage:report": "forge coverage --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 22730425 --force --report lcov && genhtml lcov.info -o report --branch-coverage && rm lcov.info",
