@@ -30,7 +30,7 @@ contract ResolvCollector is IDistributionCollector {
         uint256 pendingUSDT = 0;
 
         uint256 mintRequests = requestManager.mintRequestsCounter();
-        for (uint256 id = 0; id < mintRequests; id++) {
+        for (uint256 id = mintRequests - 1; id > mintRequests - 10; id--) {
             (, address provider, IUsrExternalRequestsManager.State state, uint256 amount, address token,) =
                 requestManager.mintRequests(id);
             if (state != IUsrExternalRequestsManager.State.CREATED || provider != holder) {
@@ -46,7 +46,7 @@ contract ResolvCollector is IDistributionCollector {
         }
 
         uint256 burnRequests = requestManager.mintRequestsCounter();
-        for (uint256 id = 0; id < burnRequests; id++) {
+        for (uint256 id = burnRequests; id > burnRequests - 10; id--) {
             (, address provider, IUsrExternalRequestsManager.State state, uint256 amount,,) =
                 requestManager.burnRequests(id);
             if (state != IUsrExternalRequestsManager.State.CREATED || provider != holder) {

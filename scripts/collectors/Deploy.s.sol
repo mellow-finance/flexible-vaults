@@ -7,15 +7,17 @@ import "./defi/CustomOracle.sol";
 import "./defi/protocols/AaveCollector.sol";
 import "./defi/protocols/ERC20Collector.sol";
 import "forge-std/Script.sol";
+import "forge-std/Test.sol";
 
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {Constants as EthereumConstants} from "../ethereum/Constants.sol";
-
 import {Constants as MonadConstants} from "../monad/Constants.sol";
+import {Constants as PlasmaConstants} from "../plasma/Constants.sol";
 
 import {MVTCustomOracle} from "./defi/instances/MVTCustomOracle.sol";
 import {rstETHPlusCustomOracle} from "./defi/instances/rstETHPlusCustomOracle.sol";
 import {strETHCustomOracle} from "./defi/instances/strETHCustomOracle.sol";
+import {strETHPlasmaCustomOracle} from "./defi/instances/strETHPlasmaCustomOracle.sol";
 import {tqETHCustomOracle} from "./defi/instances/tqETHCustomOracle.sol";
 
 import {CoreVaultsCollector} from "./defi/protocols/CoreVaultsCollector.sol";
@@ -31,13 +33,50 @@ import {rsETHOracle} from "./oracles/custom/rsETHOracle.sol";
 import {rstETHOracle} from "./oracles/custom/rstETHOracle.sol";
 import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
 
-contract Deploy is Script {
+contract Deploy is Script, Test {
     function _deployStrETHCustomCollector() internal {
-        strETHCustomOracle customOracle = new strETHCustomOracle();
-        customOracle.stateOverrides();
+        strETHCustomOracle customOracle =
+            new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
+        (address[] memory contracts, bytes[] memory bytecodes) = customOracle.stateOverrides();
 
-        uint256 tvl = customOracle.tvl(EthereumConstants.STRETH, EthereumConstants.WETH);
-        console2.log("tvl:", tvl);
+        for (uint256 i = 0; i < contracts.length; i++) {
+            string memory line =
+                string(abi.encodePacked('"', vm.toString(contracts[i]), '": "', vm.toString(bytecodes[i]), '",'));
+            console2.log(line);
+        }
+
+        // ICustomOracle.Balance[] memory balances =
+        //     customOracle.getDistributions(EthereumConstants.STRETH, EthereumConstants.WETH);
+        // for (uint256 i = 0; i < balances.length; i++) {
+        //     console2.log(
+        //         "subvault=%s, asset=%s, balance=%s",
+        //         balances[i].holder,
+        //         balances[i].asset,
+        //         vm.toString(balances[i].balance)
+        //     );
+        // }
+        // console2.log("tvl:", tvl);
+    }
+
+    function _deployStrETHPlasmaCustomCollector() internal {
+        strETHPlasmaCustomOracle customOracle =
+            new strETHPlasmaCustomOracle(address(PlasmaConstants.protocolDeployment().swapModuleFactory));
+
+        // console2.log(
+        //     customOracle.tvl(
+        //         PlasmaConstants.STRETH, PlasmaConstants.WETH)
+        // );
+
+        ICustomOracle.Balance[] memory balances =
+            customOracle.getDistributions(PlasmaConstants.STRETH, PlasmaConstants.WETH);
+        for (uint256 i = 0; i < balances.length; i++) {
+            console2.log(
+                "subvault=%s, asset=%s, balance=%s",
+                balances[i].holder,
+                balances[i].asset,
+                vm.toString(balances[i].balance)
+            );
+        }
     }
 
     function _deployRstETHPlusCustomCollector() internal {
@@ -67,30 +106,12 @@ contract Deploy is Script {
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
+        // address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
 
-        PriceOracle oracle = PriceOracle(0x7c2ff214dab06cF3Ece494c0b2893219043b500f);
+        // _deployStrETHCustomCollector();
+        // _deployStrETHPlasmaCustomCollector();
 
-        PriceOracle.TokenOracle[] memory oracles = new PriceOracle.TokenOracle[](3);
-        oracles[0].oracle = address(new rstETHOracle());
-        oracles[1].oracle = address(new rsETHOracle());
-        oracles[2].oracle = address(new weETHOracle());
-
-        address[] memory tokens = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7,
-                0x7a4EffD87C2f3C55CA251080b1343b605f327E3a,
-                0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee
-            )
-        );
-
-        oracle.setOracles(tokens, oracles);
-        // oracle.priceX96(tokens[0]);
-        // oracle.priceX96(tokens[1]);
-        // oracle.priceX96(tokens[2]);
-
-        oracle.transferOwnership(0x58B38d079e904528326aeA2Ee752356a34AC1206);
-        // revert("ok");
+        revert("ok");
     }
 }

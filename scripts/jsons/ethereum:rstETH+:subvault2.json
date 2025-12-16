@@ -1,6 +1,6 @@
 {
   "title": "ethereum:rstETH+:subvault2",
-  "merkle_root": "0x928e06ec1041833b751fe4b0670f3f2d138232747b4d6312329cf04a55c72442",
+  "merkle_root": "0x89c14900cc1dabe0ad88ff812e3010148fa072b792e7a74dd09ad7b983a29046",
   "merkle_proofs": [
     {
       "verificationType": 3,
@@ -31,7 +31,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
           "value": "0"
         },
@@ -40,12 +40,13 @@
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a696841a3a2047b2ab2be38f26ac9b42df22a24c1da20b212f2098dd82851c720000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a38659422a05938653af129adc9f0abd183fde25a9665076baae51b1f914a3e80000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x24ce546ac5eb72e651dd0a33494b08347ed706247d0706faa643ed4a3babb9ce",
-        "0xb09037978d9bc2d75a714b00da7b646f9bda2c7504bf654246688f67855e981e",
-        "0xaa31827525a508272ea6cbfbc67504ec6c639948f452ad6610e0e383773e5dfd",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0x18828b01d7b3c10625f21826b2e1de5c2d1ec6bd5785c28ccc5e5dfdbbcf1ded",
+        "0x9dd41df38764a406e9c89666d96ef4881d2356d68498e3076d0a5530e210c0f3",
+        "0xbfbb2daa48534111ad12a259585e007faa1006342db8b0eb6d8ff271d244c6a4",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
@@ -82,22 +83,23 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
           "value": "0"
         },
         "innerParameters": {
           "_asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
           "_amount": "any",
-          "_receiver": "0x88d09e8f4f889a9dca4fcb4de18b3af5856d8d4b"
+          "_receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a42fd17e369b5088ccf6a6a8993ea18406698581edd9853ca947425d66bb42d85000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a35a43899be9ade65dcfe7f9ecdce4536ef166bb7920dc6b76997be32eef9fb15000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa21ff242b944aa420b8391bdf0f37702e492df38136c1756cbbbefb6ab0b34bb",
-        "0xb66b68434da889fbfbbca34c860714c3b3d141d6e8aecd516ec3ee204530a933",
-        "0x605de9e92799bb213fb0e7889eadf742e90a46d4b3300fbf02c0498ff968d3f2",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0x84518c39f9b26b744badb53ead6dd66f1e6b51d8f2714fb3d4dc9979f7bfb22a",
+        "0x3782e41fea8001f38892c4e07acedc4686e89b4f1c48e59f4a4cd44609801083",
+        "0x10a221199ea92fdfae15f738f9ef70f4af97f3d1c499003a9371bbb6bdf86a49",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     },
     {
@@ -134,23 +136,23 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
           "value": "0"
         },
         "innerParameters": {
           "_asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
           "_amount": "any",
-          "_agent": "0x88d09e8f4f889a9dca4fcb4de18b3af5856d8d4b"
+          "_agent": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a12823b4b1ecc329b7df8ea47356e35c1c71acb8f986db2d9a503418c4a427bc2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab642700d417c189a00c1aeafc6d9e7a0b6aee35d76af71b4746bbbb79d2235cf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x07531efc1970ea543aa5b296a907e872988df651693a2c952d27d06b62b8b256",
-        "0x0ea81c0df01fc354ae1f5d848ffeb6a505b75237e9fa427b7f8c2936b6dc29c8",
-        "0xf7c104b9a446883be5eebaef2962df6d9c0ffd7ca9945791c365ca2a60e78541",
-        "0xc398e60cba88391f9cf37f30365c03a2e9f91d430cefe72552341d4f51be84d5",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0x2f99619f105f9dd06a9571e3af68b3741578f63791ed061dc6fbfb3db7ebec4c",
+        "0x6e0a4ad5009702663084fab8cf03a769b03b986360681d33da87243da7c9de95",
+        "0xbfbb2daa48534111ad12a259585e007faa1006342db8b0eb6d8ff271d244c6a4",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
@@ -182,7 +184,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
           "value": "0"
         },
@@ -191,12 +193,13 @@
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0e4b77826c6190c5104e01b182383af98a2b90c365873d751b1452c43d13f9c0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae650263fbe1bd1a5aeed09ef3042076f2aaa5fc6d771f4f73bb597fa0bca4ee6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xad5532d9925f1cff03b84e1ab7d06151502de1acea2b537b4ee3e70c0febcff8",
-        "0x0a6899c2461dbd3277ca16bed2a04db63225dd632b47ead77fddbf5797c21898",
-        "0xacbb2bb41c5ca5de0ea61307490d21e2d2d2c561f17e7e666bb6ace3af8d9b92",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0xa7cca1f4ecdcde566fc97136ca651143f9c7b6d8a585f44232f1b237ad47b2ff",
+        "0xf2e7026669400f32f007120fa8f625313f89f8aa2eee5dc95296f9bce73ff171",
+        "0x7b97620388bbf5f6c09727e347b9d9fddd65df65ab82155af5f11bd6ff3a9929",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     },
     {
@@ -228,7 +231,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0x66a1e37c9b0eaddca17d3662d6c05f4decf3e110",
           "value": "0"
         },
@@ -237,12 +240,12 @@
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a03cb185335369949aa2cb214805c01b2323d0c1ddfb48c80efae9020cb41ebc0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a18a0037d12c7bcf10e582ccab04dbe42832c5cf8b8770bb63c9228bc7ee54612000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xaadbfbfac46956c196c73a30c6fbd70249a526befee7b5e6d52916e85fe67111",
-        "0x0a6899c2461dbd3277ca16bed2a04db63225dd632b47ead77fddbf5797c21898",
-        "0xacbb2bb41c5ca5de0ea61307490d21e2d2d2c561f17e7e666bb6ace3af8d9b92",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0xffbb4bbbd559697a47555876af311fe12df6fc183b7be76c9a0195da96b08523",
+        "0xce463e592b13ba57b31b32b02d14d2dacfe67217fa4f5c56dfc5a2ed366a8a7e",
+        "0xc9c999b6b92db5d572c6017d25698a71b2ddd7f1b563308a41b621c40007a628",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
@@ -273,7 +276,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xac85ef29192487e0a109b7f9e40c267a9ea95f2e",
           "value": "0"
         },
@@ -283,12 +286,13 @@
           "_minMintAmount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a26a5bf68351f42477591960879ef70edf2561493f321825b583c22f6e431bdff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac2fa1f110c3a577057037f34e91b43027f23950241bfd4117ca28bb351790565000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x4d2e3583bcee1428d81a96a29b91fa6c1b0686bd9c4c6f767bddeb79110a4f66",
-        "0x6f908c8abdc1b9dc06248815b7f7ed2d8a3c046be11d356e5e5015649b401d06",
-        "0xaa31827525a508272ea6cbfbc67504ec6c639948f452ad6610e0e383773e5dfd",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0x615e742ad58713ac1733098815bd3bb43ba88207de189069bae5f134c0de1039",
+        "0xfff13a2c51c6400bb43afeecc0161ef66539756068d8beb232b46d7cf054536d",
+        "0x2cf960ba4278f0865b7ab9908e3528b962c104f5f71fa45518b5e7a53449db76",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     },
     {
@@ -319,7 +323,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xac85ef29192487e0a109b7f9e40c267a9ea95f2e",
           "value": "0"
         },
@@ -329,12 +333,13 @@
           "_minWithdrawalAmount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a53b323d62618f958c2038671ae73f4e93149cacd3e39e1f26a968cddd849d1c5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5f283360fa68280c5d516758c087ed591920174d0fde01e85d3cb10d2312e30b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xdc591f13701c984a703f5b7adf4e0f7ec2a88848a95b192c4e5cdcb3c848bdeb",
-        "0x82fb94cea3158ddf763709aa7c8502daf9e61dee5cc234741652e956f15baba4",
-        "0xc398e60cba88391f9cf37f30365c03a2e9f91d430cefe72552341d4f51be84d5",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0x3fb0e6827fcf3433fe52e263ec81f032c0134b6fe3c3d5a3c2c057c1372a065f",
+        "0x4187bbe8e6982969928f8c27bd5ccb2b1b2e408029dd82e9fe429b2a6c13651c",
+        "0xe8bd63295ef1b90aecf6a0974d54f32c750eca7b2d400807763d1a0294d9bce5",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
@@ -355,7 +360,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xac85ef29192487e0a109b7f9e40c267a9ea95f2e",
           "value": "0"
         },
@@ -363,13 +368,13 @@
           "_id": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a79f43de3b400121fd005c7f168b557f25acbf6d112ba39a3c0a463546753614400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aab8e52d79283ccbe0d9d35d0f50f61a325ffadfce57916e7dcb8716092f7670400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x05d14bd84ba11e56de357b2b17bdb28275ebc114a643f283dcdf309abba8456d",
-        "0x0ea81c0df01fc354ae1f5d848ffeb6a505b75237e9fa427b7f8c2936b6dc29c8",
-        "0xf7c104b9a446883be5eebaef2962df6d9c0ffd7ca9945791c365ca2a60e78541",
-        "0xc398e60cba88391f9cf37f30365c03a2e9f91d430cefe72552341d4f51be84d5",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0x30a1ab6f8eec62515c177f8bc95c98df8a2c3cb4028210ef25a8d4faa5b864eb",
+        "0x7edd127ea965c4d1b277fb538ec51015a8d1d7ca70c3f1d3bf07560dcc37f6d8",
+        "0xe8bd63295ef1b90aecf6a0974d54f32c750eca7b2d400807763d1a0294d9bce5",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
@@ -390,7 +395,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xac85ef29192487e0a109b7f9e40c267a9ea95f2e",
           "value": "0"
         },
@@ -398,12 +403,13 @@
           "_id": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a040137c3a7507f7216da6f7984a58b1e2db509669b5bb55ef4337a61b6a381cb00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a37bb67220e84209f21a78a6903fe8d0c59b7be8b4ce0539e71746a20ff312f3e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xcfde9ac6c00b6f4fbc29f1ffaf32730da8b091872f0da8d4e9c44da277e9df84",
-        "0xafc3154f264b07b056c9edcb311d40057728868496a9f7da827a52c63e274822",
-        "0xacbb2bb41c5ca5de0ea61307490d21e2d2d2c561f17e7e666bb6ace3af8d9b92",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0x185cc64d7da6c03aad21fe60d1723003737fdbc6c49a49b777749b97b0b3bdc2",
+        "0x9dd41df38764a406e9c89666d96ef4881d2356d68498e3076d0a5530e210c0f3",
+        "0xbfbb2daa48534111ad12a259585e007faa1006342db8b0eb6d8ff271d244c6a4",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
@@ -434,7 +440,7 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xac85ef29192487e0a109b7f9e40c267a9ea95f2e",
           "value": "0"
         },
@@ -444,18 +450,19 @@
           "_minExpectedAmount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abfff361aaa4dcab1074f3a1add30270b00d41ee4603bf5f84608c806ad3700c5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1ec0c285322c798bd0ba00af5de09bcaf2bda919a0a938a0927f5598bf431930000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa3e32ca371bc6664bb408199bd2db8c3e9036bed3929a1d9754dc89e0707b4cb",
-        "0xb66b68434da889fbfbbca34c860714c3b3d141d6e8aecd516ec3ee204530a933",
-        "0x605de9e92799bb213fb0e7889eadf742e90a46d4b3300fbf02c0498ff968d3f2",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0x099bb531ccb1556c2e04c7d59f8ce756f9894c6339a42ec0583654bbee9ba6dc",
+        "0xfab07cad9a559d17dce7bc1e5cd4ea5824b98aec17979d8830beb592a3d676b1",
+        "0xce463e592b13ba57b31b32b02d14d2dacfe67217fa4f5c56dfc5a2ed366a8a7e",
+        "0xc9c999b6b92db5d572c6017d25698a71b2ddd7f1b563308a41b621c40007a628",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(USR).approve(0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4, anyInt)",
+        "description": "IERC20(USR).approve(IERC4626(Wrapped stUSR), anyInt)",
         "abi": {
           "inputs": [
             {
@@ -481,196 +488,916 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0x66a1e37c9b0eaddca17d3662d6c05f4decf3e110",
           "value": "0"
         },
         "innerParameters": {
-          "to": "0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4",
+          "to": "0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055",
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5ad906470cabfaa3f4f1b87708d738757ec4dd81035d3086c138527514272e09000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab7498d1abee267e528a2c545240c50dde63f47d60838fe0009cb4fadd1723839000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x3729480086b8903bd0b3a83e5147c235706b85da1945adcc44227558364e3fa4",
-        "0xb09037978d9bc2d75a714b00da7b646f9bda2c7504bf654246688f67855e981e",
-        "0xaa31827525a508272ea6cbfbc67504ec6c639948f452ad6610e0e383773e5dfd",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0xdbe4d5e754e63d2f47120467fb718e4467bbf07fa28619548514ade0c09342be",
+        "0x11b2eea35f2a6f920a988fcf5e517cdeba4026c30d75ea71ea6d9fa37256928f",
+        "0xc9c999b6b92db5d572c6017d25698a71b2ddd7f1b563308a41b621c40007a628",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "StUSR(0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4).deposit(anyInt)",
+        "description": "IERC4626(Wrapped stUSR).deposit(anyInt, 0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535)",
         "abi": {
           "inputs": [
             {
-              "name": "_value",
+              "internalType": "uint256",
+              "name": "assets",
               "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
             }
           ],
           "name": "deposit",
-          "outputs": [],
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            }
+          ],
           "stateMutability": "nonpayable",
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
-          "target": "0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055",
           "value": "0"
         },
         "innerParameters": {
-          "_usrAmount": "any"
+          "assets": "any",
+          "receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8024b33f57ef9b3a298414ea2a894baead45c25d687a29c8c27cb2dd6ea6fa1300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a44d395a0ba1d7b520b81fe8808912bae4ea1eff03bb764ebf3168800c8ffc8b0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x718f88c766791acd319a585aaebadc509e89c493fcbb7d3b83a12faf5fa07056",
-        "0x07709b187392c60e1ed5d6f12979a9daffe23b286b86471a6db7297ac3cb6381",
-        "0x605de9e92799bb213fb0e7889eadf742e90a46d4b3300fbf02c0498ff968d3f2",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0x9cbecf6660877c58c74bf4a2e9478c3cd791fa164d5af466208d4c97611f01ef",
+        "0x8c16b32a63ee545dee734e54a87a3bfbc10230e0f31e2d3eb5ae713f70f78183",
+        "0x7b97620388bbf5f6c09727e347b9d9fddd65df65ab82155af5f11bd6ff3a9929",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "StUSR(0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4).withdraw(anyInt)",
+        "description": "IERC4626(Wrapped stUSR).mint(anyInt, 0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "name": "mint",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a719d32e989e3ee00d9a73ca659b37f71d0e89ddfa84547b77662d6b7d4a8f9b8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1d6b5b7c78df2bdfef66bb2b0a027227ff18a7e6388334cac0909490fbb55d51",
+        "0x6e0a4ad5009702663084fab8cf03a769b03b986360681d33da87243da7c9de95",
+        "0xbfbb2daa48534111ad12a259585e007faa1006342db8b0eb6d8ff271d244c6a4",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC4626(Wrapped stUSR).redeem(anyInt, 0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535, 0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "redeem",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "owner": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5dd44e7f9b09e5a9fdafb16eb19c13a10bae25ec4773b82b69cc6c39f1a7ebdb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x5a4c534f128d2ba38b5a5525d3a58892c3146a8dbf68d1349945049af3db60c2",
+        "0xfff13a2c51c6400bb43afeecc0161ef66539756068d8beb232b46d7cf054536d",
+        "0x2cf960ba4278f0865b7ab9908e3528b962c104f5f71fa45518b5e7a53449db76",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC4626(Wrapped stUSR).withdraw(anyInt, 0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535, 0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "withdraw",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "owner": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad986e3824b195b1f0940f5b1bdc5a0d5178a5f7288f8913b130c968358add584000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc04671433720a435b510cb5b465394665f9bf8ecb1a86a6d2882ca2d63ddef0a",
+        "0xe601f679fff9848489483b54dbf706eaa73a7ad57ebf38ac1a1279bcb8a9e365",
+        "0x823c36a9007d3c2981c3a5b8ef50a55e05970c44babc7275edf6d43014a985b0",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(wstUSR).approve(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac23aeabb51ef40bec80ee43ab302daf036907835e0209369e34f29bfea52a4de000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb183b45c20bf929e9ab4eaec1688fc318b87237a8d1fb17ad9dc721723ebdd83",
+        "0xf2e7026669400f32f007120fa8f625313f89f8aa2eee5dc95296f9bce73ff171",
+        "0x7b97620388bbf5f6c09727e347b9d9fddd65df65ab82155af5f11bd6ff3a9929",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(USDC).approve(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5fa681849d333cf6835aedc5a1913debd84cf106db7dae9d961b8c9ba868e296000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xec27e7443026dca2d9164340f5ebf168169a157984230db0bb987c81611f5c63",
+        "0x11b2eea35f2a6f920a988fcf5e517cdeba4026c30d75ea71ea6d9fa37256928f",
+        "0xc9c999b6b92db5d572c6017d25698a71b2ddd7f1b563308a41b621c40007a628",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).supply(USDC/wstUSR/0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc)",
         "abi": {
           "constant": false,
           "inputs": [
             {
-              "name": "wad",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "loanToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "collateralToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "irm",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "lltv",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct MarketParams",
+              "name": "marketParams",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "onBehalf",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "name": "supply",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
               "type": "uint256"
             }
           ],
-          "name": "withdraw",
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "collateralToken": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
+            "oracle": "0xDa850a72080024e17c1590fbf6ea7a826dB90760",
+            "irm": "0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC",
+            "lltv": "915000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "data": ""
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab19eec4a77cffc9e7621938a98140c69fe1bd52137d97af40a9c3cd3ccbc4bab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x9af7c6f8396f2ef8b0fefb4b931f5caf8d5dd45d57ac8a598283326435197454",
+        "0x41c09c49a7459bb1c13b40120026e57acf99fc1cd750d1faee5f7180bc64a533",
+        "0x10a221199ea92fdfae15f738f9ef70f4af97f3d1c499003a9371bbb6bdf86a49",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).supplyCollateral(USDC/wstUSR/0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc)",
+        "abi": {
+          "constant": false,
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "loanToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "collateralToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "irm",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "lltv",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct MarketParams",
+              "name": "marketParams",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "onBehalf",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "name": "supplyCollateral",
           "outputs": [],
           "payable": false,
           "stateMutability": "nonpayable",
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
-          "target": "0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
           "value": "0"
         },
         "innerParameters": {
-          "_usrAmount": "any"
+          "marketParams": {
+            "loanToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "collateralToken": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
+            "oracle": "0xDa850a72080024e17c1590fbf6ea7a826dB90760",
+            "irm": "0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC",
+            "lltv": "915000000000000000"
+          },
+          "assets": "any",
+          "onBehalf": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "data": ""
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae0e6525ae269ff023c2fc32473be3bdbd986d0db09347c4693aa2a84d490000300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9790c1fa40db8aa0d17dcca36cccded862d8816931813bef7e97521b0e75708000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x52cf05e1a9c0b8f90ee2f152df264e6b8d2b85a649c721da510fab6ad0ee7e55",
-        "0x07709b187392c60e1ed5d6f12979a9daffe23b286b86471a6db7297ac3cb6381",
-        "0x605de9e92799bb213fb0e7889eadf742e90a46d4b3300fbf02c0498ff968d3f2",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0x072d4b4254ca931de33eaf160c086034ef58589c6033e0394924c1b6213a4023",
+        "0xfab07cad9a559d17dce7bc1e5cd4ea5824b98aec17979d8830beb592a3d676b1",
+        "0xce463e592b13ba57b31b32b02d14d2dacfe67217fa4f5c56dfc5a2ed366a8a7e",
+        "0xc9c999b6b92db5d572c6017d25698a71b2ddd7f1b563308a41b621c40007a628",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "StUSR(0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4).withdrawAll()",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).repay(USDC/wstUSR/0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc)",
         "abi": {
-          "inputs": [],
-          "name": "withdrawAll",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
-          "target": "0x6c8984bc7dbbedaf4f6b2fd766f16ebb7d10aab4",
-          "value": "0"
-        },
-        "innerParameters": {}
-      },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab30b3a93c0b6a58c1e34ff1fcd3a0d92edcd4e5385c2e44b044a3ec3cf2f493c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
-      "proof": [
-        "0xfb317a886310575f9ee3fb30c8d58ee8eefdc1b1f354b947c812df56026c7438",
-        "0x82fb94cea3158ddf763709aa7c8502daf9e61dee5cc234741652e956f15baba4",
-        "0xc398e60cba88391f9cf37f30365c03a2e9f91d430cefe72552341d4f51be84d5",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
-      ]
-    },
-    {
-      "verificationType": 3,
-      "description": {
-        "description": "CowswapSettlement.setPreSignature(anyBytes(56), anyBool)",
-        "abi": {
+          "constant": false,
           "inputs": [
             {
-              "internalType": "bytes",
-              "name": "orderUid",
-              "type": "bytes"
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "loanToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "collateralToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "irm",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "lltv",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct MarketParams",
+              "name": "marketParams",
+              "type": "tuple"
             },
             {
-              "internalType": "bool",
-              "name": "signed",
-              "type": "bool"
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "onBehalf",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
             }
           ],
-          "name": "setPreSignature",
-          "outputs": [],
+          "name": "borrow",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "payable": false,
           "stateMutability": "nonpayable",
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
-          "target": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
           "value": "0"
         },
         "innerParameters": {
-          "orderUid": "any",
-          "signed": "any"
+          "marketParams": {
+            "loanToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "collateralToken": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
+            "oracle": "0xDa850a72080024e17c1590fbf6ea7a826dB90760",
+            "irm": "0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC",
+            "lltv": "915000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "data": ""
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a90c07055cfa4aec8b2b43da55609ccb7de74301ce4efd608fb5a35415d704a3100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a463bf1580adf3c2d6713c8b0b2818bc7aabf78913d3c2c910dd522c10178fb45000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xb5790780d2a41d35759695f1c186c3dd75f28d61f26046e70b8f1c8e52d3589b",
-        "0xafc3154f264b07b056c9edcb311d40057728868496a9f7da827a52c63e274822",
-        "0xacbb2bb41c5ca5de0ea61307490d21e2d2d2c561f17e7e666bb6ace3af8d9b92",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0xb9faaf68351601255a85f169e2d3617e74c320b86abb8999d59edd6944f8c915",
+        "0xe601f679fff9848489483b54dbf706eaa73a7ad57ebf38ac1a1279bcb8a9e365",
+        "0x823c36a9007d3c2981c3a5b8ef50a55e05970c44babc7275edf6d43014a985b0",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "CowswapSettlement.invalidateOrder(anyBytes(56))",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).borrow(USDC/wstUSR/0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc)",
         "abi": {
+          "constant": false,
           "inputs": [
             {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "loanToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "collateralToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "irm",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "lltv",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct MarketParams",
+              "name": "marketParams",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "onBehalf",
+              "type": "address"
+            },
+            {
               "internalType": "bytes",
-              "name": "orderUid",
+              "name": "data",
               "type": "bytes"
             }
           ],
-          "name": "invalidateOrder",
-          "outputs": [],
+          "name": "repay",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "payable": false,
           "stateMutability": "nonpayable",
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
-          "target": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
           "value": "0"
         },
         "innerParameters": {
-          "orderUid": "any"
+          "marketParams": {
+            "loanToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "collateralToken": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
+            "oracle": "0xDa850a72080024e17c1590fbf6ea7a826dB90760",
+            "irm": "0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC",
+            "lltv": "915000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acb1ee1ea8f3a42d4045d4fe040487f7d38634cf28eb7f31b6aa490bb09204ec9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a504e3eba24c4f61a80c6524691bb607e184cde142a2d582f358742bd9216c39200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x154982351e16bbb2b854b80cc28402eadd3d71aff702cdf9b432f6d77c73aa5b",
-        "0xe850a0751c973c86e364ddf0465b1e8dfced4d44e42b609f8ee4c56134206d13",
-        "0xf7c104b9a446883be5eebaef2962df6d9c0ffd7ca9945791c365ca2a60e78541",
-        "0xc398e60cba88391f9cf37f30365c03a2e9f91d430cefe72552341d4f51be84d5",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0x42b7b378d63743c36cfbef6f367f6439564173e69e6f419d36d406acefa91ede",
+        "0x11cba837cfe8c326115c01ba3b702d8b7e8ec2dd077b6d1c9688484f8f3dc5ea",
+        "0x2cf960ba4278f0865b7ab9908e3528b962c104f5f71fa45518b5e7a53449db76",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(USDC).approve(CowswapVaultRelayer, anyInt)",
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).withdraw(USDC/wstUSR/0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc)",
+        "abi": {
+          "constant": false,
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "loanToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "collateralToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "irm",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "lltv",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct MarketParams",
+              "name": "marketParams",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "onBehalf",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "name": "withdraw",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "collateralToken": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
+            "oracle": "0xDa850a72080024e17c1590fbf6ea7a826dB90760",
+            "irm": "0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC",
+            "lltv": "915000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9904cb32ce750250b56b7c9d3e8abaa3bdec2300c366be96e6f721b577bdd83a00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc05accaceebefb2373c2d255ad9214ea7eff2152286cfdc5260022804ce7d543",
+        "0xd214df132d4a9ba399be22a2b6513f68e275ea2b3c4552b16ad43836d78ac8f0",
+        "0x823c36a9007d3c2981c3a5b8ef50a55e05970c44babc7275edf6d43014a985b0",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IMorpho(0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb).withdrawCollateral(USDC/wstUSR/0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc)",
+        "abi": {
+          "constant": false,
+          "inputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "loanToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "collateralToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "irm",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "lltv",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct MarketParams",
+              "name": "marketParams",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "onBehalf",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "name": "withdrawCollateral",
+          "outputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "collateralToken": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
+            "oracle": "0xDa850a72080024e17c1590fbf6ea7a826dB90760",
+            "irm": "0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC",
+            "lltv": "915000000000000000"
+          },
+          "assets": "any",
+          "onBehalf": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535",
+          "receiver": "0x8aa55a37b0aacdaa585d024cb6747f55ce3f9535"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8d79a5a7d52138f36fbfb3030aa0a8b499885a830ade3cf231e68f1da31a92a900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8f8288b472c95d17bd150a2a883990f1138fd959e474e750e9e1870b40c06f2d",
+        "0x41c09c49a7459bb1c13b40120026e57acf99fc1cd750d1faee5f7180bc64a533",
+        "0x10a221199ea92fdfae15f738f9ef70f4af97f3d1c499003a9371bbb6bdf86a49",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(wstETH).approve(ISwapModule(0x68c32b2f49c80e0f261994e0979edad5648d3589), any)",
         "abi": {
           "inputs": [
             {
@@ -696,68 +1423,233 @@
           "type": "function"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x68c32b2f49c80e0f261994e0979edad5648d3589",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a230fd3abdd6a61c408a76f297c118b39c4e3e49192949fd18123a40c5ee6301b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x35eddb2df0bde836a45bded472318ec532d89defa42168d54ba79fcfae242f97",
+        "0x4187bbe8e6982969928f8c27bd5ccb2b1b2e408029dd82e9fe429b2a6c13651c",
+        "0xe8bd63295ef1b90aecf6a0974d54f32c750eca7b2d400807763d1a0294d9bce5",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0x68c32b2f49c80e0f261994e0979edad5648d3589).pushAssets(wstETH, any)",
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x68c32b2f49c80e0f261994e0979edad5648d3589",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae6d4b037dbb1c094b34e906cc9a28dde21fa1cb8b3715d741b6a4b7f48f50bef000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd999a9d9261836de2850431c30783361ef085e3f4d74f4b9d5efec309c14a324",
+        "0xd214df132d4a9ba399be22a2b6513f68e275ea2b3c4552b16ad43836d78ac8f0",
+        "0x823c36a9007d3c2981c3a5b8ef50a55e05970c44babc7275edf6d43014a985b0",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0x68c32b2f49c80e0f261994e0979edad5648d3589).pullAssets(wstETH, any)",
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x68c32b2f49c80e0f261994e0979edad5648d3589",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afd70e36c1e8c4df3a1a42abdc96cfc446530a143ffb5379c41768c46b30155e1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x31a9d5abbea583289ae5d27d1bea35607f3816151a422991a6e4a4a5fac67ea1",
+        "0x7edd127ea965c4d1b277fb538ec51015a8d1d7ca70c3f1d3bf07560dcc37f6d8",
+        "0xe8bd63295ef1b90aecf6a0974d54f32c750eca7b2d400807763d1a0294d9bce5",
+        "0xea0b214788513e63fbd9d18de778df68f6d7255687a6231fe1b961a5d3867b20",
+        "0xb781293e101baef0c951910fbd8aa6cafb83da063a323c0605cdd39658efe52b"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(USDC).approve(ISwapModule(0x68c32b2f49c80e0f261994e0979edad5648d3589), any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
           "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
           "value": "0"
         },
         "innerParameters": {
-          "to": "0xc92e8bdf79f0507f65a392b0ab4667716bfe0110",
+          "to": "0x68c32b2f49c80e0f261994e0979edad5648d3589",
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8f607fc6618adb25d763f5147244634ee6cac00d19293a6983cc0d1782b53155000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a33e5ddb8e399ede700a8dc2cef22c62781e5e0c03966bf4ee162291df8b2b5ab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x3a924eea2995d18d8b2631a3fc15ee4e917b9eaae177bc0fa3964ac9f26757fd",
-        "0x6f908c8abdc1b9dc06248815b7f7ed2d8a3c046be11d356e5e5015649b401d06",
-        "0xaa31827525a508272ea6cbfbc67504ec6c639948f452ad6610e0e383773e5dfd",
-        "0x44063cf28ef18425cb3f163dd2b9b031b09eec9fe2c69ab4a6c14de7215fb002"
+        "0x56ba87e5442d70181279607cb77e0ec6cdec7c90215870f30c6179d6782f1d2b",
+        "0x11cba837cfe8c326115c01ba3b702d8b7e8ec2dd077b6d1c9688484f8f3dc5ea",
+        "0x2cf960ba4278f0865b7ab9908e3528b962c104f5f71fa45518b5e7a53449db76",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(USR).approve(CowswapVaultRelayer, anyInt)",
+        "description": "ISwapModule(0x68c32b2f49c80e0f261994e0979edad5648d3589).pushAssets(USDC, any)",
         "abi": {
+          "type": "function",
+          "name": "pushAssets",
           "inputs": [
             {
-              "internalType": "address",
-              "name": "to",
-              "type": "address"
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
             },
             {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
             }
           ],
-          "name": "approve",
-          "outputs": [
-            {
-              "internalType": "bool",
-              "name": "",
-              "type": "bool"
-            }
-          ],
-          "stateMutability": "nonpayable",
-          "type": "function"
+          "outputs": [],
+          "stateMutability": "payable"
         },
         "parameters": {
-          "caller": "0xd134000450e789311f9f11609f6164a35bbf604e",
-          "target": "0x66a1e37c9b0eaddca17d3662d6c05f4decf3e110",
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x68c32b2f49c80e0f261994e0979edad5648d3589",
           "value": "0"
         },
         "innerParameters": {
-          "to": "0xc92e8bdf79f0507f65a392b0ab4667716bfe0110",
-          "amount": "any"
+          "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "value": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab803a67a070d06c52bbb958edd78de86cd5b98268f4db8e1c6d71c30556c3fd6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7b3627ec6b7b6c2dc7a81d77e98d7cc7893fb4db3abd79915300f94ad8e71608000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x1328a95afcce3f39c8a9e658432ef58d90863d7e94df8dd0d86374ae8440a8e6",
-        "0xe850a0751c973c86e364ddf0465b1e8dfced4d44e42b609f8ee4c56134206d13",
-        "0xf7c104b9a446883be5eebaef2962df6d9c0ffd7ca9945791c365ca2a60e78541",
-        "0xc398e60cba88391f9cf37f30365c03a2e9f91d430cefe72552341d4f51be84d5",
-        "0x9224170846aac5e0b87b2471f4d62722d35c8b42ef838d0eb9975d41b04d5096"
+        "0xa4f39d97c6939a7604884421032134aa287a3385b6538f8aecd46fa147d62bf8",
+        "0x8c16b32a63ee545dee734e54a87a3bfbc10230e0f31e2d3eb5ae713f70f78183",
+        "0x7b97620388bbf5f6c09727e347b9d9fddd65df65ab82155af5f11bd6ff3a9929",
+        "0xa6f841007b3e353effb7fce75760fa10f7739bc7d9ddc335a526827c4d6c7b51",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0x68c32b2f49c80e0f261994e0979edad5648d3589).pullAssets(USDC, any)",
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
+          "target": "0x68c32b2f49c80e0f261994e0979edad5648d3589",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abd8039b9cff8be28adf023a284c6aeab56fc40238c61658b16cfedca8f72ba7f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8f4fdf1cc7d87b4abb504dfddd8ccdca6f73665fa6a99aadddab8f6d005121fe",
+        "0x3782e41fea8001f38892c4e07acedc4686e89b4f1c48e59f4a4cd44609801083",
+        "0x10a221199ea92fdfae15f738f9ef70f4af97f3d1c499003a9371bbb6bdf86a49",
+        "0xc4600959d94ffb13a741c27f808fd2b27cc89ac8fad6c95719e91737d3968b1d",
+        "0xa06950d46a0cc4b2b97d0ee61f4fcb1893eed4002dc9e885f902d0e55f3380bd"
       ]
     }
   ]

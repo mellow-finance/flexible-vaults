@@ -3,6 +3,8 @@ pragma solidity 0.8.25;
 
 import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
 
+import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
+import {IMorpho} from "./interfaces/IMorpho.sol";
 import {CCIPClient} from "./libraries/CCIPClient.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
@@ -46,6 +48,29 @@ library JsonLibrary {
         } else {
             result = string(abi.encodePacked('"', parameter.name, '":"', parameter.value, '"'));
         }
+    }
+
+    function toJson(ILayerZeroOFT.SendParam memory params) internal pure returns (string memory json) {
+        json = string(
+            abi.encodePacked(
+                '{"dstEid": "',
+                _this().toString(params.dstEid),
+                '", ',
+                ' "to": "',
+                _this().toString(params.to),
+                '",',
+                ' "amountLD": "any",',
+                ' "minAmountLD": "any",',
+                ' "extraOptions": "0x",',
+                ' "composeMsg": "0x",',
+                ' "oftCmd": "0x"',
+                "}"
+            )
+        );
+    }
+
+    function toJson(ILayerZeroOFT.MessagingFee memory /* params */ ) internal pure returns (string memory json) {
+        json = string(abi.encodePacked("{", '"nativeFee": "any",', ' "lzTokenFee": "0"}'));
     }
 
     function toJson(CCIPClient.EVM2AnyMessage memory message) internal pure returns (string memory json) {
@@ -179,5 +204,15 @@ library JsonLibrary {
             array[i] = _this().toString(a[i]);
         }
         return toJson(array);
+    }
+
+    function toJson(IMorpho.MarketParams memory marketParams) internal pure returns (string memory json) {
+        ParameterLibrary.Parameter[] memory params;
+        params = ParameterLibrary.build("loanToken", _this().toString(marketParams.loanToken));
+        params = ParameterLibrary.add(params, "collateralToken", _this().toString(marketParams.collateralToken));
+        params = ParameterLibrary.add(params, "oracle", _this().toString(marketParams.oracle));
+        params = ParameterLibrary.add(params, "irm", _this().toString(marketParams.irm));
+        params = ParameterLibrary.add(params, "lltv", _this().toString(marketParams.lltv));
+        return toJson(params);
     }
 }

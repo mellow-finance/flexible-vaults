@@ -29,7 +29,7 @@ contract MVTCustomOracle {
 
     constructor() {
         impl = new CustomOracle(Constants.AAVE_V3_ORACLE, Constants.WMON);
-        erc20Collector = new ERC20Collector();
+        erc20Collector = new ERC20Collector(address(0));
         erc4626Collector = new ERC4626Collector();
 
         address[] memory protocols = ArraysLibrary.makeAddressArray(abi.encode(erc20Collector, erc4626Collector));

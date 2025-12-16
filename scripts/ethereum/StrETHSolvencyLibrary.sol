@@ -13,7 +13,9 @@ import "../common/ArraysLibrary.sol";
 import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
 import "../common/RandomLib.sol";
+
 import "../common/interfaces/Imports.sol";
+import "../common/protocols/CowSwapLibrary.sol";
 
 import "./Constants.sol";
 
