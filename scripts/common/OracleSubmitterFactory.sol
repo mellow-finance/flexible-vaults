@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../../src/oracles/OracleSubmitter.sol";
 import "./interfaces/IOracleSubmitterFactory.sol";
 
 contract OracleSubmitterFactory is IOracleSubmitterFactory {
@@ -10,7 +11,8 @@ contract OracleSubmitterFactory is IOracleSubmitterFactory {
         external
         returns (address)
     {
-        OracleSubmitter oracleSubmitter = new OracleSubmitter(admin_, submitter_, accepter_, oracle_);
+        bytes32 salt = keccak256(abi.encode(admin_, submitter_, accepter_, oracle_));
+        OracleSubmitter oracleSubmitter = new OracleSubmitter{salt: salt}(admin_, submitter_, accepter_, oracle_);
         emit OracleSubmitterDeployed(address(oracleSubmitter), msg.sender);
         return address(oracleSubmitter);
     }

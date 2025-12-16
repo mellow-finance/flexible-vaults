@@ -5,11 +5,12 @@ import "./Permissions.sol";
 
 import "./interfaces/IDeployVaultFactory.sol";
 import "./interfaces/IDeployVaultFactoryRegistry.sol";
+
+import "./interfaces/IOracleSubmitterFactory.sol";
 import "./interfaces/Imports.sol";
 
-import "scripts/common/interfaces/IOracleSubmitterFactory.sol";
-import {OracleSubmitter} from "src/oracles/OracleSubmitter.sol";
-import "src/vaults/Subvault.sol";
+import {OracleSubmitter} from "../../src/oracles/OracleSubmitter.sol";
+import {Subvault} from "../../src/vaults/Subvault.sol";
 
 contract DeployVaultFactory is IDeployVaultFactory {
     event VaultDeployed(address indexed vault, address indexed deployer);
@@ -30,15 +31,12 @@ contract DeployVaultFactory is IDeployVaultFactory {
         vaultConfigurator_ = VaultConfigurator(vaultConfigurator);
         verifierFactory_ = Factory(verifierFactory);
         oracleSubmitterFactory_ = IOracleSubmitterFactory(oracleSubmitterFactory);
-        registry_ = IDeployVaultFactoryRegistry(registry_);
+        registry_ = IDeployVaultFactoryRegistry(registry);
         registry_.initialize(address(this));
     }
 
     /// @inheritdoc IDeployVaultFactory
     function deployVault(DeployVaultConfig calldata $) external returns (Vault vault) {
-        if ($.queueLimit < $.queues.length) {
-            revert LengthMismatch();
-        }
         VaultConfigurator.InitParams memory initParams = _getInitVaultParams(
             $,
             IOracle.SecurityParams({
@@ -67,7 +65,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
     }
 
     /// @inheritdoc IDeployVaultFactory
-    function finalizeDeployment(Vault vault, SubvaultRoot[] memory subvaultRoots, Vault.RoleHolder[] memory holders)
+    function finalizeDeployment(Vault vault, SubvaultRoot[] calldata subvaultRoots, Vault.RoleHolder[] calldata holders)
         external
     {
         address deployer = msg.sender;
@@ -111,7 +109,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         registry_.setTimelockController(address(vault), address(timelockController));
 
         address oracleSubmitter;
-        if ($.addOracleSubmitter == 1) {
+        if ($.deployOracleSubmitter) {
             // deploy oracle submitter
             oracleSubmitter = oracleSubmitterFactory_.deployOracleSubmitter(
                 $.proxyAdmin, $.oracleUpdater, $.activeVaultAdmin, address(oracle)
@@ -128,7 +126,11 @@ contract DeployVaultFactory is IDeployVaultFactory {
     }
 
     /// @inheritdoc IDeployVaultFactory
-    function getInitVaultParams(DeployVaultConfig memory $) public view returns (VaultConfigurator.InitParams memory) {
+    function getInitVaultParams(DeployVaultConfig calldata $)
+        public
+        view
+        returns (VaultConfigurator.InitParams memory)
+    {
         return _getInitVaultParams($, $.securityParams);
     }
 
@@ -152,7 +154,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         return oracleSubmitterFactory_;
     }
 
-    function _getInitVaultParams(DeployVaultConfig memory $, IOracle.SecurityParams memory securityParams)
+    function _getInitVaultParams(DeployVaultConfig calldata $, IOracle.SecurityParams memory securityParams)
         internal
         view
         returns (VaultConfigurator.InitParams memory)
@@ -192,11 +194,11 @@ contract DeployVaultFactory is IDeployVaultFactory {
     function _createQueues(Vault vault, address proxyAdmin, QueueParams[] memory queues) internal {
         for (uint256 i = 0; i < queues.length; i++) {
             QueueParams memory params = queues[i];
-            vault.createQueue(params.version, params.isDeposit == 1, proxyAdmin, params.asset, params.data);
+            vault.createQueue(params.version, params.isDeposit, proxyAdmin, params.asset, params.data);
         }
     }
 
-    function _createSubvaults(Vault vault, DeployVaultConfig memory $) internal {
+    function _createSubvaults(Vault vault, DeployVaultConfig calldata $) internal {
         IRiskManager riskManager = vault.riskManager();
 
         for (uint256 i = 0; i < $.subvaultParams.length; i++) {
@@ -210,7 +212,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         }
     }
 
-    function _setSubvaultRoots(Vault vault, SubvaultRoot[] memory subvaultRoots) internal {
+    function _setSubvaultRoots(Vault vault, SubvaultRoot[] calldata subvaultRoots) internal {
         for (uint256 i = 0; i < subvaultRoots.length; i++) {
             if (vault.subvaultAt(i) != subvaultRoots[i].subvault) {
                 revert SubvaultNotAllowed(subvaultRoots[i].subvault);
@@ -230,7 +232,8 @@ contract DeployVaultFactory is IDeployVaultFactory {
             proposers[i + 1] = $.timelockProposers[i];
         }
 
-        timelockController = new TimelockController(0, proposers, $.timelockExecutors, $.lazyVaultAdmin);
+        bytes32 salt = keccak256(abi.encode(vault, proposers, $.timelockExecutors, $.lazyVaultAdmin));
+        timelockController = new TimelockController{salt: salt}(0, proposers, $.timelockExecutors, $.lazyVaultAdmin);
 
         timelockController.schedule(
             address(vault.shareManager()),
@@ -278,13 +281,13 @@ contract DeployVaultFactory is IDeployVaultFactory {
         }
     }
 
-    function _pushReports(IOracle oracle, address[] memory allowedAssets, uint256[] memory allowedAssetsPrices)
+    function _pushReports(IOracle oracle, address[] memory allowedAssets, uint224[] memory allowedAssetsPrices)
         internal
     {
         IOracle.Report[] memory reports = new IOracle.Report[](allowedAssets.length);
         for (uint256 i = 0; i < allowedAssets.length; i++) {
             reports[i].asset = allowedAssets[i];
-            reports[i].priceD18 = uint224(allowedAssetsPrices[i]);
+            reports[i].priceD18 = allowedAssetsPrices[i];
         }
 
         oracle.submitReports(reports);
@@ -311,7 +314,7 @@ contract DeployVaultFactory is IDeployVaultFactory {
         holders[index++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, this_);
     }
 
-    function _transferRoleHolders(Vault vault, address oracleSubmitter, Vault.RoleHolder[] memory holders) internal {
+    function _transferRoleHolders(Vault vault, address oracleSubmitter, Vault.RoleHolder[] calldata holders) internal {
         address timelockController = registry_.getVaultTimelockController(address(vault));
 
         /// @dev cache role constants for size contract reduction

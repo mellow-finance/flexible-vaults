@@ -8,8 +8,8 @@ import "../../src/vaults/Subvault.sol";
 import "../common/AcceptanceLibrary.sol";
 import "./Constants.sol";
 
-import "scripts/common/interfaces/IDeployVaultFactory.sol";
-import "scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
+import "../common/interfaces/IDeployVaultFactory.sol";
+import "../common/interfaces/IDeployVaultFactoryRegistry.sol";
 
 abstract contract DeployAbstractScript is Test {
     enum SubvaultVersion {
@@ -90,7 +90,7 @@ abstract contract DeployAbstractScript is Test {
         internal
         pure
         virtual
-        returns (address[] memory allowedAssets, uint256[] memory allowedAssetsPrices);
+        returns (address[] memory allowedAssets, uint224[] memory allowedAssetsPrices);
 
     function getSubvaultParams()
         internal
@@ -175,7 +175,7 @@ abstract contract DeployAbstractScript is Test {
     }
 
     function getConfig() internal returns (IDeployVaultFactory.DeployVaultConfig memory config) {
-        (address[] memory allowedAssets, uint256[] memory allowedAssetsPrices) = getAssetsWithPrices();
+        (address[] memory allowedAssets, uint224[] memory allowedAssetsPrices) = getAssetsWithPrices();
 
         (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit) = getQueues();
 
@@ -202,7 +202,7 @@ abstract contract DeployAbstractScript is Test {
             allowedAssetsPrices: allowedAssetsPrices,
             subvaultParams: getSubvaultParams(),
             queues: queues,
-            addOracleSubmitter: 1,
+            deployOracleSubmitter: true,
             securityParams: securityParams,
             defaultDepositHook: defaultDepositHook,
             defaultRedeemHook: defaultRedeemHook,
@@ -231,7 +231,7 @@ abstract contract DeployAbstractScript is Test {
         uint256 depositIndex;
         uint256 redeemIndex;
         for (uint256 i = 0; i < queues.length; i++) {
-            if (queues[i].isDeposit == 1) {
+            if (queues[i].isDeposit) {
                 depositQueueAssets[depositIndex++] = queues[i].asset;
             } else {
                 redeemQueueAssets[redeemIndex++] = queues[i].asset;

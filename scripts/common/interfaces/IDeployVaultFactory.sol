@@ -17,7 +17,7 @@ interface IDeployVaultFactory {
 
     struct QueueParams {
         uint256 version;
-        uint256 isDeposit; // 1 = deposit, 0 = redeem
+        bool isDeposit; // true = deposit, false = redeem
         address asset;
         bytes data;
     }
@@ -60,12 +60,12 @@ interface IDeployVaultFactory {
         int256 riskManagerLimit;
         // Assets
         address[] allowedAssets;
-        uint256[] allowedAssetsPrices;
+        uint224[] allowedAssetsPrices;
         SubvaultParams[] subvaultParams;
         QueueParams[] queues;
         // oracle
         IOracle.SecurityParams securityParams;
-        uint256 addOracleSubmitter; // 0 = no, 1 = yes
+        bool deployOracleSubmitter;
         address[] timelockProposers;
         address[] timelockExecutors;
         // other params can be added here as needed

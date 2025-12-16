@@ -246,6 +246,9 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
         if ($.queues.length == 0) {
             revert ZeroLength();
         }
+        if ($.queueLimit < $.queues.length) {
+            revert LengthMismatch();
+        }
 
         for (uint256 i = 0; i < $.queues.length; i++) {
             bool found;

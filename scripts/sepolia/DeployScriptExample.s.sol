@@ -2,22 +2,31 @@
 pragma solidity 0.8.25;
 
 import "../common/ArraysLibrary.sol";
+
+import "../common/DeployVaultFactory.sol";
+import "../common/DeployVaultFactoryRegistry.sol";
+import "../common/OracleSubmitterFactory.sol";
 import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
-import "scripts/common/DeployVaultFactory.sol";
-import "scripts/common/DeployVaultFactoryRegistry.sol";
 
 contract Deploy is DeployAbstractScript {
     bytes32 public testWalletPk = keccak256("testWalletPk");
     address public testWallet = vm.addr(uint256(testWalletPk));
 
     function run() external {
-        //ProtocolDeployment memory $ = Constants.protocolDeployment();
-        deployVault = DeployVaultFactory(0x99EfBeac7EE10B330fFb038A883740E6EC57f111);
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+        deployVault = new DeployVaultFactory(
+            address($.vaultConfigurator),
+            address($.verifierFactory),
+            address(new OracleSubmitterFactory()),
+            address(new DeployVaultFactoryRegistry())
+        );
+
+        //deployVault = DeployVaultFactory(address(0));
 
         /// @dev just on-chain simulation
-        //_simulate();
-        //revert("ok");
+        _simulate();
+        revert("ok");
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
@@ -117,7 +126,7 @@ contract Deploy is DeployAbstractScript {
         for (uint256 i = 0; i < depositQueueAssets.length; i++) {
             queues[i] = IDeployVaultFactory.QueueParams({
                 version: uint256(QueueVersion.DEFAULT),
-                isDeposit: 1,
+                isDeposit: true,
                 asset: depositQueueAssets[i],
                 data: ""
             });
@@ -125,7 +134,7 @@ contract Deploy is DeployAbstractScript {
         for (uint256 i = 0; i < redeemQueueAssets.length; i++) {
             queues[depositQueueAssets.length + i] = IDeployVaultFactory.QueueParams({
                 version: uint256(QueueVersion.DEFAULT),
-                isDeposit: 0,
+                isDeposit: false,
                 asset: redeemQueueAssets[i],
                 data: ""
             });
@@ -140,12 +149,12 @@ contract Deploy is DeployAbstractScript {
         internal
         pure
         override
-        returns (address[] memory allowedAssets, uint256[] memory allowedAssetsPrices)
+        returns (address[] memory allowedAssets, uint224[] memory allowedAssetsPrices)
     {
         allowedAssets =
             ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.STETH, Constants.WSTETH));
 
-        allowedAssetsPrices = new uint256[](allowedAssets.length);
+        allowedAssetsPrices = new uint224[](allowedAssets.length);
         allowedAssetsPrices[0] = 1 ether;
         allowedAssetsPrices[1] = 1 ether;
         allowedAssetsPrices[2] = 1 ether;

@@ -3,9 +3,9 @@ pragma solidity 0.8.25;
 
 import "forge-std/Script.sol";
 
-import "scripts/sepolia/Constants.sol";
-import "src/DeployVaultFactory.sol";
-import "src/DeployVaultFactoryRegistry.sol";
+import "../common/DeployVaultFactory.sol";
+import "../common/DeployVaultFactoryRegistry.sol";
+import "./Constants.sol";
 
 contract Deploy is Script {
     function run() external {
