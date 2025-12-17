@@ -74,4 +74,8 @@ library Permissions {
     bytes32 public constant SWAP_MODULE_ROUTER_ROLE = keccak256("utils.SwapModule.ROUTER_ROLE");
     bytes32 public constant SWAP_MODULE_CALLER_ROLE = keccak256("utils.SwapModule.CALLER_ROLE");
     bytes32 public constant SWAP_MODULE_SET_SLIPPAGE_ROLE = keccak256("utils.SwapModule.SET_SLIPPAGE_ROLE");
+
+    bytes32 public constant TIMELOCK_CONTROLLER_PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
+    bytes32 public constant TIMELOCK_CONTROLLER_EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
+    bytes32 public constant TIMELOCK_CONTROLLER_CANCELLER_ROLE = keccak256("CANCELLER_ROLE");
 }
