@@ -92,7 +92,6 @@ struct ProtocolDeployment {
     RedirectingDepositHook redirectingDepositHook;
     LidoDepositHook lidoDepositHook;
     OracleHelper oracleHelper;
-    DeployVaultFactory deployVaultFactory;
 }
 
 struct Call {

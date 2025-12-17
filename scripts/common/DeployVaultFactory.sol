@@ -21,7 +21,12 @@ contract DeployVaultFactory is IDeployVaultFactory {
     IDeployVaultFactoryRegistry internal registry_;
     IOracleSubmitterFactory internal oracleSubmitterFactory_;
 
-    constructor(address _vaultConfigurator, address _verifierFactory, address _oracleSubmitterFactory, address _registry) {
+    constructor(
+        address _vaultConfigurator,
+        address _verifierFactory,
+        address _oracleSubmitterFactory,
+        address _registry
+    ) {
         if (
             _vaultConfigurator == address(0) || _verifierFactory == address(0) || _oracleSubmitterFactory == address(0)
                 || _registry == address(0)
