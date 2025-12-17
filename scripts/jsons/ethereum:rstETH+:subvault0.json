@@ -1,6 +1,6 @@
 {
   "title": "ethereum:rstETH+:subvault0",
-  "merkle_root": "0x113ff82731c4768e90984c834c5ed360bcc0fcd7ec5baa43501d64441a1f2c7a",
+  "merkle_root": "0x41221e885bd3c8fb7aea344d5a2c635c75fbd6836ffa8bc3e67ab836c7283635",
   "merkle_proofs": [
     {
       "verificationType": 3,
@@ -24,15 +24,15 @@
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acea35588ae5683426ad88cf1f72fda97170bb4ce53176a333ecd62c974b206f100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x1f54453b5bbc71ad03a9e5d00ec46abb5e0bd828ba9991177084c8f923f6f3bf",
-        "0xad0b0858461b5446d60968fd54c4396a9dac9209283cfcc55827fcdf1d86c63f",
-        "0xbdda854ea551b3b0844684fec6bfe11e50881567e983f4b7782102d7c698d8f2"
+        "0x0052e5d467bdc792c0dbcdb4238521d79481438306e326485442746c9d1f74ae",
+        "0xf7738e74810c52f5fedf68c8b96a34cc79eddcc1ede57498ac0289903b4d2c41",
+        "0x7b039778063e80efde09767500c3f1082a514ba772dafc585f71611bb8904089"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(WETH).approve(ISwapModule(0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3), any)",
+        "description": "IERC20(WETH).approve(ISwapModule(0x48013307b6383a430479918c6877d0bafd8bc26b), any)",
         "abi": {
           "inputs": [
             {
@@ -63,21 +63,21 @@
           "value": "0"
         },
         "innerParameters": {
-          "to": "0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3",
+          "to": "0x48013307b6383a430479918c6877d0bafd8bc26b",
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa8d8fc914fdb5086ab7de5d51cc2004ad54ba6429f0a7bae7039c789fe037710000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a989c4f860da6aad43bc87f98c98686d468736ed441b5aa55edbfcebf1d70f096000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x00a79680bec7ef914b4f2cdaacfe75db49d57b4600c6848c6267e74a5a307893",
-        "0xe5c05a847c7a29d4c12f25a4c1f507bb835bbb2361c585147927a50c7d608310",
-        "0x3b06c685c2af34986398aea58468bb70b3e32ff62621902f93fc6f10daeed840"
+        "0x2d748a999a86e288e580573f2f17d36cd5337d11a67a5438d3b3f1981e946b45",
+        "0x97f0decabe2e11c88963d6269c46961abc99834d739c19dc27489b928a6a8434",
+        "0xc4fc085382e9aa059ebc16af83418fca2b2ca53082ceef3a499031dc00954a59"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3).pushAssets(WETH, any)",
+        "description": "ISwapModule(0x48013307b6383a430479918c6877d0bafd8bc26b).pushAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -98,7 +98,7 @@
         },
         "parameters": {
           "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
-          "target": "0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3",
+          "target": "0x48013307b6383a430479918c6877d0bafd8bc26b",
           "value": "0"
         },
         "innerParameters": {
@@ -106,17 +106,17 @@
           "value": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acbd0335bd045988f5543d784b0546f6998d8458128a97d74dfa34a4ea17cf8a6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4cbc4fca8c7b2d098dc88e190b53a3023f5c06eb003a8a5c505cb2ec304941d3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xce6cf05932200781d924077e44fac1038d3e01f16ee04cb29c10ed46fa07bd2e",
-        "0xd92e3de9b67657ea04e2f4ab00783f647f936dccf72be859ee8f8359d547da11",
-        "0xbdda854ea551b3b0844684fec6bfe11e50881567e983f4b7782102d7c698d8f2"
+        "0xc27940e169a2e4cd67f9da256a72d79c54f0be981b523d7dbcd3f8c6491da82b",
+        "0x97f0decabe2e11c88963d6269c46961abc99834d739c19dc27489b928a6a8434",
+        "0xc4fc085382e9aa059ebc16af83418fca2b2ca53082ceef3a499031dc00954a59"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3).pullAssets(WETH, any)",
+        "description": "ISwapModule(0x48013307b6383a430479918c6877d0bafd8bc26b).pullAssets(WETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -137,7 +137,7 @@
         },
         "parameters": {
           "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
-          "target": "0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3",
+          "target": "0x48013307b6383a430479918c6877d0bafd8bc26b",
           "value": "0"
         },
         "innerParameters": {
@@ -145,17 +145,17 @@
           "value": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4e23fdbbfb509f9d298aaab578d333f06fc2077542f58dc25af42fa1c6ddf410000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac72f6cd30fb613174554a5526b8d63a32cc302ba3215f1bc23d85fb39debc1ea000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x04502ee623149e4862c46dc046076db1f8f9001d6b1a45613b61184de1359dd8",
-        "0xe5c05a847c7a29d4c12f25a4c1f507bb835bbb2361c585147927a50c7d608310",
-        "0x3b06c685c2af34986398aea58468bb70b3e32ff62621902f93fc6f10daeed840"
+        "0xf6765e54b5de476475bdaa75c23b5b25503b471ddbdd72816e7dad81600c01cf",
+        "0xf8143339f00ed913e2e1f35858077b6ca025fee8d18951ccae67022e16600a89",
+        "0xc4fc085382e9aa059ebc16af83418fca2b2ca53082ceef3a499031dc00954a59"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(wstETH).approve(ISwapModule(0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3), any)",
+        "description": "IERC20(wstETH).approve(ISwapModule(0x48013307b6383a430479918c6877d0bafd8bc26b), any)",
         "abi": {
           "inputs": [
             {
@@ -186,20 +186,21 @@
           "value": "0"
         },
         "innerParameters": {
-          "to": "0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3",
+          "to": "0x48013307b6383a430479918c6877d0bafd8bc26b",
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae81c66f1b42dbcf14c100a924b46fdfa6c25657ed8730384dc5018d928dd10ce000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af9a76f639a2094b7db22df9c5fee5ec0a947d2e100ea9cc750d3a34206ff6c30000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x53f50168b2d8cdefe53694b0312c07cec58d9f94d7f942d9fe6670e802ab3a11",
-        "0x3b06c685c2af34986398aea58468bb70b3e32ff62621902f93fc6f10daeed840"
+        "0x0bb7b673738e0b86ce3bceca38f1e184cf3028cbe0f5c5fff6ff14564e4c3b55",
+        "0xf7738e74810c52f5fedf68c8b96a34cc79eddcc1ede57498ac0289903b4d2c41",
+        "0x7b039778063e80efde09767500c3f1082a514ba772dafc585f71611bb8904089"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3).pushAssets(wstETH, any)",
+        "description": "ISwapModule(0x48013307b6383a430479918c6877d0bafd8bc26b).pushAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pushAssets",
@@ -220,7 +221,7 @@
         },
         "parameters": {
           "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
-          "target": "0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3",
+          "target": "0x48013307b6383a430479918c6877d0bafd8bc26b",
           "value": "0"
         },
         "innerParameters": {
@@ -228,17 +229,17 @@
           "value": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a65d629a12499b96316b06d5c07f63710a94ef5da56b9c7a3e54b726dc2ce338b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abee27267197899fc5fe89b4ee9c1897441614bb353adc942e5b821d6f974f388000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x2ba040e7cc65c5c65e6d300fa759cd69a08a862417e9eb0e22e8d4e9f12ea033",
-        "0xd92e3de9b67657ea04e2f4ab00783f647f936dccf72be859ee8f8359d547da11",
-        "0xbdda854ea551b3b0844684fec6bfe11e50881567e983f4b7782102d7c698d8f2"
+        "0xc932e8ef624ee5a4c0776408e6b7bbfbcff7a175d56297e5aa411ea9a9918aa4",
+        "0xf8143339f00ed913e2e1f35858077b6ca025fee8d18951ccae67022e16600a89",
+        "0xc4fc085382e9aa059ebc16af83418fca2b2ca53082ceef3a499031dc00954a59"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "ISwapModule(0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3).pullAssets(wstETH, any)",
+        "description": "ISwapModule(0x48013307b6383a430479918c6877d0bafd8bc26b).pullAssets(wstETH, any)",
         "abi": {
           "type": "function",
           "name": "pullAssets",
@@ -259,7 +260,7 @@
         },
         "parameters": {
           "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
-          "target": "0xae96de8ef1d35c3a25fec87170f6e279ef38b0c3",
+          "target": "0x48013307b6383a430479918c6877d0bafd8bc26b",
           "value": "0"
         },
         "innerParameters": {
@@ -267,11 +268,10 @@
           "value": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7300ca447fe67af61c0b41776c7d8dea5a5826b40186adbb9f2ce63aa6f49003000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aae53ce862025a9f16bcfce7cabd9a999b1e425159941a407fb2f34c8b0fcf022000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x0bb7b673738e0b86ce3bceca38f1e184cf3028cbe0f5c5fff6ff14564e4c3b55",
-        "0xad0b0858461b5446d60968fd54c4396a9dac9209283cfcc55827fcdf1d86c63f",
-        "0xbdda854ea551b3b0844684fec6bfe11e50881567e983f4b7782102d7c698d8f2"
+        "0x9051986c03a8aa1e4ece14d6e6577e4b01839f11eafc75a64c4a83a69e631dd3",
+        "0x7b039778063e80efde09767500c3f1082a514ba772dafc585f71611bb8904089"
       ]
     }
   ]
