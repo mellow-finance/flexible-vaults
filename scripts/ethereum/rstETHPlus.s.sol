@@ -33,7 +33,7 @@ contract Deploy is Script {
     address public lazyVaultAdmin = 0x0Fb1fe5b41cBA3c01BBF48f73bC82b19f32b3053;
     address public activeVaultAdmin = 0x65D692F223bC78da7024a0f0e018D9F35AB45472;
     address public oracleUpdater = 0xAed4BE0D6E933249F833cfF64600e3fB33597B82;
-    address public curator = 0xf5c35D92d55fC8B2c78e2A1ceAc993Ef485Adb7C;
+    address public curator = 0x1280e86Cd7787FfA55d37759C0342F8CD3c7594a;
 
     address public feeManagerOwner = 0x1D2d56EeA41488413cC11441a79F7fF444d469d4;
 
@@ -103,7 +103,7 @@ contract Deploy is Script {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "Restaking Vault ETH+", "rstETH+"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, feeManagerOwner, uint24(0), uint24(0), uint24(15e4), uint24(0)), // 15% performance fee
+            feeManagerParams: abi.encode(deployer, feeManagerOwner, uint24(0), uint24(0), uint24(175e3), uint24(5e3)),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
@@ -121,7 +121,7 @@ contract Deploy is Script {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 9,
+            queueLimit: 4,
             roleHolders: holders
         });
 

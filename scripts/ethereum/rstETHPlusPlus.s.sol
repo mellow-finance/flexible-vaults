@@ -33,7 +33,7 @@ contract Deploy is Script {
     address public lazyVaultAdmin = 0x0Fb1fe5b41cBA3c01BBF48f73bC82b19f32b3053;
     address public activeVaultAdmin = 0x65D692F223bC78da7024a0f0e018D9F35AB45472;
     address public oracleUpdater = 0xAed4BE0D6E933249F833cfF64600e3fB33597B82;
-    address public curator = 0xf5c35D92d55fC8B2c78e2A1ceAc993Ef485Adb7C;
+    address public curator = 0x1280e86Cd7787FfA55d37759C0342F8CD3c7594a;
 
     address public feeManagerOwner = 0x1D2d56EeA41488413cC11441a79F7fF444d469d4;
 
@@ -103,7 +103,7 @@ contract Deploy is Script {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "Restaking Vault ETH++", "rstETH++"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, feeManagerOwner, uint24(0), uint24(0), uint24(15e4), uint24(0)), // 15% performance fee
+            feeManagerParams: abi.encode(deployer, feeManagerOwner, uint24(0), uint24(0), uint24(75e3), uint24(15e3)),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
@@ -121,7 +121,7 @@ contract Deploy is Script {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 6,
+            queueLimit: 4,
             roleHolders: holders
         });
 
@@ -155,8 +155,8 @@ contract Deploy is Script {
         oracleSubmitter.renounceRole(Permissions.DEFAULT_ADMIN_ROLE, deployer);
 
         // subvault setup
-        address[] memory verifiers = new address[](1);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
+        address[] memory verifiers = new address[](2);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
 
         {
             IRiskManager riskManager = vault.riskManager();
@@ -168,6 +168,22 @@ contract Deploy is Script {
 
             bytes32 merkleRoot;
             (merkleRoot, calls[subvaultIndex]) = _createSubvault0Proofs(subvault, swapModule);
+            IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
+
+            riskManager.allowSubvaultAssets(subvault, assets_);
+            riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
+        }
+
+        {
+            IRiskManager riskManager = vault.riskManager();
+            uint256 subvaultIndex = 1;
+            verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
+            address swapModule = _deploySwapModule1(subvault);
+            console2.log("SwapModule 1:", swapModule);
+
+            bytes32 merkleRoot;
+            (merkleRoot, calls[subvaultIndex]) = _createSubvault1Proofs(subvault, swapModule);
             IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
 
             riskManager.allowSubvaultAssets(subvault, assets_);
@@ -358,6 +374,17 @@ contract Deploy is Script {
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = rstETHPlusPlusLibrary.getSubvault0Proofs(curator, subvault, swapModule);
         ProofLibrary.storeProofs("ethereum:rstETH++:subvault0", merkleRoot, leaves, descriptions);
+        calls = rstETHPlusPlusLibrary.getSubvault0Calls(curator, subvault, swapModule, leaves);
+    }
+
+    function _createSubvault1Proofs(address subvault, address swapModule)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = rstETHPlusPlusLibrary.getSubvault0Descriptions(curator, subvault, swapModule);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = rstETHPlusPlusLibrary.getSubvault0Proofs(curator, subvault, swapModule);
+        ProofLibrary.storeProofs("ethereum:rstETH++:subvault1", merkleRoot, leaves, descriptions);
         calls = rstETHPlusPlusLibrary.getSubvault0Calls(curator, subvault, swapModule, leaves);
     }
 
