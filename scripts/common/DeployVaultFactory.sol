@@ -21,18 +21,18 @@ contract DeployVaultFactory is IDeployVaultFactory {
     IDeployVaultFactoryRegistry internal registry_;
     IOracleSubmitterFactory internal oracleSubmitterFactory_;
 
-    constructor(address vaultConfigurator, address verifierFactory, address oracleSubmitterFactory, address registry) {
+    constructor(address _vaultConfigurator, address _verifierFactory, address _oracleSubmitterFactory, address _registry) {
         if (
-            vaultConfigurator == address(0) || verifierFactory == address(0) || oracleSubmitterFactory == address(0)
-                || registry == address(0)
+            _vaultConfigurator == address(0) || _verifierFactory == address(0) || _oracleSubmitterFactory == address(0)
+                || _registry == address(0)
         ) {
             revert ZeroAddress();
         }
 
-        vaultConfigurator_ = VaultConfigurator(vaultConfigurator);
-        verifierFactory_ = Factory(verifierFactory);
-        oracleSubmitterFactory_ = IOracleSubmitterFactory(oracleSubmitterFactory);
-        registry_ = IDeployVaultFactoryRegistry(registry);
+        vaultConfigurator_ = VaultConfigurator(_vaultConfigurator);
+        verifierFactory_ = Factory(_verifierFactory);
+        oracleSubmitterFactory_ = IOracleSubmitterFactory(_oracleSubmitterFactory);
+        registry_ = IDeployVaultFactoryRegistry(_registry);
         registry_.initialize(address(this));
     }
 
