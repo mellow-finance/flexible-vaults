@@ -18,6 +18,7 @@ import "../../../src/managers/TokenizedShareManager.sol";
 
 import "../../../src/oracles/Oracle.sol";
 import "../../../src/oracles/OracleHelper.sol";
+import "../../../src/oracles/OracleSubmitter.sol";
 
 import "../../../src/permissions/protocols/ERC20Verifier.sol";
 import "../../../src/permissions/protocols/EigenLayerVerifier.sol";

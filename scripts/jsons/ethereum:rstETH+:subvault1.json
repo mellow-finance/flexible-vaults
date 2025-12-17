@@ -1,11 +1,11 @@
 {
   "title": "ethereum:rstETH+:subvault1",
-  "merkle_root": "0xe1e205208845d6a5cdba6b98e073e810184443fdc0374f846a38c899fc2f4fbe",
+  "merkle_root": "0xb0b435a719ff201ef377224af85b4c384ebd59f1e73bcd64d6da37261bf6e37b",
   "merkle_proofs": [
     {
       "verificationType": 3,
       "description": {
-        "description": "IERC20(wstETH).approve(SymbioticVault(0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6), anyInt)",
+        "description": "IERC20(wstETH).approve(SymbioticVault(0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20), anyInt)",
         "abi": {
           "inputs": [
             {
@@ -36,20 +36,20 @@
           "value": "0"
         },
         "innerParameters": {
-          "to": "0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6",
+          "to": "0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20",
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3457d729b0b88ae1e4d03a0b9fddb30e4a764947ac80a6fe2ec40b18abf7d4de000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adda425834b15124fb28246b0ca9a6f3ab05bfdc17ca6f568122ea6dd9bea4636000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x932a6589c4c43ff671d4ee14696c14ed80cd980ef7f385872daefd9fb4ae81c6",
-        "0xf9a55472212f2810476a82b0b553c4f9936d700169468af468ebf1194a1be7b5"
+        "0xc551de56204a2cb25c8a26cc8b3fe324eb67fc62aec278c4bb0a8a2752fb6b9a",
+        "0x4eeb3f828c57afe6c95e45a1960521f13bee2368943d551e986bde9c39729bf7"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "ISymbioticVault(0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6).deposit(0xda2f970e50ba6dcf511b8dffe18bbf1527e4be9e, anyInt)",
+        "description": "ISymbioticVault(0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20).deposit(0x538fa12df9aa9ec214a72768a272500d0429d75b, anyInt)",
         "abi": {
           "inputs": [
             {
@@ -81,24 +81,24 @@
         },
         "parameters": {
           "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
-          "target": "0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6",
+          "target": "0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20",
           "value": "0"
         },
         "innerParameters": {
-          "onBehalfOf": "0xda2f970e50ba6dcf511b8dffe18bbf1527e4be9e",
+          "onBehalfOf": "0x538fa12df9aa9ec214a72768a272500d0429d75b",
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6fe209d4277f9f62cccb865a38a7094cf4423077a84c4d87bcecf80e7d8d286d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a58301816186c97bfa3f9d9152784d117a3b6f46b304151778689a73b01ad48b1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x2df622b6b3539a446d628cade86fabdf2dad871ff467f627c1706d6798d9dc1c",
-        "0x19d404cc9fdc0670d7542999d7aa3c27c3efb54c0a42b9d05f558456328ab67e"
+        "0xdf966cc0bd769fd49ddc125b5956a41c6cdcb2043209dc01799daf61c28e2d38",
+        "0x3cf0aab33f38c0eda20ed1ce5295506fdc50a569e6137acd44723c73f044553f"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "ISymbioticVault(0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6).withdraw(0xda2f970e50ba6dcf511b8dffe18bbf1527e4be9e, anyInt)",
+        "description": "ISymbioticVault(0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20).withdraw(0x538fa12df9aa9ec214a72768a272500d0429d75b, anyInt)",
         "abi": {
           "inputs": [
             {
@@ -130,24 +130,24 @@
         },
         "parameters": {
           "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
-          "target": "0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6",
+          "target": "0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20",
           "value": "0"
         },
         "innerParameters": {
-          "claimer": "0xda2f970e50ba6dcf511b8dffe18bbf1527e4be9e",
+          "claimer": "0x538fa12df9aa9ec214a72768a272500d0429d75b",
           "amount": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aff5111e09687370435d0159365eece1d41875cf80dc0328898a7cbf3738c210c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab24fe748af242df627e0ff9b8f2bb3ad07261ad8260fcd4207e8685d73117567000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x827f9115dc1ac30e1ac8d7ddc7eea2b0753360290d5c9eab0693012375f8e785",
-        "0x19d404cc9fdc0670d7542999d7aa3c27c3efb54c0a42b9d05f558456328ab67e"
+        "0x1f29f26b192e8184e56e52e5345dc9f8526af5742cb8eba2c1bb8018be1b4c1e",
+        "0x4eeb3f828c57afe6c95e45a1960521f13bee2368943d551e986bde9c39729bf7"
       ]
     },
     {
       "verificationType": 3,
       "description": {
-        "description": "ISymbioticVault(0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6).claim(0xda2f970e50ba6dcf511b8dffe18bbf1527e4be9e, anyInt)",
+        "description": "ISymbioticVault(0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20).claim(0x538fa12df9aa9ec214a72768a272500d0429d75b, anyInt)",
         "abi": {
           "inputs": [
             {
@@ -174,18 +174,18 @@
         },
         "parameters": {
           "caller": "0xf5c35d92d55fc8b2c78e2a1ceac993ef485adb7c",
-          "target": "0xe6cf60f2b0b7c165b3e7258d8f619597a7f138b6",
+          "target": "0xe2f5a0c34bcdbfc3a7058f8b41c2aa4927be4f20",
           "value": "0"
         },
         "innerParameters": {
-          "recipient": "0xda2f970e50ba6dcf511b8dffe18bbf1527e4be9e",
+          "recipient": "0x538fa12df9aa9ec214a72768a272500d0429d75b",
           "epoch": "any"
         }
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a056dd98fe4d599dde684814cbc38a7c6acfa6ba37a4daff0eaf88fcd9005aefc000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c630fa9f89cdbb283f6ea891e8cd3ae5dabf1d52f11bb46a086664125fb1d2d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xe1ba104a1d404947dc9ebc0c346deae257be1e463690b4c98092da2e0cbc7438",
-        "0xf9a55472212f2810476a82b0b553c4f9936d700169468af468ebf1194a1be7b5"
+        "0xe4143a5c01e130beb7c243dcf5e64a0c5c417b0e6cee2c6ce0dcad92267ddda7",
+        "0x3cf0aab33f38c0eda20ed1ce5295506fdc50a569e6137acd44723c73f044553f"
       ]
     }
   ]

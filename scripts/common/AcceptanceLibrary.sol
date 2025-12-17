@@ -14,6 +14,13 @@ import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 library AcceptanceLibrary {
+    struct OracleSubmitterDeployment {
+        OracleSubmitter oracleSubmitter;
+        address admin;
+        address submitter;
+        address accepter;
+    }
+
     function _this() private pure returns (VmSafe) {
         return VmSafe(address(uint160(uint256(keccak256("hevm cheat code")))));
     }
@@ -530,6 +537,72 @@ library AcceptanceLibrary {
         _verifyGetters($, deployment);
         _verifyVerifiersParams(deployment);
         _verifyTimelockControllers($, deployment);
+    }
+
+    function runVaultDeploymentChecks(
+        ProtocolDeployment memory $,
+        VaultDeployment memory deployment,
+        OracleSubmitterDeployment memory oracleSubmitterDeployment
+    ) internal {
+        _verifyImplementations($, deployment);
+
+        for (uint256 i = 0; i < deployment.calls.length; i++) {
+            Subvault subvault = Subvault(payable(deployment.vault.subvaultAt(i)));
+            IVerifier verifier = subvault.verifier();
+            for (uint256 j = 0; j < deployment.calls[i].payloads.length; j++) {
+                Call[] memory calls = deployment.calls[i].calls[j];
+                _verifyCalls(verifier, calls, deployment.calls[i].payloads[j]);
+            }
+        }
+
+        _verifyPermissions(deployment);
+
+        _verifyGetters($, deployment);
+        _verifyVerifiersParams(deployment);
+        _verifyTimelockControllers($, deployment);
+        _verifyOracleSubmitter(oracleSubmitterDeployment, deployment.vault);
+    }
+
+    function _verifyOracleSubmitter(OracleSubmitterDeployment memory $, Vault vault) internal {
+        if (address($.oracleSubmitter) == address(0)) {
+            return;
+        }
+        {
+            bytes memory bytecode1 = address($.oracleSubmitter).code;
+            bytes memory bytecode2 = address(
+                new OracleSubmitter(address(type(uint160).max), $.submitter, $.accepter, address(vault.oracle()))
+            ).code;
+            require(
+                bytecode1.length == bytecode2.length && keccak256(bytecode1) == keccak256(bytecode2),
+                "OracleSubmitter: invalid bytecode"
+            );
+        }
+
+        require(address($.oracleSubmitter.oracle()) == address(vault.oracle()), "OracleSubmitter: invalid oracle");
+
+        require(
+            $.oracleSubmitter.getRoleMemberCount(Permissions.DEFAULT_ADMIN_ROLE) == 1,
+            "OracleSubmitter: invalid role count"
+        );
+        require(
+            $.oracleSubmitter.hasRole(Permissions.DEFAULT_ADMIN_ROLE, $.admin), "OracleSubmitter: invalid role holder"
+        );
+        require(
+            $.oracleSubmitter.getRoleMemberCount(Permissions.SUBMIT_REPORTS_ROLE) == 1,
+            "OracleSubmitter: invalid role count"
+        );
+        require(
+            $.oracleSubmitter.hasRole(Permissions.SUBMIT_REPORTS_ROLE, $.submitter),
+            "OracleSubmitter: invalid role holder"
+        );
+        require(
+            $.oracleSubmitter.getRoleMemberCount(Permissions.ACCEPT_REPORT_ROLE) == 1,
+            "OracleSubmitter: invalid role count"
+        );
+        require(
+            $.oracleSubmitter.hasRole(Permissions.ACCEPT_REPORT_ROLE, $.accepter),
+            "OracleSubmitter: invalid role holder"
+        );
     }
 
     function _verifyVerifiersParams(VaultDeployment memory deployment) internal view {

@@ -58,21 +58,6 @@ library rstETHPlusLibrary {
             iterator
         );
 
-        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            curator,
-            Constants.RSTETH,
-            0,
-            abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)),
-            ProofLibrary.makeBitmask(
-                true,
-                true,
-                true,
-                true,
-                abi.encodeCall(IERC4626.redeem, (0, address(type(uint160).max), address(type(uint160).max)))
-            )
-        );
-
         assembly {
             mstore(leaves, iterator)
         }
@@ -92,17 +77,6 @@ library rstETHPlusLibrary {
             descriptions,
             SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
             iterator
-        );
-
-        ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters = ParameterLibrary.add2("shares", "any", "receiver", Strings.toHexString(subvault)).add(
-            "owner", Strings.toHexString(subvault)
-        );
-        descriptions[iterator++] = JsonLibrary.toJson(
-            string(abi.encodePacked("rstETH.redeem(any, subvault0, subvault0)")),
-            ABILibrary.getABI(IERC4626.redeem.selector),
-            ParameterLibrary.build(Strings.toHexString(curator), Strings.toHexString(Constants.RSTETH), "0"),
-            innerParameters
         );
 
         assembly {
@@ -125,29 +99,6 @@ library rstETHPlusLibrary {
             SwapModuleLibrary.getSwapModuleCalls(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
             iterator
         );
-
-        {
-            address asset = Constants.RSTETH;
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (0, subvault, subvault)), true);
-            tmp[i++] = Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), true);
-            tmp[i++] =
-                Call(address(0xdead), asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
-            tmp[i++] =
-                Call(curator, address(0xdead), 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 1 wei, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, address(0xdead), subvault)), false);
-            tmp[i++] =
-                Call(curator, asset, 0, abi.encodeCall(IERC4626.redeem, (1 ether, subvault, address(0xdead))), false);
-            tmp[i++] = Call(curator, asset, 0, abi.encode(IERC4626.redeem.selector, 1 ether, subvault, subvault), false);
-            assembly {
-                mstore(tmp, i)
-            }
-            calls.calls[iterator++] = tmp;
-        }
     }
 
     function _getSubvault1SymbioticParams(address curator, address subvault, address symbioticVault)
