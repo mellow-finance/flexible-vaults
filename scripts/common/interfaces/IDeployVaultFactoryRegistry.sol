@@ -1,11 +1,17 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../interfaces/Imports.sol";
+import {Factory} from "../../../src/factories/Factory.sol";
+import {IFeeManager} from "../../../src/interfaces/managers/IFeeManager.sol";
+import {IRiskManager} from "../../../src/interfaces/managers/IRiskManager.sol";
+import {IShareManager} from "../../../src/interfaces/managers/IShareManager.sol";
+import {IOracle} from "../../../src/interfaces/oracles/IOracle.sol";
 
+import {OracleSubmitter} from "../../../src/oracles/OracleSubmitter.sol";
+import {Subvault} from "../../../src/vaults/Subvault.sol";
+import {Vault} from "../../../src/vaults/Vault.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "scripts/common/interfaces/IDeployVaultFactory.sol";
-import {OracleSubmitter} from "src/oracles/OracleSubmitter.sol";
 
 /// @title DeployVaultFactoryRegistry interface
 /// @notice Interface for registry that stores configuration and metadata for vaults deployed via DeployVaultFactory.

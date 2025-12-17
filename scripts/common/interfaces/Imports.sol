@@ -38,6 +38,7 @@ import "../../../src/vaults/Subvault.sol";
 import "../../../src/vaults/Vault.sol";
 import "../../../src/vaults/VaultConfigurator.sol";
 
+import "../../../scripts/common/DeployVaultFactory.sol";
 import "../../../src/utils/SwapModule.sol";
 
 struct ProtocolDeployment {
@@ -91,6 +92,7 @@ struct ProtocolDeployment {
     RedirectingDepositHook redirectingDepositHook;
     LidoDepositHook lidoDepositHook;
     OracleHelper oracleHelper;
+    DeployVaultFactory deployVaultFactory;
 }
 
 struct Call {

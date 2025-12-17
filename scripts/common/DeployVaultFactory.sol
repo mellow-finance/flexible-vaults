@@ -7,10 +7,11 @@ import "./interfaces/IDeployVaultFactory.sol";
 import "./interfaces/IDeployVaultFactoryRegistry.sol";
 
 import "./interfaces/IOracleSubmitterFactory.sol";
-import "./interfaces/Imports.sol";
 
 import {OracleSubmitter} from "../../src/oracles/OracleSubmitter.sol";
 import {Subvault} from "../../src/vaults/Subvault.sol";
+import {Vault} from "../../src/vaults/Vault.sol";
+import {VaultConfigurator} from "../../src/vaults/VaultConfigurator.sol";
 
 contract DeployVaultFactory is IDeployVaultFactory {
     event VaultDeployed(address indexed vault, address indexed deployer);

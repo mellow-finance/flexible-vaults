@@ -156,7 +156,8 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(0x000000065d1A7bD71f52886910aaBE6555b7317c),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
-            swapModuleImplementation: SwapModule(payable(0x00000000d681E85e5783588f87A9573Cb97Eda01))
+            swapModuleImplementation: SwapModule(payable(0x00000000d681E85e5783588f87A9573Cb97Eda01)),
+            deployVaultFactory: DeployVaultFactory(0xdE0000006a45bfD6a310C51c42bBE256847bB6d5)
         });
     }
 
