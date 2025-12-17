@@ -92,8 +92,9 @@ contract Deploy is Script {
                 mstore(holders, i)
             }
         }
-        address[] memory assets_ =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH));
+        address[] memory assets_ = ArraysLibrary.makeAddressArray(
+            abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.RSETH, Constants.WEETH)
+        );
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -155,8 +156,8 @@ contract Deploy is Script {
         oracleSubmitter.renounceRole(Permissions.DEFAULT_ADMIN_ROLE, deployer);
 
         // subvault setup
-        address[] memory verifiers = new address[](2);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
+        address[] memory verifiers = new address[](3);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](3);
 
         {
             IRiskManager riskManager = vault.riskManager();
@@ -179,14 +180,33 @@ contract Deploy is Script {
             uint256 subvaultIndex = 1;
             verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
-            address swapModule = _deploySwapModule1(subvault);
-            console2.log("SwapModule 1:", swapModule);
 
             bytes32 merkleRoot;
-            (merkleRoot, calls[subvaultIndex]) = _createSubvault1Proofs(subvault, swapModule);
+            (merkleRoot, calls[subvaultIndex]) = _createSubvault1Proofs(subvault);
             IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
 
-            riskManager.allowSubvaultAssets(subvault, assets_);
+            riskManager.allowSubvaultAssets(
+                subvault,
+                ArraysLibrary.makeAddressArray(
+                    abi.encode(Constants.WSTETH, Constants.WEETH, Constants.RSETH, Constants.WETH)
+                )
+            );
+            riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
+        }
+
+        {
+            IRiskManager riskManager = vault.riskManager();
+            uint256 subvaultIndex = 2;
+            verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
+
+            bytes32 merkleRoot;
+            (merkleRoot, calls[subvaultIndex]) = _createSubvault2Proofs(subvault);
+            IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
+
+            riskManager.allowSubvaultAssets(
+                subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH, Constants.RSETH))
+            );
             riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
         }
 
@@ -273,7 +293,9 @@ contract Deploy is Script {
             }
             reports[0].priceD18 = 1 ether;
             reports[1].priceD18 = 1 ether;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
+            reports[2].priceD18 = uint224(getEthAssetPrice(Constants.WSTETH));
+            reports[3].priceD18 = uint224(getEthAssetPrice(Constants.RSETH));
+            reports[4].priceD18 = uint224(getEthAssetPrice(Constants.WEETH));
 
             oracleSubmitter.submitReports(reports);
             oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
@@ -307,7 +329,9 @@ contract Deploy is Script {
                 depositHook: address($.redirectingDepositHook),
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
-                depositQueueAssets: assets_,
+                depositQueueAssets: ArraysLibrary.makeAddressArray(
+                    abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH)
+                ),
                 redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
                 subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
@@ -323,6 +347,12 @@ contract Deploy is Script {
         );
 
         revert("ok");
+    }
+
+    function getEthAssetPrice(address asset) public view returns (uint256) {
+        uint256 priceD8 = IAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(asset);
+        uint256 ethPriceD8 = IAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(Constants.WETH);
+        return Math.mulDiv(1 ether, priceD8, ethPriceD8);
     }
 
     function _getExpectedHolders(address timelockController, address oracleSubmitter)
@@ -377,15 +407,26 @@ contract Deploy is Script {
         calls = rstETHPlusPlusLibrary.getSubvault0Calls(curator, subvault, swapModule, leaves);
     }
 
-    function _createSubvault1Proofs(address subvault, address swapModule)
+    function _createSubvault1Proofs(address subvault)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        string[] memory descriptions = rstETHPlusPlusLibrary.getSubvault0Descriptions(curator, subvault, swapModule);
+        string[] memory descriptions = rstETHPlusPlusLibrary.getSubvault1Descriptions(curator, subvault);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = rstETHPlusPlusLibrary.getSubvault0Proofs(curator, subvault, swapModule);
+        (merkleRoot, leaves) = rstETHPlusPlusLibrary.getSubvault1Proofs(curator, subvault);
         ProofLibrary.storeProofs("ethereum:rstETH++:subvault1", merkleRoot, leaves, descriptions);
-        calls = rstETHPlusPlusLibrary.getSubvault0Calls(curator, subvault, swapModule, leaves);
+        calls = rstETHPlusPlusLibrary.getSubvault1Calls(curator, subvault, leaves);
+    }
+
+    function _createSubvault2Proofs(address subvault)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        string[] memory descriptions = rstETHPlusPlusLibrary.getSubvault2Descriptions(curator, subvault);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = rstETHPlusPlusLibrary.getSubvault2Proofs(curator, subvault);
+        ProofLibrary.storeProofs("ethereum:rstETH++:subvault2", merkleRoot, leaves, descriptions);
+        calls = rstETHPlusPlusLibrary.getSubvault2Calls(curator, subvault, leaves);
     }
 
     function _routers() internal pure returns (address[5] memory result) {
@@ -404,24 +445,30 @@ contract Deploy is Script {
 
     function _deployLidoLeverageSwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[4] memory assets = [Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.WEETH];
+        address[5] memory assets = [Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.WEETH, Constants.RSETH];
         address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
-                Permissions.SWAP_MODULE_CALLER_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE
+                [
+                    Permissions.SWAP_MODULE_CALLER_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE
+                ],
+                [
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE,
+                    Permissions.SWAP_MODULE_ROUTER_ROLE
+                ]
             )
         );
         return swapModuleFactory.create(

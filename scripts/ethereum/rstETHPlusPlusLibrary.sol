@@ -34,25 +34,8 @@ library rstETHPlusPlusLibrary {
             swapModule: swapModule,
             curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
             assets: ArraysLibrary.makeAddressArray(
-                abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.WEETH)
+                abi.encode(Constants.ETH, Constants.WETH, Constants.RSETH, Constants.WSTETH, Constants.WEETH)
             )
-        });
-    }
-
-    function _getSubvault0AaveParams(address curator, address subvault)
-        internal
-        pure
-        returns (AaveLibrary.Info memory)
-    {
-        return AaveLibrary.Info({
-            subvault: subvault,
-            subvaultName: "subvault0",
-            curator: curator,
-            aaveInstance: Constants.AAVE_CORE,
-            aaveInstanceName: "Core",
-            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WEETH)),
-            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
-            categoryId: 1
         });
     }
 
@@ -70,9 +53,6 @@ library rstETHPlusPlusLibrary {
                 bitmaskVerifier, _getSubvault0SwapModuleParams(curator, subvault, swapModule)
             ),
             iterator
-        );
-        iterator = ArraysLibrary.insert(
-            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault0AaveParams(curator, subvault)), iterator
         );
 
         assembly {
@@ -94,9 +74,6 @@ library rstETHPlusPlusLibrary {
             SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
             iterator
         );
-        iterator = ArraysLibrary.insert(
-            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault0AaveParams(curator, subvault)), iterator
-        );
 
         assembly {
             mstore(descriptions, iterator)
@@ -117,8 +94,193 @@ library rstETHPlusPlusLibrary {
             SwapModuleLibrary.getSwapModuleCalls(_getSubvault0SwapModuleParams(curator, subvault, swapModule)),
             iterator
         );
+    }
+
+    function _getSubvault1AaveCoreParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault1",
+            curator: curator,
+            aaveInstance: Constants.AAVE_CORE,
+            aaveInstanceName: "Core",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WEETH, Constants.RSETH, Constants.WSTETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+            categoryId: 1
+        });
+    }
+
+    function _getSubvault1AavePrimeParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault1",
+            curator: curator,
+            aaveInstance: Constants.AAVE_PRIME,
+            aaveInstanceName: "Prime",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH, Constants.RSETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+            categoryId: 1
+        });
+    }
+
+    function getSubvault1Proofs(address curator, address subvault)
+        internal
+        pure
+        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+    {
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
         iterator = ArraysLibrary.insert(
-            calls.calls, AaveLibrary.getAaveCalls(_getSubvault0AaveParams(curator, subvault)), iterator
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault1AaveCoreParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves,
+            AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault1AavePrimeParams(curator, subvault)),
+            iterator
+        );
+
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault1Descriptions(address curator, address subvault)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault1AaveCoreParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault1AavePrimeParams(curator, subvault)), iterator
+        );
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault1Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+        internal
+        pure
+        returns (SubvaultCalls memory calls)
+    {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault1AaveCoreParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault1AavePrimeParams(curator, subvault)), iterator
+        );
+    }
+
+    function _getSubvault2AaveCoreParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault2",
+            curator: curator,
+            aaveInstance: Constants.AAVE_CORE,
+            aaveInstanceName: "Core",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.RSETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+            categoryId: 3
+        });
+    }
+
+    function _getSubvault2AavePrimeParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault2",
+            curator: curator,
+            aaveInstance: Constants.AAVE_PRIME,
+            aaveInstanceName: "Prime",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.RSETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+            categoryId: 5
+        });
+    }
+
+    function getSubvault2Proofs(address curator, address subvault)
+        internal
+        pure
+        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+    {
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            leaves, AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault2AaveCoreParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves,
+            AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault2AavePrimeParams(curator, subvault)),
+            iterator
+        );
+
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault2Descriptions(address curator, address subvault)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault2AaveCoreParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault2AavePrimeParams(curator, subvault)), iterator
+        );
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault2Calls(address curator, address subvault, IVerifier.VerificationPayload[] memory leaves)
+        internal
+        pure
+        returns (SubvaultCalls memory calls)
+    {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault2AaveCoreParams(curator, subvault)), iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault2AavePrimeParams(curator, subvault)), iterator
         );
     }
 }
