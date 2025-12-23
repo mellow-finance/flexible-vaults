@@ -30,6 +30,7 @@ contract Deploy is Script, Test {
     address public proxyAdmin = Constants.proxyAdmin;
 
     address public testAdmin = 0x26351CE7fD71b843371e816110e2f89FC66255B9;
+    address public nodeOperator = 0xf6c4eb98b90A044589e3348e9CF8c4C0ACF82A40;
     address public lazyVaultAdmin = testAdmin;
     address public activeVaultAdmin = testAdmin;
     address public oracleUpdater = testAdmin;
@@ -340,7 +341,7 @@ contract Deploy is Script, Test {
         roles[i++] = ILidoV3VaultFactory.RoleAssignment({account: subvault, role: LidoV3Permissions.REBALANCE_ROLE});
 
         (, dashboard) = ILidoV3VaultFactory(Constants.LIDO_V3_VAULT_FACTORY).createVaultWithDashboard{value: 1 ether}(
-            testAdmin, testAdmin, testAdmin, 0, 1 hours, roles
+            testAdmin, nodeOperator, testAdmin, 0, 1 hours, roles
         );
     }
 
