@@ -1,0 +1,263 @@
+{
+  "title": "hoodi:lidoV3:subvault0",
+  "merkle_root": "0x902bfc052ec648c7dd8508b0b927017ebbd51ccb4a648fbab1becf95d484e51f",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(wstETH).approve(0x22d45e8916b3e694495a1960cf9ea347788c8e72, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x26351ce7fd71b843371e816110e2f89fc66255b9",
+          "target": "0x7e99ee3c66636de415d2d7c880938f2f40f94de4",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x22d45e8916b3e694495a1960cf9ea347788c8e72",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x000000000000000000000000e3899af4c0397eab3d5b501d7a91d12b5f9dcc691a441a0520a00cefa5c8b3aca01beb37ac8450de2455fcef0cdcd19e12457dd1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xce5eac75be55b9729796ca315c98f9994384afd64692fe1a099974043189d912",
+        "0xad1c90d955bec611bbb3bcb548394dc1631dbf559ed7ea7938da46c32095868c",
+        "0xdba9439e4a2676acbcf733b5cf8928f7467151ae4df58f292f18d196e9128a66"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "LidoV3Dashboard(test LidoV3 dashboard).fund{value: any}()",
+        "abi": {
+          "type": "function",
+          "name": "fund",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x26351ce7fd71b843371e816110e2f89fc66255b9",
+          "target": "0x22d45e8916b3e694495a1960cf9ea347788c8e72",
+          "value": "any"
+        },
+        "innerParameters": {}
+      },
+      "verificationData": "0x000000000000000000000000e3899af4c0397eab3d5b501d7a91d12b5f9dcc6950d0d5705c708908b8e312d0627f6d660d4516529d681294c266eb8e2b56b47d00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6084989b47cd63ca2d3f41c3b15135cf47f9b647f99f3eda5f3c0978aa85887b",
+        "0xad1c90d955bec611bbb3bcb548394dc1631dbf559ed7ea7938da46c32095868c",
+        "0xdba9439e4a2676acbcf733b5cf8928f7467151ae4df58f292f18d196e9128a66"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "LidoV3Dashboard(test LidoV3 dashboard).withdraw(subvault0, any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "claimer",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "withdraw",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "burnedShares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "mintedShares",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x26351ce7fd71b843371e816110e2f89fc66255b9",
+          "target": "0x22d45e8916b3e694495a1960cf9ea347788c8e72",
+          "value": "0"
+        },
+        "innerParameters": {
+          "claimer": "0xebe7c92334c8405c19a6bf837837ce4d5b2ceaab",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x000000000000000000000000e3899af4c0397eab3d5b501d7a91d12b5f9dcc695700b810bef2615b87931936623afa478f28623e2e6bfc52a8f3306079833124000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x5995f5f4c60376cc199b28ccaac6592833b09eec717cd4942ee094f17eb891c8",
+        "0x02d4e056f7ae4dd45ca88061aa2d6cedf6f38076a719881211e35d468c518e5c",
+        "0xdba9439e4a2676acbcf733b5cf8928f7467151ae4df58f292f18d196e9128a66"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "LidoV3Dashboard(test LidoV3 dashboard).mintWstETH{value: any}(subvault0, any)",
+        "abi": {
+          "type": "function",
+          "name": "mintWstETH",
+          "inputs": [
+            {
+              "name": "recipient_",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amountOfWstETH_",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x26351ce7fd71b843371e816110e2f89fc66255b9",
+          "target": "0x22d45e8916b3e694495a1960cf9ea347788c8e72",
+          "value": "any"
+        },
+        "innerParameters": {
+          "recipient_": "0xebe7c92334c8405c19a6bf837837ce4d5b2ceaab",
+          "amountOfWstETH_": "any"
+        }
+      },
+      "verificationData": "0x000000000000000000000000e3899af4c0397eab3d5b501d7a91d12b5f9dcc696d3197457c9f3bc088037a8c65b8df426e9926ce3373e6b6b7e5e4f7eb117290000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x40e4bf4e09fb776a4042db7cde1e5ee28b36a4241d94a1a46063652094ef9b65",
+        "0xe034fd9c61751afa6f51ad588ddf93a166f407acd628e1de9422ed0146456b03",
+        "0xaccf54b14b5d07a1b382b946bd3f06c8fc83f16d6f3d807eec839eff8ca9f214"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "LidoV3Dashboard(test LidoV3 dashboard).burnWstETH(any)",
+        "abi": {
+          "type": "function",
+          "name": "burnWstETH",
+          "inputs": [
+            {
+              "name": "amountOfWstETH_",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x26351ce7fd71b843371e816110e2f89fc66255b9",
+          "target": "0x22d45e8916b3e694495a1960cf9ea347788c8e72",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amountOfWstETH_": "any"
+        }
+      },
+      "verificationData": "0x000000000000000000000000e3899af4c0397eab3d5b501d7a91d12b5f9dcc693ce3399098f3553a91b0d13e63603baaa2721d08adb762c39d534759907e46ef00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x5176a7d0c373192ea6801c0c6884827f43583837835262f03704652a3e2934d1",
+        "0xe034fd9c61751afa6f51ad588ddf93a166f407acd628e1de9422ed0146456b03",
+        "0xaccf54b14b5d07a1b382b946bd3f06c8fc83f16d6f3d807eec839eff8ca9f214"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "LidoV3Dashboard(test LidoV3 dashboard).rebalanceVaultWithShares(any)",
+        "abi": {
+          "type": "function",
+          "name": "rebalanceVaultWithShares",
+          "inputs": [
+            {
+              "name": "shares_",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x26351ce7fd71b843371e816110e2f89fc66255b9",
+          "target": "0x22d45e8916b3e694495a1960cf9ea347788c8e72",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares_": "any"
+        }
+      },
+      "verificationData": "0x000000000000000000000000e3899af4c0397eab3d5b501d7a91d12b5f9dcc69e93791a1c0977b9a23a343efbbfe1add875228cdba4a1fb7eba337c35edf17e400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xecdf24b54c53b38f525440f3a38063c27bb0595f590e579fc5c107c72d6295df",
+        "0xaccf54b14b5d07a1b382b946bd3f06c8fc83f16d6f3d807eec839eff8ca9f214"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "LidoV3Dashboard(test LidoV3 dashboard).rebalanceVaultWithEther{value: any}(any)",
+        "abi": {
+          "type": "function",
+          "name": "rebalanceVaultWithEther",
+          "inputs": [
+            {
+              "name": "ether_",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x26351ce7fd71b843371e816110e2f89fc66255b9",
+          "target": "0x22d45e8916b3e694495a1960cf9ea347788c8e72",
+          "value": "any"
+        },
+        "innerParameters": {
+          "ether_": "any"
+        }
+      },
+      "verificationData": "0x000000000000000000000000e3899af4c0397eab3d5b501d7a91d12b5f9dcc69b62d265362263a3ab760b20626c700486ffb41648ebf3e9ef6ff84c8e94840a600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x5b069d10ed958b6e59107acf7757316e62f7e7301e0794297ac24d574ca5d5cd",
+        "0x02d4e056f7ae4dd45ca88061aa2d6cedf6f38076a719881211e35d468c518e5c",
+        "0xdba9439e4a2676acbcf733b5cf8928f7467151ae4df58f292f18d196e9128a66"
+      ]
+    }
+  ]
+}
