@@ -1,7 +1,7 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 45      4954      684       547     3723        783           837.54
+Solidity                                 46      4971      688       548     3735        783           837.54
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/factories/Factory.sol                         131       22        17       92          8             8.70
 src/hooks/BasicRedeemHook.sol                      53        4         1       48         10            20.83
@@ -12,6 +12,7 @@ src/libraries/ShareManagerFlagLibrary.sol          67        8        33       2
 src/libraries/SlotLibrary.sol                      20        1         9       10          0             0.00
 src/libraries/TransferLibrary.sol                  61        7        23       31         12            38.71
 src/managers/BasicShareManager.sol                 89       15         7       67         13            19.40
+~managers/BurnableTokenizedShareManager.sol        17        4         1       12          0             0.00
 src/managers/FeeManager.sol                       177       26        20      131         23            17.56
 src/managers/RiskManager.sol                      264       34        24      206         35            16.99
 src/managers/ShareManager.sol                     267       39        29      199         44            22.11
@@ -49,7 +50,7 @@ src/vaults/Subvault.sol                            21        3         1       1
 src/vaults/Vault.sol                               56        5         1       50          1             2.00
 src/vaults/VaultConfigurator.sol                   74        7         2       65          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    45      4954      684       547     3723        783           837.54
+Total                                    46      4971      688       548     3735        783           837.54
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 183465 bytes, 0.183 megabytes (SI)
+Processed 184017 bytes, 0.184 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
