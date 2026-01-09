@@ -42,7 +42,7 @@ contract Deploy is DeployAbstractScript {
         activeVaultAdmin = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3
         oracleUpdater = 0xF6edb1385eC1A61c33B9e8dcc348497dCceabE8D; // EOA
         curator = 0x57775cB0C39671487981706FFb1D3B3ff65Ebb1f; // EOA
-        feeManagerOwner = testWallet;
+        feeManagerOwner = 0xb7b2ee53731Fc80080ED2906431e08452BC58786; // Mellow+Sense 5/4+4
         pauser = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3
 
         timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin));
