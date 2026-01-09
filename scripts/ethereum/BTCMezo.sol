@@ -40,8 +40,8 @@ contract Deploy is DeployAbstractScript {
         proxyAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
         lazyVaultAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
         activeVaultAdmin = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3
-        oracleUpdater = 0xF6edb1385eC1A61c33B9e8dcc348497dCceabE8D; // EOA
-        curator = 0x57775cB0C39671487981706FFb1D3B3ff65Ebb1f; // EOA
+        oracleUpdater = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33; // 1/1 msig 0xF6edb1385eC1A61c33B9e8dcc348497dCceabE8D
+        curator = 0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa; // 1/1 msig 0x57775cB0C39671487981706FFb1D3B3ff65Ebb1f
         feeManagerOwner = 0xb7b2ee53731Fc80080ED2906431e08452BC58786; // Mellow+Sense 5/4+4
         pauser = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3
 
@@ -51,8 +51,8 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill fee parameters
         depositFeeD6 = 0;
         redeemFeeD6 = 0;
-        performanceFeeD6 = 1e5; // 10%
-        protocolFeeD6 = 5e3; // 0.5%
+        performanceFeeD6 = 0;
+        protocolFeeD6 = 0;
 
         /// @dev fill security params
         securityParams = IOracle.SecurityParams({
@@ -113,14 +113,14 @@ contract Deploy is DeployAbstractScript {
             version: uint256(QueueVersion.SYNC),
             isDeposit: true,
             asset: Constants.TBTC,
-            data: abi.encode(uint256(0), 24 hours) // penaltyD6 = 0%, maxAge = 1 day
+            data: abi.encode(uint256(0), 365 days) // penaltyD6 = 0%, maxAge = maximum
         });
 
         queues[1] = IDeployVaultFactory.QueueParams({
             version: uint256(QueueVersion.SYNC),
             isDeposit: true,
             asset: Constants.WBTC,
-            data: abi.encode(uint256(0), 24 hours) // penaltyD6 = 0%, maxAge = 1 day
+            data: abi.encode(uint256(0), 365 days) // penaltyD6 = 0%, maxAge = maximum
         });
 
         queueLimit = 2;
@@ -137,7 +137,7 @@ contract Deploy is DeployAbstractScript {
 
         allowedAssetsPrices = new uint224[](allowedAssets.length);
         allowedAssetsPrices[0] = 1 ether; // 18 decimals
-        allowedAssetsPrices[1] = 1.0001554e28; // 8 decimals and a bit higher price
+        allowedAssetsPrices[1] = 1e28; // 8 decimals and a bit higher price
     }
 
     /// @dev fill in vault role holders
