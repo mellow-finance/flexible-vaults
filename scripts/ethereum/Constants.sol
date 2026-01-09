@@ -29,7 +29,8 @@ library Constants {
 
     address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
     address public constant CBBTC = 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf;
-    address public constant TBTC = 0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa;
+    address public constant TBTC = 0x18084fbA666a33d37592fA2633fD49a74DD93a88;
+    address public constant WBTC = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
 
     address public constant WEETH = 0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee;
     address public constant RSETH = 0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7;
