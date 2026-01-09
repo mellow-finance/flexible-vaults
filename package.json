@@ -28,6 +28,7 @@
     "deploy:ethereum:msvusd": "forge script ./scripts/ethereum/msvUSD.s.sol:Deploy -vvvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:ethereum:example": "forge script ./scripts/ethereum/DeployScriptExample.s.sol:Deploy -vvv --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:ethereum:cbbtc": "forge script ./scripts/ethereum/cbBTCMezo.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2) --verify --verifier sourcify",
     "deploy:plasma:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep PLASMA_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow",
     "deploy:monad:test:core": "forge script ./scripts/monad/Deploy.s.sol:Deploy --fork-url $(grep MONAD_TESTNET_RPC .env | cut -d '=' -f2,3,4,5) --gas-estimate-multiplier 200 --broadcast --slow --verify --verifier sourcify",
     "deploy:monad:test": "forge script ./scripts/monad/MVTtest.s.sol:Deploy -vvvv --fork-url $(grep MONAD_TESTNET_RPC .env | cut -d '=' -f2,3,4,5) --gas-estimate-multiplier 300 --broadcast --slow --verify --verifier sourcify",

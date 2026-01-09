@@ -270,9 +270,34 @@ abstract contract DeployAbstractScript is Test {
                 redeemQueueAssets: redeemQueueAssets,
                 subvaultVerifiers: deployment.verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(deployment.timelockController))),
-                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin)),
-                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(pauser))
+                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(timelockProposers)),
+                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(timelockExecutors))
             })
+        );
+        checkTimelockControllerRoles(vaultAddress);
+    }
+
+    function checkTimelockControllerRoles(address vaultAddress) internal view {
+        IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
+            deployVault.registry().getVaultDeployment(vaultAddress);
+        TimelockController controller = TimelockController(deployment.timelockController);
+
+        for (uint256 i = 0; i < timelockProposers.length; i++) {
+            require(
+                controller.hasRole(controller.PROPOSER_ROLE(), timelockProposers[i]),
+                "TimelockController: missing PROPOSER_ROLE"
+            );
+        }
+
+        for (uint256 i = 0; i < timelockExecutors.length; i++) {
+            require(
+                controller.hasRole(controller.EXECUTOR_ROLE(), timelockExecutors[i]),
+                "TimelockController: missing EXECUTOR_ROLE"
+            );
+        }
+
+        require(
+            controller.hasRole(controller.EXECUTOR_ROLE(), pauser), "TimelockController: pauser has no EXECUTOR_ROLE"
         );
     }
 
