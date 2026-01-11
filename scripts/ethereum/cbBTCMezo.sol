@@ -19,16 +19,16 @@ contract Deploy is DeployAbstractScript {
         deployVault = Constants.deployVaultFactory;
 
         /// @dev just on-chain simulation
-        _simulate();
-        revert("ok");
+        //_simulate();
+        //revert("ok");
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0)));
+        vault = Vault(payable(address(0x3E63347C224e2D77458BCf2cB16A38b204c09099)));
         _run();
-        revert("ok");
+        //revert("ok");
     }
 
     function setUp() public override {
@@ -75,7 +75,7 @@ contract Deploy is DeployAbstractScript {
         shareManagerWhitelistMerkleRoot = bytes32(0);
 
         /// @dev fill risk manager params
-        riskManagerLimit = type(int256).max / 2;
+        riskManagerLimit = 50 ether; // 50 cbBTC
 
         /// @dev fill versions
         vaultVersion = 0;
@@ -97,7 +97,7 @@ contract Deploy is DeployAbstractScript {
         subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.CBBTC));
         subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[0].verifierVersion = 0;
-        subvaultParams[0].limit = type(int256).max / 2;
+        subvaultParams[0].limit = 50 ether; // 50 cbBTC
     }
 
     /// @dev fill in queue parameters

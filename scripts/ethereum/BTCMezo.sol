@@ -19,16 +19,16 @@ contract Deploy is DeployAbstractScript {
         deployVault = Constants.deployVaultFactory;
 
         /// @dev just on-chain simulation
-        _simulate();
-        revert("ok");
+        //_simulate();
+        //revert("ok");
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0)));
+        vault = Vault(payable(address(0x65202c541a19D903c53C985FF2aE6f3F87DAd24c)));
         _run();
-        revert("ok");
+        //revert("ok");
     }
 
     function setUp() public override {
@@ -75,7 +75,7 @@ contract Deploy is DeployAbstractScript {
         shareManagerWhitelistMerkleRoot = bytes32(0);
 
         /// @dev fill risk manager params
-        riskManagerLimit = type(int256).max / 2;
+        riskManagerLimit = 100 ether; // 100 BTC
 
         /// @dev fill versions
         vaultVersion = 0;
@@ -97,7 +97,7 @@ contract Deploy is DeployAbstractScript {
         subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC, Constants.WBTC));
         subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[0].verifierVersion = 0;
-        subvaultParams[0].limit = type(int256).max / 2;
+        subvaultParams[0].limit = 100 ether; // 100 BTC
     }
 
     /// @dev fill in queue parameters
@@ -137,7 +137,7 @@ contract Deploy is DeployAbstractScript {
 
         allowedAssetsPrices = new uint224[](allowedAssets.length);
         allowedAssetsPrices[0] = 1 ether; // 18 decimals
-        allowedAssetsPrices[1] = 1e28; // 8 decimals and a bit higher price
+        allowedAssetsPrices[1] = 1e28; // 8 decimals
     }
 
     /// @dev fill in vault role holders
