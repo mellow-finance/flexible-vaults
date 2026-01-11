@@ -265,7 +265,15 @@ contract Collector is OwnableUpgradeable {
                 try ISignatureQueue(queue).consensus() {
                     continue;
                 } catch {}
-                (uint256 timestamp, uint256 assets) = IDepositQueue(queue).requestOf(account);
+                uint256 timestamp;
+                uint256 assets;
+                try IDepositQueue(queue).requestOf(account) returns (uint256 ts, uint256 a) {
+                    timestamp = ts;
+                    assets = a;
+                } catch {
+                    /// @dev SyncDepositQueue
+                    continue;
+                }
                 if (assets == 0) {
                     continue;
                 }
