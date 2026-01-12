@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../collectors/Collector.sol";
 import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
 import "../common/interfaces/ICowswapSettlement.sol";
@@ -164,6 +165,8 @@ library Constants {
 
     DeployVaultFactory public constant deployVaultFactory =
         DeployVaultFactory(0xdE0000006a45bfD6a310C51c42bBE256847bB6d5);
+
+    Collector public constant collector = Collector(0x40DA86d29AF2fe980733bD54E364e7507505b41B);
 
     function getTqETHPreProdDeployment() internal pure returns (VaultDeployment memory $) {
         address proxyAdmin = 0xC1211878475Cd017fecb922Ae63cc3815FA45652;

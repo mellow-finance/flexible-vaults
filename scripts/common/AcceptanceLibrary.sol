@@ -6,6 +6,7 @@ import {VmSafe} from "forge-std/Vm.sol";
 
 import "./interfaces/Imports.sol";
 
+import "../ethereum/Constants.sol";
 import "./ArraysLibrary.sol";
 import "./Permissions.sol";
 import "./ProofLibrary.sol";
@@ -541,6 +542,7 @@ library AcceptanceLibrary {
         _verifyGetters($, deployment);
         _verifyVerifiersParams(deployment);
         _verifyTimelockControllers($, deployment);
+        _checkCollectorCall(deployment);
     }
 
     function runVaultDeploymentChecks(
@@ -952,5 +954,52 @@ library AcceptanceLibrary {
             }
         }
         revert(string(abi.encodePacked("Factory: implementation not found for contract ", name)));
+    }
+
+    function _checkCollectorCall(VaultDeployment memory deployment) internal {
+        IPriceOracle oracle = Constants.collector.oracle();
+
+        for (uint256 i = 0; i < deployment.assets.length; i++) {
+            address asset = deployment.assets[i];
+            uint256 decimals = asset == Constants.ETH ? 18 : IERC20Metadata(asset).decimals();
+            bool isPassed = true;
+            try oracle.getValue(asset, Constants.USDC, 10 ** decimals) returns (uint256 value) {
+                if (value == 0) {
+                    isPassed = false;
+                }
+            } catch {
+                isPassed = false;
+            }
+            if (!isPassed) {
+                revert(
+                    string(
+                        abi.encodePacked(
+                            "Collector: missing oracle or wrong price for ",
+                            IERC20Metadata(asset).symbol(),
+                            " (",
+                            Strings.toHexString(asset),
+                            ")"
+                        )
+                    )
+                );
+            }
+        }
+
+        IFeeManager feeManager = deployment.vault.feeManager();
+        address baseAsset = feeManager.baseAsset(address(deployment.vault));
+        try Constants.collector.collect(
+            0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3,
+            deployment.vault,
+            Collector.Config({
+                baseAssetFallback: baseAsset,
+                oracleUpdateInterval: 1 days,
+                redeemHandlingInterval: 1 days
+            })
+        ) returns (Collector.Response memory response) {
+            require(response.vault == address(deployment.vault), "Collector: invalid vault");
+            require(response.baseAsset == baseAsset, "Collector: invalid fee manager");
+        } catch {
+            revert("Collector call failed");
+        }
     }
 }
