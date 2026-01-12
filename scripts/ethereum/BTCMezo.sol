@@ -24,14 +24,14 @@ contract Deploy is DeployAbstractScript {
         deployVault = Constants.deployVaultFactory;
 
         /// @dev just on-chain simulation
-        //_simulate();
-        //revert("ok");
+        _simulate();
+        revert("ok");
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0x65202c541a19D903c53C985FF2aE6f3F87DAd24c)));
+        vault = Vault(payable(address(0)));
         _run();
         //revert("ok");
     }
@@ -80,7 +80,7 @@ contract Deploy is DeployAbstractScript {
             suspiciousRelativeDeviationD18: 0.001 ether,
             timeout: 20 hours,
             depositInterval: 1 hours, // does not affect sync deposit queue
-            redeemInterval: 1 years // no redemptions allowed
+            redeemInterval: 365 days // no redemptions allowed
         });
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -166,7 +166,7 @@ contract Deploy is DeployAbstractScript {
         returns (Vault.RoleHolder[] memory holders)
     {
         uint256 index;
-        holders = new Vault.RoleHolder[](16 + (timelockController == address(0) ? 0 : 3));
+        holders = new Vault.RoleHolder[](15 + (timelockController == address(0) ? 0 : 3));
 
         // lazyVaultAdmin roles:
         holders[index++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
@@ -181,7 +181,6 @@ contract Deploy is DeployAbstractScript {
         holders[index++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
-        holders[index++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, activeVaultAdmin);
 
         // emergency pauser roles:
         if (timelockController != address(0)) {

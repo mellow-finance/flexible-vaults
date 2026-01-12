@@ -48,31 +48,6 @@ contract Deploy is DeployAbstractScript {
         console.log("%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer));
     }
 
-    function changePrice() internal {
-        vault = Vault(payable(address(0x3E63347C224e2D77458BCf2cB16A38b204c09099)));
-
-        IOracle oracle = IOracle(address(0x3d1167AEff3b14937Ab50FBe3D1375145494Fe2b));
-        IOracle.SecurityParams memory params = oracle.securityParams();
-        IOracle.SecurityParams memory newParams = params;
-
-        newParams.maxAbsoluteDeviation = 1e28;
-        newParams.suspiciousAbsoluteDeviation = 1e28;
-        newParams.maxRelativeDeviationD18 = 1e10 + 1;
-        newParams.suspiciousRelativeDeviationD18 = 1e10 + 1;
-
-        lazyVaultAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
-        vm.startPrank(lazyVaultAdmin);
-        //oracle.setSecurityParams(newParams);
-        vault.grantRole(oracle.SUBMIT_REPORTS_ROLE(), lazyVaultAdmin);
-
-        IOracle.Report[] memory reports = new IOracle.Report[](1);
-        reports[0] = IOracle.Report({
-            asset: Constants.CBBTC,
-            priceD18: 1e18 + 1000
-        });
-        oracle.submitReports(reports);
-    }
-
     function setUp() public override {
         /// @dev fill name and symbol
         vaultName = "Mezo cbBTC Pre-Deposit Vault";
@@ -104,7 +79,7 @@ contract Deploy is DeployAbstractScript {
             suspiciousRelativeDeviationD18: 0.001 ether,
             timeout: 20 hours,
             depositInterval: 1 hours, // does not affect sync deposit queue
-            redeemInterval: 1 years // no redemptions allowed
+            redeemInterval: 365 days // no redemptions allowed
         });
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -180,7 +155,7 @@ contract Deploy is DeployAbstractScript {
         returns (Vault.RoleHolder[] memory holders)
     {
         uint256 index;
-        holders = new Vault.RoleHolder[](16 + (timelockController == address(0) ? 0 : 3));
+        holders = new Vault.RoleHolder[](15 + (timelockController == address(0) ? 0 : 3));
 
         // lazyVaultAdmin roles:
         holders[index++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
@@ -195,7 +170,6 @@ contract Deploy is DeployAbstractScript {
         holders[index++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
-        holders[index++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, activeVaultAdmin);
 
         // emergency pauser roles:
         if (timelockController != address(0)) {
