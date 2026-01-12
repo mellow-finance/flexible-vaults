@@ -197,15 +197,14 @@ contract Collector is OwnableUpgradeable {
                         pendingValue: 0,
                         values: new uint256[](0)
                     });
-                    try ISignatureQueue(queue).consensus() returns (IConsensus) {
+                    if (isSignatureQueue(queue)) {
                         r.queues[iterator].isSignatureQueue = true;
-                    } catch {
-                        if (r.queues[iterator].isDepositQueue) {
+                    } else if (r.queues[iterator].isDepositQueue) {
+                        if (!isSyncDepositQueue(queue)) {
                             r.queues[iterator].pendingValue = TransferLibrary.balanceOf(asset, queue);
-                        } else {
-                            (r.queues[iterator].pendingValue, r.queues[iterator].values) =
-                                _collectRedeemQueueData(queue);
                         }
+                    } else {
+                        (r.queues[iterator].pendingValue, r.queues[iterator].values) = _collectRedeemQueueData(queue);
                     }
                     iterator++;
                 }
@@ -263,14 +262,12 @@ contract Collector is OwnableUpgradeable {
                 if (!vault.isDepositQueue(queue)) {
                     continue;
                 }
-                try ISignatureQueue(queue).consensus() {
+                if (isSignatureQueue(queue)) {
                     continue;
-                } catch {}
-                try ISyncQueue(queue).name() returns (string memory name_) {
-                    if (keccak256(abi.encodePacked(name_)) == keccak256(abi.encodePacked("SyncDepositQueue"))) {
-                        continue;
-                    }
-                } catch {}
+                }
+                if (isSyncDepositQueue(queue)) {
+                    continue;
+                }
                 (uint256 timestamp, uint256 assets) = IDepositQueue(queue).requestOf(account);
                 if (assets == 0) {
                     continue;
@@ -361,6 +358,22 @@ contract Collector is OwnableUpgradeable {
             latestOracleUpdate
                 + Math.max(oracleUpdateInterval, delta * (oracleUpdateInterval - 1) / oracleUpdateInterval)
         );
+    }
+
+    function isSyncDepositQueue(address queue) public view returns (bool) {
+        try ISyncQueue(queue).name() returns (string memory name_) {
+            if (keccak256(abi.encodePacked(name_)) == keccak256(abi.encodePacked("SyncDepositQueue"))) {
+                return true;
+            }
+        } catch {}
+        return false;
+    }
+
+    function isSignatureQueue(address queue) public view returns (bool) {
+        try ISignatureQueue(queue).consensus() {
+            return true;
+        } catch {}
+        return false;
     }
 
     function collect(address user, address[] memory vaults, Config[] calldata configs)
