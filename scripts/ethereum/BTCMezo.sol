@@ -80,7 +80,7 @@ contract Deploy is DeployAbstractScript {
             suspiciousRelativeDeviationD18: 0.001 ether,
             timeout: 20 hours,
             depositInterval: 1 hours, // does not affect sync deposit queue
-            redeemInterval: type(uint32).max // no redemptions allowed
+            redeemInterval: uint32(1768204000) // no redemptions allowed
         });
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
