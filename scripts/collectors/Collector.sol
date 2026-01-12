@@ -11,6 +11,7 @@ import "../../src/interfaces/managers/IShareManager.sol";
 import "../../src/interfaces/oracles/IOracle.sol";
 
 import "../../src/interfaces/queues/IDepositQueue.sol";
+import "../../src/interfaces/queues/ISyncQueue.sol";
 
 import "../../src/interfaces/queues/IRedeemQueue.sol";
 import "../../src/interfaces/queues/ISignatureQueue.sol";
@@ -265,15 +266,12 @@ contract Collector is OwnableUpgradeable {
                 try ISignatureQueue(queue).consensus() {
                     continue;
                 } catch {}
-                uint256 timestamp;
-                uint256 assets;
-                try IDepositQueue(queue).requestOf(account) returns (uint256 ts, uint256 a) {
-                    timestamp = ts;
-                    assets = a;
-                } catch {
-                    /// @dev SyncDepositQueue
-                    continue;
-                }
+                try ISyncQueue(queue).name() returns (string memory name_) {
+                    if (keccak256(abi.encodePacked(name_)) == keccak256(abi.encodePacked("SyncDepositQueue"))) {
+                        continue;
+                    }
+                } catch {}
+                (uint256 timestamp, uint256 assets) = IDepositQueue(queue).requestOf(account);
                 if (assets == 0) {
                     continue;
                 }
