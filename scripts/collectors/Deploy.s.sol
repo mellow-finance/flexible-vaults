@@ -106,12 +106,26 @@ contract Deploy is Script, Test {
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        // address deployer = vm.addr(deployerPk);
+        address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
 
-        // _deployStrETHCustomCollector();
-        // _deployStrETHPlasmaCustomCollector();
+        Collector newImpl = new Collector();
+        address collector = 0x40DA86d29AF2fe980733bD54E364e7507505b41B;
+        address proxyAdmin = 0xe51cE5816901AA302eBD1CC764C2Bb87c72CBa69;
+        ProxyAdmin(proxyAdmin).upgradeAndCall(ITransparentUpgradeableProxy(collector), address(newImpl), "");
 
-        revert("ok");
+        console2.log("New collector impl:", address(newImpl));
+
+        // Collector(collector).collect(
+        //     deployer,
+        //     Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)),
+        //     Collector.Config({
+        //         baseAssetFallback: address(0),
+        //         oracleUpdateInterval: 1 hours,
+        //         redeemHandlingInterval: 1 hours
+        //     })
+        // );
+
+        // revert("ok");
     }
 }
