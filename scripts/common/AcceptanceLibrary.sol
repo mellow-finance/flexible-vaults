@@ -416,7 +416,7 @@ library AcceptanceLibrary {
                 )
             )
         );
-        require($.depositQueueFactory.implementations() == 2, "Factory DepositQueue: invalid implementations length");
+        require($.depositQueueFactory.implementations() == 3, "Factory DepositQueue: invalid implementations length");
         require(
             $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
             "Factory DepositQueue: invalid implementation at 0"
@@ -424,6 +424,10 @@ library AcceptanceLibrary {
         require(
             $.depositQueueFactory.implementationAt(1) == address($.signatureDepositQueueImplementation),
             "Factory DepositQueue: invalid implementation at 1"
+        );
+        require(
+            $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
+            "Factory DepositQueue: invalid implementation at 2"
         );
 
         compareBytecode(
