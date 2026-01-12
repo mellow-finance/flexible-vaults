@@ -14,6 +14,11 @@ contract Deploy is DeployAbstractScript {
     address public testWallet = vm.addr(uint256(testWalletPk));
 
     function run() external {
+        //changePrice();
+        //deposit(Constants.CBBTC, 0x38BCe97C23467A7182766026D84A50bbC176BCb4);
+        //revert("ok");
+        //return;
+
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         deployVault = Constants.deployVaultFactory;
@@ -26,9 +31,46 @@ contract Deploy is DeployAbstractScript {
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0x3E63347C224e2D77458BCf2cB16A38b204c09099)));
+        vault = Vault(payable(address(0x01A81A95AeD018385e419D973937A5b997Ce7F77)));
         _run();
         //revert("ok");
+    }
+
+    function deposit(address asset, address queue) internal {
+        IDepositQueue depositQueue = IDepositQueue(queue);
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+        vm.startBroadcast(deployerPk);
+        uint224 amount = uint224(IERC20(asset).balanceOf(deployer));
+        IERC20(asset).approve(address(depositQueue), amount);
+        depositQueue.deposit(amount, address(0), new bytes32[](0));
+        ShareManager shareManager = ShareManager(payable(0xb1b28bd283205342f7bcDCD5B5660F63ca6818d2));
+        console.log("%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer));
+    }
+
+    function changePrice() internal {
+        vault = Vault(payable(address(0x3E63347C224e2D77458BCf2cB16A38b204c09099)));
+
+        IOracle oracle = IOracle(address(0x3d1167AEff3b14937Ab50FBe3D1375145494Fe2b));
+        IOracle.SecurityParams memory params = oracle.securityParams();
+        IOracle.SecurityParams memory newParams = params;
+
+        newParams.maxAbsoluteDeviation = 1e28;
+        newParams.suspiciousAbsoluteDeviation = 1e28;
+        newParams.maxRelativeDeviationD18 = 1e10 + 1;
+        newParams.suspiciousRelativeDeviationD18 = 1e10 + 1;
+
+        lazyVaultAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
+        vm.startPrank(lazyVaultAdmin);
+        //oracle.setSecurityParams(newParams);
+        vault.grantRole(oracle.SUBMIT_REPORTS_ROLE(), lazyVaultAdmin);
+
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({
+            asset: Constants.CBBTC,
+            priceD18: 1e18 + 1000
+        });
+        oracle.submitReports(reports);
     }
 
     function setUp() public override {
@@ -62,7 +104,7 @@ contract Deploy is DeployAbstractScript {
             suspiciousRelativeDeviationD18: 0.001 ether,
             timeout: 20 hours,
             depositInterval: 1 hours, // does not affect sync deposit queue
-            redeemInterval: type(uint32).max // no redemptions allowed
+            redeemInterval: uint32(1768204000) // no redemptions allowed
         });
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -127,7 +169,7 @@ contract Deploy is DeployAbstractScript {
         allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.CBBTC));
 
         allowedAssetsPrices = new uint224[](allowedAssets.length);
-        allowedAssetsPrices[0] = 1 ether;
+        allowedAssetsPrices[0] = 1e28;
     }
 
     /// @dev fill in vault role holders

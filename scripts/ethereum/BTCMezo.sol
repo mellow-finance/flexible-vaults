@@ -14,6 +14,11 @@ contract Deploy is DeployAbstractScript {
     address public testWallet = vm.addr(uint256(testWalletPk));
 
     function run() external {
+        //deposit(Constants.TBTC, 0x866661DB3d304c45b262d36f1AE4144B8951f853);
+        //deposit(Constants.WBTC, 0x830DE0de5D271eeE200CA4Ca10056266d297034d);
+        //revert("ok");
+        //return;
+
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         deployVault = Constants.deployVaultFactory;
@@ -29,6 +34,19 @@ contract Deploy is DeployAbstractScript {
         vault = Vault(payable(address(0x65202c541a19D903c53C985FF2aE6f3F87DAd24c)));
         _run();
         //revert("ok");
+    }
+
+    function deposit(address asset, address queue) internal {
+        IDepositQueue depositQueue = IDepositQueue(queue);
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+        vm.startBroadcast(deployerPk);
+        uint224 amount = uint224(IERC20(asset).balanceOf(deployer));
+        IERC20(asset).approve(address(depositQueue), amount);
+        depositQueue.deposit(amount, address(0), new bytes32[](0));
+        ShareManager shareManager = ShareManager(payable(0x57a20D545f3f22642850858bEC70f0E90CcD3D52));
+        console.log("%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer));
+        vm.stopBroadcast();
     }
 
     function setUp() public override {
