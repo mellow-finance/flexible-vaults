@@ -35,7 +35,7 @@ contract TransferLibraryTest is Test {
     TransferWrapper internal wrapper;
     ERC20Mock internal token;
     address deployer = vm.createWallet("deployer").addr;
-    address user = vm.createWallet("admin").addr;
+    address user = vm.createWallet("user").addr;
 
     function setUp() public {
         vm.prank(deployer);

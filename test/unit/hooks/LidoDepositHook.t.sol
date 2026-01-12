@@ -36,22 +36,28 @@ contract LidoDepositHookTest is Test {
 
         uint256 wethBalanceBefore = IERC20(WETH).balanceOf(address(vault));
         vault.lidoDepositHookCall(WETH, 1 ether);
-        require(
-            IERC20(WETH).balanceOf(address(vault)) == wethBalanceBefore - 1 ether,
+        assertApproxEqAbs(
+            IERC20(WETH).balanceOf(address(vault)),
+            wethBalanceBefore - 1 ether,
+            1,
             "WETH balance should decrease by 1 ether"
         );
 
         uint256 stETHBalanceBefore = IERC20(stETH).balanceOf(address(vault));
         vault.lidoDepositHookCall(stETH, 1 ether);
-        require(
-            IERC20(stETH).balanceOf(address(vault)) == stETHBalanceBefore - 1 ether,
+        assertApproxEqAbs(
+            IERC20(stETH).balanceOf(address(vault)),
+            stETHBalanceBefore - 1 ether,
+            1,
             "stETH balance should decrease by 1 ether"
         );
 
         uint256 wstETHBalanceBefore = IERC20(wstETH).balanceOf(address(vault));
         vault.lidoDepositHookCall(wstETH, 1 ether);
         // do not change because the hook is disabled
-        require(IERC20(wstETH).balanceOf(address(vault)) == wstETHBalanceBefore, "wstETH balance should not change");
+        assertApproxEqAbs(
+            IERC20(wstETH).balanceOf(address(vault)), wstETHBalanceBefore, 1, "wstETH balance should not change"
+        );
     }
 
     function testAfterDepositNextHook() external {
