@@ -956,7 +956,7 @@ library AcceptanceLibrary {
         revert(string(abi.encodePacked("Factory: implementation not found for contract ", name)));
     }
 
-    function _checkCollectorCall(VaultDeployment memory deployment) internal {
+    function _checkCollectorCall(VaultDeployment memory deployment) internal view {
         IPriceOracle oracle = Constants.collector.oracle();
 
         for (uint256 i = 0; i < deployment.assets.length; i++) {
