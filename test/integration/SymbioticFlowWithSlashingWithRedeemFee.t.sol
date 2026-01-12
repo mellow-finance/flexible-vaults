@@ -23,7 +23,7 @@ contract SymbioticWithSlashingIntegrationTest is BaseIntegrationTest {
         string memory rpcUrl = vm.envString("ETH_RPC");
         uint256 forkId = vm.createSelectFork(rpcUrl, 22730425);
         vm.selectFork(forkId);
-        
+
         $ = deployBase();
 
         vm.startPrank(SYMBIOTIC_VAULT_ADMIN);
