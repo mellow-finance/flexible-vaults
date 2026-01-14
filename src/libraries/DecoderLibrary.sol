@@ -114,27 +114,6 @@ library DecoderLibrary {
         return (n + 0x20) - (n % 0x20);
     }
 
-    function getSize(Value memory value) internal pure returns (uint256 size) {
-        if (value.t == Type.WORD) {
-            return 0x20;
-        } else if (value.t == Type.BYTES) {
-            return 0x40 + align(value.data.length);
-        } else if (value.t == Type.ARRAY) {
-            size = 0x40;
-            uint256 length = value.children.length;
-            for (uint256 i = 0; i < length; i++) {
-                size += getSize(value.children[i]);
-            }
-            return size;
-        } else {
-            uint256 length = value.children.length;
-            for (uint256 i = 0; i < length; i++) {
-                size += getSize(value.children[i]);
-            }
-            return size;
-        }
-    }
-
     function concat(bytes[] memory array) internal pure returns (bytes memory response) {
         uint256 length = 0;
         for (uint256 i = 0; i < array.length; i++) {
@@ -228,11 +207,11 @@ library DecoderLibrary {
     }
 
     function decode(bytes memory data, Tree memory tree) internal pure returns (Value memory result) {
-        (result,) = decode(data, isDynamicTree(tree) ? uint256(at(data, 0)) : 0, tree);
+        (result,) = _decode(data, isDynamicTree(tree) ? uint256(at(data, 0)) : 0, tree);
     }
 
-    function decode(bytes memory data, uint256 offset, Tree memory tree)
-        internal
+    function _decode(bytes memory data, uint256 offset, Tree memory tree)
+        private
         pure
         returns (Value memory result, uint256 shift)
     {
@@ -253,7 +232,7 @@ library DecoderLibrary {
             for (uint256 i = 0; i < length; i++) {
                 child = tree.children[i];
                 (result.children[i], shift_) =
-                    decode(data, offset + (isDynamicTree(child) ? uint256(at(data, offset + shift)) : shift), child);
+                    _decode(data, offset + (isDynamicTree(child) ? uint256(at(data, offset + shift)) : shift), child);
                 shift += shift_;
             }
         } else {
@@ -265,7 +244,7 @@ library DecoderLibrary {
             bool isDynamic = isDynamicTree(child);
             for (uint256 i = 0; i < length; i++) {
                 (result.children[i], shift_) =
-                    decode(data, offset + (isDynamic ? uint256(at(data, offset + shift)) : shift), child);
+                    _decode(data, offset + (isDynamic ? uint256(at(data, offset + shift)) : shift), child);
                 shift += shift_;
             }
             shift = 0x20;
