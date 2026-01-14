@@ -52,70 +52,39 @@ library DecoderLibrary {
         pure
         returns (Value memory result, uint256 shift)
     {
-        shift = 0x20;
+        result.t = tree.t;
         if (tree.t == Type.WORD) {
-            result.t = Type.WORD;
             result.data = abi.encode(at(data, offset));
+            shift = 0x20;
         } else if (tree.t == Type.BYTES) {
             uint256 length = uint256(at(data, offset));
             offset += 0x20;
-            result.t = Type.BYTES;
             result.data = Bytes.slice(data, offset, offset + length);
+            shift = 0x20;
         } else if (tree.t == Type.TUPLE) {
-            result.t = Type.TUPLE;
             uint256 length = tree.children.length;
             result.children = new Value[](length);
-            shift = 0;
             Tree memory child;
             uint256 shift_;
             for (uint256 i = 0; i < length; i++) {
                 child = tree.children[i];
-                if (isDynamicTree(child)) {
-                    (result.children[i], shift_) = decode(data, offset + uint256(at(data, offset + shift)), child);
-                } else {
-                    (result.children[i], shift_) = decode(data, offset + shift, child);
-                }
+                (result.children[i], shift_) =
+                    decode(data, offset + (isDynamicTree(child) ? uint256(at(data, offset + shift)) : shift), child);
                 shift += shift_;
             }
-        } else if (tree.t == Type.ARRAY) {
-            result.t = Type.ARRAY;
+        } else {
             uint256 length = uint256(at(data, offset));
             result.children = new Value[](length);
             offset += 0x20;
-            uint256 headShift = 0;
             uint256 shift_ = 0;
             Tree memory child = tree.children[0];
             bool isDynamic = isDynamicTree(child);
             for (uint256 i = 0; i < length; i++) {
-                if (isDynamic) {
-                    (result.children[i], shift_) = decode(data, offset + uint256(at(data, offset + headShift)), child);
-                } else {
-                    (result.children[i], shift_) = decode(data, offset + headShift, child);
-                }
-                headShift += shift_;
+                (result.children[i], shift_) =
+                    decode(data, offset + (isDynamic ? uint256(at(data, offset + shift)) : shift), child);
+                shift += shift_;
             }
-        } else {
-            revert("Invalid parameter");
-        }
-    }
-
-    function dfs(Value memory v) internal view {
-        console2.log(v.t == Type.WORD ? "WORD" : v.t == Type.BYTES ? "BYTES" : v.t == Type.ARRAY ? "ARRAY" : "TUPLE");
-        if (v.t == Type.WORD || v.t == Type.BYTES) {
-            if (v.t == Type.WORD) {
-                bytes32 word = abi.decode(v.data, (bytes32));
-                console2.logBytes32(word);
-            } else {
-                console2.log(string(v.data));
-            }
-        } else {
-            for (uint256 i = 0; i < v.children.length; i++) {
-                console2.log("V");
-                dfs(v.children[i]);
-                console2.log("^");
-            }
+            shift = 0x20;
         }
     }
 }
-
-import "forge-std/console2.sol";

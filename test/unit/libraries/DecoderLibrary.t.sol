@@ -54,6 +54,6 @@ contract Unit is Test {
 
         DecoderLibrary.Tree memory tree = DecoderLibrary.Tree(DecoderLibrary.Type.ARRAY, layer0);
         DecoderLibrary.Value memory value = DecoderLibrary.decode(abi.encode(messages), tree);
-        DecoderLibrary.dfs(value);
+        // DecoderLibrary.dfs(value);
     }
 }
