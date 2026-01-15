@@ -38,6 +38,8 @@ import "../src/permissions/protocols/ERC20Verifier.sol";
 import "../src/permissions/protocols/EigenLayerVerifier.sol";
 import "../src/permissions/protocols/SymbioticVerifier.sol";
 
+import "../src/strategies/FlexibleStrategy.sol";
+
 import "../src/queues/DepositQueue.sol";
 import "../src/queues/Queue.sol";
 import "../src/queues/RedeemQueue.sol";
