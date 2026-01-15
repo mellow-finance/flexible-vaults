@@ -39,6 +39,8 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
+        calculateSubvault0MerkleRoot(address(0xbeaf)); // replace with actual vault address to calculate merkle root
+        revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
@@ -238,5 +240,14 @@ contract Deploy is Script, Test {
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
 
         revert("ok");
+    }
+
+    function calculateSubvault0MerkleRoot(address subvault0) internal {
+        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = msvUSDLibrary.getSubvault0Proofs(curator, subvault0, address(0xdead));
+        string[] memory descriptions = msvUSDLibrary.getSubvault0Descriptions(curator, subvault0);
+        ProofLibrary.storeProofs("ethereum:msvUSD:subvault0", merkleRoot, leaves, descriptions);
+        //Vault vault = Vault(payable(vaultAddress));
+        //vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, msg.sender);
+        //vault.setMerkleRoot(merkleRoot);
     }
 }

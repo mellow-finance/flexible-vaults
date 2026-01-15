@@ -70,6 +70,11 @@ library Constants {
     uint64 public constant CCIP_PLASMA_CHAIN_SELECTOR = 9335212494177455608;
     address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
     uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
+    
+    address public constant CCTP_ETHEREUM_TOKEN_MESSENGER = 0xBd3fa81B58Ba92a82136038B25aDec7066af3155; // Ethereum TokenMessenger deposit for burn
+    address public constant CCTP_ETHEREUM_MESSAGE_TRANSMITTER = 0x0a992d191DEeC32aFe36203Ad87D7d289a738F81; // Ethereum MessageTransmitter receive message
+    // https://developers.circle.com/cctp/concepts/supported-chains-and-domains
+    uint32 public constant CCTP_ARBITRUM_DOMAIN = 3; // Arbitrum EID
 
     uint32 public constant LAYER_ZERO_PLASMA_EID = 30383;
     uint32 public constant LAYER_ZERO_ETHEREUM_EID = 30101;

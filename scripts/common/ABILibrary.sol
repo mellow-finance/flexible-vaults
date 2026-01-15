@@ -28,10 +28,12 @@ import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsMana
 import {IWETH} from "./interfaces/IWETH.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ITokenMessenger} from "./interfaces/ITokenMessenger.sol";
+import {IMessageTransmitter} from "./interfaces/IMessageTransmitter.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[20] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[21] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -51,7 +53,8 @@ library ABILibrary {
             getOFTInterfaces,
             getFluidInterfaces,
             getMorphoInterfaces,
-            getLidoV3Interfaces
+            getLidoV3Interfaces,
+            getCCTPInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -386,4 +389,21 @@ library ABILibrary {
         abis[5] =
             '{"type":"function","name":"rebalanceVaultWithEther","inputs":[{"name":"ether_","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"payable"}';
     }
+
+    function getCCTPInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](3);
+        abis = new string[](3);
+
+        selectors[0] = ITokenMessenger.depositForBurn.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"destination","type":"address"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"}],"name":"depositForBurn","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"}';
+
+        selectors[1] = ITokenMessenger.depositForBurnWithCaller.selector;
+        abis[1] =
+            '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"destination","type":"address"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"},{"internalType":"address","name":"caller","type":"address"}],"name":"depositForBurnWithCaller","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"}';
+         selectors[2] = IMessageTransmitter.receiveMessage.selector;
+        abis[2] =
+            '{"inputs":[{"internalType":"bytes","name":"message","type":"bytes"},{"internalType":"bytes","name":"signature","type":"bytes"}],"name":"receiveMessage","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
 }

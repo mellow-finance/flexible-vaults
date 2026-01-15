@@ -16,6 +16,11 @@ library Constants {
     address public constant WSTETH = 0x5979D7b546E38E414F7E9822514be443A4800529;
     address public constant WSTETH_ETHEREUM = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
 
+    address public constant CCTP_ARBITRUM_TOKEN_MESSENGER = 0x19330d10D9Cc8751218eaf51E8885D058642E08A; // Arbitrum TokenMessenger deposit for burn
+    address public constant CCTP_ARBITRUM_MESSAGE_TRANSMITTER = 0xC30362313FBBA5cf9163F0bb16a0e01f01A896ca; // Arbitrum MessageTransmitter receive message
+    // https://developers.circle.com/cctp/concepts/supported-chains-and-domains
+    uint32 public constant CCTP_ETHEREUM_DOMAIN = 0; // Ethereum EID
+
     address public constant STRETH_ETHEREUM_SUBVAULT_0 = 0x90c983DC732e65DB6177638f0125914787b8Cb78;
     address public constant L2_GATEWAY_ROUTER = 0x5288c571Fd7aD117beA99bF60FE0846C4E84F933;
 
