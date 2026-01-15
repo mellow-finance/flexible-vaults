@@ -7,6 +7,22 @@ import "../../../scripts/common/interfaces/ICCIPRouterClient.sol";
 import "../../../src/libraries/DecoderLibrary.sol";
 
 contract Unit is Test {
+    function buildTree(Value memory value) internal pure returns (Tree memory tree) {
+        tree.t = value.t;
+        if (tree.t == Type.WORD || tree.t == Type.BYTES) {
+            return tree;
+        }
+        if (tree.t == Type.ARRAY) {
+            tree.children = new Tree[](1);
+            tree.children[0] = buildTree(value.children[0]);
+        } else {
+            tree.children = new Tree[](value.children.length);
+            for (uint256 i = 0; i < value.children.length; i++) {
+                tree.children[i] = buildTree(value.children[i]);
+            }
+        }
+    }
+
     function testEncode() external pure {
         uint256[] memory array = new uint256[](3);
         array[0] = 1;
@@ -16,16 +32,16 @@ contract Unit is Test {
         uint256[][] memory array2 = new uint256[][](1);
         array2[0] = array;
 
-        DecoderLibrary.Value[] memory layer1 = new DecoderLibrary.Value[](3);
-        layer1[0] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(1), new DecoderLibrary.Value[](0));
-        layer1[1] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(2), new DecoderLibrary.Value[](0));
-        layer1[2] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(3), new DecoderLibrary.Value[](0));
+        Value[] memory layer1 = new Value[](3);
+        layer1[0] = Value(Type.WORD, abi.encode(1), new Value[](0));
+        layer1[1] = Value(Type.WORD, abi.encode(2), new Value[](0));
+        layer1[2] = Value(Type.WORD, abi.encode(3), new Value[](0));
 
-        DecoderLibrary.Value[] memory layer0 = new DecoderLibrary.Value[](1);
-        layer0[0] = DecoderLibrary.Value(DecoderLibrary.Type.ARRAY, "", layer1);
+        Value[] memory layer0 = new Value[](1);
+        layer0[0] = Value(Type.ARRAY, "", layer1);
 
-        DecoderLibrary.Value memory value = DecoderLibrary.Value(DecoderLibrary.Type.ARRAY, "", layer0);
-        bytes memory encodedValue = DecoderLibrary.encode(value);
+        Value memory value = Value(Type.ARRAY, "", layer0);
+        bytes memory encodedValue = DecoderLibrary.encode(value, buildTree(value));
 
         assertEq(keccak256(abi.encode(array2)), keccak256(encodedValue));
     }
@@ -37,20 +53,20 @@ contract Unit is Test {
     }
 
     function testEncode2() external pure {
-        DecoderLibrary.Value[] memory layer1 = new DecoderLibrary.Value[](5);
-        layer1[0] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(1), new DecoderLibrary.Value[](0));
-        layer1[1] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(2), new DecoderLibrary.Value[](0));
-        layer1[2] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(3), new DecoderLibrary.Value[](0));
-        layer1[3] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(4), new DecoderLibrary.Value[](0));
-        layer1[4] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(5), new DecoderLibrary.Value[](0));
+        Value[] memory layer1 = new Value[](5);
+        layer1[0] = Value(Type.WORD, abi.encode(1), new Value[](0));
+        layer1[1] = Value(Type.WORD, abi.encode(2), new Value[](0));
+        layer1[2] = Value(Type.WORD, abi.encode(3), new Value[](0));
+        layer1[3] = Value(Type.WORD, abi.encode(4), new Value[](0));
+        layer1[4] = Value(Type.WORD, abi.encode(5), new Value[](0));
 
-        DecoderLibrary.Value[] memory layer0 = new DecoderLibrary.Value[](3);
-        layer0[0] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(0x1234), new DecoderLibrary.Value[](0));
-        layer0[1] = DecoderLibrary.Value(DecoderLibrary.Type.BYTES, abi.encode(0x1234), new DecoderLibrary.Value[](0));
-        layer0[2] = DecoderLibrary.Value(DecoderLibrary.Type.ARRAY, "", layer1);
+        Value[] memory layer0 = new Value[](3);
+        layer0[0] = Value(Type.WORD, abi.encode(0x1234), new Value[](0));
+        layer0[1] = Value(Type.BYTES, abi.encode(0x1234), new Value[](0));
+        layer0[2] = Value(Type.ARRAY, "", layer1);
 
-        DecoderLibrary.Value memory value = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer0);
-        bytes memory encodedValue = DecoderLibrary.encode(value);
+        Value memory value = Value(Type.TUPLE, "", layer0);
+        bytes memory encodedValue = DecoderLibrary.encode(value, buildTree(value));
         uint256[] memory array = new uint256[](5);
         array[0] = 1;
         array[1] = 2;
@@ -78,37 +94,37 @@ contract Unit is Test {
     }
 
     function testEncode3() external pure {
-        DecoderLibrary.Value[] memory layer4 = new DecoderLibrary.Value[](2);
-        layer4[0] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(0x12345), new DecoderLibrary.Value[](0));
-        layer4[1] = DecoderLibrary.Value(DecoderLibrary.Type.BYTES, abi.encode(0x12345), new DecoderLibrary.Value[](0));
+        Value[] memory layer4 = new Value[](2);
+        layer4[0] = Value(Type.WORD, abi.encode(0x12345), new Value[](0));
+        layer4[1] = Value(Type.BYTES, abi.encode(0x12345), new Value[](0));
 
-        DecoderLibrary.Value[] memory layer3 = new DecoderLibrary.Value[](2);
-        layer3[0] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, "a", new DecoderLibrary.Value[](0));
-        layer3[1] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, "b", new DecoderLibrary.Value[](0));
+        Value[] memory layer3 = new Value[](2);
+        layer3[0] = Value(Type.WORD, abi.encode(bytes32("a")), new Value[](0));
+        layer3[1] = Value(Type.WORD, abi.encode(bytes32("b")), new Value[](0));
 
-        DecoderLibrary.Value[] memory layer3_ = new DecoderLibrary.Value[](2);
-        layer3_[0] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(0), new DecoderLibrary.Value[](0));
-        layer3_[1] = DecoderLibrary.Value(DecoderLibrary.Type.WORD, abi.encode(0), new DecoderLibrary.Value[](0));
+        Value[] memory layer3_ = new Value[](2);
+        layer3_[0] = Value(Type.WORD, abi.encode(0), new Value[](0));
+        layer3_[1] = Value(Type.WORD, abi.encode(0), new Value[](0));
 
-        DecoderLibrary.Value[] memory layer2 = new DecoderLibrary.Value[](5);
-        layer2[0] = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer3);
-        layer2[1] = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer3_);
-        layer2[2] = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer3_);
-        layer2[3] = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer3_);
-        layer2[4] = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer3_);
+        Value[] memory layer2 = new Value[](5);
+        layer2[0] = Value(Type.TUPLE, "", layer3);
+        layer2[1] = Value(Type.TUPLE, "", layer3_);
+        layer2[2] = Value(Type.TUPLE, "", layer3_);
+        layer2[3] = Value(Type.TUPLE, "", layer3_);
+        layer2[4] = Value(Type.TUPLE, "", layer3_);
 
-        DecoderLibrary.Value[] memory layer1 = new DecoderLibrary.Value[](1);
-        layer1[0] = DecoderLibrary.Value(DecoderLibrary.Type.ARRAY, "", layer2);
+        Value[] memory layer1 = new Value[](1);
+        layer1[0] = Value(Type.ARRAY, "", layer2);
 
-        DecoderLibrary.Value[] memory layer0 = new DecoderLibrary.Value[](4);
-        layer0[0] = DecoderLibrary.Value(DecoderLibrary.Type.ARRAY, "", layer1);
-        layer0[1] = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer4);
-        layer0[2] = DecoderLibrary.Value(DecoderLibrary.Type.ARRAY, "", layer1);
-        layer0[3] = DecoderLibrary.Value(DecoderLibrary.Type.BYTES, abi.encode(0x12345), new DecoderLibrary.Value[](0));
+        Value[] memory layer0 = new Value[](4);
+        layer0[0] = Value(Type.ARRAY, "", layer1);
+        layer0[1] = Value(Type.TUPLE, "", layer4);
+        layer0[2] = Value(Type.ARRAY, "", layer1);
+        layer0[3] = Value(Type.BYTES, abi.encode(0x12345), new Value[](0));
 
-        DecoderLibrary.Value memory value = DecoderLibrary.Value(DecoderLibrary.Type.TUPLE, "", layer0);
+        Value memory value = Value(Type.TUPLE, "", layer0);
 
-        bytes memory encodedValue = DecoderLibrary.encode(value);
+        bytes memory encodedValue = DecoderLibrary.encode(value, buildTree(value));
 
         Pair[][] memory array = new Pair[][](1);
         array[0] = new Pair[](5);
@@ -135,28 +151,28 @@ contract Unit is Test {
         message.extraArgs = "6";
         messages[0] = message;
 
-        DecoderLibrary.Tree[] memory layer3 = new DecoderLibrary.Tree[](2);
-        layer3[0] = DecoderLibrary.Tree(DecoderLibrary.Type.WORD, new DecoderLibrary.Tree[](0));
-        layer3[1] = DecoderLibrary.Tree(DecoderLibrary.Type.WORD, new DecoderLibrary.Tree[](0));
+        Tree[] memory layer3 = new Tree[](2);
+        layer3[0] = Tree(Type.WORD, new Tree[](0));
+        layer3[1] = Tree(Type.WORD, new Tree[](0));
 
-        DecoderLibrary.Tree[] memory layer2 = new DecoderLibrary.Tree[](1);
-        layer2[0] = DecoderLibrary.Tree(DecoderLibrary.Type.TUPLE, layer3);
+        Tree[] memory layer2 = new Tree[](1);
+        layer2[0] = Tree(Type.TUPLE, layer3);
 
-        DecoderLibrary.Tree[] memory layer1 = new DecoderLibrary.Tree[](5);
-        layer1[0] = DecoderLibrary.Tree(DecoderLibrary.Type.BYTES, new DecoderLibrary.Tree[](0));
-        layer1[1] = DecoderLibrary.Tree(DecoderLibrary.Type.BYTES, new DecoderLibrary.Tree[](0));
+        Tree[] memory layer1 = new Tree[](5);
+        layer1[0] = Tree(Type.BYTES, new Tree[](0));
+        layer1[1] = Tree(Type.BYTES, new Tree[](0));
 
-        layer1[2] = DecoderLibrary.Tree(DecoderLibrary.Type.ARRAY, layer2);
+        layer1[2] = Tree(Type.ARRAY, layer2);
 
-        layer1[3] = DecoderLibrary.Tree(DecoderLibrary.Type.WORD, new DecoderLibrary.Tree[](0));
-        layer1[4] = DecoderLibrary.Tree(DecoderLibrary.Type.BYTES, new DecoderLibrary.Tree[](0));
+        layer1[3] = Tree(Type.WORD, new Tree[](0));
+        layer1[4] = Tree(Type.BYTES, new Tree[](0));
 
-        DecoderLibrary.Tree[] memory layer0 = new DecoderLibrary.Tree[](1);
-        layer0[0] = DecoderLibrary.Tree(DecoderLibrary.Type.TUPLE, layer1);
+        Tree[] memory layer0 = new Tree[](1);
+        layer0[0] = Tree(Type.TUPLE, layer1);
 
-        DecoderLibrary.Tree memory tree = DecoderLibrary.Tree(DecoderLibrary.Type.ARRAY, layer0);
-        DecoderLibrary.Value memory value = DecoderLibrary.decode(abi.encode(messages), tree);
+        Tree memory tree = Tree(Type.ARRAY, layer0);
+        Value memory value = DecoderLibrary.decode(abi.encode(messages), tree);
         require(value.children.length >= 0);
-        // DecoderLibrary.dfs(value);
+        // dfs(value);
     }
 }

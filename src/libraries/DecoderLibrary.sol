@@ -1,54 +1,28 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/utils/Bytes.sol";
+import {Bytes} from "@openzeppelin/contracts/utils/Bytes.sol";
+
+enum Type {
+    TUPLE, // tuple / static array
+    WORD, // int8-256 / uint8-256 / bool / address / bytes1-32
+    BYTES, // bytes / string
+    ARRAY // dynamic array
+
+}
+
+struct Tree {
+    Type t;
+    Tree[] children;
+}
+
+struct Value {
+    Type t;
+    bytes data;
+    Value[] children;
+}
 
 library DecoderLibrary {
-    enum Type {
-        TUPLE, // tuple / static array
-        WORD, // int8-256 / uint8-256 / bool / address / bytes1-32
-        BYTES, // bytes / string
-        ARRAY // dynamic array
-
-    }
-
-    struct Tree {
-        Type t;
-        Tree[] children;
-    }
-
-    struct Value {
-        Type t;
-        bytes data;
-        Value[] children;
-    }
-
-    struct Edge {
-        Type t;
-        uint256 parent;
-    }
-
-    function buildTree(bytes memory data) internal pure returns (Tree memory) {
-        Edge[] memory edges = abi.decode(data, (Edge[]));
-        uint256 n = edges.length;
-        uint256[] memory counters = new uint256[](n);
-        uint256[] memory iterators = new uint256[](n);
-        for (uint256 i = 1; i < n; i++) {
-            uint256 parent = edges[i].parent;
-            require(parent < i);
-            counters[parent]++;
-        }
-        Tree[] memory nodes = new Tree[](n);
-        for (uint256 i = 0; i < n; i++) {
-            nodes[i] = Tree(edges[i].t, new Tree[](counters[i]));
-            if (i > 0) {
-                uint256 parent = edges[i].parent;
-                nodes[parent].children[iterators[parent]++] = nodes[i];
-            }
-        }
-        return nodes[0];
-    }
-
     function traverse(Value memory value, uint256[] memory path, uint256 index) internal pure returns (Value memory) {
         if (index == path.length) {
             return value;
@@ -59,17 +33,39 @@ library DecoderLibrary {
         return traverse(value.children[path[index]], path, index + 1);
     }
 
-    function getTypeHash(Tree memory tree) internal pure returns (bytes32 hash_) {
-        hash_ = keccak256(abi.encode(tree.t));
-        for (uint256 i = 0; i < tree.children.length; i++) {
-            hash_ = keccak256(abi.encode(hash_, getTypeHash(tree.children[i])));
+    function traverse(Tree memory tree, uint256[] memory path, uint256 index) internal pure returns (Tree memory) {
+        if (index == path.length) {
+            return tree;
+        }
+        if (tree.t == Type.ARRAY) {
+            return traverse(tree.children[0], path, index + 1);
+        } else if (tree.t == Type.TUPLE) {
+            return traverse(tree.children[path[index]], path, index + 1);
+        } else {
+            revert("Invalid path");
         }
     }
 
-    function getTypeHash(Value memory value) internal pure returns (bytes32 hash_) {
-        hash_ = keccak256(abi.encode(value.t));
-        for (uint256 i = 0; i < value.children.length; i++) {
-            hash_ = keccak256(abi.encode(hash_, getTypeHash(value.children[i])));
+    function compare(Tree memory a, Tree memory b) internal pure returns (bool) {
+        if (a.t != b.t) {
+            return false;
+        }
+        Type t = a.t;
+        if (t == Type.WORD || t == Type.BYTES) {
+            return true;
+        }
+        if (t == Type.ARRAY) {
+            return compare(a.children[0], b.children[0]);
+        } else {
+            if (a.children.length != b.children.length) {
+                return false;
+            }
+            for (uint256 i = 0; i < a.children.length; i++) {
+                if (!compare(a.children[i], b.children[i])) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
@@ -87,18 +83,8 @@ library DecoderLibrary {
         return false;
     }
 
-    function isDynamicTree(Value memory tree) internal pure returns (bool) {
-        if (tree.t == Type.ARRAY || tree.t == Type.BYTES) {
-            return true;
-        } else if (tree.t == Type.WORD) {
-            return false;
-        }
-        for (uint256 i = 0; i < tree.children.length; i++) {
-            if (isDynamicTree(tree.children[i])) {
-                return true;
-            }
-        }
-        return false;
+    function isValidWord(Value memory value) internal pure returns (bool) {
+        return value.t == Type.WORD && value.children.length == 0 && value.data.length == 0x20;
     }
 
     function at(bytes memory data, uint256 offset) internal pure returns (bytes32 value) {
@@ -130,16 +116,19 @@ library DecoderLibrary {
         }
     }
 
-    function encode(Value memory value) internal pure returns (bytes memory response) {
-        if (isDynamicTree(value)) {
-            return bytes.concat(abi.encode(0x20), _encode(value));
+    function encode(Value memory value, Tree memory tree) internal pure returns (bytes memory response) {
+        if (isDynamicTree(tree)) {
+            return bytes.concat(abi.encode(0x20), _encode(value, tree));
         } else {
-            return _encode(value);
+            return _encode(value, tree);
         }
     }
 
-    function _encode(Value memory value) private pure returns (bytes memory) {
+    function _encode(Value memory value, Tree memory tree) private pure returns (bytes memory) {
         if (value.t == Type.WORD) {
+            if (value.data.length != 0x20) {
+                revert("Invalid word length");
+            }
             return value.data;
         } else if (value.t == Type.BYTES) {
             bytes memory data = value.data;
@@ -151,9 +140,9 @@ library DecoderLibrary {
             }
             bytes[] memory array = new bytes[](length);
             for (uint256 i = 0; i < length; i++) {
-                array[i] = _encode(value.children[i]);
+                array[i] = _encode(value.children[i], tree.children[0]);
             }
-            if (isDynamicTree(value.children[0])) {
+            if (isDynamicTree(tree.children[0])) {
                 bytes[] memory offsets = new bytes[](length);
                 uint256 offset = 0x20 * length;
                 for (uint256 i = 0; i < length; i++) {
@@ -171,16 +160,16 @@ library DecoderLibrary {
             }
             bytes[] memory components = new bytes[](length);
             for (uint256 i = 0; i < length; i++) {
-                components[i] = _encode(value.children[i]);
+                components[i] = _encode(value.children[i], tree.children[i]);
             }
-            if (isDynamicTree(value)) {
+            if (isDynamicTree(tree)) {
                 uint256 offset = 0;
                 bytes[] memory staticComponents = new bytes[](length);
                 uint256 iterator = 0;
                 bool[] memory isDynamicComponent = new bool[](length);
                 bytes[] memory dynamicComponents = new bytes[](length);
                 for (uint256 i = 0; i < length; i++) {
-                    isDynamicComponent[i] = isDynamicTree(value.children[i]);
+                    isDynamicComponent[i] = isDynamicTree(tree.children[i]);
                     if (isDynamicComponent[i]) {
                         dynamicComponents[iterator++] = components[i];
                         offset += 0x20;
