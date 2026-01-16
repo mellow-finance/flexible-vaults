@@ -17,32 +17,29 @@ struct Tree {
 }
 
 struct Value {
-    Type t;
     bytes data;
     Value[] children;
 }
 
 library DecoderLibrary {
-    function traverse(Value memory value, uint256[] memory path, uint256 index) internal pure returns (Value memory) {
-        if (index == path.length) {
-            return value;
-        }
-        if (value.t != Type.ARRAY && value.t != Type.TUPLE) {
-            revert("Invalid path");
-        }
-        return traverse(value.children[path[index]], path, index + 1);
-    }
+    error InvalidPath();
+    error InvalidEncodedWord();
 
-    function traverse(Tree memory tree, uint256[] memory path, uint256 index) internal pure returns (Tree memory) {
+    function traverse(Value memory value, Tree memory tree, uint256[] memory path, uint256 index)
+        internal
+        pure
+        returns (Value memory, Tree memory)
+    {
         if (index == path.length) {
-            return tree;
+            return (value, tree);
         }
+        uint256 childIndex = path[index];
         if (tree.t == Type.ARRAY) {
-            return traverse(tree.children[0], path, index + 1);
+            return traverse(value.children[childIndex], tree.children[0], path, index + 1);
         } else if (tree.t == Type.TUPLE) {
-            return traverse(tree.children[path[index]], path, index + 1);
+            return traverse(value.children[childIndex], tree.children[childIndex], path, index + 1);
         } else {
-            revert("Invalid path");
+            revert InvalidPath();
         }
     }
 
@@ -84,7 +81,7 @@ library DecoderLibrary {
     }
 
     function isValidWord(Value memory value) internal pure returns (bool) {
-        return value.t == Type.WORD && value.children.length == 0 && value.data.length == 0x20;
+        return value.children.length == 0 && value.data.length == 0x20;
     }
 
     function at(bytes memory data, uint256 offset) internal pure returns (bytes32 value) {
@@ -125,15 +122,15 @@ library DecoderLibrary {
     }
 
     function _encode(Value memory value, Tree memory tree) private pure returns (bytes memory) {
-        if (value.t == Type.WORD) {
+        if (tree.t == Type.WORD) {
             if (value.data.length != 0x20) {
-                revert("Invalid word length");
+                revert InvalidEncodedWord();
             }
             return value.data;
-        } else if (value.t == Type.BYTES) {
+        } else if (tree.t == Type.BYTES) {
             bytes memory data = value.data;
             return bytes.concat(abi.encode(data.length), data);
-        } else if (value.t == Type.ARRAY) {
+        } else if (tree.t == Type.ARRAY) {
             uint256 length = value.children.length;
             if (length == 0) {
                 return abi.encode(length);
@@ -204,7 +201,6 @@ library DecoderLibrary {
         pure
         returns (Value memory result, uint256 shift)
     {
-        result.t = tree.t;
         if (tree.t == Type.WORD) {
             result.data = abi.encode(at(data, offset));
             shift = 0x20;

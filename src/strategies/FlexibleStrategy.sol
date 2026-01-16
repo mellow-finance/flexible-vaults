@@ -8,6 +8,10 @@ import "../vaults/Subvault.sol";
 import "../vaults/Vault.sol";
 
 contract FlexibleStrategy is MellowACL {
+    error InvalidType(string);
+    error InvalidWordLength();
+    error InvalidEdgeDirection();
+
     enum ActionType {
         READ,
         CALL,
@@ -60,12 +64,12 @@ contract FlexibleStrategy is MellowACL {
             if (action.actionType == ActionType.CALL) {
                 (address subvault, address where, bytes4 selector) = abi.decode(action.data, (address, address, bytes4));
                 (Value memory inputValue, Tree memory inputTree) = _buildInputValue(i, actions, inputs, responses);
-                if (inputValue.t != Type.TUPLE || inputValue.children.length != 2) {
-                    revert("Invalid inputValue type");
+                if (inputTree.t != Type.TUPLE || inputValue.children.length != 2) {
+                    revert InvalidType("inputValue");
                 }
                 Value memory msgValue = inputValue.children[0];
                 if (!DecoderLibrary.isValidWord(msgValue)) {
-                    revert("Invalid msg.value type");
+                    revert InvalidType("msgValue");
                 }
                 bytes memory response = ICallModule(subvault).call(
                     where,
@@ -80,7 +84,7 @@ contract FlexibleStrategy is MellowACL {
                 (address source, address target, address asset) = abi.decode(action.data, (address, address, address));
                 (Value memory value,) = _buildInputValue(i, actions, inputs, responses);
                 if (!DecoderLibrary.isValidWord(value)) {
-                    revert("Invalid amount type");
+                    revert InvalidType("amount");
                 }
                 uint256 amount = abi.decode(value.data, (uint256));
                 if (source == address(vault)) {
@@ -92,11 +96,11 @@ contract FlexibleStrategy is MellowACL {
                     vault.pushAssets(target, asset, amount);
                 }
                 Value[] memory info = new Value[](4);
-                info[0] = Value(Type.WORD, abi.encode(source), new Value[](0));
-                info[1] = Value(Type.WORD, abi.encode(target), new Value[](0));
-                info[2] = Value(Type.WORD, abi.encode(asset), new Value[](0));
-                info[3] = Value(Type.WORD, abi.encode(amount), new Value[](0));
-                responses[i] = Value(Type.TUPLE, "", info);
+                info[0] = Value(abi.encode(source), new Value[](0));
+                info[1] = Value(abi.encode(target), new Value[](0));
+                info[2] = Value(abi.encode(asset), new Value[](0));
+                info[3] = Value(abi.encode(amount), new Value[](0));
+                responses[i] = Value("", info);
             } else {
                 (address target, bytes4 selector) = abi.decode(action.data, (address, bytes4));
                 (Value memory value, Tree memory tree) = _buildInputValue(i, actions, inputs, responses);
@@ -118,7 +122,7 @@ contract FlexibleStrategy is MellowACL {
             for (uint256 j = 0; j < edges.length; j++) {
                 uint256 to = edges[j];
                 if (to <= i) {
-                    revert("Invalid edge");
+                    revert InvalidEdgeDirection();
                 }
                 trees[i].children[j] = trees[to];
             }
@@ -155,40 +159,37 @@ contract FlexibleStrategy is MellowACL {
             }
             if (t == Type.WORD) {
                 if (data.length != 0x20) {
-                    revert("Invalid word lenth");
+                    revert InvalidWordLength();
                 }
             } else if (t != Type.BYTES) {
-                revert("Unsupported leaf type");
+                revert InvalidType("leaf");
             }
-            return Value(t, data, new Value[](0));
+            return Value(data, new Value[](0));
         } else if (vertex.vertexType == VertexType.RESULT) {
             (uint256 responseIndex, uint256[] memory path) = abi.decode(vertex.data, (uint256, uint256[]));
             Tree memory outputTree = _buildTree(actions[responseIndex].outputTypes);
-            outputTree = DecoderLibrary.traverse(outputTree, path, 0);
+            (value, outputTree) = DecoderLibrary.traverse(responses[responseIndex], outputTree, path, 0);
             if (!DecoderLibrary.compare(outputTree, tree)) {
-                revert("Invalid result type");
+                revert InvalidType("result");
             }
-            return DecoderLibrary.traverse(responses[responseIndex], path, 0);
+            return value;
         } else {
             if (tree.t == Type.WORD || tree.t == Type.BYTES) {
-                revert("Invalid parent type");
+                revert InvalidType("parent");
             } else if (tree.t == Type.ARRAY) {
-                value.t = tree.t;
                 value.children = new Value[](vertex.edges.length);
                 for (uint256 i = 0; i < vertex.edges.length; i++) {
                     value.children[i] =
                         _buildInputValue(tree.children[0], vertex.edges[i], inputValues, actions, inputs, responses);
                 }
             } else {
-                value.t = tree.t;
                 value.children = new Value[](vertex.edges.length);
                 for (uint256 i = 0; i < vertex.edges.length; i++) {
                     value.children[i] =
                         _buildInputValue(tree.children[i], vertex.edges[i], inputValues, actions, inputs, responses);
                 }
             }
+            return value;
         }
     }
 }
-
-import "forge-std/console2.sol";
