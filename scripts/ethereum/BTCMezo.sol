@@ -14,9 +14,9 @@ contract Deploy is DeployAbstractScript {
     address public testWallet = vm.addr(uint256(testWalletPk));
 
     function run() external {
-        deposit(Constants.TBTC, 0x4A0c88DDA012c4242B2d4F0eE76749b8C34d9Bc9);
-        deposit(Constants.WBTC, 0x84Cf231a0E8be41462A85b8C05f15598c4a34450);
-        //revert("ok");
+        deposit(Constants.TBTC, 0x0823b68c7e00B327f97b1Bf48eD44ef9CD11fb74);
+        deposit(Constants.WBTC, 0xb10feC1df8FCFF2bf06fbd1AeAc34B87EA4e9AC2);
+        ////revert("ok");
         return;
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -31,7 +31,7 @@ contract Deploy is DeployAbstractScript {
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0xc8e9223CF09012c0E1920aD59618e35C84Ad99F4)));
+        vault = Vault(payable(address(0xa8A3De0c5594A09d0cD4C8abc4e3AaB9BaE03F36)));
         _run();
         //revert("ok");
     }
@@ -44,15 +44,15 @@ contract Deploy is DeployAbstractScript {
         uint224 amount = uint224(IERC20(asset).balanceOf(deployer)) / 2;
         IERC20(asset).approve(address(depositQueue), amount);
         depositQueue.deposit(amount, address(0), new bytes32[](0));
-        ShareManager shareManager = ShareManager(payable(0xea663A469792F0e4e9cd42f1645e894C1f72D56d));
+        ShareManager shareManager = ShareManager(payable(0x43f084bdBC99409c637319dD7c544D565165A162));
         console.log("%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer));
         vm.stopBroadcast();
     }
 
     function setUp() public override {
         /// @dev fill name and symbol
-        vaultName = "Mezo BTC Pre-Deposit Vault";
-        vaultSymbol = "PreMezo-BTC";
+        vaultName = "Mezo Bitcoin Home BTC Vault";
+        vaultSymbol = "mbhBTC";
 
         /// @dev fill admin/operational addresses
         proxyAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
@@ -97,7 +97,7 @@ contract Deploy is DeployAbstractScript {
 
         /// @dev fill versions
         vaultVersion = 0;
-        shareManagerVersion = 1; // BasicShareManager, impl: 0x00000005564AAE40D88e2F08dA71CBe156767977
+        shareManagerVersion = 0; // TokenizedShareManager, impl: 0x0000000E8eb7173fA1a3ba60eCA325bcB6aaf378
         feeManagerVersion = 0;
         riskManagerVersion = 0;
         oracleVersion = 0;
