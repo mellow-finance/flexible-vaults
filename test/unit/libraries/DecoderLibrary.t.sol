@@ -12,15 +12,6 @@ import "../../utils/TreeBuilder.sol";
 contract Unit is Test {
     using StringView for StringView.View;
 
-    function dfs(Tree memory tree, string memory offset) internal view {
-        console2.log(offset, ["TUPLE", "WORD", "BYTES", "ARRAY"][uint8(tree.t)]);
-        if (tree.children.length > 0) {
-            for (uint256 i = 0; i < tree.children.length; i++) {
-                dfs(tree.children[i], string.concat(" ", offset));
-            }
-        }
-    }
-
     function testEncode() external pure {
         uint256[] memory array = new uint256[](3);
         array[0] = 1;
@@ -39,7 +30,7 @@ contract Unit is Test {
         layer0[0] = Value("", layer1);
 
         Value memory value = Value("", layer0);
-        bytes memory encodedValue = DecoderLibrary.encode(value, TreeBuilder.build("uint256[][]"));
+        bytes memory encodedValue = DecoderLibrary.encode(value, TreeBuilder.fromString("uint256[][]"));
 
         assertEq(keccak256(abi.encode(array2)), keccak256(encodedValue));
     }
@@ -64,7 +55,7 @@ contract Unit is Test {
         layer0[2] = Value("", layer1);
 
         Value memory value = Value("", layer0);
-        bytes memory encodedValue = DecoderLibrary.encode(value, TreeBuilder.build("(uint256,bytes,uint256[])"));
+        bytes memory encodedValue = DecoderLibrary.encode(value, TreeBuilder.fromString("(uint256,bytes,uint256[])"));
         uint256[] memory array = new uint256[](5);
         array[0] = 1;
         array[1] = 2;
@@ -123,7 +114,7 @@ contract Unit is Test {
         Value memory value = Value("", layer0);
 
         bytes memory encodedValue = DecoderLibrary.encode(
-            value, TreeBuilder.build("((bytes32,bytes32)[][],(bytes32,bytes),(bytes32,bytes32)[][],bytes)")
+            value, TreeBuilder.fromString("((bytes32,bytes32)[][],(bytes32,bytes),(bytes32,bytes32)[][],bytes)")
         );
 
         Pair[][] memory array = new Pair[][](1);
@@ -151,28 +142,10 @@ contract Unit is Test {
         message.extraArgs = "6";
         messages[0] = message;
 
-        Tree[] memory layer3 = new Tree[](2);
-        layer3[0] = Tree(Type.WORD, new Tree[](0));
-        layer3[1] = Tree(Type.WORD, new Tree[](0));
-
-        Tree[] memory layer2 = new Tree[](1);
-        layer2[0] = Tree(Type.TUPLE, layer3);
-
-        Tree[] memory layer1 = new Tree[](5);
-        layer1[0] = Tree(Type.BYTES, new Tree[](0));
-        layer1[1] = Tree(Type.BYTES, new Tree[](0));
-
-        layer1[2] = Tree(Type.ARRAY, layer2);
-
-        layer1[3] = Tree(Type.WORD, new Tree[](0));
-        layer1[4] = Tree(Type.BYTES, new Tree[](0));
-
-        Tree[] memory layer0 = new Tree[](1);
-        layer0[0] = Tree(Type.TUPLE, layer1);
-
-        Tree memory tree = Tree(Type.ARRAY, layer0);
+        string memory type_ = "(bytes,bytes,(word,word)[],word,bytes)[]";
+        Tree memory tree = TreeBuilder.fromString(type_);
         Value memory value = DecoderLibrary.decode(abi.encode(messages), tree);
         require(value.children.length >= 0);
-        // dfs(value);
+        assertEq(keccak256(bytes(TreeBuilder.toString(tree))), keccak256(bytes(type_)));
     }
 }

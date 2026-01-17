@@ -10,7 +10,7 @@ library TreeBuilder {
 
     using StringView for StringView.View;
 
-    function build(StringView.View memory s) internal pure returns (Tree memory tree) {
+    function fromString(StringView.View memory s) internal pure returns (Tree memory tree) {
         if (s.length() == 0) {
             revert InvalidString();
         }
@@ -18,7 +18,7 @@ library TreeBuilder {
         if (s.endswith("[]")) {
             tree.t = Type.ARRAY;
             tree.children = new Tree[](1);
-            tree.children[0] = build(s.slice(0, s.length() - 2));
+            tree.children[0] = fromString(s.slice(0, s.length() - 2));
             return tree;
         }
 
@@ -33,7 +33,7 @@ library TreeBuilder {
                     if (n == 0) {
                         revert InvalidStaticArrayLength();
                     }
-                    Tree memory child = build(s.slice(0, i));
+                    Tree memory child = fromString(s.slice(0, i));
                     tree.children = new Tree[](n);
                     for (uint256 j = 0; j < n; j++) {
                         tree.children[j] = child;
@@ -69,11 +69,11 @@ library TreeBuilder {
                 } else if (s.at(i) == ")") {
                     --level;
                 } else if (level == 0 && s.at(i) == ",") {
-                    tree.children[iterator++] = build(s.slice(from, i));
+                    tree.children[iterator++] = fromString(s.slice(from, i));
                     from = i + 1;
                 }
             }
-            tree.children[iterator] = build(s.slice(from, s.length()));
+            tree.children[iterator] = fromString(s.slice(from, s.length()));
             return tree;
         }
 
@@ -84,7 +84,23 @@ library TreeBuilder {
         }
     }
 
-    function build(string memory s) internal pure returns (Tree memory) {
-        return build(StringView.init(s));
+    function fromString(string memory s) internal pure returns (Tree memory) {
+        return fromString(StringView.init(s));
+    }
+
+    function toString(Tree memory tree) internal pure returns (string memory) {
+        if (tree.t == Type.TUPLE) {
+            string memory s = "(";
+            for (uint256 i = 0; i < tree.children.length; i++) {
+                s = string.concat(s, (i == 0 ? "" : ","), toString(tree.children[i]));
+            }
+            return string.concat(s, ")");
+        } else if (tree.t == Type.ARRAY) {
+            return string.concat(toString(tree.children[0]), "[]");
+        } else if (tree.t == Type.WORD) {
+            return "word";
+        } else {
+            return "bytes";
+        }
     }
 }
