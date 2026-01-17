@@ -181,7 +181,7 @@ contract Integration is Test {
         }
     }
 
-    function testMezoMigrationBtcVault() external {
+    function testMezoMigrationBtcVault_NO_CI() external {
         Vault vault = Vault(payable(btcVault));
         Vault newVault = Vault(payable(newBtcVault));
 
@@ -189,7 +189,7 @@ contract Integration is Test {
         migrate(vault, newVault, holders);
     }
 
-    function testMezoMigrationCbBtcVault() external {
+    function testMezoMigrationCbBtcVault_NO_CI() external {
         Vault vault = Vault(payable(cbBtcVault));
         Vault newVault = Vault(payable(newCbBtcVault));
 

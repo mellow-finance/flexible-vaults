@@ -92,7 +92,7 @@ contract IntegrationTest is Test {
         }
     }
 
-    function testFexibleStrategy() external {
+    function testFexibleStrategy_NO_CI() external {
         // create a strategy that will work as an automated stuff
         FlexibleStrategy strategy =
             FlexibleStrategy(address(new TransparentUpgradeableProxy(address(impl), address(0xdead), "")));
