@@ -16,6 +16,13 @@ struct Tree {
     Tree[] children;
 }
 
+/// Idea for more efficient struct Value format:
+/// for Parent nodes:
+///     parentMask = 1 << 255;
+///     bytes value = abi.encode(childrenIndices); // or event use abi.encodePacked & 8-bit indices
+///     assembly { mstore(value, or(parentMask, mload(value))) }
+/// for Leaf nodes:
+///     bytes value = data;
 struct Value {
     bytes data;
     Value[] children;
