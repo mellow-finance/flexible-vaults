@@ -16,13 +16,6 @@ struct Tree {
     Tree[] children;
 }
 
-/// Idea for more efficient struct Value format:
-/// for Parent nodes:
-///     parentMask = 1 << 255;
-///     bytes value = abi.encode(childrenIndices); // or event use abi.encodePacked & 8-bit indices
-///     assembly { mstore(value, or(parentMask, mload(value))) }
-/// for Leaf nodes:
-///     bytes value = data;
 struct Value {
     bytes data;
     Value[] children;
@@ -59,7 +52,7 @@ library DecoderLibrary {
             return true;
         }
         if (t == Type.ARRAY) {
-            return compare(a.children[0], b.children[0]);
+            return a.children.length == 1 && b.children.length == 1 && compare(a.children[0], b.children[0]);
         } else {
             if (a.children.length != b.children.length) {
                 return false;
@@ -122,7 +115,7 @@ library DecoderLibrary {
 
     function encode(Value memory value, Tree memory tree) internal pure returns (bytes memory response) {
         if (isDynamicTree(tree)) {
-            return bytes.concat(abi.encode(0x20), _encode(value, tree));
+            return abi.encodePacked(uint256(0x20), _encode(value, tree));
         } else {
             return _encode(value, tree);
         }
@@ -136,7 +129,7 @@ library DecoderLibrary {
             return value.data;
         } else if (tree.t == Type.BYTES) {
             bytes memory data = value.data;
-            return bytes.concat(abi.encode(data.length), data);
+            return abi.encodePacked(data.length, data);
         } else if (tree.t == Type.ARRAY) {
             uint256 length = value.children.length;
             if (length == 0) {
@@ -153,9 +146,9 @@ library DecoderLibrary {
                     offsets[i] = abi.encode(offset);
                     offset += align(array[i].length);
                 }
-                return bytes.concat(abi.encode(length), concat(offsets), concat(array));
+                return abi.encodePacked(length, concat(offsets), concat(array));
             } else {
-                return bytes.concat(abi.encode(length), concat(array));
+                return abi.encodePacked(length, concat(array));
             }
         } else {
             uint256 length = value.children.length;
@@ -192,7 +185,7 @@ library DecoderLibrary {
                     }
                 }
 
-                return bytes.concat(concat(staticComponents), concat(dynamicComponents));
+                return abi.encodePacked(concat(staticComponents), concat(dynamicComponents));
             } else {
                 return concat(components);
             }

@@ -74,9 +74,7 @@ contract FlexibleStrategy is MellowACL {
                 bytes memory response = ICallModule(subvault).call(
                     where,
                     abi.decode(msgValue.data, (uint256)),
-                    bytes.concat(
-                        abi.encodePacked(selector), DecoderLibrary.encode(inputValue.children[1], inputTree.children[1])
-                    ),
+                    abi.encodePacked(selector, DecoderLibrary.encode(inputValue.children[1], inputTree.children[1])),
                     action.payload
                 );
                 responses[i] = DecoderLibrary.decode(response, _buildTree(action.outputTypes));
@@ -105,8 +103,7 @@ contract FlexibleStrategy is MellowACL {
                 (address target, bytes4 selector) = abi.decode(action.data, (address, bytes4));
                 (Value memory value, Tree memory tree) = _buildInputValue(i, actions, inputs, responses);
                 bytes memory data = DecoderLibrary.encode(value, tree);
-                bytes memory response =
-                    Address.functionStaticCall(target, bytes.concat(abi.encodePacked(selector), data));
+                bytes memory response = Address.functionStaticCall(target, (abi.encodePacked(selector, data)));
                 responses[i] = DecoderLibrary.decode(response, _buildTree(action.outputTypes));
             }
         }

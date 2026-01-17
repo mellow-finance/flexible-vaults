@@ -84,7 +84,7 @@ contract Integration is Test {
         );
     }
 
-    function logCall(address target, bytes memory data) internal view {
+    function logCall(address target, bytes memory data) internal pure {
         console2.log("{");
         console2.log('  "to": "%s",', target);
         console2.log('  "value": "0",');
