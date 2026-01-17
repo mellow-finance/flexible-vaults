@@ -57,8 +57,9 @@ library StringView {
         }
         uint256 length_ = end - start;
         bytes memory response = new bytes(length_);
-        for (uint256 i = 0; i < length_; i++) {
-            response[i] = at(a, i + start);
+        string memory s = a.s;
+        assembly {
+            mcopy(add(response, 0x20), add(s, add(0x20, start)), length_)
         }
         return View(string(response), length_);
     }
