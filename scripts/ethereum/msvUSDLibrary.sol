@@ -99,9 +99,9 @@ library msvUSDLibrary {
             subvaultName: $.subvaultEthName,
             aaveInstance: Constants.AAVE_CORE,
             aaveInstanceName: "Core",
-            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT)),
-            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT)),
-            categoryId: 1
+            collaterals: $.swapModuleAssets,
+            loans: new address[](0),
+            categoryId: 0
         });
     }
 

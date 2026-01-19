@@ -268,14 +268,18 @@ contract Deploy is Script, Test {
         address deployer = vm.addr(deployerPk);
 
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[2] memory tokens = [Constants.USDT, Constants.USDC];
+        address[4] memory tokens = [Constants.USDT, Constants.USDC, Constants.CRV, Constants.FLUID];
         address[] memory actors =
-            ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens, Constants.COWSWAP_SETTLEMENT));
+            ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens, Constants.KYBERSWAP_ROUTER));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_ROUTER_ROLE

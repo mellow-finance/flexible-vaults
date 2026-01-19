@@ -23,6 +23,8 @@ library Constants {
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address public constant USDS = 0xdC035D45d973E3EC169d2276DDab16f1e407384F;
     address public constant USDU = 0xdde3eC717f220Fc6A29D6a4Be73F91DA5b718e55;
+    address public constant CRV = 0xD533a949740bb3306d119CC777fa900bA034cd52;
+    address public constant FLUID = 0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb;
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
@@ -39,6 +41,8 @@ library Constants {
 
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
     address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
+
+    address public constant KYBERSWAP_ROUTER = 0x6131B5fae19EA4f9D964eAc0408E4408b66337b5;
 
     address public constant AAVE_CORE = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
     address public constant AAVE_PRIME = 0x4e033931ad43597d96D6bcc25c280717730B58B1;
