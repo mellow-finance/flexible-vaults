@@ -95,7 +95,6 @@ contract RedeemQueue is IRedeemQueue, Queue {
             revert QueuePaused();
         }
         IShareManager shareManager_ = IShareManager(IShareModule(vault_).shareManager());
-        shareManager_.lock(caller, shares);
         IFeeManager feeManager_ = IShareModule(vault_).feeManager();
         address feeRecipient_ = feeManager_.feeRecipient();
 
@@ -106,6 +105,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
                 shares -= fees;
             }
         }
+        shareManager_.lock(caller, shares);
 
         RedeemQueueStorage storage $ = _redeemQueueStorage();
         uint32 timestamp = uint32(block.timestamp);
