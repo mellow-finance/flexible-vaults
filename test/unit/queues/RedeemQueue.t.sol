@@ -34,7 +34,7 @@ contract RedeemQueueTest is FixtureTest {
         address user = vm.createWallet("user").addr;
         uint256 amount = 1 ether;
         vm.prank(user);
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, user, 0, amount));
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, user, 0, 1e16));
         queue.redeem(amount);
 
         IRedeemQueue.Request[] memory requests = queue.requestsOf(user, 0, 10);
