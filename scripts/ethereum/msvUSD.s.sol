@@ -268,7 +268,7 @@ contract Deploy is Script, Test {
         address deployer = vm.addr(deployerPk);
 
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[4] memory tokens = [Constants.USDT, Constants.USDC, Constants.CRV, Constants.FLUID];
+        address[3] memory tokens = [Constants.USDT, Constants.USDC, Constants.CRV];
         address[] memory actors =
             ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens, Constants.KYBERSWAP_ROUTER));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
@@ -277,8 +277,6 @@ contract Deploy is Script, Test {
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
@@ -313,7 +311,9 @@ contract Deploy is Script, Test {
             oftUSDT: Constants.ETHEREUM_USDT_OFT_ADAPTER,
             fUSDT: Constants.ETHEREUM_FLUID_USDT_FTOKEN,
             fUSDC: Constants.ETHEREUM_FLUID_USDC_FTOKEN,
-            swapModuleAssets: swapModuleAssets
+            swapModuleAssets: swapModuleAssets,
+            kyberRouter: Constants.KYBERSWAP_ROUTER,
+            kyberSwapAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.FLUID))
         });
 
         IVerifier.VerificationPayload[] memory leaves;

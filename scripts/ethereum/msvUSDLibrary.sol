@@ -14,12 +14,13 @@ import {Constants} from "./Constants.sol";
 
 import {CCTPLibrary} from "../common/protocols/CCTPLibrary.sol";
 
-import {AaveLibrary} from "scripts/common/protocols/AaveLibrary.sol";
-import {CurveLibrary} from "scripts/common/protocols/CurveLibrary.sol";
-import {ERC4626Library} from "scripts/common/protocols/ERC4626Library.sol";
-import {OFTLibrary} from "scripts/common/protocols/OFTLibrary.sol";
-
-import {SwapModuleLibrary} from "scripts/common/protocols/SwapModuleLibrary.sol";
+import {IMetaAggregationRouterV2} from "../common/interfaces/IMetaAggregationRouterV2.sol";
+import {AaveLibrary} from "../common/protocols/AaveLibrary.sol";
+import {CurveLibrary} from "../common/protocols/CurveLibrary.sol";
+import {ERC20Library} from "../common/protocols/ERC20Library.sol";
+import {ERC4626Library} from "../common/protocols/ERC4626Library.sol";
+import {OFTLibrary} from "../common/protocols/OFTLibrary.sol";
+import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -42,6 +43,8 @@ library msvUSDLibrary {
         address fUSDT; // fluid USDT fToken
         address fUSDC; // fluid USDC fToken
         address[] swapModuleAssets;
+        address kyberRouter;
+        address[] kyberSwapAssets;
     }
 
     function _getCCTPParams(Info memory $) internal pure returns (CCTPLibrary.Info memory) {
@@ -129,6 +132,14 @@ library msvUSDLibrary {
         });
     }
 
+    function _getERC20KyberswapParams(Info memory $) internal pure returns (ERC20Library.Info memory) {
+        address[] memory to = new address[]($.kyberSwapAssets.length);
+        for (uint256 i = 0; i < $.kyberSwapAssets.length; i++) {
+            to[i] = $.kyberRouter;
+        }
+        return ERC20Library.Info({curator: $.curator, assets: $.kyberSwapAssets, to: to});
+    }
+
     function getSubvault0Proofs(Info memory $)
         internal
         view
@@ -146,6 +157,14 @@ library msvUSDLibrary {
         iterator = leaves.insert(CurveLibrary.getCurveProofs(bitmaskVerifier, _getCurveParams($)), iterator);
         iterator =
             leaves.insert(SwapModuleLibrary.getSwapModuleProofs(bitmaskVerifier, _getSwapModuleParams($)), iterator);
+
+        iterator = leaves.insert(ERC20Library.getERC20Proofs(bitmaskVerifier, _getERC20KyberswapParams($)), iterator);
+
+        {
+            leaves[iterator++] = ProofLibrary.makeVerificationPayloadCompact(
+                $.curator, $.kyberRouter, IMetaAggregationRouterV2.swap.selector
+            );
+        }
 
         assembly {
             mstore(leaves, iterator)
@@ -172,6 +191,18 @@ library msvUSDLibrary {
         iterator = ArraysLibrary.insert(
             descriptions, SwapModuleLibrary.getSwapModuleDescriptions(_getSwapModuleParams($)), iterator
         );
+        iterator =
+            ArraysLibrary.insert(descriptions, ERC20Library.getERC20Descriptions(_getERC20KyberswapParams($)), iterator);
+
+        {
+            ParameterLibrary.Parameter[] memory innerParameters;
+            descriptions[iterator++] = JsonLibrary.toJson(
+                string(abi.encodePacked("IMetaAggregationRouterV2.swap(anyParams)")),
+                ABILibrary.getABI(IMetaAggregationRouterV2.swap.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.kyberRouter), "0"),
+                innerParameters.addAny("anyParams")
+            );
+        }
 
         assembly {
             mstore(descriptions, iterator)
@@ -194,6 +225,47 @@ library msvUSDLibrary {
         iterator = ArraysLibrary.insert(calls_, AaveLibrary.getAaveCalls(_getAaveParams($)), iterator);
         iterator = ArraysLibrary.insert(calls_, CurveLibrary.getCurveCalls(_getCurveParams($)), iterator);
         iterator = ArraysLibrary.insert(calls_, SwapModuleLibrary.getSwapModuleCalls(_getSwapModuleParams($)), iterator);
+        iterator = ArraysLibrary.insert(calls_, ERC20Library.getERC20Calls(_getERC20KyberswapParams($)), iterator);
+
+        {
+            uint256 index = 0;
+            Call[][] memory calls = new Call[][](16);
+            {
+                Call[] memory tmp = new Call[](16);
+                uint256 i = 0;
+                tmp[i++] = Call(
+                    $.curator, $.kyberRouter, 0, abi.encodeWithSelector(IMetaAggregationRouterV2.swap.selector, 0), true
+                );
+                tmp[i++] = Call(
+                    $.curator,
+                    $.kyberRouter,
+                    0,
+                    abi.encodeWithSelector(IMetaAggregationRouterV2.swap.selector, new bytes(128)),
+                    true
+                );
+                tmp[i++] = Call($.curator, $.kyberRouter, 0, abi.encodeWithSelector(0x59e50fed, 0), false); // swapGeneric (0x59e50fed)
+                tmp[i++] = Call(
+                    address(0xdead),
+                    $.kyberRouter,
+                    0,
+                    abi.encodeWithSelector(IMetaAggregationRouterV2.swap.selector, 0),
+                    false
+                );
+                tmp[i++] = Call(
+                    $.curator,
+                    address(0xdead),
+                    0,
+                    abi.encodeWithSelector(IMetaAggregationRouterV2.swap.selector, 0),
+                    false
+                );
+                assembly {
+                    mstore(tmp, i)
+                }
+                calls[index++] = tmp;
+            }
+
+            iterator = ArraysLibrary.insert(calls_, calls, iterator);
+        }
 
         assembly {
             mstore(calls_, iterator)

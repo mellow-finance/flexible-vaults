@@ -24,6 +24,7 @@ import {ILidoV3Dashboard} from "./interfaces/ILidoV3Dashboard.sol";
 import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
 
 import {IMessageTransmitter} from "./interfaces/IMessageTransmitter.sol";
+import {IMetaAggregationRouterV2} from "./interfaces/IMetaAggregationRouterV2.sol";
 import {IMorpho} from "./interfaces/IMorpho.sol";
 import {IStUSR} from "./interfaces/IStUSR.sol";
 import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
@@ -35,7 +36,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[21] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[22] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -56,7 +57,8 @@ library ABILibrary {
             getFluidInterfaces,
             getMorphoInterfaces,
             getLidoV3Interfaces,
-            getCCTPInterfaces
+            getCCTPInterfaces,
+            getKyberswapInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -409,5 +411,14 @@ library ABILibrary {
         selectors[2] = IMessageTransmitter.receiveMessage.selector;
         abis[2] =
             '{"inputs":[{"internalType":"bytes","name":"message","type":"bytes"},{"internalType":"bytes","name":"signature","type":"bytes"}],"name":"receiveMessage","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getKyberswapInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = IMetaAggregationRouterV2.swap.selector;
+        abis[0] =
+            '{"type":"function","name":"swap","inputs":[{"name":"swapParams","type":"bytes","internalType":"bytes"}],"outputs":[],"stateMutability":"payable"}';
     }
 }
