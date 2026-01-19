@@ -102,6 +102,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
             uint256 fees = feeManager_.calculateRedeemFee(shares);
             if (fees > 0) {
                 shareManager_.mint(feeRecipient_, fees);
+                shareManager_.burn(caller, fees);
                 shares -= fees;
             }
         }
