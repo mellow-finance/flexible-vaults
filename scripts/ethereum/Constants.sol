@@ -70,20 +70,26 @@ library Constants {
     uint64 public constant CCIP_PLASMA_CHAIN_SELECTOR = 9335212494177455608;
     address public constant CCIP_ETHEREUM_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
     uint64 public constant CCIP_ETHEREUM_CHAIN_SELECTOR = 5009297550715157269;
-    
+
     address public constant CCTP_ETHEREUM_TOKEN_MESSENGER = 0xBd3fa81B58Ba92a82136038B25aDec7066af3155; // Ethereum TokenMessenger deposit for burn
     address public constant CCTP_ETHEREUM_MESSAGE_TRANSMITTER = 0x0a992d191DEeC32aFe36203Ad87D7d289a738F81; // Ethereum MessageTransmitter receive message
     // https://developers.circle.com/cctp/concepts/supported-chains-and-domains
     uint32 public constant CCTP_ARBITRUM_DOMAIN = 3; // Arbitrum EID
 
+    // https://docs.layerzero.network/v2/deployments/deployed-contracts
     uint32 public constant LAYER_ZERO_PLASMA_EID = 30383;
     uint32 public constant LAYER_ZERO_ETHEREUM_EID = 30101;
+    uint32 public constant LAYER_ZERO_ARBITRUM_EID = 30110;
 
     address public constant ETHEREUM_USDT_OFT_ADAPTER = 0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee;
     address public constant PLASMA_USDT_OFT_ADAPTER = 0x02ca37966753bDdDf11216B73B16C1dE756A7CF9;
+    address public constant ARBITRUM_USDT_OFT_ADAPTER = 0x14E4A1B13bf7F943c8ff7C51fb60FA964A298D92;
 
     address public constant ETHEREUM_WSTUSR_OFT_ADAPTER = 0xab17c1fE647c37ceb9b96d1c27DD189bf8451978;
     address public constant PLASMA_WSTUSR_OFT_ADAPTER = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
+
+    address public constant ETHEREUM_FLUID_USDC_FTOKEN = 0x9Fb7b4477576Fe5B32be4C1843aFB1e55F251B33;
+    address public constant ETHEREUM_FLUID_USDT_FTOKEN = 0x5C20B550819128074FD538Edf79791733ccEdd18;
 
     address public constant STRETH = 0x277C6A642564A91ff78b008022D65683cEE5CCC5;
     address public constant STRETH_DEPOSIT_QUEUE_ETH = 0xE707321B887b9da133AC5fCc5eDB78Ab177a152D;
@@ -95,6 +101,10 @@ library Constants {
 
     address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
     address public constant CURVE_USDC_USDU_GAUGE = 0x0E2662672adC42Bb73d39196f9f557C11B4FCcf9;
+
+    address public constant CURVE_USDC_USDT_POOL = 0x4f493B7dE8aAC7d55F71853688b1F7C8F0243C85;
+    address public constant CURVE_USDC_USDT_GAUGE = 0x479dFB03cdDEa20dC4e8788B81Fd7C7A08FD3555;
+    address public constant CURVE_USDC_USDT_REWARD_MINTER = 0xd061D61a4d941c39E5453435B6345Dc261C2fcE0;
 
     address public constant MORPHO_USDC_ALPHAPING = 0xb0f05E4De970A1aaf77f8C2F823953a367504BA9;
     address public constant MORPHO_WETH_ALPHAPING = 0x47fe8Ab9eE47DD65c24df52324181790b9F47EfC;

@@ -14,6 +14,7 @@ import {ICapLender} from "./interfaces/ICapLender.sol";
 import {ICowswapSettlement} from "./interfaces/ICowswapSettlement.sol";
 import {ICurveGauge} from "./interfaces/ICurveGauge.sol";
 import {ICurvePool} from "./interfaces/ICurvePool.sol";
+import {ICurveRewardMinter} from "./interfaces/ICurveRewardMinter.sol";
 import {IL1GatewayRouter} from "./interfaces/IL1GatewayRouter.sol";
 import {IL2GatewayRouter} from "./interfaces/IL2GatewayRouter.sol";
 
@@ -21,15 +22,16 @@ import {IFluidVault} from "./interfaces/IFluidVault.sol";
 import {ILidoV3Dashboard} from "./interfaces/ILidoV3Dashboard.sol";
 
 import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
+
+import {IMessageTransmitter} from "./interfaces/IMessageTransmitter.sol";
 import {IMorpho} from "./interfaces/IMorpho.sol";
 import {IStUSR} from "./interfaces/IStUSR.sol";
 import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
+import {ITokenMessenger} from "./interfaces/ITokenMessenger.sol";
 import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsManager.sol";
 import {IWETH} from "./interfaces/IWETH.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {ITokenMessenger} from "./interfaces/ITokenMessenger.sol";
-import {IMessageTransmitter} from "./interfaces/IMessageTransmitter.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
@@ -81,13 +83,14 @@ library ABILibrary {
     }
 
     function getCurveInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
-        selectors = new bytes4[](4);
-        abis = new string[](4);
+        selectors = new bytes4[](5);
+        abis = new string[](5);
 
         selectors[0] = ICurvePool.add_liquidity.selector;
         selectors[1] = ICurvePool.remove_liquidity.selector;
         selectors[2] = ICurveGauge.deposit.selector;
         selectors[3] = ICurveGauge.claim_rewards.selector;
+        selectors[4] = ICurveRewardMinter.mint.selector;
 
         abis[0] =
             '{"inputs":[{"name":"_amounts","type":"uint256[]"},{"name":"_min_mint_amount","type":"uint256"}],"name":"add_liquidity","outputs":[{"name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
@@ -97,6 +100,8 @@ library ABILibrary {
         abis[2] =
             '{"inputs":[{"name":"_value","type":"uint256"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[3] = '{"inputs":[],"name":"claim_rewards","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+        abis[4] =
+            '{"inputs":[{"name":"_gauge","type":"address"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 
     function getERC4626Interfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
@@ -401,9 +406,8 @@ library ABILibrary {
         selectors[1] = ITokenMessenger.depositForBurnWithCaller.selector;
         abis[1] =
             '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"destination","type":"address"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"},{"internalType":"address","name":"caller","type":"address"}],"name":"depositForBurnWithCaller","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"}';
-         selectors[2] = IMessageTransmitter.receiveMessage.selector;
+        selectors[2] = IMessageTransmitter.receiveMessage.selector;
         abis[2] =
             '{"inputs":[{"internalType":"bytes","name":"message","type":"bytes"},{"internalType":"bytes","name":"signature","type":"bytes"}],"name":"receiveMessage","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
-
 }

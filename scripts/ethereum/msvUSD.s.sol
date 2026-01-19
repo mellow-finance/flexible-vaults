@@ -30,6 +30,8 @@ contract Deploy is Script, Test {
 
     address public pauser = 0x2EE0AB05EB659E0681DC5f2EabFf1F4D284B3Ef7;
 
+    Vault public vault = Vault(payable(0x7207595E4c18a9A829B9dc868F11F3ADd8FCF626));
+
     function _x() internal {
         OracleSubmitter submitter = new OracleSubmitter(
             lazyVaultAdmin, oracleUpdater, activeVaultAdmin, 0xccB10707cc3105178CBef8ee5b7DC84D5d1b277F
@@ -39,7 +41,10 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
-        calculateSubvault0MerkleRoot(address(0xbeaf)); // replace with actual vault address to calculate merkle root
+        _createSubvault0(); // replace with actual vault address to calculate merkle root
+
+        address arbitrumSubvault0 = vm.addr(uint256(keccak256("arb-vault")));
+        _createSubvault0Proofs(arbitrumSubvault0);
         revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
@@ -242,12 +247,89 @@ contract Deploy is Script, Test {
         revert("ok");
     }
 
-    function calculateSubvault0MerkleRoot(address subvault0) internal {
-        (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves) = msvUSDLibrary.getSubvault0Proofs(curator, subvault0, address(0xdead));
-        string[] memory descriptions = msvUSDLibrary.getSubvault0Descriptions(curator, subvault0);
+    function _createSubvault0() internal {
+        IRiskManager riskManager = vault.riskManager();
+        vm.startPrank(lazyVaultAdmin);
+
+        vault.grantRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, lazyVaultAdmin);
+        vault.grantRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, lazyVaultAdmin);
+        address verifier = vault.verifierFactory().create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+
+        address subvault0 = vault.createSubvault(0, proxyAdmin, verifier);
+        riskManager.allowSubvaultAssets(
+            subvault0, ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT))
+        );
+        riskManager.setSubvaultLimit(subvault0, type(int256).max / 2);
+        vm.stopPrank();
+    }
+
+    function _deploySwapModule(address subvault) internal returns (address swapModule, address[] memory assets) {
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+
+        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+        address[2] memory tokens = [Constants.USDT, Constants.USDC];
+        address[] memory actors =
+            ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens, Constants.COWSWAP_SETTLEMENT));
+        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE
+            )
+        );
+
+        vm.startBroadcast(deployerPk);
+        swapModule = swapModuleFactory.create(
+            0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
+        );
+        vm.stopBroadcast();
+        return (swapModule, ArraysLibrary.makeAddressArray(abi.encode(tokens)));
+    }
+
+    function _createSubvault0Proofs(address subvault0Arbitrum)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        address payable subvault0Mainnet = payable(vault.subvaultAt(0));
+        (address swapModule, address[] memory swapModuleAssets) = _deploySwapModule(subvault0Mainnet);
+
+        msvUSDLibrary.Info memory info = msvUSDLibrary.Info({
+            curator: curator,
+            subvaultEth: subvault0Mainnet,
+            subvaultArb: subvault0Arbitrum,
+            swapModule: swapModule,
+            subvaultEthName: "subvault0",
+            subvaultArbName: "subvault0",
+            targetChainName: "Arbitrum",
+            cctpArbCaller: subvault0Arbitrum,
+            oftUSDT: Constants.ETHEREUM_USDT_OFT_ADAPTER,
+            fUSDT: Constants.ETHEREUM_FLUID_USDT_FTOKEN,
+            fUSDC: Constants.ETHEREUM_FLUID_USDC_FTOKEN,
+            swapModuleAssets: swapModuleAssets
+        });
+
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = msvUSDLibrary.getSubvault0Proofs(info);
+
+        vm.startPrank(lazyVaultAdmin);
+        Subvault(subvault0Mainnet).verifier().setMerkleRoot(merkleRoot);
+        vm.stopPrank();
+
+        string[] memory descriptions = msvUSDLibrary.getSubvault0Descriptions(info);
         ProofLibrary.storeProofs("ethereum:msvUSD:subvault0", merkleRoot, leaves, descriptions);
-        //Vault vault = Vault(payable(vaultAddress));
-        //vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, msg.sender);
-        //vault.setMerkleRoot(merkleRoot);
+
+        calls = msvUSDLibrary.getSubvault0Calls(info, leaves);
+
+        _runChecks(IVerifier(Subvault(subvault0Mainnet).verifier()), calls);
+    }
+
+    function _runChecks(IVerifier verifier, SubvaultCalls memory calls) internal view {
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
     }
 }

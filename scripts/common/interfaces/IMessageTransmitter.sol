@@ -30,7 +30,5 @@ interface IMessageTransmitter {
      * of the attester address recovered from signatures.
      * @return success bool, true if successful
      */
-    function receiveMessage(bytes calldata message, bytes calldata signature)
-        external
-        returns (bool success);
+    function receiveMessage(bytes calldata message, bytes calldata signature) external returns (bool success);
 }
