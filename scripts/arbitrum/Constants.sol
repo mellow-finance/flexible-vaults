@@ -21,7 +21,7 @@ library Constants {
     address public constant CRV = 0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978;
     address public constant FLUID = 0x61E030A56D33e8260FdD81f03B162A79Fe3449Cd;
 
-    address public constant CCTP_ARBITRUM_TOKEN_MESSENGER = 0x19330d10D9Cc8751218eaf51E8885D058642E08A; // Arbitrum TokenMessenger deposit for burn
+    address public constant CCTP_ARBITRUM_TOKEN_MESSENGER = 0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d; // Arbitrum TokenMessenger М2 deposit for burn
     address public constant CCTP_ARBITRUM_MESSAGE_TRANSMITTER = 0xC30362313FBBA5cf9163F0bb16a0e01f01A896ca; // Arbitrum MessageTransmitter receive message
     // https://developers.circle.com/cctp/concepts/supported-chains-and-domains
     uint32 public constant CCTP_ETHEREUM_DOMAIN = 0; // Ethereum EID

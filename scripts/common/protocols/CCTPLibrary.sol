@@ -33,7 +33,6 @@ library CCTPLibrary {
         address messageTransmitter;
         uint32 destinationDomain;
         address burnToken;
-        address caller; // if not zero -> depositForBurnWithCaller, else depositForBurn
     }
 
     function getCCTPProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
@@ -56,61 +55,28 @@ library CCTPLibrary {
             ),
             iterator
         );
-        if ($.caller == address(0)) {
-            leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-                bitmaskVerifier,
-                $.curator,
-                $.tokenMessenger,
-                0,
+
+        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+            bitmaskVerifier,
+            $.curator,
+            $.tokenMessenger,
+            0,
+            abi.encodeCall(
+                ITokenMessenger.depositForBurn,
+                (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+            ),
+            ProofLibrary.makeBitmask(
+                true,
+                true,
+                true,
+                true,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken)
-                ),
-                ProofLibrary.makeBitmask(
-                    true,
-                    true,
-                    true,
-                    true,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurn,
-                        (0, type(uint32).max, bytes32(type(uint256).max), address(type(uint160).max))
-                    )
+                    (0, type(uint32).max, bytes32(type(uint256).max), address(type(uint160).max), 0, type(uint32).max)
                 )
-            );
-        } else {
-            leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-                bitmaskVerifier,
-                $.curator,
-                $.tokenMessenger,
-                0,
-                abi.encodeCall(
-                    ITokenMessenger.depositForBurnWithCaller,
-                    (
-                        0,
-                        $.destinationDomain,
-                        addressToBytes32($.subvaultTarget),
-                        $.burnToken,
-                        addressToBytes32($.caller)
-                    )
-                ),
-                ProofLibrary.makeBitmask(
-                    true,
-                    true,
-                    true,
-                    true,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            0,
-                            type(uint32).max,
-                            bytes32(type(uint256).max),
-                            address(type(uint160).max),
-                            bytes32(type(uint256).max)
-                        )
-                    )
-                )
-            );
-        }
+            )
+        );
+
         /// @dev ability to receive any message
         bytes memory defaultEmptyMessage = new bytes(CCTP_MESSAGE_DEFAULT_LENGTH);
         bytes memory defaultEmptySignature = new bytes(CCTP_SIGNATURE_DEFAULT_LENGTH);
@@ -146,13 +112,13 @@ library CCTPLibrary {
             ),
             iterator
         );
-
-        if ($.caller == address(0)) {
+        {
             ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters = innerParameters.addAny("amount").add(
-                "destinationDomain", Strings.toString($.destinationDomain)
-            ).add("subvaultTarget", Strings.toHexString($.subvaultTarget)).add(
-                "burnToken", Strings.toHexString($.burnToken)
+            innerParameters =
+                innerParameters.addAny("amount").add("destinationDomain", Strings.toString($.destinationDomain));
+            innerParameters = innerParameters.add("subvaultTarget", Strings.toHexString($.subvaultTarget));
+            innerParameters = innerParameters.add("burnToken", Strings.toHexString($.burnToken)).add("maxFee", "0").add(
+                "minFinalityThreshold", "2000"
             );
 
             descriptions[iterator++] = JsonLibrary.toJson(
@@ -167,40 +133,12 @@ library CCTPLibrary {
                         ", ",
                         "burnToken=",
                         IERC20Metadata($.burnToken).symbol(),
+                        ", ",
+                        "maxFee=0, minFinalityThreshold=2000",
                         ")"
                     )
                 ),
                 ABILibrary.getABI(ITokenMessenger.depositForBurn.selector),
-                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.tokenMessenger), "0"),
-                innerParameters
-            );
-        } else {
-            ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters = innerParameters.addAny("amount").add(
-                "destinationDomain", Strings.toString($.destinationDomain)
-            ).add("subvaultTarget", Strings.toHexString($.subvaultTarget)).add(
-                "burnToken", Strings.toHexString($.burnToken)
-            ).add("destinationCaller", Strings.toHexString($.caller));
-
-            descriptions[iterator++] = JsonLibrary.toJson(
-                string(
-                    abi.encodePacked(
-                        "TokenMessenger.depositForBurnWithCaller(anyInt, ",
-                        "targetChain=",
-                        $.targetChainName,
-                        ", ",
-                        "targetSubvault=",
-                        $.subvaultTargetName,
-                        ", ",
-                        "burnToken=",
-                        IERC20Metadata($.burnToken).symbol(),
-                        ", ",
-                        "destinationCaller=",
-                        Strings.toHexString($.caller),
-                        ")"
-                    )
-                ),
-                ABILibrary.getABI(ITokenMessenger.depositForBurnWithCaller.selector),
                 ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.tokenMessenger), "0"),
                 innerParameters
             );
@@ -237,208 +175,82 @@ library CCTPLibrary {
         {
             Call[] memory tmp = new Call[](16);
             uint256 i = 0;
-            if ($.caller == address(0)) {
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                ),
+                true
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (1e6, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                ),
+                true
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                1 wei,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                ),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (1e6, $.destinationDomain + 1, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                ),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (1e6, $.destinationDomain, addressToBytes32(address(0xdead)), $.burnToken, 0, 2000)
+                ),
+                false // bad call
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (1e6, $.destinationDomain, addressToBytes32($.subvaultTarget), address(0xdead), 0, 2000)
+                ),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encode(
+                    ITokenMessenger.depositForBurn.selector,
+                    1e6,
+                    $.destinationDomain,
+                    addressToBytes32($.subvaultTarget),
+                    $.burnToken,
                     0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurn,
-                        (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken)
-                    ),
-                    true
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurn,
-                        (1e6, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken)
-                    ),
-                    true
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    1 wei,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurn,
-                        (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken)
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurn,
-                        (1e6, $.destinationDomain + 1, addressToBytes32($.subvaultTarget), $.burnToken)
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurn,
-                        (1e6, $.destinationDomain, addressToBytes32(address(0xdead)), $.burnToken)
-                    ),
-                    false // bad call
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurn,
-                        (1e6, $.destinationDomain, addressToBytes32($.subvaultTarget), address(0xdead))
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encode(
-                        ITokenMessenger.depositForBurn.selector,
-                        1e6,
-                        $.destinationDomain,
-                        addressToBytes32($.subvaultTarget),
-                        $.burnToken
-                    ),
-                    false
-                );
-            } else {
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            0,
-                            $.destinationDomain,
-                            addressToBytes32($.subvaultTarget),
-                            $.burnToken,
-                            addressToBytes32($.caller)
-                        )
-                    ),
-                    true
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            1e6,
-                            $.destinationDomain,
-                            addressToBytes32($.subvaultTarget),
-                            $.burnToken,
-                            addressToBytes32($.caller)
-                        )
-                    ),
-                    true
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    1 wei,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            0,
-                            $.destinationDomain,
-                            addressToBytes32($.subvaultTarget),
-                            $.burnToken,
-                            addressToBytes32($.caller)
-                        )
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            1e6,
-                            $.destinationDomain + 1,
-                            addressToBytes32($.subvaultTarget),
-                            $.burnToken,
-                            addressToBytes32($.caller)
-                        )
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            1e6,
-                            $.destinationDomain,
-                            addressToBytes32(address(0xdead)),
-                            $.burnToken,
-                            addressToBytes32($.caller)
-                        )
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            1e6,
-                            $.destinationDomain,
-                            addressToBytes32($.subvaultTarget),
-                            address(0xdead),
-                            addressToBytes32($.caller)
-                        )
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encodeCall(
-                        ITokenMessenger.depositForBurnWithCaller,
-                        (
-                            1e6,
-                            $.destinationDomain,
-                            addressToBytes32($.subvaultTarget),
-                            $.burnToken,
-                            addressToBytes32(address(0xdead))
-                        )
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.tokenMessenger,
-                    0,
-                    abi.encode(
-                        ITokenMessenger.depositForBurnWithCaller.selector,
-                        1e6,
-                        $.destinationDomain,
-                        addressToBytes32($.subvaultTarget),
-                        $.burnToken,
-                        addressToBytes32($.caller)
-                    ),
-                    false
-                );
-            }
+                    2000
+                ),
+                false
+            );
+
             assembly {
                 mstore(tmp, i)
             }

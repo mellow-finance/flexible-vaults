@@ -41,7 +41,7 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
-        _createSubvault0();
+        //_createSubvault0();
 
         address arbitrumSubvault0 = vm.addr(uint256(keccak256("arb-vault")));
         _createSubvault0Proofs(arbitrumSubvault0);
@@ -304,10 +304,9 @@ contract Deploy is Script, Test {
             subvaultEth: subvault0Mainnet,
             subvaultArb: subvault0Arbitrum,
             swapModule: swapModule,
-            subvaultEthName: "subvault0",
-            subvaultArbName: "subvault0",
+            subvaultEthName: "subvault0:ethereum",
+            subvaultArbName: "subvault0:arbitrum",
             targetChainName: "Arbitrum",
-            cctpArbCaller: subvault0Arbitrum,
             oftUSDT: Constants.ETHEREUM_USDT_OFT_ADAPTER,
             fUSDT: Constants.ETHEREUM_FLUID_USDT_FTOKEN,
             fUSDC: Constants.ETHEREUM_FLUID_USDC_FTOKEN,

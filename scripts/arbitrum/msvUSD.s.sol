@@ -30,7 +30,7 @@ contract Deploy is Script, Test {
 
     address public pauser = 0x2EE0AB05EB659E0681DC5f2EabFf1F4D284B3Ef7;
 
-    address ethereumSubvault0 = vm.addr(uint256(keccak256("eth-vault")));
+    address ethereumSubvault0 = 0x9757bbb42B3fAAc201d5Ba2374b9Ac62dc77a584;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -226,10 +226,9 @@ contract Deploy is Script, Test {
             subvaultEth: subvault0Ethereum,
             subvaultArb: subvault0Arbitrum,
             swapModule: swapModule,
-            subvaultEthName: "subvault0",
-            subvaultArbName: "subvault0",
+            subvaultEthName: "subvault0:ethereum",
+            subvaultArbName: "subvault0:arbitrum",
             targetChainName: "Ethereum",
-            cctpEthCaller: subvault0Ethereum,
             oftUSDT: Constants.USDT_OFT_ADAPTER,
             fUSDT: Constants.FLUID_USDT_FTOKEN,
             fUSDC: Constants.FLUID_USDC_FTOKEN,

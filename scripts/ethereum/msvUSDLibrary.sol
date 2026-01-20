@@ -39,7 +39,6 @@ library msvUSDLibrary {
         string subvaultEthName;
         string subvaultArbName;
         string targetChainName;
-        address cctpArbCaller;
         address oftUSDT;
         address fUSDT; // fluid USDT fToken
         address fUSDC; // fluid USDC fToken
@@ -59,8 +58,7 @@ library msvUSDLibrary {
             tokenMessenger: Constants.CCTP_ETHEREUM_TOKEN_MESSENGER,
             messageTransmitter: Constants.CCTP_ETHEREUM_MESSAGE_TRANSMITTER,
             destinationDomain: Constants.CCTP_ARBITRUM_DOMAIN,
-            burnToken: Constants.USDC,
-            caller: $.cctpArbCaller
+            burnToken: Constants.USDC
         });
     }
 
@@ -151,13 +149,7 @@ library msvUSDLibrary {
         iterator = leaves.insert(OFTLibrary.getOFTProofs(bitmaskVerifier, _getOFTParams($)), iterator);
         iterator = leaves.insert(
             ERC4626Library.getERC4626Proofs(
-                bitmaskVerifier, _getERC4626Params($, ArraysLibrary.makeAddressArray(abi.encode($.fUSDT)))
-            ),
-            iterator
-        );
-        iterator = leaves.insert(
-            ERC4626Library.getERC4626Proofs(
-                bitmaskVerifier, _getERC4626Params($, ArraysLibrary.makeAddressArray(abi.encode($.fUSDC)))
+                bitmaskVerifier, _getERC4626Params($, ArraysLibrary.makeAddressArray(abi.encode($.fUSDT, $.fUSDC)))
             ),
             iterator
         );

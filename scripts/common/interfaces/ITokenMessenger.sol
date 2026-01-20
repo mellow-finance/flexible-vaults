@@ -16,11 +16,18 @@ interface ITokenMessenger {
      * @param destinationDomain destination domain
      * @param mintRecipient address of mint recipient on destination domain
      * @param burnToken address of contract to burn deposited tokens, on local domain
+     * @param maxFee maximum fee to pay on the destination domain, specified in units of burnToken
+     * @param minFinalityThreshold the minimum finality at which a burn message will be attested to.
      * @return _nonce unique nonce reserved by message
      */
-    function depositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken)
-        external
-        returns (uint64 _nonce);
+    function depositForBurn(
+        uint256 amount,
+        uint32 destinationDomain,
+        bytes32 mintRecipient,
+        address burnToken,
+        uint256 maxFee,
+        uint32 minFinalityThreshold
+    ) external returns (uint64 _nonce);
 
     /**
      * @notice Deposits and burns tokens from sender to be minted on destination domain. The mint

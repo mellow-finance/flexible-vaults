@@ -39,7 +39,6 @@ library msvUSDLibrary {
         string subvaultEthName;
         string subvaultArbName;
         string targetChainName;
-        address cctpEthCaller;
         address oftUSDT;
         address fUSDT; // fluid USDT fToken
         address fUSDC; // fluid USDC fToken
@@ -59,8 +58,7 @@ library msvUSDLibrary {
             tokenMessenger: Constants.CCTP_ARBITRUM_TOKEN_MESSENGER,
             messageTransmitter: Constants.CCTP_ARBITRUM_MESSAGE_TRANSMITTER,
             destinationDomain: Constants.CCTP_ETHEREUM_DOMAIN,
-            burnToken: Constants.USDC,
-            caller: $.cctpEthCaller
+            burnToken: Constants.USDC
         });
     }
 
@@ -69,7 +67,7 @@ library msvUSDLibrary {
             curator: $.curator,
             subvault: $.subvaultArb,
             targetSubvault: $.subvaultEth,
-            approveRequired: true,
+            approveRequired: false,
             sourceOFT: $.oftUSDT,
             dstEid: Constants.LAYER_ZERO_ETHEREUM_EID,
             subvaultName: $.subvaultArbName,
@@ -97,7 +95,7 @@ library msvUSDLibrary {
             subvault: $.subvaultArb,
             subvaultName: $.subvaultArbName,
             aaveInstance: Constants.AAVE_CORE,
-            aaveInstanceName: "Core",
+            aaveInstanceName: "Arbitrum",
             collaterals: $.swapModuleAssets,
             loans: new address[](0),
             categoryId: 0
@@ -151,13 +149,7 @@ library msvUSDLibrary {
         iterator = leaves.insert(OFTLibrary.getOFTProofs(bitmaskVerifier, _getOFTParams($)), iterator);
         iterator = leaves.insert(
             ERC4626Library.getERC4626Proofs(
-                bitmaskVerifier, _getERC4626Params($, ArraysLibrary.makeAddressArray(abi.encode($.fUSDT)))
-            ),
-            iterator
-        );
-        iterator = leaves.insert(
-            ERC4626Library.getERC4626Proofs(
-                bitmaskVerifier, _getERC4626Params($, ArraysLibrary.makeAddressArray(abi.encode($.fUSDC)))
+                bitmaskVerifier, _getERC4626Params($, ArraysLibrary.makeAddressArray(abi.encode($.fUSDT, $.fUSDC)))
             ),
             iterator
         );
