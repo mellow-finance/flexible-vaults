@@ -2,6 +2,8 @@
 pragma solidity 0.8.25;
 
 import "../../test/Imports.sol";
+
+import "./Constants.sol";
 import "forge-std/Script.sol";
 
 import "@openzeppelin/contracts/utils/Create2.sol";
@@ -38,8 +40,11 @@ contract Deploy is Script {
         vm.startBroadcast(deployerPk);
 
         address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
-        deployBase(deployer, proxyAdmin);
+        //deployBase(deployer, proxyAdmin);
+        deploySwapModule(deployer, proxyAdmin);
         vm.stopBroadcast();
+
+        // revert("ok");
     }
 
     uint256 saltIterator = 0;
@@ -74,6 +79,33 @@ contract Deploy is Script {
         bytes32 salt = bytes32(salts[saltIterator++]);
         a = Create2.deploy(0, salt, abi.encodePacked(creationCode, constructorParams));
         console2.log("%s: %s;", title, a);
+    }
+
+    function deploySwapModule(address deployer, address proxyAdmin) public {
+        Factory swapModuleFactory =
+            Factory(IFactory(Constants.protocolDeployment().factory).create(0, proxyAdmin, abi.encode(deployer)));
+        console2.log("SwapModule factory: %s", address(swapModuleFactory));
+
+        bytes memory creationCode = type(SwapModule).creationCode;
+        bytes memory constructorParams = abi.encode(
+            DEPLOYMENT_NAME,
+            DEPLOYMENT_VERSION,
+            Constants.COWSWAP_SETTLEMENT,
+            Constants.COWSWAP_VAULT_RELAYER,
+            Constants.WETH
+        );
+
+        (bytes32 salt, address addr) = _findOptSalt(0, creationCode, constructorParams);
+        address implementation = Create2.deploy(0, salt, abi.encodePacked(creationCode, constructorParams));
+
+        require(implementation == addr, "Deployment address mismatch");
+
+        console2.log("SwapModule implementation: %s", implementation);
+
+        swapModuleFactory.proposeImplementation(implementation);
+        swapModuleFactory.acceptProposedImplementation(implementation);
+
+        swapModuleFactory.transferOwnership(proxyAdmin);
     }
 
     function deployBase(address deployer, address proxyAdmin) public returns (Deployment memory $) {
@@ -299,5 +331,32 @@ contract Deploy is Script {
             _deployWithOptimalSalt("RedirectingDepositHook", type(RedirectingDepositHook).creationCode, new bytes(0));
 
         $.oracleHelper = _deployWithOptimalSalt("OracleHelper", type(OracleHelper).creationCode, new bytes(0));
+    }
+
+    function _findOptSalt(uint256 startSalt, bytes memory creationCode, bytes memory constructorParams)
+        internal
+        pure
+        returns (bytes32 salt, address addr)
+    {
+        bytes32 bytecodeHash = keccak256(abi.encodePacked(creationCode, constructorParams));
+        address create2Deployer = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+        salt = bytes32(startSalt);
+
+        uint256 thershold = 1 << (160 - 28);
+        assembly ("memory-safe") {
+            let ptr := mload(0x40)
+            mstore(add(ptr, 0x40), bytecodeHash)
+            mstore(ptr, create2Deployer)
+            let start := add(ptr, 0x0b)
+            mstore8(start, 0xff)
+
+            ptr := add(ptr, 0x20)
+
+            for {} 1 { salt := add(salt, 1) } {
+                mstore(ptr, salt)
+                addr := and(keccak256(start, 85), 0xffffffffffffffffffffffffffffffffffffffff)
+                if lt(addr, thershold) { break }
+            }
+        }
     }
 }

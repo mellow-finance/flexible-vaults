@@ -41,7 +41,7 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
-        _createSubvault0(); // replace with actual vault address to calculate merkle root
+        _createSubvault0();
 
         address arbitrumSubvault0 = vm.addr(uint256(keccak256("arb-vault")));
         _createSubvault0Proofs(arbitrumSubvault0);

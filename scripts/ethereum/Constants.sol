@@ -82,7 +82,6 @@ library Constants {
 
     // https://docs.layerzero.network/v2/deployments/deployed-contracts
     uint32 public constant LAYER_ZERO_PLASMA_EID = 30383;
-    uint32 public constant LAYER_ZERO_ETHEREUM_EID = 30101;
     uint32 public constant LAYER_ZERO_ARBITRUM_EID = 30110;
 
     address public constant ETHEREUM_USDT_OFT_ADAPTER = 0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee;
