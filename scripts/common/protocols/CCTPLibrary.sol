@@ -16,12 +16,6 @@ import "../interfaces/Imports.sol";
 library CCTPLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
 
-    /// 248 bytes - is a regular length of CCTP message without body
-    uint256 constant CCTP_MESSAGE_DEFAULT_LENGTH = 248;
-
-    /// @dev usually CCTP uses two 65 bytes signature
-    uint256 constant CCTP_SIGNATURE_DEFAULT_LENGTH = 130;
-
     struct Info {
         address curator;
         address subvault;
@@ -40,7 +34,7 @@ library CCTPLibrary {
         pure
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
-        leaves = new IVerifier.VerificationPayload[](3);
+        leaves = new IVerifier.VerificationPayload[](2);
         uint256 iterator = 0;
 
         iterator = ArraysLibrary.insert(
@@ -72,27 +66,15 @@ library CCTPLibrary {
                 true,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (0, type(uint32).max, bytes32(type(uint256).max), address(type(uint160).max), 0, type(uint32).max)
+                    (
+                        0,
+                        type(uint32).max,
+                        bytes32(type(uint256).max),
+                        address(type(uint160).max),
+                        type(uint256).max,
+                        type(uint32).max
+                    )
                 )
-            )
-        );
-
-        /// @dev ability to receive any message
-        bytes memory defaultEmptyMessage = new bytes(CCTP_MESSAGE_DEFAULT_LENGTH);
-        bytes memory defaultEmptySignature = new bytes(CCTP_SIGNATURE_DEFAULT_LENGTH);
-
-        leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.messageTransmitter,
-            0,
-            abi.encodeCall(IMessageTransmitter.receiveMessage, (defaultEmptyMessage, defaultEmptySignature)),
-            ProofLibrary.makeBitmask(
-                true,
-                true,
-                true,
-                true,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (defaultEmptyMessage, defaultEmptySignature))
             )
         );
     }
@@ -143,16 +125,6 @@ library CCTPLibrary {
                 innerParameters
             );
         }
-
-        ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters = innerParameters.addAny("message").addAny("signature");
-
-        descriptions[iterator++] = JsonLibrary.toJson(
-            string(abi.encodePacked("MessageTransmitter.receiveMessage(anyBytes, anyBytes)")),
-            ABILibrary.getABI(IMessageTransmitter.receiveMessage.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.messageTransmitter), "0"),
-            innerParameters
-        );
     }
 
     function getCCTPCalls(Info memory $) internal pure returns (Call[][] memory calls) {
@@ -250,91 +222,33 @@ library CCTPLibrary {
                 ),
                 false
             );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 1, 2000)
+                ),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 1000)
+                ),
+                false
+            );
 
             assembly {
                 mstore(tmp, i)
             }
             calls[index++] = tmp;
         }
-        // IMessageTransmitter.receiveMessage
-        {
-            // real tx https://etherscan.io/tx/0x5a770beae8e755ff8e6fbe90e0b701935adc56d88e4ec16185406b17a2502190
-            bytes memory message =
-                hex"00000000000000060000000000000000000b9e9f0000000000000000000000001682ae6375c4e4a97e4b583bc394c861a46d8962000000000000000000000000bd3fa81b58ba92a82136038b25adec7066af3155000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000fd62020cee216dc543e29752058ee9f60f7d9ff900000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000fd62020cee216dc543e29752058ee9f60f7d9ff9";
-            bytes memory signature =
-                hex"0cca607b30e28758e4b25a424e3889d7e79ab43d0bfe08f5e05c7f696092c7666da9b3524d7a5d966863827ef8a6eef32f7406d6bbd19bd9d785b30eea7ab9c21b222ebd743325ddd4fb33894251913a12ccf84f9eeb09389987d93ccee39859095d7f5e09740244d7832b04d2cd2b316f25cd26a1ce9049d230278904db6ec4c51c";
-            bytes memory emptyMessage = new bytes(CCTP_MESSAGE_DEFAULT_LENGTH);
-            bytes memory emptySignature = new bytes(CCTP_SIGNATURE_DEFAULT_LENGTH);
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (emptyMessage, emptySignature)),
-                true
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (message, emptySignature)),
-                true
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (emptyMessage, signature)),
-                true
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (message, signature)),
-                true
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (new bytes(0), signature)),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (message, new bytes(0))),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (new bytes(0), new bytes(0))),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                1 wei,
-                abi.encodeCall(IMessageTransmitter.receiveMessage, (message, signature)),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.messageTransmitter,
-                0,
-                abi.encode(IMessageTransmitter.receiveMessage.selector, message, signature),
-                false
-            );
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
+
         assembly {
             mstore(calls, index)
         }
