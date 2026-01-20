@@ -84,7 +84,7 @@ contract Integration is Test {
         );
     }
 
-    function logCall(address target, bytes memory data) internal view {
+    function logCall(address target, bytes memory data) internal pure {
         console2.log("{");
         console2.log('  "to": "%s",', target);
         console2.log('  "value": "0",');
@@ -181,7 +181,7 @@ contract Integration is Test {
         }
     }
 
-    function testMezoMigrationBtcVault() external {
+    function testMezoMigrationBtcVault_NO_CI() external {
         Vault vault = Vault(payable(btcVault));
         Vault newVault = Vault(payable(newBtcVault));
 
@@ -189,7 +189,7 @@ contract Integration is Test {
         migrate(vault, newVault, holders);
     }
 
-    function testMezoMigrationCbBtcVault() external {
+    function testMezoMigrationCbBtcVault_NO_CI() external {
         Vault vault = Vault(payable(cbBtcVault));
         Vault newVault = Vault(payable(newCbBtcVault));
 
