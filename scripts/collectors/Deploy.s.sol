@@ -33,7 +33,11 @@ import {rsETHOracle} from "./oracles/custom/rsETHOracle.sol";
 import {rstETHOracle} from "./oracles/custom/rstETHOracle.sol";
 import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
 
+import {MUSDOraclePyth} from "./oracles/custom/MUSDOraclePyth.sol";
+
 contract Deploy is Script, Test {
+    address collector = 0x40DA86d29AF2fe980733bD54E364e7507505b41B;
+
     function _deployStrETHCustomCollector() internal {
         strETHCustomOracle customOracle =
             new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
@@ -105,12 +109,14 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
+        deployCustomOracle();
+        //revert("ok");
+        return;
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
 
         Collector newImpl = new Collector();
-        address collector = 0x40DA86d29AF2fe980733bD54E364e7507505b41B;
         address proxyAdmin = 0xe51cE5816901AA302eBD1CC764C2Bb87c72CBa69;
         ProxyAdmin(proxyAdmin).upgradeAndCall(ITransparentUpgradeableProxy(collector), address(newImpl), "");
 
@@ -127,5 +133,29 @@ contract Deploy is Script, Test {
         // );
 
         // revert("ok");
+    }
+
+    function deployCustomOracle() internal {
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        PriceOracle oracle = PriceOracle(address(Collector(collector).oracle()));
+        address oracleOwner = oracle.owner();
+
+        console2.log("MUSD price before update:", oracle.getValue(EthereumConstants.MUSD, 1e18));
+
+        vm.startBroadcast(deployerPk);
+        MUSDOraclePyth customOracle = new MUSDOraclePyth();
+        vm.stopBroadcast();
+
+        console2.log("MUSDOraclePyth:", address(customOracle));
+
+        address[] memory tokens = new address[](1);
+        tokens[0] = EthereumConstants.MUSD;
+        PriceOracle.TokenOracle[] memory tokenOracles = new PriceOracle.TokenOracle[](1);
+        tokenOracles[0] = PriceOracle.TokenOracle({constValue: 0, oracle: address(customOracle)});
+        vm.startPrank(oracleOwner);
+        oracle.setOracles(tokens, tokenOracles);
+        vm.stopPrank();
+
+        console2.log("MUSD price after update:", oracle.getValue(EthereumConstants.MUSD, 1e18));
     }
 }
