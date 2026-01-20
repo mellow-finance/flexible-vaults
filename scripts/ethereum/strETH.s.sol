@@ -36,6 +36,29 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
+    // function _x() internal {
+    //     address subvault = 0xCDfA7EfE670869c6b6be4375654E0b206eF49c89;
+    //     IVerifier verifier = IVerifier(0x9C5D826e1BcdF67f0596725CbB931dC02132D88d);
+    //     address swapModule = 0x2a166aE48F9F1FC27685582a61250011fd5363D8;
+
+    //     bytes32 merkleRoot;
+    //     SubvaultCalls memory calls;
+    //     (merkleRoot, calls) = _createSubvault6Verifier(subvault, swapModule);
+    //     vm.stopBroadcast();
+
+    //     vm.startPrank(lazyVaultAdmin);
+    //     verifier.setMerkleRoot(merkleRoot);
+    //     vm.stopPrank();
+
+    //     _verifyCalls(verifier, calls);
+    // }
+
+    // function _verifyCalls(IVerifier verifier, SubvaultCalls memory calls) internal view {
+    //     for (uint256 i = 0; i < calls.payloads.length; i++) {
+    //         AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+    //     }
+    // }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);

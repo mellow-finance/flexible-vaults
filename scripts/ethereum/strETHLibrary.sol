@@ -860,7 +860,7 @@ library strETHLibrary {
             aaveInstanceName: "Core",
             collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.RSETH)),
             loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
-            categoryId: 34
+            categoryId: 3
         });
     }
 
