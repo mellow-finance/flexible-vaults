@@ -50,14 +50,14 @@ library msvUSDLibrary {
     function _getCCTPParams(Info memory $) internal pure returns (CCTPLibrary.Info memory) {
         return CCTPLibrary.Info({
             curator: $.curator,
-            subvault: $.subvaultEth,
-            subvaultName: $.subvaultEthName,
-            subvaultTarget: $.subvaultArb,
-            subvaultTargetName: $.subvaultArbName,
+            subvault: $.subvaultArb,
+            subvaultName: $.subvaultArbName,
+            subvaultTarget: $.subvaultEth,
+            subvaultTargetName: $.subvaultEthName,
             targetChainName: $.targetChainName,
-            tokenMessenger: Constants.CCTP_ETHEREUM_TOKEN_MESSENGER,
+            tokenMessenger: Constants.CCTP_ARBITRUM_TOKEN_MESSENGER,
             destinationCaller: $.curator,
-            destinationDomain: Constants.CCTP_ARBITRUM_DOMAIN,
+            destinationDomain: Constants.CCTP_ETHEREUM_DOMAIN,
             burnToken: Constants.USDC
         });
     }
@@ -65,13 +65,13 @@ library msvUSDLibrary {
     function _getOFTParams(Info memory $) internal pure returns (OFTLibrary.Info memory) {
         return OFTLibrary.Info({
             curator: $.curator,
-            subvault: $.subvaultEth,
-            targetSubvault: $.subvaultArb,
-            approveRequired: true,
+            subvault: $.subvaultArb,
+            targetSubvault: $.subvaultEth,
+            approveRequired: false,
             sourceOFT: $.oftUSDT,
-            dstEid: Constants.LAYER_ZERO_ARBITRUM_EID,
-            subvaultName: $.subvaultEthName,
-            targetSubvaultName: $.subvaultArbName,
+            dstEid: Constants.LAYER_ZERO_ETHEREUM_EID,
+            subvaultName: $.subvaultArbName,
+            targetSubvaultName: $.subvaultEthName,
             targetChainName: $.targetChainName
         });
     }
@@ -83,8 +83,8 @@ library msvUSDLibrary {
     {
         return ERC4626Library.Info({
             curator: $.curator,
-            subvault: $.subvaultEth,
-            subvaultName: $.subvaultEthName,
+            subvault: $.subvaultArb,
+            subvaultName: $.subvaultArbName,
             assets: assets
         });
     }
@@ -92,10 +92,10 @@ library msvUSDLibrary {
     function _getAaveParams(Info memory $) internal pure returns (AaveLibrary.Info memory) {
         return AaveLibrary.Info({
             curator: $.curator,
-            subvault: $.subvaultEth,
-            subvaultName: $.subvaultEthName,
+            subvault: $.subvaultArb,
+            subvaultName: $.subvaultArbName,
             aaveInstance: Constants.AAVE_CORE,
-            aaveInstanceName: "Core",
+            aaveInstanceName: "Arbitrum",
             collaterals: $.swapModuleAssets,
             loans: new address[](0),
             categoryId: 0
@@ -108,8 +108,8 @@ library msvUSDLibrary {
 
         return SwapModuleLibrary.Info({
             curators: curators,
-            subvault: $.subvaultEth,
-            subvaultName: $.subvaultEthName,
+            subvault: $.subvaultArb,
+            subvaultName: $.subvaultArbName,
             swapModule: $.swapModule,
             assets: $.swapModuleAssets
         });
@@ -118,8 +118,8 @@ library msvUSDLibrary {
     function _getCurveParams(Info memory $) internal pure returns (CurveLibrary.Info memory) {
         return CurveLibrary.Info({
             curator: $.curator,
-            subvault: $.subvaultEth,
-            subvaultName: $.subvaultEthName,
+            subvault: $.subvaultArb,
+            subvaultName: $.subvaultArbName,
             pool: Constants.CURVE_USDC_USDT_POOL,
             gauge: Constants.CURVE_USDC_USDT_GAUGE,
             rewardMinter: Constants.CURVE_USDC_USDT_REWARD_MINTER
@@ -129,8 +129,8 @@ library msvUSDLibrary {
     function _getKyberswapParams(Info memory $) internal pure returns (KyberswapLibrary.Info memory) {
         return KyberswapLibrary.Info({
             curator: $.curator,
-            subvault: $.subvaultEth,
-            subvaultName: $.subvaultEthName,
+            subvault: $.subvaultArb,
+            subvaultName: $.subvaultArbName,
             kyberRouter: $.kyberRouter,
             assets: $.kyberSwapAssets
         });
@@ -167,7 +167,6 @@ library msvUSDLibrary {
     }
 
     function getSubvault0Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
         descriptions = new string[](50);
         uint256 iterator = 0;
 

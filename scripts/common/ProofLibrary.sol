@@ -64,6 +64,15 @@ library ProofLibrary {
             abi.encodePacked(bytes32(uint256(uint160(address(bitmaskVerifier)))), abi.encode(hash_, bitmask));
     }
 
+    function makeVerificationPayloadCompact(address who, address where, bytes4 selector)
+        internal
+        pure
+        returns (IVerifier.VerificationPayload memory payload)
+    {
+        payload.verificationType = IVerifier.VerificationType.MERKLE_COMPACT;
+        payload.verificationData = abi.encodePacked(keccak256(abi.encode(who, where, selector)));
+    }
+
     function generateMerkleProofs(IVerifier.VerificationPayload[] memory leaves)
         internal
         pure

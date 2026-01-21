@@ -34,6 +34,8 @@ import {rstETHOracle} from "./oracles/custom/rstETHOracle.sol";
 import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
 import {BtcEthOracle} from "./oracles/custom/BtcEthOracle.sol";
 
+import {MUSDOraclePyth} from "./oracles/custom/MUSDOraclePyth.sol";
+
 contract Deploy is Script, Test {
     PriceOracle oracle = PriceOracle(0x7c2ff214dab06cF3Ece494c0b2893219043b500f);
 
@@ -62,6 +64,8 @@ contract Deploy is Script, Test {
         console2.log("1 CBBTC = %s USDC", oracle.getValue(EthereumConstants.CBBTC, EthereumConstants.USDC, 1e8));
         console2.logBytes(abi.encodeWithSelector(oracle.setOracles.selector, tokens_, oracles_));
     }
+    address collector = 0x40DA86d29AF2fe980733bD54E364e7507505b41B;
+
     function _deployStrETHCustomCollector() internal {
         strETHCustomOracle customOracle =
             new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
@@ -133,12 +137,53 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
-        _deployMezoBTCCustomOracle();
-
-
-        // _deployStrETHCustomCollector();
-        // _deployStrETHPlasmaCustomCollector();
-
+        deployCustomOracle();
         //revert("ok");
+        return;
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+        vm.startBroadcast(deployerPk);
+
+        Collector newImpl = new Collector();
+        address proxyAdmin = 0xe51cE5816901AA302eBD1CC764C2Bb87c72CBa69;
+        ProxyAdmin(proxyAdmin).upgradeAndCall(ITransparentUpgradeableProxy(collector), address(newImpl), "");
+
+        console2.log("New collector impl:", address(newImpl));
+
+        // Collector(collector).collect(
+        //     deployer,
+        //     Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)),
+        //     Collector.Config({
+        //         baseAssetFallback: address(0),
+        //         oracleUpdateInterval: 1 hours,
+        //         redeemHandlingInterval: 1 hours
+        //     })
+        // );
+
+        // revert("ok");
+    }
+
+    function deployCustomOracle() internal {
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        PriceOracle oracle = PriceOracle(address(Collector(collector).oracle()));
+        address oracleOwner = oracle.owner();
+
+        console2.log("MUSD price before update:", oracle.getValue(EthereumConstants.MUSD, 1e18));
+
+        vm.startBroadcast(deployerPk);
+        MUSDOraclePyth customOracle = new MUSDOraclePyth();
+        vm.stopBroadcast();
+
+        console2.log("MUSDOraclePyth:", address(customOracle));
+
+        address[] memory tokens = new address[](1);
+        tokens[0] = EthereumConstants.MUSD;
+        PriceOracle.TokenOracle[] memory tokenOracles = new PriceOracle.TokenOracle[](1);
+        tokenOracles[0] = PriceOracle.TokenOracle({constValue: 0, oracle: address(customOracle)});
+        vm.startPrank(oracleOwner);
+        oracle.setOracles(tokens, tokenOracles);
+        vm.stopPrank();
+
+        console2.log("MUSD price after update:", oracle.getValue(EthereumConstants.MUSD, 1e18));
     }
 }

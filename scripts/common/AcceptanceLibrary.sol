@@ -666,7 +666,7 @@ library AcceptanceLibrary {
             require(
                 verifier.getVerificationResult(call.who, call.where, call.value, call.data, payload)
                     == call.verificationResult,
-                "Verifier: invalid verification result"
+                string(abi.encodePacked("Verifier: invalid verification result at call #", Strings.toString(k)))
             );
         }
     }
