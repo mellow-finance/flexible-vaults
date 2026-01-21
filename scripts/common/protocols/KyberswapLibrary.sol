@@ -39,7 +39,6 @@ library KyberswapLibrary {
         pure
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
-        uint256 length = $.assets.length;
         uint256 iterator;
         leaves = new IVerifier.VerificationPayload[](50);
 
@@ -55,7 +54,6 @@ library KyberswapLibrary {
     }
 
     function getKyberswapDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        uint256 length = $.assets.length;
         uint256 iterator;
         descriptions = new string[](50);
 

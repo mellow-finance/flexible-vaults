@@ -22,15 +22,15 @@ import "../common/ArraysLibrary.sol";
 
 contract Deploy is Script, Test {
     // Actors
-    address public proxyAdmin = 0x54977739CF18B316f47B1e10E3068Bb3F04e08B6;
-    address public lazyVaultAdmin = 0x0571A6ca8e1AD9822FA69e9cb7854110FD77d24d;
-    address public activeVaultAdmin = 0x0f01301a869B7C15a782bd2e60beB08C8709CC08;
-    address public oracleUpdater = 0x96ff6055DFdcd0d370D77b6dCd6a465438A613D5;
-    address public curator = 0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068;
+    address public proxyAdmin = 0x54977739CF18B316f47B1e10E3068Bb3F04e08B6; // +
+    address public lazyVaultAdmin = 0x0571A6ca8e1AD9822FA69e9cb7854110FD77d24d; // +
+    address public activeVaultAdmin = 0x0f01301a869B7C15a782bd2e60beB08C8709CC08; // +
+    address public oracleUpdater = 0x96ff6055DFdcd0d370D77b6dCd6a465438A613D5; // +
+    address public curator = 0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068; // +
 
-    address public pauser = 0x2EE0AB05EB659E0681DC5f2EabFf1F4D284B3Ef7;
+    address public pauser = 0x2EE0AB05EB659E0681DC5f2EabFf1F4D284B3Ef7; // +
 
-    address ethereumSubvault0 = 0x9757bbb42B3fAAc201d5Ba2374b9Ac62dc77a584;
+    address subvault0Ethereum = 0x9757bbb42B3fAAc201d5Ba2374b9Ac62dc77a584;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -183,13 +183,9 @@ contract Deploy is Script, Test {
     }
 
     function _createSubvault0(Vault vault) internal returns (address verifier, SubvaultCalls memory calls) {
-        IRiskManager riskManager = vault.riskManager();
-
         verifier = vault.verifierFactory().create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-
-        address subvault0 = vault.createSubvault(0, proxyAdmin, verifier);
-
-        (, calls) = _createSubvault0Proofs(vault, ethereumSubvault0);
+        vault.createSubvault(0, proxyAdmin, verifier);
+        (, calls) = _createSubvault0Proofs(vault);
     }
 
     function _deploySwapModule(address subvault) internal returns (address swapModule, address[] memory assets) {
@@ -214,10 +210,7 @@ contract Deploy is Script, Test {
         return (swapModule, ArraysLibrary.makeAddressArray(abi.encode(tokens)));
     }
 
-    function _createSubvault0Proofs(Vault vault, address subvault0Ethereum)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
+    function _createSubvault0Proofs(Vault vault) internal returns (bytes32 merkleRoot, SubvaultCalls memory calls) {
         address payable subvault0Arbitrum = payable(vault.subvaultAt(0));
         (address swapModule, address[] memory swapModuleAssets) = _deploySwapModule(subvault0Arbitrum);
 
@@ -246,13 +239,5 @@ contract Deploy is Script, Test {
         ProofLibrary.storeProofs("arbitrum:msvUSD:subvault0", merkleRoot, leaves, descriptions);
 
         calls = msvUSDLibrary.getSubvault0Calls(info, leaves);
-
-        //_runChecks(IVerifier(Subvault(subvault0Arbitrum).verifier()), calls);
-    }
-
-    function _runChecks(IVerifier verifier, SubvaultCalls memory calls) internal view {
-        for (uint256 i = 0; i < calls.payloads.length; i++) {
-            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
-        }
     }
 }

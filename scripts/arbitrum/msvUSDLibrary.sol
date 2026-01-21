@@ -167,7 +167,6 @@ library msvUSDLibrary {
     }
 
     function getSubvault0Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
         descriptions = new string[](50);
         uint256 iterator = 0;
 
