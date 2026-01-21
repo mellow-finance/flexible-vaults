@@ -9,7 +9,6 @@ import {ProofLibrary} from "../ProofLibrary.sol";
 import {ERC20Library} from "./ERC20Library.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-import {IMessageTransmitter} from "../interfaces/IMessageTransmitter.sol";
 import {ITokenMessenger} from "../interfaces/ITokenMessenger.sol";
 import "../interfaces/Imports.sol";
 
@@ -24,7 +23,7 @@ library CCTPLibrary {
         string subvaultTargetName;
         string targetChainName;
         address tokenMessenger;
-        address messageTransmitter;
+        address destinationCaller;
         uint32 destinationDomain;
         address burnToken;
     }
@@ -34,7 +33,7 @@ library CCTPLibrary {
         pure
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
-        leaves = new IVerifier.VerificationPayload[](2);
+        leaves = new IVerifier.VerificationPayload[](20);
         uint256 iterator = 0;
 
         iterator = ArraysLibrary.insert(
@@ -57,7 +56,15 @@ library CCTPLibrary {
             0,
             abi.encodeCall(
                 ITokenMessenger.depositForBurn,
-                (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                (
+                    0,
+                    $.destinationDomain,
+                    addressToBytes32($.subvaultTarget),
+                    $.burnToken,
+                    addressToBytes32($.destinationCaller),
+                    0,
+                    2000
+                )
             ),
             ProofLibrary.makeBitmask(
                 true,
@@ -67,20 +74,24 @@ library CCTPLibrary {
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
                     (
-                        0,
-                        type(uint32).max,
-                        bytes32(type(uint256).max),
-                        address(type(uint160).max),
-                        type(uint256).max,
-                        type(uint32).max
+                        0, // amount
+                        type(uint32).max, // destinationDomain
+                        bytes32(type(uint256).max), // mintRecipient
+                        address(type(uint160).max), // burnToken
+                        bytes32(type(uint256).max), // caller
+                        type(uint256).max, // maxFee
+                        type(uint32).max // minFinalityThreshold
                     )
                 )
             )
         );
+        assembly {
+            mstore(leaves, iterator)
+        }
     }
 
     function getCCTPDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        descriptions = new string[](3);
+        descriptions = new string[](2);
         uint256 iterator = 0;
 
         iterator = ArraysLibrary.insert(
@@ -94,37 +105,38 @@ library CCTPLibrary {
             ),
             iterator
         );
-        {
-            ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters =
-                innerParameters.addAny("amount").add("destinationDomain", Strings.toString($.destinationDomain));
-            innerParameters = innerParameters.add("subvaultTarget", Strings.toHexString($.subvaultTarget));
-            innerParameters = innerParameters.add("burnToken", Strings.toHexString($.burnToken)).add("maxFee", "0").add(
-                "minFinalityThreshold", "2000"
-            );
+        ParameterLibrary.Parameter[] memory innerParameters;
+        innerParameters =
+            innerParameters.addAny("amount").add("destinationDomain", Strings.toString($.destinationDomain));
+        innerParameters = innerParameters.add("subvaultTarget", Strings.toHexString($.subvaultTarget));
+        innerParameters = innerParameters.add("burnToken", Strings.toHexString($.burnToken));
+        innerParameters = innerParameters.add("destinationCaller", Strings.toHexString($.destinationCaller));
+        innerParameters = innerParameters.add("maxFee", "0");
+        innerParameters = innerParameters.add("minFinalityThreshold", "2000");
 
-            descriptions[iterator++] = JsonLibrary.toJson(
-                string(
-                    abi.encodePacked(
-                        "TokenMessenger.depositForBurn(anyInt, ",
-                        "targetChain=",
-                        $.targetChainName,
-                        ", ",
-                        "targetSubvault=",
-                        $.subvaultTargetName,
-                        ", ",
-                        "burnToken=",
-                        IERC20Metadata($.burnToken).symbol(),
-                        ", ",
-                        "maxFee=0, minFinalityThreshold=2000",
-                        ")"
-                    )
-                ),
-                ABILibrary.getABI(ITokenMessenger.depositForBurn.selector),
-                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.tokenMessenger), "0"),
-                innerParameters
-            );
-        }
+        descriptions[iterator++] = JsonLibrary.toJson(
+            string(
+                abi.encodePacked(
+                    "TokenMessenger.depositForBurn(anyInt, ",
+                    "destinationDomain=",
+                    $.targetChainName,
+                    ", ",
+                    "mintRecipient=",
+                    $.subvaultTargetName,
+                    ", ",
+                    "burnToken=",
+                    IERC20Metadata($.burnToken).symbol(),
+                    ", ",
+                    "destinationCaller=",
+                    Strings.toHexString($.destinationCaller),
+                    ", maxFee=0, minFinalityThreshold=2000",
+                    ")"
+                )
+            ),
+            ABILibrary.getABI(ITokenMessenger.depositForBurn.selector),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.tokenMessenger), "0"),
+            innerParameters
+        );
     }
 
     function getCCTPCalls(Info memory $) internal pure returns (Call[][] memory calls) {
@@ -153,7 +165,15 @@ library CCTPLibrary {
                 0,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                    (
+                        0,
+                        $.destinationDomain,
+                        addressToBytes32($.subvaultTarget),
+                        $.burnToken,
+                        addressToBytes32($.destinationCaller),
+                        0,
+                        2000
+                    )
                 ),
                 true
             );
@@ -163,7 +183,15 @@ library CCTPLibrary {
                 0,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (1e6, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                    (
+                        1e6,
+                        $.destinationDomain,
+                        addressToBytes32($.subvaultTarget),
+                        $.burnToken,
+                        addressToBytes32($.destinationCaller),
+                        0,
+                        2000
+                    )
                 ),
                 true
             );
@@ -173,7 +201,15 @@ library CCTPLibrary {
                 1 wei,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                    (
+                        0,
+                        $.destinationDomain,
+                        addressToBytes32($.subvaultTarget),
+                        $.burnToken,
+                        addressToBytes32($.destinationCaller),
+                        0,
+                        2000
+                    )
                 ),
                 false
             );
@@ -183,7 +219,15 @@ library CCTPLibrary {
                 0,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (1e6, $.destinationDomain + 1, addressToBytes32($.subvaultTarget), $.burnToken, 0, 2000)
+                    (
+                        1e6,
+                        $.destinationDomain + 1,
+                        addressToBytes32($.subvaultTarget),
+                        $.burnToken,
+                        addressToBytes32($.destinationCaller),
+                        0,
+                        2000
+                    )
                 ),
                 false
             );
@@ -193,7 +237,15 @@ library CCTPLibrary {
                 0,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (1e6, $.destinationDomain, addressToBytes32(address(0xdead)), $.burnToken, 0, 2000)
+                    (
+                        1e6,
+                        $.destinationDomain,
+                        addressToBytes32(address(0xdead)),
+                        $.burnToken,
+                        addressToBytes32($.destinationCaller),
+                        0,
+                        2000
+                    )
                 ),
                 false // bad call
             );
@@ -203,7 +255,15 @@ library CCTPLibrary {
                 0,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (1e6, $.destinationDomain, addressToBytes32($.subvaultTarget), address(0xdead), 0, 2000)
+                    (
+                        1e6,
+                        $.destinationDomain,
+                        addressToBytes32($.subvaultTarget),
+                        address(0xdead),
+                        addressToBytes32($.destinationCaller),
+                        0,
+                        2000
+                    )
                 ),
                 false
             );
@@ -217,6 +277,7 @@ library CCTPLibrary {
                     $.destinationDomain,
                     addressToBytes32($.subvaultTarget),
                     $.burnToken,
+                    address(0),
                     0,
                     2000
                 ),
@@ -228,7 +289,15 @@ library CCTPLibrary {
                 0,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 1, 2000)
+                    (
+                        0,
+                        $.destinationDomain,
+                        addressToBytes32($.subvaultTarget),
+                        $.burnToken,
+                        addressToBytes32($.destinationCaller),
+                        1,
+                        2000
+                    )
                 ),
                 false
             );
@@ -238,7 +307,33 @@ library CCTPLibrary {
                 0,
                 abi.encodeCall(
                     ITokenMessenger.depositForBurn,
-                    (0, $.destinationDomain, addressToBytes32($.subvaultTarget), $.burnToken, 0, 1000)
+                    (
+                        0,
+                        $.destinationDomain,
+                        addressToBytes32($.subvaultTarget),
+                        $.burnToken,
+                        addressToBytes32($.destinationCaller),
+                        0,
+                        1000
+                    )
+                ),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator,
+                $.tokenMessenger,
+                0,
+                abi.encodeCall(
+                    ITokenMessenger.depositForBurn,
+                    (
+                        0,
+                        $.destinationDomain,
+                        addressToBytes32($.subvaultTarget),
+                        $.burnToken,
+                        bytes32(uint256(0xdead)),
+                        0,
+                        2000
+                    )
                 ),
                 false
             );

@@ -56,7 +56,7 @@ library msvUSDLibrary {
             subvaultTargetName: $.subvaultEthName,
             targetChainName: $.targetChainName,
             tokenMessenger: Constants.CCTP_ARBITRUM_TOKEN_MESSENGER,
-            messageTransmitter: Constants.CCTP_ARBITRUM_MESSAGE_TRANSMITTER,
+            destinationCaller: $.curator,
             destinationDomain: Constants.CCTP_ETHEREUM_DOMAIN,
             burnToken: Constants.USDC
         });

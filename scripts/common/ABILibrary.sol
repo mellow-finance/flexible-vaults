@@ -398,19 +398,12 @@ library ABILibrary {
     }
 
     function getCCTPInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
-        selectors = new bytes4[](3);
-        abis = new string[](3);
+        selectors = new bytes4[](1);
+        abis = new string[](1);
 
         selectors[0] = ITokenMessenger.depositForBurn.selector;
         abis[0] =
-            '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"destination","type":"address"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"}],"name":"depositForBurn","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"}';
-
-        selectors[1] = ITokenMessenger.depositForBurnWithCaller.selector;
-        abis[1] =
-            '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"destination","type":"address"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"},{"internalType":"address","name":"caller","type":"address"}],"name":"depositForBurnWithCaller","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"}';
-        selectors[2] = IMessageTransmitter.receiveMessage.selector;
-        abis[2] =
-            '{"inputs":[{"internalType":"bytes","name":"message","type":"bytes"},{"internalType":"bytes","name":"signature","type":"bytes"}],"name":"receiveMessage","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+            '{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint32","name":"destinationDomain","type":"uint32"},{"internalType":"bytes32","name":"mintRecipient","type":"bytes32"},{"internalType":"address","name":"burnToken","type":"address"},{"internalType":"bytes32","name":"destinationCaller","type":"bytes32"},{"internalType":"uint256","name":"maxFee","type":"uint256"},{"internalType":"uint32","name":"minFinalityThreshold","type":"uint32"}],"name":"depositForBurn","outputs":[],"stateMutability":"payable","type":"function"}';
     }
 
     function getKyberswapInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
