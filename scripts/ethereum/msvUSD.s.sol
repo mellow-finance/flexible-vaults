@@ -32,6 +32,8 @@ contract Deploy is Script, Test {
 
     Vault public vault = Vault(payable(0x7207595E4c18a9A829B9dc868F11F3ADd8FCF626));
 
+    address arbitrumSubvault0 = 0x9214Fb3563BC6FE429c608071CBc5278b0e43639;
+
     function _x() internal {
         OracleSubmitter submitter = new OracleSubmitter(
             lazyVaultAdmin, oracleUpdater, activeVaultAdmin, 0xccB10707cc3105178CBef8ee5b7DC84D5d1b277F
@@ -41,10 +43,7 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
-        //_createSubvault0();
-
-        address arbitrumSubvault0 = vm.addr(uint256(keccak256("arb-vault")));
-        _createSubvault0Proofs(arbitrumSubvault0);
+        _createSubvault0Proofs();
         revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
@@ -292,7 +291,7 @@ contract Deploy is Script, Test {
         return (swapModule, ArraysLibrary.makeAddressArray(abi.encode(tokens)));
     }
 
-    function _createSubvault0Proofs(address subvault0Arbitrum)
+    function _createSubvault0Proofs()
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
@@ -302,7 +301,7 @@ contract Deploy is Script, Test {
         msvUSDLibrary.Info memory info = msvUSDLibrary.Info({
             curator: curator,
             subvaultEth: subvault0Mainnet,
-            subvaultArb: subvault0Arbitrum,
+            subvaultArb: arbitrumSubvault0,
             swapModule: swapModule,
             subvaultEthName: "subvault0:ethereum",
             subvaultArbName: "subvault0:arbitrum",
@@ -318,16 +317,21 @@ contract Deploy is Script, Test {
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = msvUSDLibrary.getSubvault0Proofs(info);
 
+        IVerifier verifier = Subvault(subvault0Mainnet).verifier();
+
         vm.startPrank(lazyVaultAdmin);
-        Subvault(subvault0Mainnet).verifier().setMerkleRoot(merkleRoot);
+        verifier.setMerkleRoot(merkleRoot);
         vm.stopPrank();
+
+        console2.log("Subvault0 Merkle Root at verifier %s:", address(verifier));
+        console2.logBytes32(merkleRoot);
 
         string[] memory descriptions = msvUSDLibrary.getSubvault0Descriptions(info);
         ProofLibrary.storeProofs("ethereum:msvUSD:subvault0", merkleRoot, leaves, descriptions);
 
         calls = msvUSDLibrary.getSubvault0Calls(info, leaves);
 
-        _runChecks(IVerifier(Subvault(subvault0Mainnet).verifier()), calls);
+        _runChecks(verifier, calls);
     }
 
     function _runChecks(IVerifier verifier, SubvaultCalls memory calls) internal view {
