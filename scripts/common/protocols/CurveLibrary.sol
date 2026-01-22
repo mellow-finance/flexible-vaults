@@ -7,6 +7,7 @@ import {ParameterLibrary} from "../ParameterLibrary.sol";
 import {ProofLibrary} from "../ProofLibrary.sol";
 import {ICurveGauge} from "../interfaces/ICurveGauge.sol";
 import {ICurvePool} from "../interfaces/ICurvePool.sol";
+import {ICurveRewardMinter} from "../interfaces/ICurveRewardMinter.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -21,6 +22,7 @@ library CurveLibrary {
         address curator;
         address pool;
         address gauge;
+        address rewardMinter;
     }
 
     function getCurveProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
@@ -30,8 +32,7 @@ library CurveLibrary {
     {
         uint256 n = ICurvePool($.pool).N_COINS();
 
-        uint256 length = n + 2 + ($.gauge == address(0) ? 0 : 4);
-        leaves = new IVerifier.VerificationPayload[](length);
+        leaves = new IVerifier.VerificationPayload[](50);
         uint256 index = 0;
         for (uint256 i = 0; i < n; i++) {
             address asset = ICurvePool($.pool).coins(i);
@@ -75,61 +76,74 @@ library CurveLibrary {
             );
         }
 
-        if ($.gauge == address(0)) {
-            return leaves;
+        if ($.gauge != address(0)) {
+            leaves[index++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.pool,
+                0,
+                abi.encodeCall(IERC20.approve, ($.gauge, 0)),
+                ProofLibrary.makeBitmask(
+                    true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
+                )
+            );
+
+            leaves[index++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.gauge,
+                0,
+                abi.encodeCall(ICurveGauge.deposit, (0)),
+                ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(ICurveGauge.deposit, (0)))
+            );
+
+            leaves[index++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.gauge,
+                0,
+                abi.encodeCall(ICurveGauge.withdraw, (0)),
+                ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(ICurveGauge.withdraw, (0)))
+            );
+
+            leaves[index++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.gauge,
+                0,
+                abi.encodeCall(ICurveGauge.claim_rewards, ()),
+                ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(ICurveGauge.claim_rewards, ()))
+            );
         }
 
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.pool,
-            0,
-            abi.encodeCall(IERC20.approve, ($.gauge, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
-        );
-
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.gauge,
-            0,
-            abi.encodeCall(ICurveGauge.deposit, (0)),
-            ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(ICurveGauge.deposit, (0)))
-        );
-
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.gauge,
-            0,
-            abi.encodeCall(ICurveGauge.withdraw, (0)),
-            ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(ICurveGauge.withdraw, (0)))
-        );
-
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            $.gauge,
-            0,
-            abi.encodeCall(ICurveGauge.claim_rewards, ()),
-            ProofLibrary.makeBitmask(true, true, true, true, abi.encodeCall(ICurveGauge.claim_rewards, ()))
-        );
+        if ($.rewardMinter != address(0)) {
+            leaves[index++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.rewardMinter,
+                0,
+                abi.encodeCall(ICurveRewardMinter.mint, ($.gauge)),
+                ProofLibrary.makeBitmask(
+                    true, true, true, true, abi.encodeCall(ICurveRewardMinter.mint, (address(type(uint160).max)))
+                )
+            );
+        }
+        assembly {
+            mstore(leaves, index)
+        }
     }
 
     function getCurveDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
         uint256 n = ICurvePool($.pool).N_COINS();
 
-        uint256 length = n + 2 + ($.gauge == address(0) ? 0 : 4);
-        descriptions = new string[](length);
+        descriptions = new string[](50);
         uint256 index = 0;
 
         ParameterLibrary.Parameter[] memory innerParameters;
         for (uint256 i = 0; i < n; i++) {
             address asset = ICurvePool($.pool).coins(i);
             string memory assetSymbol = IERC20Metadata(asset).symbol();
-            innerParameters = ParameterLibrary.build("to", Strings.toHexString(asset)).addAny("amount");
+            innerParameters = ParameterLibrary.build("to", Strings.toHexString($.pool)).addAny("amount");
             descriptions[index++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
@@ -158,53 +172,62 @@ library CurveLibrary {
             innerParameters
         );
 
-        if ($.gauge == address(0)) {
-            return descriptions;
+        if ($.gauge != address(0)) {
+            innerParameters = ParameterLibrary.build("to", Strings.toHexString($.gauge)).addAny("amount");
+            descriptions[index++] = JsonLibrary.toJson(
+                string(
+                    abi.encodePacked(
+                        "IERC20(", ICurvePool($.pool).name(), ").approve(", ICurveGauge($.gauge).name(), ", any)"
+                    )
+                ),
+                ABILibrary.getABI(IERC20.approve.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.pool), "0"),
+                innerParameters
+            );
+
+            innerParameters = ParameterLibrary.build("_value", "any");
+            descriptions[index++] = JsonLibrary.toJson(
+                string(abi.encodePacked("ICurveGauge(", ICurvePool($.gauge).name(), ").deposit(any)")),
+                ABILibrary.getABI(ICurveGauge.deposit.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.gauge), "0"),
+                innerParameters
+            );
+
+            innerParameters = ParameterLibrary.build("_value", "any");
+            descriptions[index++] = JsonLibrary.toJson(
+                string(abi.encodePacked("ICurveGauge(", ICurvePool($.gauge).name(), ").withdraw(any)")),
+                ABILibrary.getABI(ICurveGauge.withdraw.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.gauge), "0"),
+                innerParameters
+            );
+
+            innerParameters = new ParameterLibrary.Parameter[](0);
+            descriptions[index++] = JsonLibrary.toJson(
+                string(abi.encodePacked("ICurveGauge(", ICurvePool($.gauge).name(), ").claim_rewards()")),
+                ABILibrary.getABI(ICurveGauge.claim_rewards.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.gauge), "0"),
+                innerParameters
+            );
         }
 
-        innerParameters = ParameterLibrary.build("to", Strings.toHexString($.gauge)).addAny("amount");
-        descriptions[index++] = JsonLibrary.toJson(
-            string(
-                abi.encodePacked(
-                    "IERC20(", ICurvePool($.pool).name(), ").approve(", ICurveGauge($.gauge).name(), ", any)"
-                )
-            ),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.pool), "0"),
-            innerParameters
-        );
-
-        innerParameters = ParameterLibrary.build("_value", "any");
-        descriptions[index++] = JsonLibrary.toJson(
-            string(abi.encodePacked("ICurveGauge(", ICurvePool($.gauge).name(), ").deposit(any)")),
-            ABILibrary.getABI(ICurveGauge.deposit.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.gauge), "0"),
-            innerParameters
-        );
-
-        innerParameters = ParameterLibrary.build("_value", "any");
-        descriptions[index++] = JsonLibrary.toJson(
-            string(abi.encodePacked("ICurveGauge(", ICurvePool($.gauge).name(), ").withdraw(any)")),
-            ABILibrary.getABI(ICurveGauge.withdraw.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.gauge), "0"),
-            innerParameters
-        );
-
-        innerParameters = new ParameterLibrary.Parameter[](0);
-        descriptions[index++] = JsonLibrary.toJson(
-            string(abi.encodePacked("ICurveGauge(", ICurvePool($.gauge).name(), ").claim_rewards()")),
-            ABILibrary.getABI(ICurveGauge.claim_rewards.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.gauge), "0"),
-            innerParameters
-        );
+        if ($.rewardMinter != address(0)) {
+            innerParameters = ParameterLibrary.build("gauge", Strings.toHexString($.gauge));
+            descriptions[index++] = JsonLibrary.toJson(
+                string(abi.encodePacked("ICurveRewardMinter.mint(gauge: ", ICurvePool($.gauge).name(), ")")),
+                ABILibrary.getABI(ICurveRewardMinter.mint.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.rewardMinter), "0"),
+                innerParameters
+            );
+        }
+        assembly {
+            mstore(descriptions, index)
+        }
     }
 
     function getCurveCalls(Info memory $) internal view returns (Call[][] memory calls) {
         uint256 n = ICurvePool($.pool).N_COINS();
 
-        uint256 length = n + 2 + ($.gauge == address(0) ? 0 : 4);
-
-        calls = new Call[][](length);
+        calls = new Call[][](50);
 
         uint256 index = 0;
 
@@ -285,70 +308,96 @@ library CurveLibrary {
             calls[index++] = tmp;
         }
 
-        if ($.gauge == address(0)) {
-            return calls;
+        if ($.gauge != address(0)) {
+            {
+                Call[] memory tmp = new Call[](16);
+                uint256 i = 0;
+                tmp[i++] = Call($.curator, $.pool, 0, abi.encodeCall(IERC20.approve, ($.gauge, 0)), true);
+                tmp[i++] = Call($.curator, $.pool, 0, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), true);
+                tmp[i++] = Call(address(0xdead), $.pool, 0, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), false);
+                tmp[i++] =
+                    Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), false);
+                tmp[i++] = Call($.curator, $.pool, 1 wei, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), false);
+                tmp[i++] = Call($.curator, $.pool, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false);
+                tmp[i++] = Call($.curator, $.pool, 0, abi.encode(IERC20.approve.selector, $.gauge, 1 ether), false);
+
+                assembly {
+                    mstore(tmp, i)
+                }
+                calls[index++] = tmp;
+            }
+
+            {
+                Call[] memory tmp = new Call[](16);
+                uint256 i = 0;
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.deposit, (0)), true);
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.deposit, (1 ether)), true);
+                tmp[i++] = Call(address(0xdead), $.gauge, 0, abi.encodeCall(ICurveGauge.deposit, (1 ether)), false);
+                tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(ICurveGauge.deposit, (1 ether)), false);
+                tmp[i++] = Call($.curator, $.gauge, 1 wei, abi.encodeCall(ICurveGauge.deposit, (1 ether)), false);
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encode(ICurveGauge.deposit.selector, 1 ether), false);
+                assembly {
+                    mstore(tmp, i)
+                }
+                calls[index++] = tmp;
+            }
+
+            {
+                Call[] memory tmp = new Call[](16);
+                uint256 i = 0;
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.withdraw, (0)), true);
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), true);
+                tmp[i++] = Call(address(0xdead), $.gauge, 0, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), false);
+                tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), false);
+                tmp[i++] = Call($.curator, $.gauge, 1 wei, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), false);
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encode(ICurveGauge.withdraw.selector, 1 ether), false);
+                assembly {
+                    mstore(tmp, i)
+                }
+                calls[index++] = tmp;
+            }
+
+            {
+                Call[] memory tmp = new Call[](16);
+                uint256 i = 0;
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.claim_rewards, ()), true);
+                tmp[i++] = Call(address(0xdead), $.gauge, 0, abi.encodeCall(ICurveGauge.claim_rewards, ()), false);
+                tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(ICurveGauge.claim_rewards, ()), false);
+                tmp[i++] = Call($.curator, $.gauge, 1 wei, abi.encodeCall(ICurveGauge.claim_rewards, ()), false);
+                tmp[i++] = Call($.curator, $.gauge, 0, abi.encode(ICurveGauge.claim_rewards.selector, 1 wei), false);
+
+                assembly {
+                    mstore(tmp, i)
+                }
+                calls[index++] = tmp;
+            }
+        }
+        if ($.rewardMinter != address(0)) {
+            {
+                Call[] memory tmp = new Call[](16);
+                uint256 i = 0;
+                // tmp[i++] = Call($.curator, $.rewardMinter, 0, abi.encodeCall(ICurveRewardMinter.mint, ($.gauge)), true);
+                tmp[i++] = Call(
+                    $.curator, $.rewardMinter, 0, abi.encodeCall(ICurveRewardMinter.mint, (address(0xdead))), false
+                );
+                tmp[i++] =
+                    Call(address(0xdead), $.rewardMinter, 0, abi.encodeCall(ICurveRewardMinter.mint, ($.gauge)), false);
+                tmp[i++] =
+                    Call($.curator, address(0xdead), 0, abi.encodeCall(ICurveRewardMinter.mint, ($.gauge)), false);
+                tmp[i++] =
+                    Call($.curator, $.rewardMinter, 1 wei, abi.encodeCall(ICurveRewardMinter.mint, ($.gauge)), false);
+                tmp[i++] =
+                    Call($.curator, $.rewardMinter, 0, abi.encode(ICurveRewardMinter.mint.selector, $.gauge), false);
+
+                assembly {
+                    mstore(tmp, i)
+                }
+                calls[index++] = tmp;
+            }
         }
 
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.pool, 0, abi.encodeCall(IERC20.approve, ($.gauge, 0)), true);
-            tmp[i++] = Call($.curator, $.pool, 0, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), true);
-            tmp[i++] = Call(address(0xdead), $.pool, 0, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), false);
-            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.pool, 1 wei, abi.encodeCall(IERC20.approve, ($.gauge, 1 ether)), false);
-            tmp[i++] = Call($.curator, $.pool, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 1 ether)), false);
-            tmp[i++] = Call($.curator, $.pool, 0, abi.encode(IERC20.approve.selector, $.gauge, 1 ether), false);
-
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
-
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.deposit, (0)), true);
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.deposit, (1 ether)), true);
-            tmp[i++] = Call(address(0xdead), $.gauge, 0, abi.encodeCall(ICurveGauge.deposit, (1 ether)), false);
-            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(ICurveGauge.deposit, (1 ether)), false);
-            tmp[i++] = Call($.curator, $.gauge, 1 wei, abi.encodeCall(ICurveGauge.deposit, (1 ether)), false);
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encode(ICurveGauge.deposit.selector, 1 ether), false);
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
-
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.withdraw, (0)), true);
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), true);
-            tmp[i++] = Call(address(0xdead), $.gauge, 0, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), false);
-            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), false);
-            tmp[i++] = Call($.curator, $.gauge, 1 wei, abi.encodeCall(ICurveGauge.withdraw, (1 ether)), false);
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encode(ICurveGauge.withdraw.selector, 1 ether), false);
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
-
-        {
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encodeCall(ICurveGauge.claim_rewards, ()), true);
-            tmp[i++] = Call(address(0xdead), $.gauge, 0, abi.encodeCall(ICurveGauge.claim_rewards, ()), false);
-            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(ICurveGauge.claim_rewards, ()), false);
-            tmp[i++] = Call($.curator, $.gauge, 1 wei, abi.encodeCall(ICurveGauge.claim_rewards, ()), false);
-            tmp[i++] = Call($.curator, $.gauge, 0, abi.encode(ICurveGauge.claim_rewards.selector, 1 wei), false);
-
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
+        assembly {
+            mstore(calls, index)
         }
     }
 }

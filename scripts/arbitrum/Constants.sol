@@ -15,9 +15,38 @@ library Constants {
     address public constant WETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
     address public constant WSTETH = 0x5979D7b546E38E414F7E9822514be443A4800529;
     address public constant WSTETH_ETHEREUM = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
+    address public constant USDC = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
+    address public constant USDT = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
+    address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
+    address public constant CRV = 0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978;
+    address public constant FLUID = 0x61E030A56D33e8260FdD81f03B162A79Fe3449Cd;
+
+    address public constant CCTP_ARBITRUM_TOKEN_MESSENGER = 0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d; // Arbitrum TokenMessenger М2 deposit for burn
+    address public constant CCTP_ARBITRUM_MESSAGE_TRANSMITTER = 0xC30362313FBBA5cf9163F0bb16a0e01f01A896ca; // Arbitrum MessageTransmitter receive message
+    // https://developers.circle.com/cctp/concepts/supported-chains-and-domains
+    uint32 public constant CCTP_ETHEREUM_DOMAIN = 0; // Ethereum EID
+
+    // https://docs.layerzero.network/v2/deployments/deployed-contracts
+    uint32 public constant LAYER_ZERO_ETHEREUM_EID = 30101;
 
     address public constant STRETH_ETHEREUM_SUBVAULT_0 = 0x90c983DC732e65DB6177638f0125914787b8Cb78;
     address public constant L2_GATEWAY_ROUTER = 0x5288c571Fd7aD117beA99bF60FE0846C4E84F933;
+
+    address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
+    address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
+
+    address public constant KYBERSWAP_ROUTER = 0x6131B5fae19EA4f9D964eAc0408E4408b66337b5;
+
+    address public constant AAVE_CORE = 0x794a61358D6845594F94dc1DB02A252b5b4814aD;
+    address public constant AAVE_V3_ORACLE = 0xb56c2F0B653B2e0b10C9b928C8580Ac5Df02C7C7;
+
+    address public constant CURVE_USDC_USDT_POOL = 0x49b720F1Aab26260BEAec93A7BeB5BF2925b2A8F;
+    address public constant CURVE_USDC_USDT_GAUGE = 0x2F8bcdF1824B91D420F8951A972eE988Ebd8544d;
+    address public constant CURVE_USDC_USDT_REWARD_MINTER = 0xabC000d88f23Bb45525E447528DBF656A9D55bf5;
+
+    address public constant USDT_OFT_ADAPTER = 0x14E4A1B13bf7F943c8ff7C51fb60FA964A298D92;
+    address public constant FLUID_USDT_FTOKEN = 0x4A03F37e7d3fC243e3f99341d36f4b829BEe5E03;
+    address public constant FLUID_USDC_FTOKEN = 0x1A996cb54bb95462040408C06122D45D6Cdb6096;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -47,6 +76,7 @@ library Constants {
             erc20VerifierFactory: Factory(0x77A83AcBf7A6df20f1D681b4810437d74AE790F8),
             symbioticVerifierFactory: Factory(address(0)),
             eigenLayerVerifierFactory: Factory(address(0)),
+            swapModuleFactory: Factory(0x1B6C06E8ff3E2DD310E20a70a6a2Be048Fa26Dbd),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
@@ -68,20 +98,8 @@ library Constants {
             basicRedeemHook: BasicRedeemHook(0x0000000637f1b1ccDA4Af2dB6CDDf5e5Ec45fd93),
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(address(0)),
-            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35)
+            oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
+            swapModuleImplementation: SwapModule(payable(0x0000000bb667353D37478ceEd142f4cEf51b9c9F))
         });
     }
 }
-
-/*
-
-tenderly:
-0x2e567b360000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000
-6c247b1f6182318877311737bac0844baa518f5e
-00000000000000000000000090c983dc732e65db6177638f0125914787b8cb780000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000
-
-my:
-0x2e567b360000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000
-54a5bf4b97f2db9b20bcfbaf3fd38e97d72aca9c
-00000000000000000000000090c983dc732e65db6177638f0125914787b8cb780000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000
-*/
