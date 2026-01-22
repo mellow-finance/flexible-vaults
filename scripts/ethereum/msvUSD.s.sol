@@ -291,10 +291,7 @@ contract Deploy is Script, Test {
         return (swapModule, ArraysLibrary.makeAddressArray(abi.encode(tokens)));
     }
 
-    function _createSubvault0Proofs()
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
+    function _createSubvault0Proofs() internal returns (bytes32 merkleRoot, SubvaultCalls memory calls) {
         address payable subvault0Mainnet = payable(vault.subvaultAt(0));
         (address swapModule, address[] memory swapModuleAssets) = _deploySwapModule(subvault0Mainnet);
 

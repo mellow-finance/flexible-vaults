@@ -33,6 +33,11 @@ contract Deploy is Script, Test {
     address subvault0Ethereum = 0x9757bbb42B3fAAc201d5Ba2374b9Ac62dc77a584;
 
     function run() external {
+        // create fork just to replay deployment for the vault 0x13515096066708d14a06eAA2600c5c692954242E
+        string memory rpcUrl = vm.envString("ARBITRUM_RPC");
+        uint256 forkId = vm.createSelectFork(rpcUrl, 423615509);
+        vm.selectFork(forkId);
+
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 

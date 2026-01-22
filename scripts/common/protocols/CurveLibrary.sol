@@ -143,7 +143,7 @@ library CurveLibrary {
         for (uint256 i = 0; i < n; i++) {
             address asset = ICurvePool($.pool).coins(i);
             string memory assetSymbol = IERC20Metadata(asset).symbol();
-            innerParameters = ParameterLibrary.build("to", Strings.toHexString(asset)).addAny("amount");
+            innerParameters = ParameterLibrary.build("to", Strings.toHexString($.pool)).addAny("amount");
             descriptions[index++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
