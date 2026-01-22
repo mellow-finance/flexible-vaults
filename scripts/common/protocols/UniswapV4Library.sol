@@ -9,8 +9,8 @@ import {ProofLibrary} from "../ProofLibrary.sol";
 import {ERC20Library} from "./ERC20Library.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
+import {IAllowanceTransfer, IPositionManager} from "../interfaces/IPositionManager.sol";
 import "../interfaces/Imports.sol";
-import {IAllowanceTransfer, IPositionManager} from "scripts/common/interfaces/IPositionManager.sol";
 
 library UniswapV4Library {
     using ParameterLibrary for ParameterLibrary.Parameter[];
@@ -51,12 +51,13 @@ library UniswapV4Library {
 
         // approve position manager to transfer tokens on behalf of permit2
         for (uint256 i = 0; i < $.assets.length; i++) {
+            address asset = $.assets[i];
             leaves[iterator++] = ProofLibrary.makeVerificationPayload(
                 bitmaskVerifier,
                 $.curator,
                 permit2,
                 0,
-                abi.encodeCall(IAllowanceTransfer.approve, (address($.assets[i]), $.positionManager, 0, 0)),
+                abi.encodeCall(IAllowanceTransfer.approve, (asset, $.positionManager, 0, 0)),
                 ProofLibrary.makeBitmask(
                     true,
                     true,
@@ -86,14 +87,9 @@ library UniswapV4Library {
         descriptions = new string[](50);
 
         // approve permit2 to transfer tokens on behalf of position manager
-        iterator = ArraysLibrary.insert(
-            descriptions,
+        iterator = descriptions.insert(
             ERC20Library.getERC20Descriptions(
-                ERC20Library.Info({
-                    curator: $.curator,
-                    assets: $.assets,
-                    to: makeDuplicates($.positionManager, $.assets.length)
-                })
+                ERC20Library.Info({curator: $.curator, assets: $.assets, to: makeDuplicates(permit2, $.assets.length)})
             ),
             iterator
         );
@@ -105,15 +101,20 @@ library UniswapV4Library {
             innerParameters = innerParameters.add("spender", Strings.toHexString($.positionManager));
             innerParameters = innerParameters.addAny("amount");
             innerParameters = innerParameters.addAny("expiration");
-            descriptions[iterator++] = string(
-                abi.encodePacked(
-                    "Permit2(",
-                    Strings.toHexString(permit2),
-                    ").approve(",
-                    "token=",
-                    Strings.toHexString($.assets[i]),
-                    ", spender=PositionManager, amount=any, expiration=any)"
-                )
+            descriptions[iterator++] = JsonLibrary.toJson(
+                string(
+                    abi.encodePacked(
+                        "Permit2(",
+                        Strings.toHexString(permit2),
+                        ").approve(",
+                        "token=",
+                        Strings.toHexString($.assets[i]),
+                        ", spender=PositionManager, amount=any, expiration=any)"
+                    )
+                ),
+                ABILibrary.getABI(IAllowanceTransfer.approve.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(permit2), "0"),
+                innerParameters
             );
         }
 
@@ -121,12 +122,17 @@ library UniswapV4Library {
         ParameterLibrary.Parameter[] memory innerParameters;
         innerParameters = innerParameters.addAny("unlockData");
         innerParameters = innerParameters.addAny("deadline");
-        descriptions[iterator++] = string(
-            abi.encodePacked(
-                "IPositionManager(",
-                Strings.toHexString($.positionManager),
-                ").modifyLiquidities(unlockData=any, deadline=any)"
-            )
+        descriptions[iterator++] = JsonLibrary.toJson(
+            string(
+                abi.encodePacked(
+                    "IPositionManager(",
+                    Strings.toHexString($.positionManager),
+                    ").modifyLiquidities(unlockData=any, deadline=any)"
+                )
+            ),
+            ABILibrary.getABI(IPositionManager.modifyLiquidities.selector),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
+            innerParameters
         );
 
         assembly {
@@ -135,10 +141,10 @@ library UniswapV4Library {
     }
 
     function getUniswapV4Calls(Info memory $) internal view returns (Call[][] memory calls) {
-        address permit2 = IPositionManager($.positionManager).permit2();
-
-        uint256 index = 0;
+        uint256 index;
         calls = new Call[][](50);
+
+        address permit2 = IPositionManager($.positionManager).permit2();
 
         index = calls.insert(
             ERC20Library.getERC20Calls(
@@ -146,120 +152,99 @@ library UniswapV4Library {
             ),
             index
         );
-
+        // approve position manager to transfer tokens on behalf of permit2
         {
-            Call[] memory tmp = new Call[](50);
-            uint256 i = 0;
+            uint48 ts = uint48(block.timestamp);
             for (uint256 j = 0; j < $.assets.length; j++) {
-                tmp[i++] = Call(
-                    $.curator,
-                    permit2,
-                    0,
-                    abi.encodeCall(
-                        IAllowanceTransfer.approve, ($.assets[j], $.positionManager, 1 ether, uint48(block.timestamp))
-                    ),
-                    true
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    permit2,
-                    0,
-                    abi.encodeCall(
-                        IAllowanceTransfer.approve,
-                        (address(0xdead), $.positionManager, 1 ether, uint48(block.timestamp))
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    permit2,
-                    0,
-                    abi.encodeCall(
-                        IAllowanceTransfer.approve, ($.assets[j], address(0xdead), 1 ether, uint48(block.timestamp))
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    address(0xdead),
-                    permit2,
-                    0,
-                    abi.encodeCall(
-                        IAllowanceTransfer.approve, ($.assets[j], $.positionManager, 1 ether, uint48(block.timestamp))
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    address(0xdead),
-                    0,
-                    abi.encodeCall(
-                        IAllowanceTransfer.approve, ($.assets[j], $.positionManager, 1 ether, uint48(block.timestamp))
-                    ),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    permit2,
-                    1 wei,
-                    abi.encodeCall(
-                        IAllowanceTransfer.approve, ($.assets[j], $.positionManager, 1 ether, uint48(block.timestamp))
-                    ),
-                    false
-                );
+                address asset = $.assets[j];
+                {
+                    Call[] memory tmp = new Call[](16);
+                    uint256 i = 0;
+                    tmp[i++] = Call(
+                        $.curator,
+                        permit2,
+                        0,
+                        abi.encodeCall(IAllowanceTransfer.approve, (asset, $.positionManager, 1 ether, ts)),
+                        true
+                    );
+                    tmp[i++] = Call(
+                        $.curator,
+                        permit2,
+                        0,
+                        abi.encodeCall(IAllowanceTransfer.approve, (address(0xdead), $.positionManager, 1 ether, ts)),
+                        false
+                    );
+                    tmp[i++] = Call(
+                        $.curator,
+                        permit2,
+                        0,
+                        abi.encodeCall(IAllowanceTransfer.approve, (asset, address(0xdead), 1 ether, ts)),
+                        false
+                    );
+                    tmp[i++] = Call(
+                        address(0xdead),
+                        permit2,
+                        0,
+                        abi.encodeCall(IAllowanceTransfer.approve, (asset, $.positionManager, 1 ether, ts)),
+                        false
+                    );
+                    tmp[i++] = Call(
+                        $.curator,
+                        address(0xdead),
+                        0,
+                        abi.encodeCall(IAllowanceTransfer.approve, (asset, $.positionManager, 1 ether, ts)),
+                        false
+                    );
+                    tmp[i++] = Call(
+                        $.curator,
+                        permit2,
+                        1 wei,
+                        abi.encodeCall(IAllowanceTransfer.approve, (asset, $.positionManager, 1 ether, ts)),
+                        false
+                    );
+                    assembly {
+                        mstore(tmp, i)
+                    }
+                    calls[index++] = tmp;
+                }
             }
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
         }
-        
+
         // modifyLiquidities
         {
             Call[] memory tmp = new Call[](50);
             uint256 i = 0;
+
             bytes memory unlockData = new bytes(42); // arbitrary data
+            uint48 ts = uint48(block.timestamp);
 
             tmp[i++] = Call(
                 $.curator,
                 $.positionManager,
                 0,
-                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, uint48(block.timestamp))),
+                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, ts)),
                 true
             );
             tmp[i++] = Call(
                 $.curator,
                 $.positionManager,
                 0,
-                abi.encodeWithSelector(0x4afe393c, unlockData, uint48(block.timestamp)), // modifyLiquiditiesWithoutUnlock
+                abi.encodeWithSelector(0x4afe393c, unlockData, ts), // modifyLiquiditiesWithoutUnlock
                 false
             );
             tmp[i++] = Call(
                 address(0xdead),
                 $.positionManager,
                 0,
-                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, uint48(block.timestamp))),
+                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, ts)),
                 false
             );
             tmp[i++] = Call(
                 $.curator,
                 address(0xdead),
                 0,
-                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, uint48(block.timestamp))),
+                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, ts)),
                 false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.positionManager,
-                1 wei,
-                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, uint48(block.timestamp))),
-                false
-            );
-            tmp[i++] = Call(
-                $.curator,
-                $.positionManager,
-                0,
-                abi.encode(IPositionManager.modifyLiquidities.selector, unlockData, uint48(block.timestamp)),
-                true
             );
             assembly {
                 mstore(tmp, i)

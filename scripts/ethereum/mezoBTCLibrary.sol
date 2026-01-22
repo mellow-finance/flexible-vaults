@@ -51,8 +51,23 @@ library mezoBTCLibrary {
         });
     }
 
-    function getBTCSubvault0Proofs(Info memory $)
+    function getBTCSubvault0Data(Info memory $)
         internal
+        view
+        returns (
+            bytes32 merkleRoot,
+            IVerifier.VerificationPayload[] memory leaves,
+            string[] memory descriptions,
+            SubvaultCalls memory calls
+        )
+    {
+        (merkleRoot, leaves) = _getBTCSubvault0Proofs($);
+        descriptions = _getBTCSubvault0Descriptions($);
+        calls = _getBTCSubvault0Calls($, leaves);
+    }
+
+    function _getBTCSubvault0Proofs(Info memory $)
+        private
         view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
@@ -69,12 +84,11 @@ library mezoBTCLibrary {
         assembly {
             mstore(leaves, iterator)
         }
-        
+
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function getBTCSubvault0Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+    function _getBTCSubvault0Descriptions(Info memory $) private view returns (string[] memory descriptions) {
         descriptions = new string[](50);
         uint256 iterator = 0;
         // uniswapV4 descriptions
@@ -83,8 +97,8 @@ library mezoBTCLibrary {
         iterator = descriptions.insert(SwapModuleLibrary.getSwapModuleDescriptions(_getSwapModuleParams($)), iterator);
     }
 
-    function getBTCSubvault0Calls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
-        internal
+    function _getBTCSubvault0Calls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
+        private
         view
         returns (SubvaultCalls memory calls)
     {

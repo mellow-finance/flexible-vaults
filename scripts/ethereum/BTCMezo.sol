@@ -222,22 +222,18 @@ contract Deploy is DeployAbstractScript {
             positionManager: Constants.UNISWAP_V4_POSITION_MANAGER,
             uniswapV4Assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC, Constants.WBTC))
         });
+        IVerifier verifier = subvault.verifier();
         IVerifier.VerificationPayload[] memory leaves;
+        string[] memory descriptions;
 
-        (merkleRoot, leaves) = mezoBTCLibrary.getBTCSubvault0Proofs(info);
+        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault0Data(info);
 
-        string[] memory descriptions = mezoBTCLibrary.getBTCSubvault0Descriptions(info);
         ProofLibrary.storeProofs("ethereum:mbhBTC:subvault0", merkleRoot, leaves, descriptions);
 
-        calls = mezoBTCLibrary.getBTCSubvault0Calls(info, leaves);
+        vm.prank(lazyVaultAdmin);
+        verifier.setMerkleRoot(merkleRoot);
 
-        _runChecks(subvault.verifier(), calls);
-    }
-
-    function _runChecks(IVerifier verifier, SubvaultCalls memory calls) internal view {
-        for (uint256 i = 0; i < calls.payloads.length; i++) {
-            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
-        }
+        AcceptanceLibrary._runVerifyCallsChecks(verifier, calls);
     }
 
     function _deploySwapModule(address subvault) internal returns (address swapModule, address[] memory assets) {
