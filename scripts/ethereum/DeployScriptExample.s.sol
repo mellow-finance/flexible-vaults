@@ -16,7 +16,7 @@ contract Deploy is DeployAbstractScript {
     function run() external {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
-        deployVault = $.deployVaultFactory;
+        deployVault = Constants.deployVaultFactory;
 
         /// @dev just on-chain simulation
         _simulate();

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "../collectors/Collector.sol";
 import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
 import "../common/interfaces/ICowswapSettlement.sol";
@@ -138,6 +139,7 @@ library Constants {
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0x000000002E2aeaC5Fe65AaB6fE2E6AE0e44F1A3A)),
             redeemQueueImplementation: RedeemQueue(payable(0x0000000285805eac535DADdb9648F1E10DfdC411)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x0000000b2082667589A16c4cF18e9f923781c471)),
             feeManagerImplementation: FeeManager(0x0000000dE74e5D51651326E0A3e1ACA94bEAF6E1),
@@ -163,6 +165,8 @@ library Constants {
 
     DeployVaultFactory public constant deployVaultFactory =
         DeployVaultFactory(0xdE0000006a45bfD6a310C51c42bBE256847bB6d5);
+
+    Collector public constant collector = Collector(0x40DA86d29AF2fe980733bD54E364e7507505b41B);
 
     function getTqETHPreProdDeployment() internal pure returns (VaultDeployment memory $) {
         address proxyAdmin = 0xC1211878475Cd017fecb922Ae63cc3815FA45652;

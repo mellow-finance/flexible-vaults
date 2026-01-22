@@ -40,7 +40,7 @@
     "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
-    "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv",
+    "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 24018587 -vvv",
     "test:acceptance:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/AcceptanceTest.t.sol",
     "test:migration:mezo:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 24254325 -vvv --match-path ./test/integration/MezoBTCMigration.t.sol",
     "test:migration:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/MigrationTest.t.sol",
