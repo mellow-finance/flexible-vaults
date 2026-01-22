@@ -39,10 +39,15 @@ contract Mock {
         PoolKey memory poolKey =
             PoolKey({currency0: Constants.USDC, currency1: Constants.USDT, fee: 10, tickSpacing: 1, hooks: address(0)});
 
-        bytes memory actions = abi.encodePacked(uint8(0x02), uint8(0x0d));
+        // https://github.com/Uniswap/v4-periphery/blob/main/src/libraries/Actions.sol
+        bytes memory actions = abi.encodePacked(uint8(0x02), uint8(0x0d)); // mint, settle
         bytes[] memory params = new bytes[](2);
-        params[0] = abi.encode(poolKey, -10, 10, 1e6, 1e6, 1e6, msg.sender, "");
-        params[1] = abi.encode(Constants.USDC, Constants.USDT); // SETTLE_PAIR
+
+        // https://github.com/Uniswap/v4-periphery/blob/3779387e5d296f39df543d23524b050f89a62917/src/PositionManager.sol#L214-L221
+        // poolKey, tickLower, tickUpper, liquidity, amount0Max, amount1Max, recipient, hookData
+        params[0] = abi.encode(poolKey, -10, 10, 1e6, 1e6, 1e6, msg.sender, ""); // mint params
+        params[1] = abi.encode(Constants.USDC, Constants.USDT); // settle params
+        
         IPositionManager(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
             abi.encode(actions, params), block.timestamp + 1 hours
         );

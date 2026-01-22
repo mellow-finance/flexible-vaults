@@ -7,7 +7,7 @@ interface IAllowanceTransfer {
     function approve(address token, address spender, uint160 amount, uint48 expiration) external;
 }
 
-interface IPositionManager is IERC721 {
+interface IPositionManagerV4 is IERC721 {
     /// @notice Unlocks Uniswap v4 PoolManager and batches actions for modifying liquidity
     /// @dev This is the standard entrypoint for the PositionManager
     /// @param unlockData is an encoding of actions, and parameters for those actions

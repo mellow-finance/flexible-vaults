@@ -219,8 +219,10 @@ contract Deploy is DeployAbstractScript {
             swapModule: swapModule,
             subvaultName: "subvault0",
             swapModuleAssets: swapModuleAssets,
-            positionManager: Constants.UNISWAP_V4_POSITION_MANAGER,
-            uniswapV4Assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC, Constants.WBTC))
+            positionManagerV3: Constants.UNISWAP_V3_POSITION_MANAGER,
+            uniswapV3Pools: ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_TBTC_WBTC_100)),
+            positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
+            uniswapV4Assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC)) // one-side deposit
         });
         IVerifier verifier = subvault.verifier();
         IVerifier.VerificationPayload[] memory leaves;

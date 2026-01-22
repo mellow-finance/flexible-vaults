@@ -112,6 +112,8 @@ library Constants {
     address public constant CURVE_USDC_USDT_GAUGE = 0x479dFB03cdDEa20dC4e8788B81Fd7C7A08FD3555;
     address public constant CURVE_USDC_USDT_REWARD_MINTER = 0xd061D61a4d941c39E5453435B6345Dc261C2fcE0;
 
+    address public constant CURVE_TBTC_CBBTC_POOL = 0xAE6Ee608b297305AbF3EB609B81FEBbb8F6A0bb3;
+
     address public constant MORPHO_USDC_ALPHAPING = 0xb0f05E4De970A1aaf77f8C2F823953a367504BA9;
     address public constant MORPHO_WETH_ALPHAPING = 0x47fe8Ab9eE47DD65c24df52324181790b9F47EfC;
 
@@ -128,6 +130,9 @@ library Constants {
     address public constant USR_CHAINLINK_ORACLE = 0x34ad75691e25A8E9b681AAA85dbeB7ef6561B42c;
 
     address public constant UNISWAP_V4_POSITION_MANAGER = 0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e;
+    address public constant UNISWAP_V3_POSITION_MANAGER = 0xC36442b4a4522E871399CD717aBDD847Ab11FE88;
+
+    address public constant UNISWAP_V3_POOL_TBTC_WBTC_100 = 0x73A38006d23517a1d383C88929B2014F8835B38B;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({

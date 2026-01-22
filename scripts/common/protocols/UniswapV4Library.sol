@@ -9,7 +9,7 @@ import {ProofLibrary} from "../ProofLibrary.sol";
 import {ERC20Library} from "./ERC20Library.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-import {IAllowanceTransfer, IPositionManager} from "../interfaces/IPositionManager.sol";
+import {IAllowanceTransfer, IPositionManagerV4} from "../interfaces/IPositionManagerV4.sol";
 import "../interfaces/Imports.sol";
 
 library UniswapV4Library {
@@ -35,7 +35,7 @@ library UniswapV4Library {
         view
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
-        address permit2 = IPositionManager($.positionManager).permit2();
+        address permit2 = IPositionManagerV4($.positionManager).permit2();
         leaves = new IVerifier.VerificationPayload[](50);
         uint256 iterator;
 
@@ -70,9 +70,9 @@ library UniswapV4Library {
             );
         }
 
-        // enable to call IPositionManager.modifyLiquidities with any parameters
+        // enable to call IPositionManagerV4.modifyLiquidities with any parameters
         leaves[iterator++] = ProofLibrary.makeVerificationPayloadCompact(
-            $.curator, $.positionManager, IPositionManager.modifyLiquidities.selector
+            $.curator, $.positionManager, IPositionManagerV4.modifyLiquidities.selector
         );
 
         assembly {
@@ -81,7 +81,7 @@ library UniswapV4Library {
     }
 
     function getUniswapV4Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
-        address permit2 = IPositionManager($.positionManager).permit2();
+        address permit2 = IPositionManagerV4($.positionManager).permit2();
         uint256 iterator;
 
         descriptions = new string[](50);
@@ -118,19 +118,19 @@ library UniswapV4Library {
             );
         }
 
-        // enable to call IPositionManager.modifyLiquidities with any parameters
+        // enable to call IPositionManagerV4.modifyLiquidities with any parameters
         ParameterLibrary.Parameter[] memory innerParameters;
         innerParameters = innerParameters.addAny("unlockData");
         innerParameters = innerParameters.addAny("deadline");
         descriptions[iterator++] = JsonLibrary.toJson(
             string(
                 abi.encodePacked(
-                    "IPositionManager(",
+                    "IPositionManagerV4(",
                     Strings.toHexString($.positionManager),
                     ").modifyLiquidities(unlockData=any, deadline=any)"
                 )
             ),
-            ABILibrary.getABI(IPositionManager.modifyLiquidities.selector),
+            ABILibrary.getABI(IPositionManagerV4.modifyLiquidities.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
             innerParameters
         );
@@ -144,7 +144,7 @@ library UniswapV4Library {
         uint256 index;
         calls = new Call[][](50);
 
-        address permit2 = IPositionManager($.positionManager).permit2();
+        address permit2 = IPositionManagerV4($.positionManager).permit2();
 
         index = calls.insert(
             ERC20Library.getERC20Calls(
@@ -222,7 +222,7 @@ library UniswapV4Library {
                 $.curator,
                 $.positionManager,
                 0,
-                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, ts)),
+                abi.encodeCall(IPositionManagerV4.modifyLiquidities, (unlockData, ts)),
                 true
             );
             tmp[i++] = Call(
@@ -236,14 +236,14 @@ library UniswapV4Library {
                 address(0xdead),
                 $.positionManager,
                 0,
-                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, ts)),
+                abi.encodeCall(IPositionManagerV4.modifyLiquidities, (unlockData, ts)),
                 false
             );
             tmp[i++] = Call(
                 $.curator,
                 address(0xdead),
                 0,
-                abi.encodeCall(IPositionManager.modifyLiquidities, (unlockData, ts)),
+                abi.encodeCall(IPositionManagerV4.modifyLiquidities, (unlockData, ts)),
                 false
             );
             assembly {

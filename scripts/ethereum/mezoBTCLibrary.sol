@@ -10,10 +10,12 @@ import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
-
-import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
-import {UniswapV4Library} from "../common/protocols/UniswapV4Library.sol";
 import {Constants} from "./Constants.sol";
+
+import {CurveLibrary} from "../common/protocols/CurveLibrary.sol";
+import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
+import {UniswapV3Library} from "../common/protocols/UniswapV3Library.sol";
+import {UniswapV4Library} from "../common/protocols/UniswapV4Library.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -29,13 +31,25 @@ library mezoBTCLibrary {
         address swapModule;
         string subvaultName;
         address[] swapModuleAssets;
-        address positionManager;
+        address positionManagerV3;
+        address[] uniswapV3Pools;
+        address positionManagerV4;
         address[] uniswapV4Assets;
+    }
+
+    function _getUniswapV3Params(Info memory $) internal pure returns (UniswapV3Library.Info memory) {
+        return UniswapV3Library.Info({
+            curator: $.curator,
+            subvault: $.subvault,
+            subvaultName: $.subvaultName,
+            positionManager: $.positionManagerV3,
+            pools: $.uniswapV3Pools
+        });
     }
 
     function _getUniswapV4Params(Info memory $) internal pure returns (UniswapV4Library.Info memory) {
         return
-            UniswapV4Library.Info({curator: $.curator, positionManager: $.positionManager, assets: $.uniswapV4Assets});
+            UniswapV4Library.Info({curator: $.curator, positionManager: $.positionManagerV4, assets: $.uniswapV4Assets});
     }
 
     function _getSwapModuleParams(Info memory $) internal pure returns (SwapModuleLibrary.Info memory) {
@@ -72,9 +86,11 @@ library mezoBTCLibrary {
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](50);
+        leaves = new IVerifier.VerificationPayload[](100);
         uint256 iterator = 0;
 
+        // uniswapV3 proofs
+        iterator = leaves.insert(UniswapV3Library.getUniswapV3Proofs(bitmaskVerifier, _getUniswapV3Params($)), iterator);
         // uniswapV4 proofs
         iterator = leaves.insert(UniswapV4Library.getUniswapV4Proofs(bitmaskVerifier, _getUniswapV4Params($)), iterator);
         // swap module proofs
@@ -89,8 +105,10 @@ library mezoBTCLibrary {
     }
 
     function _getBTCSubvault0Descriptions(Info memory $) private view returns (string[] memory descriptions) {
-        descriptions = new string[](50);
+        descriptions = new string[](100);
         uint256 iterator = 0;
+        // uniswapV3 descriptions
+        iterator = descriptions.insert(UniswapV3Library.getUniswapV3Descriptions(_getUniswapV3Params($)), iterator);
         // uniswapV4 descriptions
         iterator = descriptions.insert(UniswapV4Library.getUniswapV4Descriptions(_getUniswapV4Params($)), iterator);
         // swap module descriptions
@@ -106,6 +124,8 @@ library mezoBTCLibrary {
         Call[][] memory calls_ = new Call[][](100);
         uint256 iterator = 0;
 
+        // uniswapV3 calls
+        iterator = calls_.insert(UniswapV3Library.getUniswapV3Calls(_getUniswapV3Params($)), iterator);
         // uniswapV4 calls
         iterator = calls_.insert(UniswapV4Library.getUniswapV4Calls(_getUniswapV4Params($)), iterator);
         // swap module calls
