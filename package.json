@@ -43,6 +43,7 @@
     "deploy:mezo": "forge script ./scripts/mezo/Deploy.s.sol:Deploy --fork-url $(grep MEZO_RPC .env | cut -d '=' -f2,3,4,5) --evm-version paris --broadcast --slow --gas-limit 10000000000000000 --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2) --verify --verifier sourcify",
     "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
+    "test:univ4": "forge script ./scripts/ethereum/test/TestUniswapV4.sol:TestUniswapV4 --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --fork-block-number 24282081",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
     "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv",
     "test:acceptance:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/AcceptanceTest.t.sol",

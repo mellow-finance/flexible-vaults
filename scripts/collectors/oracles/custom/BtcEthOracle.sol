@@ -18,6 +18,6 @@ contract BtcEthOracle is ICustomPriceOracle {
 
     function priceX96() external view returns (uint256) {
         uint256 priceD8 = uint256(IAggregatorV3(aggregatorV3).latestAnswer());
-        return Math.mulDiv(uint256(priceD8), 2 ** 96, 10**decimals);
+        return Math.mulDiv(uint256(priceD8), 2 ** 96, 10 ** decimals);
     }
 }

@@ -10,11 +10,9 @@ import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
 
 contract Deploy is DeployAbstractScript {
-    bytes32 public testWalletPk = keccak256("testWalletPk");
-    address public testWallet = vm.addr(uint256(testWalletPk));
-
     function run() external {
-        deposit(Constants.CBBTC, 0x0ee16cF1a0CA0D1cA070a6FEC1595888B22Dd02f);
+        revert("ok");
+        //deposit(Constants.CBBTC, 0x0ee16cF1a0CA0D1cA070a6FEC1595888B22Dd02f);
         return;
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -43,7 +41,9 @@ contract Deploy is DeployAbstractScript {
         IERC20(asset).approve(address(depositQueue), amount);
         depositQueue.deposit(amount, address(0), new bytes32[](0));
         ShareManager shareManager = ShareManager(payable(0x171b8E43bB751A558b2b1f3C814d3c96D36cCf2B));
-        console.log("%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer));
+        console.log(
+            "%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer)
+        );
     }
 
     function setUp() public override {
@@ -66,7 +66,7 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill fee parameters
         depositFeeD6 = 0;
         redeemFeeD6 = 0;
-        performanceFeeD6 = 0; 
+        performanceFeeD6 = 0;
         protocolFeeD6 = 0;
 
         /// @dev fill security params

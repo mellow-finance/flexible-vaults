@@ -127,6 +127,8 @@ library Constants {
     address public constant USDC_CHAINLINK_ORACLE = 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6;
     address public constant USR_CHAINLINK_ORACLE = 0x34ad75691e25A8E9b681AAA85dbeB7ef6561B42c;
 
+    address public constant UNISWAP_V4_POSITION_MANAGER = 0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,

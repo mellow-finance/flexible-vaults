@@ -8,17 +8,13 @@ import "../common/DeployVaultFactoryRegistry.sol";
 import "../common/OracleSubmitterFactory.sol";
 import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
+import {mezoBTCLibrary} from "./mezoBTCLibrary.sol";
 
 contract Deploy is DeployAbstractScript {
     bytes32 public testWalletPk = keccak256("testWalletPk");
     address public testWallet = vm.addr(uint256(testWalletPk));
 
     function run() external {
-        deposit(Constants.TBTC, 0x0823b68c7e00B327f97b1Bf48eD44ef9CD11fb74);
-        deposit(Constants.WBTC, 0xb10feC1df8FCFF2bf06fbd1AeAc34B87EA4e9AC2);
-        ////revert("ok");
-        return;
-
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         deployVault = Constants.deployVaultFactory;
@@ -32,8 +28,10 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0xa8A3De0c5594A09d0cD4C8abc4e3AaB9BaE03F36)));
-        _run();
-        //revert("ok");
+        getSubvaultMerkleRoot(0);
+        ////revert("ok");
+        //_run();
+        revert("ok");
     }
 
     function deposit(address asset, address queue) internal {
@@ -45,7 +43,9 @@ contract Deploy is DeployAbstractScript {
         IERC20(asset).approve(address(depositQueue), amount);
         depositQueue.deposit(amount, address(0), new bytes32[](0));
         ShareManager shareManager = ShareManager(payable(0x43f084bdBC99409c637319dD7c544D565165A162));
-        console.log("%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer));
+        console.log(
+            "%s %s deposited, shares received:", IERC20Metadata(asset).symbol(), amount, shareManager.sharesOf(deployer)
+        );
         vm.stopBroadcast();
     }
 
@@ -205,9 +205,63 @@ contract Deploy is DeployAbstractScript {
     }
 
     /// @dev fill in merkle roots
-    function getSubvaultMerkleRoot(Vault vault, uint256 index) internal view override returns (bytes32 merkleRoot) {
+    function getSubvaultMerkleRoot(uint256 index)
+        internal
+        override
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
         Subvault subvault = Subvault(payable(vault.subvaultAt(index)));
+        (address swapModule, address[] memory swapModuleAssets) = _deploySwapModule(address(subvault));
 
-        merkleRoot = bytes32(0);
+        mezoBTCLibrary.Info memory info = mezoBTCLibrary.Info({
+            curator: curator,
+            subvault: address(subvault),
+            swapModule: swapModule,
+            subvaultName: "subvault0",
+            swapModuleAssets: swapModuleAssets,
+            positionManager: Constants.UNISWAP_V4_POSITION_MANAGER,
+            uniswapV4Assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC, Constants.WBTC))
+        });
+        IVerifier.VerificationPayload[] memory leaves;
+
+        (merkleRoot, leaves) = mezoBTCLibrary.getBTCSubvault0Proofs(info);
+
+        string[] memory descriptions = mezoBTCLibrary.getBTCSubvault0Descriptions(info);
+        ProofLibrary.storeProofs("ethereum:mbhBTC:subvault0", merkleRoot, leaves, descriptions);
+
+        calls = mezoBTCLibrary.getBTCSubvault0Calls(info, leaves);
+
+        _runChecks(subvault.verifier(), calls);
+    }
+
+    function _runChecks(IVerifier verifier, SubvaultCalls memory calls) internal view {
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
+    }
+
+    function _deploySwapModule(address subvault) internal returns (address swapModule, address[] memory assets) {
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+
+        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+        address[2] memory tokens = [Constants.TBTC, Constants.WBTC];
+        address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens));
+        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
+            )
+        );
+
+        vm.startBroadcast(deployerPk);
+        swapModule = swapModuleFactory.create(
+            0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
+        );
+        vm.stopBroadcast();
+        return (swapModule, ArraysLibrary.makeAddressArray(abi.encode(tokens)));
     }
 }

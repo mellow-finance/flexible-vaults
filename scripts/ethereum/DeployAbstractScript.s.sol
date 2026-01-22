@@ -105,7 +105,10 @@ abstract contract DeployAbstractScript is Test {
 
     function setUp() public virtual;
 
-    function getSubvaultMerkleRoot(Vault vault, uint256 index) internal view virtual returns (bytes32 merkleRoot);
+    function getSubvaultMerkleRoot(uint256 index)
+        internal
+        virtual
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls);
 
     function _run() internal {
         setUp();
@@ -167,7 +170,7 @@ abstract contract DeployAbstractScript is Test {
         calls = new SubvaultCalls[](deployment.subvaults.length);
         for (uint256 i = 0; i < deployment.subvaults.length; i++) {
             subvaultRoots[i].subvault = deployment.subvaults[i];
-            subvaultRoots[i].merkleRoot = getSubvaultMerkleRoot(vault, i);
+            (subvaultRoots[i].merkleRoot, calls[i]) = getSubvaultMerkleRoot(i);
         }
 
         Vault.RoleHolder[] memory holders = getVaultRoleHolders(address(0), address(0));
