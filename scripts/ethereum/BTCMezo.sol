@@ -204,6 +204,14 @@ contract Deploy is DeployAbstractScript {
         holders[index++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
     }
 
+    function getTokenIdsV3() internal pure returns (uint256[][] memory tokenIds) {
+        tokenIds = new uint256[][](1);
+        tokenIds[0] = new uint256[](2);
+        tokenIds[0][0] = 123456; // example tokenId
+        tokenIds[0][1] = 456789; // example tokenId
+        return tokenIds;
+    }
+
     /// @dev fill in merkle roots
     function getSubvaultMerkleRoot(uint256 index)
         internal
@@ -221,6 +229,7 @@ contract Deploy is DeployAbstractScript {
             swapModuleAssets: swapModuleAssets,
             positionManagerV3: Constants.UNISWAP_V3_POSITION_MANAGER,
             uniswapV3Pools: ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_TBTC_WBTC_100)),
+            uniswapV3TokenIds: getTokenIdsV3(),
             positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
             uniswapV4Assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC)) // one-side deposit
         });

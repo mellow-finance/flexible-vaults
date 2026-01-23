@@ -33,6 +33,7 @@ library mezoBTCLibrary {
         address[] swapModuleAssets;
         address positionManagerV3;
         address[] uniswapV3Pools;
+        uint256[][] uniswapV3TokenIds;
         address positionManagerV4;
         address[] uniswapV4Assets;
     }
@@ -43,7 +44,8 @@ library mezoBTCLibrary {
             subvault: $.subvault,
             subvaultName: $.subvaultName,
             positionManager: $.positionManagerV3,
-            pools: $.uniswapV3Pools
+            pools: $.uniswapV3Pools,
+            tokenIds: $.uniswapV3TokenIds
         });
     }
 
