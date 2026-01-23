@@ -416,7 +416,7 @@ library AcceptanceLibrary {
                 )
             )
         );
-        require($.depositQueueFactory.implementations() == 2, "Factory DepositQueue: invalid implementations length");
+        require($.depositQueueFactory.implementations() == 3, "Factory DepositQueue: invalid implementations length");
         require(
             $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
             "Factory DepositQueue: invalid implementation at 0"
