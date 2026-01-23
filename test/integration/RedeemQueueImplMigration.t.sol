@@ -86,7 +86,7 @@ contract Integration is Test {
         }
     }
 
-    function testRedeemQueueMigration_strETH() external {
+    function testRedeemQueueMigration_strETH_NO_CI() external {
         Vault vault = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
 
         uint256 iterator = 0;
@@ -104,7 +104,7 @@ contract Integration is Test {
         runTest(vault, users);
     }
 
-    function testRedeemQueueMigration_rstETHPlus() external {
+    function testRedeemQueueMigration_rstETHPlus_NO_CI() external {
         Vault vault = Vault(payable(0x1DDA0c028555e846371655caB6Adf0E3307c29F6));
 
         uint256 iterator = 0;
@@ -117,7 +117,7 @@ contract Integration is Test {
         runTest(vault, users);
     }
 
-    function testRedeemQueueMigration_rstETHPlusPlus() external {
+    function testRedeemQueueMigration_rstETHPlusPlus_NO_CI() external {
         Vault vault = Vault(payable(0xd41f177Ec448476d287635CD3AE21457F94c2307));
 
         uint256 iterator = 0;
