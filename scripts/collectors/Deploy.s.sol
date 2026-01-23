@@ -36,8 +36,6 @@ import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
 import {MUSDOraclePyth} from "./oracles/custom/MUSDOraclePyth.sol";
 
 contract Deploy is Script, Test {
-    address collector = 0x40DA86d29AF2fe980733bD54E364e7507505b41B;
-
     function _deployStrETHCustomCollector() internal {
         strETHCustomOracle customOracle =
             new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
@@ -109,24 +107,44 @@ contract Deploy is Script, Test {
     }
 
     function run() external {
-        deployCustomOracle();
-        //revert("ok");
-        return;
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
 
         Collector newImpl = new Collector();
-        address proxyAdmin = 0xe51cE5816901AA302eBD1CC764C2Bb87c72CBa69;
-        ProxyAdmin(proxyAdmin).upgradeAndCall(ITransparentUpgradeableProxy(collector), address(newImpl), "");
+        PriceOracle oracle = new PriceOracle(deployer);
+
+        address[] memory tokens = new address[](4);
+        tokens[0] = 0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590; // WETH
+        tokens[1] = newImpl.ETH(); // rBTC
+        tokens[2] = 0x967F8799aF07dF1534d48A95a5C9FEBE92c53AE0; // wrBTC
+        tokens[3] = newImpl.USD();
+
+        PriceOracle.TokenOracle[] memory oracles = new PriceOracle.TokenOracle[](4);
+        oracles[0].constValue = 2 ** 96;
+        oracles[1].oracle = address(new BtcToEthOracle());
+        oracles[2].oracle = oracles[1].oracle;
+        oracles[3].oracle = address(new UsdToEthOracle());
+
+        oracle.setOracles(tokens, oracles);
+
+        console2.log("Btc price:", oracle.getValue(tokens[1], tokens[3], 10 ** 18));
+        console2.log("Eth price:", oracle.getValue(tokens[0], tokens[3], 10 ** 18));
+
+        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
+            address(newImpl), deployer, abi.encodeCall(Collector.initialize, (deployer, address(oracle)))
+        );
+
+        Collector collector = Collector(address(proxy));
 
         console2.log("New collector impl:", address(newImpl));
+        console2.log("Collector:", address(collector));
 
         // Collector(collector).collect(
         //     deployer,
-        //     Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5)),
+        //     Vault(payable(0xdB58329eeBb999cbcC168086A71E5DAfc9CfaFB9)),
         //     Collector.Config({
-        //         baseAssetFallback: address(0),
+        //         baseAssetFallback: 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
         //         oracleUpdateInterval: 1 hours,
         //         redeemHandlingInterval: 1 hours
         //     })
@@ -134,28 +152,30 @@ contract Deploy is Script, Test {
 
         // revert("ok");
     }
+}
 
-    function deployCustomOracle() internal {
-        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        PriceOracle oracle = PriceOracle(address(Collector(collector).oracle()));
-        address oracleOwner = oracle.owner();
+import "./oracles/IAggregatorV3.sol";
 
-        console2.log("MUSD price before update:", oracle.getValue(EthereumConstants.MUSD, 1e18));
+// == Logs ==
+//   Btc price: 9923966557
+//   Eth price: 300446999999
 
-        vm.startBroadcast(deployerPk);
-        MUSDOraclePyth customOracle = new MUSDOraclePyth();
-        vm.stopBroadcast();
+contract UsdToEthOracle {
+    address public constant aggregatorV3 = 0x3401DAF2b1f150Ef0c709Cc0283b5F2e55c3DF29;
 
-        console2.log("MUSDOraclePyth:", address(customOracle));
+    function priceX96() external view returns (uint256) {
+        uint256 priceD8 = uint256(IAggregatorV3(aggregatorV3).latestAnswer());
+        return Math.mulDiv(1 ether, 2 ** 96, priceD8);
+    }
+}
 
-        address[] memory tokens = new address[](1);
-        tokens[0] = EthereumConstants.MUSD;
-        PriceOracle.TokenOracle[] memory tokenOracles = new PriceOracle.TokenOracle[](1);
-        tokenOracles[0] = PriceOracle.TokenOracle({constValue: 0, oracle: address(customOracle)});
-        vm.startPrank(oracleOwner);
-        oracle.setOracles(tokens, tokenOracles);
-        vm.stopPrank();
+contract BtcToEthOracle {
+    address public constant aggregatorV3BtcToUsd = 0x197225B3B017eb9b72Ac356D6B3c267d0c04c57c;
+    address public constant aggregatorV3EthToUsd = 0x3401DAF2b1f150Ef0c709Cc0283b5F2e55c3DF29;
 
-        console2.log("MUSD price after update:", oracle.getValue(EthereumConstants.MUSD, 1e18));
+    function priceX96() external view returns (uint256) {
+        uint256 priceBtcToUsd = uint256(IAggregatorV3(aggregatorV3BtcToUsd).latestAnswer());
+        uint256 priceEthToUsd = uint256(IAggregatorV3(aggregatorV3EthToUsd).latestAnswer());
+        return Math.mulDiv(1e3 * priceEthToUsd, 2 ** 96, priceBtcToUsd);
     }
 }

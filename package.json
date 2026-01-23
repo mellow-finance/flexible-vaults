@@ -40,6 +40,7 @@
     "deploy:hoodi:lidov3test": "forge script ./scripts/hoodi/LidoV3Test.s.sol:Deploy --fork-url $(grep HOODI_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:rootstock": "forge script ./scripts/rootstock/Deploy.s.sol:Deploy --fork-url $(grep RSK_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier blockscout --verifier-url https://rootstock.blockscout.com/api",
     "deploy:rootstock:tyrrbtc": "forge script ./scripts/rootstock/tyr.rBTC.s.sol:Deploy -vvvv --fork-url $(grep RSK_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier blockscout --verifier-url https://rootstock.blockscout.com/api",
+    "deploy:rootstock:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep RSK_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier blockscout --verifier-url https://rootstock.blockscout.com/api",
     "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
