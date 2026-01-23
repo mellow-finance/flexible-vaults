@@ -4,9 +4,10 @@ pragma solidity 0.8.25;
 import "../Constants.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Script} from "forge-std/Script.sol";
-import {IAllowanceTransfer, IPositionManager} from "scripts/common/interfaces/IPositionManager.sol";
+import "forge-std/Test.sol";
+import {IAllowanceTransfer, IPositionManagerV4} from "scripts/common/interfaces/IPositionManagerV4.sol";
 
-contract Mock {
+contract Mock is Script {
     /// @notice Returns the key for identifying a pool
     struct PoolKey {
         /// @notice The lower currency of the pool, sorted numerically
@@ -23,11 +24,9 @@ contract Mock {
 
     using SafeERC20 for IERC20;
 
-    function mint() external {
-        uint256 tokenId = IPositionManager(Constants.UNISWAP_V4_POSITION_MANAGER).nextTokenId();
-        address permit2 = IPositionManager(Constants.UNISWAP_V4_POSITION_MANAGER).permit2();
-        address sender = msg.sender;
+    function approves() internal {
         address this_ = address(this);
+        address permit2 = IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).permit2();
         IERC20(Constants.USDC).safeIncreaseAllowance(permit2, IERC20(Constants.USDC).balanceOf(this_));
         IERC20(Constants.USDT).safeIncreaseAllowance(permit2, IERC20(Constants.USDT).balanceOf(this_));
         IAllowanceTransfer(permit2).approve(
@@ -36,6 +35,12 @@ contract Mock {
         IAllowanceTransfer(permit2).approve(
             Constants.USDT, Constants.UNISWAP_V4_POSITION_MANAGER, type(uint160).max, uint48(block.timestamp + 365 days)
         );
+    }
+
+    function mint() external returns (uint256 tokenId) {
+        approves();
+        address this_ = address(this);
+        tokenId = IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).nextTokenId();
         PoolKey memory poolKey =
             PoolKey({currency0: Constants.USDC, currency1: Constants.USDT, fee: 10, tickSpacing: 1, hooks: address(0)});
 
@@ -45,15 +50,68 @@ contract Mock {
 
         // https://github.com/Uniswap/v4-periphery/blob/3779387e5d296f39df543d23524b050f89a62917/src/PositionManager.sol#L214-L221
         // poolKey, tickLower, tickUpper, liquidity, amount0Max, amount1Max, recipient, hookData
-        params[0] = abi.encode(poolKey, -10, 10, 1e6, 1e6, 1e6, msg.sender, ""); // mint params
+        params[0] = abi.encode(poolKey, -10, 10, 1e6, 1e6, 1e6, this_, ""); // mint params
         params[1] = abi.encode(Constants.USDC, Constants.USDT); // settle params
-        
-        IPositionManager(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
+
+        IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
             abi.encode(actions, params), block.timestamp + 1 hours
         );
 
-        IPositionManager(Constants.UNISWAP_V4_POSITION_MANAGER).balanceOf(msg.sender);
-        require(IPositionManager(Constants.UNISWAP_V4_POSITION_MANAGER).ownerOf(tokenId) == sender, "Not owner");
+        IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).balanceOf(this_);
+        require(IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).ownerOf(tokenId) == this_, "Not owner");
+    }
+
+    function increaseLiquidity(uint256 tokenId) external {
+        approves();
+        address this_ = address(this);
+        bytes memory actions = abi.encodePacked(uint8(0x00), uint8(0x0d)); // increase, settle
+        bytes[] memory params = new bytes[](2);
+
+        // tokenId, liquidity, amount0Max, amount1Max, hookData
+        params[0] = abi.encode(tokenId, 1e6, 1e6, 1e6, ""); // increaseLiquidity params
+        params[1] = abi.encode(Constants.USDC, Constants.USDT); // settle params
+
+        IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
+            abi.encode(actions, params), block.timestamp + 1 hours
+        );
+        console2.logBytes(
+            abi.encodeCall(
+                IPositionManagerV4.modifyLiquidities, (abi.encode(actions, params), block.timestamp + 1 hours)
+            )
+        );
+    }
+
+    function decreaseLiquidity(uint256 tokenId) external {
+        approves();
+        address this_ = address(this);
+        bytes memory actions = abi.encodePacked(uint8(0x01), uint8(0x11)); // decrease, take
+        bytes[] memory params = new bytes[](2);
+
+        // tokenId, liquidity, amount0Min, amount1Min, hookData
+        params[0] = abi.encode(tokenId, 1e6, 0, 0, ""); // decreaseLiquidity params
+        // token0, token1, recipient
+        params[1] = abi.encode(Constants.USDC, Constants.USDT, this_); // take params
+
+        IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
+            abi.encode(actions, params), block.timestamp + 1 hours
+        );
+    }
+
+    /// @dev the same as decreaseLiquidity but with zero liquidity to just collect fees
+    function collect(uint256 tokenId) external {
+        approves();
+        address this_ = address(this);
+        bytes memory actions = abi.encodePacked(uint8(0x01), uint8(0x11)); // decrease, take
+        bytes[] memory params = new bytes[](2);
+
+        // tokenId, liquidity, amount0Min, amount1Min, hookData
+        params[0] = abi.encode(tokenId, 0, 0, 0, ""); // decreaseLiquidity params
+        // token0, token1, recipient
+        params[1] = abi.encode(Constants.USDC, Constants.USDT, this_); // take params
+
+        IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
+            abi.encode(actions, params), block.timestamp + 1 hours
+        );
     }
 }
 
@@ -65,9 +123,12 @@ contract TestUniswapV4 is Script {
         address user = vm.addr(deployerPk);
         vm.startPrank(user);
         Mock mock = new Mock();
-        IERC20(Constants.USDC).safeTransfer(address(mock), 1e6);
-        IERC20(Constants.USDT).safeTransfer(address(mock), 1e6);
-        mock.mint();
+        IERC20(Constants.USDC).safeTransfer(address(mock), IERC20(Constants.USDC).balanceOf(user));
+        IERC20(Constants.USDT).safeTransfer(address(mock), IERC20(Constants.USDT).balanceOf(user));
+        uint256 tokenId = mock.mint();
+        mock.increaseLiquidity(tokenId);
+        mock.decreaseLiquidity(tokenId);
+        mock.collect(tokenId);
         vm.stopPrank();
         revert("ok");
     }
