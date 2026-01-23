@@ -8,20 +8,6 @@ import "forge-std/Test.sol";
 import {IAllowanceTransfer, IPositionManagerV4} from "scripts/common/interfaces/IPositionManagerV4.sol";
 
 contract Mock is Script {
-    /// @notice Returns the key for identifying a pool
-    struct PoolKey {
-        /// @notice The lower currency of the pool, sorted numerically
-        address currency0;
-        /// @notice The higher currency of the pool, sorted numerically
-        address currency1;
-        /// @notice The pool LP fee, capped at 1_000_000. If the highest bit is 1, the pool has a dynamic fee and must be exactly equal to 0x800000
-        uint24 fee;
-        /// @notice Ticks that involve positions must be a multiple of tick spacing
-        int24 tickSpacing;
-        /// @notice The hooks of the pool
-        address hooks;
-    }
-
     using SafeERC20 for IERC20;
 
     function approves() internal {
@@ -41,8 +27,13 @@ contract Mock is Script {
         approves();
         address this_ = address(this);
         tokenId = IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).nextTokenId();
-        PoolKey memory poolKey =
-            PoolKey({currency0: Constants.USDC, currency1: Constants.USDT, fee: 10, tickSpacing: 1, hooks: address(0)});
+        IPositionManagerV4.PoolKey memory poolKey = IPositionManagerV4.PoolKey({
+            currency0: Constants.USDC,
+            currency1: Constants.USDT,
+            fee: 10,
+            tickSpacing: 1,
+            hooks: address(0)
+        });
 
         // https://github.com/Uniswap/v4-periphery/blob/main/src/libraries/Actions.sol
         bytes memory actions = abi.encodePacked(uint8(0x02), uint8(0x0d)); // mint, settle

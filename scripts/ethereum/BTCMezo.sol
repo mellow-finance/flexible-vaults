@@ -207,8 +207,16 @@ contract Deploy is DeployAbstractScript {
     function getTokenIdsV3() internal pure returns (uint256[][] memory tokenIds) {
         tokenIds = new uint256[][](1);
         tokenIds[0] = new uint256[](2);
-        tokenIds[0][0] = 123456; // example tokenId
-        tokenIds[0][1] = 456789; // example tokenId
+        tokenIds[0][0] = 333123456; // example tokenId
+        tokenIds[0][1] = 333456789; // example tokenId
+        return tokenIds;
+    }
+
+    function getTokenIdsV4() internal pure returns (uint256[][] memory tokenIds) {
+        tokenIds = new uint256[][](1);
+        tokenIds[0] = new uint256[](2);
+        tokenIds[0][0] = 444123456; // example tokenId
+        tokenIds[0][1] = 444456789; // example tokenId
         return tokenIds;
     }
 
@@ -231,7 +239,8 @@ contract Deploy is DeployAbstractScript {
             uniswapV3Pools: ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_TBTC_WBTC_100)),
             uniswapV3TokenIds: getTokenIdsV3(),
             positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
-            uniswapV4Assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC)) // one-side deposit
+            uniswapV4Pools: ArraysLibrary.makeBytes25Array(abi.encode(Constants.UNISWAP_V4_POOL_TBTC_WBTC_100)),
+            uniswapV4TokenIds: getTokenIdsV4()
         });
         IVerifier verifier = subvault.verifier();
         IVerifier.VerificationPayload[] memory leaves;

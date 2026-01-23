@@ -8,6 +8,20 @@ interface IAllowanceTransfer {
 }
 
 interface IPositionManagerV4 is IERC721 {
+    /// @notice Returns the key for identifying a pool
+    struct PoolKey {
+        /// @notice The lower currency of the pool, sorted numerically
+        address currency0;
+        /// @notice The higher currency of the pool, sorted numerically
+        address currency1;
+        /// @notice The pool LP fee, capped at 1_000_000. If the highest bit is 1, the pool has a dynamic fee and must be exactly equal to 0x800000
+        uint24 fee;
+        /// @notice Ticks that involve positions must be a multiple of tick spacing
+        int24 tickSpacing;
+        /// @notice The hooks of the pool
+        address hooks;
+    }
+
     /// @notice Unlocks Uniswap v4 PoolManager and batches actions for modifying liquidity
     /// @dev This is the standard entrypoint for the PositionManager
     /// @param unlockData is an encoding of actions, and parameters for those actions
@@ -21,4 +35,6 @@ interface IPositionManagerV4 is IERC721 {
     function balanceOf(address owner) external view returns (uint256);
 
     function nextTokenId() external view returns (uint256);
+
+    function poolKeys(bytes25 poolId) external view returns (PoolKey memory);
 }

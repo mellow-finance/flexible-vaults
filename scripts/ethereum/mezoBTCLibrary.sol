@@ -35,7 +35,8 @@ library mezoBTCLibrary {
         address[] uniswapV3Pools;
         uint256[][] uniswapV3TokenIds;
         address positionManagerV4;
-        address[] uniswapV4Assets;
+        bytes25[] uniswapV4Pools;
+        uint256[][] uniswapV4TokenIds;
     }
 
     function _getUniswapV3Params(Info memory $) internal pure returns (UniswapV3Library.Info memory) {
@@ -50,8 +51,14 @@ library mezoBTCLibrary {
     }
 
     function _getUniswapV4Params(Info memory $) internal pure returns (UniswapV4Library.Info memory) {
-        return
-            UniswapV4Library.Info({curator: $.curator, positionManager: $.positionManagerV4, assets: $.uniswapV4Assets});
+        return UniswapV4Library.Info({
+            curator: $.curator,
+            subvault: $.subvault,
+            subvaultName: $.subvaultName,
+            positionManager: $.positionManagerV4,
+            poolIds: $.uniswapV4Pools,
+            tokenIds: $.uniswapV4TokenIds
+        });
     }
 
     function _getSwapModuleParams(Info memory $) internal pure returns (SwapModuleLibrary.Info memory) {
