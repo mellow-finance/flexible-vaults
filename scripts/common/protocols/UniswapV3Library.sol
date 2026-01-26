@@ -180,15 +180,13 @@ library UniswapV3Library {
         {
             ParameterLibrary.Parameter[] memory innerParameters;
             innerParameters = ParameterLibrary.build("tokenId", "0");
-            innerParameters = innerParameters.add("recipient", $.subvaultName);
+            innerParameters = innerParameters.add("recipient", Strings.toHexString($.subvault));
             innerParameters = innerParameters.addAny("amount0Max");
             innerParameters = innerParameters.addAny("amount1Max");
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
-                        "INonfungiblePositionManager(",
-                        Strings.toHexString($.positionManager),
-                        ").collect(",
+                        "NonfungiblePositionManager.collect(",
                         "tokenId=anyInt,",
                         "recipient=",
                         $.subvaultName,
@@ -217,9 +215,7 @@ library UniswapV3Library {
                 descriptions[iterator++] = JsonLibrary.toJson(
                     string(
                         abi.encodePacked(
-                            "INonfungiblePositionManager(",
-                            Strings.toHexString($.positionManager),
-                            ").increaseLiquidity(",
+                            "NonfungiblePositionManager.increaseLiquidity(",
                             "tokenId=",
                             Strings.toString(tokenIds[j]),
                             ", amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)"
@@ -243,9 +239,7 @@ library UniswapV3Library {
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
-                        "INonfungiblePositionManager(",
-                        Strings.toHexString($.positionManager),
-                        ").decreaseLiquidity(",
+                        "NonfungiblePositionManager.decreaseLiquidity(",
                         "tokenId=anyInt, liquidity=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)"
                     )
                 ),
@@ -260,14 +254,7 @@ library UniswapV3Library {
             ParameterLibrary.Parameter[] memory innerParameters;
             innerParameters = innerParameters.addAny("tokenId");
             descriptions[iterator++] = JsonLibrary.toJson(
-                string(
-                    abi.encodePacked(
-                        "INonfungiblePositionManager(",
-                        Strings.toHexString($.positionManager),
-                        ").burn(",
-                        "tokenId=anyInt)"
-                    )
-                ),
+                string(abi.encodePacked("NonfungiblePositionManager.burn(", "tokenId=anyInt)")),
                 ABILibrary.getABI(IPositionManagerV3.burn.selector),
                 ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
                 innerParameters
