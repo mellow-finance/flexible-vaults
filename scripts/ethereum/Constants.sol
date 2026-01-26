@@ -135,6 +135,8 @@ library Constants {
     address public constant UNISWAP_V3_POOL_TBTC_WBTC_100 = 0x73A38006d23517a1d383C88929B2014F8835B38B;
     bytes25 public constant UNISWAP_V4_POOL_TBTC_WBTC_100 = 0x5459f9d1f649b9f1353a50fd0c8d796b4feb11926bec295cb0;
 
+    address public constant ANGLE_PROTOCOL_DISTRIBUTOR = 0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,

@@ -23,6 +23,7 @@ import {ILidoV3Dashboard} from "./interfaces/ILidoV3Dashboard.sol";
 
 import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
 
+import {IAngleDistributor} from "./interfaces/IAngleDistributor.sol";
 import {IMessageTransmitter} from "./interfaces/IMessageTransmitter.sol";
 import {IMetaAggregationRouterV2} from "./interfaces/IMetaAggregationRouterV2.sol";
 import {IMorpho} from "./interfaces/IMorpho.sol";
@@ -40,7 +41,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[24] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[25] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -64,7 +65,8 @@ library ABILibrary {
             getCCTPInterfaces,
             getKyberswapInterfaces,
             getUniswapV3Interfaces,
-            getUniswapV4Interfaces
+            getUniswapV4Interfaces,
+            getAngleDistributorInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -454,5 +456,14 @@ library ABILibrary {
             '{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint160","name":"amount","type":"uint160"},{"internalType":"uint48","name":"expiration","type":"uint48"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"}';
         abis[1] =
             '{"inputs":[{"internalType":"bytes","name":"unlockData","type":"bytes"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"modifyLiquidities","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getAngleDistributorInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = IAngleDistributor.toggleOperator.selector;
+        abis[0] =
+            '{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"toggleOperator","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }

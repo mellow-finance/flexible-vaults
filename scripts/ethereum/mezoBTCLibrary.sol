@@ -13,6 +13,11 @@ import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} fro
 import {Constants} from "./Constants.sol";
 
 import {CurveLibrary} from "../common/protocols/CurveLibrary.sol";
+
+import {CurveLibrary} from "../common/protocols/CurveLibrary.sol";
+
+import {AngleDistributorLibrary} from "../common/protocols/AngleDistributorLibrary.sol";
+import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
 import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 import {UniswapV3Library} from "../common/protocols/UniswapV3Library.sol";
 import {UniswapV4Library} from "../common/protocols/UniswapV4Library.sol";
@@ -74,6 +79,15 @@ library mezoBTCLibrary {
         });
     }
 
+    function _getAngleDistributorParams(Info memory $) internal pure returns (AngleDistributorLibrary.Info memory) {
+        return AngleDistributorLibrary.Info({
+            curator: $.curator,
+            subvault: $.subvault,
+            subvaultName: $.subvaultName,
+            angleDistributor: Constants.ANGLE_PROTOCOL_DISTRIBUTOR
+        });
+    }
+
     function getBTCSubvault0Data(Info memory $)
         internal
         view
@@ -105,6 +119,10 @@ library mezoBTCLibrary {
         // swap module proofs
         iterator =
             leaves.insert(SwapModuleLibrary.getSwapModuleProofs(bitmaskVerifier, _getSwapModuleParams($)), iterator);
+        // angle distributor proofs
+        iterator = leaves.insert(
+            AngleDistributorLibrary.getAngleDistributorProofs(bitmaskVerifier, _getAngleDistributorParams($)), iterator
+        );
 
         assembly {
             mstore(leaves, iterator)
@@ -122,6 +140,10 @@ library mezoBTCLibrary {
         iterator = descriptions.insert(UniswapV4Library.getUniswapV4Descriptions(_getUniswapV4Params($)), iterator);
         // swap module descriptions
         iterator = descriptions.insert(SwapModuleLibrary.getSwapModuleDescriptions(_getSwapModuleParams($)), iterator);
+        // angle distributor descriptions
+        iterator = descriptions.insert(
+            AngleDistributorLibrary.getAngleDistributorDescriptions(_getAngleDistributorParams($)), iterator
+        );
     }
 
     function _getBTCSubvault0Calls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
@@ -139,6 +161,9 @@ library mezoBTCLibrary {
         iterator = calls_.insert(UniswapV4Library.getUniswapV4Calls(_getUniswapV4Params($)), iterator);
         // swap module calls
         iterator = calls_.insert(SwapModuleLibrary.getSwapModuleCalls(_getSwapModuleParams($)), iterator);
+        // angle distributor calls
+        iterator =
+            calls_.insert(AngleDistributorLibrary.getAngleDistributorCalls(_getAngleDistributorParams($)), iterator);
 
         assembly {
             mstore(calls_, iterator)
