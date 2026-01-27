@@ -12,8 +12,6 @@ import "./DeployAbstractScript.s.sol";
 import {mezoBTCLibrary} from "./mezoBTCLibrary.sol";
 
 contract Deploy is DeployAbstractScript {
-    bytes32 public testWalletPk = keccak256("testWalletPk");
-    address public testWallet = vm.addr(uint256(testWalletPk));
     address[] uniswapV3Pools;
     bytes25[] uniswapV4Pools;
 
@@ -274,15 +272,19 @@ contract Deploy is DeployAbstractScript {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         vm.startBroadcast(deployerPk);
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[2] memory tokens = [Constants.TBTC, Constants.WBTC];
-        address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens));
+        address[3] memory tokens = [Constants.TBTC, Constants.WBTC, Constants.CBBTC];
+        address[] memory actors =
+            ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens, Constants.KYBERSWAP_ROUTER));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE
             )
         );
         swapModule = swapModuleFactory.create(
