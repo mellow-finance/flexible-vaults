@@ -41,9 +41,9 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
         {
-    OracleSubmitter oracleSubmitter = OracleSubmitter(0x9D7534a8A42639bd4d8ee7153a8c014eAEEEcB57);
+            OracleSubmitter oracleSubmitter = OracleSubmitter(0x9D7534a8A42639bd4d8ee7153a8c014eAEEEcB57);
 
-        address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC, Constants.WRBTC));
+            address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC, Constants.WRBTC));
             IOracle oracle = vault.oracle();
             uint224[] memory prices_ = new uint224[](assets_.length);
             uint32[] memory timestamps_ = new uint32[](assets_.length);
