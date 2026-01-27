@@ -30,7 +30,7 @@ contract Deploy is Script, Test {
     address public pauser = 0xC5C0fE8D0DD15a96ec2760c1953799F15ecCe65c;
     // to avoid stack too deep
     address public deployer;
-    Vault vault;
+    Vault vault = Vault(payable(0xdB58329eeBb999cbcC168086A71E5DAfc9CfaFB9));
     TimelockController timelockController;
 
     function run() external {
@@ -40,6 +40,27 @@ contract Deploy is Script, Test {
         console2.log("Deployer: %s", deployer);
 
         vm.startBroadcast(deployerPk);
+        {
+    OracleSubmitter oracleSubmitter = OracleSubmitter(0x9D7534a8A42639bd4d8ee7153a8c014eAEEEcB57);
+
+        address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC, Constants.WRBTC));
+            IOracle oracle = vault.oracle();
+            uint224[] memory prices_ = new uint224[](assets_.length);
+            uint32[] memory timestamps_ = new uint32[](assets_.length);
+            for (uint256 i = 0; i < assets_.length; i++) {
+                IOracle.DetailedReport memory report = oracle.getReport(assets_[i]);
+                prices_[i] = report.priceD18;
+                timestamps_[i] = report.timestamp;
+            }
+            oracleSubmitter.acceptReports(assets_, prices_, timestamps_);
+            oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        }
+
+        IDepositQueue(address(vault.queueAt(Constants.RBTC, 0))).deposit{value: 1 gwei}(
+            1 gwei, address(0), new bytes32[](0)
+        );
+
+        return;
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
 
@@ -118,7 +139,7 @@ contract Deploy is Script, Test {
         });
 
         {
-            (,,,, address vault_) = $.vaultConfigurator.create(initParams);
+            (,,,, address vault_) = $.vaultConfigurator.create{gas: 6800000}(initParams);
             vault = Vault(payable(vault_));
         }
 
@@ -153,8 +174,6 @@ contract Deploy is Script, Test {
         {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             vault.createSubvault(0, proxyAdmin, verifiers[0]);
-            bytes32 merkleRoot;
-            IVerifier(verifiers[0]).setMerkleRoot(merkleRoot);
             riskManager.allowSubvaultAssets(
                 vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC, Constants.WRBTC))
             );
@@ -268,13 +287,12 @@ contract Deploy is Script, Test {
             oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
         }
 
-        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
-
         IDepositQueue(address(vault.queueAt(Constants.RBTC, 0))).deposit{value: 1 gwei}(
             1 gwei, address(0), new bytes32[](0)
         );
+
         vm.stopBroadcast();
+
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
         AcceptanceLibrary.runVaultDeploymentChecks(
             Constants.protocolDeployment(),
@@ -295,7 +313,7 @@ contract Deploy is Script, Test {
             })
         );
 
-        revert("ok");
+        //revert("ok");
     }
 
     function _getExpectedHolders(address timelockController, address oracleSubmitter)
