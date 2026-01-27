@@ -7,12 +7,15 @@ import "../common/DeployVaultFactory.sol";
 import "../common/DeployVaultFactoryRegistry.sol";
 import "../common/OracleSubmitterFactory.sol";
 import "../common/ProofLibrary.sol";
+
 import "./DeployAbstractScript.s.sol";
 import {mezoBTCLibrary} from "./mezoBTCLibrary.sol";
 
 contract Deploy is DeployAbstractScript {
     bytes32 public testWalletPk = keccak256("testWalletPk");
     address public testWallet = vm.addr(uint256(testWalletPk));
+    address[] uniswapV3Pools;
+    bytes25[] uniswapV4Pools;
 
     function run() external {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -28,6 +31,16 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0xa8A3De0c5594A09d0cD4C8abc4e3AaB9BaE03F36)));
+
+        uniswapV3Pools = ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_TBTC_WBTC_100));
+        uniswapV4Pools = ArraysLibrary.makeBytes25Array(abi.encode(Constants.UNISWAP_V4_POOL_TBTC_CBBTC_100));
+
+        //uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        //vm.startBroadcast(deployerPk);
+        //mezoBTCLibrary.mintTokenIdsV4(uniswapV4Pools, vault.subvaultAt(0));
+        //vm.stopBroadcast();
+        //return;
+
         getSubvaultMerkleRoot(0);
         ////revert("ok");
         //_run();
@@ -204,19 +217,20 @@ contract Deploy is DeployAbstractScript {
         holders[index++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
     }
 
-    function getTokenIdsV3() internal pure returns (uint256[][] memory tokenIds) {
+    function getTokenIdsV4(bytes25[] memory pools) internal pure returns (uint256[][] memory tokenIds) {
+        /* there is no way to fetch tokenIds belongs to subvault
+            Minting Uniswap V4 positions at pool tBTC/cbBTC
+            Minted Uniswap V4 tokenId: 143327 [-230316, -230216]
+            Minted Uniswap V4 tokenId: 143330 [-230291, -230241]
+            Minted Uniswap V4 tokenId: 143331 [-230316, -230266]
+            Minted Uniswap V4 tokenId: 143332 [-230266, -230216]
+        */
         tokenIds = new uint256[][](1);
-        tokenIds[0] = new uint256[](2);
-        tokenIds[0][0] = 333123456; // example tokenId
-        tokenIds[0][1] = 333456789; // example tokenId
-        return tokenIds;
-    }
-
-    function getTokenIdsV4() internal pure returns (uint256[][] memory tokenIds) {
-        tokenIds = new uint256[][](1);
-        tokenIds[0] = new uint256[](2);
-        tokenIds[0][0] = 444123456; // example tokenId
-        tokenIds[0][1] = 444456789; // example tokenId
+        tokenIds[0] = new uint256[](4);
+        tokenIds[0][0] = 143327;
+        tokenIds[0][1] = 143330;
+        tokenIds[0][2] = 143331;
+        tokenIds[0][3] = 143332;
         return tokenIds;
     }
 
@@ -227,6 +241,7 @@ contract Deploy is DeployAbstractScript {
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
         Subvault subvault = Subvault(payable(vault.subvaultAt(index)));
+
         (address swapModule, address[] memory swapModuleAssets) = _deploySwapModule(address(subvault));
 
         mezoBTCLibrary.Info memory info = mezoBTCLibrary.Info({
@@ -236,11 +251,10 @@ contract Deploy is DeployAbstractScript {
             subvaultName: "subvault0",
             swapModuleAssets: swapModuleAssets,
             positionManagerV3: Constants.UNISWAP_V3_POSITION_MANAGER,
-            uniswapV3Pools: ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_TBTC_WBTC_100)),
-            uniswapV3TokenIds: getTokenIdsV3(),
+            uniswapV3Pools: uniswapV3Pools,
             positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
-            uniswapV4Pools: ArraysLibrary.makeBytes25Array(abi.encode(Constants.UNISWAP_V4_POOL_TBTC_WBTC_100)),
-            uniswapV4TokenIds: getTokenIdsV4()
+            uniswapV4Pools: uniswapV4Pools,
+            uniswapV4TokenIds: getTokenIdsV4(uniswapV4Pools)
         });
         IVerifier verifier = subvault.verifier();
         IVerifier.VerificationPayload[] memory leaves;
@@ -253,13 +267,12 @@ contract Deploy is DeployAbstractScript {
         vm.prank(lazyVaultAdmin);
         verifier.setMerkleRoot(merkleRoot);
 
-        AcceptanceLibrary._runVerifyCallsChecks(verifier, calls);
+        AcceptanceLibrary.runVerifyCallsChecks(verifier, calls);
     }
 
     function _deploySwapModule(address subvault) internal returns (address swapModule, address[] memory assets) {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
-
+        vm.startBroadcast(deployerPk);
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
         address[2] memory tokens = [Constants.TBTC, Constants.WBTC];
         address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens));
@@ -272,8 +285,6 @@ contract Deploy is DeployAbstractScript {
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
             )
         );
-
-        vm.startBroadcast(deployerPk);
         swapModule = swapModuleFactory.create(
             0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
         );

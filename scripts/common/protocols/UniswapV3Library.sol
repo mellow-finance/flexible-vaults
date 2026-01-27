@@ -44,11 +44,14 @@ library UniswapV3Library {
     }
 
     function getTokenIdsV3(Info memory $) internal view returns (uint256[] memory tokenIds) {
-        uint256 nfts = IPositionManagerV3($.positionManager).balanceOf($.subvault);
+        uint256 length = IPositionManagerV3($.positionManager).balanceOf($.subvault);
         address factory = IPositionManagerV3($.positionManager).factory();
-        tokenIds = new uint256[](nfts);
-        for (uint256 i = 0; i < nfts; i++) {
+        tokenIds = new uint256[](length);
+        for (uint256 i = 0; i < length; i++) {
             uint256 tokenId = IPositionManagerV3($.positionManager).tokenOfOwnerByIndex($.subvault, i);
+            if (IPositionManagerV3($.positionManager).getApproved(tokenId) != address(0)) {
+                revert("TokenID must not have an approval");
+            }
             (,, address token0, address token1, uint24 fee,,,,,,,) =
                 IPositionManagerV3($.positionManager).positions(tokenId);
             for (uint256 j = 0; j < $.pools.length; j++) {

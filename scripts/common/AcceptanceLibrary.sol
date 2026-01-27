@@ -671,7 +671,7 @@ library AcceptanceLibrary {
         }
     }
 
-    function _runVerifyCallsChecks(IVerifier verifier, SubvaultCalls memory calls) internal {
+    function runVerifyCallsChecks(IVerifier verifier, SubvaultCalls memory calls) internal {
         for (uint256 i = 0; i < calls.payloads.length; i++) {
             _verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
         }

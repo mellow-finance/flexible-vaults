@@ -51,6 +51,19 @@ library UniswapV4Library {
         return ArraysLibrary.unique(tokens);
     }
 
+    function checkTokenIds(Info memory $) internal view {
+        for (uint256 i = 0; i < $.tokenIds.length; i++) {
+            for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
+                if (IPositionManagerV4($.positionManager).ownerOf($.tokenIds[i][j]) != $.subvault) {
+                    revert("Subvault is not owner of tokenId");
+                }
+                if (IPositionManagerV4($.positionManager).getApproved($.tokenIds[i][j]) != address(0)) {
+                    revert("TokenID must not have an approval");
+                }
+            }
+        }
+    }
+
     function makeIncreaseLiquidityCalldata(address positionManager, bytes25 poolId, uint256 tokenId)
         internal
         view
@@ -106,6 +119,7 @@ library UniswapV4Library {
         view
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
+        checkTokenIds($);
         address permit2 = IPositionManagerV4($.positionManager).permit2();
         leaves = new IVerifier.VerificationPayload[](50);
         uint256 iterator;
