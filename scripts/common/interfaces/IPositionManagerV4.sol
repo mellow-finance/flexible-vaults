@@ -7,6 +7,10 @@ interface IAllowanceTransfer {
     function approve(address token, address spender, uint160 amount, uint48 expiration) external;
 }
 
+interface IPoolManager {
+    function extsload(bytes32 slot) external view returns (bytes32 value);
+}
+
 interface IPositionManagerV4 is IERC721 {
     /// @notice Returns the key for identifying a pool
     struct PoolKey {

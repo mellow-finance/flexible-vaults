@@ -8,6 +8,8 @@ import {JsonLibrary} from "../common/JsonLibrary.sol";
 import {ParameterLibrary} from "../common/ParameterLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import {Constants} from "./Constants.sol";
@@ -16,6 +18,10 @@ import {CurveLibrary} from "../common/protocols/CurveLibrary.sol";
 
 import {CurveLibrary} from "../common/protocols/CurveLibrary.sol";
 
+import {IPoolUniswapV3, IPositionManagerV3} from "../common/interfaces/IPositionManagerV3.sol";
+import {IAllowanceTransfer, IPositionManagerV4} from "../common/interfaces/IPositionManagerV4.sol";
+
+import {StateLibrary} from "../common/libraries/StateLibrary.sol";
 import {AngleDistributorLibrary} from "../common/protocols/AngleDistributorLibrary.sol";
 import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
 import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
@@ -23,6 +29,7 @@ import {UniswapV3Library} from "../common/protocols/UniswapV3Library.sol";
 import {UniswapV4Library} from "../common/protocols/UniswapV4Library.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import "forge-std/console2.sol";
 
 library mezoBTCLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
@@ -38,7 +45,6 @@ library mezoBTCLibrary {
         address[] swapModuleAssets;
         address positionManagerV3;
         address[] uniswapV3Pools;
-        uint256[][] uniswapV3TokenIds;
         address positionManagerV4;
         bytes25[] uniswapV4Pools;
         uint256[][] uniswapV4TokenIds;
@@ -50,8 +56,7 @@ library mezoBTCLibrary {
             subvault: $.subvault,
             subvaultName: $.subvaultName,
             positionManager: $.positionManagerV3,
-            pools: $.uniswapV3Pools,
-            tokenIds: $.uniswapV3TokenIds
+            pools: $.uniswapV3Pools
         });
     }
 
@@ -134,6 +139,7 @@ library mezoBTCLibrary {
     function _getBTCSubvault0Descriptions(Info memory $) private view returns (string[] memory descriptions) {
         descriptions = new string[](100);
         uint256 iterator = 0;
+
         // uniswapV3 descriptions
         iterator = descriptions.insert(UniswapV3Library.getUniswapV3Descriptions(_getUniswapV3Params($)), iterator);
         // uniswapV4 descriptions
@@ -170,5 +176,144 @@ library mezoBTCLibrary {
         }
 
         calls.calls = calls_;
+    }
+
+    function getRanges(int24 tickSpot, int24 tickRange)
+        internal
+        pure
+        returns (int24[] memory tickLower, int24[] memory tickUpper)
+    {
+        tickLower = new int24[](4);
+        tickUpper = new int24[](4);
+        //    [tickSpot - tickRange / 2, tickSpot - tickRange / 4, tickSpot - tickRange / 2, tickSpot];
+        tickLower[0] = tickSpot - tickRange / 2;
+        tickLower[1] = tickSpot - tickRange / 4;
+        tickLower[2] = tickSpot - tickRange / 2;
+        tickLower[3] = tickSpot;
+        // [tickSpot + tickRange / 2, tickSpot + tickRange / 4, tickSpot, tickSpot + tickRange / 2];
+        tickUpper[0] = tickSpot + tickRange / 2;
+        tickUpper[1] = tickSpot + tickRange / 4;
+        tickUpper[2] = tickSpot;
+        tickUpper[3] = tickSpot + tickRange / 2;
+        return (tickLower, tickUpper);
+    }
+
+    function mintTokenIdsV3(address[] memory pools, address subvault) internal {
+        int24 tickRange = 100;
+        for (uint256 i = 0; i < pools.length; i++) {
+            (, int24 tick,,,,,) = IPoolUniswapV3(pools[i]).slot0();
+            address token0 = IPoolUniswapV3(pools[i]).token0();
+            address token1 = IPoolUniswapV3(pools[i]).token1();
+            console2.log(
+                "Minting Uniswap V3 positions at pool %s %s/%s",
+                pools[i],
+                IERC20Metadata(token0).symbol(),
+                IERC20Metadata(token1).symbol()
+            );
+            IERC20(token0).approve(Constants.UNISWAP_V3_POSITION_MANAGER, type(uint256).max);
+            IERC20(token1).approve(Constants.UNISWAP_V3_POSITION_MANAGER, type(uint256).max);
+            (int24[] memory tickLower, int24[] memory tickUpper) = getRanges(tick, tickRange);
+            for (uint256 j = 0; j < tickLower.length; j++) {
+                IPositionManagerV3.MintParams memory mintParams = IPositionManagerV3.MintParams({
+                    token0: address(token0),
+                    token1: address(token1),
+                    fee: IPoolUniswapV3(pools[i]).fee(),
+                    tickLower: tickLower[j],
+                    tickUpper: tickUpper[j],
+                    amount0Desired: 10 ** (IERC20Metadata(token0).decimals() - 7), // 1e-7 BTC
+                    amount1Desired: 10 ** (IERC20Metadata(token1).decimals() - 7), // 1e-7 BTC
+                    amount0Min: 0,
+                    amount1Min: 0,
+                    recipient: subvault,
+                    deadline: block.timestamp + 1 hours
+                });
+                (uint256 tokenId,,,) = IPositionManagerV3(Constants.UNISWAP_V3_POSITION_MANAGER).mint(mintParams);
+                console2.log(
+                    "Minted Uniswap V3 tokenId: %s [%s, %s]",
+                    tokenId,
+                    signedInt256ToString(int256(tickLower[j])),
+                    signedInt256ToString(int256(tickUpper[j]))
+                );
+            }
+        }
+    }
+
+    function mintTokenIdsV4(bytes25[] memory pools, address subvault) internal {
+        address permit2 = IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).permit2();
+        for (uint256 i = 0; i < pools.length; i++) {
+            IPositionManagerV4.PoolKey memory poolKey =
+                IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).poolKeys(pools[i]);
+            console2.log(
+                "Minting Uniswap V4 positions at pool %s/%s",
+                IERC20Metadata(poolKey.currency0).symbol(),
+                IERC20Metadata(poolKey.currency1).symbol()
+            );
+
+            IERC20(poolKey.currency0).approve(permit2, type(uint256).max);
+            IERC20(poolKey.currency1).approve(permit2, type(uint256).max);
+            IAllowanceTransfer(permit2).approve(
+                poolKey.currency0,
+                Constants.UNISWAP_V4_POSITION_MANAGER,
+                type(uint160).max,
+                uint48(block.timestamp + 1 hours)
+            );
+            IAllowanceTransfer(permit2).approve(
+                poolKey.currency1,
+                Constants.UNISWAP_V4_POSITION_MANAGER,
+                type(uint160).max,
+                uint48(block.timestamp + 1 hours)
+            );
+            bytes memory actions = abi.encodePacked(uint8(0x02), uint8(0x0d)); // mint, settle
+            bytes[] memory params = new bytes[](2);
+            params[1] = abi.encode(poolKey.currency0, poolKey.currency1); // settle params
+
+            int24[] memory tickLower;
+            int24[] memory tickUpper;
+            {
+                (, int24 tick,,) = StateLibrary.getSlot0(
+                    IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).poolManager(), StateLibrary.toId(poolKey)
+                );
+                (tickLower, tickUpper) = getRanges(tick, 100);
+            }
+
+            for (uint256 j = 0; j < tickLower.length; j++) {
+                uint256[] memory decimals = new uint256[](2);
+                decimals[0] = IERC20Metadata(poolKey.currency0).decimals();
+                decimals[1] = IERC20Metadata(poolKey.currency1).decimals();
+                // poolKey, tickLower, tickUpper, liquidity, amount0Max, amount1Max, recipient, hookData
+                params[0] = abi.encode(
+                    poolKey,
+                    tickLower[j],
+                    tickUpper[j],
+                    10 ** ((decimals[0] + decimals[1]) / 2 - 7), // 1e-7 BTC liquidity
+                    10 ** (decimals[0] - 7),
+                    10 ** (decimals[1] - 7),
+                    subvault,
+                    ""
+                );
+
+                uint256 tokenId = IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).nextTokenId();
+                IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
+                    abi.encode(actions, params), block.timestamp + 1 hours
+                );
+                require(
+                    IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).ownerOf(tokenId) == subvault, "Not owner"
+                );
+                console2.log(
+                    "Minted Uniswap V4 tokenId: %s [%s, %s]",
+                    tokenId,
+                    signedInt256ToString(int256(tickLower[j])),
+                    signedInt256ToString(int256(tickUpper[j]))
+                );
+            }
+        }
+    }
+
+    function signedInt256ToString(int256 value) internal pure returns (string memory) {
+        if (value >= 0) {
+            return string(abi.encodePacked("+", Strings.toString(uint256(value))));
+        } else {
+            return string(abi.encodePacked("-", Strings.toString(uint256(-value))));
+        }
     }
 }

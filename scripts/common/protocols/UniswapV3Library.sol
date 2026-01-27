@@ -9,7 +9,7 @@ import {ProofLibrary} from "../ProofLibrary.sol";
 import {ERC20Library} from "./ERC20Library.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-import {IPoolUniswapV3, IPositionManagerV3} from "../interfaces/IPositionManagerV3.sol";
+import {IPoolFactoryUniswapV3, IPoolUniswapV3, IPositionManagerV3} from "../interfaces/IPositionManagerV3.sol";
 import "../interfaces/Imports.sol";
 
 library UniswapV3Library {
@@ -23,7 +23,6 @@ library UniswapV3Library {
         string subvaultName;
         address positionManager;
         address[] pools;
-        uint256[][] tokenIds; // allowed tokenIds per pool
     }
 
     function makeDuplicates(address addr, uint256 count) internal pure returns (address[] memory addrs) {
@@ -42,6 +41,24 @@ library UniswapV3Library {
             tokens[i * 2 + 1] = IPoolUniswapV3(pools[i]).token1();
         }
         return ArraysLibrary.unique(tokens);
+    }
+
+    function getTokenIdsV3(Info memory $) internal view returns (uint256[] memory tokenIds) {
+        uint256 nfts = IPositionManagerV3($.positionManager).balanceOf($.subvault);
+        address factory = IPositionManagerV3($.positionManager).factory();
+        tokenIds = new uint256[](nfts);
+        for (uint256 i = 0; i < nfts; i++) {
+            uint256 tokenId = IPositionManagerV3($.positionManager).tokenOfOwnerByIndex($.subvault, i);
+            (,, address token0, address token1, uint24 fee,,,,,,,) =
+                IPositionManagerV3($.positionManager).positions(tokenId);
+            for (uint256 j = 0; j < $.pools.length; j++) {
+                if (IPoolFactoryUniswapV3(factory).getPool(token0, token1, fee) == $.pools[j]) {
+                    tokenIds[i] = tokenId;
+                    break;
+                }
+            }
+        }
+        return tokenIds;
     }
 
     function getUniswapV3Proofs(BitmaskVerifier bitmaskVerifier, Info memory $)
@@ -97,22 +114,36 @@ library UniswapV3Library {
         );
 
         // allow to call IPositionManager.increaseLiquidity for allowed tokenIds
-        for (uint256 i = 0; i < $.pools.length; i++) {
-            address pool = $.pools[i];
-            uint256[] memory tokenIds = $.tokenIds[i];
-
-            // allow to call IPositionManager.increaseLiquidity with specific tokenIds
-            for (uint256 j = 0; j < tokenIds.length; j++) {
-                leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-                    bitmaskVerifier,
-                    $.curator,
-                    $.positionManager,
-                    0,
+        uint256[] memory tokenIds = getTokenIdsV3($);
+        for (uint256 j = 0; j < tokenIds.length; j++) {
+            leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.positionManager,
+                0,
+                abi.encodeCall(
+                    IPositionManagerV3.increaseLiquidity,
+                    (
+                        IPositionManagerV3.IncreaseLiquidityParams({
+                            tokenId: tokenIds[j],
+                            amount0Desired: 0,
+                            amount1Desired: 0,
+                            amount0Min: 0,
+                            amount1Min: 0,
+                            deadline: 0
+                        })
+                    )
+                ),
+                ProofLibrary.makeBitmask(
+                    true,
+                    true,
+                    true,
+                    true,
                     abi.encodeCall(
                         IPositionManagerV3.increaseLiquidity,
                         (
                             IPositionManagerV3.IncreaseLiquidityParams({
-                                tokenId: tokenIds[j],
+                                tokenId: type(uint256).max,
                                 amount0Desired: 0,
                                 amount1Desired: 0,
                                 amount0Min: 0,
@@ -120,28 +151,9 @@ library UniswapV3Library {
                                 deadline: 0
                             })
                         )
-                    ),
-                    ProofLibrary.makeBitmask(
-                        true,
-                        true,
-                        true,
-                        true,
-                        abi.encodeCall(
-                            IPositionManagerV3.increaseLiquidity,
-                            (
-                                IPositionManagerV3.IncreaseLiquidityParams({
-                                    tokenId: type(uint256).max,
-                                    amount0Desired: 0,
-                                    amount1Desired: 0,
-                                    amount0Min: 0,
-                                    amount1Min: 0,
-                                    deadline: 0
-                                })
-                            )
-                        )
                     )
-                );
-            }
+                )
+            );
         }
 
         // allow to call IPositionManager.decreaseLiquidity with any parameters
@@ -200,32 +212,29 @@ library UniswapV3Library {
         }
 
         // allow to call IPositionManager.increaseLiquidity for allowed tokenIds
-        for (uint256 i = 0; i < $.pools.length; i++) {
-            address pool = $.pools[i];
-            uint256[] memory tokenIds = $.tokenIds[i];
-            // allow to call IPositionManager.increaseLiquidity with specific tokenIds
-            for (uint256 j = 0; j < tokenIds.length; j++) {
-                ParameterLibrary.Parameter[] memory innerParameters;
-                innerParameters = innerParameters.add("tokenId", Strings.toString(tokenIds[j]));
-                innerParameters = innerParameters.addAny("amount0Desired");
-                innerParameters = innerParameters.addAny("amount1Desired");
-                innerParameters = innerParameters.addAny("amount0Min");
-                innerParameters = innerParameters.addAny("amount1Min");
-                innerParameters = innerParameters.addAny("deadline");
-                descriptions[iterator++] = JsonLibrary.toJson(
-                    string(
-                        abi.encodePacked(
-                            "NonfungiblePositionManager.increaseLiquidity(",
-                            "tokenId=",
-                            Strings.toString(tokenIds[j]),
-                            ", amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)"
-                        )
-                    ),
-                    ABILibrary.getABI(IPositionManagerV3.increaseLiquidity.selector),
-                    ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
-                    innerParameters
-                );
-            }
+        uint256[] memory tokenIds = getTokenIdsV3($);
+        // allow to call IPositionManager.increaseLiquidity with specific tokenIds
+        for (uint256 j = 0; j < tokenIds.length; j++) {
+            ParameterLibrary.Parameter[] memory innerParameters;
+            innerParameters = innerParameters.add("tokenId", Strings.toString(tokenIds[j]));
+            innerParameters = innerParameters.addAny("amount0Desired");
+            innerParameters = innerParameters.addAny("amount1Desired");
+            innerParameters = innerParameters.addAny("amount0Min");
+            innerParameters = innerParameters.addAny("amount1Min");
+            innerParameters = innerParameters.addAny("deadline");
+            descriptions[iterator++] = JsonLibrary.toJson(
+                string(
+                    abi.encodePacked(
+                        "NonfungiblePositionManager.increaseLiquidity(",
+                        "tokenId=",
+                        Strings.toString(tokenIds[j]),
+                        ", amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)"
+                    )
+                ),
+                ABILibrary.getABI(IPositionManagerV3.increaseLiquidity.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
+                innerParameters
+            );
         }
 
         // allow to call IPositionManager.decreaseLiquidity
@@ -267,6 +276,7 @@ library UniswapV3Library {
 
     function getUniswapV3Calls(Info memory $) internal view returns (Call[][] memory calls) {
         address[] memory assets = getUniqueAssets($.pools);
+        uint256[] memory tokenIds = getTokenIdsV3($);
 
         uint256 index;
         calls = new Call[][](100);
@@ -310,59 +320,44 @@ library UniswapV3Library {
         }
 
         // increaseLiquidity
-        for (uint256 iPool = 0; iPool < $.pools.length; iPool++) {
-            uint256 forbiddenTokenId = type(uint256).max - 1;
-            uint256[] memory tokenIds = $.tokenIds[iPool];
+        uint256 forbiddenTokenId = type(uint256).max - 1;
 
-            for (uint256 j = 0; j < tokenIds.length; j++) {
-                Call[] memory tmp = new Call[](50);
-                uint256 i = 0;
-                IPositionManagerV3.IncreaseLiquidityParams memory params = IPositionManagerV3.IncreaseLiquidityParams({
-                    tokenId: tokenIds[j],
-                    amount0Desired: 0,
-                    amount1Desired: 0,
-                    amount0Min: 0,
-                    amount1Min: 0,
-                    deadline: 0
-                });
+        for (uint256 j = 0; j < tokenIds.length; j++) {
+            Call[] memory tmp = new Call[](50);
+            uint256 i = 0;
+            IPositionManagerV3.IncreaseLiquidityParams memory params = IPositionManagerV3.IncreaseLiquidityParams({
+                tokenId: tokenIds[j],
+                amount0Desired: 0,
+                amount1Desired: 0,
+                amount0Min: 0,
+                amount1Min: 0,
+                deadline: 0
+            });
 
-                tmp[i++] = Call(
-                    $.curator,
-                    $.positionManager,
-                    0,
-                    abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)),
-                    true
-                );
-                tmp[i++] = Call(
-                    $.curator,
-                    $.positionManager,
-                    0,
-                    abi.encodeWithSelector(IPositionManagerV3.mint.selector, params),
-                    false
-                );
-                tmp[i++] = Call(
-                    address(0xdead),
-                    $.positionManager,
-                    0,
-                    abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)),
-                    false
-                );
-                tmp[i++] = Call(
-                    $.curator, address(0xdead), 0, abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)), false
-                );
-                params.tokenId = forbiddenTokenId;
-                tmp[i++] = Call(
-                    $.curator,
-                    $.positionManager,
-                    0,
-                    abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)),
-                    false
-                );
-                assembly {
-                    mstore(tmp, i)
-                }
-                calls[index++] = tmp;
+            tmp[i++] = Call(
+                $.curator, $.positionManager, 0, abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)), true
+            );
+            tmp[i++] = Call(
+                $.curator, $.positionManager, 0, abi.encodeWithSelector(IPositionManagerV3.mint.selector, params), false
+            );
+            tmp[i++] = Call(
+                address(0xdead),
+                $.positionManager,
+                0,
+                abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)),
+                false
+            );
+            tmp[i++] = Call(
+                $.curator, address(0xdead), 0, abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)), false
+            );
+            params.tokenId = forbiddenTokenId;
+            tmp[i++] = Call(
+                $.curator, $.positionManager, 0, abi.encodeCall(IPositionManagerV3.increaseLiquidity, (params)), false
+            );
+            assembly {
+                mstore(tmp, i)
             }
+            calls[index++] = tmp;
         }
 
         // decreaseLiquidity
