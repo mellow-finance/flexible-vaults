@@ -25,11 +25,11 @@ import "../common/ArraysLibrary.sol";
 contract Deploy is Script, Test {
     // Actors
 
-    address testMultisig = 0xaea17d90C2fECbF171EafdAd7E81CAe49D363981;
-    string public vaultSymbol = "rtv1";
-    string public vaultName = "reportingTestVault1";
+    address testMultisig = 0xaACd51Ec497E9217c986E4F77FfD2F98477734DD;
+    string public vaultSymbol = "MUITV";
+    string public vaultName = "Mellow UI TestVault";
 
-    uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
+    uint256 public constant DEFAULT_MULTIPLIER = 0.9e8;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -89,7 +89,7 @@ contract Deploy is Script, Test {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 3,
+            queueLimit: type(uint256).max,
             roleHolders: holders
         });
 
@@ -110,18 +110,14 @@ contract Deploy is Script, Test {
 
         // subvault setup
         address[] memory verifiers = new address[](2);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
 
         IRiskManager riskManager = vault.riskManager();
         {
             uint256 subvaultIndex = 0;
             verifiers[subvaultIndex] = $.verifierFactory.create(0, testMultisig, abi.encode(vault, bytes32(0)));
             address subvault = vault.createSubvault(0, testMultisig, verifiers[subvaultIndex]); // eth,weth,wsteth
-
             address swapModule = _deploySwapModule0(subvault);
-            bytes32 merkleRoot;
-            (merkleRoot, calls[subvaultIndex]) = _createSubvault0Verifier(vault.subvaultAt(0), swapModule);
-            IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
+            console2.log("SwapModule0:", swapModule);
             riskManager.allowSubvaultAssets(subvault, assets_);
             riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
         }
@@ -129,11 +125,8 @@ contract Deploy is Script, Test {
             uint256 subvaultIndex = 1;
             verifiers[subvaultIndex] = $.verifierFactory.create(0, testMultisig, abi.encode(vault, bytes32(0)));
             address subvault = vault.createSubvault(0, testMultisig, verifiers[subvaultIndex]); // wsteth, weth
-
             address swapModule = _deploySwapModule1(subvault);
-            bytes32 merkleRoot;
-            (merkleRoot, calls[subvaultIndex]) = _createSubvault1Verifier(subvault, swapModule);
-            IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
+            console2.log("SwapModule1:", swapModule);
             riskManager.allowSubvaultAssets(
                 subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
             );
@@ -180,34 +173,6 @@ contract Deploy is Script, Test {
             IOracle.DetailedReport memory r = oracle.getReport(asset);
             oracle.acceptReport(asset, uint256(r.priceD18), uint32(r.timestamp));
         }
-    }
-
-    function _createSubvault0Verifier(address subvault, address swapModule)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        console2.log("SwapModule 0: %s", swapModule);
-        string[] memory descriptions = strETHLibrary.getSubvault0Descriptions(testMultisig, subvault, swapModule);
-        IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = strETHLibrary.getSubvault0Proofs(testMultisig, subvault, swapModule);
-        ProofLibrary.storeProofs(
-            string(abi.encodePacked("ethereum:", vaultSymbol, ":subvault0")), merkleRoot, leaves, descriptions
-        );
-        calls = strETHLibrary.getSubvault0SubvaultCalls(testMultisig, subvault, swapModule, leaves);
-    }
-
-    function _createSubvault1Verifier(address subvault, address swapModule)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        console2.log("SwapModule 1: %s", swapModule);
-        string[] memory descriptions = strETHLibrary.getSubvault1Descriptions(testMultisig, subvault, swapModule);
-        IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = strETHLibrary.getSubvault1Proofs(testMultisig, subvault, swapModule);
-        ProofLibrary.storeProofs(
-            string(abi.encodePacked("ethereum:", vaultSymbol, ":subvault1")), merkleRoot, leaves, descriptions
-        );
-        calls = strETHLibrary.getSubvault1SubvaultCalls(testMultisig, subvault, swapModule, leaves);
     }
 
     function _routers() internal pure returns (address[1] memory result) {
