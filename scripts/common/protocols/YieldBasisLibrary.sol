@@ -38,6 +38,13 @@ library YieldBasisLibrary {
         }
     }
 
+    function getAssets(Info memory $) internal view returns (address[] memory assets) {
+        assets = new address[]($.ybTokens.length);
+        for (uint256 i = 0; i < $.ybTokens.length; i++) {
+            assets[i] = IYieldBasis($.ybTokens[i]).ASSET_TOKEN();
+        }
+    }
+
     function getYieldBasisProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
         internal
         view
@@ -60,24 +67,18 @@ library YieldBasisLibrary {
             iterator
         );
 
+        // ERC20 approve asset to ybTokens
+        iterator = ArraysLibrary.insert(
+            leaves,
+            ERC20Library.getERC20Proofs(
+                bitmaskVerifier, ERC20Library.Info({curator: $.curator, assets: getAssets($), to: $.ybTokens})
+            ),
+            iterator
+        );
+
         for (uint256 i = 0; i < $.ybTokens.length; i++) {
             address ybToken = $.ybTokens[i];
             address gauge = IYieldBasis(ybToken).staker(); // inherited from IRC4626
-            address asset = IYieldBasis(ybToken).ASSET_TOKEN();
-
-            // ERC20 approve asset to ybToken
-            iterator = ArraysLibrary.insert(
-                leaves,
-                ERC20Library.getERC20Proofs(
-                    bitmaskVerifier,
-                    ERC20Library.Info({
-                        curator: $.curator,
-                        assets: ArraysLibrary.makeAddressArray(abi.encode(asset)),
-                        to: ArraysLibrary.makeAddressArray(abi.encode(ybToken))
-                    })
-                ),
-                iterator
-            );
 
             // function deposit(uint256 assets, uint256 debt, uint256 min_shares)
             leaves[iterator++] = ProofLibrary.makeVerificationPayload(
@@ -174,25 +175,21 @@ library YieldBasisLibrary {
             iterator
         );
 
+        // ERC20 approve asset to ybTokens
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            ERC20Library.getERC20Descriptions(
+                ERC20Library.Info({curator: $.curator, assets: getAssets($), to: $.ybTokens})
+            ),
+            iterator
+        );
+
         for (uint256 i = 0; i < $.ybTokens.length; i++) {
             address ybToken = $.ybTokens[i];
             address gauge = IYieldBasis(ybToken).staker(); // inherited from IRC4626
             address asset = IYieldBasis(ybToken).ASSET_TOKEN();
             string memory ybTokenSymbol = IYieldBasis(ybToken).symbol();
             string memory gaugeSymbol = IYieldBasisGauge(gauge).symbol();
-
-            // ERC20 approve asset to ybToken
-            iterator = ArraysLibrary.insert(
-                descriptions,
-                ERC20Library.getERC20Descriptions(
-                    ERC20Library.Info({
-                        curator: $.curator,
-                        assets: ArraysLibrary.makeAddressArray(abi.encode(asset)),
-                        to: ArraysLibrary.makeAddressArray(abi.encode(ybToken))
-                    })
-                ),
-                iterator
-            );
 
             // function deposit(uint256 assets, uint256 debt, uint256 min_shares)
             {
@@ -315,23 +312,17 @@ library YieldBasisLibrary {
             iterator
         );
 
+        // ERC20 approve asset to ybToken
+        iterator = ArraysLibrary.insert(
+            calls,
+            ERC20Library.getERC20Calls(ERC20Library.Info({curator: $.curator, assets: getAssets($), to: $.ybTokens})),
+            iterator
+        );
+
         for (uint256 i = 0; i < $.ybTokens.length; i++) {
             address ybToken = $.ybTokens[i];
             address gauge = IYieldBasis(ybToken).staker(); // inherited from IRC4626
             address asset = IYieldBasis(ybToken).ASSET_TOKEN();
-
-            // ERC20 approve asset to ybToken
-            iterator = ArraysLibrary.insert(
-                calls,
-                ERC20Library.getERC20Calls(
-                    ERC20Library.Info({
-                        curator: $.curator,
-                        assets: ArraysLibrary.makeAddressArray(abi.encode(asset)),
-                        to: ArraysLibrary.makeAddressArray(abi.encode(ybToken))
-                    })
-                ),
-                iterator
-            );
 
             // function deposit(uint256 assets, uint256 debt, uint256 min_shares)
             {

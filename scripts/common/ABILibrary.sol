@@ -39,9 +39,13 @@ import {IWETH} from "./interfaces/IWETH.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import {IYieldBasis} from "./interfaces/IYieldBasis.sol";
+import {IYieldBasisGauge} from "./interfaces/IYieldBasisGauge.sol";
+import {IYieldBasisZap} from "./interfaces/IYieldBasisZap.sol";
+
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[25] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[26] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -66,7 +70,8 @@ library ABILibrary {
             getKyberswapInterfaces,
             getUniswapV3Interfaces,
             getUniswapV4Interfaces,
-            getAngleDistributorInterfaces
+            getAngleDistributorInterfaces,
+            getYieldBasisInterfaces
         ];
         for (uint256 i = 0; i < functions.length; i++) {
             (bytes4[] memory selectors, string[] memory abis) = functions[i]();
@@ -465,5 +470,35 @@ library ABILibrary {
         selectors[0] = IAngleDistributor.toggleOperator.selector;
         abis[0] =
             '{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"toggleOperator","outputs":[],"stateMutability":"nonpayable","type":"function"}';
+    }
+
+    function getYieldBasisInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](6);
+        abis = new string[](6);
+
+        selectors[0] = IYieldBasis.deposit.selector;
+        selectors[1] = IYieldBasis.withdraw.selector;
+        selectors[2] = IYieldBasis.emergency_withdraw.selector;
+        selectors[3] = IYieldBasisZap.deposit_and_stake.selector;
+        selectors[4] = IYieldBasisZap.withdraw_and_unstake.selector;
+        selectors[5] = IYieldBasisGauge.claim.selector;
+
+        abis[0] =
+            '{"inputs":[{"name":"assets","type":"uint256"},{"name":"debt","type":"uint256"},{"name":"min_shares","type":"uint256"}],"name":"deposit","outputs":[{"name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+
+        abis[1] =
+            '{"inputs":[{"name":"shares","type":"uint256"},{"name":"min_assets","type":"uint256"}],"name":"withdraw","outputs":[{"name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+
+        abis[2] =
+            '{"inputs":[{"name":"shares","type":"uint256"}],"name":"emergency_withdraw","outputs":[{"name":"","type":"uint256"},{"name":"","type":"int256"}],"stateMutability":"nonpayable","type":"function"}';
+
+        abis[3] =
+            '{"inputs":[{"name":"gauge","type":"address"},{"name":"assets","type":"uint256"},{"name":"debt","type":"uint256"},{"name":"min_shares","type":"uint256"}],"name":"deposit_and_stake","outputs":[{"name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+
+        abis[4] =
+            '{"inputs":[{"name":"gauge","type":"address"},{"name":"shares","type":"uint256"},{"name":"min_assets","type":"uint256"}],"name":"withdraw_and_unstake","outputs":[{"name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}';
+
+        abis[5] =
+            '{"inputs":[{"name":"reward","type":"address"}],"name":"claim","outputs":[],"stateMutability":"nonpayable","type":"function"}';
     }
 }
