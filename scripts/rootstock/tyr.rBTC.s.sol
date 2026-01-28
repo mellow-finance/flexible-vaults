@@ -128,10 +128,10 @@ contract Deploy is Script, Test {
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
-                    maxAbsoluteDeviation: 0.005 ether,
-                    suspiciousAbsoluteDeviation: 0.001 ether,
-                    maxRelativeDeviationD18: 0.005 ether,
-                    suspiciousRelativeDeviationD18: 0.001 ether,
+                    maxAbsoluteDeviation: 0.05 ether,
+                    suspiciousAbsoluteDeviation: 0.01 ether,
+                    maxRelativeDeviationD18: 0.05 ether,
+                    suspiciousRelativeDeviationD18: 0.01 ether,
                     timeout: 25 days,
                     depositInterval: 1 hours,
                     redeemInterval: 15 days
