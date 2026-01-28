@@ -49,6 +49,7 @@ library Constants {
             consensusImplementation: Consensus(0x0000000Ee53D9707851626b0E8485A8599bE95E7),
             depositQueueImplementation: DepositQueue(payable(0x0000000eED98Aca517473d134Cc1a79c5a23b591)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000009A6488c99272A1ae297b7f364A348ba55)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0x0000000D38799D88008747b874822f55f0D35F6a)),
             redeemQueueImplementation: RedeemQueue(payable(0x0000000A37A76557eAf5FF84D537C19aefb61c69)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x00000009839691F13A8B2Bfb48a02338d5BB4282)),
             feeManagerImplementation: FeeManager(0x0000000852CF76C1c3dd8e74c817c442667f59D3),

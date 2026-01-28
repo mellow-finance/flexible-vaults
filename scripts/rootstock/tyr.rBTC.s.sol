@@ -28,9 +28,13 @@ contract Deploy is Script, Test {
     address public curator = 0xc67F082359f006B1D7d1666f1a43976C9E0Aea44;
     address public feeManagerOwner = lazyVaultAdmin;
     address public pauser = 0xC5C0fE8D0DD15a96ec2760c1953799F15ecCe65c;
+
+    uint24 performanceFeeD6 = 2e5; // 20%
+    uint24 protocolFeeD6 = 2e4; // 2%
+
     // to avoid stack too deep
     address public deployer;
-    Vault vault = Vault(payable(0xdB58329eeBb999cbcC168086A71E5DAfc9CfaFB9));
+    Vault vault = Vault(payable(0));
     TimelockController timelockController;
 
     function run() external {
@@ -40,27 +44,25 @@ contract Deploy is Script, Test {
         console2.log("Deployer: %s", deployer);
 
         vm.startBroadcast(deployerPk);
-        {
-            OracleSubmitter oracleSubmitter = OracleSubmitter(0x9D7534a8A42639bd4d8ee7153a8c014eAEEEcB57);
 
-            address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC, Constants.WRBTC));
-            IOracle oracle = vault.oracle();
-            uint224[] memory prices_ = new uint224[](assets_.length);
-            uint32[] memory timestamps_ = new uint32[](assets_.length);
-            for (uint256 i = 0; i < assets_.length; i++) {
-                IOracle.DetailedReport memory report = oracle.getReport(assets_[i]);
-                prices_[i] = report.priceD18;
-                timestamps_[i] = report.timestamp;
-            }
-            oracleSubmitter.acceptReports(assets_, prices_, timestamps_);
-            oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
-        }
-
-        IDepositQueue(address(vault.queueAt(Constants.RBTC, 0))).deposit{value: 1 gwei}(
-            1 gwei, address(0), new bytes32[](0)
-        );
-
-        return;
+        //{
+        //    OracleSubmitter oracleSubmitter = OracleSubmitter(0x9D7534a8A42639bd4d8ee7153a8c014eAEEEcB57);
+        //    address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC));
+        //    IOracle oracle = vault.oracle();
+        //    uint224[] memory prices_ = new uint224[](assets_.length);
+        //    uint32[] memory timestamps_ = new uint32[](assets_.length);
+        //    for (uint256 i = 0; i < assets_.length; i++) {
+        //        IOracle.DetailedReport memory report = oracle.getReport(assets_[i]);
+        //        prices_[i] = report.priceD18;
+        //        timestamps_[i] = report.timestamp;
+        //    }
+        //    oracleSubmitter.acceptReports(assets_, prices_, timestamps_);
+        //    oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        //}
+        //IDepositQueue(address(vault.queueAt(Constants.RBTC, 0))).deposit{value: 1 gwei}(
+        //    1 gwei, address(0), new bytes32[](0)
+        //);
+        //return;
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
 
@@ -101,12 +103,15 @@ contract Deploy is Script, Test {
             holders[i++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
+            // allow to operate with whitelist and flags
+            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_ACCOUNT_INFO_ROLE, deployer);
+            
             assembly {
                 mstore(holders, i)
             }
         }
-        address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC, Constants.WRBTC));
+        address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC));
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -116,7 +121,7 @@ contract Deploy is Script, Test {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "Tyr Capital", "Tyr.rBTC"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(2e5), uint24(2e4)),
+            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), performanceFeeD6, protocolFeeD6),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
@@ -126,15 +131,15 @@ contract Deploy is Script, Test {
                     suspiciousAbsoluteDeviation: type(uint224).max,
                     maxRelativeDeviationD18: type(uint64).max,
                     suspiciousRelativeDeviationD18: type(uint64).max,
-                    timeout: 1,
-                    depositInterval: 1,
-                    redeemInterval: 1
+                    timeout: 25 days,
+                    depositInterval: 1 hours,
+                    redeemInterval: 15 days
                 }),
                 assets_
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 4,
+            queueLimit: 2,
             roleHolders: holders
         });
 
@@ -143,11 +148,28 @@ contract Deploy is Script, Test {
             vault = Vault(payable(vault_));
         }
 
+        // set whitelist and transferWhitelist
+        vault.shareManager().setFlags(
+            IShareManager.Flags({
+                hasMintPause: false,
+                hasBurnPause: false,
+                hasTransferPause: false,
+                hasWhitelist: true,
+                hasTransferWhitelist: true,
+                globalLockup: 0
+            })
+        );
+
+        // set feeManagerOwner as whitelisted depositor
+        vault.shareManager().setAccountInfo(feeManagerOwner, IShareManager.AccountInfo({
+            canDeposit: true,
+            canTransfer: false,
+            isBlacklisted: false
+        }));
+
         // queues setup
         vault.createQueue(0, true, proxyAdmin, Constants.RBTC, new bytes(0));
         vault.createQueue(0, false, proxyAdmin, Constants.RBTC, new bytes(0));
-        vault.createQueue(0, true, proxyAdmin, Constants.WRBTC, new bytes(0));
-        vault.createQueue(0, false, proxyAdmin, Constants.WRBTC, new bytes(0));
 
         // fee manager setup
         vault.feeManager().setBaseAsset(address(vault), Constants.RBTC);
@@ -175,7 +197,7 @@ contract Deploy is Script, Test {
             verifiers[0] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             vault.createSubvault(0, proxyAdmin, verifiers[0]);
             riskManager.allowSubvaultAssets(
-                vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC, Constants.WRBTC))
+                vault.subvaultAt(0), ArraysLibrary.makeAddressArray(abi.encode(Constants.RBTC))
             );
             riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         }
@@ -234,7 +256,8 @@ contract Deploy is Script, Test {
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
         vault.renounceRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
-        vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
+        vault.renounceRole(Permissions.SET_FLAGS_ROLE, deployer);
+        vault.renounceRole(Permissions.SET_ACCOUNT_INFO_ROLE, deployer);
 
         console2.log("Vault %s", address(vault));
 
@@ -251,6 +274,7 @@ contract Deploy is Script, Test {
         }
 
         console2.log("Oracle %s", address(vault.oracle()));
+        console2.log("OracleSubmitter %s", address(oracleSubmitter));
         console2.log("ShareManager %s", address(vault.shareManager()));
         console2.log("FeeManager %s", address(vault.feeManager()));
         console2.log("RiskManager %s", address(vault.riskManager()));
@@ -268,7 +292,6 @@ contract Deploy is Script, Test {
                 reports[i].asset = assets_[i];
             }
             reports[0].priceD18 = 1 ether;
-            reports[1].priceD18 = 1 ether;
 
             oracleSubmitter.submitReports(reports);
             oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
@@ -286,10 +309,6 @@ contract Deploy is Script, Test {
             oracleSubmitter.acceptReports(assets_, prices_, timestamps_);
             oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
         }
-
-        IDepositQueue(address(vault.queueAt(Constants.RBTC, 0))).deposit{value: 1 gwei}(
-            1 gwei, address(0), new bytes32[](0)
-        );
 
         vm.stopBroadcast();
 
@@ -313,7 +332,7 @@ contract Deploy is Script, Test {
             })
         );
 
-        //revert("ok");
+        revert("ok");
     }
 
     function _getExpectedHolders(address timelockController, address oracleSubmitter)
