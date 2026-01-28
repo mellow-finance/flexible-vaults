@@ -144,6 +144,11 @@ library Constants {
 
     address public constant ANGLE_PROTOCOL_DISTRIBUTOR = 0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae;
 
+    address public constant YIELD_BASIS_ZAP = 0xE862bC39B8D5F12D8c4117d3e2D493Dc20051EC6;
+    address public constant YIELD_BASIS_TBTC_TOKEN = 0xaC0a340C1644321D0BBc6404946d828c1EBfAC92;
+    address public constant YIELD_BASIS_WBTC_TOKEN = 0xfBF3C16676055776Ab9B286492D8f13e30e2E763;
+    address public constant YIELD_BASIS_CBBTC_TOKEN = 0xAC0cfa7742069a8af0c63e14FFD0fe6b3e1Bf8D2;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,

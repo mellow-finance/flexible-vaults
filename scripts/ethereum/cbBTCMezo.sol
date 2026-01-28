@@ -38,11 +38,17 @@ contract Deploy is DeployAbstractScript {
         //mezoBTCLibrary.mintTokenIdsV4(uniswapV4Pools, vault.subvaultAt(0));
         //vm.stopBroadcast();
         //return;
+        {
+            address verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            vm.startPrank(lazyVaultAdmin);
+            vault.grantRole(Permissions.CREATE_SUBVAULT_ROLE, lazyVaultAdmin);
+            vault.createSubvault(0, proxyAdmin, verifier);
+            vm.stopPrank();
+        }
 
-        getSubvaultMerkleRoot(0);
-        ////revert("ok");
+        getSubvaultMerkleRoot(1);
         //_run();
-        //revert("ok");
+        revert("ok");
     }
 
     function deposit(address asset, address queue) internal {
@@ -120,12 +126,17 @@ contract Deploy is DeployAbstractScript {
         override
         returns (IDeployVaultFactory.SubvaultParams[] memory subvaultParams)
     {
-        subvaultParams = new IDeployVaultFactory.SubvaultParams[](1);
+        subvaultParams = new IDeployVaultFactory.SubvaultParams[](2);
 
         subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.CBBTC));
         subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[0].verifierVersion = 0;
         subvaultParams[0].limit = 50 ether; // 50 cbBTC
+
+        subvaultParams[1].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.CBBTC));
+        subvaultParams[1].version = uint256(SubvaultVersion.DEFAULT);
+        subvaultParams[1].verifierVersion = 0;
+        subvaultParams[1].limit = 50 ether; // 50 cbBTC
     }
 
     /// @dev fill in queue parameters
@@ -228,27 +239,21 @@ contract Deploy is DeployAbstractScript {
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
         Subvault subvault = Subvault(payable(vault.subvaultAt(index)));
-        (address swapModule, address[] memory swapModuleAssets) = _deploySwapModule(address(subvault));
-
-        mezoBTCLibrary.Info memory info = mezoBTCLibrary.Info({
-            curator: curator,
-            subvault: address(subvault),
-            swapModule: swapModule,
-            subvaultName: "subvault0",
-            swapModuleAssets: swapModuleAssets,
-            positionManagerV3: Constants.UNISWAP_V3_POSITION_MANAGER,
-            uniswapV3Pools: uniswapV3Pools,
-            positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
-            uniswapV4Pools: uniswapV4Pools,
-            uniswapV4TokenIds: getTokenIdsV4(uniswapV4Pools)
-        });
         IVerifier verifier = subvault.verifier();
+
         IVerifier.VerificationPayload[] memory leaves;
         string[] memory descriptions;
+        string memory jsonSubvaultName;
 
-        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault0Data(info);
+        if (index == 0) {
+            (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault0MerkleRoot(address(subvault));
+        } else if (index == 1) {
+            (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault1MerkleRoot(address(subvault));
+        } else {
+            revert("Invalid subvault index");
+        }
 
-        ProofLibrary.storeProofs("ethereum:mbhcbBTC:subvault0", merkleRoot, leaves, descriptions);
+        ProofLibrary.storeProofs(jsonSubvaultName, merkleRoot, leaves, descriptions);
 
         vm.prank(lazyVaultAdmin);
         verifier.setMerkleRoot(merkleRoot);
@@ -256,15 +261,21 @@ contract Deploy is DeployAbstractScript {
         AcceptanceLibrary.runVerifyCallsChecks(verifier, calls);
     }
 
-    function _deploySwapModule(address subvault) internal returns (address swapModule, address[] memory assets) {
-        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
-
-        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+    function _getSubvault0MerkleRoot(address subvault)
+        private
+        returns (
+            bytes32 merkleRoot,
+            IVerifier.VerificationPayload[] memory leaves,
+            string[] memory descriptions,
+            SubvaultCalls memory calls,
+            string memory jsonSubvaultName
+        )
+    {
         // allow to swap not allowed assets because of LPing
-        address[2] memory tokens = [Constants.CBBTC, Constants.TBTC];
-        address[] memory actors =
-            ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens, Constants.KYBERSWAP_ROUTER));
+        address[2] memory swapModuleAssets = [Constants.CBBTC, Constants.TBTC];
+        address[] memory actors = ArraysLibrary.makeAddressArray(
+            abi.encode(curator, swapModuleAssets, swapModuleAssets, Constants.KYBERSWAP_ROUTER)
+        );
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
@@ -275,6 +286,58 @@ contract Deploy is DeployAbstractScript {
                 Permissions.SWAP_MODULE_ROUTER_ROLE
             )
         );
+        address swapModule = _deploySwapModule(subvault, actors, permissions);
+
+        mezoBTCLibrary.Info0 memory info = mezoBTCLibrary.Info0({
+            curator: curator,
+            subvault: subvault,
+            swapModule: swapModule,
+            subvaultName: "subvault0",
+            swapModuleAssets: ArraysLibrary.makeAddressArray(abi.encode(swapModuleAssets)),
+            positionManagerV3: Constants.UNISWAP_V3_POSITION_MANAGER,
+            uniswapV3Pools: uniswapV3Pools,
+            positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
+            uniswapV4Pools: uniswapV4Pools,
+            uniswapV4TokenIds: getTokenIdsV4(uniswapV4Pools)
+        });
+
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault0Data(info);
+        jsonSubvaultName = "ethereum:mbhcbBTC:subvault0";
+    }
+
+    function _getSubvault1MerkleRoot(address subvault)
+        private
+        returns (
+            bytes32 merkleRoot,
+            IVerifier.VerificationPayload[] memory leaves,
+            string[] memory descriptions,
+            SubvaultCalls memory calls,
+            string memory jsonSubvaultName
+        )
+    {
+        mezoBTCLibrary.Info1 memory info = mezoBTCLibrary.Info1({
+            curator: curator,
+            subvault: subvault,
+            subvaultName: "subvault1",
+            yieldBasisTokens: ArraysLibrary.makeAddressArray(abi.encode(Constants.YIELD_BASIS_CBBTC_TOKEN))
+        });
+
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault1Data(info);
+        jsonSubvaultName = "ethereum:mbhcbBTC:subvault1";
+    }
+
+    function _deploySwapModule(address subvault, address[] memory actors, bytes32[] memory permissions)
+        internal
+        returns (address swapModule)
+    {
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
+
+        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
 
         vm.startBroadcast(deployerPk);
         swapModule = swapModuleFactory.create(
@@ -282,6 +345,6 @@ contract Deploy is DeployAbstractScript {
         );
         console2.log("Deployed SwapModule at", swapModule);
         vm.stopBroadcast();
-        return (swapModule, ArraysLibrary.makeAddressArray(abi.encode(tokens)));
+        return swapModule;
     }
 }

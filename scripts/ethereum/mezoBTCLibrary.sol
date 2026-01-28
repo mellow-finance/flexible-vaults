@@ -27,6 +27,7 @@ import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
 import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 import {UniswapV3Library} from "../common/protocols/UniswapV3Library.sol";
 import {UniswapV4Library} from "../common/protocols/UniswapV4Library.sol";
+import {YieldBasisLibrary} from "../common/protocols/YieldBasisLibrary.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import "forge-std/console2.sol";
@@ -37,7 +38,7 @@ library mezoBTCLibrary {
     using ArraysLibrary for string[];
     using ArraysLibrary for Call[][];
 
-    struct Info {
+    struct Info0 {
         address curator;
         address subvault;
         address swapModule;
@@ -50,7 +51,14 @@ library mezoBTCLibrary {
         uint256[][] uniswapV4TokenIds;
     }
 
-    function _getUniswapV3Params(Info memory $) internal pure returns (UniswapV3Library.Info memory) {
+    struct Info1 {
+        address curator;
+        address subvault;
+        string subvaultName;
+        address[] yieldBasisTokens;
+    }
+
+    function _getUniswapV3Params(Info0 memory $) internal pure returns (UniswapV3Library.Info memory) {
         return UniswapV3Library.Info({
             curator: $.curator,
             subvault: $.subvault,
@@ -60,7 +68,7 @@ library mezoBTCLibrary {
         });
     }
 
-    function _getUniswapV4Params(Info memory $) internal pure returns (UniswapV4Library.Info memory) {
+    function _getUniswapV4Params(Info0 memory $) internal pure returns (UniswapV4Library.Info memory) {
         return UniswapV4Library.Info({
             curator: $.curator,
             subvault: $.subvault,
@@ -71,7 +79,7 @@ library mezoBTCLibrary {
         });
     }
 
-    function _getSwapModuleParams(Info memory $) internal pure returns (SwapModuleLibrary.Info memory) {
+    function _getSwapModuleParams(Info0 memory $) internal pure returns (SwapModuleLibrary.Info memory) {
         address[] memory curators = new address[](1);
         curators[0] = $.curator;
 
@@ -84,7 +92,7 @@ library mezoBTCLibrary {
         });
     }
 
-    function _getAngleDistributorParams(Info memory $) internal pure returns (AngleDistributorLibrary.Info memory) {
+    function _getAngleDistributorParams(Info0 memory $) internal pure returns (AngleDistributorLibrary.Info memory) {
         return AngleDistributorLibrary.Info({
             curator: $.curator,
             subvault: $.subvault,
@@ -93,7 +101,17 @@ library mezoBTCLibrary {
         });
     }
 
-    function getBTCSubvault0Data(Info memory $)
+    function _getYieldBasisParams(Info1 memory $) internal pure returns (YieldBasisLibrary.Info memory) {
+        return YieldBasisLibrary.Info({
+            curator: $.curator,
+            subvault: $.subvault,
+            subvaultName: $.subvaultName,
+            zap: Constants.YIELD_BASIS_ZAP,
+            ybTokens: $.yieldBasisTokens
+        });
+    }
+
+    function getBTCSubvault0Data(Info0 memory $)
         internal
         view
         returns (
@@ -108,7 +126,26 @@ library mezoBTCLibrary {
         calls = _getBTCSubvault0Calls($, leaves);
     }
 
-    function _getBTCSubvault0Proofs(Info memory $)
+    function getBTCSubvault1Data(Info1 memory $)
+        internal
+        view
+        returns (
+            bytes32 merkleRoot,
+            IVerifier.VerificationPayload[] memory leaves,
+            string[] memory descriptions,
+            SubvaultCalls memory calls
+        )
+    {
+        (merkleRoot, leaves) = _getBTCSubvault1Proofs($);
+        descriptions = _getBTCSubvault1Descriptions($);
+        calls = _getBTCSubvault1Calls($, leaves);
+    }
+
+    /*--------------------------------------------------------------------------------------
+                            Subvault 0 (Uniswap V3, V4, Swap Module, Angle Distributor)                            
+    --------------------------------------------------------------------------------------*/
+
+    function _getBTCSubvault0Proofs(Info0 memory $)
         private
         view
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
@@ -136,7 +173,7 @@ library mezoBTCLibrary {
         return ProofLibrary.generateMerkleProofs(leaves);
     }
 
-    function _getBTCSubvault0Descriptions(Info memory $) private view returns (string[] memory descriptions) {
+    function _getBTCSubvault0Descriptions(Info0 memory $) private view returns (string[] memory descriptions) {
         descriptions = new string[](100);
         uint256 iterator = 0;
 
@@ -150,9 +187,12 @@ library mezoBTCLibrary {
         iterator = descriptions.insert(
             AngleDistributorLibrary.getAngleDistributorDescriptions(_getAngleDistributorParams($)), iterator
         );
+        assembly {
+            mstore(descriptions, iterator)
+        }
     }
 
-    function _getBTCSubvault0Calls(Info memory $, IVerifier.VerificationPayload[] memory leaves)
+    function _getBTCSubvault0Calls(Info0 memory $, IVerifier.VerificationPayload[] memory leaves)
         private
         view
         returns (SubvaultCalls memory calls)
@@ -170,6 +210,60 @@ library mezoBTCLibrary {
         // angle distributor calls
         iterator =
             calls_.insert(AngleDistributorLibrary.getAngleDistributorCalls(_getAngleDistributorParams($)), iterator);
+
+        calls.calls = calls_;
+
+        assembly {
+            mstore(calls_, iterator)
+        }
+    }
+
+    /*----------------------------------------------------------------------------
+                            Subvault 1 (YieldBasis)                             
+    ----------------------------------------------------------------------------*/
+    function _getBTCSubvault1Proofs(Info1 memory $)
+        private
+        view
+        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+    {
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](100);
+        uint256 iterator = 0;
+
+        // yieldBasis proofs
+        iterator =
+            leaves.insert(YieldBasisLibrary.getYieldBasisProofs(bitmaskVerifier, _getYieldBasisParams($)), iterator);
+
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function _getBTCSubvault1Descriptions(Info1 memory $) private view returns (string[] memory descriptions) {
+        descriptions = new string[](100);
+        uint256 iterator = 0;
+
+        // yieldBasis descriptions
+        iterator = descriptions.insert(YieldBasisLibrary.getYieldBasisDescriptions(_getYieldBasisParams($)), iterator);
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function _getBTCSubvault1Calls(Info1 memory $, IVerifier.VerificationPayload[] memory leaves)
+        private
+        view
+        returns (SubvaultCalls memory calls)
+    {
+        calls.payloads = leaves;
+        Call[][] memory calls_ = new Call[][](100);
+        uint256 iterator = 0;
+
+        // yieldBasis calls
+        iterator = calls_.insert(YieldBasisLibrary.getYieldBasisCalls(_getYieldBasisParams($)), iterator);
 
         assembly {
             mstore(calls_, iterator)
