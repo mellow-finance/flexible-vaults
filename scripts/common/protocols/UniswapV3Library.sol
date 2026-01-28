@@ -69,6 +69,10 @@ library UniswapV3Library {
         view
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
+        if ($.pools.length == 0) {
+            return new IVerifier.VerificationPayload[](0);
+        }
+
         leaves = new IVerifier.VerificationPayload[](100);
         uint256 iterator;
         address[] memory assets = getUniqueAssets($.pools);
@@ -174,6 +178,9 @@ library UniswapV3Library {
     }
 
     function getUniswapV3Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
+        if ($.pools.length == 0) {
+            return new string[](0);
+        }
         address[] memory assets = getUniqueAssets($.pools);
 
         uint256 iterator;
@@ -278,6 +285,9 @@ library UniswapV3Library {
     }
 
     function getUniswapV3Calls(Info memory $) internal view returns (Call[][] memory calls) {
+        if ($.pools.length == 0) {
+            return new Call[][](0);
+        }
         address[] memory assets = getUniqueAssets($.pools);
         uint256[] memory tokenIds = getTokenIdsV3($);
 

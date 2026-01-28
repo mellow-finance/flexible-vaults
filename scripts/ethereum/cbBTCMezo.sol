@@ -29,7 +29,7 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x63a76a4a94cAB1DD49fcf0d7E3FC53a78AC8Ec5C)));
 
-        uniswapV3Pools = ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_WBTC_CBBTC_100));
+        //uniswapV3Pools = ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_WBTC_CBBTC_100));
         uniswapV4Pools = ArraysLibrary.makeBytes25Array(abi.encode(Constants.UNISWAP_V4_POOL_TBTC_CBBTC_100));
 
         //uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -42,7 +42,7 @@ contract Deploy is DeployAbstractScript {
         getSubvaultMerkleRoot(0);
         ////revert("ok");
         //_run();
-        revert("ok");
+        //revert("ok");
     }
 
     function deposit(address asset, address queue) internal {
@@ -262,7 +262,7 @@ contract Deploy is DeployAbstractScript {
 
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
         // allow to swap not allowed assets because of LPing
-        address[3] memory tokens = [Constants.CBBTC, Constants.WBTC, Constants.TBTC];
+        address[2] memory tokens = [Constants.CBBTC, Constants.TBTC];
         address[] memory actors =
             ArraysLibrary.makeAddressArray(abi.encode(curator, tokens, tokens, Constants.KYBERSWAP_ROUTER));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
@@ -270,8 +270,6 @@ contract Deploy is DeployAbstractScript {
                 Permissions.SWAP_MODULE_CALLER_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                 Permissions.SWAP_MODULE_ROUTER_ROLE
@@ -282,6 +280,7 @@ contract Deploy is DeployAbstractScript {
         swapModule = swapModuleFactory.create(
             0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
         );
+        console2.log("Deployed SwapModule at", swapModule);
         vm.stopBroadcast();
         return (swapModule, ArraysLibrary.makeAddressArray(abi.encode(tokens)));
     }

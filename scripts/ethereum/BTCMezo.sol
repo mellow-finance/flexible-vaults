@@ -42,7 +42,7 @@ contract Deploy is DeployAbstractScript {
         getSubvaultMerkleRoot(0);
         ////revert("ok");
         //_run();
-        revert("ok");
+        //revert("ok");
     }
 
     function deposit(address asset, address queue) internal {
