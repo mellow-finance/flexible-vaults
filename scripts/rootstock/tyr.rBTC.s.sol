@@ -27,6 +27,7 @@ contract Deploy is Script, Test {
     address public oracleUpdater = 0xC5C0fE8D0DD15a96ec2760c1953799F15ecCe65c;
     address public curator = 0xc67F082359f006B1D7d1666f1a43976C9E0Aea44;
     address public feeManagerOwner = lazyVaultAdmin;
+    address public feeRecipient = lazyVaultAdmin;
     address public pauser = 0xC5C0fE8D0DD15a96ec2760c1953799F15ecCe65c;
 
     uint24 performanceFeeD6 = 2e5; // 20%
@@ -121,16 +122,16 @@ contract Deploy is Script, Test {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), "Tyr Capital", "Tyr.rBTC"),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), performanceFeeD6, protocolFeeD6),
+            feeManagerParams: abi.encode(deployer, feeRecipient, uint24(0), uint24(0), performanceFeeD6, protocolFeeD6),
             riskManagerVersion: 0,
             riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
-                    maxAbsoluteDeviation: type(uint224).max,
-                    suspiciousAbsoluteDeviation: type(uint224).max,
-                    maxRelativeDeviationD18: type(uint64).max,
-                    suspiciousRelativeDeviationD18: type(uint64).max,
+                    maxAbsoluteDeviation: 0.005 ether,
+                    suspiciousAbsoluteDeviation: 0.001 ether,
+                    maxRelativeDeviationD18: 0.005 ether,
+                    suspiciousRelativeDeviationD18: 0.001 ether,
                     timeout: 25 days,
                     depositInterval: 1 hours,
                     redeemInterval: 15 days
@@ -160,8 +161,8 @@ contract Deploy is Script, Test {
             })
         );
 
-        // set feeManagerOwner as whitelisted depositor
-        vault.shareManager().setAccountInfo(feeManagerOwner, IShareManager.AccountInfo({
+        // set feeRecipient as whitelisted depositor
+        vault.shareManager().setAccountInfo(feeRecipient, IShareManager.AccountInfo({
             canDeposit: true,
             canTransfer: false,
             isBlacklisted: false
