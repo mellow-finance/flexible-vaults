@@ -30,8 +30,8 @@ contract Deploy is Script, Test {
     address public feeRecipient = lazyVaultAdmin;
     address public pauser = 0xC5C0fE8D0DD15a96ec2760c1953799F15ecCe65c;
 
-    uint24 performanceFeeD6 = 2e5; // 20%
-    uint24 protocolFeeD6 = 2e4; // 2%
+    uint24 performanceFeeD6 = 0; // 20%
+    uint24 protocolFeeD6 = 0; // 2%
 
     // to avoid stack too deep
     address public deployer;
@@ -107,7 +107,7 @@ contract Deploy is Script, Test {
             // allow to operate with whitelist and flags
             holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.SET_ACCOUNT_INFO_ROLE, deployer);
-            
+
             assembly {
                 mstore(holders, i)
             }
@@ -133,7 +133,7 @@ contract Deploy is Script, Test {
                     maxRelativeDeviationD18: 0.05 ether,
                     suspiciousRelativeDeviationD18: 0.01 ether,
                     timeout: 25 days,
-                    depositInterval: 1 hours,
+                    depositInterval: 72 hours,
                     redeemInterval: 15 days
                 }),
                 assets_
@@ -162,11 +162,9 @@ contract Deploy is Script, Test {
         );
 
         // set feeRecipient as whitelisted depositor
-        vault.shareManager().setAccountInfo(feeRecipient, IShareManager.AccountInfo({
-            canDeposit: true,
-            canTransfer: false,
-            isBlacklisted: false
-        }));
+        //vault.shareManager().setAccountInfo(
+        //    feeRecipient, IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
+        //);
 
         // queues setup
         vault.createQueue(0, true, proxyAdmin, Constants.RBTC, new bytes(0));
