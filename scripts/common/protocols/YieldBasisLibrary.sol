@@ -45,6 +45,13 @@ library YieldBasisLibrary {
         }
     }
 
+    function makeDuplicates(address addr, uint256 count) internal pure returns (address[] memory addrs) {
+        addrs = new address[](count);
+        for (uint256 i = 0; i < count; i++) {
+            addrs[i] = addr;
+        }
+    }
+
     function getYieldBasisProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
         internal
         view
@@ -67,11 +74,23 @@ library YieldBasisLibrary {
             iterator
         );
 
+        address[] memory assets = getAssets($);
+
         // ERC20 approve asset to ybTokens
         iterator = ArraysLibrary.insert(
             leaves,
             ERC20Library.getERC20Proofs(
-                bitmaskVerifier, ERC20Library.Info({curator: $.curator, assets: getAssets($), to: $.ybTokens})
+                bitmaskVerifier, ERC20Library.Info({curator: $.curator, assets: assets, to: $.ybTokens})
+            ),
+            iterator
+        );
+
+        // ERC20 approve asset to zap
+        iterator = ArraysLibrary.insert(
+            leaves,
+            ERC20Library.getERC20Proofs(
+                bitmaskVerifier,
+                ERC20Library.Info({curator: $.curator, assets: assets, to: makeDuplicates($.zap, assets.length)})
             ),
             iterator
         );
@@ -175,21 +194,27 @@ library YieldBasisLibrary {
             iterator
         );
 
+        address[] memory assets = getAssets($);
+
         // ERC20 approve asset to ybTokens
         iterator = ArraysLibrary.insert(
             descriptions,
+            ERC20Library.getERC20Descriptions(ERC20Library.Info({curator: $.curator, assets: assets, to: $.ybTokens})),
+            iterator
+        );
+
+        // ERC20 approve asset to zap
+        iterator = ArraysLibrary.insert(
+            descriptions,
             ERC20Library.getERC20Descriptions(
-                ERC20Library.Info({curator: $.curator, assets: getAssets($), to: $.ybTokens})
+                ERC20Library.Info({curator: $.curator, assets: assets, to: makeDuplicates($.zap, assets.length)})
             ),
             iterator
         );
 
         for (uint256 i = 0; i < $.ybTokens.length; i++) {
             address ybToken = $.ybTokens[i];
-            address gauge = IYieldBasis(ybToken).staker(); // inherited from IRC4626
-            address asset = IYieldBasis(ybToken).ASSET_TOKEN();
             string memory ybTokenSymbol = IYieldBasis(ybToken).symbol();
-            string memory gaugeSymbol = IYieldBasisGauge(gauge).symbol();
 
             // function deposit(uint256 assets, uint256 debt, uint256 min_shares)
             {
@@ -200,7 +225,7 @@ library YieldBasisLibrary {
                 descriptions[iterator++] = JsonLibrary.toJson(
                     string(
                         abi.encodePacked(
-                            "IYieldBasis(", ybTokenSymbol, ")deposit(assets=anyInt, debt=anyInt, min_shares=anyInt)"
+                            "IYieldBasis(", ybTokenSymbol, ").deposit(assets=anyInt, debt=anyInt, min_shares=anyInt)"
                         )
                     ),
                     ABILibrary.getABI(IYieldBasis.deposit.selector),
@@ -216,7 +241,7 @@ library YieldBasisLibrary {
                 innerParameters = innerParameters.addAny("min_assets");
                 descriptions[iterator++] = JsonLibrary.toJson(
                     string(
-                        abi.encodePacked("IYieldBasis(", ybTokenSymbol, ")withdraw(shares=anyInt, min_assets=anyInt)")
+                        abi.encodePacked("IYieldBasis(", ybTokenSymbol, ").withdraw(shares=anyInt, min_assets=anyInt)")
                     ),
                     ABILibrary.getABI(IYieldBasis.withdraw.selector),
                     ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(ybToken), "0"),
@@ -229,64 +254,68 @@ library YieldBasisLibrary {
                 ParameterLibrary.Parameter[] memory innerParameters;
                 innerParameters = innerParameters.addAny("shares");
                 descriptions[iterator++] = JsonLibrary.toJson(
-                    string(abi.encodePacked("IYieldBasis(", ybTokenSymbol, ")emergency_withdraw(shares=anyInt)")),
+                    string(abi.encodePacked("IYieldBasis(", ybTokenSymbol, ").emergency_withdraw(shares=anyInt)")),
                     ABILibrary.getABI(IYieldBasis.emergency_withdraw.selector),
                     ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(ybToken), "0"),
                     innerParameters
                 );
             }
-
-            // function deposit_and_stake(address gauge, uint256 assets, uint256 debt, uint256 min_shares)
             {
-                ParameterLibrary.Parameter[] memory innerParameters;
-                innerParameters = innerParameters.add("gauge", Strings.toHexString(gauge));
-                innerParameters = innerParameters.addAny("assets");
-                innerParameters = innerParameters.addAny("debt");
-                innerParameters = innerParameters.addAny("min_shares");
-                descriptions[iterator++] = JsonLibrary.toJson(
-                    string(
-                        abi.encodePacked(
-                            "IYieldBasisZap.deposit_and_stake(gauge=",
-                            gaugeSymbol,
-                            ", assets=anyInt, debt=anyInt, min_shares=anyInt)"
-                        )
-                    ),
-                    ABILibrary.getABI(IYieldBasisZap.deposit_and_stake.selector),
-                    ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.zap), "0"),
-                    innerParameters
-                );
-            }
+                address gauge = IYieldBasis(ybToken).staker(); // inherited from IRC4626
+                string memory gaugeSymbol = IYieldBasisGauge(gauge).symbol();
 
-            // function withdraw_and_unstake(address gauge, uint256 shares, uint256 min_assets)
-            {
-                ParameterLibrary.Parameter[] memory innerParameters;
-                innerParameters = innerParameters.add("gauge", Strings.toHexString(gauge));
-                innerParameters = innerParameters.addAny("shares");
-                innerParameters = innerParameters.addAny("min_assets");
-                descriptions[iterator++] = JsonLibrary.toJson(
-                    string(
-                        abi.encodePacked(
-                            "IYieldBasisZap.withdraw_and_unstake(gauge=",
-                            gaugeSymbol,
-                            ", shares=anyInt, min_assets=anyInt)"
-                        )
-                    ),
-                    ABILibrary.getABI(IYieldBasisZap.withdraw_and_unstake.selector),
-                    ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.zap), "0"),
-                    innerParameters
-                );
-            }
+                // function deposit_and_stake(address gauge, uint256 assets, uint256 debt, uint256 min_shares)
+                {
+                    ParameterLibrary.Parameter[] memory innerParameters;
+                    innerParameters = innerParameters.add("gauge", Strings.toHexString(gauge));
+                    innerParameters = innerParameters.addAny("assets");
+                    innerParameters = innerParameters.addAny("debt");
+                    innerParameters = innerParameters.addAny("min_shares");
+                    descriptions[iterator++] = JsonLibrary.toJson(
+                        string(
+                            abi.encodePacked(
+                                "IYieldBasisZap.deposit_and_stake(gauge=",
+                                gaugeSymbol,
+                                ", assets=anyInt, debt=anyInt, min_shares=anyInt)"
+                            )
+                        ),
+                        ABILibrary.getABI(IYieldBasisZap.deposit_and_stake.selector),
+                        ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.zap), "0"),
+                        innerParameters
+                    );
+                }
 
-            // function claim(address reward)
-            {
-                ParameterLibrary.Parameter[] memory innerParameters;
-                innerParameters = innerParameters.addAny("reward");
-                descriptions[iterator++] = JsonLibrary.toJson(
-                    string(abi.encodePacked("IYieldBasisGauge(", gaugeSymbol, ")claim(reward=Any)")),
-                    ABILibrary.getABI(IYieldBasisGauge.claim.selector),
-                    ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(gauge), "0"),
-                    innerParameters
-                );
+                // function withdraw_and_unstake(address gauge, uint256 shares, uint256 min_assets)
+                {
+                    ParameterLibrary.Parameter[] memory innerParameters;
+                    innerParameters = innerParameters.add("gauge", Strings.toHexString(gauge));
+                    innerParameters = innerParameters.addAny("shares");
+                    innerParameters = innerParameters.addAny("min_assets");
+                    descriptions[iterator++] = JsonLibrary.toJson(
+                        string(
+                            abi.encodePacked(
+                                "IYieldBasisZap.withdraw_and_unstake(gauge=",
+                                gaugeSymbol,
+                                ", shares=anyInt, min_assets=anyInt)"
+                            )
+                        ),
+                        ABILibrary.getABI(IYieldBasisZap.withdraw_and_unstake.selector),
+                        ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.zap), "0"),
+                        innerParameters
+                    );
+                }
+
+                // function claim(address reward)
+                {
+                    ParameterLibrary.Parameter[] memory innerParameters;
+                    innerParameters = innerParameters.addAny("reward");
+                    descriptions[iterator++] = JsonLibrary.toJson(
+                        string(abi.encodePacked("IYieldBasisGauge(", gaugeSymbol, ").claim(reward=Any)")),
+                        ABILibrary.getABI(IYieldBasisGauge.claim.selector),
+                        ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(gauge), "0"),
+                        innerParameters
+                    );
+                }
             }
         }
 
@@ -312,10 +341,21 @@ library YieldBasisLibrary {
             iterator
         );
 
+        address[] memory assets = getAssets($);
+
         // ERC20 approve asset to ybToken
         iterator = ArraysLibrary.insert(
             calls,
-            ERC20Library.getERC20Calls(ERC20Library.Info({curator: $.curator, assets: getAssets($), to: $.ybTokens})),
+            ERC20Library.getERC20Calls(ERC20Library.Info({curator: $.curator, assets: assets, to: $.ybTokens})),
+            iterator
+        );
+
+        // ERC20 approve asset to zap
+        iterator = ArraysLibrary.insert(
+            calls,
+            ERC20Library.getERC20Calls(
+                ERC20Library.Info({curator: $.curator, assets: assets, to: makeDuplicates($.zap, assets.length)})
+            ),
             iterator
         );
 
