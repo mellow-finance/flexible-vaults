@@ -100,6 +100,9 @@ library Constants {
     address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
 
+    address public constant GGV = 0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09;
+    address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
+
     address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
 
     address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
