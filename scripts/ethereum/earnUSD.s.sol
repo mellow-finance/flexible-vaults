@@ -20,9 +20,11 @@ import "forge-std/Script.sol";
 import "forge-std/Test.sol";
 
 import "./Constants.sol";
-import "./earnETHLibrary.sol";
+import "./earnUSDLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
+
+import "../common/interfaces/IAggregatorV3.sol";
 
 contract Deploy is Script, Test {
     // Actors
@@ -41,13 +43,13 @@ contract Deploy is Script, Test {
     uint256 public constant DEFAULT_PENALTY_D6 = 200; // 0.02%
     uint32 public constant DEFAULT_MAX_AGE = 24 hours;
 
-    string public name = "Lido Earn ETH";
-    string public symbol = "earnETH";
+    string public name = "Lido Earn USD";
+    string public symbol = "earnUSD";
 
-    address public constant GGV_ACCOUNTANT = 0xc873F2b7b3BA0a7faA2B56e210E3B965f2b618f5;
+    address public constant primitiveVault = Constants.STRETH;
+    address public constant exoticVault = Constants.STRETH;
 
-    address[6] public depositAssets =
-        [Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.GGV, Constants.STRETH_SHARE_MANAGER, Constants.DVV];
+    address[2] public depositAssets = [Constants.USDC, Constants.USDT];
 
     address[] public assets_ = ArraysLibrary.makeAddressArray(abi.encode(depositAssets));
 
@@ -126,7 +128,7 @@ contract Deploy is Script, Test {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 13,
+            queueLimit: 5,
             roleHolders: holders
         });
 
@@ -147,10 +149,10 @@ contract Deploy is Script, Test {
         }
 
         // Updated version of RedeemQueue contract
-        vault.createQueue(2, false, proxyAdmin, Constants.WSTETH, new bytes(0));
+        vault.createQueue(2, false, proxyAdmin, Constants.USDC, new bytes(0));
 
         // fee manager setup
-        vault.feeManager().setBaseAsset(address(vault), Constants.ETH);
+        vault.feeManager().setBaseAsset(address(vault), Constants.USDC);
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
@@ -166,20 +168,11 @@ contract Deploy is Script, Test {
                 address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
 
                 bytes32 merkleRoot;
-                (merkleRoot, calls[subvaultIndex]) = _createSubvault0Verifier(vault.subvaultAt(0));
+                (merkleRoot, calls[subvaultIndex]) = _createSubvault0Verifier(vault.subvaultAt(0), primitiveVault);
                 IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
 
                 riskManager.allowSubvaultAssets(
-                    subvault,
-                    ArraysLibrary.makeAddressArray(
-                        abi.encode(
-                            Constants.ETH,
-                            Constants.WETH,
-                            Constants.WSTETH,
-                            Constants.STRETH_SHARE_MANAGER,
-                            Constants.DVV
-                        )
-                    )
+                    subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT))
                 );
                 riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
             }
@@ -191,13 +184,10 @@ contract Deploy is Script, Test {
                 address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
 
                 bytes32 merkleRoot;
-                (merkleRoot, calls[subvaultIndex]) = _createSubvault1Verifier(subvault);
+                (merkleRoot, calls[subvaultIndex]) = _createSubvault1Verifier(subvault, exoticVault);
                 IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
                 riskManager.allowSubvaultAssets(
-                    subvault,
-                    ArraysLibrary.makeAddressArray(
-                        abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.GGV)
-                    )
+                    subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT))
                 );
                 riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
             }
@@ -309,19 +299,15 @@ contract Deploy is Script, Test {
                 reports[i].asset = assets_[i];
             }
 
-            // Constants.ETH, Constants.WETH, Constants.WSTETH, Constants.GGV, Constants.STRETH, Constants.DVV
-            reports[0].priceD18 = 1 ether;
-            reports[1].priceD18 = 1 ether;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
-            reports[3].priceD18 = uint224(OracleSubmitter(GGV_ACCOUNTANT).getRate());
-            reports[4].priceD18 = uint224(Vault(payable(Constants.STRETH)).oracle().getReport(Constants.ETH).priceD18);
-            reports[5].priceD18 = uint224(
-                WSTETHInterface(Constants.WSTETH).getStETHByWstETH(IERC4626(Constants.DVV).previewRedeem(1 ether))
-            );
+            // Constants.USDC, Constants.USDT
+            reports[0].priceD18 =
+                uint224(uint256(IAggregatorV3(0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6).latestAnswer()) * 1e22);
+            reports[1].priceD18 =
+                uint224(uint256(IAggregatorV3(0x3E7d1eAB13ad0104d2750B8863b489D65364e32D).latestAnswer()) * 1e22);
 
             IOracle oracle = vault.oracle();
             oracleSubmitter.submitReports(reports);
-            uint256 timestamp = oracle.getReport(Constants.ETH).timestamp;
+            uint256 timestamp = oracle.getReport(Constants.USDC).timestamp;
             uint32[] memory timestamps_ = new uint32[](reports.length);
             uint224[] memory prices_ = new uint224[](reports.length);
             for (uint256 i = 0; i < reports.length; i++) {
@@ -334,8 +320,9 @@ contract Deploy is Script, Test {
         oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
         {
-            address syncDepositQueue = address(vault.queueAt(Constants.ETH, 1));
-            IDepositQueue(syncDepositQueue).deposit{value: 0.0001 ether}(0.0001 ether, address(0), new bytes32[](0));
+            address syncDepositQueue = address(vault.queueAt(Constants.USDC, 1));
+            IERC20(Constants.USDC).approve(syncDepositQueue, 1e6);
+            IDepositQueue(syncDepositQueue).deposit(1e6, address(0), new bytes32[](0));
         }
 
         vm.stopBroadcast();
@@ -356,7 +343,7 @@ contract Deploy is Script, Test {
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
                 depositQueueAssets: depositQueueAssets,
-                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)),
+                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
                 subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
@@ -404,25 +391,25 @@ contract Deploy is Script, Test {
         }
     }
 
-    function _createSubvault0Verifier(address subvault)
+    function _createSubvault0Verifier(address subvault, address vault)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        string[] memory descriptions = earnETHLibrary.getSubvault0Descriptions(curator, subvault);
+        string[] memory descriptions = earnUSDLibrary.getSubvault0Descriptions(curator, subvault, vault);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = earnETHLibrary.getSubvault0Proofs(curator, subvault);
+        (merkleRoot, leaves) = earnUSDLibrary.getSubvault0Proofs(curator, subvault, vault);
         ProofLibrary.storeProofs(string.concat("ethereum:", symbol, ":subvault0"), merkleRoot, leaves, descriptions);
-        calls = earnETHLibrary.getSubvault0SubvaultCalls(curator, subvault, leaves);
+        calls = earnUSDLibrary.getSubvault0SubvaultCalls(curator, subvault, vault, leaves);
     }
 
-    function _createSubvault1Verifier(address subvault)
+    function _createSubvault1Verifier(address subvault, address vault)
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        string[] memory descriptions = earnETHLibrary.getSubvault1Descriptions(curator, subvault);
+        string[] memory descriptions = earnUSDLibrary.getSubvault1Descriptions(curator, subvault, vault);
         IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = earnETHLibrary.getSubvault1Proofs(curator, subvault);
+        (merkleRoot, leaves) = earnUSDLibrary.getSubvault1Proofs(curator, subvault, vault);
         ProofLibrary.storeProofs(string.concat("ethereum:", symbol, ":subvault1"), merkleRoot, leaves, descriptions);
-        calls = earnETHLibrary.getSubvault1SubvaultCalls(curator, subvault, leaves);
+        calls = earnUSDLibrary.getSubvault1SubvaultCalls(curator, subvault, vault, leaves);
     }
 }

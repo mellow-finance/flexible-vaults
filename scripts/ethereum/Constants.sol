@@ -99,6 +99,7 @@ library Constants {
     address public constant STRETH_DEPOSIT_QUEUE_WETH = 0x2eA268f1018a4767bF5da42D531Ea9e943942A36;
     address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
+    address public constant STRETH_SHARE_MANAGER = 0xcd3c0F51798D1daA92Fb192E57844Ae6cEE8a6c7;
 
     address public constant GGV = 0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09;
     address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
