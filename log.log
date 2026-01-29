@@ -1,0 +1,5 @@
+yarn run v1.22.22
+$ forge script ./scripts/ethereum/BTCMezo.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2) --verify --verifier sourcify
+Compiling 23 files with Solc 0.8.25
+Solc 0.8.25 finished in 209.26ms
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

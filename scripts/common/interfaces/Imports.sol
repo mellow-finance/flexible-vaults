@@ -30,6 +30,7 @@ import "../../../src/permissions/MellowACL.sol";
 import "../../../src/permissions/Verifier.sol";
 
 import "../../../src/queues/DepositQueue.sol";
+import "../../../src/queues/SyncDepositQueue.sol";
 import "../../../src/queues/RedeemQueue.sol";
 import "../../../src/queues/SignatureDepositQueue.sol";
 import "../../../src/queues/SignatureRedeemQueue.sol";

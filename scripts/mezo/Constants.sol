@@ -69,7 +69,7 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x0000000B77FC23f6F0f4c51238D6e1c76DefBFdb),
             lidoDepositHook: LidoDepositHook(address(0)),
             oracleHelper: OracleHelper(0x00000002FC616d31133ab9AD626E43a94674D5B6),
-            swapModuleImplementation: SwapModule(payable(0x0000000bd67D6538614668EFe27aF3f17A3031dd))
+            swapModuleImplementation: SwapModule(payable(address(0)))
         });
     }
 
