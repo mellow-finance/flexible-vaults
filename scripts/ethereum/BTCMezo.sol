@@ -14,6 +14,7 @@ import {mezoBTCLibrary} from "./mezoBTCLibrary.sol";
 contract Deploy is DeployAbstractScript {
     address[] uniswapV3Pools;
     bytes25[] uniswapV4Pools;
+    bytes32 constant ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
 
     function run() external {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -29,6 +30,7 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0xa8A3De0c5594A09d0cD4C8abc4e3AaB9BaE03F36)));
+        transferOwnership();
 
         uniswapV3Pools = ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_TBTC_WBTC_100));
         uniswapV4Pools = ArraysLibrary.makeBytes25Array(abi.encode(Constants.UNISWAP_V4_POOL_TBTC_CBBTC_100));
@@ -44,7 +46,7 @@ contract Deploy is DeployAbstractScript {
             //address verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             //console2.log("mbhBTC subvault1 Verifier deployed at:", verifier);
             //vm.stopBroadcast();
-            
+
             // mbhBTC subvault1 Verifier deployed at: 0xb09918d0D0eFfE817F80FB8A9C2851fF53D52f7A
             // address verifier = 0xb09918d0D0eFfE817F80FB8A9C2851fF53D52f7A;
             // vm.startPrank(lazyVaultAdmin);
@@ -56,6 +58,54 @@ contract Deploy is DeployAbstractScript {
         getSubvaultMerkleRoot(1);
         //_run();
         revert("ok");
+    }
+
+    function transferOwnership() internal {
+        /*
+            proxyAdmin: Mellow Admin (⅝ sign) 0xb7b2ee53731Fc80080ED2906431e08452BC58786 EOA TLL MKG CWK + 4 mellow
+            lazyVaultAdmin: Sense Admin (⅗ sign) 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d EOA TLL MKG CWK VVV
+            activeVaultAdmin: Sense Op (⅔ sign) 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458 EOA TLL MGK
+            oracleUpdater: Oracle Update (1/1 sign) 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33 (0xF6edb1385eC1A61c33B9e8dcc348497dCceabE8D EOA)
+            curator: Curator (1/1 sign) 0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa (0x57775cB0C39671487981706FFb1D3B3ff65Ebb1f EOA)
+        */
+        address newProxyAdmin = 0xb7b2ee53731Fc80080ED2906431e08452BC58786;
+        // new proxy admin for the Vault
+        setNewOwner(address(vault), proxyAdmin, newProxyAdmin, "vault");
+        // new proxy admin for the ShareManager
+        setNewOwner(address(vault.shareManager()), proxyAdmin, newProxyAdmin, "shareManager");
+        // new proxy admin for the FeeManager
+        setNewOwner(address(vault.feeManager()), proxyAdmin, newProxyAdmin, "feeManager");
+        // new proxy admin for the RiskManager
+        setNewOwner(address(vault.riskManager()), proxyAdmin, newProxyAdmin, "riskManager");
+        // new proxy admin for the Oracle
+        setNewOwner(address(vault.oracle()), proxyAdmin, newProxyAdmin, "oracle");
+
+        // new proxy admin for subvaults and queues
+        for (uint256 i = 0; i < vault.subvaults(); i++) {
+            setNewOwner(vault.subvaultAt(i), proxyAdmin, newProxyAdmin, "subvault");
+        }
+        // new proxy admin for queues
+        for (uint256 i = 0; i < vault.getAssetCount(); i++) {
+            address asset = vault.assetAt(i);
+            for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
+                setNewOwner(vault.queueAt(asset, j), proxyAdmin, newProxyAdmin, "queue");
+            }
+        }
+        proxyAdmin = newProxyAdmin;
+    }
+
+    function setNewOwner(address proxy, address oldProxyAdmin, address newProxyAdmin, string memory name) internal {
+        ProxyAdmin admin = ProxyAdmin(address(uint160(uint256(vm.load(proxy, ADMIN_SLOT)))));
+        if (admin.owner() == newProxyAdmin) {
+            return;
+        }
+
+        assertTrue(admin.owner() == oldProxyAdmin, "Unexpected old ProxyAdmin");
+        vm.startPrank(oldProxyAdmin);
+        admin.transferOwnership(newProxyAdmin);
+        vm.stopPrank();
+        assertEq(admin.owner(), newProxyAdmin, "Unexpected new ProxyAdmin");
+        console2.log("ProxyAdmin %s of proxy %s (%s)", address(admin), proxy, name);
     }
 
     function deposit(address asset, address queue) internal {
