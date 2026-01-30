@@ -40,7 +40,13 @@ contract Deploy is DeployAbstractScript {
         //return;
 
         {
-            address verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            //vm.startBroadcast(deployerPk);
+            //address verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+            //console2.log("mbhBTC subvault1 Verifier deployed at:", verifier);
+            //vm.stopBroadcast();
+            
+            // mbhBTC subvault1 Verifier deployed at: 0xb09918d0D0eFfE817F80FB8A9C2851fF53D52f7A
+            address verifier = 0xb09918d0D0eFfE817F80FB8A9C2851fF53D52f7A;
             vm.startPrank(lazyVaultAdmin);
             vault.grantRole(Permissions.CREATE_SUBVAULT_ROLE, lazyVaultAdmin);
             vault.createSubvault(0, proxyAdmin, verifier);
