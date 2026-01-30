@@ -1,0 +1,604 @@
+{
+  "title": "ethereum:mbhcbBTC:subvault1",
+  "merkle_root": "0x5bd066b7e9d30b1a26cb8aef9aee2e55e3f72810e640edadcf661af6365e7da0",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(yb-cbBTC).approve(IERC4626(YB Gauge: yb-cbBTC), anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xac0cfa7742069a8af0c63e14ffd0fe6b3e1bf8d2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c2b36906fa84fb8c62682d3e99d9e5c0563b9d96ad2863758a8204568758572000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1b2ba2c0b6cc71063475673d72fe274fa6f127a34b044f334f26e3036e3b3f60",
+        "0xfc4ae4d56c7efb48dcb94e1e3519d465fa5501b2c4138acfdf840f2c56395826",
+        "0x72cb6796d7ae638b4e03e203dbd01b9b17e27ea0dbce49542b2f91d03b742634",
+        "0xb604f9e9e71c271eca9bcfd433eb2b8b354be8109a4bf376986a5a05286515d0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC4626(YB Gauge: yb-cbBTC).deposit(anyInt, 0xae6181a132ba9a3bbd2787ced0a93486c6907545)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "name": "deposit",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0xae6181a132ba9a3bbd2787ced0a93486c6907545"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a900b27d1226a8ee657a2e83e2a8e7ed5748b1c350c2a7e147d8ec3e14fb0c848000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x358930e00a32c1cab422d131c8daa1ed4ddb929ec67cec6fae0859977e4ecaf8",
+        "0xaca913bec3b2e05e54ee96c1f8f06fad8b60cc1914d5ba2ea9c9d615e0d7f71a",
+        "0xd60c7f9d5095462a2a4c42d626f71e58c3b78b577d2e3580acfb64e15e706342",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC4626(YB Gauge: yb-cbBTC).mint(anyInt, 0xae6181a132ba9a3bbd2787ced0a93486c6907545)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "name": "mint",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0xae6181a132ba9a3bbd2787ced0a93486c6907545"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a92349cc46fe729a39e9f5183fb2078f773e3b840d767c647c990f25bb7ae2eb9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x2d1ae53847f64118754d5802b800739b1093fc9c7231aa2fde9125aeb809e776",
+        "0xaca913bec3b2e05e54ee96c1f8f06fad8b60cc1914d5ba2ea9c9d615e0d7f71a",
+        "0xd60c7f9d5095462a2a4c42d626f71e58c3b78b577d2e3580acfb64e15e706342",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC4626(YB Gauge: yb-cbBTC).redeem(anyInt, 0xae6181a132ba9a3bbd2787ced0a93486c6907545, 0xae6181a132ba9a3bbd2787ced0a93486c6907545)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "redeem",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0xae6181a132ba9a3bbd2787ced0a93486c6907545",
+          "owner": "0xae6181a132ba9a3bbd2787ced0a93486c6907545"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aff7aa3d454a23cdd0ce79e0ef26feebc299b4e59aa146226dc1de73998f611d7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xe4e879e715dcd02780510baa66c0dbf80ed576084a3b82a27151bb0291bddc97",
+        "0xce0389951e554ed8b18212aeeee8e323c1d67265b8bf083913fe2c94f41ecb00",
+        "0x8fc726c4ba01b00af4a4585870f9dc665d1a328234e6824cec1de15c1d63c720",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC4626(YB Gauge: yb-cbBTC).withdraw(anyInt, 0xae6181a132ba9a3bbd2787ced0a93486c6907545, 0xae6181a132ba9a3bbd2787ced0a93486c6907545)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "withdraw",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "shares",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0xae6181a132ba9a3bbd2787ced0a93486c6907545",
+          "owner": "0xae6181a132ba9a3bbd2787ced0a93486c6907545"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a310dfc1c6ef8f033cd84041105ff150eafffd8a419795206ce1077b60f80bb25000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x04f481c56b27c8387faf18fc353ac58ff0ef5c5629446b3d3fc04dc2999ee798",
+        "0xfc4ae4d56c7efb48dcb94e1e3519d465fa5501b2c4138acfdf840f2c56395826",
+        "0x72cb6796d7ae638b4e03e203dbd01b9b17e27ea0dbce49542b2f91d03b742634",
+        "0xb604f9e9e71c271eca9bcfd433eb2b8b354be8109a4bf376986a5a05286515d0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(cbBTC).approve(0xac0cfa7742069a8af0c63e14ffd0fe6b3e1bf8d2, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xac0cfa7742069a8af0c63e14ffd0fe6b3e1bf8d2",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9ae872c1269ece31f9566d686510a29145c628e1555f331cae21fcd315713878000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4c909e9efad87fcd4662801ed936219a0b9d07417e3d14205caeae922586d30d",
+        "0xb970e44c54fac03b4d4b41d2d41334a2fb5ca447ba245f5ced5d9263795cdad3",
+        "0xd60c7f9d5095462a2a4c42d626f71e58c3b78b577d2e3580acfb64e15e706342",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(cbBTC).approve(0xe862bc39b8d5f12d8c4117d3e2d493dc20051ec6, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xe862bc39b8d5f12d8c4117d3e2d493dc20051ec6",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae03ff590d58be148476c0e78fbd85ddacd453a0f8cdd67ee543756c241ebb3a9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8a5b377f187e2fdae8051732fb9832676e6d05276c86eb26683c5a50c677bdf4",
+        "0xb8639efb23cfdff5f9eb174430ed658e170b0c8e1397336efae6f1b2fb038991",
+        "0x8fc726c4ba01b00af4a4585870f9dc665d1a328234e6824cec1de15c1d63c720",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IYieldBasis(yb-cbBTC).deposit(assets=anyInt, debt=anyInt, min_shares=anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "name": "debt",
+              "type": "uint256"
+            },
+            {
+              "name": "min_shares",
+              "type": "uint256"
+            }
+          ],
+          "name": "deposit",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xac0cfa7742069a8af0c63e14ffd0fe6b3e1bf8d2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "debt": "any",
+          "min_shares": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a568b518090b43e0745261cceaada10009ce63c75b7032ea726f880c255eff5b6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf7cb00028ea8c8c63ce6cde4b11a72e40172c87f73683b52dd5b507bb2776892",
+        "0x1c159136679660c0ae63dc352a18e72024259238dc008b9ef2aa9f64d8458694",
+        "0xb604f9e9e71c271eca9bcfd433eb2b8b354be8109a4bf376986a5a05286515d0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IYieldBasis(yb-cbBTC).withdraw(shares=anyInt, min_assets=anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "name": "min_assets",
+              "type": "uint256"
+            }
+          ],
+          "name": "withdraw",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xac0cfa7742069a8af0c63e14ffd0fe6b3e1bf8d2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "min_assets": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0e049576daa464d8bdba5723f1883eaef870e5e957574948c12e63630031d32b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x717320026a7332076708ae9ab1ea43e8ec429ec04cdfe21d0f857dced3f507a8",
+        "0x72cb6796d7ae638b4e03e203dbd01b9b17e27ea0dbce49542b2f91d03b742634",
+        "0xb604f9e9e71c271eca9bcfd433eb2b8b354be8109a4bf376986a5a05286515d0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IYieldBasis(yb-cbBTC).emergency_withdraw(shares=anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256"
+            }
+          ],
+          "name": "emergency_withdraw",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "name": "",
+              "type": "int256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xac0cfa7742069a8af0c63e14ffd0fe6b3e1bf8d2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3e9b0a25a007aa13d13235f3bfc1239e683c54b2b9e2af416dc58be13a61487a00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xfa45510c3268fc33a7c7413c079dc6c00764697a9f0e0e7defecdb54e80b221b",
+        "0x1c159136679660c0ae63dc352a18e72024259238dc008b9ef2aa9f64d8458694",
+        "0xb604f9e9e71c271eca9bcfd433eb2b8b354be8109a4bf376986a5a05286515d0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IYieldBasisZap.deposit_and_stake(gauge=g(yb-cbBTC), assets=anyInt, debt=anyInt, min_shares=anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "gauge",
+              "type": "address"
+            },
+            {
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "name": "debt",
+              "type": "uint256"
+            },
+            {
+              "name": "min_shares",
+              "type": "uint256"
+            }
+          ],
+          "name": "deposit_and_stake",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xe862bc39b8d5f12d8c4117d3e2d493dc20051ec6",
+          "value": "0"
+        },
+        "innerParameters": {
+          "gauge": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "assets": "any",
+          "debt": "any",
+          "min_shares": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab4de7af5cd4f77f571c16bcdbbc1c6f0fb7592c3ac6d7da1ce11260022231efa000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x484eabd1971fc1093d74014e1caf04daa4fb54d598e7fd2c5a9cfa3239192659",
+        "0xb970e44c54fac03b4d4b41d2d41334a2fb5ca447ba245f5ced5d9263795cdad3",
+        "0xd60c7f9d5095462a2a4c42d626f71e58c3b78b577d2e3580acfb64e15e706342",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IYieldBasisZap.withdraw_and_unstake(gauge=g(yb-cbBTC), shares=anyInt, min_assets=anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "gauge",
+              "type": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "name": "min_assets",
+              "type": "uint256"
+            }
+          ],
+          "name": "withdraw_and_unstake",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xe862bc39b8d5f12d8c4117d3e2d493dc20051ec6",
+          "value": "0"
+        },
+        "innerParameters": {
+          "gauge": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "shares": "any",
+          "min_assets": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a62968b21e07de3de734626337ea6e26126527f000806dc536cda0bfedb84263b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8cb1ed68e7f1d7f8568bc141ba17d84a019dd362767b0af415d52bdcd1172f53",
+        "0xce0389951e554ed8b18212aeeee8e323c1d67265b8bf083913fe2c94f41ecb00",
+        "0x8fc726c4ba01b00af4a4585870f9dc665d1a328234e6824cec1de15c1d63c720",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IYieldBasisGauge(g(yb-cbBTC)).claim(reward=Any)",
+        "abi": {
+          "inputs": [
+            {
+              "name": "reward",
+              "type": "address"
+            }
+          ],
+          "name": "claim",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xf3081a2eb8927c0462864ec3fdbe927c842a0893",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reward": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a18752b006a6f6e6a8224f014c970e959ecd17589a98d603ba07e77240f0c4b6e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x601aca16bffc9042edb5be26e402dd857508fc9cef1da85a97fac3c9ddaafe3d",
+        "0xb8639efb23cfdff5f9eb174430ed658e170b0c8e1397336efae6f1b2fb038991",
+        "0x8fc726c4ba01b00af4a4585870f9dc665d1a328234e6824cec1de15c1d63c720",
+        "0x38a6b112195c804babce3e03325e4a1e2a8f92ecae4d078425f6fe690ba9d6f0"
+      ]
+    }
+  ]
+}

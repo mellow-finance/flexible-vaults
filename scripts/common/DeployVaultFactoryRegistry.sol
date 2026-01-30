@@ -195,7 +195,7 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
     }
 
     /// @inheritdoc IDeployVaultFactoryRegistry
-    function validateDeployConfig(IDeployVaultFactory.DeployVaultConfig calldata $) public view {
+    function validateDeployConfig(IDeployVaultFactory.DeployVaultConfig calldata $) public pure {
         if (bytes($.vaultName).length == 0) {
             revert ZeroLength();
         }

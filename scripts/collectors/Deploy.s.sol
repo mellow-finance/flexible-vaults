@@ -29,6 +29,7 @@ import {Deployment} from "./defi/Deployment.sol";
 
 import {PriceOracle} from "./oracles/PriceOracle.sol";
 
+import {BtcEthOracle} from "./oracles/custom/BtcEthOracle.sol";
 import {rsETHOracle} from "./oracles/custom/rsETHOracle.sol";
 import {rstETHOracle} from "./oracles/custom/rstETHOracle.sol";
 import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
@@ -36,6 +37,35 @@ import {weETHOracle} from "./oracles/custom/weETHOracle.sol";
 import {MUSDOraclePyth} from "./oracles/custom/MUSDOraclePyth.sol";
 
 contract Deploy is Script, Test {
+    PriceOracle oracle = PriceOracle(0x7c2ff214dab06cF3Ece494c0b2893219043b500f);
+
+    function _deployMezoBTCCustomOracle() internal {
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        // address deployer = vm.addr(deployerPk);
+        vm.startBroadcast(deployerPk);
+
+        //BtcEthOracle customOracle = new BtcEthOracle(8);
+        address[] memory tokens_ = new address[](3);
+        PriceOracle.TokenOracle[] memory oracles_ = new PriceOracle.TokenOracle[](3);
+        oracles_[0] = PriceOracle.TokenOracle({constValue: 0, oracle: address(new BtcEthOracle(18))});
+        oracles_[1] = PriceOracle.TokenOracle({constValue: 0, oracle: address(new BtcEthOracle(8))});
+        oracles_[2] = PriceOracle.TokenOracle({constValue: 0, oracle: address(new BtcEthOracle(8))});
+        tokens_[0] = EthereumConstants.TBTC;
+        tokens_[1] = EthereumConstants.WBTC;
+        tokens_[2] = EthereumConstants.CBBTC;
+        vm.stopBroadcast();
+
+        vm.prank(0x58B38d079e904528326aeA2Ee752356a34AC1206);
+        oracle.setOracles(tokens_, oracles_);
+
+        console2.log("1 TBTC = %s USDC", oracle.getValue(EthereumConstants.TBTC, EthereumConstants.USDC, 1 ether));
+        console2.log("1 WBTC = %s USDC", oracle.getValue(EthereumConstants.WBTC, EthereumConstants.USDC, 1e8));
+        console2.log("1 CBBTC = %s USDC", oracle.getValue(EthereumConstants.CBBTC, EthereumConstants.USDC, 1e8));
+        console2.logBytes(abi.encodeWithSelector(oracle.setOracles.selector, tokens_, oracles_));
+    }
+
+    address collector = 0x40DA86d29AF2fe980733bD54E364e7507505b41B;
+
     function _deployStrETHCustomCollector() internal {
         strETHCustomOracle customOracle =
             new strETHCustomOracle(address(EthereumConstants.protocolDeployment().swapModuleFactory));
