@@ -5,12 +5,15 @@ import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import {ABILibrary} from "../ABILibrary.sol";
+
+import {ArraysLibrary} from "../ArraysLibrary.sol";
 import {JsonLibrary} from "../JsonLibrary.sol";
 import "../ParameterLibrary.sol";
 import "../ProofLibrary.sol";
-import "../interfaces/Imports.sol";
+import "./ERC20Library.sol";
 
 import "../interfaces/IEthWrapper.sol";
+import "../interfaces/Imports.sol";
 
 library DVVLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
@@ -26,6 +29,14 @@ library DVVLibrary {
     address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
     address public constant ETH_WRAPPER = 0xfD4a4922d1AFe70000Ce0Ec6806454e78256504e;
 
+    function _getERC20Info(address curator) internal pure returns (ERC20Library.Info memory) {
+        return ERC20Library.Info({
+            curator: curator,
+            assets: ArraysLibrary.makeAddressArray(abi.encode(WETH)),
+            to: ArraysLibrary.makeAddressArray(abi.encode(ETH_WRAPPER))
+        });
+    }
+
     function getDVVProofs(BitmaskVerifier bitmaskVerifier, Info memory $)
         internal
         pure
@@ -34,16 +45,8 @@ library DVVLibrary {
         uint256 length = 4;
         leaves = new IVerifier.VerificationPayload[](length);
         uint256 index = 0;
-        leaves[index++] = ProofLibrary.makeVerificationPayload(
-            bitmaskVerifier,
-            $.curator,
-            WETH,
-            0,
-            abi.encodeCall(IERC20.approve, (ETH_WRAPPER, 0)),
-            ProofLibrary.makeBitmask(
-                true, true, true, true, abi.encodeCall(IERC20.approve, (address(type(uint160).max), 0))
-            )
-        );
+        index =
+            ArraysLibrary.insert(leaves, ERC20Library.getERC20Proofs(bitmaskVerifier, _getERC20Info($.curator)), index);
 
         leaves[index++] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
@@ -96,19 +99,15 @@ library DVVLibrary {
         );
     }
 
-    function getDVVDescriptions(Info memory $) internal pure returns (string[] memory descriptions) {
+    function getDVVDescriptions(Info memory $) internal view returns (string[] memory descriptions) {
         uint256 length = 4;
         descriptions = new string[](length);
         uint256 index = 0;
 
         ParameterLibrary.Parameter[] memory innerParameters;
-        innerParameters = ParameterLibrary.build("to", Strings.toHexString(WETH)).addAny("amount");
-        descriptions[index++] = JsonLibrary.toJson(
-            string(abi.encodePacked("IERC20(WETH).approve(EthWrapper, anyInt)")),
-            ABILibrary.getABI(IERC20.approve.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString(WETH), "0"),
-            innerParameters
-        );
+        innerParameters = ParameterLibrary.build("to", Strings.toHexString(ETH_WRAPPER)).addAny("amount");
+
+        index = ArraysLibrary.insert(descriptions, ERC20Library.getERC20Descriptions(_getERC20Info($.curator)), index);
 
         innerParameters = ParameterLibrary.build("depositToken", Strings.toHexString(ETH)).addAny("amount").add(
             "vault", Strings.toHexString(DVV)
@@ -158,22 +157,7 @@ library DVVLibrary {
         uint256 length = 4;
         calls = new Call[][](length);
 
-        {
-            address asset = WETH;
-            Call[] memory tmp = new Call[](16);
-            uint256 i = 0;
-            tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC20.approve, (ETH_WRAPPER, 0)), true);
-            tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC20.approve, (ETH_WRAPPER, 100 ether)), true);
-            tmp[i++] = Call(address(0xdead), asset, 0, abi.encodeCall(IERC20.approve, (ETH_WRAPPER, 0)), false);
-            tmp[i++] = Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.approve, (ETH_WRAPPER, 0)), false);
-            tmp[i++] = Call($.curator, asset, 1 wei, abi.encodeCall(IERC20.approve, (ETH_WRAPPER, 0)), false);
-            tmp[i++] = Call($.curator, asset, 0, abi.encodeCall(IERC20.approve, (address(0xdead), 0)), false);
-            tmp[i++] = Call($.curator, asset, 0, abi.encode(IERC20.approve.selector, ETH_WRAPPER, 0), false);
-            assembly {
-                mstore(tmp, i)
-            }
-            calls[index++] = tmp;
-        }
+        index = ArraysLibrary.insert(calls, ERC20Library.getERC20Calls(_getERC20Info($.curator)), index);
 
         {
             address asset = ETH;
