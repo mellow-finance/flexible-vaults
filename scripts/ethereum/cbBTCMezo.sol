@@ -44,11 +44,11 @@ contract Deploy is DeployAbstractScript {
             // console2.log("mbhcbBTC subvault1 Verifier deployed at:", verifier);
             // vm.stopBroadcast();
             // mbhcbBTC subvault1 Verifier deployed at: 0x577A106ABc361772fC825723A7CdfafDbb596ed1
-            address verifier = 0x577A106ABc361772fC825723A7CdfafDbb596ed1;
-            vm.startPrank(lazyVaultAdmin);
-            vault.grantRole(Permissions.CREATE_SUBVAULT_ROLE, lazyVaultAdmin);
-            vault.createSubvault(0, proxyAdmin, verifier);
-            vm.stopPrank();
+            // address verifier = 0x577A106ABc361772fC825723A7CdfafDbb596ed1;
+            // vm.startPrank(lazyVaultAdmin);
+            // vault.grantRole(Permissions.CREATE_SUBVAULT_ROLE, lazyVaultAdmin);
+            // vault.createSubvault(0, proxyAdmin, verifier);
+            // vm.stopPrank();
         }
 
         getSubvaultMerkleRoot(1);
