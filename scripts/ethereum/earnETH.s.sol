@@ -32,6 +32,7 @@ contract Deploy is Script, Test {
     address public curator = 0xe5abcc40196174Ae0d12153dE286F0D8E401769d;
 
     address public oracleUpdater = 0x93a797643d74fC81e7A51F3f84a9D78F930435D1;
+    address public oracleAccepter = lazyVaultAdmin;
     address public treasury = 0xcCf2daba8Bb04a232a2fDA0D01010D4EF6C69B85;
 
     address public lidoPauser = 0xA916fD5252160A7E56A6405741De76dc0Da5A0Cd;
@@ -292,7 +293,7 @@ contract Deploy is Script, Test {
         console2.log("Timelock controller:", address(timelockController));
 
         OracleSubmitter oracleSubmitter =
-            new OracleSubmitter(deployer, oracleUpdater, activeVaultAdmin, address(vault.oracle()));
+            new OracleSubmitter(deployer, oracleUpdater, oracleAccepter, address(vault.oracle()));
         oracleSubmitter.grantRole(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
         oracleSubmitter.grantRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         oracleSubmitter.grantRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
