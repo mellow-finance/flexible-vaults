@@ -30,6 +30,9 @@ library Constants {
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
 
     address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
+    address public constant CBBTC = 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf; // 8 decimals
+    address public constant TBTC = 0x18084fbA666a33d37592fA2633fD49a74DD93a88; // 18 decimals
+    address public constant WBTC = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599; // 8 decimals
 
     address public constant WEETH = 0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee;
     address public constant RSETH = 0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7;
@@ -113,6 +116,8 @@ library Constants {
     address public constant CURVE_USDC_USDT_GAUGE = 0x479dFB03cdDEa20dC4e8788B81Fd7C7A08FD3555;
     address public constant CURVE_USDC_USDT_REWARD_MINTER = 0xd061D61a4d941c39E5453435B6345Dc261C2fcE0;
 
+    address public constant CURVE_TBTC_CBBTC_POOL = 0xAE6Ee608b297305AbF3EB609B81FEBbb8F6A0bb3;
+
     address public constant MORPHO_USDC_ALPHAPING = 0xb0f05E4De970A1aaf77f8C2F823953a367504BA9;
     address public constant MORPHO_WETH_ALPHAPING = 0x47fe8Ab9eE47DD65c24df52324181790b9F47EfC;
 
@@ -127,6 +132,26 @@ library Constants {
     address public constant USDT_CHAINLINK_ORACLE = 0x3E7d1eAB13ad0104d2750B8863b489D65364e32D;
     address public constant USDC_CHAINLINK_ORACLE = 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6;
     address public constant USR_CHAINLINK_ORACLE = 0x34ad75691e25A8E9b681AAA85dbeB7ef6561B42c;
+
+    address public constant UNISWAP_V3_POSITION_MANAGER = 0xC36442b4a4522E871399CD717aBDD847Ab11FE88;
+    address public constant UNISWAP_V4_POSITION_MANAGER = 0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e;
+
+    address public constant UNISWAP_V3_FACTORY = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+
+    // https://app.uniswap.org/explore/pools/ethereum/
+    address public constant UNISWAP_V3_POOL_TBTC_WBTC_100 = 0x73A38006d23517a1d383C88929B2014F8835B38B;
+    address public constant UNISWAP_V3_POOL_WBTC_CBBTC_100 = 0xe8f7c89C5eFa061e340f2d2F206EC78FD8f7e124;
+    // 0x5459f9d1f649b9f1353a50fd0c8d796b4feb11926bec295cb0614a135febdf9a
+    bytes25 public constant UNISWAP_V4_POOL_TBTC_CBBTC_100 = 0x5459f9d1f649b9f1353a50fd0c8d796b4feb11926bec295cb0;
+    // 0x2f92b371aef58f0abe9c10c06423de083405991f2839638914a1031e91d9a723
+    bytes25 public constant UNISWAP_V4_POOL_WBTC_CBBTC_100 = 0x2f92b371aef58f0abe9c10c06423de083405991f2839638914;
+
+    address public constant ANGLE_PROTOCOL_DISTRIBUTOR = 0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae;
+
+    address public constant YIELD_BASIS_ZAP = 0xE862bC39B8D5F12D8c4117d3e2D493Dc20051EC6;
+    address public constant YIELD_BASIS_TBTC_TOKEN = 0xaC0a340C1644321D0BBc6404946d828c1EBfAC92;
+    address public constant YIELD_BASIS_WBTC_TOKEN = 0xfBF3C16676055776Ab9B286492D8f13e30e2E763;
+    address public constant YIELD_BASIS_CBBTC_TOKEN = 0xAC0cfa7742069a8af0c63e14FFD0fe6b3e1Bf8D2;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({

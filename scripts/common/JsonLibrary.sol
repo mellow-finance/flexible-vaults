@@ -6,6 +6,8 @@ import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
 import {IBoringOnChainQueue} from "./interfaces/IBoringOnChainQueue.sol";
 import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
 import {IMorpho} from "./interfaces/IMorpho.sol";
+
+import {IPositionManagerV3} from "./interfaces/IPositionManagerV3.sol";
 import {CCIPClient} from "./libraries/CCIPClient.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
@@ -112,6 +114,57 @@ library JsonLibrary {
                 ",",
                 '"feeToken": "0x0000000000000000000000000000000000000000",',
                 '"extraArgs": "0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"}'
+            )
+        );
+    }
+
+    function toJson(IPositionManagerV3.CollectParams memory params) internal pure returns (string memory json) {
+        json = string(
+            abi.encodePacked(
+                '{"tokenId": "any",',
+                ' "recipient": "',
+                _this().toString(params.recipient),
+                '",',
+                ' "amount0Max": "any",',
+                ' "amount1Max": "any"',
+                "}"
+            )
+        );
+    }
+
+    function toJson(IPositionManagerV3.IncreaseLiquidityParams memory params)
+        internal
+        pure
+        returns (string memory json)
+    {
+        json = string(
+            abi.encodePacked(
+                '{"tokenId": "',
+                _this().toString(params.tokenId),
+                '", ',
+                ' "amount0Desired": "any",',
+                ' "amount1Desired": "any",',
+                ' "amount0Min": "any",',
+                ' "amount1Min": "any",',
+                ' "deadline": "any"',
+                "}"
+            )
+        );
+    }
+
+    function toJson(IPositionManagerV3.DecreaseLiquidityParams memory params)
+        internal
+        pure
+        returns (string memory json)
+    {
+        json = string(
+            abi.encodePacked(
+                '{"tokenId": "any",',
+                ' "liquidity": "any",',
+                ' "amount0Min": "any",',
+                ' "amount1Min": "any",',
+                ' "deadline": "any"',
+                "}"
             )
         );
     }

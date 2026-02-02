@@ -105,7 +105,10 @@ abstract contract DeployAbstractScript is Test {
 
     function setUp() public virtual;
 
-    function getSubvaultMerkleRoot(Vault vault, uint256 index) internal view virtual returns (bytes32 merkleRoot);
+    function getSubvaultMerkleRoot(uint256 index)
+        internal
+        virtual
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls);
 
     function _run() internal {
         setUp();
@@ -167,7 +170,7 @@ abstract contract DeployAbstractScript is Test {
         calls = new SubvaultCalls[](deployment.subvaults.length);
         for (uint256 i = 0; i < deployment.subvaults.length; i++) {
             subvaultRoots[i].subvault = deployment.subvaults[i];
-            subvaultRoots[i].merkleRoot = getSubvaultMerkleRoot(vault, i);
+            (subvaultRoots[i].merkleRoot, calls[i]) = getSubvaultMerkleRoot(i);
         }
 
         Vault.RoleHolder[] memory holders = getVaultRoleHolders(address(0), address(0));
@@ -270,9 +273,34 @@ abstract contract DeployAbstractScript is Test {
                 redeemQueueAssets: redeemQueueAssets,
                 subvaultVerifiers: deployment.verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(deployment.timelockController))),
-                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin)),
-                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(pauser))
+                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(timelockProposers)),
+                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(timelockExecutors))
             })
+        );
+        checkTimelockControllerRoles(vaultAddress);
+    }
+
+    function checkTimelockControllerRoles(address vaultAddress) internal view {
+        IDeployVaultFactoryRegistry.VaultDeployment memory deployment =
+            deployVault.registry().getVaultDeployment(vaultAddress);
+        TimelockController controller = TimelockController(deployment.timelockController);
+
+        for (uint256 i = 0; i < timelockProposers.length; i++) {
+            require(
+                controller.hasRole(controller.PROPOSER_ROLE(), timelockProposers[i]),
+                "TimelockController: missing PROPOSER_ROLE"
+            );
+        }
+
+        for (uint256 i = 0; i < timelockExecutors.length; i++) {
+            require(
+                controller.hasRole(controller.EXECUTOR_ROLE(), timelockExecutors[i]),
+                "TimelockController: missing EXECUTOR_ROLE"
+            );
+        }
+
+        require(
+            controller.hasRole(controller.EXECUTOR_ROLE(), pauser), "TimelockController: pauser has no EXECUTOR_ROLE"
         );
     }
 

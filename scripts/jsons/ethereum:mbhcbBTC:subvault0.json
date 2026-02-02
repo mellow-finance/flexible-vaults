@@ -1,0 +1,864 @@
+{
+  "title": "ethereum:mbhcbBTC:subvault0",
+  "merkle_root": "0x0f5c69ebc5aa2848859a8bf947ccc9c7c4e945ef5eafcbbdb79784d06aa6cdab",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(tBTC).approve(0x000000000022d473030f116ddee9f6b43ac78ba3, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x000000000022d473030f116ddee9f6b43ac78ba3",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5dbbdd77c7a7eb7c4200990feea5c3e8c5f52c8d7e80ec21c7834c4ff8989b64000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0c7392e6146ddb80b22ed0ce2ffe090266f6bc6b2472745d9dad2703d0fd0b01",
+        "0x56d85280001d308621326175e1a6b2ec0c3fd0008dcb3944eafaaf66aa270f59",
+        "0x76ac046a5949686ec487bff3811ccc7ab6fbc5b503a4822b149c0b33b8c2b12f",
+        "0x7b4c2230477bc5a36327da1ed5f4a88be92cdb4ccc04e83ce3fb975aca0a212c",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(cbBTC).approve(0x000000000022d473030f116ddee9f6b43ac78ba3, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x000000000022d473030f116ddee9f6b43ac78ba3",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac0a24f03d28de2c676bee4ae6445b2bc86828ae5d5d573f42c2643f01ff0cc1e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4847d09e0edab11589c246e1920d9c0a5e43d0fadac1cb94ff132d8417510c77",
+        "0x8bdd76ad1f09fb7008f94cdd57ed3d11209c05bac64ed2c64920d991cd8c2130",
+        "0xa01533ae7c9ca2ae472b9854d0a6522f5dacef89ba541ef9cc79960b65436cd4",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "Permit2.approve(token=tBTC, spender=PositionManager, amount=any, expiration=any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "internalType": "uint160",
+              "name": "amount",
+              "type": "uint160"
+            },
+            {
+              "internalType": "uint48",
+              "name": "expiration",
+              "type": "uint48"
+            }
+          ],
+          "name": "approve",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0x000000000022d473030f116ddee9f6b43ac78ba3",
+          "value": "0"
+        },
+        "innerParameters": {
+          "token": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "spender": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "amount": "any",
+          "expiration": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aafc765f4d71f6e8e853d763958c69e149fc2ae2f46e3ae6c68fa1b0b9c116ff6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0e380d262316735ed1b10ea74e136b9b740b1be22a391af77fb559633a7f66f1",
+        "0x56d85280001d308621326175e1a6b2ec0c3fd0008dcb3944eafaaf66aa270f59",
+        "0x76ac046a5949686ec487bff3811ccc7ab6fbc5b503a4822b149c0b33b8c2b12f",
+        "0x7b4c2230477bc5a36327da1ed5f4a88be92cdb4ccc04e83ce3fb975aca0a212c",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "Permit2.approve(token=cbBTC, spender=PositionManager, amount=any, expiration=any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "internalType": "uint160",
+              "name": "amount",
+              "type": "uint160"
+            },
+            {
+              "internalType": "uint48",
+              "name": "expiration",
+              "type": "uint48"
+            }
+          ],
+          "name": "approve",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0x000000000022d473030f116ddee9f6b43ac78ba3",
+          "value": "0"
+        },
+        "innerParameters": {
+          "token": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+          "spender": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "amount": "any",
+          "expiration": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abbf6171203fab46b93108926bf98350b8d2bb7d8321f324859e6f8fceaf3020f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8c403ccb8a7c5da04d7a85aefe653f72b8aae140eef1c88dc18e019d341b7b84",
+        "0x066855c7cd1a7f438ec6a547a79a4903bf5665ddf907bbd4d6660f2303b10a8e",
+        "0x0d1db9347324700a7f1d10f3853904c79771f4633ff01055298508cec17a3170",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143354, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143354",
+          "amount0Desired": "any",
+          "amount1Desired": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a626b2ceda5b0bf018b1ae076c0ee30e1d22495d8f8c2f4c3c03a420d57109946000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0x1ab8c1969a588354e36cfc511eca263b5d57bd21cc13f34adb70680257ee8b97",
+        "0xf9c7dc040593dfdd33f16ec4ed359e018bc07c163aacadcd42231742f6766a86",
+        "0x7b4c2230477bc5a36327da1ed5f4a88be92cdb4ccc04e83ce3fb975aca0a212c",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143355, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143355",
+          "amount0Desired": "any",
+          "amount1Desired": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adb5efce99c6a5ac1a72120b5d21b0063c88c87ec5da5216a17cf33d7481ea52c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0x6ad49192d92a6a608d4dd84e02816d457235dff961373055f350c2d2940324bf",
+        "0xac30f8814175afb5b5e34ad6e3714e39636156fe7bef3066fa38413acc18f47c",
+        "0x0d1db9347324700a7f1d10f3853904c79771f4633ff01055298508cec17a3170",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143356, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143356",
+          "amount0Desired": "any",
+          "amount1Desired": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad6bc05dc3c3464c1968e9c058a2e14d7ed768c39cd7bc3220dd1e56ebba019f5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0xad1421bc538ad42ab57351f7706ac6ab0bb063b4fcf650e423ee3bff55bfd52f",
+        "0x503069318c051609ad77d98aa2cfa475212ccb367d56b8e6c8e66a4c734ac654",
+        "0x23bfa3ec8f6e83b83054e99559386e81f92a34abfeb8e95000a4f62c5c6a6f24",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143357, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143357",
+          "amount0Desired": "any",
+          "amount1Desired": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa5b18ad6804dd0a40a021f73184604b6e5c1e72b3f2ac0d47b949529fd9346dd000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0x5dfdd0a89fe26b6f5c918fd8279e1105f8d985e1128f459ea3fe56c23800ba65",
+        "0xac30f8814175afb5b5e34ad6e3714e39636156fe7bef3066fa38413acc18f47c",
+        "0x0d1db9347324700a7f1d10f3853904c79771f4633ff01055298508cec17a3170",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143354, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143354",
+          "liquidity": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9effbec2fb987c7629ceaef86bc894c70ed903df8688d3afd11ef92e3e6223b8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002011100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0x58a537309acb82541e8f86323c1b4ff23f8ad002226b0cc982d68dc83955a697",
+        "0x8bdd76ad1f09fb7008f94cdd57ed3d11209c05bac64ed2c64920d991cd8c2130",
+        "0xa01533ae7c9ca2ae472b9854d0a6522f5dacef89ba541ef9cc79960b65436cd4",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143355, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143355",
+          "liquidity": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acbc1cd6c214e1aa1abde2ace71773b139c09df412a9fa866ea4d857bcdb4fb44000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002011100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0x0a3beea0badbacc23ef0b50a9d27e68f04944c186ad6824f68a834400d50a576",
+        "0xde110ead978b90707de4622973a0ab7168ea750a73708594ef9bd29d8714c60b",
+        "0xf9c7dc040593dfdd33f16ec4ed359e018bc07c163aacadcd42231742f6766a86",
+        "0x7b4c2230477bc5a36327da1ed5f4a88be92cdb4ccc04e83ce3fb975aca0a212c",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143356, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143356",
+          "liquidity": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a22e5b448a2f5cfd62264d0b8bee9fbe81c3acf01e9834d23f8394f64bc73b98f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002011100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0x0b8774d814bd73f23961a2d57d2985c0d1ae47a2f9a4322684ea2f7ae733c463",
+        "0xde110ead978b90707de4622973a0ab7168ea750a73708594ef9bd29d8714c60b",
+        "0xf9c7dc040593dfdd33f16ec4ed359e018bc07c163aacadcd42231742f6766a86",
+        "0x7b4c2230477bc5a36327da1ed5f4a88be92cdb4ccc04e83ce3fb975aca0a212c",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143357, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenId": "143357",
+          "liquidity": "any",
+          "amount0Min": "any",
+          "amount1Min": "any",
+          "data": "any",
+          "currency0": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "currency1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adad6fb32ab62261799ccc636c24be5682e827fe37006b4b361a243ef27e9a4b4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000006979a6630000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002011100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "proof": [
+        "0x0e7e5b64ebcbbe170404dfbf1490d89cceca283f0336e2829578c339a0b92e10",
+        "0xa3d283802d0a5d76f978c0ca4560d7ee78537b7c01165db60a561fb56ee3fd6e",
+        "0x76ac046a5949686ec487bff3811ccc7ab6fbc5b503a4822b149c0b33b8c2b12f",
+        "0x7b4c2230477bc5a36327da1ed5f4a88be92cdb4ccc04e83ce3fb975aca0a212c",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(cbBTC).approve(ISwapModule(0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a), any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af8bd5c74b5ed84da372bf0e32c43529ea317dd432b7d58ade66fb393002aa3c8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x26add42ee6167d71ef5f9926e4a8247ad1614ec4baee84ba395f2c2099ac507e",
+        "0xa3d283802d0a5d76f978c0ca4560d7ee78537b7c01165db60a561fb56ee3fd6e",
+        "0x76ac046a5949686ec487bff3811ccc7ab6fbc5b503a4822b149c0b33b8c2b12f",
+        "0x7b4c2230477bc5a36327da1ed5f4a88be92cdb4ccc04e83ce3fb975aca0a212c",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a).pushAssets(cbBTC, any)",
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3d1ead61e0d24a2ffdefe9d7bf46efdc9d16201ca2191f2cc9a9944cd2ab62b0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x944610d8940fc9d722d3368bc09bd5dfade01e5eca0800bc87c67d7c93c681b7",
+        "0x377c3a9fe10cf90f5667d151e533eef93cbf94e1f519b393427b2031a618c9eb",
+        "0x23bfa3ec8f6e83b83054e99559386e81f92a34abfeb8e95000a4f62c5c6a6f24",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a).pullAssets(cbBTC, any)",
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4506e22df03f78ed738a5cd76345d3840bb4f90e6b8d8b31831e32893ab569b3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbe0daa5a3df5d696421c5d3fcc79cec265d80c48e118ddf74e78fc6b4c99e029",
+        "0x503069318c051609ad77d98aa2cfa475212ccb367d56b8e6c8e66a4c734ac654",
+        "0x23bfa3ec8f6e83b83054e99559386e81f92a34abfeb8e95000a4f62c5c6a6f24",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(tBTC).approve(ISwapModule(0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a), any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a896d975412fd146ba8326e530f7ffc346897d81008814cb8d4b2067126851293000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x36c8f9f7fdd47fa36473da68c6d32eae750a049840fc4cba2506e30d608b0dc4",
+        "0x788bad5dbd5db483057af8a91089fe76c4fd48cdd5e1a7dbb8b3346cb78e03f3",
+        "0xa01533ae7c9ca2ae472b9854d0a6522f5dacef89ba541ef9cc79960b65436cd4",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a).pushAssets(tBTC, any)",
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a089a89f6e4d0b604fdcd67b7508a9291be37a7aa327417e20dd087184cc62df8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4579de61c201d2a7cf87ae199d2f064c93339523aad174e17386fc4dda36fe36",
+        "0x788bad5dbd5db483057af8a91089fe76c4fd48cdd5e1a7dbb8b3346cb78e03f3",
+        "0xa01533ae7c9ca2ae472b9854d0a6522f5dacef89ba541ef9cc79960b65436cd4",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a).pullAssets(tBTC, any)",
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xef0c3036a29d6d9d1ec7a8aee1dbb885c488641a",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af5bd25deda59e234592efc064aa47d08f30620f69f1729c7270aa033ac5fa65c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8eab0c046dbb6057f46befa6c4fe1d814a2b741a8ae87b132ffad0129efde524",
+        "0x066855c7cd1a7f438ec6a547a79a4903bf5665ddf907bbd4d6660f2303b10a8e",
+        "0x0d1db9347324700a7f1d10f3853904c79771f4633ff01055298508cec17a3170",
+        "0x7e928a627584c2456ad41a20f8a0d5f280944c9b58ae0e4ff3fadd1d738a5849"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "AngleDistributor.toggleOperator(user=subvault0, operator=Any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "operator",
+              "type": "address"
+            }
+          ],
+          "name": "toggleOperator",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae",
+          "value": "0"
+        },
+        "innerParameters": {
+          "user": "0x699d09f862e0d3d093b522562c42e9efbcee207f",
+          "operator": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa8d23d79e04d810a8fb131f92431d76b3a59f53239ed87d9a6fa13daf2ab69cb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa9c1e3a9c41fc2e11165dbe863550ee5b148c438436bef81ee76c230c21c2079",
+        "0x377c3a9fe10cf90f5667d151e533eef93cbf94e1f519b393427b2031a618c9eb",
+        "0x23bfa3ec8f6e83b83054e99559386e81f92a34abfeb8e95000a4f62c5c6a6f24",
+        "0x780b2a5220696e0f3293a040b245a27ee03754c29cbe16409950373072dfdc3f"
+      ]
+    }
+  ]
+}

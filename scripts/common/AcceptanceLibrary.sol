@@ -700,6 +700,12 @@ library AcceptanceLibrary {
         }
     }
 
+    function runVerifyCallsChecks(IVerifier verifier, SubvaultCalls memory calls) internal view {
+        for (uint256 i = 0; i < calls.payloads.length; i++) {
+            _verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+        }
+    }
+
     function _verifyPermissions(VaultDeployment memory deployment) internal view {
         Vault vault = deployment.vault;
         Vault.RoleHolder[] memory holders = deployment.holders;
