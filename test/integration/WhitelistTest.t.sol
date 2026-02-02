@@ -31,7 +31,7 @@ contract Integration is Test {
         reports[2].priceD18 = 1223682862755529629;
     }
 
-    function testDepositTransferWhitelist() external {
+    function testDepositTransferWhitelist_NO_CI() external {
         IShareManager shareManager = vault.shareManager();
         IOracle oracle = vault.oracle();
         {

@@ -3,6 +3,7 @@ pragma solidity 0.8.25;
 
 import {IVerifier} from "../../src/interfaces/permissions/IVerifier.sol";
 
+import {IBoringOnChainQueue} from "./interfaces/IBoringOnChainQueue.sol";
 import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
 import {IMorpho} from "./interfaces/IMorpho.sol";
 
@@ -50,6 +51,26 @@ library JsonLibrary {
         } else {
             result = string(abi.encodePacked('"', parameter.name, '":"', parameter.value, '"'));
         }
+    }
+
+    function toJson(IBoringOnChainQueue.OnChainWithdraw memory $) internal pure returns (string memory json) {
+        json = string(
+            abi.encodePacked(
+                '{"nonce": "any", ',
+                ' "user": "',
+                _this().toString($.user),
+                '",',
+                ' "assetOut": "',
+                _this().toString($.assetOut),
+                '",',
+                ' "amountOfShares": "any", ',
+                ' "amountOfAssets": "any", ',
+                ' "creationTime": "any", ',
+                ' "secondsToMaturity": "any", ',
+                ' "secondsToDeadline": "any", ',
+                "}"
+            )
+        );
     }
 
     function toJson(ILayerZeroOFT.SendParam memory params) internal pure returns (string memory json) {
@@ -131,11 +152,7 @@ library JsonLibrary {
         );
     }
 
-    function toJson(IPositionManagerV3.DecreaseLiquidityParams memory params)
-        internal
-        pure
-        returns (string memory json)
-    {
+    function toJson(IPositionManagerV3.DecreaseLiquidityParams memory) internal pure returns (string memory json) {
         json = string(
             abi.encodePacked(
                 '{"tokenId": "any",',
