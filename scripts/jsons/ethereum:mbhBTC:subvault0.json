@@ -103,24 +103,26 @@
         "abi": {
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "uint128",
-              "name": "amount0Max",
-              "type": "uint128"
-            },
-            {
-              "internalType": "uint128",
-              "name": "amount1Max",
-              "type": "uint128"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "recipient",
+                  "type": "address"
+                },
+                {
+                  "name": "amount0Max",
+                  "type": "uint128"
+                },
+                {
+                  "name": "amount1Max",
+                  "type": "uint128"
+                }
+              ]
             }
           ],
           "name": "collect",
@@ -167,34 +169,34 @@
         "abi": {
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "name": "increaseLiquidity",
@@ -248,34 +250,34 @@
         "abi": {
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "name": "increaseLiquidity",
@@ -329,34 +331,34 @@
         "abi": {
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "name": "increaseLiquidity",
@@ -410,34 +412,34 @@
         "abi": {
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "name": "increaseLiquidity",
@@ -491,29 +493,30 @@
         "abi": {
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint128",
-              "name": "liquidity",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "liquidity",
+                  "type": "uint128"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "name": "decreaseLiquidity",
