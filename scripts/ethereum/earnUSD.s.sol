@@ -47,8 +47,8 @@ contract Deploy is Script, Test {
     string public name = "Lido Earn USD";
     string public symbol = "earnUSD";
 
-    address public constant primitiveVault = Constants.STRETH;
-    address public constant exoticVault = Constants.STRETH;
+    address public constant conservativeVault = 0xdd1f1E4aE980cE03051315e30d163d2A062bf8Ec;
+    address public constant exoticVault = 0x6f4cd5d8C9e3962139Da896B63A8eceD8771b15E;
 
     address[2] public depositAssets = [Constants.USDC, Constants.USDT];
 
@@ -169,7 +169,7 @@ contract Deploy is Script, Test {
                 address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
 
                 bytes32 merkleRoot;
-                (merkleRoot, calls[subvaultIndex]) = _createSubvault0Verifier(vault.subvaultAt(0), primitiveVault);
+                (merkleRoot, calls[subvaultIndex]) = _createSubvault0Verifier(vault.subvaultAt(0), conservativeVault);
                 IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
 
                 riskManager.allowSubvaultAssets(

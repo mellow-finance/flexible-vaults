@@ -59,6 +59,11 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
 
+        if (true) {
+            _acceptReports(OracleSubmitter(0xeE2a2B77Ee1B27BF2D68A7496f52dd551873681D), deployer);
+            return;
+        }
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;
 
@@ -269,48 +274,39 @@ contract Deploy is Script, Test {
             reports[1].priceD18 =
                 uint224(uint256(IAggregatorV3(0x3E7d1eAB13ad0104d2750B8863b489D65364e32D).latestAnswer()) * 1e22);
 
-            IOracle oracle = vault.oracle();
             oracleSubmitter.submitReports(reports);
-            uint256 timestamp = oracle.getReport(Constants.USDC).timestamp;
-            uint32[] memory timestamps_ = new uint32[](reports.length);
-            uint224[] memory prices_ = new uint224[](reports.length);
-            for (uint256 i = 0; i < reports.length; i++) {
-                timestamps_[i] = uint32(timestamp);
-                prices_[i] = uint224(oracle.getReport(assets_[i]).priceD18);
-            }
-            oracleSubmitter.acceptReports(assets_, prices_, timestamps_);
         }
 
-        oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-        oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        // _acceptReports(oracleSubmitter, deployer);
 
-        vm.stopBroadcast();
-        address[] memory depositQueueAssets = new address[](depositAssets.length * 2);
-        for (uint256 i = 0; i < depositAssets.length; i++) {
-            depositQueueAssets[i * 2] = depositAssets[i];
-            depositQueueAssets[i * 2 + 1] = depositAssets[i];
-        }
-        AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
-        AcceptanceLibrary.runVaultDeploymentChecks(
-            Constants.protocolDeployment(),
-            VaultDeployment({
-                vault: vault,
-                calls: calls,
-                initParams: initParams,
-                holders: _getExpectedHolders(address(timelockController), address(oracleSubmitter), deployer),
-                depositHook: address($.redirectingDepositHook),
-                redeemHook: address($.basicRedeemHook),
-                assets: assets_,
-                depositQueueAssets: depositQueueAssets,
-                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
-                subvaultVerifiers: verifiers,
-                timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
-                timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
-                timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser))
-            })
-        );
+        // vm.stopBroadcast();
 
-        revert("ok");
+        // address[] memory depositQueueAssets = new address[](depositAssets.length * 2);
+        // for (uint256 i = 0; i < depositAssets.length; i++) {
+        //     depositQueueAssets[i * 2] = depositAssets[i];
+        //     depositQueueAssets[i * 2 + 1] = depositAssets[i];
+        // }
+        // AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
+        // AcceptanceLibrary.runVaultDeploymentChecks(
+        //     Constants.protocolDeployment(),
+        //     VaultDeployment({
+        //         vault: vault,
+        //         calls: calls,
+        //         initParams: initParams,
+        //         holders: _getExpectedHolders(address(timelockController), address(oracleSubmitter), deployer),
+        //         depositHook: address($.redirectingDepositHook),
+        //         redeemHook: address($.basicRedeemHook),
+        //         assets: assets_,
+        //         depositQueueAssets: depositQueueAssets,
+        //         redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
+        //         subvaultVerifiers: verifiers,
+        //         timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
+        //         timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer)),
+        //         timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser))
+        //     })
+        // );
+
+        // revert("ok");
     }
 
     function _getExpectedHolders(address timelockController, address oracleSubmitter, address deployer)
