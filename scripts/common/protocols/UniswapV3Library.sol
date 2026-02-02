@@ -202,7 +202,7 @@ library UniswapV3Library {
         {
             ParameterLibrary.Parameter[] memory innerParameters;
             innerParameters = innerParameters.addJson(
-                "collectParams",
+                "params",
                 JsonLibrary.toJson(
                     IPositionManagerV3.CollectParams({tokenId: 0, recipient: $.subvault, amount0Max: 0, amount1Max: 0})
                 )
@@ -229,7 +229,7 @@ library UniswapV3Library {
         for (uint256 j = 0; j < tokenIds.length; j++) {
             ParameterLibrary.Parameter[] memory innerParameters;
             innerParameters = innerParameters.addJson(
-                "increaseLiquidityParams",
+                "params",
                 JsonLibrary.toJson(
                     IPositionManagerV3.IncreaseLiquidityParams({
                         tokenId: tokenIds[j],
@@ -260,7 +260,7 @@ library UniswapV3Library {
         {
             ParameterLibrary.Parameter[] memory innerParameters;
             innerParameters = innerParameters.addJson(
-                "decreaseLiquidityParams",
+                "params",
                 JsonLibrary.toJson(
                     IPositionManagerV3.DecreaseLiquidityParams({
                         tokenId: 0,
