@@ -2,6 +2,7 @@
 pragma solidity 0.8.25;
 
 import "forge-std/Script.sol";
+import "forge-std/Test.sol";
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
@@ -26,7 +27,7 @@ import "./Constants.sol";
 
 import {rstETHPlusPlusLibrary} from "./rstETHPlusPlusLibrary.sol";
 
-contract Deploy is Script {
+contract Deploy is Script, Test {
     // Actors
 
     address public proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
@@ -41,9 +42,287 @@ contract Deploy is Script {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
+    function getMerkleRoot(uint256 subvaultIndex) public pure returns (bytes32) {
+        if (subvaultIndex == 0) {
+            return 0xbca74c74fb91cafed614154f2c8fe71a79f6bf87b3f5c8fd0dfe2485cd8d0e9c;
+        } else if (subvaultIndex == 1) {
+            return 0x31448edbe5cea82f8b9e0636c855b479dc4771973ee5ac2f264376718b90391c;
+        } else if (subvaultIndex == 2) {
+            return 0x3e9ed6f426697501b8f2c6b5a2af4512524e2cecf6cf3f3c2f5a9e680396ab67;
+        } else {
+            revert("Invalid subvaultIndex");
+        }
+    }
+
+    bytes32 public constant FUND_ROLE = keccak256("vaults.Permissions.Fund");
+    bytes32 public constant WITHDRAW_ROLE = keccak256("vaults.Permissions.Withdraw");
+    bytes32 public constant MINT_ROLE = keccak256("vaults.Permissions.Mint");
+    bytes32 public constant BURN_ROLE = keccak256("vaults.Permissions.Burn");
+    bytes32 public constant REBALANCE_ROLE = keccak256("vaults.Permissions.Rebalance");
+    bytes32 public constant PAUSE_BEACON_CHAIN_DEPOSITS_ROLE = keccak256("vaults.Permissions.PauseDeposits");
+    bytes32 public constant RESUME_BEACON_CHAIN_DEPOSITS_ROLE = keccak256("vaults.Permissions.ResumeDeposits");
+    bytes32 public constant REQUEST_VALIDATOR_EXIT_ROLE = keccak256("vaults.Permissions.RequestValidatorExit");
+    bytes32 public constant TRIGGER_VALIDATOR_WITHDRAWAL_ROLE =
+        keccak256("vaults.Permissions.TriggerValidatorWithdrawal");
+    bytes32 public constant VOLUNTARY_DISCONNECT_ROLE = keccak256("vaults.Permissions.VoluntaryDisconnect");
+    bytes32 public constant VAULT_CONFIGURATION_ROLE = keccak256("vaults.Permissions.VaultConfiguration");
+    bytes32 public constant COLLECT_VAULT_ERC20_ROLE = keccak256("vaults.Dashboard.CollectVaultERC20");
+    bytes32 public constant DEFAULT_ADMIN_ROLE = 0x00;
+
+    bytes32 public constant NODE_OPERATOR_MANAGER_ROLE = keccak256("vaults.NodeOperatorFee.NodeOperatorManagerRole");
+    bytes32 public constant NODE_OPERATOR_FEE_EXEMPT_ROLE = keccak256("vaults.NodeOperatorFee.FeeExemptRole");
+    bytes32 public constant NODE_OPERATOR_UNGUARANTEED_DEPOSIT_ROLE =
+        keccak256("vaults.NodeOperatorFee.UnguaranteedDepositRole");
+    bytes32 public constant NODE_OPERATOR_PROVE_UNKNOWN_VALIDATOR_ROLE =
+        keccak256("vaults.NodeOperatorFee.ProveUnknownValidatorsRole");
+
+    function logLidoV3Permissions(address d) internal view {
+        bytes32[17] memory roles = [
+            FUND_ROLE,
+            WITHDRAW_ROLE,
+            MINT_ROLE,
+            BURN_ROLE,
+            REBALANCE_ROLE,
+            PAUSE_BEACON_CHAIN_DEPOSITS_ROLE,
+            RESUME_BEACON_CHAIN_DEPOSITS_ROLE,
+            REQUEST_VALIDATOR_EXIT_ROLE,
+            TRIGGER_VALIDATOR_WITHDRAWAL_ROLE,
+            VOLUNTARY_DISCONNECT_ROLE,
+            VAULT_CONFIGURATION_ROLE,
+            COLLECT_VAULT_ERC20_ROLE,
+            DEFAULT_ADMIN_ROLE,
+            NODE_OPERATOR_MANAGER_ROLE,
+            NODE_OPERATOR_FEE_EXEMPT_ROLE,
+            NODE_OPERATOR_UNGUARANTEED_DEPOSIT_ROLE,
+            NODE_OPERATOR_PROVE_UNKNOWN_VALIDATOR_ROLE
+        ];
+
+        string[17] memory roleNames = [
+            "FUND_ROLE",
+            "WITHDRAW_ROLE",
+            "MINT_ROLE",
+            "BURN_ROLE",
+            "REBALANCE_ROLE",
+            "PAUSE_BEACON_CHAIN_DEPOSITS_ROLE",
+            "RESUME_BEACON_CHAIN_DEPOSITS_ROLE",
+            "REQUEST_VALIDATOR_EXIT_ROLE",
+            "TRIGGER_VALIDATOR_WITHDRAWAL_ROLE",
+            "VOLUNTARY_DISCONNECT_ROLE",
+            "VAULT_CONFIGURATION_ROLE",
+            "COLLECT_VAULT_ERC20_ROLE",
+            "DEFAULT_ADMIN_ROLE",
+            "NODE_OPERATOR_MANAGER_ROLE",
+            "NODE_OPERATOR_FEE_EXEMPT_ROLE",
+            "NODE_OPERATOR_UNGUARANTEED_DEPOSIT_ROLE",
+            "NODE_OPERATOR_PROVE_UNKNOWN_VALIDATOR_ROLE"
+        ];
+
+        for (uint256 i = 0; i < roles.length; i++) {
+            bytes32 role = roles[i];
+            address[] memory members = AccessControlEnumerable(d).getRoleMembers(role);
+            for (uint256 j = 0; j < members.length; j++) {
+                console2.log("LidoV3 dashboard: user %s holds role %s", members[j], roleNames[i]);
+            }
+        }
+    }
+
+    function logAllowedAssetsAndLimits(Vault vault) internal view {
+        IRiskManager riskManager = vault.riskManager();
+
+        for (uint256 i = 0; i < vault.subvaults(); i++) {
+            address subvault = vault.subvaultAt(i);
+            uint256 n = riskManager.allowedAssets(subvault);
+            console2.log("subvault %s limit: %s", i, uint256(riskManager.subvaultState(subvault).limit));
+            for (uint256 j = 0; j < n; j++) {
+                address allowedAsset = riskManager.allowedAssetAt(subvault, j);
+                string memory asset = allowedAsset == Constants.ETH ? "ETH" : IERC20Metadata(allowedAsset).symbol();
+                console2.log("subvault %s has allowed asset %s", i, asset);
+            }
+        }
+    }
+
+    function logMerkleRoots(Vault vault) internal view {
+        for (uint256 i = 0; i < vault.subvaults(); i++) {
+            address subvault = vault.subvaultAt(i);
+            console2.log(
+                "subvault %s has merkle root %s", i, vm.toString(IVerifierModule(subvault).verifier().merkleRoot())
+            );
+        }
+    }
+
+    bytes32 public constant TOKEN_IN_ROLE = keccak256("utils.SwapModule.TOKEN_IN_ROLE");
+    bytes32 public constant TOKEN_OUT_ROLE = keccak256("utils.SwapModule.TOKEN_OUT_ROLE");
+    bytes32 public constant ROUTER_ROLE = keccak256("utils.SwapModule.ROUTER_ROLE");
+    bytes32 public constant CALLER_ROLE = keccak256("utils.SwapModule.CALLER_ROLE");
+    bytes32 public constant SET_SLIPPAGE_ROLE = keccak256("utils.SwapModule.SET_SLIPPAGE_ROLE");
+
+    function logSwapModulePermissions(address s) internal view {
+        bytes32[6] memory roles =
+            [DEFAULT_ADMIN_ROLE, TOKEN_IN_ROLE, TOKEN_OUT_ROLE, ROUTER_ROLE, CALLER_ROLE, SET_SLIPPAGE_ROLE];
+        string[6] memory roleNames =
+            ["DEFAULT_ADMIN_ROLE", "TOKEN_IN_ROLE", "TOKEN_OUT_ROLE", "ROUTER_ROLE", "CALLER_ROLE", "SET_SLIPPAGE_ROLE"];
+        for (uint256 i = 0; i < roles.length; i++) {
+            bytes32 role = roles[i];
+            address[] memory members = AccessControlEnumerable(s).getRoleMembers(role);
+            for (uint256 j = 0; j < members.length; j++) {
+                console2.log("SwapModule %s: user %s holds role %s", s, members[j], roleNames[i]);
+            }
+        }
+    }
+
+    function logOracleAssets(IOracle oracle) internal view {
+        for (uint256 i = 0; i < oracle.supportedAssets(); i++) {
+            address supportedAsset = oracle.supportedAssetAt(i);
+
+            string memory asset = supportedAsset == Constants.ETH ? "ETH" : IERC20Metadata(supportedAsset).symbol();
+            console2.log("oracle has supported asset %s", asset);
+        }
+    }
+
+    function logCall(address target, bytes memory data) internal pure {
+        console2.log("{");
+        console2.log('  "to": "%s",', target);
+        console2.log('  "value": "0",');
+        console2.log('  "data": "%s",', vm.toString(data));
+        console2.log('  "contractMethod": {');
+        console2.log('    "inputs": [],');
+        console2.log('     "name": "fallback",');
+        console2.log('     "payable": true');
+        console2.log("  },");
+        console2.log('  "contractInputsValues": null');
+        console2.log("},");
+    }
+
+    function migrate(Vault vault, IAccessControl dashboard, SwapModule swapModule) internal {
+        RiskManager riskManager = RiskManager(address(vault.riskManager()));
+        address subvault0 = vault.subvaultAt(0);
+        address subvault1 = vault.subvaultAt(1);
+        address subvault2 = vault.subvaultAt(2);
+
+        vm.startPrank(lazyVaultAdmin);
+
+        logCall(
+            address(vault),
+            abi.encodeCall(vault.grantRole, (riskManager.DISALLOW_SUBVAULT_ASSETS_ROLE(), lazyVaultAdmin))
+        );
+        vault.grantRole(riskManager.DISALLOW_SUBVAULT_ASSETS_ROLE(), lazyVaultAdmin);
+
+        logCall(
+            address(vault), abi.encodeCall(vault.grantRole, (riskManager.ALLOW_SUBVAULT_ASSETS_ROLE(), lazyVaultAdmin))
+        );
+        vault.grantRole(riskManager.ALLOW_SUBVAULT_ASSETS_ROLE(), lazyVaultAdmin);
+
+        logCall(
+            address(riskManager),
+            abi.encodeCall(
+                riskManager.disallowSubvaultAssets,
+                (subvault1, ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH, Constants.RSETH)))
+            )
+        );
+        riskManager.disallowSubvaultAssets(
+            subvault1, ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH, Constants.RSETH))
+        );
+
+        logCall(
+            address(riskManager),
+            abi.encodeCall(
+                riskManager.disallowSubvaultAssets,
+                (subvault2, ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)))
+            )
+        );
+        riskManager.disallowSubvaultAssets(subvault2, ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH)));
+
+        logCall(
+            address(riskManager),
+            abi.encodeCall(
+                riskManager.allowSubvaultAssets,
+                (subvault2, ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH)))
+            )
+        );
+        riskManager.allowSubvaultAssets(
+            subvault2, ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH))
+        );
+
+        logCall(
+            address(IVerifierModule(subvault0).verifier()),
+            abi.encodeCall(IVerifierModule(subvault0).verifier().setMerkleRoot, (getMerkleRoot(0)))
+        );
+        IVerifierModule(subvault0).verifier().setMerkleRoot(getMerkleRoot(0));
+
+        logCall(
+            address(IVerifierModule(subvault1).verifier()),
+            abi.encodeCall(IVerifierModule(subvault1).verifier().setMerkleRoot, (getMerkleRoot(1)))
+        );
+        IVerifierModule(subvault1).verifier().setMerkleRoot(getMerkleRoot(1));
+
+        logCall(
+            address(IVerifierModule(subvault2).verifier()),
+            abi.encodeCall(IVerifierModule(subvault2).verifier().setMerkleRoot, (getMerkleRoot(2)))
+        );
+        IVerifierModule(subvault2).verifier().setMerkleRoot(getMerkleRoot(2));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.revokeRole, (FUND_ROLE, address(swapModule))));
+        dashboard.revokeRole(FUND_ROLE, address(swapModule));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.revokeRole, (WITHDRAW_ROLE, address(swapModule))));
+        dashboard.revokeRole(WITHDRAW_ROLE, address(swapModule));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.revokeRole, (MINT_ROLE, address(swapModule))));
+        dashboard.revokeRole(MINT_ROLE, address(swapModule));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.revokeRole, (BURN_ROLE, address(swapModule))));
+        dashboard.revokeRole(BURN_ROLE, address(swapModule));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.revokeRole, (REBALANCE_ROLE, address(swapModule))));
+        dashboard.revokeRole(REBALANCE_ROLE, address(swapModule));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.grantRole, (FUND_ROLE, address(subvault0))));
+        dashboard.grantRole(FUND_ROLE, subvault0);
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.grantRole, (WITHDRAW_ROLE, address(subvault0))));
+        dashboard.grantRole(WITHDRAW_ROLE, address(subvault0));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.grantRole, (MINT_ROLE, address(subvault0))));
+        dashboard.grantRole(MINT_ROLE, address(subvault0));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.grantRole, (BURN_ROLE, address(subvault0))));
+        dashboard.grantRole(BURN_ROLE, address(subvault0));
+
+        logCall(address(dashboard), abi.encodeCall(dashboard.grantRole, (REBALANCE_ROLE, address(subvault0))));
+        dashboard.grantRole(REBALANCE_ROLE, address(subvault0));
+
+        vm.stopPrank();
+    }
+
+    function upgradePermissions() internal {
+        address dashboard = 0xfF1e3a07dF140A6d7207865414D22335B2B263b1;
+        Vault vault = Vault(payable(0xd41f177Ec448476d287635CD3AE21457F94c2307));
+        address swapModule = 0x2BC798BE6610df25c0255e4C054cbb35F8e99A71;
+
+        migrate(vault, IAccessControl(dashboard), SwapModule(payable(swapModule)));
+
+        logAllowedAssetsAndLimits(vault);
+        console2.log();
+
+        logMerkleRoots(vault);
+
+        console2.log();
+        logSwapModulePermissions(swapModule);
+        console2.log();
+        logOracleAssets(vault.oracle());
+        console2.log();
+        logLidoV3Permissions(dashboard);
+        console2.log();
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
+
+        if (true) {
+            upgradePermissions();
+            return;
+        }
 
         vm.startBroadcast(deployerPk);
 
