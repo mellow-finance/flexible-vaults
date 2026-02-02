@@ -99,7 +99,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.collect(tokenId=anyInt,recipient=subvault0, amount0Max=anyInt, amount1Max=anyInt)",
+        "description": "NonfungiblePositionManager.collect(CollectParams(tokenId=anyInt,recipient=subvault0, amount0Max=anyInt, amount1Max=anyInt))",
         "abi": {
           "inputs": [
             {
@@ -147,10 +147,12 @@
           "value": "0"
         },
         "innerParameters": {
-          "tokenId": "0",
-          "recipient": "0xc22642ad548183afbe389dc667d698c60f3d9a22",
-          "amount0Max": "any",
-          "amount1Max": "any"
+          "collectParams": {
+            "tokenId": "any",
+            "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22",
+            "amount0Max": "any",
+            "amount1Max": "any"
+          }
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a098f1cb46e8fe0ab1243d6433f4ad5a338731ccf0bbd6e8fa7023a4f67b96d62000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -165,7 +167,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182115, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182115, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "inputs": [
             {
@@ -226,12 +228,14 @@
           "value": "0"
         },
         "innerParameters": {
-          "tokenId": "1182115",
-          "amount0Desired": "any",
-          "amount1Desired": "any",
-          "amount0Min": "any",
-          "amount1Min": "any",
-          "deadline": "any"
+          "increaseLiquidityParams": {
+            "tokenId": "1182115",
+            "amount0Desired": "any",
+            "amount1Desired": "any",
+            "amount0Min": "any",
+            "amount1Min": "any",
+            "deadline": "any"
+          }
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7fa2b29c22e5fc073aa36a884d45bd72e1dbc64968b85e5eb727492010bd1cab00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -246,7 +250,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182116, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182116, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "inputs": [
             {
@@ -307,12 +311,14 @@
           "value": "0"
         },
         "innerParameters": {
-          "tokenId": "1182116",
-          "amount0Desired": "any",
-          "amount1Desired": "any",
-          "amount0Min": "any",
-          "amount1Min": "any",
-          "deadline": "any"
+          "increaseLiquidityParams": {
+            "tokenId": "1182116",
+            "amount0Desired": "any",
+            "amount1Desired": "any",
+            "amount0Min": "any",
+            "amount1Min": "any",
+            "deadline": "any"
+          }
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aae6dd946064e6ba73548312c296e445c77651ea2787bd3760c6a3249c364d07200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -327,7 +333,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182117, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182117, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "inputs": [
             {
@@ -388,12 +394,14 @@
           "value": "0"
         },
         "innerParameters": {
-          "tokenId": "1182117",
-          "amount0Desired": "any",
-          "amount1Desired": "any",
-          "amount0Min": "any",
-          "amount1Min": "any",
-          "deadline": "any"
+          "increaseLiquidityParams": {
+            "tokenId": "1182117",
+            "amount0Desired": "any",
+            "amount1Desired": "any",
+            "amount0Min": "any",
+            "amount1Min": "any",
+            "deadline": "any"
+          }
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5842cb635b37f8ad815865bf7856c4df5f430ebe40fd1319e7d88fc5942f5cdf00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -408,7 +416,7 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182118, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182118, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "inputs": [
             {
@@ -469,12 +477,14 @@
           "value": "0"
         },
         "innerParameters": {
-          "tokenId": "1182118",
-          "amount0Desired": "any",
-          "amount1Desired": "any",
-          "amount0Min": "any",
-          "amount1Min": "any",
-          "deadline": "any"
+          "increaseLiquidityParams": {
+            "tokenId": "1182118",
+            "amount0Desired": "any",
+            "amount1Desired": "any",
+            "amount0Min": "any",
+            "amount1Min": "any",
+            "deadline": "any"
+          }
         }
       },
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a547a44495be8d0abb6811cfaa955aa8bdcdba52c1b43dcaddbfeea9978e83f3e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -489,7 +499,7 @@
     {
       "verificationType": 1,
       "description": {
-        "description": "NonfungiblePositionManager.decreaseLiquidity(tokenId=anyInt, liquidity=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.decreaseLiquidity(DecreaseLiquidityParams(tokenId=anyInt, liquidity=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "inputs": [
             {
@@ -541,11 +551,13 @@
           "value": "0"
         },
         "innerParameters": {
-          "tokenId": "any",
-          "liquidity": "any",
-          "amount0Min": "any",
-          "amount1Min": "any",
-          "deadline": "any"
+          "decreaseLiquidityParams": {
+            "tokenId": "any",
+            "liquidity": "any",
+            "amount0Min": "any",
+            "amount1Min": "any",
+            "deadline": "any"
+          }
         }
       },
       "verificationData": "0x1dd97b5ce0a90e76df68c39816e9cb253a90ffde2d219131d37dfc625bde6999",
