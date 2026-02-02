@@ -32,6 +32,8 @@ import {IMorpho} from "./interfaces/IMorpho.sol";
 import {IPositionManagerV3} from "./interfaces/IPositionManagerV3.sol";
 import {IAllowanceTransfer, IPositionManagerV4} from "./interfaces/IPositionManagerV4.sol";
 
+import {IAngleDistributor} from "./interfaces/IAngleDistributor.sol";
+
 import {IStUSR} from "./interfaces/IStUSR.sol";
 import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
 

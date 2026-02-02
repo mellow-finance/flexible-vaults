@@ -152,11 +152,7 @@ library JsonLibrary {
         );
     }
 
-    function toJson(IPositionManagerV3.DecreaseLiquidityParams memory params)
-        internal
-        pure
-        returns (string memory json)
-    {
+    function toJson(IPositionManagerV3.DecreaseLiquidityParams memory) internal pure returns (string memory json) {
         json = string(
             abi.encodePacked(
                 '{"tokenId": "any",',
