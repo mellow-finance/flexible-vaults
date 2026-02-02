@@ -29,7 +29,8 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x63a76a4a94cAB1DD49fcf0d7E3FC53a78AC8Ec5C)));
-        transferOwnership();
+        //transferOwnership();
+        //revert("ok");
 
         //uniswapV3Pools = ArraysLibrary.makeAddressArray(abi.encode(Constants.UNISWAP_V3_POOL_WBTC_CBBTC_100));
         uniswapV4Pools = ArraysLibrary.makeBytes25Array(abi.encode(Constants.UNISWAP_V4_POOL_TBTC_CBBTC_100));
@@ -53,7 +54,7 @@ contract Deploy is DeployAbstractScript {
             // vm.stopPrank();
         }
 
-        getSubvaultMerkleRoot(1);
+        getSubvaultMerkleRoot(0);
         //_run();
         revert("ok");
     }
@@ -104,6 +105,7 @@ contract Deploy is DeployAbstractScript {
         vm.stopPrank();
         assertEq(admin.owner(), newProxyAdmin, "Unexpected new ProxyAdmin");
         console2.log("ProxyAdmin %s of proxy %s (%s)", address(admin), proxy, name);
+        console2.logBytes(abi.encodeCall(Ownable.transferOwnership, (newProxyAdmin)));
     }
 
     function deposit(address asset, address queue) internal {
@@ -270,7 +272,7 @@ contract Deploy is DeployAbstractScript {
         holders[index++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
     }
 
-    function getTokenIdsV4(bytes25[] memory pools) internal pure returns (uint256[][] memory tokenIds) {
+    function getTokenIdsV4(bytes25[] memory pools) internal pure returns (uint256[] memory tokenIds) {
         /* there is no way to fetch tokenIds belongs to subvault
             Minting Uniswap V4 positions at pool tBTC/cbBTC
             Minted Uniswap V4 tokenId: 143354 [-230316, -230216]
@@ -278,12 +280,11 @@ contract Deploy is DeployAbstractScript {
             Minted Uniswap V4 tokenId: 143356 [-230316, -230266]
             Minted Uniswap V4 tokenId: 143357 [-230266, -230216]
         */
-        tokenIds = new uint256[][](1);
-        tokenIds[0] = new uint256[](4);
-        tokenIds[0][0] = 143354;
-        tokenIds[0][1] = 143355;
-        tokenIds[0][2] = 143356;
-        tokenIds[0][3] = 143357;
+        tokenIds = new uint256[](4);
+        tokenIds[0] = 143354;
+        tokenIds[1] = 143355;
+        tokenIds[2] = 143356;
+        tokenIds[3] = 143357;
         return tokenIds;
     }
 
@@ -341,7 +342,7 @@ contract Deploy is DeployAbstractScript {
                 Permissions.SWAP_MODULE_ROUTER_ROLE
             )
         );
-        address swapModule = _deploySwapModule(subvault, actors, permissions);
+        address swapModule = 0xeF0C3036A29d6d9d1EC7a8aEe1DbB885C488641A; // _deploySwapModule(subvault, actors, permissions);
 
         mezoBTCLibrary.Info0 memory info = mezoBTCLibrary.Info0({
             curator: curator,
@@ -352,7 +353,6 @@ contract Deploy is DeployAbstractScript {
             positionManagerV3: Constants.UNISWAP_V3_POSITION_MANAGER,
             uniswapV3Pools: uniswapV3Pools,
             positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
-            uniswapV4Pools: uniswapV4Pools,
             uniswapV4TokenIds: getTokenIdsV4(uniswapV4Pools)
         });
 

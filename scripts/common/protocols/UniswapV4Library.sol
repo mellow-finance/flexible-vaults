@@ -28,8 +28,7 @@ library UniswapV4Library {
         address subvault;
         string subvaultName;
         address positionManager;
-        bytes25[] poolIds;
-        uint256[][] tokenIds; // allowed tokenIds per pool
+        uint256[] tokenIds; // allowed tokenIds
     }
 
     function makeDuplicates(address addr, uint256 count) internal pure returns (address[] memory addrs) {
@@ -40,11 +39,12 @@ library UniswapV4Library {
     }
 
     function getUniqueAssets(Info memory $) internal view returns (address[] memory) {
-        address[] memory tokens = new address[]($.poolIds.length * 2);
+        address[] memory tokens = new address[]($.tokenIds.length * 2);
         uint256 count;
 
-        for (uint256 i = 0; i < $.poolIds.length; i++) {
-            IPositionManagerV4.PoolKey memory key = IPositionManagerV4($.positionManager).poolKeys($.poolIds[i]);
+        for (uint256 i = 0; i < $.tokenIds.length; i++) {
+            (IPositionManagerV4.PoolKey memory key,) =
+                IPositionManagerV4($.positionManager).getPoolAndPositionInfo($.tokenIds[i]);
             tokens[i * 2] = key.currency0;
             tokens[i * 2 + 1] = key.currency1;
         }
@@ -53,26 +53,26 @@ library UniswapV4Library {
 
     function checkTokenIds(Info memory $) internal view {
         for (uint256 i = 0; i < $.tokenIds.length; i++) {
-            for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
-                if (IPositionManagerV4($.positionManager).ownerOf($.tokenIds[i][j]) != $.subvault) {
-                    revert("Subvault is not owner of tokenId");
-                }
-                if (IPositionManagerV4($.positionManager).getApproved($.tokenIds[i][j]) != address(0)) {
-                    revert("TokenID must not have an approval");
-                }
+            if (IPositionManagerV4($.positionManager).ownerOf($.tokenIds[i]) != $.subvault) {
+                revert("Subvault is not owner of tokenId");
+            }
+            if (IPositionManagerV4($.positionManager).getApproved($.tokenIds[i]) != address(0)) {
+                revert("TokenID must not have an approval");
             }
         }
     }
 
-    function makeIncreaseLiquidityCalldata(address positionManager, bytes25 poolId, uint256 tokenId)
+    function makeIncreaseLiquidityUnlockData(address positionManager, uint256 tokenId)
         internal
         view
         returns (bytes memory)
     {
-        IPositionManagerV4.PoolKey memory key = IPositionManagerV4(positionManager).poolKeys(poolId);
+        (IPositionManagerV4.PoolKey memory poolKey,) =
+            IPositionManagerV4(positionManager).getPoolAndPositionInfo(tokenId);
+
         bytes[] memory params = new bytes[](2);
         params[0] = abi.encode(tokenId, 0, 0, 0, ""); // increaseLiquidity params
-        params[1] = abi.encode(key.currency0, key.currency1); // settle params
+        params[1] = abi.encode(poolKey.currency0, poolKey.currency1); // settle params
 
         return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_INCREASE_LIQUIDITY, ACTION_SETTLE_PAIR), params);
     }
@@ -85,15 +85,17 @@ library UniswapV4Library {
         return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_INCREASE_LIQUIDITY, ACTION_SETTLE_PAIR), params);
     }
 
-    function makeDecreaseLiquidityCalldata(address positionManager, bytes25 poolId, uint256 tokenId)
+    function makeDecreaseLiquidityUnlockData(address positionManager, uint256 tokenId, address recipient)
         internal
         view
         returns (bytes memory)
     {
-        IPositionManagerV4.PoolKey memory key = IPositionManagerV4(positionManager).poolKeys(poolId);
+        (IPositionManagerV4.PoolKey memory poolKey,) =
+            IPositionManagerV4(positionManager).getPoolAndPositionInfo(tokenId);
+
         bytes[] memory params = new bytes[](2);
         params[0] = abi.encode(tokenId, 0, 0, 0, ""); // decreaseLiquidity params
-        params[1] = abi.encode(key.currency0, key.currency1); // take params
+        params[1] = abi.encode(poolKey.currency0, poolKey.currency1, recipient); // take params
 
         return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_DECREASE_LIQUIDITY, ACTION_TAKE_PAIR), params);
     }
@@ -101,7 +103,7 @@ library UniswapV4Library {
     function makeDecreaseLiquidityCalldataMask() internal view returns (bytes memory) {
         bytes[] memory params = new bytes[](2);
         params[0] = abi.encode(type(uint256).max, 0, 0, 0, ""); // decreaseLiquidity params with any liquidity and amounts
-        params[1] = abi.encode(type(uint160).max, type(uint160).max); // take params
+        params[1] = abi.encode(type(uint160).max, type(uint160).max, type(uint160).max); // take params
 
         return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_DECREASE_LIQUIDITY, ACTION_TAKE_PAIR), params);
     }
@@ -157,35 +159,46 @@ library UniswapV4Library {
         }
 
         // enable increase liquidity for given poolIds and tokenIds
-        for (uint256 i = 0; i < $.poolIds.length; i++) {
-            bytes25 poolId = $.poolIds[i];
-            for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
-                uint256 tokenId = $.tokenIds[i][j];
-                leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-                    bitmaskVerifier,
-                    $.curator,
-                    $.positionManager,
-                    0,
-                    makeIncreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                    ProofLibrary.makeBitmask(true, true, true, true, makeIncreaseLiquidityCalldataMask())
-                );
-            }
+        for (uint256 i = 0; i < $.tokenIds.length; i++) {
+            uint256 tokenId = $.tokenIds[i];
+            leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.positionManager,
+                0,
+                abi.encodeCall(
+                    IPositionManagerV4.modifyLiquidities,
+                    (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                ),
+                ProofLibrary.makeBitmask(
+                    true,
+                    true,
+                    true,
+                    true,
+                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityCalldataMask(), 0))
+                )
+            );
         }
 
         // enable decrease liquidity for given poolIds and tokenIds
-        for (uint256 i = 0; i < $.poolIds.length; i++) {
-            bytes25 poolId = $.poolIds[i];
-            for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
-                uint256 tokenId = $.tokenIds[i][j];
-                leaves[iterator++] = ProofLibrary.makeVerificationPayload(
-                    bitmaskVerifier,
-                    $.curator,
-                    $.positionManager,
-                    0,
-                    makeDecreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                    ProofLibrary.makeBitmask(true, true, true, true, makeDecreaseLiquidityCalldataMask())
-                );
-            }
+        for (uint256 i = 0; i < $.tokenIds.length; i++) {
+            leaves[iterator++] = ProofLibrary.makeVerificationPayload(
+                bitmaskVerifier,
+                $.curator,
+                $.positionManager,
+                0,
+                abi.encodeCall(
+                    IPositionManagerV4.modifyLiquidities,
+                    (makeDecreaseLiquidityUnlockData($.positionManager, $.tokenIds[i], $.subvault), 0)
+                ),
+                ProofLibrary.makeBitmask(
+                    true,
+                    true,
+                    true,
+                    true,
+                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityCalldataMask(), 0))
+                )
+            );
         }
 
         assembly {
@@ -231,73 +244,71 @@ library UniswapV4Library {
         }
 
         // enable increase liquidity for given poolIds and tokenIds
-        for (uint256 i = 0; i < $.poolIds.length; i++) {
-            bytes25 poolId = $.poolIds[i];
-            IPositionManagerV4.PoolKey memory key = IPositionManagerV4($.positionManager).poolKeys(poolId);
-            for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
-                // inner parameters for increaseLiquidity
-                ParameterLibrary.Parameter[] memory innerParameters;
-                innerParameters = innerParameters.add("tokenId", Strings.toString($.tokenIds[i][j]));
-                innerParameters = innerParameters.addAny("amount0Desired");
-                innerParameters = innerParameters.addAny("amount1Desired");
-                innerParameters = innerParameters.addAny("amount0Min");
-                innerParameters = innerParameters.addAny("amount1Min");
-                innerParameters = innerParameters.addAny("data");
-                // inner parameters for settle
-                innerParameters = innerParameters.add("currency0", Strings.toHexString(key.currency0));
-                innerParameters = innerParameters.add("currency1", Strings.toHexString(key.currency1));
+        for (uint256 i = 0; i < $.tokenIds.length; i++) {
+            (IPositionManagerV4.PoolKey memory key,) =
+                IPositionManagerV4($.positionManager).getPoolAndPositionInfo($.tokenIds[i]);
 
-                descriptions[iterator++] = JsonLibrary.toJson(
-                    string(
-                        abi.encodePacked(
-                            "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=",
-                            Strings.toString($.tokenIds[i][j]),
-                            ", amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=",
-                            IERC20Metadata(key.currency0).symbol(),
-                            ", currency1=",
-                            IERC20Metadata(key.currency1).symbol(),
-                            "))"
-                        )
-                    ),
-                    ABILibrary.getABI(IPositionManagerV4.modifyLiquidities.selector),
-                    ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
-                    innerParameters
-                );
-            }
+            // inner parameters for increaseLiquidity
+            ParameterLibrary.Parameter[] memory innerParameters;
+            innerParameters = innerParameters.add("tokenId", Strings.toString($.tokenIds[i]));
+            innerParameters = innerParameters.addAny("amount0Desired");
+            innerParameters = innerParameters.addAny("amount1Desired");
+            innerParameters = innerParameters.addAny("amount0Min");
+            innerParameters = innerParameters.addAny("amount1Min");
+            innerParameters = innerParameters.addAny("data");
+            // inner parameters for settle
+            innerParameters = innerParameters.add("currency0", Strings.toHexString(key.currency0));
+            innerParameters = innerParameters.add("currency1", Strings.toHexString(key.currency1));
+
+            descriptions[iterator++] = JsonLibrary.toJson(
+                string(
+                    abi.encodePacked(
+                        "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=",
+                        Strings.toString($.tokenIds[i]),
+                        ", amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=",
+                        IERC20Metadata(key.currency0).symbol(),
+                        ", currency1=",
+                        IERC20Metadata(key.currency1).symbol(),
+                        "))"
+                    )
+                ),
+                ABILibrary.getABI(IPositionManagerV4.modifyLiquidities.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
+                innerParameters
+            );
         }
         // enable decrease liquidity for given poolIds and tokenIds
-        for (uint256 i = 0; i < $.poolIds.length; i++) {
-            bytes25 poolId = $.poolIds[i];
-            IPositionManagerV4.PoolKey memory key = IPositionManagerV4($.positionManager).poolKeys(poolId);
-            for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
-                // inner parameters for decreaseLiquidity
-                ParameterLibrary.Parameter[] memory innerParameters;
-                innerParameters = innerParameters.add("tokenId", Strings.toString($.tokenIds[i][j]));
-                innerParameters = innerParameters.addAny("liquidity");
-                innerParameters = innerParameters.addAny("amount0Min");
-                innerParameters = innerParameters.addAny("amount1Min");
-                innerParameters = innerParameters.addAny("data");
-                // inner parameters for take
-                innerParameters = innerParameters.add("currency0", Strings.toHexString(key.currency0));
-                innerParameters = innerParameters.add("currency1", Strings.toHexString(key.currency1));
+        for (uint256 i = 0; i < $.tokenIds.length; i++) {
+            (IPositionManagerV4.PoolKey memory key,) =
+                IPositionManagerV4($.positionManager).getPoolAndPositionInfo($.tokenIds[i]);
 
-                descriptions[iterator++] = JsonLibrary.toJson(
-                    string(
-                        abi.encodePacked(
-                            "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=",
-                            Strings.toString($.tokenIds[i][j]),
-                            ", liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=",
-                            IERC20Metadata(key.currency0).symbol(),
-                            ", currency1=",
-                            IERC20Metadata(key.currency1).symbol(),
-                            "))"
-                        )
-                    ),
-                    ABILibrary.getABI(IPositionManagerV4.modifyLiquidities.selector),
-                    ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
-                    innerParameters
-                );
-            }
+            // inner parameters for decreaseLiquidity
+            ParameterLibrary.Parameter[] memory innerParameters;
+            innerParameters = innerParameters.add("tokenId", Strings.toString($.tokenIds[i]));
+            innerParameters = innerParameters.addAny("liquidity");
+            innerParameters = innerParameters.addAny("amount0Min");
+            innerParameters = innerParameters.addAny("amount1Min");
+            innerParameters = innerParameters.addAny("data");
+            // inner parameters for take
+            innerParameters = innerParameters.add("currency0", Strings.toHexString(key.currency0));
+            innerParameters = innerParameters.add("currency1", Strings.toHexString(key.currency1));
+
+            descriptions[iterator++] = JsonLibrary.toJson(
+                string(
+                    abi.encodePacked(
+                        "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=",
+                        Strings.toString($.tokenIds[i]),
+                        ", liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=",
+                        IERC20Metadata(key.currency0).symbol(),
+                        ", currency1=",
+                        IERC20Metadata(key.currency1).symbol(),
+                        "))"
+                    )
+                ),
+                ABILibrary.getABI(IPositionManagerV4.modifyLiquidities.selector),
+                ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.positionManager), "0"),
+                innerParameters
+            );
         }
 
         assembly {
@@ -378,117 +389,178 @@ library UniswapV4Library {
         // enable increase liquidity for given poolIds and tokenIds
         {
             uint48 ts = uint48(block.timestamp);
-            for (uint256 i = 0; i < $.poolIds.length; i++) {
-                bytes25 poolId = $.poolIds[i];
-                for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
-                    uint256 tokenId = $.tokenIds[i][j];
-                    Call[] memory tmp = new Call[](16);
-                    uint256 k = 0;
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        0,
-                        makeIncreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        true
-                    );
-                    tmp[k++] = Call(
-                        address(0xdead),
-                        $.positionManager,
-                        0,
-                        makeIncreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        address(0xdead),
-                        0,
-                        makeIncreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        1 wei,
-                        makeIncreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        0,
-                        makeIncreaseLiquidityCalldata($.positionManager, bytes25(bytes32(uint256(0x123456))), tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        0,
-                        makeIncreaseLiquidityCalldata($.positionManager, poolId, 1),
-                        false
-                    );
-                    assembly {
-                        mstore(tmp, k)
-                    }
-                    calls[index++] = tmp;
+            for (uint256 i = 0; i < $.tokenIds.length; i++) {
+                uint256 tokenId = $.tokenIds[i];
+                Call[] memory tmp = new Call[](16);
+                uint256 k = 0;
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                    ),
+                    true
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 1234)
+                    ),
+                    true
+                );
+                tmp[k++] = Call(
+                    address(0xdead),
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    address(0xdead),
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    1 wei,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($.positionManager, 1), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encode(
+                        IPositionManagerV4.modifyLiquidities.selector,
+                        makeIncreaseLiquidityUnlockData($.positionManager, tokenId),
+                        0
+                    ),
+                    false
+                );
+                assembly {
+                    mstore(tmp, k)
                 }
+                calls[index++] = tmp;
             }
         }
         // enable decrease liquidity for given poolIds and tokenIds
         {
             uint48 ts = uint48(block.timestamp);
-            for (uint256 i = 0; i < $.poolIds.length; i++) {
-                bytes25 poolId = $.poolIds[i];
-                for (uint256 j = 0; j < $.tokenIds[i].length; j++) {
-                    uint256 tokenId = $.tokenIds[i][j];
-                    Call[] memory tmp = new Call[](16);
-                    uint256 k = 0;
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        0,
-                        makeDecreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        true
-                    );
-                    tmp[k++] = Call(
-                        address(0xdead),
-                        $.positionManager,
-                        0,
-                        makeDecreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        address(0xdead),
-                        0,
-                        makeDecreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        1 wei,
-                        makeDecreaseLiquidityCalldata($.positionManager, poolId, tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        0,
-                        makeDecreaseLiquidityCalldata($.positionManager, bytes25(bytes32(uint256(0x123456))), tokenId),
-                        false
-                    );
-                    tmp[k++] = Call(
-                        $.curator,
-                        $.positionManager,
-                        0,
-                        makeDecreaseLiquidityCalldata($.positionManager, poolId, 1),
-                        false
-                    );
-                    assembly {
-                        mstore(tmp, k)
-                    }
-                    calls[index++] = tmp;
+            for (uint256 i = 0; i < $.tokenIds.length; i++) {
+                uint256 tokenId = $.tokenIds[i];
+                Call[] memory tmp = new Call[](16);
+                uint256 k = 0;
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                    ),
+                    true
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 1234)
+                    ),
+                    true
+                );
+                tmp[k++] = Call(
+                    address(0xdead),
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    address(0xdead),
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    1 wei,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeDecreaseLiquidityUnlockData($.positionManager, 1, $.subvault), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encodeCall(
+                        IPositionManagerV4.modifyLiquidities,
+                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, address(0xdead)), 0)
+                    ),
+                    false
+                );
+                tmp[k++] = Call(
+                    $.curator,
+                    $.positionManager,
+                    0,
+                    abi.encode(
+                        IPositionManagerV4.modifyLiquidities.selector,
+                        makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault),
+                        0
+                    ),
+                    false
+                );
+                assembly {
+                    mstore(tmp, k)
                 }
+                calls[index++] = tmp;
             }
         }
 

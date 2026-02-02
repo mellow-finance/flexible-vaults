@@ -47,8 +47,7 @@ library mezoBTCLibrary {
         address positionManagerV3;
         address[] uniswapV3Pools;
         address positionManagerV4;
-        bytes25[] uniswapV4Pools;
-        uint256[][] uniswapV4TokenIds;
+        uint256[] uniswapV4TokenIds;
     }
 
     struct Info1 {
@@ -74,7 +73,6 @@ library mezoBTCLibrary {
             subvault: $.subvault,
             subvaultName: $.subvaultName,
             positionManager: $.positionManagerV4,
-            poolIds: $.uniswapV4Pools,
             tokenIds: $.uniswapV4TokenIds
         });
     }

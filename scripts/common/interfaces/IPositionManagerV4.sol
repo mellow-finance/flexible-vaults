@@ -43,4 +43,6 @@ interface IPositionManagerV4 is IERC721 {
     function poolKeys(bytes25 poolId) external view returns (PoolKey memory);
 
     function getApproved(uint256 tokenId) external view returns (address);
+
+    function getPoolAndPositionInfo(uint256 tokenId) external view returns (PoolKey memory poolKey, uint256 info);
 }
