@@ -11,7 +11,9 @@ import {TickMath} from "../../common/libraries/TickMath.sol";
 import "../Constants.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Script} from "forge-std/Script.sol";
+
 import "forge-std/Test.sol";
+import "src/UniswapV4UnlockDataGenerator.sol";
 
 contract Mock is Script {
     using SafeERC20 for IERC20;
@@ -113,7 +115,7 @@ contract Mock is Script {
     {
         (IPositionManagerV4.PoolKey memory poolKey, uint256 info) =
             IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).getPoolAndPositionInfo(tokenId);
-        (uint160 sqrtRatioX96,,,) = StateLibrary.getSlot0(
+        (uint160 sqrtRatioX96, int24 tick,,) = StateLibrary.getSlot0(
             IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).poolManager(), StateLibrary.toId(poolKey)
         );
 
@@ -123,15 +125,121 @@ contract Mock is Script {
         uint160 sqrtRatioAX96 = TickMath.getSqrtRatioAtTick(PositionInfoLibrary.tickLower(info));
         uint160 sqrtRatioBX96 = TickMath.getSqrtRatioAtTick(PositionInfoLibrary.tickUpper(info));
 
+        // sqrtRatioX96 = TickMath.getSqrtRatioAtTick(-230265);
         uint128 liquidity = LiquidityAmounts.getMaxLiquidityForAmounts(
             sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, amount0Max, amount1Max
         );
+        (uint256 amount0, uint256 amount1) =
+            LiquidityAmounts.getAmountsForLiquidity(sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, liquidity);
+        console2.log(
+            "Currency0: %s Currency1: %s",
+            IERC20Metadata(poolKey.currency0).symbol(),
+            IERC20Metadata(poolKey.currency1).symbol()
+        );
+        console2.log("Predicted amounts: %s %s liquidity: %s", amount0, amount1, liquidity);
+        console2.log("spot tick -%s", uint24(-tick));
+        console2.log(
+            "range [-%s; -%s]",
+            uint24(-PositionInfoLibrary.tickLower(info)),
+            uint24(-PositionInfoLibrary.tickUpper(info))
+        );
 
         // tokenId, liquidity, amount0Max, amount1Max, hookData
-        params[0] = abi.encode(tokenId, liquidity * 9 / 10, amount0Max, amount1Max, ""); // increaseLiquidity params
+        params[0] = abi.encode(tokenId, liquidity * 9 / 10, amount0, amount1, ""); // increaseLiquidity params
         params[1] = abi.encode(poolKey.currency0, poolKey.currency1); // settle params
 
         return abi.encode(actions, params);
+    }
+}
+
+contract UniswapV4UnlockDataGenerator_ {
+    address public constant POSITION_MANAGER = 0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e;
+
+    struct Currency {
+        address addr;
+        string symbol;
+        uint256 amount;
+    }
+
+    struct LiquidityData {
+        uint256 tokenId;
+        int24 tickLower;
+        int24 tickUpper;
+        int24 spotTick;
+        uint160 sqrtRatioX96;
+        uint128 liquidity;
+        Currency currency0;
+        Currency currency1;
+        bytes unlockData;
+    }
+
+    function getIncreaseLiquidityUnlockData(uint256 tokenId, uint256 amount0Max, uint256 amount1Max)
+        public
+        view
+        returns (LiquidityData memory data)
+    {
+        bytes[] memory params = new bytes[](2);
+        bytes memory actions = abi.encodePacked(uint8(0x00), uint8(0x0d)); // increase, settle
+
+        data = getInfo(tokenId);
+
+        uint160 sqrtRatioAX96 = TickMath.getSqrtRatioAtTick(data.tickLower);
+        uint160 sqrtRatioBX96 = TickMath.getSqrtRatioAtTick(data.tickUpper);
+
+        // sqrtRatioX96 = TickMath.getSqrtRatioAtTick(-230265);
+        data.liquidity = LiquidityAmounts.getMaxLiquidityForAmounts(
+            data.sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, amount0Max, amount1Max
+        );
+
+        (data.currency0.amount, data.currency1.amount) =
+            LiquidityAmounts.getAmountsForLiquidity(data.sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, data.liquidity);
+        // tokenId, liquidity, amount0Max, amount1Max, hookData
+        params[0] = abi.encode(data.tokenId, data.liquidity * 9 / 10, data.currency0.amount, data.currency1.amount, ""); // increaseLiquidity params
+        params[1] = abi.encode(data.currency0.addr, data.currency1.addr); // settle params
+
+        data.unlockData = abi.encode(actions, params);
+    }
+
+    function getDecreaseLiquidityUnlockData(
+        uint256 tokenId,
+        uint128 liquidity,
+        uint256 amount0Min,
+        uint256 amount1Min,
+        address recipient
+    ) public view returns (LiquidityData memory data) {
+        bytes memory actions = abi.encodePacked(uint8(0x01), uint8(0x11)); // decrease, take
+        bytes[] memory params = new bytes[](2);
+        data = getInfo(tokenId);
+        data.liquidity = liquidity;
+
+        uint160 sqrtRatioAX96 = TickMath.getSqrtRatioAtTick(data.tickLower);
+        uint160 sqrtRatioBX96 = TickMath.getSqrtRatioAtTick(data.tickUpper);
+        (data.currency0.amount, data.currency1.amount) =
+            LiquidityAmounts.getAmountsForLiquidity(data.sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, data.liquidity);
+
+        // tokenId, liquidity, amount0Min, amount1Min, hookData
+        params[0] = abi.encode(tokenId, liquidity, amount0Min, amount1Min, ""); // decreaseLiquidity params
+
+        // token0, token1, recipient
+        params[1] = abi.encode(data.currency0.addr, data.currency1.addr, recipient); // take params
+
+        data.unlockData = abi.encode(actions, params);
+    }
+
+    function getInfo(uint256 tokenId) internal view returns (LiquidityData memory data) {
+        (IPositionManagerV4.PoolKey memory poolKey, uint256 info) =
+            IPositionManagerV4(POSITION_MANAGER).getPoolAndPositionInfo(tokenId);
+
+        (data.sqrtRatioX96,,,) =
+            StateLibrary.getSlot0(IPositionManagerV4(POSITION_MANAGER).poolManager(), StateLibrary.toId(poolKey));
+        data.spotTick = TickMath.getTickAtSqrtRatio(data.sqrtRatioX96);
+        data.tokenId = tokenId;
+        data.tickLower = PositionInfoLibrary.tickLower(info);
+        data.tickUpper = PositionInfoLibrary.tickUpper(info);
+        data.currency0.symbol = IERC20Metadata(poolKey.currency0).symbol();
+        data.currency0.addr = poolKey.currency0;
+        data.currency1.symbol = IERC20Metadata(poolKey.currency1).symbol();
+        data.currency1.addr = poolKey.currency1;
     }
 }
 
@@ -140,18 +248,21 @@ contract TestUniswapV4 is Script {
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        vm.startBroadcast(deployerPk);
+        UniswapV4UnlockDataGenerator mock = new UniswapV4UnlockDataGenerator();
+        vm.stopBroadcast();
         address user = vm.addr(deployerPk);
         vm.startPrank(user);
-        Mock mock = new Mock();
-        //console2.logBytes(mock.getIncreaseLiquidityUnlockData(143331, 1e6, 1e6));
+        mock.getIncreaseLiquidityUnlockData(143332, 1e18 / 1000, 1e8 / 1000);
+        mock.getDecreaseLiquidityUnlockData(143332, 1000000, 0, 0, 0xC22642ad548183aFbe389dc667d698C60f3D9a22);
         //revert("ok");
 
-        IERC20(Constants.USDC).safeTransfer(address(mock), IERC20(Constants.USDC).balanceOf(user));
+        /* IERC20(Constants.USDC).safeTransfer(address(mock), IERC20(Constants.USDC).balanceOf(user));
         IERC20(Constants.USDT).safeTransfer(address(mock), IERC20(Constants.USDT).balanceOf(user));
         uint256 tokenId = mock.mint();
         mock.increaseLiquidity(tokenId);
         mock.decreaseLiquidity(tokenId);
         mock.collect(tokenId);
-        vm.stopPrank();
+        vm.stopPrank(); */
     }
 }
