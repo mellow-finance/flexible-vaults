@@ -62,58 +62,57 @@ library UniswapV4Library {
         }
     }
 
-    function makeIncreaseLiquidityUnlockData(address positionManager, uint256 tokenId)
+    function makeIncreaseLiquidityUnlockData(Info memory $, uint256 tokenId) internal view returns (bytes memory) {
+        (IPositionManagerV4.PoolKey memory poolKey,) =
+            IPositionManagerV4($.positionManager).getPoolAndPositionInfo(tokenId);
+
+        return _makeIncreaseLiquidityUnlockData(tokenId, poolKey.currency0, poolKey.currency1);
+    }
+
+    function makeDecreaseLiquidityUnlockData(Info memory $, uint256 tokenId) internal view returns (bytes memory) {
+        (IPositionManagerV4.PoolKey memory poolKey,) =
+            IPositionManagerV4($.positionManager).getPoolAndPositionInfo(tokenId);
+
+        return _makeDecreaseLiquidityUnlockData(tokenId, poolKey.currency0, poolKey.currency1, $.subvault);
+    }
+
+    function makeIncreaseLiquidityUnlockDataMask() internal view returns (bytes memory) {
+        return
+            _makeIncreaseLiquidityUnlockData(type(uint256).max, address(type(uint160).max), address(type(uint160).max));
+    }
+
+    function makeDecreaseLiquidityUnlockDataMask() internal view returns (bytes memory) {
+        return _makeDecreaseLiquidityUnlockData(
+            type(uint256).max, address(type(uint160).max), address(type(uint160).max), address(type(uint160).max)
+        );
+    }
+
+    function _makeIncreaseLiquidityUnlockData(uint256 tokenId, address token0, address token1)
         internal
         view
         returns (bytes memory)
     {
-        (IPositionManagerV4.PoolKey memory poolKey,) =
-            IPositionManagerV4(positionManager).getPoolAndPositionInfo(tokenId);
-
         bytes[] memory params = new bytes[](2);
+        // tokenId, liquidity, amount0Max, amount1Max, hookData
         params[0] = abi.encode(tokenId, 0, 0, 0, ""); // increaseLiquidity params
-        params[1] = abi.encode(poolKey.currency0, poolKey.currency1); // settle params
+        // token0, token1
+        params[1] = abi.encode(token0, token1); // settle params
 
-        return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_INCREASE_LIQUIDITY, ACTION_SETTLE_PAIR), params);
+        return abi.encode(abi.encodePacked(ACTION_INCREASE_LIQUIDITY, ACTION_SETTLE_PAIR), params);
     }
 
-    function makeIncreaseLiquidityCalldataMask() internal view returns (bytes memory) {
-        bytes[] memory params = new bytes[](2);
-        params[0] = abi.encode(type(uint256).max, 0, 0, 0, ""); // increaseLiquidity params with any liquidity and amounts
-        params[1] = abi.encode(type(uint160).max, type(uint160).max); // settle params
-
-        return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_INCREASE_LIQUIDITY, ACTION_SETTLE_PAIR), params);
-    }
-
-    function makeDecreaseLiquidityUnlockData(address positionManager, uint256 tokenId, address recipient)
+    function _makeDecreaseLiquidityUnlockData(uint256 tokenId, address token0, address token1, address recipient)
         internal
         view
         returns (bytes memory)
     {
-        (IPositionManagerV4.PoolKey memory poolKey,) =
-            IPositionManagerV4(positionManager).getPoolAndPositionInfo(tokenId);
-
         bytes[] memory params = new bytes[](2);
+        // tokenId, liquidity, amount0Min, amount1Min, hookData
         params[0] = abi.encode(tokenId, 0, 0, 0, ""); // decreaseLiquidity params
-        params[1] = abi.encode(poolKey.currency0, poolKey.currency1, recipient); // take params
+        // token0, token1, recipient
+        params[1] = abi.encode(token0, token1, recipient); // take params
 
-        return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_DECREASE_LIQUIDITY, ACTION_TAKE_PAIR), params);
-    }
-
-    function makeDecreaseLiquidityCalldataMask() internal view returns (bytes memory) {
-        bytes[] memory params = new bytes[](2);
-        params[0] = abi.encode(type(uint256).max, 0, 0, 0, ""); // decreaseLiquidity params with any liquidity and amounts
-        params[1] = abi.encode(type(uint160).max, type(uint160).max, type(uint160).max); // take params
-
-        return makeModifyLiquiditiesCalldata(abi.encodePacked(ACTION_DECREASE_LIQUIDITY, ACTION_TAKE_PAIR), params);
-    }
-
-    function makeModifyLiquiditiesCalldata(bytes memory actions, bytes[] memory params)
-        internal
-        view
-        returns (bytes memory)
-    {
-        return abi.encode(abi.encode(actions, params), block.timestamp + 1 hours);
+        return abi.encode(abi.encodePacked(ACTION_DECREASE_LIQUIDITY, ACTION_TAKE_PAIR), params);
     }
 
     function getUniswapV4Proofs(BitmaskVerifier bitmaskVerifier, Info memory $)
@@ -166,16 +165,13 @@ library UniswapV4Library {
                 $.curator,
                 $.positionManager,
                 0,
-                abi.encodeCall(
-                    IPositionManagerV4.modifyLiquidities,
-                    (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
-                ),
+                abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($, tokenId), 0)),
                 ProofLibrary.makeBitmask(
                     true,
                     true,
                     true,
                     true,
-                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityCalldataMask(), 0))
+                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockDataMask(), 0))
                 )
             );
         }
@@ -188,15 +184,14 @@ library UniswapV4Library {
                 $.positionManager,
                 0,
                 abi.encodeCall(
-                    IPositionManagerV4.modifyLiquidities,
-                    (makeDecreaseLiquidityUnlockData($.positionManager, $.tokenIds[i], $.subvault), 0)
+                    IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, $.tokenIds[i]), 0)
                 ),
                 ProofLibrary.makeBitmask(
                     true,
                     true,
                     true,
                     true,
-                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityCalldataMask(), 0))
+                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockDataMask(), 0))
                 )
             );
         }
@@ -250,15 +245,8 @@ library UniswapV4Library {
 
             // inner parameters for increaseLiquidity
             ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters = innerParameters.add("tokenId", Strings.toString($.tokenIds[i]));
-            innerParameters = innerParameters.addAny("amount0Desired");
-            innerParameters = innerParameters.addAny("amount1Desired");
-            innerParameters = innerParameters.addAny("amount0Min");
-            innerParameters = innerParameters.addAny("amount1Min");
-            innerParameters = innerParameters.addAny("data");
-            // inner parameters for settle
-            innerParameters = innerParameters.add("currency0", Strings.toHexString(key.currency0));
-            innerParameters = innerParameters.add("currency1", Strings.toHexString(key.currency1));
+            innerParameters = innerParameters.add("unlockData", "anyBytes");
+            innerParameters = innerParameters.add("deadline", "anyInt");
 
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
@@ -284,14 +272,8 @@ library UniswapV4Library {
 
             // inner parameters for decreaseLiquidity
             ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters = innerParameters.add("tokenId", Strings.toString($.tokenIds[i]));
-            innerParameters = innerParameters.addAny("liquidity");
-            innerParameters = innerParameters.addAny("amount0Min");
-            innerParameters = innerParameters.addAny("amount1Min");
-            innerParameters = innerParameters.addAny("data");
-            // inner parameters for take
-            innerParameters = innerParameters.add("currency0", Strings.toHexString(key.currency0));
-            innerParameters = innerParameters.add("currency1", Strings.toHexString(key.currency1));
+            innerParameters = innerParameters.add("unlockData", "anyBytes");
+            innerParameters = innerParameters.add("deadline", "anyInt");
 
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
@@ -331,7 +313,7 @@ library UniswapV4Library {
         );
         // approve position manager to transfer tokens on behalf of permit2
         {
-            uint48 ts = uint48(block.timestamp);
+            uint48 ts = uint48(block.timestamp) + 1 hours;
             for (uint256 j = 0; j < assets.length; j++) {
                 address asset = assets[j];
                 {
@@ -388,7 +370,7 @@ library UniswapV4Library {
         }
         // enable increase liquidity for given poolIds and tokenIds
         {
-            uint48 ts = uint48(block.timestamp);
+            uint48 ts = uint48(block.timestamp) + 1 hours;
             for (uint256 i = 0; i < $.tokenIds.length; i++) {
                 uint256 tokenId = $.tokenIds[i];
                 Call[] memory tmp = new Call[](16);
@@ -398,8 +380,7 @@ library UniswapV4Library {
                     $.positionManager,
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($, tokenId), 0)
                     ),
                     true
                 );
@@ -408,8 +389,7 @@ library UniswapV4Library {
                     $.positionManager,
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 1234)
+                        IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     true
                 );
@@ -418,8 +398,7 @@ library UniswapV4Library {
                     $.positionManager,
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     false
                 );
@@ -428,8 +407,7 @@ library UniswapV4Library {
                     address(0xdead),
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     false
                 );
@@ -438,8 +416,7 @@ library UniswapV4Library {
                     $.positionManager,
                     1 wei,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeIncreaseLiquidityUnlockData($.positionManager, tokenId), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     false
                 );
@@ -447,9 +424,7 @@ library UniswapV4Library {
                     $.curator,
                     $.positionManager,
                     0,
-                    abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($.positionManager, 1), 0)
-                    ),
+                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeIncreaseLiquidityUnlockData($, 1), ts)),
                     false
                 );
                 tmp[k++] = Call(
@@ -457,9 +432,7 @@ library UniswapV4Library {
                     $.positionManager,
                     0,
                     abi.encode(
-                        IPositionManagerV4.modifyLiquidities.selector,
-                        makeIncreaseLiquidityUnlockData($.positionManager, tokenId),
-                        0
+                        IPositionManagerV4.modifyLiquidities.selector, makeIncreaseLiquidityUnlockData($, tokenId), ts
                     ),
                     false
                 );
@@ -471,7 +444,7 @@ library UniswapV4Library {
         }
         // enable decrease liquidity for given poolIds and tokenIds
         {
-            uint48 ts = uint48(block.timestamp);
+            uint48 ts = uint48(block.timestamp) + 1 hours;
             for (uint256 i = 0; i < $.tokenIds.length; i++) {
                 uint256 tokenId = $.tokenIds[i];
                 Call[] memory tmp = new Call[](16);
@@ -481,8 +454,7 @@ library UniswapV4Library {
                     $.positionManager,
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, tokenId), 0)
                     ),
                     true
                 );
@@ -491,8 +463,7 @@ library UniswapV4Library {
                     $.positionManager,
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 1234)
+                        IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     true
                 );
@@ -501,8 +472,7 @@ library UniswapV4Library {
                     $.positionManager,
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     false
                 );
@@ -511,8 +481,7 @@ library UniswapV4Library {
                     address(0xdead),
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     false
                 );
@@ -521,8 +490,7 @@ library UniswapV4Library {
                     $.positionManager,
                     1 wei,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     false
                 );
@@ -530,30 +498,27 @@ library UniswapV4Library {
                     $.curator,
                     $.positionManager,
                     0,
-                    abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeDecreaseLiquidityUnlockData($.positionManager, 1, $.subvault), 0)
-                    ),
+                    abi.encodeCall(IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, 1), ts)),
                     false
                 );
+                address subvault = $.subvault;
+                $.subvault = address(0xdead); // to make sure wrong subvault is not accepted
                 tmp[k++] = Call(
                     $.curator,
                     $.positionManager,
                     0,
                     abi.encodeCall(
-                        IPositionManagerV4.modifyLiquidities,
-                        (makeDecreaseLiquidityUnlockData($.positionManager, tokenId, address(0xdead)), 0)
+                        IPositionManagerV4.modifyLiquidities, (makeDecreaseLiquidityUnlockData($, tokenId), ts)
                     ),
                     false
                 );
+                $.subvault = subvault;
                 tmp[k++] = Call(
                     $.curator,
                     $.positionManager,
                     0,
                     abi.encode(
-                        IPositionManagerV4.modifyLiquidities.selector,
-                        makeDecreaseLiquidityUnlockData($.positionManager, tokenId, $.subvault),
-                        0
+                        IPositionManagerV4.modifyLiquidities.selector, makeDecreaseLiquidityUnlockData($, tokenId), ts
                     ),
                     false
                 );
