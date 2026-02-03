@@ -15,6 +15,10 @@ library Constants {
     address public constant XPL = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WXPL = 0x6100E367285b01F48D07953803A2d8dCA5D19873;
     address public constant WSTUSR = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
+    address public constant SYRUP_USDT = 0xC4374775489CB9C56003BF2C9b12495fC64F0771;
+    address public constant USDE = 0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34;
+    address public constant SUSDE = 0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2;
+
     address public constant USDT0 = 0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb;
     address public constant WETH = 0x9895D81bB462A195b4922ED7De0e3ACD007c32CB;
     address public constant WSTETH = 0xe48D935e6C9e735463ccCf29a7F11e32bC09136E;
@@ -85,6 +89,7 @@ library Constants {
             eigenLayerVerifierFactory: Factory(address(0)),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(address(0))),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
             redeemQueueImplementation: RedeemQueue(payable(0x0000000285805eac535DADdb9648F1E10DfdC411)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x0000000b2082667589A16c4cF18e9f923781c471)),

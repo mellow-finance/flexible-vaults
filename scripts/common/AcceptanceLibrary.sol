@@ -94,11 +94,21 @@ library AcceptanceLibrary {
             address($.depositQueueImplementation),
             address(new DepositQueue($.deploymentName, $.deploymentVersion))
         );
-        compareBytecode(
-            "RedeemQueue",
-            address($.redeemQueueImplementation),
-            address(new RedeemQueue($.deploymentName, $.deploymentVersion))
-        );
+        if (address($.syncDepositQueueImplementation) != address(0)) {
+            compareBytecode(
+                "SyncDepositQueue",
+                address($.syncDepositQueueImplementation),
+                address(new SyncDepositQueue($.deploymentName, $.deploymentVersion))
+            );
+        }
+        // currently only on ethereum and rootstock
+        if (block.chainid == 1 || block.chainid == 30) {
+            compareBytecode(
+                "RedeemQueue",
+                address($.redeemQueueImplementation),
+                address(new RedeemQueue($.deploymentName, $.deploymentVersion))
+            );
+        }
 
         compareBytecode(
             "SignatureDepositQueue",
