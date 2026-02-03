@@ -201,18 +201,20 @@ library UniswapV3Library {
         // allow collect
         {
             ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters = ParameterLibrary.build("tokenId", "0");
-            innerParameters = innerParameters.add("recipient", Strings.toHexString($.subvault));
-            innerParameters = innerParameters.addAny("amount0Max");
-            innerParameters = innerParameters.addAny("amount1Max");
+            innerParameters = innerParameters.addJson(
+                "params",
+                JsonLibrary.toJson(
+                    IPositionManagerV3.CollectParams({tokenId: 0, recipient: $.subvault, amount0Max: 0, amount1Max: 0})
+                )
+            );
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
-                        "NonfungiblePositionManager.collect(",
+                        "NonfungiblePositionManager.collect(CollectParams(",
                         "tokenId=anyInt,",
                         "recipient=",
                         $.subvaultName,
-                        ", amount0Max=anyInt, amount1Max=anyInt)"
+                        ", amount0Max=anyInt, amount1Max=anyInt))"
                     )
                 ),
                 ABILibrary.getABI(IPositionManagerV3.collect.selector),
@@ -226,19 +228,26 @@ library UniswapV3Library {
         // allow to call IPositionManager.increaseLiquidity with specific tokenIds
         for (uint256 j = 0; j < tokenIds.length; j++) {
             ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters = innerParameters.add("tokenId", Strings.toString(tokenIds[j]));
-            innerParameters = innerParameters.addAny("amount0Desired");
-            innerParameters = innerParameters.addAny("amount1Desired");
-            innerParameters = innerParameters.addAny("amount0Min");
-            innerParameters = innerParameters.addAny("amount1Min");
-            innerParameters = innerParameters.addAny("deadline");
+            innerParameters = innerParameters.addJson(
+                "params",
+                JsonLibrary.toJson(
+                    IPositionManagerV3.IncreaseLiquidityParams({
+                        tokenId: tokenIds[j],
+                        amount0Desired: 0,
+                        amount1Desired: 0,
+                        amount0Min: 0,
+                        amount1Min: 0,
+                        deadline: 0
+                    })
+                )
+            );
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
-                        "NonfungiblePositionManager.increaseLiquidity(",
+                        "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(",
                         "tokenId=",
                         Strings.toString(tokenIds[j]),
-                        ", amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)"
+                        ", amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))"
                     )
                 ),
                 ABILibrary.getABI(IPositionManagerV3.increaseLiquidity.selector),
@@ -250,16 +259,23 @@ library UniswapV3Library {
         // allow to call IPositionManager.decreaseLiquidity
         {
             ParameterLibrary.Parameter[] memory innerParameters;
-            innerParameters = innerParameters.addAny("tokenId");
-            innerParameters = innerParameters.addAny("liquidity");
-            innerParameters = innerParameters.addAny("amount0Min");
-            innerParameters = innerParameters.addAny("amount1Min");
-            innerParameters = innerParameters.addAny("deadline");
+            innerParameters = innerParameters.addJson(
+                "params",
+                JsonLibrary.toJson(
+                    IPositionManagerV3.DecreaseLiquidityParams({
+                        tokenId: 0,
+                        liquidity: 0,
+                        amount0Min: 0,
+                        amount1Min: 0,
+                        deadline: 0
+                    })
+                )
+            );
             descriptions[iterator++] = JsonLibrary.toJson(
                 string(
                     abi.encodePacked(
-                        "NonfungiblePositionManager.decreaseLiquidity(",
-                        "tokenId=anyInt, liquidity=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)"
+                        "NonfungiblePositionManager.decreaseLiquidity(DecreaseLiquidityParams(",
+                        "tokenId=anyInt, liquidity=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))"
                     )
                 ),
                 ABILibrary.getABI(IPositionManagerV3.decreaseLiquidity.selector),

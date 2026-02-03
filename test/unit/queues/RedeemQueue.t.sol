@@ -753,4 +753,126 @@ contract RedeemQueueTest is FixtureTest {
             assertEq(assets * price / 1e18, amount, "User should receive assets after claim");
         }
     }
+
+    function testRedeemAfterRemovingERC20() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RedeemQueue redeemQueue = RedeemQueue(payable(addRedeemQueue(deployment, vaultProxyAdmin, asset)));
+        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setFees(0, 0, 0, 0);
+
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        address user = vm.createWallet("user").addr;
+        uint256 amount = 1 ether;
+
+        makeDeposit(user, amount, depositQueue);
+
+        skip(Math.max(securityParams.timeout, securityParams.depositInterval));
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        (, uint256 shares) = depositQueue.requestOf(user);
+        uint32 redeemTimestamp = uint32(block.timestamp);
+
+        // during redeeming, all unclaimed shares are claimed
+        vm.prank(user);
+        redeemQueue.redeem(shares);
+
+        assertEq(deployment.shareManager.sharesOf(user), 0, "User should have no shares after redeem");
+        assertEq(IERC20(asset).balanceOf(user), 0, "User should have no assets before claim");
+
+        uint32[] memory timestamps = new uint32[](1);
+        timestamps[0] = redeemTimestamp;
+
+        vm.prank(user);
+        redeemQueue.claim(user, timestamps);
+        assertEq(IERC20(asset).balanceOf(user), 0, "User should have no assets before handleBatches");
+
+        skip(Math.max(securityParams.timeout, securityParams.redeemInterval));
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        assertFalse(redeemQueue.canBeRemoved(), "RedeemQueue should not be removable before unhandled batches");
+        redeemQueue.handleBatches(1);
+        assertTrue(redeemQueue.canBeRemoved(), "RedeemQueue should be removable after all batches handled");
+
+        assertEq(
+            IERC20(asset).balanceOf(address(redeemQueue)), amount, "RedeemQueue should have assets after handleBatches"
+        );
+
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.grantRole(deployment.vault.REMOVE_QUEUE_ROLE(), deployment.vaultAdmin);
+        deployment.vault.removeQueue(address(redeemQueue));
+        vm.stopPrank();
+        assertEq(IERC20(asset).balanceOf(address(redeemQueue)), amount, "RedeemQueue should have assets after removing");
+
+        vm.prank(user);
+        redeemQueue.claim(user, timestamps);
+        assertEq(deployment.shareManager.sharesOf(user), 0, "User should not have of the shares after claim");
+        assertEq(IERC20(asset).balanceOf(user), amount, "User should have of the assets after claiming");
+        assertEq(IERC20(asset).balanceOf(address(redeemQueue)), 0, "RedeemQueue should have no assets after claiming");
+    }
+
+    function testRedeemAfterRemovingETH() external {
+        asset = TransferLibrary.ETH;
+        assetsDefault = new address[](1);
+        assetsDefault[0] = asset;
+
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        RedeemQueue redeemQueue = RedeemQueue(payable(addRedeemQueue(deployment, vaultProxyAdmin, asset)));
+        DepositQueue depositQueue = DepositQueue(addDepositQueue(deployment, vaultProxyAdmin, asset));
+        IOracle.SecurityParams memory securityParams = deployment.oracle.securityParams();
+
+        vm.prank(deployment.vaultAdmin);
+        deployment.feeManager.setFees(0, 0, 0, 0);
+
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        address user = vm.createWallet("user").addr;
+        uint256 amount = 1 ether;
+
+        makeDeposit(user, amount, depositQueue);
+
+        skip(Math.max(securityParams.timeout, securityParams.depositInterval));
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        (, uint256 shares) = depositQueue.requestOf(user);
+        uint32 redeemTimestamp = uint32(block.timestamp);
+
+        // during redeeming, all unclaimed shares are claimed
+        vm.prank(user);
+        redeemQueue.redeem(shares);
+
+        assertEq(deployment.shareManager.sharesOf(user), 0, "User should have no shares after redeem");
+        assertEq(user.balance, 0, "User should have no assets before claim");
+
+        uint32[] memory timestamps = new uint32[](1);
+        timestamps[0] = redeemTimestamp;
+
+        vm.prank(user);
+        redeemQueue.claim(user, timestamps);
+        assertEq(user.balance, 0, "User should have no assets before handleBatches");
+
+        skip(Math.max(securityParams.timeout, securityParams.redeemInterval));
+        pushReport(deployment, IOracle.Report({asset: asset, priceD18: 1e18}));
+
+        assertFalse(redeemQueue.canBeRemoved(), "RedeemQueue should not be removable before unhandled batches");
+        redeemQueue.handleBatches(1);
+        assertTrue(redeemQueue.canBeRemoved(), "RedeemQueue should be removable after all batches handled");
+
+        assertEq(address(redeemQueue).balance, amount, "RedeemQueue should have assets after handleBatches");
+
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.grantRole(deployment.vault.REMOVE_QUEUE_ROLE(), deployment.vaultAdmin);
+        deployment.vault.removeQueue(address(redeemQueue));
+        vm.stopPrank();
+        assertEq(address(redeemQueue).balance, amount, "RedeemQueue should have assets after removing");
+
+        vm.prank(user);
+        redeemQueue.claim(user, timestamps);
+        assertEq(deployment.shareManager.sharesOf(user), 0, "User should not have of the shares after claim");
+        assertEq(user.balance, amount, "User should have of the assets after claiming");
+        assertEq(address(redeemQueue).balance, 0, "RedeemQueue should have no assets after claiming");
+    }
 }

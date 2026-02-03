@@ -18,4 +18,21 @@ contract Integration is Test {
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
         AcceptanceLibrary.runVaultDeploymentChecks(Constants.protocolDeployment(), Constants.getStrETHDeployment());
     }
+
+    function testImpl_SyncDepositQueue_NO_CI() external {
+        address implementation = address(Constants.protocolDeployment().syncDepositQueueImplementation);
+        AcceptanceLibrary.compareBytecode(
+            "SyncDepositQueue", implementation, address(new SyncDepositQueue("Mellow", 1))
+        );
+    }
+
+    function testImpl_DepositQueue_NO_CI() external {
+        address implementation = address(Constants.protocolDeployment().depositQueueImplementation);
+        AcceptanceLibrary.compareBytecode("DepositQueue", implementation, address(new DepositQueue("Mellow", 1)));
+    }
+
+    function testImpl_RedeemQueue_NO_CI() external {
+        address implementation = address(Constants.protocolDeployment().redeemQueueImplementation);
+        AcceptanceLibrary.compareBytecode("RedeemQueue", implementation, address(new RedeemQueue("Mellow", 1)));
+    }
 }

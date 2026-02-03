@@ -75,6 +75,7 @@ struct ProtocolDeployment {
     Consensus consensusImplementation;
     DepositQueue depositQueueImplementation;
     SignatureDepositQueue signatureDepositQueueImplementation;
+    SyncDepositQueue syncDepositQueueImplementation;
     RedeemQueue redeemQueueImplementation;
     SignatureRedeemQueue signatureRedeemQueueImplementation;
     FeeManager feeManagerImplementation;

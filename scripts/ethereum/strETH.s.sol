@@ -36,6 +36,29 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
+    // function _x() internal {
+    //     address subvault = 0xCDfA7EfE670869c6b6be4375654E0b206eF49c89;
+    //     IVerifier verifier = IVerifier(0x9C5D826e1BcdF67f0596725CbB931dC02132D88d);
+    //     address swapModule = 0x2a166aE48F9F1FC27685582a61250011fd5363D8;
+
+    //     bytes32 merkleRoot;
+    //     SubvaultCalls memory calls;
+    //     (merkleRoot, calls) = _createSubvault6Verifier(subvault, swapModule);
+    //     vm.stopBroadcast();
+
+    //     vm.startPrank(lazyVaultAdmin);
+    //     verifier.setMerkleRoot(merkleRoot);
+    //     vm.stopPrank();
+
+    //     _verifyCalls(verifier, calls);
+    // }
+
+    // function _verifyCalls(IVerifier verifier, SubvaultCalls memory calls) internal view {
+    //     for (uint256 i = 0; i < calls.payloads.length; i++) {
+    //         AcceptanceLibrary._verifyCalls(verifier, calls.calls[i], calls.payloads[i]);
+    //     }
+    // }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
@@ -461,6 +484,18 @@ contract Deploy is Script, Test {
         calls = strETHLibrary.getSubvault5SubvaultCalls(curator, subvault, swapModule, leaves);
     }
 
+    function _createSubvault6Verifier(address subvault, address swapModule)
+        internal
+        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
+    {
+        console2.log("SwapModule 6: %s", swapModule);
+        string[] memory descriptions = strETHLibrary.getSubvault6Descriptions(curator, subvault, swapModule);
+        IVerifier.VerificationPayload[] memory leaves;
+        (merkleRoot, leaves) = strETHLibrary.getSubvault6Proofs(curator, subvault, swapModule);
+        ProofLibrary.storeProofs("ethereum:strETH:subvault6", merkleRoot, leaves, descriptions);
+        calls = strETHLibrary.getSubvault6SubvaultCalls(curator, subvault, swapModule, leaves);
+    }
+
     function _routers() internal pure returns (address[5] memory result) {
         result = [
             address(0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE),
@@ -489,6 +524,10 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule5(address subvault) internal returns (address swapModule) {
         return _deployEthenaLeverageSwapModule(subvault);
+    }
+
+    function _deploySwapModule6(address subvault) internal returns (address swapModule) {
+        return _deployRsETHLeverageSwapModule(subvault);
     }
 
     function _deployLidoLeverageSwapModule(address subvault) internal returns (address) {
@@ -548,6 +587,32 @@ contract Deploy is Script, Test {
                     Permissions.SWAP_MODULE_ROUTER_ROLE,
                     Permissions.SWAP_MODULE_ROUTER_ROLE
                 ]
+            )
+        );
+        return swapModuleFactory.create(
+            0,
+            proxyAdmin,
+            abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+        );
+    }
+
+    function _deployRsETHLeverageSwapModule(address subvault) internal returns (address) {
+        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+        address[2] memory lidoLeverage = [Constants.WETH, Constants.RSETH];
+        address[] memory actors =
+            ArraysLibrary.makeAddressArray(abi.encode(curator, lidoLeverage, lidoLeverage, _routers()));
+        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                Permissions.SWAP_MODULE_CALLER_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE,
+                Permissions.SWAP_MODULE_ROUTER_ROLE
             )
         );
         return swapModuleFactory.create(

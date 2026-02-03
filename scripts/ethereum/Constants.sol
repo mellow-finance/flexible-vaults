@@ -102,6 +102,10 @@ library Constants {
     address public constant STRETH_DEPOSIT_QUEUE_WETH = 0x2eA268f1018a4767bF5da42D531Ea9e943942A36;
     address public constant STRETH_DEPOSIT_QUEUE_WSTETH = 0x614cb9E9D13712781DfD15aDC9F3DAde60E4eFAb;
     address public constant STRETH_REDEEM_QUEUE_WSTETH = 0x1ae8C006b5C97707aa074AaeD42BecAD2CF80Da2;
+    address public constant STRETH_SHARE_MANAGER = 0xcd3c0F51798D1daA92Fb192E57844Ae6cEE8a6c7;
+
+    address public constant GGV = 0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09;
+    address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
 
     address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
 
@@ -180,8 +184,9 @@ library Constants {
             swapModuleFactory: Factory(0xE3575055a24d8642DFA3a51ec766Ef2db2671659),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0x000000002E2aeaC5Fe65AaB6fE2E6AE0e44F1A3A)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
-            redeemQueueImplementation: RedeemQueue(payable(0x0000000285805eac535DADdb9648F1E10DfdC411)),
+            redeemQueueImplementation: RedeemQueue(payable(0x000000000c139266BA06170Ed1DeacA6d11903c1)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x0000000b2082667589A16c4cF18e9f923781c471)),
             feeManagerImplementation: FeeManager(0x0000000dE74e5D51651326E0A3e1ACA94bEAF6E1),
             oracleImplementation: Oracle(0x0000000F0d3D1c31b72368366A4049C05E291D58),

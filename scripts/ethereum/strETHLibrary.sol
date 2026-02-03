@@ -832,4 +832,100 @@ library strETHLibrary {
             calls.calls, OFTLibrary.getOFTCalls(_getSubvault5_WSTUSR_OFT_Params(curator, subvault)), iterator
         );
     }
+
+    function _getSubvault6SwapModuleParams(address curator, address subvault, address swapModule)
+        internal
+        pure
+        returns (SwapModuleLibrary.Info memory)
+    {
+        return SwapModuleLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault6",
+            swapModule: swapModule,
+            curators: ArraysLibrary.makeAddressArray(abi.encode(curator)),
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.RSETH))
+        });
+    }
+
+    function _getSubvault6AavePrimeParams(address curator, address subvault)
+        internal
+        pure
+        returns (AaveLibrary.Info memory)
+    {
+        return AaveLibrary.Info({
+            subvault: subvault,
+            subvaultName: "subvault6",
+            curator: curator,
+            aaveInstance: Constants.AAVE_CORE,
+            aaveInstanceName: "Core",
+            collaterals: ArraysLibrary.makeAddressArray(abi.encode(Constants.RSETH)),
+            loans: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+            categoryId: 3
+        });
+    }
+
+    function getSubvault6Proofs(address curator, address subvault, address swapModule)
+        internal
+        pure
+        returns (bytes32 merkleProof, IVerifier.VerificationPayload[] memory leaves)
+    {
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            leaves,
+            SwapModuleLibrary.getSwapModuleProofs(
+                bitmaskVerifier, _getSubvault6SwapModuleParams(curator, subvault, swapModule)
+            ),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            leaves,
+            AaveLibrary.getAaveProofs(bitmaskVerifier, _getSubvault6AavePrimeParams(curator, subvault)),
+            iterator
+        );
+        assembly {
+            mstore(leaves, iterator)
+        }
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function getSubvault6Descriptions(address curator, address subvault, address swapModule)
+        internal
+        view
+        returns (string[] memory descriptions)
+    {
+        descriptions = new string[](50);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            descriptions,
+            SwapModuleLibrary.getSwapModuleDescriptions(_getSubvault6SwapModuleParams(curator, subvault, swapModule)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            descriptions, AaveLibrary.getAaveDescriptions(_getSubvault6AavePrimeParams(curator, subvault)), iterator
+        );
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function getSubvault6SubvaultCalls(
+        address curator,
+        address subvault,
+        address swapModule,
+        IVerifier.VerificationPayload[] memory leaves
+    ) internal pure returns (SubvaultCalls memory calls) {
+        calls.payloads = leaves;
+        calls.calls = new Call[][](leaves.length);
+        uint256 iterator = 0;
+        iterator = ArraysLibrary.insert(
+            calls.calls,
+            SwapModuleLibrary.getSwapModuleCalls(_getSubvault6SwapModuleParams(curator, subvault, swapModule)),
+            iterator
+        );
+        iterator = ArraysLibrary.insert(
+            calls.calls, AaveLibrary.getAaveCalls(_getSubvault6AavePrimeParams(curator, subvault)), iterator
+        );
+    }
 }

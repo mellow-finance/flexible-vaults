@@ -1,0 +1,539 @@
+{
+  "title": "ethereum:rtv3:subvault0",
+  "merkle_root": "0xaf3a57a6f24a44ab9f2e84018ff7ff133f48ba73b6759bf56e2412dcaab5aaa5",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "WETH.deposit{value: any}()",
+        "abi": {
+          "constant": false,
+          "inputs": [],
+          "name": "deposit",
+          "outputs": [],
+          "payable": true,
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "any"
+        },
+        "innerParameters": {}
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abba64df5031651e7ae6f900d3e587b18152a4c1aa363ff2c82dd7b2b8c9d392900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbc64bc31fdb976b2379c538976b563277b762d47db8ea29a51abfea1c2fe0175",
+        "0xa342990520e225baca67ea37d3f9241888dea06b2a276a2aef1e8198d1a44465",
+        "0x6eb7ac289bb866b69ebde9a23aac956438dcbc52f5fb19f1187aabe6e5eb68e7"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(WETH).approve(ISwapModule(0xecf978995cba94ee853eb6cd4613e798d6d30c5c), any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xecf978995cba94ee853eb6cd4613e798d6d30c5c",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a30d0de9e955be4b46d0b2ce67bb05d11d8761ccf4e86779d4fc076544a5ca56f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0c64e23ef098b5f62d626e805ff9e34ef0b5eb02f9777f4aa03fc399002974b0",
+        "0xd3ba04195cdfc22745ad56141c22234a3416fb43890414497b77ec30fc05d4ab",
+        "0x7ab9d7bd94f2e8b1b441b948400835a2566c68f82b87edbd789a11aa93bc9335",
+        "0x54add2affe13f4d4ec73fd176db1095b7ed03d08d6b28551e507b037daec7b0d"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xecf978995cba94ee853eb6cd4613e798d6d30c5c).pushAssets(WETH, any)",
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0xecf978995cba94ee853eb6cd4613e798d6d30c5c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adadff586cadcf71ef82aea68254b195bc90c4eb7464d488a518c2d03dd148f31000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc1397f16752f1cede58987f1663fadd5145018ccbf8dd84e94d99241baf334eb",
+        "0xa342990520e225baca67ea37d3f9241888dea06b2a276a2aef1e8198d1a44465",
+        "0x6eb7ac289bb866b69ebde9a23aac956438dcbc52f5fb19f1187aabe6e5eb68e7"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xecf978995cba94ee853eb6cd4613e798d6d30c5c).pullAssets(WETH, any)",
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0xecf978995cba94ee853eb6cd4613e798d6d30c5c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4b1690677046604ab692c42f521df1e0d08469cc71195abbfe3cae28eef9e520000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7159c190fa1c13c6bb6b23f6150e27db43c2c1a6f3ae66747532d0cff812e1ca",
+        "0x3d846685db48003a61433dd8ab1344706f69ed313b5d6e0134ad7805769115c5",
+        "0x58bd3d265f7381cd52d3372e93b1d5f85df1e4ac5cdd079591489a50f74d7f75",
+        "0x54add2affe13f4d4ec73fd176db1095b7ed03d08d6b28551e507b037daec7b0d"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(wstETH).approve(ISwapModule(0xecf978995cba94ee853eb6cd4613e798d6d30c5c), any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xecf978995cba94ee853eb6cd4613e798d6d30c5c",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acd30c694b9548a31012a77153a1bf74c6352b3e7a4d2b452498c1e2b109f0327000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7794eaf147a504f3fef73ff11bb2209067c67d0a9dd4a26c3addde1fbb298e3e",
+        "0xd08a263a190b731e0af3cb283a510b223ad97d7f97d5b7e559795b5c87d72cee",
+        "0x58bd3d265f7381cd52d3372e93b1d5f85df1e4ac5cdd079591489a50f74d7f75",
+        "0x54add2affe13f4d4ec73fd176db1095b7ed03d08d6b28551e507b037daec7b0d"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xecf978995cba94ee853eb6cd4613e798d6d30c5c).pushAssets(wstETH, any)",
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0xecf978995cba94ee853eb6cd4613e798d6d30c5c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0ecaa923995028a25896d713a706c927fb01e72a531218af91645991b91e4861000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x9941c67f56cf6913756724f2dbd9ada4900ce17e9979304af63b89fb93068c66",
+        "0x787294028402df558d6a66572b8b4cb5fa0d9b1f12eea128e928138e31dc4b97",
+        "0x6eb7ac289bb866b69ebde9a23aac956438dcbc52f5fb19f1187aabe6e5eb68e7"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "ISwapModule(0xecf978995cba94ee853eb6cd4613e798d6d30c5c).pullAssets(wstETH, any)",
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0xecf978995cba94ee853eb6cd4613e798d6d30c5c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20add45fc562e91cce6c2ce6c46b11e9c273a536df0075c2ba581423fdfc59046bb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x22896f11f99c653471c14b97ed949133cf9f4e3180b4092daddbcc124025d64c",
+        "0x7ab9d7bd94f2e8b1b441b948400835a2566c68f82b87edbd789a11aa93bc9335",
+        "0x54add2affe13f4d4ec73fd176db1095b7ed03d08d6b28551e507b037daec7b0d"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(wstETH).approve(0x0f25c1dc2a9922304f2eac71dca9b07e310e8e5a, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x0f25c1dc2a9922304f2eac71dca9b07e310e8e5a",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9adc76f4a2bee38a242c8d5414c075116fbe9a7f07ca67fa2187c50f6358aaa7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0507c3e80c49eee9ac91dd4c3c7953477a4ebc111f94a79f6071e07029962129",
+        "0xd3ba04195cdfc22745ad56141c22234a3416fb43890414497b77ec30fc05d4ab",
+        "0x7ab9d7bd94f2e8b1b441b948400835a2566c68f82b87edbd789a11aa93bc9335",
+        "0x54add2affe13f4d4ec73fd176db1095b7ed03d08d6b28551e507b037daec7b0d"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "L1GatewayRouter.outboundTransfer{value: any}(WstETH, strETH_Subvault0_arbitrum, any, any, any, any)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_token",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_maxGas",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_gasPriceBid",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes",
+              "name": "_data",
+              "type": "bytes"
+            }
+          ],
+          "name": "outboundTransfer",
+          "outputs": [
+            {
+              "internalType": "bytes",
+              "name": "",
+              "type": "bytes"
+            }
+          ],
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0x72ce9c846789fdb6fc1f34ac4ad25dd9ef7031ef",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_token": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "_to": "0x222fa99c485a088564eb43faa50bc10b2497cdb2",
+          "_amount": "any",
+          "_maxGas": "any",
+          "_gasPriceBid": "any",
+          "_data": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8aba1fa53ddd5ba497fbefb60eac0b4116657bfc983afc57c7c2fe20d1cf3839000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb27dd96775a390ba94ba57e8f58458cfb56a1ea287ac43c2e5ecc9c0d803ffc7",
+        "0x787294028402df558d6a66572b8b4cb5fa0d9b1f12eea128e928138e31dc4b97",
+        "0x6eb7ac289bb866b69ebde9a23aac956438dcbc52f5fb19f1187aabe6e5eb68e7"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(wstETH).approve(0x80226fc0ee2b096224eeac085bb9a8cba1146f7d, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0x80226fc0ee2b096224eeac085bb9a8cba1146f7d",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8982e696a9ba0bcfb9bf27436d85a5e06ed56a528a4e1f37641a2fd02bf48996000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0f636cb88d706e2ad4c29611804cc22a946900990614310f4d37af7d04d5b02c",
+        "0x3d846685db48003a61433dd8ab1344706f69ed313b5d6e0134ad7805769115c5",
+        "0x58bd3d265f7381cd52d3372e93b1d5f85df1e4ac5cdd079591489a50f74d7f75",
+        "0x54add2affe13f4d4ec73fd176db1095b7ed03d08d6b28551e507b037daec7b0d"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "CCIPRouterClient.ccipSend(ChainSelector(plasma), [abi.encode(0xbbf9400c09b0f649f3156989f1ccb9c016f943bb), 0x, [[wstETH, any]], 0x0000000000000000000000000000000000000000, 0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001])",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint64",
+              "name": "destinationChainSelector",
+              "type": "uint64"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "bytes",
+                  "name": "receiver",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "data",
+                  "type": "bytes"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "token",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "structClient.EVMTokenAmount[]",
+                  "name": "tokenAmounts",
+                  "type": "tuple[]"
+                },
+                {
+                  "internalType": "address",
+                  "name": "feeToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "extraArgs",
+                  "type": "bytes"
+                }
+              ],
+              "internalType": "structClient.EVM2AnyMessage",
+              "name": "message",
+              "type": "tuple"
+            }
+          ],
+          "name": "ccipSend",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x5955ec2429564fa8a3274001df2ef791c0c1d60b",
+          "target": "0x80226fc0ee2b096224eeac085bb9a8cba1146f7d",
+          "value": "any"
+        },
+        "innerParameters": {
+          "destinationChainSelector": "9335212494177455608",
+          "message": {
+            "receiver": "0x000000000000000000000000bbf9400c09b0f649f3156989f1ccb9c016f943bb",
+            "data": "0x",
+            "tokenAmounts": [
+              {
+                "token": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+                "amount": "any"
+              }
+            ],
+            "feeToken": "0x0000000000000000000000000000000000000000",
+            "extraArgs": "0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+          }
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a14239d8a8b3e1d210b6015e325da8be21c3a5d5a9f252a1ba7774173e9f6018900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000284ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff000000000000000000000000000000000000000000000000ffffffffffffffff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000001600000000000000000000000000000000000000000000000000000000000000020000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044181dcf10ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7f5e709187b3bb468cb611009f12386e8b16561bbdaecdb1651677f3cb1a35a2",
+        "0xd08a263a190b731e0af3cb283a510b223ad97d7f97d5b7e559795b5c87d72cee",
+        "0x58bd3d265f7381cd52d3372e93b1d5f85df1e4ac5cdd079591489a50f74d7f75",
+        "0x54add2affe13f4d4ec73fd176db1095b7ed03d08d6b28551e507b037daec7b0d"
+      ]
+    }
+  ]
+}

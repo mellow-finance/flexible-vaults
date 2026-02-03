@@ -23,7 +23,8 @@ import {ILidoV3Dashboard} from "./interfaces/ILidoV3Dashboard.sol";
 
 import {ILayerZeroOFT} from "./interfaces/ILayerZeroOFT.sol";
 
-import {IAngleDistributor} from "./interfaces/IAngleDistributor.sol";
+import {IBoringOnChainQueue} from "./interfaces/IBoringOnChainQueue.sol";
+import {IEthWrapper} from "./interfaces/IEthWrapper.sol";
 import {IMessageTransmitter} from "./interfaces/IMessageTransmitter.sol";
 import {IMetaAggregationRouterV2} from "./interfaces/IMetaAggregationRouterV2.sol";
 import {IMorpho} from "./interfaces/IMorpho.sol";
@@ -31,8 +32,12 @@ import {IMorpho} from "./interfaces/IMorpho.sol";
 import {IPositionManagerV3} from "./interfaces/IPositionManagerV3.sol";
 import {IAllowanceTransfer, IPositionManagerV4} from "./interfaces/IPositionManagerV4.sol";
 
+import {IAngleDistributor} from "./interfaces/IAngleDistributor.sol";
+
 import {IStUSR} from "./interfaces/IStUSR.sol";
 import {IStakeWiseEthVault} from "./interfaces/IStakeWiseEthVault.sol";
+
+import {ITeller} from "./interfaces/ITeller.sol";
 import {ITokenMessenger} from "./interfaces/ITokenMessenger.sol";
 import {IUsrExternalRequestsManager} from "./interfaces/IUsrExternalRequestsManager.sol";
 import {IWETH} from "./interfaces/IWETH.sol";
@@ -45,7 +50,7 @@ import {IYieldBasisZap} from "./interfaces/IYieldBasisZap.sol";
 
 library ABILibrary {
     function getABI(bytes4 selector) internal pure returns (string memory) {
-        function() pure returns (bytes4[] memory, string[] memory)[26] memory functions = [
+        function() pure returns (bytes4[] memory, string[] memory)[29] memory functions = [
             getERC20Interfaces,
             getERC4626Interfaces,
             getAaveInterfaces,
@@ -68,6 +73,9 @@ library ABILibrary {
             getLidoV3Interfaces,
             getCCTPInterfaces,
             getKyberswapInterfaces,
+            getEthWrapperInterfaces,
+            getBoringOnChainQueueInterfaces,
+            getTellerInterfaces,
             getUniswapV3Interfaces,
             getUniswapV4Interfaces,
             getAngleDistributorInterfaces,
@@ -428,6 +436,43 @@ library ABILibrary {
             '{"type":"function","name":"swap","inputs":[{"name":"swapParams","type":"bytes","internalType":"bytes"}],"outputs":[],"stateMutability":"payable"}';
     }
 
+    function getEthWrapperInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = IEthWrapper.deposit.selector;
+        abis[0] =
+            '{"type":"function","name":"deposit","inputs":[{"name":"depositToken","type":"address","internalType":"address"},{"name":"amount","type":"uint256","internalType":"uint256"},{"name":"vault","type":"address","internalType":"address"},{"name":"receiver","type":"address","internalType":"address"},{"name":"referral","type":"address","internalType":"address"}],"outputs":[{"name":"shares","type":"uint256","internalType":"uint256"}],"stateMutability":"payable"}';
+    }
+
+    function getBoringOnChainQueueInterfaces()
+        internal
+        pure
+        returns (bytes4[] memory selectors, string[] memory abis)
+    {
+        selectors = new bytes4[](3);
+        abis = new string[](3);
+
+        selectors[0] = IBoringOnChainQueue.requestOnChainWithdraw.selector;
+        selectors[1] = IBoringOnChainQueue.cancelOnChainWithdraw.selector;
+        selectors[2] = IBoringOnChainQueue.replaceOnChainWithdraw.selector;
+        abis[0] =
+            '{"type":"function","name":"requestOnChainWithdraw","inputs":[{"name":"assetOut","type":"address","internalType":"address"},{"name":"amountOfShares","type":"uint128","internalType":"uint128"},{"name":"discount","type":"uint16","internalType":"uint16"},{"name":"secondsToDeadline","type":"uint24","internalType":"uint24"}],"outputs":[{"name":"requestId","type":"bytes32","internalType":"bytes32"}],"stateMutability":"nonpayable"}';
+        abis[1] =
+            '{"type":"function","name":"cancelOnChainWithdraw","inputs":[{"name":"request","type":"tuple","internalType":"structIBoringOnChainQueue.OnChainWithdraw","components":[{"name":"nonce","type":"uint96","internalType":"uint96"},{"name":"user","type":"address","internalType":"address"},{"name":"assetOut","type":"address","internalType":"address"},{"name":"amountOfShares","type":"uint128","internalType":"uint128"},{"name":"amountOfAssets","type":"uint128","internalType":"uint128"},{"name":"creationTime","type":"uint40","internalType":"uint40"},{"name":"secondsToMaturity","type":"uint24","internalType":"uint24"},{"name":"secondsToDeadline","type":"uint24","internalType":"uint24"}]}],"outputs":[{"name":"requestId","type":"bytes32","internalType":"bytes32"}],"stateMutability":"nonpayable"}';
+        abis[2] =
+            '{"type":"function","name":"replaceOnChainWithdraw","inputs":[{"name":"oldRequest","type":"tuple","internalType":"structIBoringOnChainQueue.OnChainWithdraw","components":[{"name":"nonce","type":"uint96","internalType":"uint96"},{"name":"user","type":"address","internalType":"address"},{"name":"assetOut","type":"address","internalType":"address"},{"name":"amountOfShares","type":"uint128","internalType":"uint128"},{"name":"amountOfAssets","type":"uint128","internalType":"uint128"},{"name":"creationTime","type":"uint40","internalType":"uint40"},{"name":"secondsToMaturity","type":"uint24","internalType":"uint24"},{"name":"secondsToDeadline","type":"uint24","internalType":"uint24"}]},{"name":"discount","type":"uint16","internalType":"uint16"},{"name":"secondsToDeadline","type":"uint24","internalType":"uint24"}],"outputs":[{"name":"oldRequestId","type":"bytes32","internalType":"bytes32"},{"name":"newRequestId","type":"bytes32","internalType":"bytes32"}],"stateMutability":"nonpayable"}';
+    }
+
+    function getTellerInterfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
+        selectors = new bytes4[](1);
+        abis = new string[](1);
+
+        selectors[0] = ITeller.deposit.selector;
+        abis[0] =
+            '{"type":"function","name":"deposit","inputs":[{"name":"depositAsset","type":"address","internalType":"address"},{"name":"depositAmount","type":"uint256","internalType":"uint256"},{"name":"minimumMint","type":"uint256","internalType":"uint256"},{"name":"referralAddress","type":"address","internalType":"address"}],"outputs":[{"name":"shares","type":"uint256","internalType":"uint256"}],"stateMutability":"payable"}';
+    }
+
     function getUniswapV3Interfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {
         selectors = new bytes4[](5);
         abis = new string[](5);
@@ -437,19 +482,15 @@ library ABILibrary {
         selectors[3] = IPositionManagerV3.collect.selector;
         selectors[4] = IPositionManagerV3.burn.selector;
         abis[0] =
-            '{"inputs":[{"internalType":"address","name":"token0","type":"address"},{"internalType":"address","name":"token1","type":"address"},{"internalType":"uint24","name":"fee","type":"uint24"},{"internalType":"int24","name":"tickLower","type":"int24"},{"internalType":"int24","name":"tickUpper","type":"int24"},{"internalType":"uint256","name":"amount0Desired","type":"uint256"},{"internalType":"uint256","name":"amount1Desired","type":"uint256"},{"internalType":"uint256","name":"amount0Min","type":"uint256"},{"internalType":"uint256","name":"amount1Min","type":"uint256"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"mint","outputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint128","name":"liquidity","type":"uint128"},{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"stateMutability":"payable","type":"function"}';
-
+            '{"type":"function","name":"mint","stateMutability":"payable","inputs":[{"name":"params","type":"tuple","components":[{"name":"token0","type":"address"},{"name":"token1","type":"address"},{"name":"fee","type":"uint24"},{"name":"tickLower","type":"int24"},{"name":"tickUpper","type":"int24"},{"name":"amount0Desired","type":"uint256"},{"name":"amount1Desired","type":"uint256"},{"name":"amount0Min","type":"uint256"},{"name":"amount1Min","type":"uint256"},{"name":"recipient","type":"address"},{"name":"deadline","type":"uint256"}]}],"outputs":[{"name":"tokenId","type":"uint256"},{"name":"liquidity","type":"uint128"},{"name":"amount0","type":"uint256"},{"name":"amount1","type":"uint256"}]}';
         abis[1] =
-            '{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"amount0Desired","type":"uint256"},{"internalType":"uint256","name":"amount1Desired","type":"uint256"},{"internalType":"uint256","name":"amount0Min","type":"uint256"},{"internalType":"uint256","name":"amount1Min","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"increaseLiquidity","outputs":[{"internalType":"uint128","name":"liquidity","type":"uint128"},{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"stateMutability":"payable","type":"function"}';
-
+            '{"type":"function","name":"increaseLiquidity","stateMutability":"payable","inputs":[{"name":"params","type":"tuple","components":[{"name":"tokenId","type":"uint256"},{"name":"amount0Desired","type":"uint256"},{"name":"amount1Desired","type":"uint256"},{"name":"amount0Min","type":"uint256"},{"name":"amount1Min","type":"uint256"},{"name":"deadline","type":"uint256"}]}],"outputs":[{"name":"liquidity","type":"uint128"},{"name":"amount0","type":"uint256"},{"name":"amount1","type":"uint256"}]}';
         abis[2] =
-            '{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint128","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amount0Min","type":"uint256"},{"internalType":"uint256","name":"amount1Min","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"decreaseLiquidity","outputs":[{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"stateMutability":"payable","type":"function"}';
-
+            '{"type":"function","name":"decreaseLiquidity","stateMutability":"payable","inputs":[{"name":"params","type":"tuple","components":[{"name":"tokenId","type":"uint256"},{"name":"liquidity","type":"uint128"},{"name":"amount0Min","type":"uint256"},{"name":"amount1Min","type":"uint256"},{"name":"deadline","type":"uint256"}]}],"outputs":[{"name":"amount0","type":"uint256"},{"name":"amount1","type":"uint256"}]}';
         abis[3] =
-            '{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint128","name":"amount0Max","type":"uint128"},{"internalType":"uint128","name":"amount1Max","type":"uint128"}],"name":"collect","outputs":[{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"stateMutability":"payable","type":"function"}';
-
+            '{"type":"function","name":"collect","stateMutability":"payable","inputs":[{"name":"params","type":"tuple","components":[{"name":"tokenId","type":"uint256"},{"name":"recipient","type":"address"},{"name":"amount0Max","type":"uint128"},{"name":"amount1Max","type":"uint128"}]}],"outputs":[{"name":"amount0","type":"uint256"},{"name":"amount1","type":"uint256"}]}';
         abis[4] =
-            '{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"payable","type":"function"}';
+            '{"type":"function","name":"burn","stateMutability":"payable","inputs":[{"name":"tokenId","type":"uint256"}],"outputs":[]}';
     }
 
     function getUniswapV4Interfaces() internal pure returns (bytes4[] memory selectors, string[] memory abis) {

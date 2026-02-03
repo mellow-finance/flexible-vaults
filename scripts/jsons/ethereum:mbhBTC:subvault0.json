@@ -99,31 +99,33 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.collect(tokenId=anyInt,recipient=subvault0, amount0Max=anyInt, amount1Max=anyInt)",
+        "description": "NonfungiblePositionManager.collect(CollectParams(tokenId=anyInt,recipient=subvault0, amount0Max=anyInt, amount1Max=anyInt))",
         "abi": {
           "type": "function",
           "name": "collect",
           "stateMutability": "payable",
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "internalType": "uint128",
-              "name": "amount0Max",
-              "type": "uint128"
-            },
-            {
-              "internalType": "uint128",
-              "name": "amount1Max",
-              "type": "uint128"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "recipient",
+                  "type": "address"
+                },
+                {
+                  "name": "amount0Max",
+                  "type": "uint128"
+                },
+                {
+                  "name": "amount1Max",
+                  "type": "uint128"
+                }
+              ]
             }
           ],
           "outputs": [
@@ -163,41 +165,41 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182115, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182115, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "type": "function",
           "name": "increaseLiquidity",
           "stateMutability": "payable",
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "outputs": [
@@ -243,41 +245,41 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182116, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182116, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "type": "function",
           "name": "increaseLiquidity",
           "stateMutability": "payable",
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "outputs": [
@@ -323,41 +325,41 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182117, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182117, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "type": "function",
           "name": "increaseLiquidity",
           "stateMutability": "payable",
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "outputs": [
@@ -403,41 +405,41 @@
     {
       "verificationType": 3,
       "description": {
-        "description": "NonfungiblePositionManager.increaseLiquidity(tokenId=1182118, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.increaseLiquidity(IncreaseLiquidityParams(tokenId=1182118, amount0Desired=anyInt, amount1Desired=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "type": "function",
           "name": "increaseLiquidity",
           "stateMutability": "payable",
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Desired",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "outputs": [
@@ -483,36 +485,37 @@
     {
       "verificationType": 1,
       "description": {
-        "description": "NonfungiblePositionManager.decreaseLiquidity(tokenId=anyInt, liquidity=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt)",
+        "description": "NonfungiblePositionManager.decreaseLiquidity(DecreaseLiquidityParams(tokenId=anyInt, liquidity=anyInt, amount0Min=anyInt, amount1Min=anyInt, deadline=anyInt))",
         "abi": {
           "type": "function",
           "name": "decreaseLiquidity",
           "stateMutability": "payable",
           "inputs": [
             {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint128",
-              "name": "liquidity",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount0Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount1Min",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
+              "name": "params",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "name": "liquidity",
+                  "type": "uint128"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
             }
           ],
           "outputs": [
