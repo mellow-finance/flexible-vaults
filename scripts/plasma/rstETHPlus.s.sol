@@ -37,6 +37,10 @@ contract Deploy is Script, Test {
             lazyVaultAdmin
         );
 
+        address[] memory assets = ArraysLibrary.makeAddressArray(
+            abi.encode(Constants.USDT0, Constants.SYRUP_USDT, Constants.WXPL, Constants.USDE, Constants.SUSDE)
+        );
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](50);
         {
             uint256 i = 0;
@@ -53,42 +57,49 @@ contract Deploy is Script, Test {
             // deployer roles:
             holders[i++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, deployer);
 
             assembly {
                 mstore(holders, i)
             }
         }
 
+        uint32 maxInterval = 1770144000;
         ProtocolDeployment memory deployment = Constants.protocolDeployment();
+        VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
+            version: 0,
+            proxyAdmin: proxyAdminOwner,
+            vaultAdmin: lazyVaultAdmin,
+            shareManagerVersion: 0,
+            shareManagerParams: abi.encode(bytes32(0), "Restaking Vault ETH+", "rstETH+"),
+            feeManagerVersion: 0,
+            feeManagerParams: abi.encode(lazyVaultAdmin, lazyVaultAdmin, 0, 0, 0, 0),
+            riskManagerVersion: 0,
+            riskManagerParams: abi.encode(type(int256).max / 2),
+            oracleVersion: 0,
+            oracleParams: abi.encode(
+                IOracle.SecurityParams({
+                    maxAbsoluteDeviation: 1,
+                    suspiciousAbsoluteDeviation: 1,
+                    maxRelativeDeviationD18: 1,
+                    suspiciousRelativeDeviationD18: 1,
+                    timeout: type(uint32).max,
+                    depositInterval: maxInterval,
+                    redeemInterval: maxInterval
+                }),
+                assets
+            ),
+            defaultDepositHook: address(0),
+            defaultRedeemHook: address(0),
+            queueLimit: 0,
+            roleHolders: holders
+        });
+
         Vault vault;
-        VaultConfigurator.InitParams memory initParams;
         {
-            IOracle.SecurityParams memory securityParams = IOracle.SecurityParams({
-                maxAbsoluteDeviation: 1,
-                suspiciousAbsoluteDeviation: 1,
-                maxRelativeDeviationD18: 1,
-                suspiciousRelativeDeviationD18: 1,
-                timeout: type(uint32).max,
-                depositInterval: type(uint32).max,
-                redeemInterval: type(uint32).max
-            });
-            initParams = VaultConfigurator.InitParams({
-                version: 0,
-                proxyAdmin: proxyAdminOwner,
-                vaultAdmin: lazyVaultAdmin,
-                shareManagerVersion: 0,
-                shareManagerParams: abi.encode(bytes32(0), "Restaking Vault ETH+", "rstETH+"),
-                feeManagerVersion: 0,
-                feeManagerParams: abi.encode(lazyVaultAdmin, lazyVaultAdmin, 0, 0, 0, 0),
-                riskManagerVersion: 0,
-                riskManagerParams: abi.encode(0),
-                oracleVersion: 0,
-                oracleParams: abi.encode(securityParams, new address[](0)),
-                defaultDepositHook: address(0),
-                defaultRedeemHook: address(0),
-                queueLimit: 0,
-                roleHolders: holders
-            });
             (,,,, address vault_) = deployment.vaultConfigurator.create(initParams);
             vault = Vault(payable(vault_));
         }
@@ -97,31 +108,47 @@ contract Deploy is Script, Test {
         SubvaultCalls[] memory calls = new SubvaultCalls[](3);
 
         {
+            IRiskManager riskManager = vault.riskManager();
+
             Factory verifierFactory = Constants.protocolDeployment().verifierFactory;
-            address verifier0 = verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
-            address subvault0 = vault.createSubvault(0, proxyAdminOwner, verifier0);
-            address swapModule0 = _createSwapModule0(subvault0);
+            {
+                address verifier0 = verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
+                address subvault0 = vault.createSubvault(0, proxyAdminOwner, verifier0);
+                address swapModule0 = _createSwapModule0(subvault0);
+                riskManager.setSubvaultLimit(subvault0, type(int256).max / 2);
+                riskManager.allowSubvaultAssets(subvault0, assets);
 
-            address verifier1 = verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
-            address subvault1 = vault.createSubvault(0, proxyAdminOwner, verifier1);
+                console2.log("Verifier 0:", verifier0);
+                console2.log("Subvault 0:", subvault0);
+                console2.log("SwapModule 0:", swapModule0);
+                verifiers[0] = verifier0;
+            }
 
-            address verifier2 = verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
-            address subvault2 = vault.createSubvault(0, proxyAdminOwner, verifier2);
+            {
+                address verifier1 = verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
+                address subvault1 = vault.createSubvault(0, proxyAdminOwner, verifier1);
+                riskManager.setSubvaultLimit(subvault1, type(int256).max / 2);
+                riskManager.allowSubvaultAssets(subvault1, assets);
+                console2.log("Verifier 1:", verifier1);
+                console2.log("Subvault 1:", subvault1);
+                verifiers[1] = verifier1;
+            }
 
-            console2.log("Verifier 0:", verifier0);
-            console2.log("Subvault 0:", subvault0);
-            console2.log("SwapModule 0:", swapModule0);
-            console2.log("Verifier 1:", verifier1);
-            console2.log("Subvault 1:", subvault1);
-            console2.log("Verifier 2:", verifier2);
-            console2.log("Subvault 2:", subvault2);
+            {
+                address verifier2 = verifierFactory.create(0, proxyAdminOwner, abi.encode(vault, bytes32(0)));
+                address subvault2 = vault.createSubvault(0, proxyAdminOwner, verifier2);
+                riskManager.setSubvaultLimit(subvault2, type(int256).max / 2);
+                riskManager.allowSubvaultAssets(subvault2, assets);
 
-            verifiers[0] = verifier0;
-            verifiers[1] = verifier1;
-            verifiers[2] = verifier2;
+                console2.log("Verifier 2:", verifier2);
+                console2.log("Subvault 2:", subvault2);
+                verifiers[2] = verifier2;
+            }
         }
 
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
+        vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
+        vault.renounceRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
 
         for (uint256 i = 0; i < verifiers.length; i++) {
             timelockController.schedule(
@@ -135,6 +162,17 @@ contract Deploy is Script, Test {
         console2.log("Vault: %s", address(vault));
         console2.log("TimelockController: %s", address(timelockController));
 
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](assets.length);
+            for (uint256 i = 0; i < assets.length; i++) {
+                reports[i].asset = assets[i];
+                reports[i].priceD18 = uint224(1 ether);
+            }
+            vault.oracle().submitReports(reports);
+        }
+
+        _acceptReports(vault, deployer);
+
         vm.stopBroadcast();
 
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
@@ -147,7 +185,7 @@ contract Deploy is Script, Test {
                 holders: _getExpectedHolders(timelockController, deployer),
                 depositHook: address(0),
                 redeemHook: address(0),
-                assets: new address[](0),
+                assets: assets,
                 depositQueueAssets: new address[](0),
                 redeemQueueAssets: new address[](0),
                 subvaultVerifiers: verifiers,
@@ -157,6 +195,17 @@ contract Deploy is Script, Test {
             })
         );
         revert("ok");
+    }
+
+    function _acceptReports(Vault vault, address deployer) internal {
+        IOracle oracle = vault.oracle();
+        for (uint256 i = 0; i < oracle.supportedAssets(); i++) {
+            address a = oracle.supportedAssetAt(i);
+            IOracle.DetailedReport memory r = oracle.getReport(a);
+            oracle.acceptReport(a, r.priceD18, r.timestamp);
+        }
+        vault.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
     }
 
     function _getExpectedHolders(TimelockController timelockController, address deployer)
