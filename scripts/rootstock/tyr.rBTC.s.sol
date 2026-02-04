@@ -18,6 +18,7 @@ import "../common/ProofLibrary.sol";
 import "./Constants.sol";
 
 import "../common/ArraysLibrary.sol";
+import {tyrLibrary} from "./tyrLibrary.sol";
 
 contract Deploy is Script, Test {
     // Actors
@@ -35,10 +36,12 @@ contract Deploy is Script, Test {
 
     // to avoid stack too deep
     address public deployer;
-    Vault vault = Vault(payable(0));
+    Vault vault = Vault(payable(0x97Bb1d1b9FaA1091406A005F0B4a1658e5b542Eb));
     TimelockController timelockController;
 
     function run() external {
+        getSubvault0MerkleRoot();
+        revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
 
         deployer = vm.addr(deployerPk);
@@ -373,5 +376,30 @@ contract Deploy is Script, Test {
         assembly {
             mstore(holders, i)
         }
+    }
+
+    function getSubvault0MerkleRoot() internal returns (bytes32 merkleRoot, SubvaultCalls memory calls) {
+        Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
+        IVerifier verifier = subvault.verifier();
+
+        IVerifier.VerificationPayload[] memory leaves;
+        string[] memory descriptions;
+        string memory jsonSubvaultName = "rootstock:tyr.rBTC:subvault0";
+
+        (merkleRoot, leaves, descriptions, calls) = tyrLibrary.getSubvault0Data(
+            tyrLibrary.Info({
+                curator: curator,
+                subvault: address(subvault),
+                subvaultName: "Tyr.rBTC",
+                utilaAccount: Constants.UTILA_ACCOUNT
+            })
+        );
+
+        ProofLibrary.storeProofs(jsonSubvaultName, merkleRoot, leaves, descriptions);
+
+        vm.prank(lazyVaultAdmin);
+        verifier.setMerkleRoot(merkleRoot);
+
+        AcceptanceLibrary.runVerifyCallsChecks(verifier, calls);
     }
 }

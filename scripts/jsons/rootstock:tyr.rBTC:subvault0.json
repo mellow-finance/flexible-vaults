@@ -1,0 +1,21 @@
+{
+  "title": "rootstock:tyr.rBTC:subvault0",
+  "merkle_root": "0x1e07c1986001e23af1e31ab22a881579320ad79ae9bf5669f0034aeb9e3ca59c",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "UtilaAccount.call{value: any}()",
+        "abi": {},
+        "parameters": {
+          "caller": "0xc67f082359f006b1d7d1666f1a43976c9e0aea44",
+          "target": "0xa380682204147122a32573fe369f53b8236c38c7",
+          "value": "any"
+        },
+        "innerParameters": {}
+      },
+      "verificationData": "0x0000000000000000000000000000000022c92ac77562374f5e4617bf5ff7c2b551631a1c88ed70499ed02a799a1b0907059759f0c129c52bea29482a39623e0d00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000060ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000",
+      "proof": []
+    }
+  ]
+}

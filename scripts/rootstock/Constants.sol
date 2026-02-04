@@ -14,6 +14,7 @@ library Constants {
 
     address public constant RBTC = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WRBTC = 0x967F8799aF07dF1534d48A95a5C9FEBE92c53AE0;
+    address public constant UTILA_ACCOUNT = 0xA380682204147122A32573FE369F53b8236c38C7;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
