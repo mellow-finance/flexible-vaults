@@ -35,6 +35,14 @@ library ArraysLibrary {
         }
     }
 
+    function makeBytes25Array(bytes memory data) internal pure returns (bytes25[] memory a) {
+        uint256 n = data.length / 32;
+        a = new bytes25[](n);
+        assembly {
+            mcopy(add(a, 0x20), add(data, 0x20), mul(n, 0x20))
+        }
+    }
+
     function insert(address[] memory a, address[] memory b, uint256 from) internal pure returns (uint256) {
         for (uint256 i = 0; i < b.length; i++) {
             a[from + i] = b[i];
