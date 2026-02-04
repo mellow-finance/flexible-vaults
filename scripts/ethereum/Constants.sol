@@ -192,6 +192,9 @@ library Constants {
             oracleImplementation: Oracle(0x0000000F0d3D1c31b72368366A4049C05E291D58),
             riskManagerImplementation: RiskManager(0x0000000714cf2851baC1AE2f41871862e9D216fD),
             tokenizedShareManagerImplementation: TokenizedShareManager(0x0000000E8eb7173fA1a3ba60eCA325bcB6aaf378),
+            burnableTokenizedShareManagerImplementation: BurnableTokenizedShareManager(
+                0x000000000c79D2B5cD58AE545afc83030233D7B6
+            ),
             basicShareManagerImplementation: BasicShareManager(0x00000005564AAE40D88e2F08dA71CBe156767977),
             subvaultImplementation: Subvault(payable(0x0000000E535B4E063f8372933A55470e67910a66)),
             verifierImplementation: Verifier(0x000000047Fc878662006E78D5174FB4285637966),

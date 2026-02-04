@@ -12,6 +12,8 @@ import "../../../src/libraries/ShareManagerFlagLibrary.sol";
 import "../../../src/libraries/SlotLibrary.sol";
 
 import "../../../src/managers/BasicShareManager.sol";
+
+import "../../../src/managers/BurnableTokenizedShareManager.sol";
 import "../../../src/managers/FeeManager.sol";
 import "../../../src/managers/RiskManager.sol";
 import "../../../src/managers/TokenizedShareManager.sol";
@@ -82,6 +84,7 @@ struct ProtocolDeployment {
     Oracle oracleImplementation;
     RiskManager riskManagerImplementation;
     TokenizedShareManager tokenizedShareManagerImplementation;
+    BurnableTokenizedShareManager burnableTokenizedShareManagerImplementation;
     BasicShareManager basicShareManagerImplementation;
     Subvault subvaultImplementation;
     Verifier verifierImplementation;

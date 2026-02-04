@@ -48,6 +48,7 @@ import "../src/queues/SyncDepositQueue.sol";
 
 import "../src/managers/BasicShareManager.sol";
 
+import "../src/managers/BurnableTokenizedShareManager.sol";
 import "../src/managers/FeeManager.sol";
 import "../src/managers/RiskManager.sol";
 import "../src/managers/ShareManager.sol";

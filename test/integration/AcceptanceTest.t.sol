@@ -35,4 +35,11 @@ contract Integration is Test {
         address implementation = address(Constants.protocolDeployment().redeemQueueImplementation);
         AcceptanceLibrary.compareBytecode("RedeemQueue", implementation, address(new RedeemQueue("Mellow", 1)));
     }
+
+    function testImpl_BurnableTokenizedShareManager_NO_CI() external {
+        address implementation = address(Constants.protocolDeployment().burnableTokenizedShareManagerImplementation);
+        AcceptanceLibrary.compareBytecode(
+            "BurnableTokenizedShareManager", implementation, address(new BurnableTokenizedShareManager("Mellow", 1))
+        );
+    }
 }
