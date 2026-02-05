@@ -23,5 +23,8 @@ contract MellowAccount is IFactoryEntity, OwnableUpgradeable, ReentrancyGuardUpg
         for (uint256 i = 0; i < calls.length; i++) {
             results[i] = Address.functionCall(calls[i].target, calls[i].data);
         }
+        emit Executed(_msgSender());
     }
+
+    event Executed(address indexed caller);
 }
