@@ -3,6 +3,7 @@ Language                              Files     Lines   Blanks  Comments     Cod
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Solidity                                 47      4999      692       550     3757        784           842.20
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+src/accounts/MellowAccount.sol                     27        4         2       21          1             4.76
 src/factories/Factory.sol                         131       22        17       92          8             8.70
 src/hooks/BasicRedeemHook.sol                      53        4         1       48         10            20.83
 src/hooks/LidoDepositHook.sol                      49        8         1       40         13            32.50
@@ -44,7 +45,6 @@ src/queues/SignatureRedeemQueue.sol                34        8         1       2
 src/queues/SyncDepositQueue.sol                   134       23        12       99         17            17.17
 src/queues/SyncQueue.sol                           53       11         7       35          5            14.29
 src/strategies/SymbioticStrategy.sol               65        9         2       54          1             1.85
-src/utils/MellowAccount.sol                        27        4         2       21          1             4.76
 src/utils/SwapModule.sol                          312       35        33      244         69            28.28
 src/vaults/Migrator.sol                           142       23         1      118         12            10.17
 src/vaults/Subvault.sol                            21        3         1       17          0             0.00

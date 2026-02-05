@@ -6,7 +6,7 @@ import "../../scripts/ethereum/Constants.sol";
 import "../Imports.sol";
 import "forge-std/Test.sol";
 
-import "../../src/utils/MellowAccount.sol";
+import "../../src/accounts/MellowAccount.sol";
 
 contract Integration is Test {
     Vault vault = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
