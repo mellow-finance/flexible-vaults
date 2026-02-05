@@ -6,10 +6,14 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
-contract MellowAccount is IFactoryEntity, OwnableUpgradeable, ReentrancyGuardUpgradeable {
+contract MellowAccountV1 is IFactoryEntity, OwnableUpgradeable, ReentrancyGuardUpgradeable {
     struct Call {
         address target;
         bytes data;
+    }
+
+    constructor() {
+        _disableInitializers();
     }
 
     // @inheritdoc IFactoryEntity

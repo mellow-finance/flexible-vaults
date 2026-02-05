@@ -6,7 +6,7 @@ import "../../scripts/ethereum/Constants.sol";
 import "../Imports.sol";
 import "forge-std/Test.sol";
 
-import "../../src/accounts/MellowAccount.sol";
+import "../../src/accounts/MellowAccountV1.sol";
 
 contract Integration is Test {
     Vault vault = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
@@ -15,8 +15,8 @@ contract Integration is Test {
         address admin = vault.getRoleMember(Permissions.DEFAULT_ADMIN_ROLE, 0);
 
         address curator = vm.createWallet("curator-wallet").addr;
-        MellowAccount impl = new MellowAccount();
-        MellowAccount account = MellowAccount(
+        MellowAccountV1 impl = new MellowAccountV1();
+        MellowAccountV1 account = MellowAccountV1(
             address(
                 new TransparentUpgradeableProxy(
                     address(impl), admin, abi.encodeCall(IFactoryEntity.initialize, (abi.encode(curator)))
@@ -54,17 +54,17 @@ contract Integration is Test {
         deal(Constants.WSTETH, subvault0, balance);
 
         uint256 i = 0;
-        MellowAccount.Call[] memory calls = new MellowAccount.Call[](7);
-        calls[i++] = MellowAccount.Call({
+        MellowAccountV1.Call[] memory calls = new MellowAccountV1.Call[](7);
+        calls[i++] = MellowAccountV1.Call({
             target: address(vault),
             data: abi.encodeCall(vault.pullAssets, (subvault0, Constants.WSTETH, balance))
         });
-        calls[i++] = MellowAccount.Call({
+        calls[i++] = MellowAccountV1.Call({
             target: address(vault),
             data: abi.encodeCall(vault.pushAssets, (subvault1, Constants.WSTETH, balance))
         });
         IVerifier.VerificationPayload memory payload;
-        calls[i++] = MellowAccount.Call({
+        calls[i++] = MellowAccountV1.Call({
             target: subvault1,
             data: abi.encodeCall(
                 ICallModule.call,
@@ -72,7 +72,7 @@ contract Integration is Test {
             )
         });
 
-        calls[i++] = MellowAccount.Call({
+        calls[i++] = MellowAccountV1.Call({
             target: subvault1,
             data: abi.encodeCall(
                 ICallModule.call,
@@ -85,7 +85,7 @@ contract Integration is Test {
             )
         });
 
-        calls[i++] = MellowAccount.Call({
+        calls[i++] = MellowAccountV1.Call({
             target: subvault1,
             data: abi.encodeCall(
                 ICallModule.call,
@@ -98,12 +98,12 @@ contract Integration is Test {
             )
         });
 
-        calls[i++] = MellowAccount.Call({
+        calls[i++] = MellowAccountV1.Call({
             target: address(vault),
             data: abi.encodeCall(vault.pullAssets, (subvault1, Constants.WETH, balance))
         });
 
-        calls[i++] = MellowAccount.Call({
+        calls[i++] = MellowAccountV1.Call({
             target: address(vault),
             data: abi.encodeCall(vault.pushAssets, (subvault0, Constants.WETH, balance))
         });
