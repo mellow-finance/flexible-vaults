@@ -64,7 +64,7 @@ contract UniswapV4UnlockDataGenerator {
         );
 
         /// @dev apply slippage: reducing liquidity delta, but keeping amounts the same (to do not exceed max amounts)
-        data.liquidityDelta = uint128(data.liquidity * (D6 - slippageD6) / D6);
+        data.liquidityDelta = uint128(data.liquidityDelta * (D6 - slippageD6) / D6);
 
         // tokenId, liquidity, amount0Max, amount1Max, hookData
         params[0] = abi.encode(data.tokenId, data.liquidityDelta, data.currency0.amount, data.currency1.amount, ""); // increaseLiquidity params
@@ -78,16 +78,16 @@ contract UniswapV4UnlockDataGenerator {
         uint256 tokenId,
         uint256 amount0Max,
         uint256 amount1Max,
-        uint128 liquidity
+        uint128 liquidityDelta
     ) public view returns (LiquidityData memory data) {
         bytes[] memory params = new bytes[](2);
         bytes memory actions = abi.encodePacked(ACTION_INCREASE_LIQUIDITY, ACTION_SETTLE_PAIR); // increase, settle
 
         data = getInfo(tokenId);
-        data.liquidityDelta = liquidity;
+        data.liquidityDelta = liquidityDelta;
         (data.currency0.amount, data.currency1.amount) = (amount0Max, amount1Max);
         // tokenId, liquidity, amount0Max, amount1Max, hookData
-        params[0] = abi.encode(data.tokenId, liquidity, amount0Max, amount1Max, ""); // increaseLiquidity params
+        params[0] = abi.encode(data.tokenId, liquidityDelta, amount0Max, amount1Max, ""); // increaseLiquidity params
         params[1] = abi.encode(data.currency0.addr, data.currency1.addr); // settle params
 
         data.unlockData = abi.encode(actions, params);
@@ -108,16 +108,22 @@ contract UniswapV4UnlockDataGenerator {
 
         data.liquidityDelta = liquidityDelta;
 
-        if (data.liquidityDelta > data.liquidity) {
-            data.liquidityDelta = data.liquidity;
-        }
+        if (data.liquidityDelta > 0) {
+            /// @dev actually decrease liquidity
+            if (data.liquidityDelta > data.liquidity) {
+                data.liquidityDelta = data.liquidity;
+            }
 
-        uint160 sqrtRatioAX96 = TickMath.getSqrtRatioAtTick(data.tickLower);
-        uint160 sqrtRatioBX96 = TickMath.getSqrtRatioAtTick(data.tickUpper);
-        uint128 adjustedLiquidity = uint128(data.liquidityDelta * (D6 - slippageD6) / D6);
-        /// @dev decrease amounts by slippage
-        (data.currency0.amount, data.currency1.amount) =
-            LiquidityAmounts.getAmountsForLiquidity(data.sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, adjustedLiquidity);
+            uint160 sqrtRatioAX96 = TickMath.getSqrtRatioAtTick(data.tickLower);
+            uint160 sqrtRatioBX96 = TickMath.getSqrtRatioAtTick(data.tickUpper);
+            /// @dev amounts with slippage
+            (data.currency0.amount, data.currency1.amount) = LiquidityAmounts.getAmountsForLiquidity(
+                data.sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, uint128(data.liquidityDelta * (D6 - slippageD6) / D6)
+            );
+        } else {
+            /// @dev if liquidityDelta = 0 -> just collect fees
+            (amount0Min, amount1Min) = (0, 0);
+        }
 
         // tokenId, liquidity, amount0Min, amount1Min, hookData
         params[0] = abi.encode(tokenId, liquidityDelta, amount0Min, amount1Min, ""); // decreaseLiquidity params

@@ -121,6 +121,7 @@ contract TestUniswapV4 is Script {
         mock.getIncreaseLiquidityUnlockData(143332, 1e18 / 1000, 1e8 / 1000, 1000);
         mock.getIncreaseLiquidityUnlockDataCustom(143332, 1e18 / 1000, 1e8 / 1000, 1e18);
         mock.getDecreaseLiquidityUnlockData(143332, 1000000, 0, 0, 1000, 0xC22642ad548183aFbe389dc667d698C60f3D9a22);
+        mock.getDecreaseLiquidityUnlockData(143332, 0, 0, 0, 1000, 0xC22642ad548183aFbe389dc667d698C60f3D9a22);
         mock.getDecreaseLiquidityUnlockDataCustom(143332, 1000000, 0, 0, 0xC22642ad548183aFbe389dc667d698C60f3D9a22);
         revert("ok");
 
