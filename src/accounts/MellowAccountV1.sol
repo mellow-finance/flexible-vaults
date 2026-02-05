@@ -17,9 +17,10 @@ contract MellowAccountV1 is IFactoryEntity, OwnableUpgradeable, ReentrancyGuardU
     }
 
     // @inheritdoc IFactoryEntity
-    function initialize(bytes memory initData) external initializer {
-        __Ownable_init(abi.decode(initData, (address)));
+    function initialize(bytes memory data) external initializer {
+        __Ownable_init(abi.decode(data, (address)));
         __ReentrancyGuard_init();
+        emit Initialized(data);
     }
 
     function multicall(Call[] calldata calls) external nonReentrant onlyOwner returns (bytes[] memory results) {
