@@ -42,6 +42,8 @@ import "../../../src/vaults/Subvault.sol";
 import "../../../src/vaults/Vault.sol";
 import "../../../src/vaults/VaultConfigurator.sol";
 
+import "../../../src/accounts/MellowAccountV1.sol";
+
 import "../../../scripts/common/DeployVaultFactory.sol";
 import "../../../scripts/common/DeployVaultFactoryRegistry.sol";
 import "../../../src/utils/SwapModule.sol";
@@ -74,6 +76,7 @@ struct ProtocolDeployment {
     Factory feeManagerFactory;
     Factory oracleFactory;
     Factory swapModuleFactory;
+    Factory accountFactory;
     Consensus consensusImplementation;
     DepositQueue depositQueueImplementation;
     SignatureDepositQueue signatureDepositQueueImplementation;
@@ -99,6 +102,7 @@ struct ProtocolDeployment {
     RedirectingDepositHook redirectingDepositHook;
     LidoDepositHook lidoDepositHook;
     OracleHelper oracleHelper;
+    MellowAccountV1 mellowAccountV1Implementation;
 }
 
 struct Call {
