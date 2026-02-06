@@ -22,24 +22,49 @@ library ArraysLibrary {
     function makeAddressArray(bytes memory data) internal pure returns (address[] memory a) {
         uint256 n = data.length / 32;
         a = new address[](n);
+        bytes32 ptr;
         assembly {
-            mcopy(add(a, 0x20), add(data, 0x20), mul(n, 0x20))
+            ptr := data
         }
+        mcopy(ptr, data, n);
     }
 
     function makeBytes32Array(bytes memory data) internal pure returns (bytes32[] memory a) {
         uint256 n = data.length / 32;
         a = new bytes32[](n);
+        bytes32 ptr;
         assembly {
-            mcopy(add(a, 0x20), add(data, 0x20), mul(n, 0x20))
+            ptr := data
         }
+        mcopy(ptr, data, n);
     }
 
     function makeBytes25Array(bytes memory data) internal pure returns (bytes25[] memory a) {
         uint256 n = data.length / 32;
         a = new bytes25[](n);
+        bytes32 ptr;
         assembly {
-            mcopy(add(a, 0x20), add(data, 0x20), mul(n, 0x20))
+            ptr := data
+        }
+        mcopy(ptr, data, n);
+    }
+
+    /// @dev for Paris EVM version compatibility
+    function mcopy(bytes32 ptr, bytes memory data, uint256 n) internal pure {
+        uint256 length;
+        assembly {
+            length := mload(data)
+        }
+        require(length >= n, "ArraysLibrary: array too small");
+        assembly {
+            let dst := add(ptr, 0x20)
+            let src := add(data, 0x20)
+            let end := add(src, mul(n, 0x20))
+
+            for {} lt(src, end) {
+                src := add(src, 0x20)
+                dst := add(dst, 0x20)
+            } { mstore(dst, mload(src)) }
         }
     }
 

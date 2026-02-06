@@ -42,6 +42,7 @@ import "../../../src/vaults/VaultConfigurator.sol";
 
 import "../../../scripts/common/DeployVaultFactory.sol";
 import "../../../scripts/common/DeployVaultFactoryRegistry.sol";
+import "../../../scripts/common/OracleSubmitterFactory.sol";
 import "../../../src/utils/SwapModule.sol";
 
 struct ProtocolDeployment {
