@@ -107,6 +107,9 @@ library Constants {
     address public constant GGV = 0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09;
     address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
 
+    address public constant EARN_USD = 0x8FFa4D9FBa523044429D2E51aC055726959942d8;
+    address public constant EARN_ETH = 0x6a37725ca7f4CE81c004c955f7280d5C704a249e;
+
     address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
 
     address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
