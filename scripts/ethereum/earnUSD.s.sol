@@ -54,11 +54,21 @@ contract Deploy is Script, Test {
 
     address[] public assets_ = ArraysLibrary.makeAddressArray(abi.encode(depositAssets));
 
+    function upgradePermissions() internal {
+        _createSubvault0Verifier(IVaultModule(Constants.EARN_USD).subvaultAt(0), Constants.EARN_USDC);
+        _createSubvault1Verifier(IVaultModule(Constants.EARN_USD).subvaultAt(1), Constants.EARN_USDE);
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
+
+        if (true) {
+            upgradePermissions();
+            return;
+        }
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;

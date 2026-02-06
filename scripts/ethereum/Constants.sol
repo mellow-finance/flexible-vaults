@@ -108,6 +108,8 @@ library Constants {
     address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
 
     address public constant EARN_USD = 0x8FFa4D9FBa523044429D2E51aC055726959942d8;
+    address public constant EARN_USDC = 0x8F281A5fC4Fc588842923DE678ccC48Fc36AB631;
+    address public constant EARN_USDE = 0x2816f240109845661ba27b3D0148f211c5921553;
     address public constant EARN_ETH = 0x6a37725ca7f4CE81c004c955f7280d5C704a249e;
 
     address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
