@@ -11,7 +11,7 @@ import "../../src/accounts/MellowAccountV1.sol";
 contract Integration is Test {
     Vault vault = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
 
-    function testMulticall() external {
+    function testMulticall_NO_CI() external {
         address admin = vault.getRoleMember(Permissions.DEFAULT_ADMIN_ROLE, 0);
 
         address curator = vm.createWallet("curator-wallet").addr;
