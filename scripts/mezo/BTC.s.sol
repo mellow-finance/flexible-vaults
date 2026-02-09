@@ -39,7 +39,7 @@ contract Deploy is DeployAbstractScript {
         vaultSymbol = "mbhBTC";
 
         /// @dev fill admin/operational addresses
-        proxyAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5 Mezo
+        proxyAdmin = 0xb7b2ee53731Fc80080ED2906431e08452BC58786; // 5/8 Mellow+Mezo
         lazyVaultAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5 Mezo
         activeVaultAdmin = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3 Mezo
         curator = 0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa; // 1/1 msig 0x57775cB0C39671487981706FFb1D3B3ff65Ebb1f Mezo
@@ -84,7 +84,7 @@ contract Deploy is DeployAbstractScript {
 
         /// @dev fill versions
         vaultVersion = 0;
-        shareManagerVersion = 0; // TokenizedShareManager, impl: 0x0000000E8eb7173fA1a3ba60eCA325bcB6aaf378
+        shareManagerVersion = 0; // TokenizedShareManager
         feeManagerVersion = 0;
         riskManagerVersion = 0;
         oracleVersion = 0;
