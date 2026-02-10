@@ -15,10 +15,16 @@ abstract contract DeployAbstractScript is Test {
     enum SubvaultVersion {
         DEFAULT
     }
-    enum QueueVersion {
+    enum DepositQueueVersion {
         DEFAULT,
         SIGNATURE,
         SYNC
+    }
+
+    enum RedeemQueueVersion {
+        DEPRECATED,
+        SIGNATURE,
+        DEFAULT
     }
 
     error ZeroLength();
@@ -146,6 +152,7 @@ abstract contract DeployAbstractScript is Test {
         SubvaultCalls[] memory calls = stepTwo(vault_);
 
         //checkDeployment(address(vault_), calls, config, Constants.protocolDeployment());
+        revert("Simulation complete");
     }
 
     /**
@@ -155,7 +162,7 @@ abstract contract DeployAbstractScript is Test {
      *   - set logic for merkle roots in getSubvaultMerkleRoot()
      */
     function stepOne(IDeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
-        vault = deployVault.deployVault(config);
+        vault = deployVault.deployVault{gas: 1e7}(config);
         console2.log("Deployed vault at:", address(vault));
     }
 
@@ -176,7 +183,7 @@ abstract contract DeployAbstractScript is Test {
         }
 
         Vault.RoleHolder[] memory holders = getVaultRoleHolders(address(0), address(0));
-        deployVault.finalizeDeployment(vault, subvaultRoots, holders);
+        deployVault.finalizeDeployment{gas: 1e7}(vault, subvaultRoots, holders);
     }
 
     function getConfig() internal returns (IDeployVaultFactory.DeployVaultConfig memory config) {
