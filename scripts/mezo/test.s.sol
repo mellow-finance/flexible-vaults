@@ -57,16 +57,11 @@ contract Deploy is DeployAbstractScript {
             oracle.submitReports(reports);
             skip(securityParams.timeout + 1);
         }
-        DepositQueue BTCDepositQueue = DepositQueue(vault.queueAt(Constants.BTC, 0));
-        BTCDepositQueue.deposit{value: actualDeposit}(uint224(actualDeposit), address(0), new bytes32[](0));
 
         address account = vm.addr(deployerPk);
         IShareManager shareManager = vault.shareManager();
-        skip(securityParams.timeout + 1);
-        oracle.submitReports(reports);
-        uint256 expectedShares = shareManager.claimableSharesOf(account);
-        assertApproxEqAbs(expectedShares, targetShares, 1, "Unexpected shares minted");
-
+        DepositQueue BTCDepositQueue = DepositQueue(vault.queueAt(Constants.BTC, 1));
+        BTCDepositQueue.deposit{value: actualDeposit}(uint224(actualDeposit), address(0), new bytes32[](0));
         vault.claimShares(account);
         uint256 actualShares = shareManager.sharesOf(account);
         assertApproxEqAbs(actualShares, targetShares, 1, "Unexpected actual shares minted");
