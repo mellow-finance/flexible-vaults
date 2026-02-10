@@ -24,7 +24,7 @@ library ArraysLibrary {
         a = new address[](n);
         bytes32 ptr;
         assembly {
-            ptr := data
+            ptr := a
         }
         mcopy(ptr, data, n);
     }
@@ -34,7 +34,7 @@ library ArraysLibrary {
         a = new bytes32[](n);
         bytes32 ptr;
         assembly {
-            ptr := data
+            ptr := a
         }
         mcopy(ptr, data, n);
     }
@@ -44,21 +44,21 @@ library ArraysLibrary {
         a = new bytes25[](n);
         bytes32 ptr;
         assembly {
-            ptr := data
+            ptr := a
         }
         mcopy(ptr, data, n);
     }
 
     /// @dev for Paris EVM version compatibility
-    function mcopy(bytes32 ptr, bytes memory data, uint256 n) internal pure {
+    function mcopy(bytes32 dst, bytes memory src, uint256 n) internal pure {
         uint256 length;
         assembly {
-            length := mload(data)
+            length := mload(src)
         }
         require(length >= n, "ArraysLibrary: array too small");
         assembly {
-            let dst := add(ptr, 0x20)
-            let src := add(data, 0x20)
+            dst := add(dst, 0x20)
+            src := add(src, 0x20)
             let end := add(src, mul(n, 0x20))
 
             for {} lt(src, end) {
