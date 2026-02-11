@@ -13,6 +13,7 @@ library Constants {
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
     address public constant BTC = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
     address public constant mcbBTC = 0x6a7CD8E1384d49f502b4A4CE9aC9eb320835c5d7;
     address public constant mUSDC = 0x04671C72Aab5AC02A03c1098314b1BB6B560c197;
     address public constant mUSDT = 0xeB5a5d39dE4Ea42C2Aa6A57EcA2894376683bB8E;

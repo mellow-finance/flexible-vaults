@@ -39,6 +39,16 @@ library ArraysLibrary {
         mcopy(ptr, data, n);
     }
 
+    function makeUint224Array(bytes memory data) internal pure returns (uint224[] memory a) {
+        uint256 n = data.length / 32;
+        a = new uint224[](n);
+        bytes32 ptr;
+        assembly {
+            ptr := a
+        }
+        mcopy(ptr, data, n);
+    }
+
     function makeBytes25Array(bytes memory data) internal pure returns (bytes25[] memory a) {
         uint256 n = data.length / 32;
         a = new bytes25[](n);

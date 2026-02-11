@@ -8,32 +8,30 @@ import "../common/OracleSubmitterFactory.sol";
 import "./DeployAbstractScript.s.sol";
 
 contract Deploy is DeployAbstractScript {
-    address[] swapModuleAssets;
-
     function run() external {
+        GAS_PER_TRANSACTION = 1.0e7;
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         deployVault = Constants.deployVaultFactory;
 
         /// @dev just on-chain simulation
-        _simulate();
-        revert("ok");
+        //_simulate();
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0)));
+        vault = Vault(payable(address(0x807D4778abA870e4222904f5b528F68B350cE0E0)));
 
         //revert("ok");
 
-        //_run();
-        revert("ok");
+        _run();
+        // revert("ok");
     }
 
     function setUp() public override {
-        isEmptyVault = true;
-        deployOracleSubmitter = false;
+        isEmptyVault = false;
+        deployOracleSubmitter = true;
         /// @dev fill name and symbol
         vaultName = "Mezo Bitcoin Home BTC Vault";
         vaultSymbol = "mbhBTC";
@@ -56,8 +54,8 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill fee parameters
         depositFeeD6 = 0;
         redeemFeeD6 = 0;
-        performanceFeeD6 = 0;
-        protocolFeeD6 = 0;
+        performanceFeeD6 = 100000; // 10% performance fee
+        protocolFeeD6 = 10000; // 1% protocol fee
 
         /// @dev fill security params
         securityParams = IOracle.SecurityParams({
@@ -65,9 +63,9 @@ contract Deploy is DeployAbstractScript {
             suspiciousAbsoluteDeviation: 1,
             maxRelativeDeviationD18: 1,
             suspiciousRelativeDeviationD18: 1,
-            timeout: type(uint32).max, // no timeout
-            depositInterval: type(uint32).max, // does not affect sync deposit queue
-            redeemInterval: type(uint32).max // no redemptions allowed
+            timeout: 365 days, // no timeout
+            depositInterval: 365 days, // does not affect sync deposit queue
+            redeemInterval: 365 days // no redemptions allowed
         });
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -99,10 +97,28 @@ contract Deploy is DeployAbstractScript {
     {
         subvaultParams = new IDeployVaultFactory.SubvaultParams[](1);
 
-        subvaultParams[0].assets = new address[](0);
-        subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
-        subvaultParams[0].verifierVersion = 0;
-        subvaultParams[0].limit = type(int256).max;
+        // native BTC subvault (veBTC)
+        {
+            subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.BTC));
+            subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
+            subvaultParams[0].verifierVersion = 0;
+            subvaultParams[0].limit = type(int256).max;
+        }
+        return subvaultParams;
+        // MUSD subvault (mint/repay/borrow)
+        {
+            subvaultParams[1].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.BTC, Constants.MUSD));
+            subvaultParams[1].version = uint256(SubvaultVersion.DEFAULT);
+            subvaultParams[1].verifierVersion = 0;
+            subvaultParams[1].limit = type(int256).max;
+        }
+        // Tigris subvault (LPing BTC/MUSD on Tigris AMM)
+        {
+            subvaultParams[2].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.BTC, Constants.MUSD));
+            subvaultParams[2].version = uint256(SubvaultVersion.DEFAULT);
+            subvaultParams[2].verifierVersion = 0;
+            subvaultParams[2].limit = type(int256).max;
+        }
     }
 
     /// @dev fill in queue parameters
@@ -112,8 +128,14 @@ contract Deploy is DeployAbstractScript {
         override
         returns (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit)
     {
-        queues = new IDeployVaultFactory.QueueParams[](0);
-        queueLimit = 0;
+        queues = new IDeployVaultFactory.QueueParams[](1);
+        queueLimit = 1;
+        queues[0] = IDeployVaultFactory.QueueParams({
+            version: uint256(DepositQueueVersion.DEFAULT),
+            isDeposit: true,
+            asset: Constants.BTC,
+            data: ""
+        });
     }
 
     /// @dev fill in allowed assets/base asset and subvault assets
@@ -123,8 +145,9 @@ contract Deploy is DeployAbstractScript {
         override
         returns (address[] memory allowedAssets, uint224[] memory allowedAssetsPrices)
     {
-        allowedAssets = new address[](0);
-        allowedAssetsPrices = new uint224[](0);
+        allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.BTC, Constants.MUSD));
+        uint256 BTCPrice = 69000;
+        allowedAssetsPrices = ArraysLibrary.makeUint224Array(abi.encode(1e18, 1e18 / BTCPrice));
     }
 
     /// @dev fill in vault role holders
@@ -140,6 +163,9 @@ contract Deploy is DeployAbstractScript {
         // lazyVaultAdmin roles:
         holders[index++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
         holders[index++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, lazyVaultAdmin);
+        holders[index++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, lazyVaultAdmin);
+        holders[index++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, lazyVaultAdmin);
+        holders[index++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, lazyVaultAdmin);
 
         // activeVaultAdmin roles:
         holders[index++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
