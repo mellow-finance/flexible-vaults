@@ -76,4 +76,13 @@ library Constants {
             oracleHelper: OracleHelper(0x9bB327889402AC19BF2D164eA79CcfE46c16a37B)
         });
     }
+
+    OracleSubmitterFactory public constant oracleSubmitterFactory =
+        OracleSubmitterFactory(0x000000051CDb58AB93997745Fc58Ec873C1055e2);
+
+    DeployVaultFactoryRegistry public constant deployVaultFactoryRegistry =
+        DeployVaultFactoryRegistry(0x0000000385a4FfABd599bb9c90ce5Ca4D655F1bF);
+
+    DeployVaultFactory public constant deployVaultFactory =
+        DeployVaultFactory(0x0000000773aE050a46935cE78aA6eE321aBe91b8);
 }
