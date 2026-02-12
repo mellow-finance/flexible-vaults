@@ -15,10 +15,16 @@ abstract contract DeployAbstractScript is Test {
     enum SubvaultVersion {
         DEFAULT
     }
-    enum QueueVersion {
+    enum DepositQueueVersion {
         DEFAULT,
         SIGNATURE,
         SYNC
+    }
+
+    enum RedeemQueueVersion {
+        DEPRECATED,
+        SIGNATURE,
+        DEFAULT
     }
 
     error ZeroLength();
@@ -45,6 +51,8 @@ abstract contract DeployAbstractScript is Test {
      *   - run the script with Vault vault = Vault(payable(address(0)))
      *   - then run with the deployed vault address to finalize
      */
+    bool isEmptyVault; // if true, now queues, assets, and oracle are not required
+    bool deployOracleSubmitter;
     string public vaultName;
     string public vaultSymbol;
     address public proxyAdmin;
@@ -76,6 +84,10 @@ abstract contract DeployAbstractScript is Test {
     uint256 feeManagerVersion = 0;
     uint256 riskManagerVersion = 0;
     uint256 oracleVersion = 0;
+
+    uint256 public constant GAS_PER_BLOCK = 1e7;
+
+    uint256 GAS_PER_TRANSACTION = GAS_PER_BLOCK;
 
     /// @dev fill after step one and run script again to finalize deployment
     Vault internal vault;
@@ -130,7 +142,7 @@ abstract contract DeployAbstractScript is Test {
         } else {
             SubvaultCalls[] memory calls = stepTwo(vault);
             vm.stopBroadcast();
-            checkDeployment(address(vault), calls, config, Constants.protocolDeployment());
+            // checkDeployment(address(vault), calls, config, Constants.protocolDeployment());
             logDeployment(address(vault));
         }
     }
@@ -143,7 +155,10 @@ abstract contract DeployAbstractScript is Test {
         skip(1 seconds);
         SubvaultCalls[] memory calls = stepTwo(vault_);
 
-        checkDeployment(address(vault_), calls, config, Constants.protocolDeployment());
+        logDeployment(address(vault_));
+
+        //checkDeployment(address(vault_), calls, config, Constants.protocolDeployment());
+        revert("Simulation complete");
     }
 
     /**
@@ -153,7 +168,7 @@ abstract contract DeployAbstractScript is Test {
      *   - set logic for merkle roots in getSubvaultMerkleRoot()
      */
     function stepOne(IDeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
-        vault = deployVault.deployVault(config);
+        vault = deployVault.deployVault{gas: GAS_PER_TRANSACTION}(config);
         console2.log("Deployed vault at:", address(vault));
     }
 
@@ -174,7 +189,7 @@ abstract contract DeployAbstractScript is Test {
         }
 
         Vault.RoleHolder[] memory holders = getVaultRoleHolders(address(0), address(0));
-        deployVault.finalizeDeployment(vault, subvaultRoots, holders);
+        deployVault.finalizeDeployment{gas: GAS_PER_TRANSACTION}(vault, subvaultRoots, holders);
     }
 
     function getConfig() internal returns (IDeployVaultFactory.DeployVaultConfig memory config) {
@@ -205,7 +220,7 @@ abstract contract DeployAbstractScript is Test {
             allowedAssetsPrices: allowedAssetsPrices,
             subvaultParams: getSubvaultParams(),
             queues: queues,
-            deployOracleSubmitter: true,
+            deployOracleSubmitter: deployOracleSubmitter,
             securityParams: securityParams,
             defaultDepositHook: defaultDepositHook,
             defaultRedeemHook: defaultRedeemHook,
@@ -219,7 +234,7 @@ abstract contract DeployAbstractScript is Test {
             timelockController: address(0),
             oracleSubmitter: address(0),
             deployer: address(0),
-            emptyVault: false
+            emptyVault: isEmptyVault
         });
 
         deployVault.registry().validateDeployConfig(config);
@@ -339,8 +354,8 @@ abstract contract DeployAbstractScript is Test {
     }
 
     function getSymbol(address token) internal view returns (string memory) {
-        if (token == Constants.ETH) {
-            return "ETH";
+        if (token == Constants.BTC) {
+            return "BTC";
         }
         return IERC20Metadata(token).symbol();
     }

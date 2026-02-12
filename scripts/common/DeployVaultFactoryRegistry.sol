@@ -220,7 +220,7 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
         if ($.activeVaultAdmin == address(0)) {
             revert ZeroAddress();
         }
-        if ($.oracleUpdater == address(0)) {
+        if (!$.emptyVault && $.oracleUpdater == address(0)) {
             revert ZeroAddress();
         }
         if ($.curator == address(0)) {
@@ -235,17 +235,24 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
     }
 
     function _checkAssets(IDeployVaultFactory.DeployVaultConfig calldata $) internal pure {
-        if ($.allowedAssets.length == 0) {
-            revert ZeroLength();
-        }
-        for (uint256 i = 0; i < $.allowedAssets.length; i++) {
-            if ($.allowedAssets[i] == address(0)) {
-                revert ZeroAddress();
+        if (!$.emptyVault) {
+            if ($.allowedAssets.length == 0) {
+                revert ZeroLength();
+            }
+            for (uint256 i = 0; i < $.allowedAssets.length; i++) {
+                if ($.allowedAssets[i] == address(0)) {
+                    revert ZeroAddress();
+                }
+            }
+            if ($.queues.length == 0) {
+                revert ZeroLength();
+            }
+
+            if ($.subvaultParams.length == 0) {
+                revert ZeroLength();
             }
         }
-        if ($.queues.length == 0) {
-            revert ZeroLength();
-        }
+
         if ($.queueLimit < $.queues.length) {
             revert LengthMismatch();
         }
@@ -263,16 +270,10 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
             }
         }
 
-        if ($.subvaultParams.length == 0) {
-            revert ZeroLength();
-        }
-
         for (uint256 i = 0; i < $.subvaultParams.length; i++) {
-            if ($.subvaultParams[i].assets.length == 0) {
+            if (!$.emptyVault && $.subvaultParams[i].assets.length == 0) {
                 revert ZeroLength();
             }
-        }
-        for (uint256 i = 0; i < $.subvaultParams.length; i++) {
             for (uint256 j = 0; j < $.subvaultParams[i].assets.length; j++) {
                 bool found;
                 for (uint256 k = 0; k < $.allowedAssets.length; k++) {
@@ -286,6 +287,7 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
                 }
             }
         }
+
         if ($.allowedAssetsPrices.length != $.allowedAssets.length) {
             revert LengthMismatch();
         }
