@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/Create2.sol";
 import "forge-std/Script.sol";
 import "src/DeployVaultFactory.sol";
 import "src/DeployVaultFactoryRegistry.sol";
-import "src/OracleSubmitterFactory.sol";
+//import "src/OracleSubmitterFactory.sol";
 
 contract Deploy is Script {
     uint256 startSalt = 0;
@@ -19,8 +19,7 @@ contract Deploy is Script {
 
         address vaultConfigurator = 0x9B626C849eaBe8486DDFeb439c97d327447e5996;
         address verifierFactory = 0x10B98695aBeeC98FADaeE5155819434670936206;
-        address oracleSubmitterFactory =
-            _deployWithOptimalSalt("OracleSubmitterFactory", type(OracleSubmitterFactory).creationCode, "");
+        address oracleSubmitterFactory = 0x000000051CDb58AB93997745Fc58Ec873C1055e2;
 
         address registry =
             _deployWithOptimalSalt("DeployVaultFactoryRegistry", type(DeployVaultFactoryRegistry).creationCode, "");
@@ -31,7 +30,7 @@ contract Deploy is Script {
             abi.encode(vaultConfigurator, verifierFactory, oracleSubmitterFactory, registry)
         );
         vm.stopBroadcast();
-        revert("ok");
+        // revert("ok");
     }
 
     function _deployWithOptimalSalt(string memory title, bytes memory creationCode, bytes memory constructorParams)

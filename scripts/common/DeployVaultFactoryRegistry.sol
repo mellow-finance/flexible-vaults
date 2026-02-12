@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./interfaces/IDeployVaultFactory.sol";
-import "./interfaces/IDeployVaultFactoryRegistry.sol";
+import "../scripts/common/Permissions.sol";
+import "../scripts/common/interfaces/IDeployVaultFactory.sol";
+import "../scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
+import "../scripts/common/interfaces/IOracleSubmitterFactory.sol";
+
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
@@ -239,11 +242,6 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
             if ($.allowedAssets.length == 0) {
                 revert ZeroLength();
             }
-            for (uint256 i = 0; i < $.allowedAssets.length; i++) {
-                if ($.allowedAssets[i] == address(0)) {
-                    revert ZeroAddress();
-                }
-            }
             if ($.queues.length == 0) {
                 revert ZeroLength();
             }
@@ -251,22 +249,22 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
             if ($.subvaultParams.length == 0) {
                 revert ZeroLength();
             }
-        }
 
-        if ($.queueLimit < $.queues.length) {
-            revert LengthMismatch();
-        }
-
-        for (uint256 i = 0; i < $.queues.length; i++) {
-            bool found;
-            for (uint256 j = 0; j < $.allowedAssets.length; j++) {
-                if ($.queues[i].asset == $.allowedAssets[j]) {
-                    found = true;
-                    break;
-                }
+            if ($.queueLimit < $.queues.length) {
+                revert LengthMismatch();
             }
-            if (!found) {
-                revert AssetNotAllowed($.queues[i].asset);
+
+            for (uint256 i = 0; i < $.queues.length; i++) {
+                bool found;
+                for (uint256 j = 0; j < $.allowedAssets.length; j++) {
+                    if ($.queues[i].asset == $.allowedAssets[j]) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    revert AssetNotAllowed($.queues[i].asset);
+                }
             }
         }
 
@@ -292,6 +290,12 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
             revert LengthMismatch();
         }
 
+        for (uint256 i = 0; i < $.allowedAssets.length; i++) {
+            if ($.allowedAssets[i] == address(0)) {
+                revert ZeroAddress();
+            }
+        }
+        
         for (uint256 i = 0; i < $.allowedAssetsPrices.length; i++) {
             if ($.allowedAssetsPrices[i] == 0) {
                 revert ZeroValue();

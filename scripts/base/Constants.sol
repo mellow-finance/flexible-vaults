@@ -81,8 +81,8 @@ library Constants {
         OracleSubmitterFactory(0x000000051CDb58AB93997745Fc58Ec873C1055e2);
 
     DeployVaultFactoryRegistry public constant deployVaultFactoryRegistry =
-        DeployVaultFactoryRegistry(0x0000000385a4FfABd599bb9c90ce5Ca4D655F1bF);
+        DeployVaultFactoryRegistry(0x0000000B584a670D7C438165354304E09bC4C061);
 
     DeployVaultFactory public constant deployVaultFactory =
-        DeployVaultFactory(0x0000000773aE050a46935cE78aA6eE321aBe91b8);
+        DeployVaultFactory(0x000000049958f02B405F97A3181d3754d44c8CA2);
 }

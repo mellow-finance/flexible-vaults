@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "./Permissions.sol";
+import "../scripts/common/Permissions.sol";
+import "../scripts/common/interfaces/IDeployVaultFactory.sol";
+import "../scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
+import "../scripts/common/interfaces/IOracleSubmitterFactory.sol";
 
-import "./interfaces/IDeployVaultFactory.sol";
-import "./interfaces/IDeployVaultFactoryRegistry.sol";
-
-import "./interfaces/IOracleSubmitterFactory.sol";
-
-import {OracleSubmitter} from "../../src/oracles/OracleSubmitter.sol";
-import {Subvault} from "../../src/vaults/Subvault.sol";
-import {Vault} from "../../src/vaults/Vault.sol";
-import {VaultConfigurator} from "../../src/vaults/VaultConfigurator.sol";
+import {OracleSubmitter} from "./oracles/OracleSubmitter.sol";
+import {Subvault} from "./vaults/Subvault.sol";
+import {Vault} from "./vaults/Vault.sol";
+import {VaultConfigurator} from "./vaults/VaultConfigurator.sol";
 
 contract DeployVaultFactory is IDeployVaultFactory {
     event VaultDeployed(address indexed vault, address indexed deployer);
