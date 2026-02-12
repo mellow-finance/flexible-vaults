@@ -24,7 +24,7 @@ library MezoBridgeLibrary {
     struct Info {
         address curator;
         address dstSubvault;
-        string srcSubvaultName;
+        string dstSubvaultName;
         address[] assets;
         address bridge;
     }
@@ -113,7 +113,7 @@ library MezoBridgeLibrary {
                             "IMezoBridge(",
                             Strings.toHexString($.bridge),
                             ").bridgeTBTC(anyInt, subvault=",
-                            $.srcSubvaultName,
+                            $.dstSubvaultName,
                             ")"
                         )
                     ),
@@ -133,7 +133,7 @@ library MezoBridgeLibrary {
                             "asset=",
                             IERC20Metadata(asset).symbol(),
                             ", anyInt, subvault=",
-                            $.srcSubvaultName,
+                            $.dstSubvaultName,
                             ")"
                         )
                     ),
@@ -175,7 +175,7 @@ library MezoBridgeLibrary {
                     Call($.curator, $.bridge, 0, abi.encodeCall(IMezoBridge.bridgeTBTC, (1 ether, $.dstSubvault)), true);
 
                 tmp[i++] = Call(
-                    $.curator, $.bridge, 1 wei, abi.encodeCall(IMezoBridge.bridgeTBTC, (1 ether, $.dstSubvault)), true
+                    $.curator, $.bridge, 1 wei, abi.encodeCall(IMezoBridge.bridgeTBTC, (1 ether, $.dstSubvault)), false
                 );
 
                 tmp[i++] = Call(
@@ -222,7 +222,7 @@ library MezoBridgeLibrary {
                     $.bridge,
                     1 wei,
                     abi.encodeCall(IMezoBridge.bridgeERC20, (asset, 1 ether, $.dstSubvault)),
-                    true
+                    false
                 );
 
                 tmp[i++] = Call(
@@ -271,6 +271,7 @@ library MezoBridgeLibrary {
             }
             calls[index++] = tmp;
         }
+
         assembly {
             mstore(calls, index)
         }

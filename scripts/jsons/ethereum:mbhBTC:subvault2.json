@@ -1,0 +1,86 @@
+{
+  "title": "ethereum:mbhBTC:subvault2",
+  "merkle_root": "0x6540ea28ce977612da312227268a148b954ea6bd5bf218f7db307fec94aa6b4f",
+  "merkle_proofs": [
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IERC20(tBTC).approve(0xc1b8ed9cbf1b3a7a4c2b5e1ae7ff0d9cc1b0e8e6, anyInt)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+          "value": "0"
+        },
+        "innerParameters": {
+          "to": "0xc1b8ed9cbf1b3a7a4c2b5e1ae7ff0d9cc1b0e8e6",
+          "amount": "any"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae8c535ff4ffc4dc4452489dde35b52b5259c8a9523ed510e87bcc9af25eadffe000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbd5ff6a730175e5b468d7b02f144bf4d5e4fc676c85ec2bcb436890c2ba1de99"
+      ]
+    },
+    {
+      "verificationType": 3,
+      "description": {
+        "description": "IMezoBridge(0xc1b8ed9cbf1b3a7a4c2b5e1ae7ff0d9cc1b0e8e6).bridgeTBTC(anyInt, subvault=mezoSubvault0)",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            }
+          ],
+          "name": "bridgeTBTC",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        "parameters": {
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xc1b8ed9cbf1b3a7a4c2b5e1ae7ff0d9cc1b0e8e6",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "recipient": "0x26310e42d8de572a27acc6c8d77946968bac5e79"
+        }
+      },
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aec9d62ce9984431c6db1cff364e6de272850b433817938d15d9ec86dde06f27e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7d23741c2c0548bc22c1c44813ca60769de9e5d2b334cdbfd30f70e9cab98ce3"
+      ]
+    }
+  ]
+}

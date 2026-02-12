@@ -62,7 +62,7 @@ library mezoBTCLibrary {
     struct Info2 {
         address curator;
         address dstSubvault;
-        string srcSubvaultName;
+        string dstSubvaultName;
         address[] assets;
         address bridge;
     }
@@ -123,7 +123,7 @@ library mezoBTCLibrary {
         return MezoBridgeLibrary.Info({
             curator: $.curator,
             dstSubvault: $.dstSubvault,
-            srcSubvaultName: $.srcSubvaultName,
+            dstSubvaultName: $.dstSubvaultName,
             assets: $.assets,
             bridge: $.bridge
         });

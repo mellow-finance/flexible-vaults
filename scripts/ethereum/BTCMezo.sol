@@ -459,7 +459,7 @@ contract Deploy is DeployAbstractScript {
         mezoBTCLibrary.Info2 memory info = mezoBTCLibrary.Info2({
             curator: curator,
             dstSubvault: MEZO_SUBVAULT0_RECIPIENT,
-            srcSubvaultName: "subvault2",
+            dstSubvaultName: "mezoSubvault0",
             assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC)),
             bridge: Constants.MEZO_NATIVE_BRIDGE
         });
