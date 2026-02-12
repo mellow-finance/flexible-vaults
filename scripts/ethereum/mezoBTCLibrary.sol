@@ -23,6 +23,8 @@ import {IAllowanceTransfer, IPositionManagerV4} from "../common/interfaces/IPosi
 
 import {StateLibrary} from "../common/libraries/StateLibrary.sol";
 import {AngleDistributorLibrary} from "../common/protocols/AngleDistributorLibrary.sol";
+
+import {MezoBridgeLibrary} from "../common/protocols/MezoBridgeLibrary.sol";
 import {MorphoLibrary} from "../common/protocols/MorphoLibrary.sol";
 import {SwapModuleLibrary} from "../common/protocols/SwapModuleLibrary.sol";
 import {UniswapV3Library} from "../common/protocols/UniswapV3Library.sol";
@@ -55,6 +57,14 @@ library mezoBTCLibrary {
         address subvault;
         string subvaultName;
         address[] yieldBasisTokens;
+    }
+
+    struct Info2 {
+        address curator;
+        address dstSubvault;
+        string dstSubvaultName;
+        address[] assets;
+        address bridge;
     }
 
     function _getUniswapV3Params(Info0 memory $) internal pure returns (UniswapV3Library.Info memory) {
@@ -109,6 +119,16 @@ library mezoBTCLibrary {
         });
     }
 
+    function _getMezoBridgeParams(Info2 memory $) internal pure returns (MezoBridgeLibrary.Info memory) {
+        return MezoBridgeLibrary.Info({
+            curator: $.curator,
+            dstSubvault: $.dstSubvault,
+            dstSubvaultName: $.dstSubvaultName,
+            assets: $.assets,
+            bridge: $.bridge
+        });
+    }
+
     function getBTCSubvault0Data(Info0 memory $)
         internal
         view
@@ -137,6 +157,21 @@ library mezoBTCLibrary {
         (merkleRoot, leaves) = _getBTCSubvault1Proofs($);
         descriptions = _getBTCSubvault1Descriptions($);
         calls = _getBTCSubvault1Calls($, leaves);
+    }
+
+    function getBTCSubvault2Data(Info2 memory $)
+        internal
+        view
+        returns (
+            bytes32 merkleRoot,
+            IVerifier.VerificationPayload[] memory leaves,
+            string[] memory descriptions,
+            SubvaultCalls memory calls
+        )
+    {
+        (merkleRoot, leaves) = _getBTCSubvault2Proofs($);
+        descriptions = _getBTCSubvault2Descriptions($);
+        calls = _getBTCSubvault2Calls($, leaves);
     }
 
     /*--------------------------------------------------------------------------------------
@@ -262,6 +297,60 @@ library mezoBTCLibrary {
 
         // yieldBasis calls
         iterator = calls_.insert(YieldBasisLibrary.getYieldBasisCalls(_getYieldBasisParams($)), iterator);
+
+        assembly {
+            mstore(calls_, iterator)
+        }
+
+        calls.calls = calls_;
+    }
+
+    /*----------------------------------------------------------------------------
+                            Subvault 2 (Mezo Bridge)                             
+    ----------------------------------------------------------------------------*/
+    function _getBTCSubvault2Proofs(Info2 memory $)
+        private
+        view
+        returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
+    {
+        BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
+        leaves = new IVerifier.VerificationPayload[](100);
+        uint256 iterator = 0;
+
+        // mezo bridge proofs
+        iterator =
+            leaves.insert(MezoBridgeLibrary.getMezoBridgeProofs(bitmaskVerifier, _getMezoBridgeParams($)), iterator);
+
+        assembly {
+            mstore(leaves, iterator)
+        }
+
+        return ProofLibrary.generateMerkleProofs(leaves);
+    }
+
+    function _getBTCSubvault2Descriptions(Info2 memory $) private view returns (string[] memory descriptions) {
+        descriptions = new string[](100);
+        uint256 iterator = 0;
+
+        // mezo bridge descriptions
+        iterator = descriptions.insert(MezoBridgeLibrary.getMezoBridgeDescriptions(_getMezoBridgeParams($)), iterator);
+
+        assembly {
+            mstore(descriptions, iterator)
+        }
+    }
+
+    function _getBTCSubvault2Calls(Info2 memory $, IVerifier.VerificationPayload[] memory leaves)
+        private
+        view
+        returns (SubvaultCalls memory calls)
+    {
+        calls.payloads = leaves;
+        Call[][] memory calls_ = new Call[][](100);
+        uint256 iterator = 0;
+
+        // mezo bridge calls
+        iterator = calls_.insert(MezoBridgeLibrary.getMezoBridgeCalls(_getMezoBridgeParams($)), iterator);
 
         assembly {
             mstore(calls_, iterator)
