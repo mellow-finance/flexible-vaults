@@ -20,9 +20,9 @@ contract Deploy is DeployAbstractScript {
     bytes25[] uniswapV4Pools;
     bytes32 constant ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
 
+    address constant MEZO_SUBVAULT0_RECIPIENT = 0x26310E42d8DE572a27Acc6C8D77946968baC5E79;
+
     function run() external {
-        checkVerifyCalls();
-        return;
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         deployVault = Constants.deployVaultFactory;
@@ -50,7 +50,7 @@ contract Deploy is DeployAbstractScript {
         {
             //vm.startBroadcast(deployerPk);
             //address verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            //console2.log("mbhBTC subvault1 Verifier deployed at:", verifier);
+            //console2.log("mbhBTC subvault2 Verifier deployed at:", verifier);
             //vm.stopBroadcast();
 
             // mbhBTC subvault1 Verifier deployed at: 0xb09918d0D0eFfE817F80FB8A9C2851fF53D52f7A
@@ -61,7 +61,7 @@ contract Deploy is DeployAbstractScript {
             // vm.stopPrank();
         }
 
-        getSubvaultMerkleRoot(0);
+        getSubvaultMerkleRoot(2);
         //_run();
         revert("ok");
     }
@@ -172,7 +172,7 @@ contract Deploy is DeployAbstractScript {
         vaultSymbol = "mbhBTC";
 
         /// @dev fill admin/operational addresses
-        proxyAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
+        proxyAdmin = 0xb7b2ee53731Fc80080ED2906431e08452BC58786; //old - 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
         lazyVaultAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
         activeVaultAdmin = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3
         oracleUpdater = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33; // 1/1 msig 0xF6edb1385eC1A61c33B9e8dcc348497dCceabE8D
@@ -354,6 +354,8 @@ contract Deploy is DeployAbstractScript {
             (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault0MerkleRoot(address(subvault));
         } else if (index == 1) {
             (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault1MerkleRoot(address(subvault));
+        } else if (index == 2) {
+            (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault2MerkleRoot(address(subvault));
         } else {
             revert("Invalid subvault index");
         }
@@ -442,6 +444,30 @@ contract Deploy is DeployAbstractScript {
 
         (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault1Data(info);
         jsonSubvaultName = "ethereum:mbhBTC:subvault1";
+    }
+
+    function _getSubvault2MerkleRoot(address subvault)
+        private
+        returns (
+            bytes32 merkleRoot,
+            IVerifier.VerificationPayload[] memory leaves,
+            string[] memory descriptions,
+            SubvaultCalls memory calls,
+            string memory jsonSubvaultName
+        )
+    {
+        mezoBTCLibrary.Info2 memory info = mezoBTCLibrary.Info2({
+            curator: curator,
+            dstSubvault: MEZO_SUBVAULT0_RECIPIENT,
+            srcSubvaultName: "subvault2",
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC)),
+            bridge: Constants.MEZO_NATIVE_BRIDGE
+        });
+
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault2Data(info);
+        jsonSubvaultName = "ethereum:mbhBTC:subvault2";
     }
 
     function _deploySwapModule(address subvault, address[] memory actors, bytes32[] memory permissions)
