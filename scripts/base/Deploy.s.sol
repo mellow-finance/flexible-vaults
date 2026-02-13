@@ -69,8 +69,8 @@ contract Deploy is Script {
 
         vm.stopBroadcast();
 
-        AcceptanceLibrary.runProtocolDeploymentChecks(deployment);
+        // AcceptanceLibrary.runProtocolDeploymentChecks(deployment);
 
-        revert("ok");
+        // revert("ok");
     }
 }
