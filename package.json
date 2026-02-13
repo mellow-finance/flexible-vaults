@@ -55,6 +55,7 @@
     "deploy:rootstock": "forge script ./scripts/rootstock/Deploy.s.sol:Deploy --fork-url $(grep RSK_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier blockscout --verifier-url https://rootstock.blockscout.com/api",
     "deploy:rootstock:tyrrbtc": "forge script ./scripts/rootstock/tyr.rBTC.s.sol:Deploy -vvvv --fork-url $(grep RSK_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier blockscout --verifier-url https://rootstock.blockscout.com/api",
     "deploy:rootstock:collector": "forge script ./scripts/collectors/Deploy.s.sol:Deploy --fork-url $(grep RSK_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --verifier blockscout --verifier-url https://rootstock.blockscout.com/api",
+    "deploy:hyper": "forge script ./scripts/hyper/Deploy.s.sol:Deploy --fork-url $(grep HYPE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --gas-limit 10000000000000000 --verify --verifier custom --verifier-url https://api.explorer.hyper.org/api",
     "test": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base",
     "test:ci": "yarn test:base --deny-warnings --no-match-test .*_NO_CI",
     "test:univ4": "forge script ./scripts/ethereum/test/TestUniswapV4.sol:TestUniswapV4 --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --fork-block-number 24368924",
