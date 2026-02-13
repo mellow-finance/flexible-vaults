@@ -8,14 +8,16 @@ import {IWETH as WETHInterface} from "../common/interfaces/IWETH.sol";
 import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
 import "../common/interfaces/Imports.sol";
 
-import "./strETHLibrary.sol";
-import "./tqETHLibrary.sol";
-
 library Constants {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
     address public constant BTC = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
+    address public constant mcbBTC = 0x6a7CD8E1384d49f502b4A4CE9aC9eb320835c5d7;
+    address public constant mUSDC = 0x04671C72Aab5AC02A03c1098314b1BB6B560c197;
+    address public constant mUSDT = 0xeB5a5d39dE4Ea42C2Aa6A57EcA2894376683bB8E;
+    address public constant mUSDe = 0xdf6542260a9F768f07030E4895083F804241F4C4;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
@@ -48,9 +50,9 @@ library Constants {
             swapModuleFactory: Factory(address(0)),
             consensusImplementation: Consensus(0x000000083a1bE8Aa2Aa5fB244c84A6E410e6ce24),
             depositQueueImplementation: DepositQueue(payable(0x0000000518eC830D8C3da6056b34A0dfBF9e924d)),
-            syncDepositQueueImplementation: DepositQueue(payable(address(0x0000000B813e85943D42c5187efAb487E12e1485))),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(address(0x0000000B813e85943D42c5187efAb487E12e1485))),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000006A03A937E4B316F02a5130e4FB0B22Dea)),
-            redeemQueueImplementation: RedeemQueue(payable(0x00000000d06959064b28a46970497923f8834B16)),
+            redeemQueueImplementation: RedeemQueue(payable(0x0000000B04E01e31715f4137D664aB402268B9d0)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x000000004a3F4ff856e7cb47A0ae8aDe6d133cFB)),
             feeManagerImplementation: FeeManager(0x0000000df5Cff487723b8D8c58eD5C336d8a2317),
             oracleImplementation: Oracle(0x0000000C705B7C7485F62Bc1DF7554fD6EB6C602),
@@ -77,8 +79,8 @@ library Constants {
         OracleSubmitterFactory(0x00000007AA9Bd15F538a2d1D68A2aCFE8D09BFd0);
 
     DeployVaultFactoryRegistry public constant deployVaultFactoryRegistry =
-        DeployVaultFactoryRegistry(0x000000020893B447c2c13E4A8e5abCF5E7c09AeA);
+        DeployVaultFactoryRegistry(0x00000002650310C073F90341C2C272aF5C56e292);
 
     DeployVaultFactory public constant deployVaultFactory =
-        DeployVaultFactory(0x0000000bd67D6538614668EFe27aF3f17A3031dd);
+        DeployVaultFactory(0x000000007f271A7C5E6C928B7998efc3b8Dbc5EF);
 }

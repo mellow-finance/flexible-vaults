@@ -158,6 +158,8 @@ library Constants {
     address public constant YIELD_BASIS_WBTC_TOKEN = 0xfBF3C16676055776Ab9B286492D8f13e30e2E763;
     address public constant YIELD_BASIS_CBBTC_TOKEN = 0xAC0cfa7742069a8af0c63e14FFD0fe6b3e1Bf8D2;
 
+    address public constant MEZO_NATIVE_BRIDGE = 0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,

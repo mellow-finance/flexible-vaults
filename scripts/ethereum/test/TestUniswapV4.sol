@@ -6,11 +6,12 @@ import {IAllowanceTransfer, IPositionManagerV4} from "../../common/interfaces/IP
 import "../../common/libraries/LiquidityAmounts.sol";
 import {PositionInfoLibrary} from "../../common/libraries/PositionInfoLibrary.sol";
 
+import "../../common/UniswapV4UnlockDataGenerator.sol";
 import {StateLibrary} from "../../common/libraries/StateLibrary.sol";
 import {TickMath} from "../../common/libraries/TickMath.sol";
 import "../Constants.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Script} from "forge-std/Script.sol";
+
 import "forge-std/Test.sol";
 
 contract Mock is Script {
@@ -105,34 +106,6 @@ contract Mock is Script {
             abi.encode(actions, params), block.timestamp + 1 hours
         );
     }
-
-    function getIncreaseLiquidityUnlockData(uint256 tokenId, uint256 amount0Max, uint256 amount1Max)
-        public
-        view
-        returns (bytes memory)
-    {
-        (IPositionManagerV4.PoolKey memory poolKey, uint256 info) =
-            IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).getPoolAndPositionInfo(tokenId);
-        (uint160 sqrtRatioX96,,,) = StateLibrary.getSlot0(
-            IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).poolManager(), StateLibrary.toId(poolKey)
-        );
-
-        bytes[] memory params = new bytes[](2);
-        bytes memory actions = abi.encodePacked(uint8(0x00), uint8(0x0d)); // increase, settle
-
-        uint160 sqrtRatioAX96 = TickMath.getSqrtRatioAtTick(PositionInfoLibrary.tickLower(info));
-        uint160 sqrtRatioBX96 = TickMath.getSqrtRatioAtTick(PositionInfoLibrary.tickUpper(info));
-
-        uint128 liquidity = LiquidityAmounts.getMaxLiquidityForAmounts(
-            sqrtRatioX96, sqrtRatioAX96, sqrtRatioBX96, amount0Max, amount1Max
-        );
-
-        // tokenId, liquidity, amount0Max, amount1Max, hookData
-        params[0] = abi.encode(tokenId, liquidity * 9 / 10, amount0Max, amount1Max, ""); // increaseLiquidity params
-        params[1] = abi.encode(poolKey.currency0, poolKey.currency1); // settle params
-
-        return abi.encode(actions, params);
-    }
 }
 
 contract TestUniswapV4 is Script {
@@ -140,18 +113,25 @@ contract TestUniswapV4 is Script {
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        vm.startBroadcast(deployerPk);
+        UniswapV4UnlockDataGenerator mock = new UniswapV4UnlockDataGenerator();
+        vm.stopBroadcast();
         address user = vm.addr(deployerPk);
         vm.startPrank(user);
-        Mock mock = new Mock();
-        //console.logBytes(mock.getIncreaseLiquidityUnlockData(143331, 1e6, 1e6));
-        //revert("ok");
 
-        IERC20(Constants.USDC).safeTransfer(address(mock), IERC20(Constants.USDC).balanceOf(user));
+        mock.getIncreaseLiquidityUnlockData(143332, 1e18 / 1000, 1e8 / 1000, 1000);
+        mock.getIncreaseLiquidityUnlockDataCustom(143332, 1e18 / 1000, 1e8 / 1000, 1e18);
+        mock.getDecreaseLiquidityUnlockData(143332, 1000000, 0, 0, 1000, 0xC22642ad548183aFbe389dc667d698C60f3D9a22);
+        mock.getDecreaseLiquidityUnlockData(143332, 0, 0, 0, 1000, 0xC22642ad548183aFbe389dc667d698C60f3D9a22);
+        mock.getDecreaseLiquidityUnlockDataCustom(143332, 1000000, 0, 0, 0xC22642ad548183aFbe389dc667d698C60f3D9a22);
+        revert("ok");
+
+        /* IERC20(Constants.USDC).safeTransfer(address(mock), IERC20(Constants.USDC).balanceOf(user));
         IERC20(Constants.USDT).safeTransfer(address(mock), IERC20(Constants.USDT).balanceOf(user));
         uint256 tokenId = mock.mint();
         mock.increaseLiquidity(tokenId);
         mock.decreaseLiquidity(tokenId);
         mock.collect(tokenId);
-        vm.stopPrank();
+        vm.stopPrank(); */
     }
 }

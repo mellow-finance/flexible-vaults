@@ -81,21 +81,24 @@ contract DeployVaultFactory is IDeployVaultFactory {
         }
 
         DeployVaultConfig memory $ = registry_.getDeployVaultConfig(address(vault));
-        address baseAsset = $.allowedAssets[0];
+        IFeeManager feeManager = vault.feeManager();
+        IOracle oracle = vault.oracle();
 
-        if (baseAsset == address(0)) {
-            revert NotYetDeployed();
+        address baseAsset;
+        if (!$.emptyVault) {
+            baseAsset = $.allowedAssets[0];
+
+            if (baseAsset == address(0)) {
+                revert NotYetDeployed();
+            }
+            feeManager.setBaseAsset(address(vault), baseAsset);
         }
 
         if (deployer != registry_.getVaultDeployer(address(vault))) {
             revert Forbidden();
         }
 
-        IFeeManager feeManager = vault.feeManager();
-        IOracle oracle = vault.oracle();
-
         // fee manager setup
-        feeManager.setBaseAsset(address(vault), baseAsset);
         Ownable(address(feeManager)).transferOwnership($.feeManagerParams.owner);
 
         // create all queues

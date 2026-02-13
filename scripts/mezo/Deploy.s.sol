@@ -46,10 +46,12 @@ contract Deploy is Script {
         vm.startBroadcast(deployerPk);
 
         address proxyAdmin = 0xAFfAE6697Ca8B35f397FA2993B03cD9F506DdD17;
-        deployBase(deployer, proxyAdmin);
+        //deployBase(deployer, proxyAdmin);
         vm.stopBroadcast();
         //revert("ok");
     }
+
+    function deployDeployFactory() internal {}
 
     function _findOptSalt(uint256 startSalt_, bytes memory creationCode, bytes memory constructorParams)
         internal

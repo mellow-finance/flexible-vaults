@@ -46,6 +46,7 @@ import "../../../src/accounts/MellowAccountV1.sol";
 
 import "../../../scripts/common/DeployVaultFactory.sol";
 import "../../../scripts/common/DeployVaultFactoryRegistry.sol";
+import "../../../scripts/common/OracleSubmitterFactory.sol";
 import "../../../src/utils/SwapModule.sol";
 
 import {ProtocolDeployment} from "../ProtocolDeploymentLibrary.sol";
