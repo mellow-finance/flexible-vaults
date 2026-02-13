@@ -154,7 +154,7 @@ abstract contract DeployAbstractScript is Test {
      */
     function stepOne(IDeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
         vault = deployVault.deployVault(config);
-        console2.log("Deployed vault at:", address(vault));
+        console.log("Deployed vault at:", address(vault));
     }
 
     /*
@@ -306,35 +306,35 @@ abstract contract DeployAbstractScript is Test {
 
     function logDeployment(address vault) internal view {
         IDeployVaultFactoryRegistry.VaultDeployment memory deployment = deployVault.registry().getVaultDeployment(vault);
-        console2.log("-------------------------------------------------------------");
-        console2.log("Deployment details %s (%s) chain ID %s", vaultName, vaultSymbol, block.chainid);
-        console2.log("-------------------------------------------------------------");
-        console2.log("Vault              %s", vault);
+        console.log("-------------------------------------------------------------");
+        console.log("Deployment details %s (%s) chain ID %s", vaultName, vaultSymbol, block.chainid);
+        console.log("-------------------------------------------------------------");
+        console.log("Vault              %s", vault);
         for (uint256 i = 0; i < deployment.subvaults.length; i++) {
-            console2.log("  |--Subvault #%s   %s", i, address(deployment.subvaults[i]));
-            console2.log("    |--Verifier    %s", address(deployment.verifiers[i]));
+            console.log("  |--Subvault #%s   %s", i, address(deployment.subvaults[i]));
+            console.log("    |--Verifier    %s", address(deployment.verifiers[i]));
         }
-        console2.log("Oracle             %s", address(deployment.oracle));
-        console2.log("ShareManager       %s", address(deployment.shareManager));
-        console2.log("FeeManager         %s", address(deployment.feeManager));
-        console2.log("RiskManager        %s", address(deployment.riskManager));
-        console2.log("TimelockController %s", address(deployment.timelockController));
-        console2.log("-------------------------------------------------------------");
+        console.log("Oracle             %s", address(deployment.oracle));
+        console.log("ShareManager       %s", address(deployment.shareManager));
+        console.log("FeeManager         %s", address(deployment.feeManager));
+        console.log("RiskManager        %s", address(deployment.riskManager));
+        console.log("TimelockController %s", address(deployment.timelockController));
+        console.log("-------------------------------------------------------------");
         for (uint256 i = 0; i < deployment.depositQueues.length; i++) {
-            console2.log(
+            console.log(
                 "DepositQueue       %s (%s)",
                 address(deployment.depositQueues[i]),
                 getSymbol(IQueue(deployment.depositQueues[i]).asset())
             );
         }
         for (uint256 i = 0; i < deployment.redeemQueues.length; i++) {
-            console2.log(
+            console.log(
                 "RedeemQueue        %s (%s)",
                 address(deployment.redeemQueues[i]),
                 getSymbol(IQueue(deployment.redeemQueues[i]).asset())
             );
         }
-        console2.log("-------------------------------------------------------------");
+        console.log("-------------------------------------------------------------");
     }
 
     function getSymbol(address token) internal view returns (string memory) {

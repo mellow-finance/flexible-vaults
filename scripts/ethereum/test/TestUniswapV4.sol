@@ -70,7 +70,7 @@ contract Mock is Script {
         IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).modifyLiquidities(
             abi.encode(actions, params), block.timestamp + 1 hours
         );
-        console2.logBytes(abi.encode(actions, params));
+        console.logBytes(abi.encode(actions, params));
     }
 
     function decreaseLiquidity(uint256 tokenId) external {
@@ -143,7 +143,7 @@ contract TestUniswapV4 is Script {
         address user = vm.addr(deployerPk);
         vm.startPrank(user);
         Mock mock = new Mock();
-        //console2.logBytes(mock.getIncreaseLiquidityUnlockData(143331, 1e6, 1e6));
+        //console.logBytes(mock.getIncreaseLiquidityUnlockData(143331, 1e6, 1e6));
         //revert("ok");
 
         IERC20(Constants.USDC).safeTransfer(address(mock), IERC20(Constants.USDC).balanceOf(user));

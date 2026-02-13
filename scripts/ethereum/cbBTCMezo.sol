@@ -44,7 +44,7 @@ contract Deploy is DeployAbstractScript {
         {
             // vm.startBroadcast(deployerPk);
             // address verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            // console2.log("mbhcbBTC subvault1 Verifier deployed at:", verifier);
+            // console.log("mbhcbBTC subvault1 Verifier deployed at:", verifier);
             // vm.stopBroadcast();
             // mbhcbBTC subvault1 Verifier deployed at: 0x577A106ABc361772fC825723A7CdfafDbb596ed1
             // address verifier = 0x577A106ABc361772fC825723A7CdfafDbb596ed1;
@@ -104,8 +104,8 @@ contract Deploy is DeployAbstractScript {
         admin.transferOwnership(newProxyAdmin);
         vm.stopPrank();
         assertEq(admin.owner(), newProxyAdmin, "Unexpected new ProxyAdmin");
-        console2.log("ProxyAdmin %s of proxy %s (%s)", address(admin), proxy, name);
-        console2.logBytes(abi.encodeCall(Ownable.transferOwnership, (newProxyAdmin)));
+        console.log("ProxyAdmin %s of proxy %s (%s)", address(admin), proxy, name);
+        console.logBytes(abi.encodeCall(Ownable.transferOwnership, (newProxyAdmin)));
     }
 
     function deposit(address asset, address queue) internal {
@@ -398,7 +398,7 @@ contract Deploy is DeployAbstractScript {
         swapModule = swapModuleFactory.create(
             0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
         );
-        console2.log("Deployed SwapModule at", swapModule);
+        console.log("Deployed SwapModule at", swapModule);
         vm.stopBroadcast();
         return swapModule;
     }

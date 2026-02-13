@@ -31,7 +31,7 @@ contract Deploy is Script {
         address instance = IF(0x0000000000FFe8B47B3e2130213B802212439497).safeCreate2(
             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a31f80ea8ecdc2d1140a0f00c0, bytecode
         );
-        console2.log("SyncDepositQueue: %s", instance);
+        console.log("SyncDepositQueue: %s", instance);
 
         vm.stopBroadcast();
         // revert("ok");

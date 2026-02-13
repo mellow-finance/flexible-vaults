@@ -39,7 +39,7 @@ contract Deploy is Script {
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
-        console2.log("Deployer: %s", deployer);
+        console.log("Deployer: %s", deployer);
 
         vm.startBroadcast(deployerPk);
 
@@ -83,7 +83,7 @@ contract Deploy is Script {
         bytes32 salt = bytes32(salts[saltIterator++]);
 
         a = Create2.deploy(0, salt, abi.encodePacked(creationCode, constructorParams));
-        console2.log("%s: %s", title, a);
+        console.log("%s: %s", title, a);
     }
 
     function deployMonad(address deployer, address proxyAdmin) public returns (Deployment memory $) {
@@ -112,7 +112,7 @@ contract Deploy is Script {
 
         {
             $.consensusFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("Consensus factory: %s", address($.consensusFactory));
+            console.log("Consensus factory: %s", address($.consensusFactory));
             {
                 address implementation = _deployWithOptimalSalt(
                     "Consensus implementation",
@@ -127,7 +127,7 @@ contract Deploy is Script {
 
         {
             $.depositQueueFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("DepositQueue factory: %s", address($.depositQueueFactory));
+            console.log("DepositQueue factory: %s", address($.depositQueueFactory));
             {
                 address implementation = _deployWithOptimalSalt(
                     "DepositQueue implementation",
@@ -151,7 +151,7 @@ contract Deploy is Script {
 
         {
             $.feeManagerFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("FeeManager factory: %s", address($.feeManagerFactory));
+            console.log("FeeManager factory: %s", address($.feeManagerFactory));
             address implementation = _deployWithOptimalSalt(
                 "FeeManager implementation",
                 type(FeeManager).creationCode,
@@ -164,7 +164,7 @@ contract Deploy is Script {
 
         {
             $.oracleFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("Oracle factory: %s", address($.oracleFactory));
+            console.log("Oracle factory: %s", address($.oracleFactory));
             address implementation = _deployWithOptimalSalt(
                 "Oracle implementation", type(Oracle).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
             );
@@ -175,7 +175,7 @@ contract Deploy is Script {
 
         {
             $.redeemQueueFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("RedeemQueue factory: %s", address($.redeemQueueFactory));
+            console.log("RedeemQueue factory: %s", address($.redeemQueueFactory));
             {
                 address implementation = _deployWithOptimalSalt(
                     "RedeemQueue implementation",
@@ -199,7 +199,7 @@ contract Deploy is Script {
 
         {
             $.riskManagerFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("RiskManager factory: %s", address($.riskManagerFactory));
+            console.log("RiskManager factory: %s", address($.riskManagerFactory));
             address implementation = _deployWithOptimalSalt(
                 "RiskManager implementation",
                 type(RiskManager).creationCode,
@@ -212,7 +212,7 @@ contract Deploy is Script {
 
         {
             $.shareManagerFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("ShareManager factory: %s", address($.shareManagerFactory));
+            console.log("ShareManager factory: %s", address($.shareManagerFactory));
             {
                 address implementation = _deployWithOptimalSalt(
                     "TokenizedShareManager implementation",
@@ -236,7 +236,7 @@ contract Deploy is Script {
 
         {
             $.subvaultFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("Subvault factory: %s", address($.subvaultFactory));
+            console.log("Subvault factory: %s", address($.subvaultFactory));
             address implementation = _deployWithOptimalSalt(
                 "Subvault implementation", type(Subvault).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
             );
@@ -247,7 +247,7 @@ contract Deploy is Script {
 
         {
             $.verifierFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("Verifier factory: %s", address($.verifierFactory));
+            console.log("Verifier factory: %s", address($.verifierFactory));
             address implementation = _deployWithOptimalSalt(
                 "Verifier implementation", type(Verifier).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
             );
@@ -258,7 +258,7 @@ contract Deploy is Script {
 
         {
             $.vaultFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("Vault factory: %s", address($.vaultFactory));
+            console.log("Vault factory: %s", address($.vaultFactory));
             address implementation = _deployWithOptimalSalt(
                 "Vault implementation",
                 type(Vault).creationCode,
@@ -281,7 +281,7 @@ contract Deploy is Script {
 
         {
             $.erc20VerifierFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
-            console2.log("ERC20Verifier factory: %s", address($.erc20VerifierFactory));
+            console.log("ERC20Verifier factory: %s", address($.erc20VerifierFactory));
             address implementation = _deployWithOptimalSalt(
                 "ERC20Verifier", type(ERC20Verifier).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
             );

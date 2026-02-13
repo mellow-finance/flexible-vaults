@@ -21,7 +21,7 @@ contract Deploy is Script {
         );
         vm.stopBroadcast();
 
-        console2.log("DeployVaultFactoryRegistry deployed at:", address(registry));
-        console2.log("        DeployVaultFactory deployed at:", address(deployVaultFactory));
+        console.log("DeployVaultFactoryRegistry deployed at:", address(registry));
+        console.log("        DeployVaultFactory deployed at:", address(deployVaultFactory));
     }
 }
