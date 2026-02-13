@@ -212,7 +212,7 @@ contract Deploy is DeployAbstractScript {
                 lazyVaultAdmin, subvault, address(0), /* Constants.AAVE_V3_ORACLE */ 0.995e8, actors, permissions
             )
         );
-        console2.log("Deployed SwapModule at", swapModule);
+        console.log("Deployed SwapModule at", swapModule);
         vm.stopBroadcast();
         return swapModule;
     }

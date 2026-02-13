@@ -125,15 +125,15 @@ contract Deploy is Script, Test {
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
         vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
-        console2.log("Vault %s", address(vault));
+        console.log("Vault %s", address(vault));
 
         for (uint256 i = 0; i < vault.subvaults(); i++) {
             address subvault = vault.subvaultAt(i);
-            console2.log("Subvault %s %s", i, subvault);
-            console2.log("Verifier %s %s", i, address(IVerifierModule(subvault).verifier()));
+            console.log("Subvault %s %s", i, subvault);
+            console.log("Verifier %s %s", i, address(IVerifierModule(subvault).verifier()));
         }
 
-        console2.log("Timelock controller:", address(timelockController));
+        console.log("Timelock controller:", address(timelockController));
 
         vm.stopBroadcast();
         ProtocolDeployment memory protocolDeployment = Constants.protocolDeployment();

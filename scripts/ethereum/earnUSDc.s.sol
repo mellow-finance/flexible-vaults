@@ -65,24 +65,24 @@ contract Deploy is Script, Test {
             timelockController = new TimelockController(0, proposers, executors, lazyVaultAdmin);
         }
 
-        console2.log("------------------------------------");
-        console2.log("%s (%s)", name, symbol);
-        console2.log("------------------------------------");
-        console2.log("Actors:");
-        console2.log("------------------------------------");
-        console2.log("ProxyAdmin", proxyAdmin);
-        console2.log("LazyAdmin", lazyVaultAdmin);
+        console.log("------------------------------------");
+        console.log("%s (%s)", name, symbol);
+        console.log("------------------------------------");
+        console.log("Actors:");
+        console.log("------------------------------------");
+        console.log("ProxyAdmin", proxyAdmin);
+        console.log("LazyAdmin", lazyVaultAdmin);
 
-        console2.log("OracleUpdater", oracleUpdater);
-        console2.log("OracleAccepter", oracleAccepter);
-        console2.log("Treasury", treasury);
+        console.log("OracleUpdater", oracleUpdater);
+        console.log("OracleAccepter", oracleAccepter);
+        console.log("Treasury", treasury);
 
-        console2.log("LidoPauser", lidoPauser);
-        console2.log("MellowPauser", mellowPauser);
+        console.log("LidoPauser", lidoPauser);
+        console.log("MellowPauser", mellowPauser);
 
-        console2.log("------------------------------------");
-        console2.log("Addresses:");
-        console2.log("------------------------------------");
+        console.log("------------------------------------");
+        console.log("Addresses:");
+        console.log("------------------------------------");
 
         {
             uint256 i = 0;
@@ -222,7 +222,7 @@ contract Deploy is Script, Test {
 
         vault.renounceRole(Permissions.CREATE_QUEUE_ROLE, deployer);
 
-        console2.log("Vault %s", address(vault));
+        console.log("Vault %s", address(vault));
 
         for (uint256 i = 0; i < vault.getAssetCount(); i++) {
             address asset = vault.assetAt(i);
@@ -231,27 +231,27 @@ contract Deploy is Script, Test {
                 address queue = vault.queueAt(asset, j);
                 if (vault.isDepositQueue(queue)) {
                     try SyncDepositQueue(queue).name() returns (string memory) {
-                        console2.log("SyncDepositQueue (%s): %s", symbol_, queue);
+                        console.log("SyncDepositQueue (%s): %s", symbol_, queue);
                     } catch {
-                        console2.log("DepositQueue (%s): %s", symbol_, queue);
+                        console.log("DepositQueue (%s): %s", symbol_, queue);
                     }
                 } else {
-                    console2.log("RedeemQueue (%s): %s", symbol_, queue);
+                    console.log("RedeemQueue (%s): %s", symbol_, queue);
                 }
             }
         }
 
-        console2.log("Oracle %s", address(vault.oracle()));
-        console2.log("ShareManager %s", address(vault.shareManager()));
-        console2.log("FeeManager %s", address(vault.feeManager()));
-        console2.log("RiskManager %s", address(vault.riskManager()));
+        console.log("Oracle %s", address(vault.oracle()));
+        console.log("ShareManager %s", address(vault.shareManager()));
+        console.log("FeeManager %s", address(vault.feeManager()));
+        console.log("RiskManager %s", address(vault.riskManager()));
 
         for (uint256 i = 0; i < vault.subvaults(); i++) {
             address subvault = vault.subvaultAt(i);
-            console2.log("Subvault %s %s", i, subvault);
-            console2.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
+            console.log("Subvault %s %s", i, subvault);
+            console.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
         }
-        console2.log("Timelock controller:", address(timelockController));
+        console.log("Timelock controller:", address(timelockController));
 
         OracleSubmitter oracleSubmitter =
             new OracleSubmitter(deployer, oracleUpdater, oracleAccepter, address(vault.oracle()));
@@ -263,7 +263,7 @@ contract Deploy is Script, Test {
         vault.grantRole(Permissions.ACCEPT_REPORT_ROLE, address(oracleSubmitter));
         vault.renounceRole(Permissions.DEFAULT_ADMIN_ROLE, deployer);
 
-        console2.log("OracleSubmitter: %s", address(oracleSubmitter));
+        console.log("OracleSubmitter: %s", address(oracleSubmitter));
 
         {
             IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);

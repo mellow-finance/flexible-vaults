@@ -70,7 +70,7 @@ contract Deploy is Script {
         Collector Impl = new Collector();
         Collector collector = Collector(payable(new TransparentUpgradeableProxy(address(Impl), deployer, new bytes(0))));
         collector.initialize(deployer, address(oracle));
-        console2.log("Collector", address(collector));
+        console.log("Collector", address(collector));
 
         tokenOracles = new PriceOracle.TokenOracle[](1);
         tokenOracles[0] = PriceOracle.TokenOracle({constValue: 1e18 * Q96, oracle: address(0)}); // USD

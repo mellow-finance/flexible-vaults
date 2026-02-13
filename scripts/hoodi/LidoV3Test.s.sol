@@ -222,24 +222,24 @@ contract Deploy is Script, Test {
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
-        console2.log("Vault %s", address(vault));
+        console.log("Vault %s", address(vault));
 
-        console2.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
-        console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
-        console2.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
-        console2.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
+        console.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
+        console.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
+        console.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
+        console.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
 
-        console2.log("Oracle %s", address(vault.oracle()));
-        console2.log("ShareManager %s", address(vault.shareManager()));
-        console2.log("FeeManager %s", address(vault.feeManager()));
-        console2.log("RiskManager %s", address(vault.riskManager()));
+        console.log("Oracle %s", address(vault.oracle()));
+        console.log("ShareManager %s", address(vault.shareManager()));
+        console.log("FeeManager %s", address(vault.feeManager()));
+        console.log("RiskManager %s", address(vault.riskManager()));
 
         for (uint256 i = 0; i < vault.subvaults(); i++) {
             address subvault = vault.subvaultAt(i);
-            console2.log("Subvault %s %s", i, subvault);
-            console2.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
+            console.log("Subvault %s %s", i, subvault);
+            console.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
         }
-        console2.log("Timelock controller:", address(timelockController));
+        console.log("Timelock controller:", address(timelockController));
 
         {
             IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);
@@ -349,7 +349,7 @@ contract Deploy is Script, Test {
         internal
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {
-        console2.log("LidoV3 Dashboard 0: %s", dashboard);
+        console.log("LidoV3 Dashboard 0: %s", dashboard);
         string[] memory descriptions = LidoV3TestLibrary.getSubvault0Descriptions(curator, subvault, dashboard);
         IVerifier.VerificationPayload[] memory leaves;
         (merkleRoot, leaves) = LidoV3TestLibrary.getSubvault0Proofs(curator, subvault, dashboard);

@@ -3,7 +3,6 @@ pragma solidity 0.8.25;
 
 import "../common/interfaces/ICowswapSettlement.sol";
 import {IWETH as WETHInterface} from "../common/interfaces/IWETH.sol";
-import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
@@ -18,18 +17,14 @@ import "forge-std/Script.sol";
 import "forge-std/Test.sol";
 
 import "./Constants.sol";
-import "./strETHLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
 
 contract Deploy is Script, Test {
     // Actors
-
-    address testMultisig = 0xaACd51Ec497E9217c986E4F77FfD2F98477734DD;
-    string public vaultSymbol = "MUITV";
-    string public vaultName = "Mellow UI TestVault";
-
-    uint256 public constant DEFAULT_MULTIPLIER = 0.9e8;
+    address public testMultisig = 0xe469E9BCF4A9A2D7d9Ca9dAa5f6D168a94f1a4F9;
+    string public vaultSymbol = "CB-TV";
+    string public vaultName = "Mellow Test Vault";
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -60,8 +55,7 @@ contract Deploy is Script, Test {
                 mstore(holders, i)
             }
         }
-        address[] memory assets_ =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH));
+        address[] memory assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH));
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
         VaultConfigurator.InitParams memory initParams = VaultConfigurator.InitParams({
@@ -101,43 +95,31 @@ contract Deploy is Script, Test {
 
         // queues setup
         vault.createQueue(0, true, testMultisig, Constants.ETH, new bytes(0));
-        vault.createQueue(0, true, testMultisig, Constants.WSTETH, new bytes(0));
-        vault.createQueue(0, false, testMultisig, Constants.WSTETH, new bytes(0));
+        vault.createQueue(0, true, testMultisig, Constants.WETH, new bytes(0));
+        vault.createQueue(0, false, testMultisig, Constants.WETH, new bytes(0));
 
         // fee manager setup
         vault.feeManager().setBaseAsset(address(vault), Constants.ETH);
         Ownable(address(vault.feeManager())).transferOwnership(testMultisig);
 
         // subvault setup
-        address[] memory verifiers = new address[](2);
+        address[] memory verifiers = new address[](1);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
 
         IRiskManager riskManager = vault.riskManager();
         {
             uint256 subvaultIndex = 0;
             verifiers[subvaultIndex] = $.verifierFactory.create(0, testMultisig, abi.encode(vault, bytes32(0)));
-            address subvault = vault.createSubvault(0, testMultisig, verifiers[subvaultIndex]); // eth,weth,wsteth
-            address swapModule = _deploySwapModule0(subvault);
-            console.log("SwapModule0:", swapModule);
+            address subvault = vault.createSubvault(0, testMultisig, verifiers[subvaultIndex]); // eth,weth
             riskManager.allowSubvaultAssets(subvault, assets_);
-            riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
-        }
-        {
-            uint256 subvaultIndex = 1;
-            verifiers[subvaultIndex] = $.verifierFactory.create(0, testMultisig, abi.encode(vault, bytes32(0)));
-            address subvault = vault.createSubvault(0, testMultisig, verifiers[subvaultIndex]); // wsteth, weth
-            address swapModule = _deploySwapModule1(subvault);
-            console.log("SwapModule1:", swapModule);
-            riskManager.allowSubvaultAssets(
-                subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH, Constants.WSTETH))
-            );
             riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
         }
 
         console.log("Vault %s", address(vault));
 
         console.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
-        console.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
-        console.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
+        console.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
+        console.log("RedeemQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 1)));
 
         console.log("Oracle %s", address(vault.oracle()));
         console.log("ShareManager %s", address(vault.shareManager()));
@@ -157,13 +139,33 @@ contract Deploy is Script, Test {
             }
             reports[0].priceD18 = 1 ether;
             reports[1].priceD18 = 1 ether;
-            reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
             IOracle oracle = vault.oracle();
             oracle.submitReports(reports);
         }
 
+        _acceptReports(vault);
+
         vm.stopBroadcast();
-        // revert("ok");
+
+        AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
+        AcceptanceLibrary.runVaultDeploymentChecks(
+            Constants.protocolDeployment(),
+            VaultDeployment({
+                vault: vault,
+                calls: calls,
+                initParams: initParams,
+                holders: _getExpectedHolders(deployer),
+                depositHook: address($.redirectingDepositHook),
+                redeemHook: address($.basicRedeemHook),
+                assets: assets_,
+                depositQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH)),
+                redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.WETH)),
+                subvaultVerifiers: verifiers,
+                timelockControllers: new address[](0),
+                timelockProposers: new address[](0),
+                timelockExecutors: new address[](0)
+            })
+        );
     }
 
     function _acceptReports(Vault vault) internal {
@@ -175,41 +177,28 @@ contract Deploy is Script, Test {
         }
     }
 
-    function _routers() internal pure returns (address[1] memory result) {
-        result = [address(0x6131B5fae19EA4f9D964eAc0408E4408b66337b5)];
-    }
+    function _getExpectedHolders(address deployer) internal view returns (Vault.RoleHolder[] memory holders) {
+        holders = new Vault.RoleHolder[](42);
+        uint256 i = 0;
 
-    function _deploySwapModule0(address subvault) internal returns (address) {
-        return _deployLidoLeverageSwapModule(subvault);
-    }
+        holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, testMultisig);
+        holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, testMultisig);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, testMultisig);
+        holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, testMultisig);
+        holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, testMultisig);
+        holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, testMultisig);
+        holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, testMultisig);
 
-    function _deploySwapModule1(address subvault) internal returns (address swapModule) {
-        return _deployLidoLeverageSwapModule(subvault);
-    }
-
-    function _deployLidoLeverageSwapModule(address subvault) internal returns (address) {
-        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[2] memory lidoLeverage = [Constants.WETH, Constants.WSTETH];
-        address[] memory actors =
-            ArraysLibrary.makeAddressArray(abi.encode(testMultisig, lidoLeverage, lidoLeverage, _routers()));
-        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
-            abi.encode(
-                Permissions.SWAP_MODULE_CALLER_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE
-            )
-        );
-        return swapModuleFactory.create(
-            0,
-            testMultisig,
-            abi.encode(testMultisig, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
-        );
+        holders[i++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
+        assembly {
+            mstore(holders, i)
+        }
     }
 }

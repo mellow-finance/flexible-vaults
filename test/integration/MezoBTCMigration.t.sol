@@ -85,17 +85,17 @@ contract Integration is Test {
     }
 
     function logCall(address target, bytes memory data) internal pure {
-        console2.log("{");
-        console2.log('  "to": "%s",', target);
-        console2.log('  "value": "0",');
-        console2.log('  "data": "%s",', vm.toString(data));
-        console2.log('  "contractMethod": {');
-        console2.log('    "inputs": [],');
-        console2.log('     "name": "fallback",');
-        console2.log('     "payable": true');
-        console2.log("  },");
-        console2.log('  "contractInputsValues": null');
-        console2.log("},");
+        console.log("{");
+        console.log('  "to": "%s",', target);
+        console.log('  "value": "0",');
+        console.log('  "data": "%s",', vm.toString(data));
+        console.log('  "contractMethod": {');
+        console.log('    "inputs": [],');
+        console.log('     "name": "fallback",');
+        console.log('     "payable": true');
+        console.log("  },");
+        console.log('  "contractInputsValues": null');
+        console.log("},");
     }
 
     function migrate(Vault vault, Vault newVault, address[] memory holders) internal {

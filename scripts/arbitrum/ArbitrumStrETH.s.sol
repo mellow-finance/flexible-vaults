@@ -103,10 +103,10 @@ contract Deploy is Script, Test {
         timelockController.renounceRole(timelockController.PROPOSER_ROLE(), deployer);
         timelockController.renounceRole(timelockController.CANCELLER_ROLE(), deployer);
 
-        console2.log("Vault: %s", address(vault));
-        console2.log("Subvault: %s", address(subvault));
-        console2.log("Verifier: %s", address(verifier));
-        console2.log("TimelockController: %s", address(timelockController));
+        console.log("Vault: %s", address(vault));
+        console.log("Subvault: %s", address(subvault));
+        console.log("Verifier: %s", address(verifier));
+        console.log("TimelockController: %s", address(timelockController));
 
         vm.stopBroadcast();
 

@@ -311,19 +311,19 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
         vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
-        console2.log("Vault %s", address(vault));
+        console.log("Vault %s", address(vault));
 
-        console2.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
-        console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
-        console2.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
-        console2.log("RedeemQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 1)));
-        console2.log("RedeemQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 1)));
-        console2.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
+        console.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
+        console.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
+        console.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
+        console.log("RedeemQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 1)));
+        console.log("RedeemQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 1)));
+        console.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
 
-        console2.log("Oracle %s", address(vault.oracle()));
-        console2.log("ShareManager %s", address(vault.shareManager()));
-        console2.log("FeeManager %s", address(vault.feeManager()));
-        console2.log("RiskManager %s", address(vault.riskManager()));
+        console.log("Oracle %s", address(vault.oracle()));
+        console.log("ShareManager %s", address(vault.shareManager()));
+        console.log("FeeManager %s", address(vault.feeManager()));
+        console.log("RiskManager %s", address(vault.riskManager()));
 
         IDepositQueue(address(vault.queueAt(Constants.ETH, 0))).deposit{value: 1 gwei}(
             1 gwei, address(0), new bytes32[](0)
