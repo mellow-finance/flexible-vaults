@@ -167,6 +167,8 @@ library Constants {
             eigenLayerDelegationManager: EIGEN_LAYER_DELEGATION_MANAGER,
             eigenLayerStrategyManager: EIGEN_LAYER_STRATEGY_MANAGER,
             eigenLayerRewardsCoordinator: EIGEN_LAYER_REWARDS_COORDINATOR,
+            cowswapSettlement: COWSWAP_SETTLEMENT,
+            cowswapVaultRelayer: COWSWAP_VAULT_RELAYER,
             symbioticVaultFactory: SYMBIOTIC_VAULT_FACTORY,
             symbioticFarmFactory: SYMBIOTIC_FARM_FACTORY,
             wsteth: WSTETH,
