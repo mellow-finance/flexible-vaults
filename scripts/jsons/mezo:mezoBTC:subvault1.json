@@ -1,0 +1,262 @@
+{
+  "title": "mezo:mezoBTC:subvault1",
+  "vault": "0x807D4778abA870e4222904f5b528F68B350cE0E0",
+  "chain": "mezo",
+  "merkle_root": "0xc1b2ac2d2f1adbbdc41c7f911ee80e5b49bbb7d264cce733fcf3b9d318b5ce89",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "borrowerOperation",
+        "protocol": "BorrowerOperation",
+        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).openTrove{value: any}(any,any,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "value": "any"
+        },
+        "innerParameters": {
+          "_debtAmount": "any",
+          "_upperHint": "any",
+          "_lowerHint": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "openTrove",
+          "inputs": [
+            {
+              "name": "_debtAmount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "_upperHint",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "_lowerHint",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae415cb240a8a60ccf949c40867457a5bc2b5909edb668874c006234df7e48339000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8c69782fbbb00d24044d6678ceb02186f67b2397368163a74229b21d65827fb4",
+        "0x1ad247e03debe929cb7cdcd3a3945f7ec934c2431eaa091b3b2366a8f484f29f",
+        "0xa76096403572afe3e180af22a52dcbcc94207c0907f67ad06f36b4d4b796fbbb"
+      ]
+    },
+    {
+      "description": {
+        "integration": "borrowerOperation",
+        "protocol": "BorrowerOperation",
+        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).addColl{value: any}(any,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "value": "any"
+        },
+        "innerParameters": {
+          "_upperHint": "any",
+          "_lowerHint": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "addColl",
+          "inputs": [
+            {
+              "name": "_upperHint",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "_lowerHint",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa33393c7571608207c23edb9fab4220e86d5ef6fb3a214030f786e75273fa030000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x464ca5c4f1c40ff709c5d211293ef7f10c8c8dcd1650f105980f74ebd3d79626",
+        "0x26b0a601c29cc2990bd58711e562e9e401caa225b2e87dd2495f331d2d2a8dac",
+        "0xa76096403572afe3e180af22a52dcbcc94207c0907f67ad06f36b4d4b796fbbb"
+      ]
+    },
+    {
+      "description": {
+        "integration": "borrowerOperation",
+        "protocol": "BorrowerOperation",
+        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).withdrawColl(any,any,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_amount": "any",
+          "_upperHint": "any",
+          "_lowerHint": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdrawColl",
+          "inputs": [
+            {
+              "name": "_amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "_upperHint",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "_lowerHint",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0fc239a9be070ac3de871f8280e253ec2cde2982027ae2b567d2cd265aaf5a6d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd043fa4aee9e787438dfb36d08ee8a3bc80422901210bf80cf8fdd0fa5041736",
+        "0x6e905dfc526df5b8c0d08267856ebece47dc7ab085b5b656be13eac3cd8f1704"
+      ]
+    },
+    {
+      "description": {
+        "integration": "borrowerOperation",
+        "protocol": "BorrowerOperation",
+        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).withdrawMUSD(any,any,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_amount": "any",
+          "_upperHint": "any",
+          "_lowerHint": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdrawMUSD",
+          "inputs": [
+            {
+              "name": "_amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "_upperHint",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "_lowerHint",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1009ef7a69fb0a4cc523d5ef9b5471fa51caf1cc208c8eef388009e12d460264000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd4d542effc13d842b36fd2fc5c1fb7e21877f8679cfb96d17610f60d7cabb480",
+        "0x6e905dfc526df5b8c0d08267856ebece47dc7ab085b5b656be13eac3cd8f1704"
+      ]
+    },
+    {
+      "description": {
+        "integration": "borrowerOperation",
+        "protocol": "BorrowerOperation",
+        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).repayMUSD(any,any,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_amount": "any",
+          "_upperHint": "any",
+          "_lowerHint": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repayMUSD",
+          "inputs": [
+            {
+              "name": "_amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "_upperHint",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "_lowerHint",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7e0a3194a90a53d79cb0396dfe26a4c848765e098d28023f304a622b7576473d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbb7e434657275f797852fab8ae4bb8a28a3797391d8165c76ff9d26be1180d35",
+        "0x1ad247e03debe929cb7cdcd3a3945f7ec934c2431eaa091b3b2366a8f484f29f",
+        "0xa76096403572afe3e180af22a52dcbcc94207c0907f67ad06f36b4d4b796fbbb"
+      ]
+    },
+    {
+      "description": {
+        "integration": "borrowerOperation",
+        "protocol": "BorrowerOperation",
+        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).closeTrove()",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "value": "0"
+        },
+        "innerParameters": {},
+        "abi": {
+          "type": "function",
+          "name": "closeTrove",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7cf9d0377b125a2009505c080a199f38ca6833cd91e8d1bb70bc17475c43081e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x46acf69fe9d6ccaeae364b35d65a1017dab7ca7fe78941406aba5f5325612b12",
+        "0x26b0a601c29cc2990bd58711e562e9e401caa225b2e87dd2495f331d2d2a8dac",
+        "0xa76096403572afe3e180af22a52dcbcc94207c0907f67ad06f36b4d4b796fbbb"
+      ]
+    }
+  ]
+}
