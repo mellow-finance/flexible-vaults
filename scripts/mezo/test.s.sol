@@ -35,8 +35,8 @@ contract Deploy is DeployAbstractScript {
         uint224 targetPriceD18 = uint224(targetShares.mulDiv(1e18, actualDeposit));
         uint224 originalPriceD18 = vault.oracle().getReport(Constants.BTC).priceD18;
         uint224 currentPriceD18 = originalPriceD18;
-        console2.log("Current price:", currentPriceD18);
-        console2.log(" Target price:", targetPriceD18);
+        console.log("Current price:", currentPriceD18);
+        console.log(" Target price:", targetPriceD18);
 
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         vm.startBroadcast(deployerPk);
@@ -52,7 +52,7 @@ contract Deploy is DeployAbstractScript {
                     : securityParams.maxRelativeDeviationD18;
             }
             currentPriceD18 = uint224(uint256(currentPriceD18).mulDiv(relativeDeviationD18, 1e18));
-            console2.log("New price:", currentPriceD18);
+            console.log("New price:", currentPriceD18);
             reports[0] = IOracle.Report({asset: Constants.BTC, priceD18: currentPriceD18});
             oracle.submitReports(reports);
             skip(securityParams.timeout + 1);
@@ -347,7 +347,7 @@ contract Deploy is DeployAbstractScript {
                 lazyVaultAdmin, subvault, address(0), /* Constants.AAVE_V3_ORACLE */ 0.995e8, actors, permissions
             )
         );
-        console2.log("Deployed SwapModule at", swapModule);
+        console.log("Deployed SwapModule at", swapModule);
         vm.stopBroadcast();
         return swapModule;
     }

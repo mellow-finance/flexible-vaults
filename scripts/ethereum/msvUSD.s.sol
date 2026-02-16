@@ -39,7 +39,7 @@ contract Deploy is Script, Test {
             lazyVaultAdmin, oracleUpdater, activeVaultAdmin, 0xccB10707cc3105178CBef8ee5b7DC84D5d1b277F
         );
 
-        console2.log("submitter: %s", address(submitter));
+        console.log("submitter: %s", address(submitter));
     }
 
     function run() external {
@@ -206,22 +206,22 @@ contract Deploy is Script, Test {
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
-        console2.log("Vault %s", address(vault));
+        console.log("Vault %s", address(vault));
 
-        console2.log("DepositQueue (USDC) %s", address(vault.queueAt(Constants.USDC, 0)));
-        console2.log("DepositQueue (USDT) %s", address(vault.queueAt(Constants.USDT, 0)));
-        console2.log("DepositQueue (MUSD) %s", address(vault.queueAt(Constants.MUSD, 0)));
+        console.log("DepositQueue (USDC) %s", address(vault.queueAt(Constants.USDC, 0)));
+        console.log("DepositQueue (USDT) %s", address(vault.queueAt(Constants.USDT, 0)));
+        console.log("DepositQueue (MUSD) %s", address(vault.queueAt(Constants.MUSD, 0)));
 
-        console2.log("RedeemQueue (USDC) %s", address(vault.queueAt(Constants.USDC, 1)));
-        console2.log("RedeemQueue (USDT) %s", address(vault.queueAt(Constants.USDT, 1)));
-        console2.log("RedeemQueue (MUSD) %s", address(vault.queueAt(Constants.MUSD, 1)));
+        console.log("RedeemQueue (USDC) %s", address(vault.queueAt(Constants.USDC, 1)));
+        console.log("RedeemQueue (USDT) %s", address(vault.queueAt(Constants.USDT, 1)));
+        console.log("RedeemQueue (MUSD) %s", address(vault.queueAt(Constants.MUSD, 1)));
 
-        console2.log("Oracle %s", address(vault.oracle()));
-        console2.log("ShareManager %s", address(vault.shareManager()));
-        console2.log("FeeManager %s", address(vault.feeManager()));
-        console2.log("RiskManager %s", address(vault.riskManager()));
+        console.log("Oracle %s", address(vault.oracle()));
+        console.log("ShareManager %s", address(vault.shareManager()));
+        console.log("FeeManager %s", address(vault.feeManager()));
+        console.log("RiskManager %s", address(vault.riskManager()));
 
-        console2.log("Timelock controller:", address(timelockController));
+        console.log("Timelock controller:", address(timelockController));
 
         {
             IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);
@@ -320,8 +320,8 @@ contract Deploy is Script, Test {
         verifier.setMerkleRoot(merkleRoot);
         vm.stopPrank();
 
-        console2.log("Subvault0 Merkle Root at verifier %s:", address(verifier));
-        console2.logBytes32(merkleRoot);
+        console.log("Subvault0 Merkle Root at verifier %s:", address(verifier));
+        console.logBytes32(merkleRoot);
 
         string[] memory descriptions = msvUSDLibrary.getSubvault0Descriptions(info);
         ProofLibrary.storeProofs("ethereum:msvUSD:subvault0", merkleRoot, leaves, descriptions);

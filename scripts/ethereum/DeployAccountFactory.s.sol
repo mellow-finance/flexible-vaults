@@ -29,8 +29,8 @@ contract Deploy is Script {
         accountFactory.acceptProposedImplementation(address(impl));
         Ownable(address(accountFactory)).transferOwnership(proxyAdmin);
 
-        console2.log("MellowAccount factory", address(accountFactory));
-        console2.log("MellowAccountV1 implementation", address(impl));
+        console.log("MellowAccount factory", address(accountFactory));
+        console.log("MellowAccountV1 implementation", address(impl));
 
         vm.stopBroadcast();
         // revert("ok");

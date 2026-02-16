@@ -59,6 +59,8 @@ library Constants {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
             deploymentVersion: DEPLOYMENT_VERSION,
+            cowswapSettlement: COWSWAP_SETTLEMENT,
+            cowswapVaultRelayer: COWSWAP_VAULT_RELAYER,
             eigenLayerDelegationManager: address(0),
             eigenLayerStrategyManager: address(0),
             eigenLayerRewardsCoordinator: address(0),
@@ -108,7 +110,9 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(address(0)),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
-            swapModuleImplementation: SwapModule(payable(0x00000000fF13abe88Ff02DC80d53D1d3B89b2E0F))
+            swapModuleImplementation: SwapModule(payable(0x00000000fF13abe88Ff02DC80d53D1d3B89b2E0F)),
+            mellowAccountV1Implementation: MellowAccountV1(address(0)),
+            accountFactory: Factory(address(0))
         });
     }
 }

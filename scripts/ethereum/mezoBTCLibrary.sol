@@ -32,7 +32,7 @@ import {UniswapV4Library} from "../common/protocols/UniswapV4Library.sol";
 import {YieldBasisLibrary} from "../common/protocols/YieldBasisLibrary.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import "forge-std/console2.sol";
+import "forge-std/console.sol";
 
 library mezoBTCLibrary {
     using ParameterLibrary for ParameterLibrary.Parameter[];
@@ -385,7 +385,7 @@ library mezoBTCLibrary {
             (, int24 tick,,,,,) = IPoolUniswapV3(pools[i]).slot0();
             address token0 = IPoolUniswapV3(pools[i]).token0();
             address token1 = IPoolUniswapV3(pools[i]).token1();
-            console2.log(
+            console.log(
                 "Minting Uniswap V3 positions at pool %s %s/%s",
                 pools[i],
                 IERC20Metadata(token0).symbol(),
@@ -409,7 +409,7 @@ library mezoBTCLibrary {
                     deadline: block.timestamp + 1 hours
                 });
                 (uint256 tokenId,,,) = IPositionManagerV3(Constants.UNISWAP_V3_POSITION_MANAGER).mint(mintParams);
-                console2.log(
+                console.log(
                     "Minted Uniswap V3 tokenId: %s [%s, %s]",
                     tokenId,
                     signedInt256ToString(int256(tickLower[j])),
@@ -424,7 +424,7 @@ library mezoBTCLibrary {
         for (uint256 i = 0; i < pools.length; i++) {
             IPositionManagerV4.PoolKey memory poolKey =
                 IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).poolKeys(pools[i]);
-            console2.log(
+            console.log(
                 "Minting Uniswap V4 positions at pool %s/%s",
                 IERC20Metadata(poolKey.currency0).symbol(),
                 IERC20Metadata(poolKey.currency1).symbol()
@@ -480,7 +480,7 @@ library mezoBTCLibrary {
                 require(
                     IPositionManagerV4(Constants.UNISWAP_V4_POSITION_MANAGER).ownerOf(tokenId) == subvault, "Not owner"
                 );
-                console2.log(
+                console.log(
                     "Minted Uniswap V4 tokenId: %s [%s, %s]",
                     tokenId,
                     signedInt256ToString(int256(tickLower[j])),

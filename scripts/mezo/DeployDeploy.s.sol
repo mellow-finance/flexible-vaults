@@ -40,7 +40,7 @@ contract Deploy is Script {
         startSalt = uint256(salt) + 1;
         a = Create2.deploy(0, salt, abi.encodePacked(creationCode, constructorParams));
         require(a == addr, "mismatched address");
-        console2.log("salt %s | %s: %s;", uint256(salt), title, a);
+        console.log("salt %s | %s: %s;", uint256(salt), title, a);
     }
 
     function _findOptSalt(uint256 startSalt_, bytes memory creationCode, bytes memory constructorParams)

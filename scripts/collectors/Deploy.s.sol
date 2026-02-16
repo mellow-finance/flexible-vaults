@@ -18,7 +18,7 @@ contract Deploy is Script, Test {
         vm.startBroadcast(deployerPk);
 
         strETHToEthOracle o = new strETHToEthOracle();
-        console2.log(o.priceX96() * 1e18 / 2 ** 96);
+        console.log(o.priceX96() * 1e18 / 2 ** 96);
     }
 }
 

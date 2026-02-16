@@ -37,7 +37,7 @@ contract Deploy is Script, Test {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
 
         deployer = vm.addr(deployerPk);
-        console2.log("Deployer: %s", deployer);
+        console.log("Deployer: %s", deployer);
 
         vm.startBroadcast(deployerPk);
         {
@@ -236,31 +236,31 @@ contract Deploy is Script, Test {
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
-        console2.log("Vault %s", address(vault));
+        console.log("Vault %s", address(vault));
 
         for (uint256 i = 0; i < assets_.length; i++) {
             string memory symbol = assets_[i] == Constants.RBTC ? "RBTC" : IERC20Metadata(assets_[i]).symbol();
             for (uint256 j = 0; j < vault.getQueueCount(assets_[i]); j++) {
                 address queue = vault.queueAt(assets_[i], j);
                 if (vault.isDepositQueue(queue)) {
-                    console2.log("DepositQueue (%s): %s", symbol, queue);
+                    console.log("DepositQueue (%s): %s", symbol, queue);
                 } else {
-                    console2.log("RedeemQueue (%s): %s", symbol, queue);
+                    console.log("RedeemQueue (%s): %s", symbol, queue);
                 }
             }
         }
 
-        console2.log("Oracle %s", address(vault.oracle()));
-        console2.log("ShareManager %s", address(vault.shareManager()));
-        console2.log("FeeManager %s", address(vault.feeManager()));
-        console2.log("RiskManager %s", address(vault.riskManager()));
+        console.log("Oracle %s", address(vault.oracle()));
+        console.log("ShareManager %s", address(vault.shareManager()));
+        console.log("FeeManager %s", address(vault.feeManager()));
+        console.log("RiskManager %s", address(vault.riskManager()));
 
         for (uint256 i = 0; i < vault.subvaults(); i++) {
             address subvault = vault.subvaultAt(i);
-            console2.log("Subvault %s %s", i, subvault);
-            console2.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
+            console.log("Subvault %s %s", i, subvault);
+            console.log("Verifier %s %s", i, address(Subvault(payable(subvault)).verifier()));
         }
-        console2.log("Timelock controller:", address(timelockController));
+        console.log("Timelock controller:", address(timelockController));
 
         {
             IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);

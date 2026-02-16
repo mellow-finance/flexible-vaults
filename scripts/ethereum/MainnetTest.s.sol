@@ -90,13 +90,13 @@ contract Deploy is Script {
 
         IDepositQueue(vault.queueAt(ETH, 0)).deposit{value: 1 gwei}(1 gwei, deployer, new bytes32[](0));
 
-        console2.log("Vault:", vault_);
-        console2.log("DepositQueue WSTETH:", vault.queueAt(WSTETH, 0));
-        console2.log("DepositQueue WETH:", vault.queueAt(WETH, 0));
-        console2.log("DepositQueue ETH:", vault.queueAt(ETH, 0));
-        console2.log("RedeemQueue WSTETH:", vault.queueAt(WSTETH, 1));
+        console.log("Vault:", vault_);
+        console.log("DepositQueue WSTETH:", vault.queueAt(WSTETH, 0));
+        console.log("DepositQueue WETH:", vault.queueAt(WETH, 0));
+        console.log("DepositQueue ETH:", vault.queueAt(ETH, 0));
+        console.log("RedeemQueue WSTETH:", vault.queueAt(WSTETH, 1));
 
-        console2.log("Dummy reporter:", address(dummyReporter));
+        console.log("Dummy reporter:", address(dummyReporter));
         vm.stopBroadcast();
         // revert("ok");
     }

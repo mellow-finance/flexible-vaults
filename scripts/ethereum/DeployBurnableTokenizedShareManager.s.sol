@@ -21,7 +21,7 @@ contract Deploy is Script {
             salt: 0xe98be1e5538fcbd716c506052eb1fd5d6fc495a321fb8675f917ee1fffab0080
         }(DEPLOYMENT_NAME, DEPLOYMENT_VERSION);
 
-        console2.log(address(impl));
+        console.log(address(impl));
         vm.stopBroadcast();
         // revert("ok");
     }

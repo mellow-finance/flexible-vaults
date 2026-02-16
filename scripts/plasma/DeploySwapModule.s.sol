@@ -47,8 +47,8 @@ contract Deploy is Script {
         swapModuleFactory.acceptProposedImplementation(address(impl));
         Ownable(address(swapModuleFactory)).transferOwnership(proxyAdmin);
 
-        console2.log("SwapModuleFactory", address(swapModuleFactory));
-        console2.log("SwapModule implementation", address(impl));
+        console.log("SwapModuleFactory", address(swapModuleFactory));
+        console.log("SwapModule implementation", address(impl));
 
         vm.stopBroadcast();
         // revert("ok");
