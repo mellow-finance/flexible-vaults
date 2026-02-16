@@ -113,23 +113,6 @@ contract Deploy is DeployAbstractScript {
         override
         returns (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit)
     {
-        queues = new IDeployVaultFactory.QueueParams[](2);
-
-        queues[0] = IDeployVaultFactory.QueueParams({
-            version: uint256(QueueVersion.SYNC),
-            isDeposit: true,
-            asset: Constants.TBTC,
-            data: abi.encode(uint256(0), 365 days) // penaltyD6 = 0%, maxAge = maximum
-        });
-
-        queues[1] = IDeployVaultFactory.QueueParams({
-            version: uint256(QueueVersion.SYNC),
-            isDeposit: true,
-            asset: Constants.WBTC,
-            data: abi.encode(uint256(0), 365 days) // penaltyD6 = 0%, maxAge = maximum
-        });
-
-        queueLimit = 2;
     }
 
     /// @dev fill in allowed assets/base asset and subvault assets
@@ -139,7 +122,7 @@ contract Deploy is DeployAbstractScript {
         override
         returns (address[] memory allowedAssets, uint224[] memory allowedAssetsPrices)
     {
-        allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC, Constants.WBTC));
+        allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MUSD, Constants.USDC));
 
         allowedAssetsPrices = new uint224[](allowedAssets.length);
         allowedAssetsPrices[0] = 1 ether; // 18 decimals
