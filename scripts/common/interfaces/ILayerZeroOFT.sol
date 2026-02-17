@@ -32,4 +32,6 @@ interface ILayerZeroOFT {
         external
         payable
         returns (MessagingReceipt memory, OFTReceipt memory);
+
+    function quoteSend(SendParam calldata _sendParam, bool) external view returns (uint256);
 }
