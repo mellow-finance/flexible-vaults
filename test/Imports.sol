@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.so
 import "@openzeppelin/contracts/utils/SlotDerivation.sol";
 
 import "../src/factories/Factory.sol";
+import "../src/accounts/MellowAccountV1.sol";
 
 import "../src/hooks/BasicRedeemHook.sol";
 import "../src/hooks/LidoDepositHook.sol";
