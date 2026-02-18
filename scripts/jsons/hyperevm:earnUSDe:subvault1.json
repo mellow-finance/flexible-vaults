@@ -1,0 +1,133 @@
+{
+  "title": "hyperevm:earnUSDe:subvault1",
+  "vault": "0x25eb235e86814775De245fab4a3752a44a0dfc30",
+  "chain": "hyperevm",
+  "merkle_root": "0x4c1e1b8cbaa3fc47ebf5f878fe7a8bc318f44dea796297d0d309ceb672c03cb9",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "funding_rate_strategy",
+        "protocol": "Hyperliquid",
+        "description": "IERC20(0xb88339CB7199b77E23DB6E890353E22632Ba630f).approve(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24,any)",
+        "parameters": {
+          "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae66cc5fc6a94c0aefbde07730b816af62fb29abc1457c37bd3d307d42fdb926a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4b0fa0b95e8ce2bf92a647375e04d3aa581bf1ba3370372f3da729570778b182",
+        "0xca91a14c347f657b65d53280c855dc096a42aaf74e640143e96041db73ba6893"
+      ]
+    },
+    {
+      "description": {
+        "integration": "funding_rate_strategy",
+        "protocol": "Hyperliquid",
+        "description": "ICoreDepositWallet(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24).deposit(any,0)",
+        "parameters": {
+          "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
+          "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDex": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDex",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae189fd75b1519e163a3b4cea8d0de33bf098169f5c09df4e5858484859aac4c0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6df501aaa85d7bc999acbb77ea0a27cc66a58ef986db1a785f1f8c9e985db595"
+      ]
+    },
+    {
+      "description": {
+        "integration": "funding_rate_strategy",
+        "protocol": "Hyperliquid",
+        "description": "ICoreDepositWallet(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24).deposit(any,4294967295)",
+        "parameters": {
+          "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
+          "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDex": "4294967295"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDex",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a154ec6f4c2c3b8b02a390ede979cf31ca60016a7ea67bfae65e3317005655927000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4b652b75dded2eca1cdeffdc1dc1a512b53abfab103cbbdecc55ee59a620952e",
+        "0xca91a14c347f657b65d53280c855dc096a42aaf74e640143e96041db73ba6893"
+      ]
+    }
+  ]
+}

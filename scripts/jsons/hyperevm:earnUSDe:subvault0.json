@@ -1,0 +1,128 @@
+{
+  "title": "hyperevm:earnUSDe:subvault0",
+  "vault": "0x25eb235e86814775De245fab4a3752a44a0dfc30",
+  "chain": "hyperevm",
+  "merkle_root": "0x7969c704103db648eaa6923f96c11cc59a52d32f7e8e8b75bc5f68f89917dcc6",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "usdc_bridge_to_ethereum",
+        "protocol": "CCTP",
+        "description": "IERC20(0xb88339CB7199b77E23DB6E890353E22632Ba630f).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
+        "parameters": {
+          "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20add2793923df1827983c9a7a9dabe691492c3d29909e4d0cfc4027c933a20c75a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb6f5e527c1c1a5e7fbf63c36a83d928ee83d5d8655ee00b857e17f6bb30a6bd7"
+      ]
+    },
+    {
+      "description": {
+        "integration": "usdc_bridge_to_ethereum",
+        "protocol": "CCTP",
+        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,0xb88339CB7199b77E23DB6E890353E22632Ba630f,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
+        "parameters": {
+          "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "0",
+          "destinationDomain": "0",
+          "mintRecipient": "0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049",
+          "burnToken": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "destinationCaller": "0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19",
+          "maxFee": "0",
+          "minFinalityThreshold": "2000"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositForBurn",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDomain",
+              "type": "uint32",
+              "internalType": "uint32"
+            },
+            {
+              "name": "mintRecipient",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "burnToken",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "destinationCaller",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "maxFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minFinalityThreshold",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "_nonce",
+              "type": "uint64",
+              "internalType": "uint64"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab1d785ebe7555539fbea021145ed0a4ea1844957800a0670bf868f1cb3020b0800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb7b13e8fc7b0b1ebc8647cfe0eaaf11abaf3c25e11b99849f304a699caa52371"
+      ]
+    }
+  ]
+}

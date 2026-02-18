@@ -1,0 +1,561 @@
+{
+  "title": "plasma:earnUSDe:subvault1",
+  "vault": "0x071537fdED831729ccDF16cAF48d035aBE12EB0c",
+  "chain": "plasma",
+  "merkle_root": "0xdbb2dacfd1afffd089959adb2710f4f903630a5e6458e37431c67532b020b08a",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IERC20(0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a82589bca772192894e474a5cd0822d77310686dbb56c6e3ff846b76468005748000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x410253c31dc47e69aa493b164a0429a4a510d6ec2027f5cd914a0c0431e66a9c",
+        "0x26cecbec98f743b234a492119e571ef90e9abe1944e61d6b01f7fa128e10a177",
+        "0x3316101199028f99364136472d0a317a37465ad3664a3d3483ff40fe3749ba54",
+        "0xf4f81de4916dfb89abe22f4620f148d183dc7c5c553818a42c3058bd843ebf1a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IERC20(0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2f72ba5044395eb97cca9190f81c734dd2df7894672fe8ec21d613b5da5d5872000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1cf4d9a7a11c232e720fdc3c37f64faba47586e9d216a3edc01e9d59ace1ef57",
+        "0xd4338c5b84feee054740665697d264bcc5b9e5c9e0b5aec863e532f93a0252dc",
+        "0xd1469ab77f8dda943c128a35606863ec40b1edb53bae5068fabba7088e2ceaa2",
+        "0xf4f81de4916dfb89abe22f4620f148d183dc7c5c553818a42c3058bd843ebf1a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IERC20(0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad40b9f489972798697ea17a46fdec3b71e5108c7614a9a3d10a701d71883ccdb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3d713f1dee67c4ff34f8db84a2d9353a08207fe7ea0c250119adc9bde44f3c46",
+        "0xd4338c5b84feee054740665697d264bcc5b9e5c9e0b5aec863e532f93a0252dc",
+        "0xd1469ab77f8dda943c128a35606863ec40b1edb53bae5068fabba7088e2ceaa2",
+        "0xf4f81de4916dfb89abe22f4620f148d183dc7c5c553818a42c3058bd843ebf1a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).setUserEMode(2)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "value": "0"
+        },
+        "innerParameters": {
+          "categoryId": "2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "setUserEMode",
+          "inputs": [
+            {
+              "name": "categoryId",
+              "type": "uint8",
+              "internalType": "uint8"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7ef992150a4f85d38b7d85c1b15d6ddcd68c1107dd56a91db65fdfe8a5dc7a0200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc92c4bece64cac0060a36106f86ff8a0d05f93881c283373e3d7fd94fa4a096d",
+        "0x470bb3e28134426ba7e9512a47e6f47b9eb5df7611e71c6834f081b14fe67385",
+        "0x43548a6319e699c81a5a15cf1b2adfbd2ce729afcfe8e435aceeba08a06aead3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).supply(0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1,0)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "amount": "any",
+          "onBehalfOf": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1",
+          "referralCode": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a516100f2138a3dc2fa9c211b33e8436db67d01672f8e56c494a9c46a95879078000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6b79c9c6ad425729676b98577076c21ddb0dde28f3875c208ef5bb224daf83ce",
+        "0xd1469ab77f8dda943c128a35606863ec40b1edb53bae5068fabba7088e2ceaa2",
+        "0xf4f81de4916dfb89abe22f4620f148d183dc7c5c553818a42c3058bd843ebf1a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).supply(0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1,0)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "amount": "any",
+          "onBehalfOf": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1",
+          "referralCode": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0f6aa9e9e12b01a7a2c3c190ec78c01fbf19207944100e38c3b227da3b096f03000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x641451ff593dbb81ae89b43d0ae0b08aed1f00e10f72549f1bf1a642e976fe14",
+        "0x120fc08e00f39b2ab0a414c94feaba20b8ce83dac30b774c6961084748279bc2",
+        "0x43548a6319e699c81a5a15cf1b2adfbd2ce729afcfe8e435aceeba08a06aead3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).withdraw(0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "amount": "any",
+          "to": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6e99b6cb849b51e771b8d333a701b346b364d05b9c2695b66e397b40ac787a0d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x501a107f2887bc118f888002a378e05422f9d2ff2d54a08aa1083235e164467f",
+        "0x0dabc9c5f83886603643866070ee468b50e8f0d1f651dddd9526471d352ac22a",
+        "0x3316101199028f99364136472d0a317a37465ad3664a3d3483ff40fe3749ba54",
+        "0xf4f81de4916dfb89abe22f4620f148d183dc7c5c553818a42c3058bd843ebf1a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).withdraw(0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "amount": "any",
+          "to": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac66490b7e555fada466d9fda0bc1a85b4538bff5a44e71aaaa84a2b2a09f07ff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x543a7400693d68d07b9ab7b47c34e964ce6b15f28c9786322fe5820cc86fa15d",
+        "0x0dabc9c5f83886603643866070ee468b50e8f0d1f651dddd9526471d352ac22a",
+        "0x3316101199028f99364136472d0a317a37465ad3664a3d3483ff40fe3749ba54",
+        "0xf4f81de4916dfb89abe22f4620f148d183dc7c5c553818a42c3058bd843ebf1a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).borrow(0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb,any,2,0,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
+          "amount": "any",
+          "interestRateMode": "2",
+          "referralCode": "0",
+          "onBehalfOf": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrow",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "interestRateMode",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a10a5034bd41f6304e2aa391503a97a6a63561da5096df483d6d44144c6ac194c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3ef7f1ca7dc90f6dd30ff8818ef3717f831dddc9bd75b53991682f3c82a480e0",
+        "0x26cecbec98f743b234a492119e571ef90e9abe1944e61d6b01f7fa128e10a177",
+        "0x3316101199028f99364136472d0a317a37465ad3664a3d3483ff40fe3749ba54",
+        "0xf4f81de4916dfb89abe22f4620f148d183dc7c5c553818a42c3058bd843ebf1a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_loop",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).repay(0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb,any,2,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
+          "amount": "any",
+          "interestRateMode": "2",
+          "onBehalfOf": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repay",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "interestRateMode",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae1a2a4150f02ce35aaf0dea913171e0182a4a0d7e538c218e5203f27adf1277f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x60e66d3f7e6c32e791bee0d23af6504636aee341d341403837d2871551413a92",
+        "0x120fc08e00f39b2ab0a414c94feaba20b8ce83dac30b774c6961084748279bc2",
+        "0x43548a6319e699c81a5a15cf1b2adfbd2ce729afcfe8e435aceeba08a06aead3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "merkl",
+        "protocol": "Merkl",
+        "description": "IMerklDistributor(0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae).toggleOperator(0xde803287368e47D2aF700Db27afF61a8DeC89cE1,any)",
+        "parameters": {
+          "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "value": "0"
+        },
+        "innerParameters": {
+          "user": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1",
+          "operator": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "toggleOperator",
+          "inputs": [
+            {
+              "name": "user",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "operator",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a961ee17bf72f48160b59dd9fd2258fbfb9a9601f837a5521c16535646a0f7686000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa2a0d3c1b8cd69264077e5ed5a153680479cba9b121db18bf95016ffb86b693a",
+        "0x470bb3e28134426ba7e9512a47e6f47b9eb5df7611e71c6834f081b14fe67385",
+        "0x43548a6319e699c81a5a15cf1b2adfbd2ce729afcfe8e435aceeba08a06aead3"
+      ]
+    }
+  ]
+}

@@ -9,6 +9,9 @@ import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
 import "../common/interfaces/Imports.sol";
 
 library Constants {
+    address public constant USDC = 0xb88339CB7199b77E23DB6E890353E22632Ba630f;
+    address public constant HYPE = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
@@ -16,6 +19,8 @@ library Constants {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
             deploymentVersion: DEPLOYMENT_VERSION,
+            cowswapVaultRelayer: address(0),
+            cowswapSettlement: address(0),
             eigenLayerDelegationManager: address(0),
             eigenLayerStrategyManager: address(0),
             eigenLayerRewardsCoordinator: address(0),
@@ -52,6 +57,7 @@ library Constants {
             oracleImplementation: Oracle(0x00000001bdbaFbE0Fb55b7d74a6dB74D1DA6047E),
             riskManagerImplementation: RiskManager(0x0000000a0d139B4B7add54D70e2a4ED3c81C513C),
             tokenizedShareManagerImplementation: TokenizedShareManager(0x0000000f2a485f26efd108144cCBFc46b18cB3e0),
+            burnableTokenizedShareManagerImplementation: BurnableTokenizedShareManager(address(0)),
             basicShareManagerImplementation: BasicShareManager(0x0000000454d68af6Faf344e8acAa372f136749c5),
             subvaultImplementation: Subvault(payable(0x00000008c8A185371Ab8eB28bbdb875cd526B69C)),
             verifierImplementation: Verifier(0x00000007eEEbCA71f6b261061136BaFA666218A5),

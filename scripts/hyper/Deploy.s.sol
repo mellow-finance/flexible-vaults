@@ -32,7 +32,6 @@ contract Deploy is Script {
         Factory swapModuleFactory;
         address bitmaskVerifier;
         address erc20Verifier;
-
         address vaultConfigurator;
         address basicRedeemHook;
         address redirectingDepositHook;
@@ -311,9 +310,8 @@ contract Deploy is Script {
         {
             $.accountFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
             console.log("Account factory: %s", address($.accountFactory));
-            address implementation = _deployWithOptimalSalt(
-                "MellowAccountV1", type(MellowAccountV1).creationCode, abi.encode()
-            );
+            address implementation =
+                _deployWithOptimalSalt("MellowAccountV1", type(MellowAccountV1).creationCode, abi.encode());
 
             $.accountFactory.proposeImplementation(implementation);
             $.accountFactory.acceptProposedImplementation(implementation);

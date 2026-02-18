@@ -1,0 +1,1462 @@
+{
+  "title": "ethereum:earnUSDe:subvault2",
+  "vault": "0xB6DB39C23158fE36B963d606daA0f59508566DC9",
+  "chain": "ethereum",
+  "merkle_root": "0xd30d64ca76f0c441977649efcb6aca1cf81b3e2303899eaf3c2c58e5a7d3e5eb",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(0x546329A16DcEdC46e93F7b03A65F49A84700bca1,any)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a59fc719ed5a76cd7672658993c16bfe2e04699160b5a205f10d2ea9d76fcabff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xaf86733140e12a0336723ce68339165357019f51b53dd752411cb2841c25118c",
+        "0x581b572b4fe775f61a1ad23d4cc8c95a20681d09dcbac5dc08fb0909a4dfdbca",
+        "0x46bc0d7c1bed7193e97a57f1f713dc70db44eee6a32a2e4c039c34eb2310b1fc",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7).approve(0x546329A16DcEdC46e93F7b03A65F49A84700bca1,any)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a73eb74771bc40a23284935a0316b99442a8a7a30957aaacdc3548dfe41815e5d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbf6cd7bfc94ad784d72c12bf7b8e35684565b5f23f42b496218698fc076ca02c",
+        "0xa0344f6fcd75a56725e29a429aa29ad5f1f9153f1da80772e4133adfe1eb8664",
+        "0x46bc0d7c1bed7193e97a57f1f713dc70db44eee6a32a2e4c039c34eb2310b1fc",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IERC20(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497).approve(0x546329A16DcEdC46e93F7b03A65F49A84700bca1,any)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad48a40cb459977ea74e8722c48a078b1d2cd76e46545efe8f75168857832af15000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6838caca25d78970feb2475ff6f7239545058fe6cb6ee0c79fb45c97d73885ac",
+        "0x92611f96555ee0472733cabf091ec7b35f4dc6b6714657b18f83f0628a04cb92",
+        "0xab88460460922d5f13396e3a75310ae0258a7baf8ae5ac0325c6c1b794704668",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositWithReferral(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "referralId": "any(66)"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositWithReferral",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralId",
+              "type": "string",
+              "internalType": "string"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ada368b1e67968d79ad82f0a5ca8de24119dcfa5e803858ad7effbaaeccc15e3c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xdfa40035c554e4a2b465ebf3047c7eba1785f0a922b2c04443817fd39138b458",
+        "0x2679695c0abb04344c2afb122ccf7c36e84dfb251d9cf545e2f66b79441fdb74",
+        "0x634dfb602a2448451e155ba58ae93898bd90a38596173d6f611e8aa445d507ca",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositAssetWithReferral(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "referralId": "any(66)"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositAssetWithReferral",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralId",
+              "type": "string",
+              "internalType": "string"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a90e4d1608cf69a1c0625a1ef263e5f6b3a5d3167a156dfaa558864bbefd584f900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x074569c0b7d75d0e8299782b38758abc60da39076e9899543219e25cb9fa25b3",
+        "0x7dff85216d9b9f6644c581749c6f41fb7bce9de5a51d5fe2a9ac94513e79d480",
+        "0x13353ae0d1f72d4e30e6b71b0f9789bdb8446e36a57d2d49d1c7f77911b7783a",
+        "0x799501cec25800bcbbc3c73598cd0facd6505aba511d2839dafdd4ef82e46637",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositAssetWithReferral(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "referralId": "any(66)"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositAssetWithReferral",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralId",
+              "type": "string",
+              "internalType": "string"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8188cbe1518e5e6972d4a8bc79291cba6f8cfa93841cb171028ac556d5147d5800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x5b5883e42c9c95f19b682114ee0d1b412830181aa7de0b499237e9d92644bf84",
+        "0xc2432c489e70ac2c7a8e7c26b47bfbb7e7f90b84bbdebd88c92186a4ddc3cb21",
+        "0xde87a04ac6c7aef8721d109531a709f0668b2623b21e500fd6365c0d771989f7",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositAssetWithReferral(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "referralId": "any(66)"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositAssetWithReferral",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralId",
+              "type": "string",
+              "internalType": "string"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a189b88365ed852f2b3a226968645ec513866eb89e2ce23ca5ffe66d97901bbf300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3f9e037a76764a7437046d0d420f09b47e6792b6db5e26ff79240c420c740a37",
+        "0x649d4ea089d3bc7fcecea30804e4affce12f266e353280747fc287cae2a88538",
+        "0xde87a04ac6c7aef8721d109531a709f0668b2623b21e500fd6365c0d771989f7",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeem(any)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "requestRedeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "requestId",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a345bf5b677c273edf3df491d7bd7de73fd9298e92b0f63624ef296f9eaa1165300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xca5e52fd16508f82a2bb35dd05d0aa188d965320850e2c3a897035c2d4c2e374",
+        "0x373d29848d8b8ef94d9d3456b063e723672db8cec431f2abf4f44176f8f2649c",
+        "0x634dfb602a2448451e155ba58ae93898bd90a38596173d6f611e8aa445d507ca",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequest(0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "cancelRedeemRequest",
+          "inputs": [
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a925b1e8b8cdaf80b85cc25132ec56400c80a256325d7b8adec7f74c9c355782200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd1e516aad4322f55335fd06866ba072cd97a04d574b73bdaa8fd8beef5a2aa7f",
+        "0x373d29848d8b8ef94d9d3456b063e723672db8cec431f2abf4f44176f8f2649c",
+        "0x634dfb602a2448451e155ba58ae93898bd90a38596173d6f611e8aa445d507ca",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeemOfAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "shares": "any",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "owner": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "requestRedeemOfAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "requestId",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4525985d7a1318c2452e7054d710e6ff44d250d3a26cae8cfb871d6e9dd767b3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x90fcd813f3325a614e9e4473ed1c18e9862599089934b8e730532e85874c3828",
+        "0xb31370590489dc8c7c5d772d668cd5ceb2972f5915cef9e3c6d9fc00039215dd",
+        "0x1ead8e7d6a3ccb5c7e292292820ab7df1add6ad892e239749e333df41ba0ff25",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeemOfAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "shares": "any",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "owner": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "requestRedeemOfAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "requestId",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afcdf6b34407ec564cd6aea31ab77d977a789719007afbbb63be04b2c199abbc4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x79b79aabc990a3f6a616d0f6bd4dccc07cedcfd111fc314ab288c7ec1770ec78",
+        "0x079a411c8a59721170caa9a04800d01a75495b29462a70b0f2e0c6c67605e8a7",
+        "0xab88460460922d5f13396e3a75310ae0258a7baf8ae5ac0325c6c1b794704668",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeemOfAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+          "shares": "any",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "owner": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "requestRedeemOfAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "requestId",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a60fd9f450487dc25f3c4256a69f6a2cb9181ce4e4bd4d8068d5b98b5a122a715000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xfed5a562cbdc5fecd0bfd13eebd038f7f854272e228d77a5bfb6cb305b59339b",
+        "0x03be1cba9483c7e3565b5815023edf2fd32ce412afc41d98024e77d65635d2e7",
+        "0x799501cec25800bcbbc3c73598cd0facd6505aba511d2839dafdd4ef82e46637",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestOfAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "cancelRedeemRequestOfAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a07bfc51a0a0104b450effa77c8697fed2173bf30849d03d0be7efd0a4f82f603000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa52467d99b8efeedae236346bf60147088bf49d89c499587f44813c78fe9a6ab",
+        "0x581b572b4fe775f61a1ad23d4cc8c95a20681d09dcbac5dc08fb0909a4dfdbca",
+        "0x46bc0d7c1bed7193e97a57f1f713dc70db44eee6a32a2e4c039c34eb2310b1fc",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestOfAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "cancelRedeemRequestOfAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac0a11d338360f7ccdc5247c6e236bdb2ffc528e7147ac8cd2f969c0f489fc8c1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x536d67f5794c90edb765204b369083befa533f440be53fc94c91f7ca95b2c72d",
+        "0xc2432c489e70ac2c7a8e7c26b47bfbb7e7f90b84bbdebd88c92186a4ddc3cb21",
+        "0xde87a04ac6c7aef8721d109531a709f0668b2623b21e500fd6365c0d771989f7",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestOfAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "cancelRedeemRequestOfAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa17f6f464ad75968715ba0e520f5fd92b8518cc0158d2f1d35c41b5b6f4f3241000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8591aa9e9bcc52afffccbbae37b4bea2672272965c6777b16c1626556f66f360",
+        "0x4f024c7d4dcd7e4c3d6d3df6341ca9fc0c68a4004c29284dec59bb7253754b59",
+        "0x1ead8e7d6a3ccb5c7e292292820ab7df1add6ad892e239749e333df41ba0ff25",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestPartially(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "shares": "any",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "cancelRedeemRequestPartially",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af70392fa4dee1fca30ae22d31bcf915891f44f908fba91accd0df607819c76f9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x97bc5fe06fa07c1864fd8d9e7ccd76a696b679d8c6056f20e92e707b09db8372",
+        "0xb31370590489dc8c7c5d772d668cd5ceb2972f5915cef9e3c6d9fc00039215dd",
+        "0x1ead8e7d6a3ccb5c7e292292820ab7df1add6ad892e239749e333df41ba0ff25",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestPartially(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "shares": "any",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "cancelRedeemRequestPartially",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa3a0abab3995b0ad0d4924f5cd9b8ac8d7efc0fa4890d67eecf65cacaa890944000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x00d51241b21da4d6d9655193c78e91b08346b88620836dc2bfd7a9e06fe3fae5",
+        "0x7dff85216d9b9f6644c581749c6f41fb7bce9de5a51d5fe2a9ac94513e79d480",
+        "0x13353ae0d1f72d4e30e6b71b0f9789bdb8446e36a57d2d49d1c7f77911b7783a",
+        "0x799501cec25800bcbbc3c73598cd0facd6505aba511d2839dafdd4ef82e46637",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestPartially(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+          "shares": "any",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "cancelRedeemRequestPartially",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3573b3ea3fd71ffc9f4a07817f74f9aa9d76fdebe14622f0f96308618f18529e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x71c66e16d16dd1815175bed77304bfb88b6f2a520f57513dab72b0dc6b649f91",
+        "0x92611f96555ee0472733cabf091ec7b35f4dc6b6714657b18f83f0628a04cb92",
+        "0xab88460460922d5f13396e3a75310ae0258a7baf8ae5ac0325c6c1b794704668",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdraw(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5b31544bf08be43f878c266a0aa4bdb743e9f5b659b302b4a42553fa78a00899000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf0c71011cc97ae18296370d625f42282f0027435e049c1b813e83c4cc82c1b50",
+        "0x03be1cba9483c7e3565b5815023edf2fd32ce412afc41d98024e77d65635d2e7",
+        "0x799501cec25800bcbbc3c73598cd0facd6505aba511d2839dafdd4ef82e46637",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdrawAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdrawAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa796638821deca9cd9f822dc9369d50a4bb53f7044e1e577b4a15a7125dc09e5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xde268cd8459232ac0e1efc6af9682b1ec311a2636674b820c84c5073e25783eb",
+        "0x2679695c0abb04344c2afb122ccf7c36e84dfb251d9cf545e2f66b79441fdb74",
+        "0x634dfb602a2448451e155ba58ae93898bd90a38596173d6f611e8aa445d507ca",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdrawAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdrawAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2c1243df0885c9f7c9714395fad65cee7347890476e5d37739f24c603ddd50a4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb4d053399864d2151d073ae9f0f0baf8e7127661839eb865b887491974cd4678",
+        "0xa0344f6fcd75a56725e29a429aa29ad5f1f9153f1da80772e4133adfe1eb8664",
+        "0x46bc0d7c1bed7193e97a57f1f713dc70db44eee6a32a2e4c039c34eb2310b1fc",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdrawAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+          "assets": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdrawAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa8f0ac2aa2a85ca59952cd77a64e302ffdde4e88b4cd8e4661da5c05dbb61859000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x776453257e07af990139cc3c87e062697773cb07f74b167ab3ed91bd96ba923f",
+        "0x079a411c8a59721170caa9a04800d01a75495b29462a70b0f2e0c6c67605e8a7",
+        "0xab88460460922d5f13396e3a75310ae0258a7baf8ae5ac0325c6c1b794704668",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeem(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9d51211ff0601aedea0b10707e546bef9ec918db985d53792961f0a586a29b73000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3b177ecba99d94dfcdff14d7b5a263aa87a66c7421e836ebfe26f01c915f1682",
+        "0x649d4ea089d3bc7fcecea30804e4affce12f266e353280747fc287cae2a88538",
+        "0xde87a04ac6c7aef8721d109531a709f0668b2623b21e500fd6365c0d771989f7",
+        "0x44e01fbe7307ece306ab6d3471ccec78a6e9bbbb4a8811c3fae5277787958fb7",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeemAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "shares": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeemAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae74c1111e69064f7d0d93ec7ad9ad79222c14ed3213fbe97de2ef3081918f1c8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x334cf75b126d8169ea752ff801edf722a2702447dfe56c8982034c16153a1c3e",
+        "0xc7cbdb1b7738db818dc9442c7365a514302e47cb17f2690b8cd51b9a956a9b68",
+        "0x13353ae0d1f72d4e30e6b71b0f9789bdb8446e36a57d2d49d1c7f77911b7783a",
+        "0x799501cec25800bcbbc3c73598cd0facd6505aba511d2839dafdd4ef82e46637",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeemAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "shares": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeemAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a73763a82a1bb5c7042d3cbf1aa7d51763ee84e3191c4b07e3c471cfdaa85c515000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x9044dfd623e13d201af28e7f4e1acd6a7b6431b048e4bdc91ec0b8f43513a232",
+        "0x4f024c7d4dcd7e4c3d6d3df6341ca9fc0c68a4004c29284dec59bb7253754b59",
+        "0x1ead8e7d6a3ccb5c7e292292820ab7df1add6ad892e239749e333df41ba0ff25",
+        "0x0a2819e70813fd088bbe8576f0f949d24aff28cdb085e30d06d585cefe88a16e",
+        "0xb88afa7593a34dfc91e491cf1a2f5269f29a215bd26bf9f5adfd7d85328860ec"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ultra_yield_usdc",
+        "protocol": "UltraYield",
+        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeemAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "parameters": {
+          "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
+          "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "_asset": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+          "shares": "any",
+          "receiver": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
+          "controller": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeemAsset",
+          "inputs": [
+            {
+              "name": "_asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "controller",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8ca3741e5df85d081d7d2f45d2016942130fa7aadfc7885f330a3ce7fd251855000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1752bba8793d50569b3d3925a1d74c31c6225a65f349d1bb66b28a41faa53018",
+        "0xc7cbdb1b7738db818dc9442c7365a514302e47cb17f2690b8cd51b9a956a9b68",
+        "0x13353ae0d1f72d4e30e6b71b0f9789bdb8446e36a57d2d49d1c7f77911b7783a",
+        "0x799501cec25800bcbbc3c73598cd0facd6505aba511d2839dafdd4ef82e46637",
+        "0x2ee8cb677650cfd544f5be82d0b27b6ea5bb6e67528a648b8c602154fdda894b"
+      ]
+    }
+  ]
+}
