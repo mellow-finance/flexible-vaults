@@ -25,6 +25,7 @@ library Constants {
     address public constant USDU = 0xdde3eC717f220Fc6A29D6a4Be73F91DA5b718e55;
     address public constant CRV = 0xD533a949740bb3306d119CC777fa900bA034cd52;
     address public constant FLUID = 0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb;
+    address public constant SYRUP_USDT = 0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D;
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;

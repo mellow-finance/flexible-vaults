@@ -35,6 +35,8 @@ library Constants {
             eigenLayerDelegationManager: address(0),
             eigenLayerStrategyManager: address(0),
             eigenLayerRewardsCoordinator: address(0),
+            cowswapSettlement: address(0),
+            cowswapVaultRelayer: address(0),
             symbioticVaultFactory: address(0),
             symbioticFarmFactory: address(0),
             wsteth: address(0),
@@ -57,12 +59,12 @@ library Constants {
             redeemQueueFactory: Factory(0xA92CeA07d6009DE8F2AA377a4298dECCF94d942a),
             feeManagerFactory: Factory(0xDC40601EeE986E739831A96669F931EB818F43d2),
             oracleFactory: Factory(0x2c2ca09e5511bd69fFe9f156254b901DdC4f7FC5),
-            swapModuleFactory: Factory(address(0)),
+            swapModuleFactory: Factory(0x7ce0E2F1aDbb0Dc7a84bE13eEA55ca391ee33efc),
             // --- implementations ---
             consensusImplementation: Consensus(0x000000005AB29dAA855DfA661d8D9D25cD88c103),
             depositQueueImplementation: DepositQueue(payable(0x00000004F672aA091EbF44545cb8aE75143d8F4c)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000008D840ca76629607583C697FEdFA5fdd49)),
-            redeemQueueImplementation: RedeemQueue(payable(0x00000004051f95d5836fF4149ca4a26B5Cfb8784)),
+            redeemQueueImplementation: RedeemQueue(payable(0)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x00000002CB862cEdD58B73B24996f54E43a3E00f)),
             feeManagerImplementation: FeeManager(0x00000005e070fE45D9bc67A4E3201994347Ec9F5),
             oracleImplementation: Oracle(0x0000000cCDCc8A633bC9738fD8D3129e70f7a049),
@@ -76,13 +78,17 @@ library Constants {
             erc20VerifierImplementation: ERC20Verifier(0x00000009710AebAE63B94487a7d4A0B07e6c4837),
             symbioticVerifierImplementation: SymbioticVerifier(address(0)),
             eigenLayerVerifierImplementation: EigenLayerVerifier(address(0)),
-            swapModuleImplementation: SwapModule(payable(address(0))),
+            swapModuleImplementation: SwapModule(payable(0x00000000422e95E2963145bf010D8EF439D94d6b)),
             // --- helpers / hooks ---
             vaultConfigurator: VaultConfigurator(0x0000000594E51babd99Dae398E877C474201F1a5),
             basicRedeemHook: BasicRedeemHook(0x00000001D757B0554F564d88C6855ccD9BaB5B6c),
             redirectingDepositHook: RedirectingDepositHook(0x0000000Ef1A84Ae7D455249D61d33e6397C46D72),
             lidoDepositHook: LidoDepositHook(address(0)),
-            oracleHelper: OracleHelper(0x00000002449a991F159727e9AA64583a560e5efD)
+            oracleHelper: OracleHelper(0x00000002449a991F159727e9AA64583a560e5efD),
+            mellowAccountV1Implementation: MellowAccountV1(address(0x00000000028E2Bc6FABc9e8B9c7d5D411982Ff8e)),
+            accountFactory: Factory(address(0x5863121b85A5b8321a9E2248E58ed5BF41ba154E)),
+            burnableTokenizedShareManagerImplementation: BurnableTokenizedShareManager(address(0)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0))
         });
     }
 }

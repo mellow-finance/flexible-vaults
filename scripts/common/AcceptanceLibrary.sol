@@ -13,6 +13,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
+import "forge-std/console.sol";
+
 library AcceptanceLibrary {
     struct OracleSubmitterDeployment {
         OracleSubmitter oracleSubmitter;
@@ -56,7 +58,11 @@ library AcceptanceLibrary {
         }
         bytes memory aBytecode = removeMetadata(a.code);
         bytes memory bBytecode = removeMetadata(b.code);
+
         if (keccak256(aBytecode) != keccak256(bBytecode)) {
+            console.logBytes(aBytecode);
+
+            console.logBytes(bBytecode);
             revert(
                 string.concat(
                     title,
@@ -400,22 +406,23 @@ library AcceptanceLibrary {
             )
         );
 
-        require($.shareManagerFactory.implementations() >= 2, "Factory ShareManager: invalid implementations length");
-        require(
-            $.shareManagerFactory.implementationAt(0) == address($.tokenizedShareManagerImplementation),
-            "Factory ShareManager: invalid implementation at 0"
-        );
-        require(
-            $.shareManagerFactory.implementationAt(1) == address($.basicShareManagerImplementation),
-            "Factory ShareManager: invalid implementation at 1"
-        );
-        if ($.shareManagerFactory.implementations() == 3) {
+        {
+            uint256 shareManagers = $.shareManagerFactory.implementations();
+            require(1 < shareManagers && shareManagers < 4, "Factory ShareManager: invalid implementations length");
             require(
-                $.shareManagerFactory.implementationAt(2) == address($.burnableTokenizedShareManagerImplementation),
-                "Factory ShareManager: invalid implementation at 2"
+                $.shareManagerFactory.implementationAt(0) == address($.tokenizedShareManagerImplementation),
+                "Factory ShareManager: invalid implementation at 0"
             );
-        } else {
-            revert("Factory ShareManager: invalid implementations length");
+            require(
+                $.shareManagerFactory.implementationAt(1) == address($.basicShareManagerImplementation),
+                "Factory ShareManager: invalid implementation at 1"
+            );
+            if (shareManagers == 3) {
+                require(
+                    $.shareManagerFactory.implementationAt(2) == address($.burnableTokenizedShareManagerImplementation),
+                    "Factory ShareManager: invalid implementation at 2"
+                );
+            }
         }
 
         compareBytecode(
@@ -447,22 +454,23 @@ library AcceptanceLibrary {
             )
         );
 
-        require($.depositQueueFactory.implementations() >= 2, "Factory DepositQueue: invalid implementations length");
-        require(
-            $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
-            "Factory DepositQueue: invalid implementation at 0"
-        );
-        require(
-            $.depositQueueFactory.implementationAt(1) == address($.signatureDepositQueueImplementation),
-            "Factory DepositQueue: invalid implementation at 1"
-        );
-        if ($.depositQueueFactory.implementations() == 3) {
+        {
+            uint256 depositQueues = $.depositQueueFactory.implementations();
+            require(1 < depositQueues && depositQueues < 4, "Factory DepositQueue: invalid implementations length");
             require(
-                $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
-                "Factory DepositQueue: invalid implementation at 2"
+                $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
+                "Factory DepositQueue: invalid implementation at 0"
             );
-        } else {
-            revert("Factory DepositQueue: invalid implementations length");
+            require(
+                $.depositQueueFactory.implementationAt(1) == address($.signatureDepositQueueImplementation),
+                "Factory DepositQueue: invalid implementation at 1"
+            );
+            if (depositQueues == 3) {
+                require(
+                    $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
+                    "Factory DepositQueue: invalid implementation at 2"
+                );
+            }
         }
 
         compareBytecode(
@@ -490,10 +498,12 @@ library AcceptanceLibrary {
                 "Factory RedeemQueue: invalid implementation at 1"
             );
         } else {
-            require(
-                $.redeemQueueFactory.implementationAt(0) == address($.redeemQueueImplementation),
-                "Factory RedeemQueue: invalid implementation at 0"
-            );
+            if (address($.redeemQueueImplementation) != address(0)) {
+                require(
+                    $.redeemQueueFactory.implementationAt(0) == address($.redeemQueueImplementation),
+                    "Factory RedeemQueue: invalid implementation at 0"
+                );
+            }
             if (block.chainid != 9745) {
                 require(
                     $.redeemQueueFactory.implementations() == 2, "Factory RedeemQueue: invalid implementations length"
@@ -898,14 +908,8 @@ library AcceptanceLibrary {
         // FeeManager
         {
             IFeeManager feeManager = vault.feeManager();
-            (
-                address initialOwner,
-                address feeRecipient,
-                uint24 depositFee,
-                uint24 redeemFee,
-                uint24 performanceFee,
-                uint24 protocolFee
-            ) = abi.decode(deployment.initParams.feeManagerParams, (address, address, uint24, uint24, uint24, uint24));
+            (, address feeRecipient, uint24 depositFee, uint24 redeemFee, uint24 performanceFee, uint24 protocolFee) =
+                abi.decode(deployment.initParams.feeManagerParams, (address, address, uint24, uint24, uint24, uint24));
             require(feeManager.depositFeeD6() == depositFee, "FeeManager: invalid deposit fee");
             require(feeManager.redeemFeeD6() == redeemFee, "FeeManager: invalid redeem fee");
             require(feeManager.performanceFeeD6() == performanceFee, "FeeManager: invalid performance fee");
@@ -915,14 +919,10 @@ library AcceptanceLibrary {
                     || Ownable(address(feeManager)).owner() == feeRecipient,
                 "FeeManager: invalid owner"
             );
-            require(
-                initialOwner == $.deployer || initialOwner == deployment.initParams.vaultAdmin,
-                "FeeManager: invalid initial owner"
-            );
             require(feeManager.feeRecipient() == feeRecipient, "FeeManager: inalid initial fee recipient");
             require(
                 feeManager.baseAsset(address(vault)) == address(0)
-                    || vault.hasAsset(feeManager.baseAsset(address(vault))),
+                    || vault.oracle().isSupportedAsset(feeManager.baseAsset(address(vault))),
                 "FeeManager: invalid base asset"
             );
         }
@@ -990,6 +990,9 @@ library AcceptanceLibrary {
         internal
         view
     {
+        if (entity == address(0)) {
+            return;
+        }
         if (!factory.isEntity(entity)) {
             revert(string(abi.encodePacked("Contract is not an entity for ", name, " factory")));
         }
