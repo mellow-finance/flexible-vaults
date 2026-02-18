@@ -13,6 +13,9 @@ library Constants {
     address public constant WETH = 0x4200000000000000000000000000000000000006;
     address public constant WSTETH = 0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452;
 
+    address public constant USDC = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913;
+    address public constant MUSD = address(0xdead);
+
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
     address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
 
@@ -86,8 +89,8 @@ library Constants {
         OracleSubmitterFactory(0x000000051CDb58AB93997745Fc58Ec873C1055e2);
 
     DeployVaultFactoryRegistry public constant deployVaultFactoryRegistry =
-        DeployVaultFactoryRegistry(0x0000000B584a670D7C438165354304E09bC4C061);
+        DeployVaultFactoryRegistry(0x00000005Cb10C02C0373D540103f1D017C69536A);
 
     DeployVaultFactory public constant deployVaultFactory =
-        DeployVaultFactory(0x000000049958f02B405F97A3181d3754d44c8CA2);
+        DeployVaultFactory(0x0000000f6d3CA34974A404fc07aC155033C71335);
 }

@@ -77,6 +77,9 @@ abstract contract DeployAbstractScript is Test {
     uint256 riskManagerVersion = 0;
     uint256 oracleVersion = 0;
 
+    bool emptyVault = false;
+    bool deployOracleSubmitter = true;
+
     /// @dev fill after step one and run script again to finalize deployment
     Vault internal vault;
 
@@ -139,11 +142,11 @@ abstract contract DeployAbstractScript is Test {
     function _simulate() internal {
         IDeployVaultFactory.DeployVaultConfig memory config = getConfig();
 
-        Vault vault_ = stepOne(config);
+        vault = stepOne(config);
         skip(1 seconds);
-        SubvaultCalls[] memory calls = stepTwo(vault_);
+        SubvaultCalls[] memory calls = stepTwo(vault);
 
-        checkDeployment(address(vault_), calls, config, Constants.protocolDeployment());
+        checkDeployment(address(vault), calls, config, Constants.protocolDeployment());
         revert("simulation successful");
     }
 
@@ -206,7 +209,7 @@ abstract contract DeployAbstractScript is Test {
             allowedAssetsPrices: allowedAssetsPrices,
             subvaultParams: getSubvaultParams(),
             queues: queues,
-            deployOracleSubmitter: true,
+            deployOracleSubmitter: deployOracleSubmitter,
             securityParams: securityParams,
             defaultDepositHook: defaultDepositHook,
             defaultRedeemHook: defaultRedeemHook,
@@ -219,7 +222,8 @@ abstract contract DeployAbstractScript is Test {
             oracleVersion: oracleVersion,
             timelockController: address(0),
             oracleSubmitter: address(0),
-            deployer: address(0)
+            deployer: address(0),
+            emptyVault: emptyVault
         });
 
         deployVault.registry().validateDeployConfig(config);

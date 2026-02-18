@@ -13,13 +13,8 @@ import {IPositionManagerV4} from "../common/interfaces/IPositionManagerV4.sol";
 
 import "../common/protocols/UniswapV4Library.sol";
 import "./DeployAbstractScript.s.sol";
-import {mezoBTCLibrary} from "./mezoBTCLibrary.sol";
 
 contract Deploy is DeployAbstractScript {
-    address[] uniswapV3Pools;
-    bytes25[] uniswapV4Pools;
-    bytes32 constant ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
-
     function run() external {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
@@ -41,6 +36,8 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill name and symbol
         vaultName = "Mezo Stable Vault";
         vaultSymbol = "msvUSD";
+        emptyVault = true;
+        deployOracleSubmitter = false;
 
         /// @dev fill admin/operational addresses
         proxyAdmin = 0x54977739CF18B316f47B1e10E3068Bb3F04e08B6; // 3/4 Mellow +
@@ -81,7 +78,7 @@ contract Deploy is DeployAbstractScript {
         shareManagerWhitelistMerkleRoot = bytes32(0);
 
         /// @dev fill risk manager params
-        riskManagerLimit = type(uint256).max;
+        riskManagerLimit = type(int256).max;
 
         /// @dev fill versions
         vaultVersion = 0;
@@ -100,10 +97,10 @@ contract Deploy is DeployAbstractScript {
     {
         subvaultParams = new IDeployVaultFactory.SubvaultParams[](1);
 
-        subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MUSD, Constants.USDC));
+        subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.MUSD));
         subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[0].verifierVersion = 0;
-        subvaultParams[0].limit = type(uint256).max;
+        subvaultParams[0].limit = type(int256).max;
     }
 
     /// @dev fill in queue parameters
@@ -112,8 +109,7 @@ contract Deploy is DeployAbstractScript {
         pure
         override
         returns (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit)
-    {
-    }
+    {}
 
     /// @dev fill in allowed assets/base asset and subvault assets
     function getAssetsWithPrices()
@@ -122,11 +118,11 @@ contract Deploy is DeployAbstractScript {
         override
         returns (address[] memory allowedAssets, uint224[] memory allowedAssetsPrices)
     {
-        allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.MUSD, Constants.USDC));
+        allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.MUSD));
 
         allowedAssetsPrices = new uint224[](allowedAssets.length);
-        allowedAssetsPrices[0] = 1 ether; // 18 decimals
-        allowedAssetsPrices[1] = 1e28; // 8 decimals
+        allowedAssetsPrices[0] = 1 ether; // 6 decimals
+        allowedAssetsPrices[1] = 1e6; // 18 decimals
     }
 
     /// @dev fill in vault role holders
@@ -175,22 +171,6 @@ contract Deploy is DeployAbstractScript {
         holders[index++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
     }
 
-    function getTokenIdsV4(bytes25[] memory pools) internal pure returns (uint256[] memory tokenIds) {
-        /* there is no way to fetch tokenIds belongs to subvault
-            Minting Uniswap V4 positions at pool tBTC/cbBTC
-            Minted Uniswap V4 tokenId: 143327 [-230316, -230216]
-            Minted Uniswap V4 tokenId: 143330 [-230291, -230241]
-            Minted Uniswap V4 tokenId: 143331 [-230316, -230266]
-            Minted Uniswap V4 tokenId: 143332 [-230266, -230216]
-        */
-        tokenIds = new uint256[](4);
-        tokenIds[0] = 143327;
-        tokenIds[1] = 143330;
-        tokenIds[2] = 143331;
-        tokenIds[3] = 143332;
-        return tokenIds;
-    }
-
     /// @dev fill in merkle roots
     function getSubvaultMerkleRoot(uint256 index)
         internal
@@ -206,20 +186,16 @@ contract Deploy is DeployAbstractScript {
 
         if (index == 0) {
             (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault0MerkleRoot(address(subvault));
-        } else if (index == 1) {
-            (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault1MerkleRoot(address(subvault));
         } else {
             revert("Invalid subvault index");
         }
+        /*
+                ProofLibrary.storeProofs(jsonSubvaultName, merkleRoot, leaves, descriptions);
 
-        ProofLibrary.storeProofs(jsonSubvaultName, merkleRoot, leaves, descriptions);
+                vm.prank(lazyVaultAdmin);
+                verifier.setMerkleRoot(merkleRoot);
 
-        vm.prank(lazyVaultAdmin);
-        verifier.setMerkleRoot(merkleRoot);
-
-        checkVerifyCalls();
-
-        AcceptanceLibrary.runVerifyCallsChecks(verifier, calls);
+                AcceptanceLibrary.runVerifyCallsChecks(verifier, calls); */
     }
 
     function _getSubvault0MerkleRoot(address subvault)
@@ -232,70 +208,7 @@ contract Deploy is DeployAbstractScript {
             string memory jsonSubvaultName
         )
     {
-        address swapModule;
-        // allow to swap not allowed assets because of LPing
-        address[3] memory swapModuleAssets = [Constants.TBTC, Constants.WBTC, Constants.CBBTC];
-        {
-            address[] memory actors = ArraysLibrary.makeAddressArray(
-                abi.encode(curator, swapModuleAssets, swapModuleAssets, Constants.KYBERSWAP_ROUTER)
-            );
-            bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
-                abi.encode(
-                    Permissions.SWAP_MODULE_CALLER_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_ROUTER_ROLE
-                )
-            );
-
-            swapModule = 0xA56ef88a2D196c9A706e084420a9a6B307B1A7Ff; //_deploySwapModule(address(subvault), actors, permissions);
-        }
-
-        mezoBTCLibrary.Info0 memory info = mezoBTCLibrary.Info0({
-            curator: curator,
-            subvault: address(subvault),
-            swapModule: swapModule,
-            subvaultName: "subvault0",
-            swapModuleAssets: ArraysLibrary.makeAddressArray(abi.encode(swapModuleAssets)),
-            positionManagerV3: Constants.UNISWAP_V3_POSITION_MANAGER,
-            uniswapV3Pools: uniswapV3Pools,
-            positionManagerV4: Constants.UNISWAP_V4_POSITION_MANAGER,
-            uniswapV4TokenIds: getTokenIdsV4(uniswapV4Pools)
-        });
-
-        IVerifier verifier = Subvault(payable(subvault)).verifier();
-
-        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault0Data(info);
-        jsonSubvaultName = "ethereum:mbhBTC:subvault0";
-    }
-
-    function _getSubvault1MerkleRoot(address subvault)
-        private
-        returns (
-            bytes32 merkleRoot,
-            IVerifier.VerificationPayload[] memory leaves,
-            string[] memory descriptions,
-            SubvaultCalls memory calls,
-            string memory jsonSubvaultName
-        )
-    {
-        mezoBTCLibrary.Info1 memory info = mezoBTCLibrary.Info1({
-            curator: curator,
-            subvault: subvault,
-            subvaultName: "subvault1",
-            yieldBasisTokens: ArraysLibrary.makeAddressArray(
-                abi.encode(Constants.YIELD_BASIS_TBTC_TOKEN, Constants.YIELD_BASIS_WBTC_TOKEN)
-            )
-        });
-
-        IVerifier verifier = Subvault(payable(subvault)).verifier();
-
-        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault1Data(info);
-        jsonSubvaultName = "ethereum:mbhBTC:subvault1";
+        jsonSubvaultName = "base:mbhBTC:subvault0";
     }
 
     function _deploySwapModule(address subvault, address[] memory actors, bytes32[] memory permissions)

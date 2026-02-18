@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/Create2.sol";
 import "forge-std/Script.sol";
 import "src/DeployVaultFactory.sol";
 import "src/DeployVaultFactoryRegistry.sol";
-//import "src/OracleSubmitterFactory.sol";
+import "src/OracleSubmitterFactory.sol";
 
 contract Deploy is Script {
     uint256 startSalt = 0;
@@ -17,12 +17,13 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
-        address vaultConfigurator = 0x9B626C849eaBe8486DDFeb439c97d327447e5996;
-        address verifierFactory = 0x10B98695aBeeC98FADaeE5155819434670936206;
-        address oracleSubmitterFactory = 0x000000051CDb58AB93997745Fc58Ec873C1055e2;
+        address vaultConfigurator = 0x0000000005a67199ABE0f9C995EAB9DaDfA31Ccd;
+        address verifierFactory = 0x9fBAF5AEB9F52bA57E1cC1D3050eac6d75Df8ae7;
 
         address registry =
             _deployWithOptimalSalt("DeployVaultFactoryRegistry", type(DeployVaultFactoryRegistry).creationCode, "");
+        address oracleSubmitterFactory =
+            _deployWithOptimalSalt("OracleSubmitterFactory", type(OracleSubmitterFactory).creationCode, "");
 
         _deployWithOptimalSalt(
             "DeployVaultFactory",

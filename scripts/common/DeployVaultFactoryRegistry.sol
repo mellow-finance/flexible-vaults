@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../scripts/common/Permissions.sol";
-import "../scripts/common/interfaces/IDeployVaultFactory.sol";
-import "../scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
-import "../scripts/common/interfaces/IOracleSubmitterFactory.sol";
+import "./Permissions.sol";
+import "./interfaces/IDeployVaultFactory.sol";
+import "./interfaces/IDeployVaultFactoryRegistry.sol";
+import "./interfaces/IOracleSubmitterFactory.sol";
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
@@ -295,7 +295,7 @@ contract DeployVaultFactoryRegistry is IDeployVaultFactoryRegistry {
                 revert ZeroAddress();
             }
         }
-        
+
         for (uint256 i = 0; i < $.allowedAssetsPrices.length; i++) {
             if ($.allowedAssetsPrices[i] == 0) {
                 revert ZeroValue();
