@@ -58,8 +58,6 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
 
-        Ownable(0xc093E5Eccc196dd79467d208b706D08724ade1b6).transferOwnership(proxyAdmin);
-
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;
 

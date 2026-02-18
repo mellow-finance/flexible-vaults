@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
+import "forge-std/Script.sol";
+import "forge-std/Test.sol";
+
 import "../common/interfaces/ICowswapSettlement.sol";
 import {IWETH as WETHInterface} from "../common/interfaces/IWETH.sol";
 import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
@@ -17,11 +20,8 @@ import "../../src/vaults/VaultConfigurator.sol";
 import "../common/AcceptanceLibrary.sol";
 import "../common/Permissions.sol";
 import "../common/ProofLibrary.sol";
-import "forge-std/Script.sol";
-import "forge-std/Test.sol";
 
 import "./Constants.sol";
-import "./earnUSDLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
 

@@ -21,11 +21,7 @@ contract Deploy is Script {
         vm.startBroadcast(deployerPk);
 
         SwapModule impl = new SwapModule{salt: 0xe98be1e5538fcbd716c506052eb1fd5d6fc495a38d68cf46272e5289a2050048}(
-            DEPLOYMENT_NAME,
-            DEPLOYMENT_VERSION,
-            address(0),
-            address(0),
-            Constants.WMON
+            DEPLOYMENT_NAME, DEPLOYMENT_VERSION, address(0), address(0), Constants.WMON
         );
 
         IFactory swapModuleFactory =
@@ -37,7 +33,6 @@ contract Deploy is Script {
 
         console.log("SwapModuleFactory", address(swapModuleFactory));
         console.log("SwapModule implementation", address(impl));
-
 
         vm.stopBroadcast();
         // revert("ok");
