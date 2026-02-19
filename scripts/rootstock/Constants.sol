@@ -13,15 +13,13 @@ library Constants {
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
     address public constant RBTC = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-    address public constant WRBTC = 0x967F8799aF07dF1534d48A95a5C9FEBE92c53AE0;
+    address public constant WRBTC = 0x542fDA317318eBF1d3DEAf76E0b632741A7e677d;
     address public constant UTILA_ACCOUNT = 0xA380682204147122A32573FE369F53b8236c38C7;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
             deploymentVersion: DEPLOYMENT_VERSION,
-            cowswapSettlement: address(0),
-            cowswapVaultRelayer: address(0),
             eigenLayerDelegationManager: address(0),
             eigenLayerStrategyManager: address(0),
             eigenLayerRewardsCoordinator: address(0),
@@ -54,7 +52,6 @@ library Constants {
             // --- implementations ---
             consensusImplementation: Consensus(0x0000000Ee53D9707851626b0E8485A8599bE95E7),
             depositQueueImplementation: DepositQueue(payable(0x0000000eED98Aca517473d134Cc1a79c5a23b591)),
-            syncDepositQueueImplementation: SyncDepositQueue(payable(0)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000009A6488c99272A1ae297b7f364A348ba55)),
             syncDepositQueueImplementation: SyncDepositQueue(payable(0x0000000D38799D88008747b874822f55f0D35F6a)),
             redeemQueueImplementation: RedeemQueue(payable(0x0000000A37A76557eAf5FF84D537C19aefb61c69)),
