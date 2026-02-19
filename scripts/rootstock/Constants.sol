@@ -25,6 +25,8 @@ library Constants {
             eigenLayerDelegationManager: address(0),
             eigenLayerStrategyManager: address(0),
             eigenLayerRewardsCoordinator: address(0),
+            cowswapSettlement: address(0),
+            cowswapVaultRelayer: address(0),
             symbioticVaultFactory: address(0),
             symbioticFarmFactory: address(0),
             wsteth: address(0),
@@ -52,6 +54,7 @@ library Constants {
             // --- implementations ---
             consensusImplementation: Consensus(0x0000000Ee53D9707851626b0E8485A8599bE95E7),
             depositQueueImplementation: DepositQueue(payable(0x0000000eED98Aca517473d134Cc1a79c5a23b591)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000009A6488c99272A1ae297b7f364A348ba55)),
             syncDepositQueueImplementation: SyncDepositQueue(payable(0x0000000D38799D88008747b874822f55f0D35F6a)),
             redeemQueueImplementation: RedeemQueue(payable(0x0000000A37A76557eAf5FF84D537C19aefb61c69)),

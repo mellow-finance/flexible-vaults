@@ -8,7 +8,7 @@
       "description": {
         "integration": "bridge_usdc_to_monad",
         "protocol": "CCTP",
-        "description": "IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
+        "description": "IERC20(USDC).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -57,7 +57,7 @@
       "description": {
         "integration": "bridge_usdc_to_monad",
         "protocol": "CCTP",
-        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,15,0x000000000000000000000000D65C52Ef0ABB63EA1415759CE1db8534D635d441,0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,0x0000000000000000000000002d947C132E8f36cFDe1eb14bcDd692cA3d14A58C,0,2000)",
+        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,15,0x000000000000000000000000D65C52Ef0ABB63EA1415759CE1db8534D635d441,USDC,0x0000000000000000000000002d947C132E8f36cFDe1eb14bcDd692cA3d14A58C,0,2000)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
@@ -136,7 +136,7 @@
       "description": {
         "integration": "bridge_usdc_to_hyperevm",
         "protocol": "CCTP",
-        "description": "IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
+        "description": "IERC20(USDC).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -185,7 +185,7 @@
       "description": {
         "integration": "bridge_usdc_to_hyperevm",
         "protocol": "CCTP",
-        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,19,0x000000000000000000000000fE9A7df88be49Bca543665e17b05D268781c700f,0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,0x0000000000000000000000000E1661C48246c9E21ec4063B72D683c09757e777,0,2000)",
+        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,19,0x000000000000000000000000fE9A7df88be49Bca543665e17b05D268781c700f,USDC,0x0000000000000000000000000E1661C48246c9E21ec4063B72D683c09757e777,0,2000)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
@@ -263,7 +263,7 @@
       "description": {
         "integration": "bridge_usdt_to_plasma",
         "protocol": "OFT",
-        "description": "IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7).approve(0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee,any)",
+        "description": "IERC20(USDT).approve(0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -472,7 +472,7 @@
       "description": {
         "integration": "bridge_usde_to_plasma",
         "protocol": "OFT",
-        "description": "IERC20(0x4c9EDD5852cd905f086C759E8383e09bff1E68B3).approve(0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34,any)",
+        "description": "IERC20(USDe).approve(0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
@@ -682,7 +682,7 @@
       "description": {
         "integration": "bridge_susde_to_plasma",
         "protocol": "OFT",
-        "description": "IERC20(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497).approve(0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2,any)",
+        "description": "IERC20(sUSDe).approve(0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
@@ -891,7 +891,7 @@
       "description": {
         "integration": "bridge_syrup_usdt_to_plasma",
         "protocol": "CCIP",
-        "description": "IERC20(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D).approve(0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D,any)",
+        "description": "IERC20(syrupUSDT).approve(0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -940,7 +940,7 @@
       "description": {
         "integration": "bridge_syrup_usdt_to_plasma",
         "protocol": "CCIP",
-        "description": "ICCIPRouterClient(0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D).ccipSend{value: any}(9335212494177455608,(0x0000000000000000000000004E2126de8129f5cb650D86C3E730FEF29D794644,0x,[(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D,any)],0x0000000000000000000000000000000000000000,0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))",
+        "description": "ICCIPRouterClient(0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D).ccipSend{value: any}(9335212494177455608,(0x0000000000000000000000004E2126de8129f5cb650D86C3E730FEF29D794644,0x,[(syrupUSDT,any)],0x0000000000000000000000000000000000000000,0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D",
@@ -1039,7 +1039,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
+        "description": "IERC20(sUSDe).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
@@ -1088,7 +1088,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x4c9EDD5852cd905f086C759E8383e09bff1E68B3).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
+        "description": "IERC20(USDe).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
@@ -1137,7 +1137,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
+        "description": "IERC20(USDC).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -1186,7 +1186,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
+        "description": "IERC20(USDT).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -1235,7 +1235,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
+        "description": "IERC20(syrupUSDT).approve(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -1284,7 +1284,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1327,7 +1327,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(0x4c9EDD5852cd905f086C759E8383e09bff1E68B3,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(USDe,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1369,7 +1369,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1412,7 +1412,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(0xdAC17F958D2ee523a2206206994597C13D831ec7,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1455,7 +1455,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pushAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1498,7 +1498,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1541,7 +1541,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(0x4c9EDD5852cd905f086C759E8383e09bff1E68B3,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(USDe,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1584,7 +1584,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1627,7 +1627,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(0xdAC17F958D2ee523a2206206994597C13D831ec7,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1670,7 +1670,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D,any)",
+        "description": "ISwapModule(0x82419c84fd5E4ae074b798b65f33ed99AaE637b7).pullAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x82419c84fd5E4ae074b798b65f33ed99AaE637b7",
@@ -1713,7 +1713,7 @@
       "description": {
         "integration": "syrup_usdt",
         "protocol": "SyrupUSDT",
-        "description": "ISyrup(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D).requestRedeem(any,0x0D18b333A11DeD583537eAa9b447A3127A773049)",
+        "description": "ISyrup(syrupUSDT).requestRedeem(any,0x0D18b333A11DeD583537eAa9b447A3127A773049)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",

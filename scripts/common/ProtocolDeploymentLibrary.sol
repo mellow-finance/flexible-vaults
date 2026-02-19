@@ -63,7 +63,6 @@ struct ProtocolDeployment {
     address weth;
     address proxyAdmin;
     address deployer;
-
     Factory factoryImplementation;
     Factory factory;
     Factory erc20VerifierFactory;
@@ -81,7 +80,6 @@ struct ProtocolDeployment {
     Factory oracleFactory;
     Factory swapModuleFactory;
     Factory accountFactory;
-
     Consensus consensusImplementation;
     DepositQueue depositQueueImplementation;
     SignatureDepositQueue signatureDepositQueueImplementation;
@@ -102,7 +100,6 @@ struct ProtocolDeployment {
     SymbioticVerifier symbioticVerifierImplementation;
     EigenLayerVerifier eigenLayerVerifierImplementation;
     SwapModule swapModuleImplementation;
-    
     VaultConfigurator vaultConfigurator;
     BasicRedeemHook basicRedeemHook;
     RedirectingDepositHook redirectingDepositHook;

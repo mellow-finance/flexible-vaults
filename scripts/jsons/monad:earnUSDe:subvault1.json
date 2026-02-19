@@ -8,7 +8,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC20(0x754704Bc059F8C67012fEd69BC8A327a5aafb603).approve(0x6b343f7b797f1488aa48c49d540690f2b2c89751,any)",
+        "description": "IERC20(USDC).approve(edgeUSDC,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
@@ -55,7 +55,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x6B343F7B797f1488AA48C49d540690F2b2c89751).deposit(any,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(edgeUSDC).deposit(any,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",
@@ -102,7 +102,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x6B343F7B797f1488AA48C49d540690F2b2c89751).mint(any,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(edgeUSDC).mint(any,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",
@@ -149,7 +149,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x6B343F7B797f1488AA48C49d540690F2b2c89751).withdraw(any,0x7E767B87E18E0978d33Be607844DAf8d55648066,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(edgeUSDC).withdraw(any,0x7E767B87E18E0978d33Be607844DAf8d55648066,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",
@@ -201,7 +201,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x6B343F7B797f1488AA48C49d540690F2b2c89751).redeem(any,0x7E767B87E18E0978d33Be607844DAf8d55648066,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(edgeUSDC).redeem(any,0x7E767B87E18E0978d33Be607844DAf8d55648066,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",

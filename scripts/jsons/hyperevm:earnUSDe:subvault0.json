@@ -8,7 +8,7 @@
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
-        "description": "IERC20(0xb88339CB7199b77E23DB6E890353E22632Ba630f).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
+        "description": "IERC20(USDC).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
@@ -53,7 +53,7 @@
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
-        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,0xb88339CB7199b77E23DB6E890353E22632Ba630f,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
+        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,USDC,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
