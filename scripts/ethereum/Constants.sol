@@ -107,6 +107,11 @@ library Constants {
     address public constant GGV = 0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09;
     address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
 
+    address public constant EARN_USD = 0x8FFa4D9FBa523044429D2E51aC055726959942d8;
+    address public constant EARN_USDC = 0x8F281A5fC4Fc588842923DE678ccC48Fc36AB631;
+    address public constant EARN_USDE = 0x2816f240109845661ba27b3D0148f211c5921553;
+    address public constant EARN_ETH = 0x6a37725ca7f4CE81c004c955f7280d5C704a249e;
+
     address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;
 
     address public constant CURVE_USDC_USDU_POOL = 0x771c91e699B4B23420de3F81dE2aA38C4041632b;
@@ -153,6 +158,8 @@ library Constants {
     address public constant YIELD_BASIS_WBTC_TOKEN = 0xfBF3C16676055776Ab9B286492D8f13e30e2E763;
     address public constant YIELD_BASIS_CBBTC_TOKEN = 0xAC0cfa7742069a8af0c63e14FFD0fe6b3e1Bf8D2;
 
+    address public constant MEZO_NATIVE_BRIDGE = 0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c;
+
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
@@ -160,6 +167,8 @@ library Constants {
             eigenLayerDelegationManager: EIGEN_LAYER_DELEGATION_MANAGER,
             eigenLayerStrategyManager: EIGEN_LAYER_STRATEGY_MANAGER,
             eigenLayerRewardsCoordinator: EIGEN_LAYER_REWARDS_COORDINATOR,
+            cowswapSettlement: COWSWAP_SETTLEMENT,
+            cowswapVaultRelayer: COWSWAP_VAULT_RELAYER,
             symbioticVaultFactory: SYMBIOTIC_VAULT_FACTORY,
             symbioticFarmFactory: SYMBIOTIC_FARM_FACTORY,
             wsteth: WSTETH,
@@ -182,6 +191,7 @@ library Constants {
             symbioticVerifierFactory: Factory(0x41C443F10a92D597e6c9E271140BC94c10f5159F),
             eigenLayerVerifierFactory: Factory(0x77A83AcBf7A6df20f1D681b4810437d74AE790F8),
             swapModuleFactory: Factory(0xE3575055a24d8642DFA3a51ec766Ef2db2671659),
+            accountFactory: Factory(0xCa027f59521E808EFdaF6f338D4269833451118A),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
             syncDepositQueueImplementation: SyncDepositQueue(payable(0x000000002E2aeaC5Fe65AaB6fE2E6AE0e44F1A3A)),
@@ -192,6 +202,9 @@ library Constants {
             oracleImplementation: Oracle(0x0000000F0d3D1c31b72368366A4049C05E291D58),
             riskManagerImplementation: RiskManager(0x0000000714cf2851baC1AE2f41871862e9D216fD),
             tokenizedShareManagerImplementation: TokenizedShareManager(0x0000000E8eb7173fA1a3ba60eCA325bcB6aaf378),
+            burnableTokenizedShareManagerImplementation: BurnableTokenizedShareManager(
+                0x000000000c79D2B5cD58AE545afc83030233D7B6
+            ),
             basicShareManagerImplementation: BasicShareManager(0x00000005564AAE40D88e2F08dA71CBe156767977),
             subvaultImplementation: Subvault(payable(0x0000000E535B4E063f8372933A55470e67910a66)),
             verifierImplementation: Verifier(0x000000047Fc878662006E78D5174FB4285637966),
@@ -205,298 +218,11 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(0x000000065d1A7bD71f52886910aaBE6555b7317c),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
-            swapModuleImplementation: SwapModule(payable(0x00000000d681E85e5783588f87A9573Cb97Eda01))
+            swapModuleImplementation: SwapModule(payable(0x00000000d681E85e5783588f87A9573Cb97Eda01)),
+            mellowAccountV1Implementation: MellowAccountV1(0x00000000028E2Bc6FABc9e8B9c7d5D411982Ff8e)
         });
     }
 
     DeployVaultFactory public constant deployVaultFactory =
         DeployVaultFactory(0xdE0000006a45bfD6a310C51c42bBE256847bB6d5);
-
-    function getTqETHPreProdDeployment() internal pure returns (VaultDeployment memory $) {
-        address proxyAdmin = 0xC1211878475Cd017fecb922Ae63cc3815FA45652;
-        address lazyVaultAdmin = 0xE8bEc6Fb52f01e487415D3Ed3797ab92cBfdF498;
-        address activeVaultAdmin = 0x7885B30F0DC0d8e1aAf0Ed6580caC22d5D09ff4f;
-        address oracleUpdater = 0x3F1C3Eb0bC499c1A091B635dEE73fF55E19cdCE9;
-        address curator = 0x55666095cD083a92E368c0CBAA18d8a10D3b65Ec;
-        address pauser1 = 0xFeCeb0255a4B7Cd05995A7d617c0D52c994099CF;
-        address pauser2 = 0x8b7C1b52e2d606a526abD73f326c943c75e45Bd3;
-
-        address timelockController = 0xFA4B93A6A482dE973cAcFd89e8CB7a425016Fb89;
-        ProtocolDeployment memory pd = protocolDeployment();
-        address deployer = pd.deployer;
-
-        address[] memory assets_ = new address[](3);
-        assets_[0] = Constants.ETH;
-        assets_[1] = Constants.WETH;
-        assets_[2] = Constants.WSTETH;
-
-        {
-            Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
-
-            uint256 i = 0;
-            // activeVaultAdmin roles:
-            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
-
-            // emergeny pauser roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
-            holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
-
-            // oracle updater roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
-
-            // curator roles:
-            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
-
-            // deployer roles:
-            holders[i++] = Vault.RoleHolder(Permissions.CREATE_QUEUE_ROLE, deployer);
-            holders[i++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
-            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, deployer);
-            assembly {
-                mstore(holders, i)
-            }
-
-            $.initParams = VaultConfigurator.InitParams({
-                version: 0,
-                proxyAdmin: proxyAdmin,
-                vaultAdmin: lazyVaultAdmin,
-                shareManagerVersion: 0,
-                shareManagerParams: abi.encode(bytes32(0), "Theoriq AlphaVault ETH", "tqETH"),
-                feeManagerVersion: 0,
-                feeManagerParams: abi.encode(deployer, lazyVaultAdmin, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
-                riskManagerVersion: 0,
-                riskManagerParams: abi.encode(type(int256).max),
-                oracleVersion: 0,
-                oracleParams: abi.encode(
-                    IOracle.SecurityParams({
-                        maxAbsoluteDeviation: 0.005 ether,
-                        suspiciousAbsoluteDeviation: 0.001 ether,
-                        maxRelativeDeviationD18: 0.005 ether,
-                        suspiciousRelativeDeviationD18: 0.001 ether,
-                        timeout: 1 hours,
-                        depositInterval: 1 hours,
-                        redeemInterval: 2 days
-                    }),
-                    assets_
-                ),
-                defaultDepositHook: address(pd.redirectingDepositHook),
-                defaultRedeemHook: address(pd.basicRedeemHook),
-                queueLimit: 6,
-                roleHolders: holders
-            });
-        }
-
-        $.vault = Vault(payable(0xf328463fb20d9265C612155F4d023f8cD79916C7));
-
-        {
-            Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](50);
-            uint256 i = 0;
-
-            // lazyVaultAdmin roles:
-            holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
-
-            // activeVaultAdmin roles:
-            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
-
-            // emergeny pauser roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
-            holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
-
-            // oracle updater roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
-
-            // curator roles:
-            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
-
-            assembly {
-                mstore(holders, i)
-            }
-            $.holders = holders;
-        }
-
-        $.depositHook = address(pd.redirectingDepositHook);
-        $.redeemHook = address(pd.basicRedeemHook);
-        $.assets = assets_;
-        $.depositQueueAssets = assets_;
-        $.redeemQueueAssets = assets_;
-        $.subvaultVerifiers = new address[](1);
-        $.subvaultVerifiers[0] = 0x972C2c6b0f11dC748635b00dAD36Bf0BdE08Aa82;
-        $.timelockControllers = new address[](1);
-        $.timelockControllers[0] = timelockController;
-
-        $.timelockProposers = new address[](2);
-        $.timelockProposers[0] = lazyVaultAdmin;
-        $.timelockProposers[1] = deployer;
-
-        $.timelockExecutors = new address[](2);
-        $.timelockExecutors[0] = pauser1;
-        $.timelockExecutors[1] = pauser2;
-        $.calls = new SubvaultCalls[](1);
-        // (, IVerifier.VerificationPayload[] memory leaves) = tqETHLibrary.getSubvault0Proofs(curator);
-        // $.calls[0] = tqETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
-    }
-
-    function getStrETHDeployment() internal pure returns (VaultDeployment memory $) {
-        address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
-        address lazyVaultAdmin = 0xAbE20D266Ae54b9Ae30492dEa6B6407bF18fEeb5;
-        address activeVaultAdmin = 0xeb1CaFBcC8923eCbc243ff251C385C201A6c734a;
-        address oracleUpdater = 0xd27fFB15Dd00D5E52aC2BFE6d5AFD36caE850081;
-        address curator = 0x5Dbf9287787A5825beCb0321A276C9c92d570a75;
-        address lidoPauser = 0xA916fD5252160A7E56A6405741De76dc0Da5A0Cd;
-        address mellowPauser = 0xa6278B726d4AA09D14f9E820D7785FAd82E7196F;
-        address treasury = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
-        address timelockController = 0x8D8b65727729Fb484CB6dc1452D61608a5758596;
-
-        ProtocolDeployment memory pd = protocolDeployment();
-        address deployer = pd.deployer;
-
-        address[] memory assets_ = new address[](6);
-        assets_[0] = Constants.ETH;
-        assets_[1] = Constants.WETH;
-        assets_[2] = Constants.WSTETH;
-        assets_[3] = Constants.USDC;
-        assets_[4] = Constants.USDT;
-        assets_[5] = Constants.USDS;
-
-        {
-            Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
-
-            uint256 i = 0;
-
-            // lazyAdmin
-            holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
-
-            // activeVaultAdmin roles:
-            holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.DISALLOW_CALL_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
-
-            // emergeny pauser roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
-            holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
-            holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
-
-            // oracle updater roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleUpdater);
-
-            // curator roles:
-            holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
-
-            // deployer roles:
-            assembly {
-                mstore(holders, i)
-            }
-
-            $.initParams = VaultConfigurator.InitParams({
-                version: 0,
-                proxyAdmin: proxyAdmin,
-                vaultAdmin: lazyVaultAdmin,
-                shareManagerVersion: 0,
-                shareManagerParams: abi.encode(bytes32(0), "Mellow stRATEGY", "strETH"),
-                feeManagerVersion: 0,
-                feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(1e5), uint24(1e4)),
-                riskManagerVersion: 0,
-                riskManagerParams: abi.encode(type(int256).max / 2),
-                oracleVersion: 0,
-                oracleParams: abi.encode(
-                    IOracle.SecurityParams({
-                        maxAbsoluteDeviation: 0.005 ether,
-                        suspiciousAbsoluteDeviation: 0.001 ether,
-                        maxRelativeDeviationD18: 0.005 ether,
-                        suspiciousRelativeDeviationD18: 0.001 ether,
-                        timeout: 20 hours,
-                        depositInterval: 1 hours,
-                        redeemInterval: 2 days
-                    }),
-                    assets_
-                ),
-                defaultDepositHook: address(pd.redirectingDepositHook),
-                defaultRedeemHook: address(pd.basicRedeemHook),
-                queueLimit: 4,
-                roleHolders: holders
-            });
-
-            $.holders = holders;
-        }
-
-        $.vault = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
-
-        $.depositHook = address(pd.redirectingDepositHook);
-        $.redeemHook = address(pd.basicRedeemHook);
-        $.assets = assets_;
-        $.depositQueueAssets =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.ETH, Constants.WETH, Constants.WSTETH));
-        $.redeemQueueAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.WSTETH));
-        $.subvaultVerifiers = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                0xF4eA276361348b301Ba2296dB909a7c973A15451,
-                0x02e1C91C4D82af454D892FBE2c5De2c4504b2675,
-                0x1616d39a201D246cbD1B3B145234638f7719b53A,
-                0xd662dF7C0FAF0Fe6446638651b05C287806AD1AE
-            )
-        );
-        $.timelockControllers = ArraysLibrary.makeAddressArray(abi.encode(address(timelockController)));
-        $.timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
-        $.timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser));
-
-        // address[] memory subvaults = ArraysLibrary.makeAddressArray(
-        //     abi.encode(
-        //         0x90c983DC732e65DB6177638f0125914787b8Cb78,
-        //         0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,
-        //         0x181cB55f872450D16aE858D532B4e35e50eaA76D,
-        //         0x9938A09FeA37bA681A1Bd53D33ddDE2dEBEc1dA0
-        //     )
-        // );
-
-        $.calls = new SubvaultCalls[](4);
-        // {
-        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault0Proofs(curator, subvaults[0], swapModules[0]);
-        //     $.calls[0] = strETHLibrary.getSubvault0SubvaultCalls(curator, leaves);
-        // }
-        // {
-        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault1Proofs(curator, subvaults[1], address(0));
-        //     $.calls[1] = strETHLibrary.getSubvault1SubvaultCalls(curator, subvaults[1], leaves);
-        // }
-        // {
-        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault2Proofs(curator, subvaults[2], swapModules[3]);
-        //     $.calls[2] = strETHLibrary.getSubvault2SubvaultCalls(curator, subvaults[2], leaves);
-        // }
-        // {
-        //     (, IVerifier.VerificationPayload[] memory leaves) = strETHLibrary.getSubvault3Proofs(curator, subvaults[3], swapModules[4]);
-        //     $.calls[3] = strETHLibrary.getSubvault3SubvaultCalls(curator, subvaults[3], leaves);
-        // }
-    }
 }

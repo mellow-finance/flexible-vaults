@@ -81,6 +81,8 @@ interface IDeployVaultFactory {
         address timelockController;
         address oracleSubmitter;
         address deployer;
+        // if true, now queues, assets, and oracle are required
+        bool emptyVault;
     }
 
     /**

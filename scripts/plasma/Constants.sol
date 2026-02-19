@@ -16,6 +16,7 @@ library Constants {
     address public constant WXPL = 0x6100E367285b01F48D07953803A2d8dCA5D19873;
     address public constant WSTUSR = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
     address public constant USDT0 = 0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb;
+    address public constant SYRUP_USDT = 0xC4374775489CB9C56003BF2C9b12495fC64F0771;
     address public constant WETH = 0x9895D81bB462A195b4922ED7De0e3ACD007c32CB;
     address public constant WSTETH = 0xe48D935e6C9e735463ccCf29a7F11e32bC09136E;
 
@@ -58,6 +59,8 @@ library Constants {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
             deploymentVersion: DEPLOYMENT_VERSION,
+            cowswapSettlement: COWSWAP_SETTLEMENT,
+            cowswapVaultRelayer: COWSWAP_VAULT_RELAYER,
             eigenLayerDelegationManager: address(0),
             eigenLayerStrategyManager: address(0),
             eigenLayerRewardsCoordinator: address(0),
@@ -85,6 +88,7 @@ library Constants {
             eigenLayerVerifierFactory: Factory(address(0)),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
             redeemQueueImplementation: RedeemQueue(payable(0x0000000285805eac535DADdb9648F1E10DfdC411)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x0000000b2082667589A16c4cF18e9f923781c471)),
@@ -92,6 +96,7 @@ library Constants {
             oracleImplementation: Oracle(0x0000000F0d3D1c31b72368366A4049C05E291D58),
             riskManagerImplementation: RiskManager(0x0000000714cf2851baC1AE2f41871862e9D216fD),
             tokenizedShareManagerImplementation: TokenizedShareManager(0x0000000E8eb7173fA1a3ba60eCA325bcB6aaf378),
+            burnableTokenizedShareManagerImplementation: BurnableTokenizedShareManager(address(0)),
             basicShareManagerImplementation: BasicShareManager(0x00000005564AAE40D88e2F08dA71CBe156767977),
             subvaultImplementation: Subvault(payable(0x0000000E535B4E063f8372933A55470e67910a66)),
             verifierImplementation: Verifier(0x000000047Fc878662006E78D5174FB4285637966),
@@ -105,7 +110,9 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(address(0)),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
-            swapModuleImplementation: SwapModule(payable(0x00000000fF13abe88Ff02DC80d53D1d3B89b2E0F))
+            swapModuleImplementation: SwapModule(payable(0x00000000fF13abe88Ff02DC80d53D1d3B89b2E0F)),
+            mellowAccountV1Implementation: MellowAccountV1(address(0)),
+            accountFactory: Factory(address(0))
         });
     }
 }

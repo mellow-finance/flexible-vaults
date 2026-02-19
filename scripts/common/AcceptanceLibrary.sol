@@ -95,6 +95,11 @@ library AcceptanceLibrary {
             address(new DepositQueue($.deploymentName, $.deploymentVersion))
         );
         compareBytecode(
+            "SyncDepositQueue",
+            address($.syncDepositQueueImplementation),
+            address(new SyncDepositQueue($.deploymentName, $.deploymentVersion))
+        );
+        compareBytecode(
             "RedeemQueue",
             address($.redeemQueueImplementation),
             address(new RedeemQueue($.deploymentName, $.deploymentVersion))
@@ -135,12 +140,28 @@ library AcceptanceLibrary {
             address($.basicShareManagerImplementation),
             address(new BasicShareManager($.deploymentName, $.deploymentVersion))
         );
+        compareBytecode(
+            "BurnableTokenizedShareManager",
+            address($.burnableTokenizedShareManagerImplementation),
+            address(new BurnableTokenizedShareManager($.deploymentName, $.deploymentVersion))
+        );
 
         compareBytecode(
             "Subvault", address($.subvaultImplementation), address(new Subvault($.deploymentName, $.deploymentVersion))
         );
         compareBytecode(
             "Verifier", address($.verifierImplementation), address(new Verifier($.deploymentName, $.deploymentVersion))
+        );
+        compareBytecode("MellowAccountV1", address($.mellowAccountV1Implementation), address(new MellowAccountV1()));
+
+        compareBytecode(
+            "SwapModule",
+            address($.swapModuleImplementation),
+            address(
+                new SwapModule(
+                    $.deploymentName, $.deploymentVersion, $.cowswapSettlement, $.cowswapVaultRelayer, $.weth
+                )
+            )
         );
 
         compareBytecode(
@@ -378,7 +399,8 @@ library AcceptanceLibrary {
                 )
             )
         );
-        require($.shareManagerFactory.implementations() == 2, "Factory ShareManager: invalid implementations length");
+
+        require($.shareManagerFactory.implementations() >= 2, "Factory ShareManager: invalid implementations length");
         require(
             $.shareManagerFactory.implementationAt(0) == address($.tokenizedShareManagerImplementation),
             "Factory ShareManager: invalid implementation at 0"
@@ -387,6 +409,14 @@ library AcceptanceLibrary {
             $.shareManagerFactory.implementationAt(1) == address($.basicShareManagerImplementation),
             "Factory ShareManager: invalid implementation at 1"
         );
+        if ($.shareManagerFactory.implementations() == 3) {
+            require(
+                $.shareManagerFactory.implementationAt(2) == address($.burnableTokenizedShareManagerImplementation),
+                "Factory ShareManager: invalid implementation at 2"
+            );
+        } else {
+            revert("Factory ShareManager: invalid implementations length");
+        }
 
         compareBytecode(
             "Factory Consensus",
@@ -417,34 +447,22 @@ library AcceptanceLibrary {
             )
         );
 
-        if (block.chainid == 1) {
-            require(
-                $.depositQueueFactory.implementations() == 3, "Factory DepositQueue: invalid implementations length"
-            );
-            require(
-                $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
-                "Factory DepositQueue: invalid implementation at 0"
-            );
-            require(
-                $.depositQueueFactory.implementationAt(1) == address($.signatureDepositQueueImplementation),
-                "Factory DepositQueue: invalid implementation at 1"
-            );
+        require($.depositQueueFactory.implementations() >= 2, "Factory DepositQueue: invalid implementations length");
+        require(
+            $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
+            "Factory DepositQueue: invalid implementation at 0"
+        );
+        require(
+            $.depositQueueFactory.implementationAt(1) == address($.signatureDepositQueueImplementation),
+            "Factory DepositQueue: invalid implementation at 1"
+        );
+        if ($.depositQueueFactory.implementations() == 3) {
             require(
                 $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
                 "Factory DepositQueue: invalid implementation at 2"
             );
         } else {
-            require(
-                $.depositQueueFactory.implementations() == 2, "Factory DepositQueue: invalid implementations length"
-            );
-            require(
-                $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
-                "Factory DepositQueue: invalid implementation at 0"
-            );
-            require(
-                $.depositQueueFactory.implementationAt(1) == address($.signatureDepositQueueImplementation),
-                "Factory DepositQueue: invalid implementation at 1"
-            );
+            revert("Factory DepositQueue: invalid implementations length");
         }
 
         compareBytecode(
@@ -521,32 +539,35 @@ library AcceptanceLibrary {
             "Factory Oracle: invalid implementation at 0"
         );
 
-        require($.factory.isEntity(address($.depositQueueFactory)), "DepositQueueFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.redeemQueueFactory)), "RedeemQueueFactory is not Factory Factoy entity");
-        require(
-            $.factory.isEntity(address($.erc20VerifierFactory)), "ERC20VerifierFactory is not Factory Factoy entity"
-        );
+        (address implementation, address owner) = getProxyInfo(address($.factory));
+        require(implementation == address($.factoryImplementation), "Invalid base factory implementation");
+        require(owner == $.proxyAdmin, "Invalid base factory proxy admin");
+
+        _checkFactoryEntity($.factory, address($.erc20VerifierFactory), "ERC20Verifier Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.riskManagerFactory), "RiskManager Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.subvaultFactory), "Subvault Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.verifierFactory), "Verifier Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.vaultFactory), "Vault Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.shareManagerFactory), "ShareManager Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.consensusFactory), "Consensus Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.feeManagerFactory), "FeeManager Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.oracleFactory), "Oracle Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.accountFactory), "Account Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.swapModuleFactory), "SwapModule Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.depositQueueFactory), "DepositQueue Factory", $.proxyAdmin);
+        _checkFactoryEntity($.factory, address($.redeemQueueFactory), "RedeemQueue Factory", $.proxyAdmin);
+
         if (address($.symbioticVerifierFactory) != address(0)) {
-            require(
-                $.factory.isEntity(address($.symbioticVerifierFactory)),
-                "SymbioticVerifierFactory is not Factory Factoy entity"
+            _checkFactoryEntity(
+                $.factory, address($.symbioticVerifierFactory), "SymbioticVerifier Factory", $.proxyAdmin
             );
         }
 
         if (address($.eigenLayerVerifierFactory) != address(0)) {
-            require(
-                $.factory.isEntity(address($.eigenLayerVerifierFactory)),
-                "EigenLayerVerifierFactory is not Factory Factoy entity"
+            _checkFactoryEntity(
+                $.factory, address($.eigenLayerVerifierFactory), "EigenLayerVerifier Factory", $.proxyAdmin
             );
         }
-        require($.factory.isEntity(address($.riskManagerFactory)), "RiskManagerFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.subvaultFactory)), "SubvaultFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.verifierFactory)), "VerifierFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.vaultFactory)), "VaultFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.shareManagerFactory)), "ShareManagerFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.consensusFactory)), "ConsensusFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.feeManagerFactory)), "FeeManagerFactory is not Factory Factoy entity");
-        require($.factory.isEntity(address($.oracleFactory)), "OracleFactory is not Factory Factoy entity");
     }
 
     function runVaultDeploymentChecks(ProtocolDeployment memory $, VaultDeployment memory deployment) internal {

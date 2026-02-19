@@ -15,6 +15,7 @@ import {PlasmaStrETHLibrary} from "./PlasmaStrETHLibrary.sol";
 
 import {IL2GatewayRouter} from "../common/interfaces/IL2GatewayRouter.sol";
 
+import "../common/interfaces/ILayerZeroOFT.sol";
 import "../common/libraries/CCIPClient.sol";
 
 contract Deploy is Script, Test {
@@ -26,6 +27,55 @@ contract Deploy is Script, Test {
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
     function run() external {
+        // {
+        //     IVerifier.VerificationPayload memory payload;
+        //     payload.verificationType = IVerifier.VerificationType.CUSTOM_VERIFIER;
+        //     payload.verificationData =
+        //         hex"0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a71ae8c58d3e73743db9db91bef073281144659d18c2ed41772f38a762db7530400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        //     payload.proof = ArraysLibrary.makeBytes32Array(
+        //         abi.encode(
+        //             0xae80c0dbf9042d1c228dbbcf5a7f738a3071b93728daf1164174a3844cb373e9,
+        //             0x6b1eb7bc70162850439af82e02bbe01b4dc93078e63354beb0238f1c82ba2172,
+        //             0xa46f118e4139cc3595e09dccbab4127486f2305308ff82622809944dfeacdfaa,
+        //             0x491060c5134ccf2a04b00bf75b61b01e60609571836212797171727f1d51d9e6
+        //         )
+        //     );
+
+        //     ILayerZeroOFT oft = ILayerZeroOFT(0x2a52B289bA68bBd02676640aA9F605700c9e5699);
+        //     uint256 amount = 10e6 ether;
+        //     address subvault = 0xbbF9400C09B0F649F3156989F1CCb9c016f943bb;
+        //     ILayerZeroOFT.SendParam memory sendParams = ILayerZeroOFT.SendParam({
+        //         dstEid: 30101,
+        //         to: 0x000000000000000000000000ecf3bde9f50f71ede67e05050123b64b519df55c,
+        //         amountLD: amount,
+        //         minAmountLD: amount,
+        //         extraOptions: "",
+        //         composeMsg: "",
+        //         oftCmd: ""
+        //     });
+        //     uint256 fees = oft.quoteSend(sendParams, false);
+        //     fees *= 2;
+        //     console2.logBytes(
+        //         abi.encodeCall(
+        //             ICallModule.call,
+        //             (
+        //                 address(oft),
+        //                 fees,
+        //                 abi.encodeCall(
+        //                     oft.send,
+        //                     (
+        //                         sendParams,
+        //                         ILayerZeroOFT.MessagingFee(fees, 0),
+        //                         0xbbF9400C09B0F649F3156989F1CCb9c016f943bb
+        //                     )
+        //                 ),
+        //                 payload
+        //             )
+        //         )
+        //     );
+        //     return;
+        // }
+
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
@@ -111,10 +161,10 @@ contract Deploy is Script, Test {
         timelockController.renounceRole(timelockController.PROPOSER_ROLE(), deployer);
         timelockController.renounceRole(timelockController.CANCELLER_ROLE(), deployer);
 
-        console2.log("Vault: %s", address(vault));
-        console2.log("Subvault: %s", address(subvault));
-        console2.log("Verifier: %s", address(verifier));
-        console2.log("TimelockController: %s", address(timelockController));
+        console.log("Vault: %s", address(vault));
+        console.log("Subvault: %s", address(subvault));
+        console.log("Verifier: %s", address(verifier));
+        console.log("TimelockController: %s", address(timelockController));
 
         vm.stopBroadcast();
 

@@ -25,7 +25,7 @@ contract Deploy is Script {
         bytes32 salt = 0xe98be1e5538fcbd716c506052eb1fd5d6fc495a37fb4a8690ba11a6a1c14001c;
         address instance = address(new RedeemQueue{salt: salt}(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
 
-        console2.log("RedeemQueue: %s", instance);
+        console.log("RedeemQueue: %s", instance);
 
         vm.stopBroadcast();
         // revert("ok");

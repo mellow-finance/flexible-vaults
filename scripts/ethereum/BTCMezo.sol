@@ -20,6 +20,8 @@ contract Deploy is DeployAbstractScript {
     bytes25[] uniswapV4Pools;
     bytes32 constant ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
 
+    address constant MEZO_SUBVAULT0_RECIPIENT = 0x26310E42d8DE572a27Acc6C8D77946968baC5E79;
+
     function run() external {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
@@ -48,7 +50,7 @@ contract Deploy is DeployAbstractScript {
         {
             //vm.startBroadcast(deployerPk);
             //address verifier = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            //console2.log("mbhBTC subvault1 Verifier deployed at:", verifier);
+            //console.log("mbhBTC subvault1 Verifier deployed at:", verifier);
             //vm.stopBroadcast();
 
             // mbhBTC subvault1 Verifier deployed at: 0xb09918d0D0eFfE817F80FB8A9C2851fF53D52f7A
@@ -59,7 +61,7 @@ contract Deploy is DeployAbstractScript {
             // vm.stopPrank();
         }
 
-        getSubvaultMerkleRoot(0);
+        getSubvaultMerkleRoot(2);
         //_run();
         revert("ok");
     }
@@ -67,17 +69,17 @@ contract Deploy is DeployAbstractScript {
     function checkVerifyCalls() internal {
         address subvault = 0xC22642ad548183aFbe389dc667d698C60f3D9a22;
         bytes32[] memory proof = new bytes32[](5);
-        proof[0] = 0x1920282d130d3c7fb9b2ff41d97a9ae58357d63b75422dd67184a723d80e5295;
-        proof[1] = 0x384a04d4179105b4a73801038da13514358ea8ed2be987846d37d6e69736e143;
-        proof[2] = 0xac5ef343a4634cfb9761a17fe0cd7b32668b08446545ac008a9e5866711126da;
-        proof[3] = 0x07933ed5aea3fc4a52fb2ca5de95636e051591134f4ae6ccdbe553cde2e21a05;
+        proof[0] = 0x3fd4798893f2bbf51eca21a5dd2715e6d7a7a2f4f2908bb06464070760e13367;
+        proof[1] = 0x9b34e88534ef03e0e96a72c6eed6b3865b07fe92b739ed8ce76abf6fecb15070;
+        proof[2] = 0x2974969fe6718d1d3c8a40c01db079bc5c1d45e79dc63840b6d6ee529f5f1a0c;
+        proof[3] = 0xa2f5cac2292cad21052aa864c29f5804ef2dad085e7ba9eb5bc52b85800f606a;
         proof[4] = 0x896b3ac059848c17ede93481d623eba7538dd7bca1a2c548369816f76261cf99;
 
         IVerifier verifier = Subvault(payable(subvault)).verifier();
 
         //bytes memory unlockData = UniswapV4Library.makeIncreaseLiquidityUnlockData(
         //    UniswapV4Library.Info({
-        //        curator: 0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa,
+        //        curator: curator,
         //        subvault: subvault,
         //        subvaultName: "mbhBTC subvault1",
         //        positionManager: Constants.UNISWAP_V4_POSITION_MANAGER,
@@ -86,18 +88,18 @@ contract Deploy is DeployAbstractScript {
         //    143331
         //);
         bytes memory unlockData =
-            hex"000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000022fe30000000000000000000000000000000000000000000000000000221c87a3788100000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000018084fba666a33d37592fa2633fd49a74dd93a88000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf";
-        verifier.verifyCall(
-            0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa,
-            Constants.UNISWAP_V4_POSITION_MANAGER,
-            0,
-            abi.encodeCall(IPositionManagerV4.modifyLiquidities, (unlockData, block.timestamp + 1 hours)),
-            IVerifier.VerificationPayload({
-                verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
-                verificationData: hex"0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3ed70a2f760b4d986abd7a564a6b21991c314caf30f5b1f1a9695296aa517a94000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
-                proof: proof
-            })
-        );
+            hex"000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002011100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000022fe400000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000018084fba666a33d37592fa2633fd49a74dd93a88000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf000000000000000000000000c22642ad548183afbe389dc667d698c60f3d9a22";
+        bytes memory data =
+            abi.encodeCall(IPositionManagerV4.modifyLiquidities, (unlockData, block.timestamp + 1 hours));
+        IVerifier.VerificationPayload memory payload = IVerifier.VerificationPayload({
+            verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
+            verificationData: hex"0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a720790d54aae42293b00b993fcbd661fd8ef1d453cafec76d63c2719bfe80f3c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000240000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002011100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000c0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+            proof: proof
+        });
+        verifier.verifyCall(curator, Constants.UNISWAP_V4_POSITION_MANAGER, 0, data, payload);
+
+        vm.prank(curator);
+        Subvault(payable(subvault)).call(Constants.UNISWAP_V4_POSITION_MANAGER, 0, data, payload);
     }
 
     function transferOwnership() internal {
@@ -145,8 +147,8 @@ contract Deploy is DeployAbstractScript {
         admin.transferOwnership(newProxyAdmin);
         vm.stopPrank();
         assertEq(admin.owner(), newProxyAdmin, "Unexpected new ProxyAdmin");
-        console2.log("ProxyAdmin %s of proxy %s (%s)", address(admin), proxy, name);
-        console2.logBytes(abi.encodeCall(Ownable.transferOwnership, (newProxyAdmin)));
+        console.log("ProxyAdmin %s of proxy %s (%s)", address(admin), proxy, name);
+        console.logBytes(abi.encodeCall(Ownable.transferOwnership, (newProxyAdmin)));
     }
 
     function deposit(address asset, address queue) internal {
@@ -170,7 +172,7 @@ contract Deploy is DeployAbstractScript {
         vaultSymbol = "mbhBTC";
 
         /// @dev fill admin/operational addresses
-        proxyAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
+        proxyAdmin = 0xb7b2ee53731Fc80080ED2906431e08452BC58786; //old - 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
         lazyVaultAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
         activeVaultAdmin = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3
         oracleUpdater = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33; // 1/1 msig 0xF6edb1385eC1A61c33B9e8dcc348497dCceabE8D
@@ -352,6 +354,8 @@ contract Deploy is DeployAbstractScript {
             (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault0MerkleRoot(address(subvault));
         } else if (index == 1) {
             (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault1MerkleRoot(address(subvault));
+        } else if (index == 2) {
+            (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault2MerkleRoot(address(subvault));
         } else {
             revert("Invalid subvault index");
         }
@@ -442,6 +446,30 @@ contract Deploy is DeployAbstractScript {
         jsonSubvaultName = "ethereum:mbhBTC:subvault1";
     }
 
+    function _getSubvault2MerkleRoot(address subvault)
+        private
+        returns (
+            bytes32 merkleRoot,
+            IVerifier.VerificationPayload[] memory leaves,
+            string[] memory descriptions,
+            SubvaultCalls memory calls,
+            string memory jsonSubvaultName
+        )
+    {
+        mezoBTCLibrary.Info2 memory info = mezoBTCLibrary.Info2({
+            curator: curator,
+            dstSubvault: MEZO_SUBVAULT0_RECIPIENT,
+            dstSubvaultName: "mezoSubvault0",
+            assets: ArraysLibrary.makeAddressArray(abi.encode(Constants.TBTC)),
+            bridge: Constants.MEZO_NATIVE_BRIDGE
+        });
+
+        IVerifier verifier = Subvault(payable(subvault)).verifier();
+
+        (merkleRoot, leaves, descriptions, calls) = mezoBTCLibrary.getBTCSubvault2Data(info);
+        jsonSubvaultName = "ethereum:mbhBTC:subvault2";
+    }
+
     function _deploySwapModule(address subvault, address[] memory actors, bytes32[] memory permissions)
         internal
         returns (address swapModule)
@@ -455,7 +483,7 @@ contract Deploy is DeployAbstractScript {
         swapModule = swapModuleFactory.create(
             0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
         );
-        console2.log("Deployed SwapModule at", swapModule);
+        console.log("Deployed SwapModule at", swapModule);
         vm.stopBroadcast();
         return swapModule;
     }

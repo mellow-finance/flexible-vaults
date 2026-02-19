@@ -1046,12 +1046,12 @@
               "type": "address"
             },
             {
-              "internalType": "address",
-              "name": "receiver",
-              "type": "address"
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
             }
           ],
-          "name": "borrow",
+          "name": "repay",
           "outputs": [
             {
               "internalType": "uint256",
@@ -1151,12 +1151,12 @@
               "type": "address"
             },
             {
-              "internalType": "bytes",
-              "name": "data",
-              "type": "bytes"
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
             }
           ],
-          "name": "repay",
+          "name": "borrow",
           "outputs": [
             {
               "internalType": "uint256",

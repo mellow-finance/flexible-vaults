@@ -1,0 +1,627 @@
+{
+  "title": "mezo:mezoBTC:subvault2",
+  "vault": "0x807D4778abA870e4222904f5b528F68B350cE0E0",
+  "chain": "mezo",
+  "merkle_root": "0x582a73ffef87361345dc9c5edeed576d65f47dac618d279eb19e8ab2863722ee",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "tigris",
+        "protocol": "Tigris",
+        "description": "IERC20(0x7b7C000000000000000000000000000000000000).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x7b7C000000000000000000000000000000000000",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3aad3a401e9d86877d902495c41f9d1ddfd8415c596650c271e7a541c1c05574000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd1e9dc117528af24010ea2eaff608cece75c26e3ffe0cc606d94cf893f2e53ac",
+        "0x39f609f02477c6464038c2b21b4cc3fc06d80c086ddd7d20e834c3de68019951",
+        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigris",
+        "protocol": "Tigris",
+        "description": "IERC20(0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9caadea7896ba52044c6537a78a4d99294e2c36446cd0b44fa4f323081f1f6ac000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6a60b33f4ecff055755d3cddc5f89becc468fdb22e39eff3597f86a84c33b28b",
+        "0x325ec063aea33548c97b6bf62349c240c378136f7087f24bddfea8d2a2a74223",
+        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigris",
+        "protocol": "Tigris",
+        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).addLiquidity(0x7b7C000000000000000000000000000000000000,0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186,any,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenA": "0x7b7C000000000000000000000000000000000000",
+          "tokenB": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+          "stable": "any",
+          "amountADesired": "any",
+          "amountBDesired": "any",
+          "amountAMin": "any",
+          "amountBMin": "any",
+          "to": "0x7684145E1dB121f5924570a27315480ac7f83584",
+          "deadline": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "addLiquidity",
+          "inputs": [
+            {
+              "name": "tokenA",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "tokenB",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "stable",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "amountADesired",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amountBDesired",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amountAMin",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amountBMin",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "amountA",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amountB",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "liquidity",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abdd342764aacb264fa2a405552f9b8eec513e50318524e439dd7710cd360e0ce00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc730732028095364222dbc5d7d34d6b17ff753baacc5ea9337c18e38d6ab1df7",
+        "0x5a22cb0387597d9f39f06f899f31077bbcbe797225f4d61bde213e9f3a8778bc",
+        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigris",
+        "protocol": "Tigris",
+        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).removeLiquidity(0x7b7C000000000000000000000000000000000000,0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+          "value": "0"
+        },
+        "innerParameters": {
+          "tokenA": "0x7b7C000000000000000000000000000000000000",
+          "tokenB": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+          "stable": "any",
+          "liquidity": "any",
+          "amountAMin": "any",
+          "amountBMin": "any",
+          "to": "0x7684145E1dB121f5924570a27315480ac7f83584",
+          "deadline": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "removeLiquidity",
+          "inputs": [
+            {
+              "name": "tokenA",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "tokenB",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "stable",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "liquidity",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amountAMin",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amountBMin",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "amountA",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amountB",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8c89d156d5f75afd92b4b843b4154f08d2d6014202602a475c0d6527bdd1858600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa1d5005aa29f56265e26f57729e4e1a9e17ab7fd25041a7509648c049ec44723",
+        "0x1d459fcef2f7f2e33cc659895cff69db7d3b96e7b6502add445505605c94502b",
+        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigrisCL",
+        "protocol": "TigrisCL",
+        "description": "IERC20(0x7b7C000000000000000000000000000000000000).approve(0x509Bc221df2B83927c695FA0bb0f5B21053C874c,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x7b7C000000000000000000000000000000000000",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a020333e04f4117206759d5d6e7fde644a510a58d57e8691c0e30757677c392ed000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1f0842925f88f87015eb2af4b07abb72de07ad4f4fbe6634027d094ddaf38347",
+        "0xf65c6ee77a510a6ab969361fb2f75a7045755e7b3ff7e087446dd77087b759cc",
+        "0x39f609f02477c6464038c2b21b4cc3fc06d80c086ddd7d20e834c3de68019951",
+        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigrisCL",
+        "protocol": "TigrisCL",
+        "description": "IERC20(0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186).approve(0x509Bc221df2B83927c695FA0bb0f5B21053C874c,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab72d36964b722d5e8660e19a90ddc5bbd27942ac5121030691ceed064c1132bf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x92ef6a630b09b426885aa7b880daf54b9b7ef290f35beac46647cd7bd155922d",
+        "0x1d459fcef2f7f2e33cc659895cff69db7d3b96e7b6502add445505605c94502b",
+        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigrisCL",
+        "protocol": "TigrisCL",
+        "description": "ITigrisCL(0x509Bc221df2B83927c695FA0bb0f5B21053C874c).increaseLiquidity((24,any,any,any,any,any))",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "params": {
+            "tokenId": "24",
+            "amount0Desired": "any",
+            "amount1Desired": "any",
+            "amount0Min": "any",
+            "amount1Min": "any",
+            "deadline": "any"
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "increaseLiquidity",
+          "inputs": [
+            {
+              "name": "params",
+              "type": "tuple",
+              "internalType": "struct ITigrisCL.IncreaseLiquidityParams",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amount0Desired",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amount1Desired",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "name": "liquidity",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "amount0",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount1",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "payable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a31280db21bbdcc71c64ee23b1d5d0fc9f8d93161c16b98b092f012af3936b82f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x36b88a0578cbb1adb124f788dc13014d7e2b7019fb500eaec2dccede2b62f986",
+        "0x325ec063aea33548c97b6bf62349c240c378136f7087f24bddfea8d2a2a74223",
+        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigrisCL",
+        "protocol": "TigrisCL",
+        "description": "ITigrisCL(0x509Bc221df2B83927c695FA0bb0f5B21053C874c).decreaseLiquidity((any,any,any,any,any))",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "params": {
+            "tokenId": "any",
+            "liquidity": "any",
+            "amount0Min": "any",
+            "amount1Min": "any",
+            "deadline": "any"
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "decreaseLiquidity",
+          "inputs": [
+            {
+              "name": "params",
+              "type": "tuple",
+              "internalType": "struct ITigrisCL.DecreaseLiquidityParams",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "liquidity",
+                  "type": "uint128",
+                  "internalType": "uint128"
+                },
+                {
+                  "name": "amount0Min",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amount1Min",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "deadline",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "name": "amount0",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount1",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "payable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4dcfd36fc0dba57e7901e7e2bb184ef38b38294c6fc4b3ed274e3f972e40d77000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x13470994ae49a0ca9fd4e2a56a4c9845d8d153798b22061df680e283beab9c7f",
+        "0xf65c6ee77a510a6ab969361fb2f75a7045755e7b3ff7e087446dd77087b759cc",
+        "0x39f609f02477c6464038c2b21b4cc3fc06d80c086ddd7d20e834c3de68019951",
+        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigrisCL",
+        "protocol": "TigrisCL",
+        "description": "ITigrisCL(0x509Bc221df2B83927c695FA0bb0f5B21053C874c).collect((any,0x7684145E1dB121f5924570a27315480ac7f83584,any,any))",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "params": {
+            "tokenId": "any",
+            "recipient": "0x7684145E1dB121f5924570a27315480ac7f83584",
+            "amount0Max": "any",
+            "amount1Max": "any"
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "collect",
+          "inputs": [
+            {
+              "name": "params",
+              "type": "tuple",
+              "internalType": "struct ITigrisCL.CollectParams",
+              "components": [
+                {
+                  "name": "tokenId",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "recipient",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "amount0Max",
+                  "type": "uint128",
+                  "internalType": "uint128"
+                },
+                {
+                  "name": "amount1Max",
+                  "type": "uint128",
+                  "internalType": "uint128"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "name": "amount0",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount1",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "payable"
+        }
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab614c42d2006a233389e2d6f40479b96fe4ad33103b25dc1acdf31ec326c3f3b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc79cc365169e9cadfad849fffd1376f461bdb1bb2c7223bb12097133287c5555",
+        "0x5a22cb0387597d9f39f06f899f31077bbcbe797225f4d61bde213e9f3a8778bc",
+        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+      ]
+    }
+  ]
+}

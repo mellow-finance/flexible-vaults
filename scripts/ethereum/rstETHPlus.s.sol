@@ -42,6 +42,8 @@ contract Deploy is Script {
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
     function run() external {
+        _createSubvault2Proofs(0x9E8Eb7f8894C373E50f735370e21b9C5312f2702, 0xa802438DD8F0c9c9AfA66cD889e861aAF0dB00B8);
+        revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
@@ -164,7 +166,7 @@ contract Deploy is Script {
             verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
             address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
             address swapModule = _deploySwapModule0(subvault);
-            console2.log("SwapModule 0:", swapModule);
+            console.log("SwapModule 0:", swapModule);
 
             bytes32 merkleRoot;
             (merkleRoot, calls[subvaultIndex]) = _createSubvault0Proofs(subvault, swapModule);
@@ -195,7 +197,7 @@ contract Deploy is Script {
             uint256 subvaultIndex = 2;
             address subvault = vault.subvaultAt(subvaultIndex);
             address swapModule = _deploySwapModule2(subvault);
-            console2.log("SwapModule 2:", swapModule);
+            console.log("SwapModule 2:", swapModule);
             bytes32 merkleRoot2;
             (merkleRoot2, calls[subvaultIndex]) = _createSubvault2Proofs(subvault, swapModule);
             IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot2);
@@ -260,25 +262,25 @@ contract Deploy is Script {
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
-        console2.log("Vault %s", address(vault));
+        console.log("Vault %s", address(vault));
 
-        console2.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
-        console2.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
-        console2.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
-        console2.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
+        console.log("DepositQueue (ETH) %s", address(vault.queueAt(Constants.ETH, 0)));
+        console.log("DepositQueue (WETH) %s", address(vault.queueAt(Constants.WETH, 0)));
+        console.log("DepositQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 0)));
+        console.log("RedeemQueue (WSTETH) %s", address(vault.queueAt(Constants.WSTETH, 1)));
 
-        console2.log("Oracle %s", address(vault.oracle()));
-        console2.log("OracleSubmitter %s", address(oracleSubmitter));
-        console2.log("ShareManager %s", address(vault.shareManager()));
-        console2.log("FeeManager %s", address(vault.feeManager()));
-        console2.log("RiskManager %s", address(vault.riskManager()));
+        console.log("Oracle %s", address(vault.oracle()));
+        console.log("OracleSubmitter %s", address(oracleSubmitter));
+        console.log("ShareManager %s", address(vault.shareManager()));
+        console.log("FeeManager %s", address(vault.feeManager()));
+        console.log("RiskManager %s", address(vault.riskManager()));
 
         for (uint256 i = 0; i < vault.subvaults(); i++) {
             address subvault = vault.subvaultAt(i);
-            console2.log("Subvault %s %s", i, subvault);
-            console2.log("Verifier %s %s", i, address(IVerifierModule(subvault).verifier()));
+            console.log("Subvault %s %s", i, subvault);
+            console.log("Verifier %s %s", i, address(IVerifierModule(subvault).verifier()));
         }
-        console2.log("Timelock controller:", address(timelockController));
+        console.log("Timelock controller:", address(timelockController));
 
         {
             IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);
@@ -487,8 +489,8 @@ contract Deploy is Script {
             deployer, Constants.WSTETH, vault.subvaultAt(2), Constants.CAP_NETWORK
         );
 
-        console2.log("Symbiotic Cap Vault", capSymbioticVault);
-        console2.log("Symbiotic Cap StakerRewards", stakerRewards);
+        console.log("Symbiotic Cap Vault", capSymbioticVault);
+        console.log("Symbiotic Cap StakerRewards", stakerRewards);
 
         {
             ISymbioticVaultPermissions sv = ISymbioticVaultPermissions(capSymbioticVault);
