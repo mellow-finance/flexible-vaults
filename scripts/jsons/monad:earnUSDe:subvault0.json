@@ -8,7 +8,7 @@
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
-        "description": "IERC20(0x754704Bc059F8C67012fEd69BC8A327a5aafb603).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
+        "description": "IERC20(USDC).approve(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
@@ -55,7 +55,7 @@
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
-        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,0x754704bc059f8c67012fed69bc8a327a5aafb603,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
+        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,USDC,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
@@ -132,7 +132,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x754704Bc059F8C67012fEd69BC8A327a5aafb603).approve(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd,any)",
+        "description": "IERC20(USDC).approve(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
@@ -179,7 +179,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A).approve(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd,any)",
+        "description": "IERC20(WMON).approve(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A",
@@ -226,7 +226,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pushAssets(0x754704bc059f8c67012fed69bc8a327a5aafb603,any)",
+        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd",
@@ -267,7 +267,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pushAssets(0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A,any)",
+        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pushAssets(WMON,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd",
@@ -308,7 +308,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pullAssets(0x754704bc059f8c67012fed69bc8a327a5aafb603,any)",
+        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd",
@@ -349,7 +349,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pullAssets(0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A,any)",
+        "description": "ISwapModule(0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd).pullAssets(WMON,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x26F68ca6c6e462c44B3142aB4C6402c35Ac9EeDd",

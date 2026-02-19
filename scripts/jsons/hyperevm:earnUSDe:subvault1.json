@@ -8,7 +8,7 @@
       "description": {
         "integration": "funding_rate_strategy",
         "protocol": "Hyperliquid",
-        "description": "IERC20(0xb88339CB7199b77E23DB6E890353E22632Ba630f).approve(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24,any)",
+        "description": "IERC20(USDC).approve(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24,any)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",

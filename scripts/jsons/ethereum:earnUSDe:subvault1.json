@@ -8,7 +8,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IERC20(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D).approve(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2,any)",
+        "description": "IERC20(syrupUSDT).approve(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -56,7 +56,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7).approve(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2,any)",
+        "description": "IERC20(USDT).approve(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -139,7 +139,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).supply(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D,any,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a,0)",
+        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).supply(syrupUSDT,any,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a,0)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -193,7 +193,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).withdraw(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D,any,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
+        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).withdraw(syrupUSDT,any,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -246,7 +246,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).borrow(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,2,0,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
+        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).borrow(USDT,any,2,0,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -306,7 +306,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).repay(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,2,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
+        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).repay(USDT,any,2,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -365,7 +365,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IERC20(0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "description": "IERC20(syrupUSDT).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -412,7 +412,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "description": "IERC20(USDT).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",

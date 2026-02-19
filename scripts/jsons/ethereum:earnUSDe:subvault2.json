@@ -8,7 +8,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(0x546329A16DcEdC46e93F7b03A65F49A84700bca1,any)",
+        "description": "IERC20(USDC).approve(Ultra_USD,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -57,7 +57,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7).approve(0x546329A16DcEdC46e93F7b03A65F49A84700bca1,any)",
+        "description": "IERC20(USDT).approve(Ultra_USD,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -106,7 +106,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IERC20(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497).approve(0x546329A16DcEdC46e93F7b03A65F49A84700bca1,any)",
+        "description": "IERC20(sUSDe).approve(Ultra_USD,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
@@ -155,7 +155,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositWithReferral(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "description": "IUltraYieldVault(Ultra_USD).depositWithReferral(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -209,7 +209,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositAssetWithReferral(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "description": "IUltraYieldVault(Ultra_USD).depositAssetWithReferral(USDC,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -270,7 +270,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositAssetWithReferral(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "description": "IUltraYieldVault(Ultra_USD).depositAssetWithReferral(USDT,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -331,7 +331,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).depositAssetWithReferral(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
+        "description": "IUltraYieldVault(Ultra_USD).depositAssetWithReferral(sUSDe,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,any(66))",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -392,7 +392,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeem(any)",
+        "description": "IUltraYieldVault(Ultra_USD).requestRedeem(any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -434,7 +434,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequest(0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).cancelRedeemRequest(0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -476,7 +476,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeemOfAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).requestRedeemOfAsset(USDC,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -537,7 +537,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeemOfAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).requestRedeemOfAsset(USDT,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -598,7 +598,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).requestRedeemOfAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).requestRedeemOfAsset(sUSDe,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -658,7 +658,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestOfAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).cancelRedeemRequestOfAsset(USDC,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -713,7 +713,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestOfAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).cancelRedeemRequestOfAsset(USDT,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -768,7 +768,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestOfAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).cancelRedeemRequestOfAsset(sUSDe,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -823,7 +823,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestPartially(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).cancelRedeemRequestPartially(USDC,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -878,7 +878,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestPartially(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).cancelRedeemRequestPartially(USDT,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -933,7 +933,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).cancelRedeemRequestPartially(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).cancelRedeemRequestPartially(sUSDe,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -988,7 +988,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdraw(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).withdraw(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -1042,7 +1042,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdrawAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).withdrawAsset(USDC,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -1102,7 +1102,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdrawAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).withdrawAsset(USDT,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -1163,7 +1163,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).withdrawAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).withdrawAsset(sUSDe,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -1224,7 +1224,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeem(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).redeem(any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -1279,7 +1279,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeemAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).redeemAsset(USDC,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -1340,7 +1340,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeemAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).redeemAsset(USDT,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",
@@ -1401,7 +1401,7 @@
       "description": {
         "integration": "ultra_yield_usdc",
         "protocol": "UltraYield",
-        "description": "IUltraYieldVault(0x546329A16DcEdC46e93F7b03A65F49A84700bca1).redeemAsset(0x9D39A5DE30e57443BfF2A8307A4256c8797A3497,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
+        "description": "IUltraYieldVault(Ultra_USD).redeemAsset(sUSDe,any,0x019852c3f94327E5744d67B1cB55B65648DAF3ff,0x019852c3f94327E5744d67B1cB55B65648DAF3ff)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x546329A16DcEdC46e93F7b03A65F49A84700bca1",

@@ -8,7 +8,7 @@
       "description": {
         "integration": "bridge_usdt_to_ethereum",
         "protocol": "OFT",
-        "description": "IERC20(0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb).approve(0x02ca37966753bDdDf11216B73B16C1dE756A7CF9,any)",
+        "description": "IERC20(USDT0).approve(0x02ca37966753bDdDf11216B73B16C1dE756A7CF9,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
@@ -218,7 +218,7 @@
       "description": {
         "integration": "bridge_usde_to_plasma",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34).send((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
+        "description": "ILayerZeroOFT(USDe).send((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -378,7 +378,7 @@
       "description": {
         "integration": "bridge_susde_to_plasma",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2).send((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
+        "description": "ILayerZeroOFT(sUSDe).send((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
@@ -538,7 +538,7 @@
       "description": {
         "integration": "bridge_syrup_usdt_to_plasma",
         "protocol": "CCIP",
-        "description": "IERC20(0xC4374775489CB9C56003BF2C9b12495fC64F0771).approve(0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3,any)",
+        "description": "IERC20(syrupUSDT).approve(0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xC4374775489CB9C56003BF2C9b12495fC64F0771",
@@ -587,7 +587,7 @@
       "description": {
         "integration": "bridge_syrup_usdt_to_plasma",
         "protocol": "CCIP",
-        "description": "ICCIPRouterClient(0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3).ccipSend{value: any}(5009297550715157269,(0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,0x,[(0xc4374775489cb9c56003bf2c9b12495fc64f0771,any)],0x0000000000000000000000000000000000000000,0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))",
+        "description": "ICCIPRouterClient(0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3).ccipSend{value: any}(5009297550715157269,(0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,0x,[(syrupUSDT,any)],0x0000000000000000000000000000000000000000,0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3",
@@ -685,7 +685,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
+        "description": "IERC20(sUSDe).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
@@ -734,7 +734,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
+        "description": "IERC20(USDe).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -782,7 +782,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
+        "description": "IERC20(USDT0).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
@@ -831,7 +831,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0xC4374775489CB9C56003BF2C9b12495fC64F0771).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
+        "description": "IERC20(syrupUSDT).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xC4374775489CB9C56003BF2C9b12495fC64F0771",
@@ -879,7 +879,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x6100E367285b01F48D07953803A2d8dCA5D19873).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
+        "description": "IERC20(WXPL).approve(0xB50666e75FEb36BaC195feF1C123eB0605425293,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x6100E367285b01F48D07953803A2d8dCA5D19873",
@@ -927,7 +927,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(sUSDe,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -970,7 +970,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(USDe,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1013,7 +1013,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(USDT0,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1055,7 +1055,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(0xc4374775489cb9c56003bf2c9b12495fc64f0771,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1097,7 +1097,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(0x6100E367285b01F48D07953803A2d8dCA5D19873,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pushAssets(WXPL,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1140,7 +1140,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(sUSDe,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1182,7 +1182,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(USDe,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1225,7 +1225,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(USDT0,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1267,7 +1267,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(0xc4374775489cb9c56003bf2c9b12495fc64f0771,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
@@ -1310,7 +1310,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(0x6100E367285b01F48D07953803A2d8dCA5D19873,any)",
+        "description": "ISwapModule(0xB50666e75FEb36BaC195feF1C123eB0605425293).pullAssets(WXPL,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB50666e75FEb36BaC195feF1C123eB0605425293",
