@@ -8,6 +8,8 @@ import {JsonLibrary} from "../common/JsonLibrary.sol";
 import {ParameterLibrary} from "../common/ParameterLibrary.sol";
 import {Permissions} from "../common/Permissions.sol";
 import {ProofLibrary} from "../common/ProofLibrary.sol";
+import {WethLibrary} from "../common/protocols/WethLibrary.sol";
+import {IERC20} from "lib/contracts/src/contracts/interfaces/IERC20.sol";
 
 import {BitmaskVerifier, Call, IVerifier, ProtocolDeployment, SubvaultCalls} from "../common/interfaces/Imports.sol";
 import {Constants} from "./Constants.sol";
@@ -25,6 +27,7 @@ library tyrLibrary {
         address subvault;
         string subvaultName;
         address utilaAccount;
+        address wrbtc;
     }
 
     function getSubvault0Data(Info memory $)
@@ -48,15 +51,22 @@ library tyrLibrary {
         returns (bytes32 merkleRoot, IVerifier.VerificationPayload[] memory leaves)
     {
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        leaves = new IVerifier.VerificationPayload[](1);
+        leaves = new IVerifier.VerificationPayload[](3);
 
-        leaves[0] = ProofLibrary.makeVerificationPayload(
+        WethLibrary.Info memory wethInfo = WethLibrary.Info({curator: $.curator, weth: $.wrbtc});
+
+        leaves[0] = WethLibrary.getWethDepositProof(bitmaskVerifier, wethInfo);
+        leaves[1] = WethLibrary.getWethWithdrawProof(bitmaskVerifier, wethInfo);
+
+        leaves[2] = ProofLibrary.makeVerificationPayload(
             bitmaskVerifier,
             $.curator,
-            $.utilaAccount,
+            $.wrbtc,
             0,
-            new bytes(0),
-            ProofLibrary.makeBitmask(true, true, false, true, new bytes(0))
+            abi.encodeCall(IERC20.transfer, ($.utilaAccount, 0)),
+            ProofLibrary.makeBitmask(
+                true, true, true, true, abi.encodeCall(IERC20.transfer, (address(type(uint160).max), 0))
+            )
         );
 
         return ProofLibrary.generateMerkleProofs(leaves);
@@ -64,13 +74,16 @@ library tyrLibrary {
 
     function getSubvault0Descriptions(Info memory $) internal view returns (string[] memory descriptions) {
         BitmaskVerifier bitmaskVerifier = Constants.protocolDeployment().bitmaskVerifier;
-        descriptions = new string[](1);
+        descriptions = new string[](3);
 
-        descriptions[0] = JsonLibrary.toJson(
-            "UtilaAccount.call{value: any}()",
-            "{}",
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.utilaAccount), "any"),
-            new ParameterLibrary.Parameter[](0)
+        WethLibrary.Info memory wethInfo = WethLibrary.Info({curator: $.curator, weth: $.wrbtc});
+        descriptions[0] = WethLibrary.getWethDepositDescription(wethInfo);
+        descriptions[1] = WethLibrary.getWethWithdrawDescription(wethInfo);
+        descriptions[2] = JsonLibrary.toJson(
+            "IERC20(WRBTC).transfer(to=UtilaAccount, amount=any)",
+            ABILibrary.getABI(IERC20.transfer.selector),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.wrbtc), "0"),
+            ParameterLibrary.build("to", Strings.toHexString($.utilaAccount)).addAny("amount")
         );
     }
 
@@ -81,12 +94,23 @@ library tyrLibrary {
     {
         calls.payloads = leaves;
         calls.calls = new Call[][](leaves.length);
-        calls.calls[0] = new Call[](5);
-        bytes memory emptyData = new bytes(0);
-        calls.calls[0][0] = Call($.curator, $.utilaAccount, 1 ether, emptyData, true);
-        calls.calls[0][1] = Call($.curator, $.utilaAccount, 0, emptyData, true);
-        calls.calls[0][2] = Call(address(0xdead), $.utilaAccount, 1 ether, emptyData, false);
-        calls.calls[0][3] = Call($.curator, address(0xdead), 1 ether, emptyData, false);
-        calls.calls[0][4] = Call($.curator, $.utilaAccount, 1 ether, abi.encode(0x12345678), false); // not empty calldata
+
+        WethLibrary.Info memory wethInfo = WethLibrary.Info({curator: $.curator, weth: $.wrbtc});
+        calls.calls[0] = WethLibrary.getWethDepositCalls(wethInfo);
+        calls.calls[1] = WethLibrary.getWethWithdrawCalls(wethInfo);
+
+        {
+            calls.calls[2] = new Call[](5);
+            calls.calls[2][0] =
+                Call($.curator, $.wrbtc, 0, abi.encodeCall(IERC20.transfer, ($.utilaAccount, 1 ether)), true);
+            calls.calls[2][1] =
+                Call(address(0xdead), $.wrbtc, 1 wei, abi.encodeCall(IERC20.transfer, ($.utilaAccount, 1 ether)), false);
+            calls.calls[2][2] =
+                Call($.curator, address(0xdead), 0, abi.encodeCall(IERC20.transfer, ($.utilaAccount, 1 ether)), false);
+            calls.calls[2][3] =
+                Call($.curator, $.wrbtc, 0, abi.encodeCall(IERC20.transfer, (address(0xdead), 1 ether)), false);
+            calls.calls[2][4] =
+                Call($.curator, $.wrbtc, 0, abi.encode(IERC20.transfer.selector, $.utilaAccount, 1 ether), false);
+        }
     }
 }

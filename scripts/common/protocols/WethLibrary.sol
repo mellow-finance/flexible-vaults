@@ -68,7 +68,7 @@ library WethLibrary {
 
     function getWethWithdrawDescription(Info memory $) internal pure returns (string memory) {
         return JsonLibrary.toJson(
-            "WETH.weth(any)",
+            "WETH.withdraw(any)",
             ABILibrary.getABI(IWETH.withdraw.selector),
             ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.weth), "any"),
             ParameterLibrary.buildAny("wad")

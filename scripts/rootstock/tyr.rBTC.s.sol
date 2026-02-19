@@ -391,7 +391,8 @@ contract Deploy is Script, Test {
                 curator: curator,
                 subvault: address(subvault),
                 subvaultName: "Tyr.rBTC",
-                utilaAccount: Constants.UTILA_ACCOUNT
+                utilaAccount: Constants.UTILA_ACCOUNT,
+                wrbtc: Constants.WRBTC
             })
         );
 

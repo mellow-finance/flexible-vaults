@@ -20,6 +20,8 @@ library Constants {
         return ProtocolDeployment({
             deploymentName: DEPLOYMENT_NAME,
             deploymentVersion: DEPLOYMENT_VERSION,
+            cowswapSettlement: address(0),
+            cowswapVaultRelayer: address(0),
             eigenLayerDelegationManager: address(0),
             eigenLayerStrategyManager: address(0),
             eigenLayerRewardsCoordinator: address(0),
@@ -46,6 +48,7 @@ library Constants {
             feeManagerFactory: Factory(0xcf41afeD6DE8A38F69235d414BB686f2847C19E0),
             oracleFactory: Factory(0x03D4FfC7fB7bfec79EfF121201eB567A4d8E3AbA),
             swapModuleFactory: Factory(address(0)),
+            accountFactory: Factory(address(0)),
             // --- implementations ---
             consensusImplementation: Consensus(0x0000000Ee53D9707851626b0E8485A8599bE95E7),
             depositQueueImplementation: DepositQueue(payable(0x0000000eED98Aca517473d134Cc1a79c5a23b591)),
@@ -57,6 +60,7 @@ library Constants {
             oracleImplementation: Oracle(0x00000000fd75e0935c7101432F07E7D949a3709A),
             riskManagerImplementation: RiskManager(0x00000009BC5616c655EB3931d15553645F79e163),
             tokenizedShareManagerImplementation: TokenizedShareManager(0x0000000Ef763C2e0Fd309DaB48Bb4d5502ebe9F2),
+            burnableTokenizedShareManagerImplementation: BurnableTokenizedShareManager(address(0)),
             basicShareManagerImplementation: BasicShareManager(0x00000000DAf16b90ee413672d0C7E51201A444a2),
             subvaultImplementation: Subvault(payable(0x0000000A9671be5CA72833D21A5A048Bb59140A7)),
             verifierImplementation: Verifier(0x00000008d3117169514077a7d3e5e8B7cf76d4EA),
@@ -71,7 +75,8 @@ library Constants {
             basicRedeemHook: BasicRedeemHook(0x00000007A95AcE65df0d6F71660152c196f6330d),
             redirectingDepositHook: RedirectingDepositHook(0x0000000b0bFE39B38d95be646921D9E3756D27ee),
             lidoDepositHook: LidoDepositHook(address(0)),
-            oracleHelper: OracleHelper(0x0000000e1a96d9abAb10F19b966F960efc8Ca989)
+            oracleHelper: OracleHelper(0x0000000e1a96d9abAb10F19b966F960efc8Ca989),
+            mellowAccountV1Implementation: MellowAccountV1(address(0))
         });
     }
 }
