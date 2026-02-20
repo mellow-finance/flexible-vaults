@@ -70,7 +70,7 @@ library WethLibrary {
         return JsonLibrary.toJson(
             "WETH.withdraw(any)",
             ABILibrary.getABI(IWETH.withdraw.selector),
-            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.weth), "any"),
+            ParameterLibrary.build(Strings.toHexString($.curator), Strings.toHexString($.weth), "0"),
             ParameterLibrary.buildAny("wad")
         );
     }
