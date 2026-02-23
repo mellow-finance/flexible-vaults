@@ -1,6 +1,7 @@
 {
   "title": "hyperevm:earnUSDe:subvault0",
   "vault": "0x25eb235e86814775De245fab4a3752a44a0dfc30",
+  "subvault": "0xfE9A7df88be49Bca543665e17b05D268781c700f",
   "chain": "hyperevm",
   "merkle_root": "0x7969c704103db648eaa6923f96c11cc59a52d32f7e8e8b75bc5f68f89917dcc6",
   "merkle_proofs": [

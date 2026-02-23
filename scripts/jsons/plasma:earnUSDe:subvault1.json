@@ -1,6 +1,7 @@
 {
   "title": "plasma:earnUSDe:subvault1",
   "vault": "0x071537fdED831729ccDF16cAF48d035aBE12EB0c",
+  "subvault": "0xde803287368e47D2aF700Db27afF61a8DeC89cE1",
   "chain": "plasma",
   "merkle_root": "0xdbb2dacfd1afffd089959adb2710f4f903630a5e6458e37431c67532b020b08a",
   "merkle_proofs": [

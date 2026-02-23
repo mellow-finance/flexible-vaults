@@ -1,6 +1,7 @@
 {
   "title": "monad:earnUSDe:subvault1",
   "vault": "0x29C70eC3e16b71aD7a6077d70b854E5E5e800704",
+  "subvault": "0x7E767B87E18E0978d33Be607844DAf8d55648066",
   "chain": "monad",
   "merkle_root": "0x8c521a4b978bf5f5666fc2620081c3ba13da4271348517dbd1e37fffabfe0f5e",
   "merkle_proofs": [

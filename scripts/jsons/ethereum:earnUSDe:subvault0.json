@@ -1,6 +1,7 @@
 {
   "title": "ethereum:earnUSDe:subvault0",
   "vault": "0xB6DB39C23158fE36B963d606daA0f59508566DC9",
+  "subvault": "0x0D18b333A11DeD583537eAa9b447A3127A773049",
   "chain": "ethereum",
   "merkle_root": "0x997e43cff31c4b080c66d58f8aa773cd859500a96229a604bf57b8f4f54064d0",
   "merkle_proofs": [
