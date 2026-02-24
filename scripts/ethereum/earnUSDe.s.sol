@@ -56,11 +56,29 @@ contract Deploy is Script, Test {
 
     address[] verifiers = new address[](3);
 
+    function _update(address subvault, bytes32 root) internal {
+        IVerifierModule(subvault).verifier().setMerkleRoot(root);
+    }
+
+    function _updatePermissions() internal {
+        // _update(0x0D18b333A11DeD583537eAa9b447A3127A773049, 0xd1b733a2f4bf640d708c765663be45093e5c6090174ef4f0343524e229e15a4d);
+        // _update(0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a, 0xda2edb8e73aaf06450ca72ec19c5255454efd0c3660d4ba283753d9335a11dd1);
+        _update(
+            0x019852c3f94327E5744d67B1cB55B65648DAF3ff,
+            0x4afb4abcc816e81e7b0fe7bde94ef699220bb39e451fd852a6e8ff6996e70440
+        );
+    }
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
+
+        if (true) {
+            _updatePermissions();
+            return;
+        }
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;
