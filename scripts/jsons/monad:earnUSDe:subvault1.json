@@ -10,7 +10,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC20(USDC).approve(edgeUSDC,any)",
+        "description": "IERC20(USDC).approve(Gearbox_UltraYield_USDC,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
@@ -64,7 +64,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(edgeUSDC).deposit(any,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(Gearbox_UltraYield_USDC).deposit(any,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",
@@ -118,7 +118,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(edgeUSDC).mint(any,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(Gearbox_UltraYield_USDC).mint(any,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",
@@ -172,7 +172,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(edgeUSDC).withdraw(any,0x7E767B87E18E0978d33Be607844DAf8d55648066,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(Gearbox_UltraYield_USDC).withdraw(any,earnUSDe_Subvault_1,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",
@@ -231,7 +231,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(edgeUSDC).redeem(any,0x7E767B87E18E0978d33Be607844DAf8d55648066,0x7E767B87E18E0978d33Be607844DAf8d55648066)",
+        "description": "IERC4626(Gearbox_UltraYield_USDC).redeem(any,earnUSDe_Subvault_1,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x6B343F7B797f1488AA48C49d540690F2b2c89751",
@@ -290,7 +290,7 @@
       "description": {
         "integration": "merkl",
         "protocol": "Merkl",
-        "description": "IMerklDistributor(0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae).toggleOperator(0x7E767B87E18E0978d33Be607844DAf8d55648066,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(earnUSDe_Subvault_1,any)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",

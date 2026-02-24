@@ -10,7 +10,7 @@
       "description": {
         "integration": "funding_rate_strategy",
         "protocol": "Hyperliquid",
-        "description": "IERC20(USDC).approve(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24,any)",
+        "description": "IERC20(USDC).approve(Hyperliquid_CoreDepositWallet,any)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
@@ -63,7 +63,7 @@
       "description": {
         "integration": "funding_rate_strategy",
         "protocol": "Hyperliquid",
-        "description": "ICoreDepositWallet(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24).deposit(any,0)",
+        "description": "ICoreDepositWallet(Hyperliquid_CoreDepositWallet).deposit(any,0)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
@@ -110,7 +110,7 @@
       "description": {
         "integration": "funding_rate_strategy",
         "protocol": "Hyperliquid",
-        "description": "ICoreDepositWallet(0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24).deposit(any,4294967295)",
+        "description": "ICoreDepositWallet(Hyperliquid_CoreDepositWallet).deposit(any,4294967295)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
@@ -157,7 +157,7 @@
       "description": {
         "integration": "funding_rate_strategy",
         "protocol": "Hyperliquid",
-        "description": "ICoreWriter(0x3333333333333333333333333333333333333333).sendRawAction(1,9,0xb945c6b249e8C64987c95249Bf2b644B68Ba1b15,earnusde_trading_key)",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(1,9,earnUSDe_Trading_Wallet,earnusde_trading_key)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0x3333333333333333333333333333333333333333",
@@ -196,7 +196,7 @@
       "description": {
         "integration": "funding_rate_strategy",
         "protocol": "Hyperliquid",
-        "description": "ICoreWriter(0x3333333333333333333333333333333333333333).sendRawAction(1,6,0x6754E55170bfe9Fd8ca88620c66e7F0f70C0e401,0,any)",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(1,6,earnUSDe_Subvault_1,0,any)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0x3333333333333333333333333333333333333333",
@@ -224,7 +224,7 @@
         },
         "requiredPaths": [
           {
-            "path": "encoded_spotSend.weis",
+            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_spotSend.weis",
             "type": "uint64",
             "allowedValue": "any"
           }

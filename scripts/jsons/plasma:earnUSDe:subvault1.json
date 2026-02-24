@@ -10,7 +10,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IERC20(sUSDe).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "description": "IERC20(sUSDe).approve(AavePool,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
@@ -65,7 +65,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IERC20(USDe).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "description": "IERC20(USDe).approve(AavePool,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -120,7 +120,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IERC20(USDT0).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "description": "IERC20(USDT0).approve(AavePool,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
@@ -175,7 +175,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).setUserEMode(2)",
+        "description": "IAavePoolV3(AavePool).setUserEMode(2)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -211,7 +211,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).supply(sUSDe,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1,0)",
+        "description": "IAavePoolV3(AavePool).supply(sUSDe,any,earnUSDe_Subvault_1,0)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -271,7 +271,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).supply(USDe,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1,0)",
+        "description": "IAavePoolV3(AavePool).supply(USDe,any,earnUSDe_Subvault_1,0)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -331,7 +331,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).withdraw(sUSDe,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "description": "IAavePoolV3(AavePool).withdraw(sUSDe,any,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -392,7 +392,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).withdraw(USDe,any,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "description": "IAavePoolV3(AavePool).withdraw(USDe,any,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -453,7 +453,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).borrow(USDT0,any,2,0,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "description": "IAavePoolV3(AavePool).borrow(USDT0,any,2,0,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -520,7 +520,7 @@
       "description": {
         "integration": "ethena_loop",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x925a2A7214Ed92428B5b1B090F80b25700095e12).repay(USDT0,any,2,0xde803287368e47D2aF700Db27afF61a8DeC89cE1)",
+        "description": "IAavePoolV3(AavePool).repay(USDT0,any,2,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -586,7 +586,7 @@
       "description": {
         "integration": "merkl",
         "protocol": "Merkl",
-        "description": "IMerklDistributor(0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae).toggleOperator(0xde803287368e47D2aF700Db27afF61a8DeC89cE1,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(earnUSDe_Subvault_1,any)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",

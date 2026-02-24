@@ -10,7 +10,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IERC20(syrupUSDT).approve(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2,any)",
+        "description": "IERC20(syrupUSDT).approve(AavePool(Core),any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -65,7 +65,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IERC20(USDT).approve(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2,any)",
+        "description": "IERC20(USDT).approve(AavePool(Core),any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -119,7 +119,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).setUserEMode(33)",
+        "description": "IAavePoolV3(AavePool(Core)).setUserEMode(33)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -156,7 +156,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).supply(syrupUSDT,any,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a,0)",
+        "description": "IAavePoolV3(AavePool(Core)).supply(syrupUSDT,any,earnUSDe_Subvault_1,0)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -217,7 +217,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).withdraw(syrupUSDT,any,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(syrupUSDT,any,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -277,7 +277,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).borrow(USDT,any,2,0,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
+        "description": "IAavePoolV3(AavePool(Core)).borrow(USDT,any,2,0,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -344,7 +344,7 @@
       "description": {
         "integration": "maple_loop_aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2).repay(USDT,any,2,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
+        "description": "IAavePoolV3(AavePool(Core)).repay(USDT,any,2,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -410,7 +410,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IERC20(syrupUSDT).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "description": "IERC20(syrupUSDT).approve(FluidVault_syrupUSDT/USDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -464,7 +464,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IERC20(USDT).approve(0x925a2A7214Ed92428B5b1B090F80b25700095e12,any)",
+        "description": "IERC20(USDT).approve(FluidVault_syrupUSDT/USDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -519,7 +519,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IFluidVault(0x925a2A7214Ed92428B5b1B090F80b25700095e12).operate{value: any}(10518,any,any,0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a)",
+        "description": "IFluidVault(FluidVault_syrupUSDT/USDT).operate{value: any}(10518,any,any,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x925a2A7214Ed92428B5b1B090F80b25700095e12",
@@ -600,7 +600,7 @@
       "description": {
         "integration": "merkl",
         "protocol": "Merkl",
-        "description": "IMerklDistributor(0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae).toggleOperator(0x0e5f73fBaE6800e4b6E7fCEB77Ab514e3cA3379a,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(earnUSDe_Subvault_1,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
