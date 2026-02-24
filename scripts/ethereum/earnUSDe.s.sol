@@ -74,9 +74,15 @@ contract Deploy is Script, Test {
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
-
         if (true) {
-            _updatePermissions();
+            address u = 0x754704Bc059F8C67012fEd69BC8A327a5aafb603;
+            address s0 = 0xD65C52Ef0ABB63EA1415759CE1db8534D635d441;
+            address s1 = 0x7E767B87E18E0978d33Be607844DAf8d55648066;
+            address v = 0x29C70eC3e16b71aD7a6077d70b854E5E5e800704;
+
+            console2.logBytes(abi.encodeCall(IVaultModule.pullAssets, (s0, u, 1e6)));
+            console2.logBytes(abi.encodeCall(IVaultModule.pushAssets, (s1, u, 1e6)));
+
             return;
         }
 
