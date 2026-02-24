@@ -3,7 +3,8 @@
   "vault": "0x29C70eC3e16b71aD7a6077d70b854E5E5e800704",
   "subvault": "0xD65C52Ef0ABB63EA1415759CE1db8534D635d441",
   "chain": "monad",
-  "merkle_root": "0x5677f1513cc0305eb30f4b589f70b8acb5a50241481fdcf9104c1304b1ab2f1b",
+  "merkle_root": "0x3ddbd0d64f25ffaad5c063fcb623a301528a3a83b22605d07b62068c0b7adf3c",
+  "vault_symbol": "earnUSDe",
   "merkle_proofs": [
     {
       "description": {
@@ -42,28 +43,35 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aea24f11bc46e177bc5ef59e053ef35281733d19631bc0a15060ee7d5bd5dda61000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x42c8a3b4af4a81bc0d04e3a665e51cfe7fe9d4cd3792f4ef4e176e9957236f15",
         "0x859b1bdc83e84e83f77e70ec57d041c43074934abb93e083af1619ab9f559f12",
-        "0x2649882b607154beea101705d5b5e507106f42fdfcfa9543d82da0c6cacac0d0"
+        "0xdd54eabd6df9d99100560098a973f7104428e0256602e61e8bfa07f39e308039"
       ]
     },
     {
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
-        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(0,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,USDC,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
+        "description": "ITokenMessenger(0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d).depositForBurn(any,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,USDC,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
         "parameters": {
           "caller": "0x2d947C132E8f36cFDe1eb14bcDd692cA3d14A58C",
           "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
           "value": "0"
         },
         "innerParameters": {
-          "amount": "0",
+          "amount": "any",
           "destinationDomain": "0",
           "mintRecipient": "0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049",
           "burnToken": "0x754704bc059f8c67012fed69bc8a327a5aafb603",
@@ -119,10 +127,17 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositForBurn.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2d105747ab30f33de6ae4c440a9e6762cb4165a4f4f08dd492162de69608619f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2d105747ab30f33de6ae4c440a9e6762cb4165a4f4f08dd492162de69608619f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa9fcccff0b655089bb4882f827636a01a597061e9bafcee10e42c37fae212047",
         "0x966a5e80ceb732f9799df4909e550d53b7e6fd2f1130bd5c7ade9168201301ac",
@@ -166,13 +181,20 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a02f009a69d485b1eb86e19536274d8e8356429af9bee58b7faa6af0331211f87000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xf70d2d1c4d89c9c0f9b38d145cf6c8ef3135de7882855e9ca5f2bda11c71a635",
-        "0xd2c21d1626880d79aaf802112e6df1a67c0943cbc4ed62267337a8abd568c2c2",
+        "0x29f3d05d7da11accb0a4a0175bcaef229ad644eeb69098d511f831553307ac14",
         "0x3869b7bd297fb58a57055dcecef347668b286fa207574af0c37099ac33913a6a"
       ]
     },
@@ -213,12 +235,19 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae56fce690b88898c99bfbe10d58f50cf15f8996b60abccd3ef8aeee3902fe823000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x8feea9641596203fbbcacab13b169b6da79ddeff63f0879f8f86654669acacf0",
+        "0xcad783e3bb847402345d90bfc6e760eb2a1b5f2f1b57baf20e58e06d61f47b45",
         "0x966a5e80ceb732f9799df4909e550d53b7e6fd2f1130bd5c7ade9168201301ac",
         "0x3869b7bd297fb58a57055dcecef347668b286fa207574af0c37099ac33913a6a"
       ]
@@ -254,14 +283,21 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6e1e432a0a14515ffd3e5748704c213165a09cc55ea4efc120358eddc384ba33000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x24f0fed1c3af1bcabfa8cf78a3a436fcc9ec8adb92bcf882195298845981244d",
         "0xa68b55fcc102aa4d8d3ed02efd933d511d1e343db389f34eb5927cd51ba8330b",
-        "0x2649882b607154beea101705d5b5e507106f42fdfcfa9543d82da0c6cacac0d0"
+        "0xdd54eabd6df9d99100560098a973f7104428e0256602e61e8bfa07f39e308039"
       ]
     },
     {
@@ -295,14 +331,21 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aebc4e5012424c3d2b3803d64e9e03028bb4f2020309cbb879011cfc5c986c3e9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x1bc0dd777a8da7a3f5fce52ae7d40f7efba9dfa74f64a29e66be4a396d584ffe",
         "0xa68b55fcc102aa4d8d3ed02efd933d511d1e343db389f34eb5927cd51ba8330b",
-        "0x2649882b607154beea101705d5b5e507106f42fdfcfa9543d82da0c6cacac0d0"
+        "0xdd54eabd6df9d99100560098a973f7104428e0256602e61e8bfa07f39e308039"
       ]
     },
     {
@@ -336,13 +379,20 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8a964d813809cba20e62251f8a0d2ffb09aa0180e498a927dbf0c47492c9f415000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xedd227b404bf553b3aa56919f2037b67f0a887872a65e3657cd213714948bf96",
-        "0xd2c21d1626880d79aaf802112e6df1a67c0943cbc4ed62267337a8abd568c2c2",
+        "0x29f3d05d7da11accb0a4a0175bcaef229ad644eeb69098d511f831553307ac14",
         "0x3869b7bd297fb58a57055dcecef347668b286fa207574af0c37099ac33913a6a"
       ]
     },
@@ -377,14 +427,21 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6af6f61091dcb48d4a0b6ae07dbf3062ee83a82afff7de84703d841ec20eb19c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x3daec9305493308c3b2410ae3affa4f117c58085cd7c0a061033ca9f67a425e7",
         "0x859b1bdc83e84e83f77e70ec57d041c43074934abb93e083af1619ab9f559f12",
-        "0x2649882b607154beea101705d5b5e507106f42fdfcfa9543d82da0c6cacac0d0"
+        "0xdd54eabd6df9d99100560098a973f7104428e0256602e61e8bfa07f39e308039"
       ]
     }
   ]

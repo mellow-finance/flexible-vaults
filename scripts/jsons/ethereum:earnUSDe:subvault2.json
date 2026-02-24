@@ -4,6 +4,7 @@
   "subvault": "0x019852c3f94327E5744d67B1cB55B65648DAF3ff",
   "chain": "ethereum",
   "merkle_root": "0xd30d64ca76f0c441977649efcb6aca1cf81b3e2303899eaf3c2c58e5a7d3e5eb",
+  "vault_symbol": "earnUSDe",
   "merkle_proofs": [
     {
       "description": {
@@ -42,7 +43,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a59fc719ed5a76cd7672658993c16bfe2e04699160b5a205f10d2ea9d76fcabff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -91,7 +99,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a73eb74771bc40a23284935a0316b99442a8a7a30957aaacdc3548dfe41815e5d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -140,7 +155,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad48a40cb459977ea74e8722c48a078b1d2cd76e46545efe8f75168857832af15000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -195,7 +217,19 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositWithReferral.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "depositWithReferral.referralId",
+            "type": "string",
+            "allowedValue": "any(66)"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ada368b1e67968d79ad82f0a5ca8de24119dcfa5e803858ad7effbaaeccc15e3c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -255,7 +289,19 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositAssetWithReferral.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "depositAssetWithReferral.referralId",
+            "type": "string",
+            "allowedValue": "any(66)"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a90e4d1608cf69a1c0625a1ef263e5f6b3a5d3167a156dfaa558864bbefd584f900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -316,7 +362,19 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositAssetWithReferral.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "depositAssetWithReferral.referralId",
+            "type": "string",
+            "allowedValue": "any(66)"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8188cbe1518e5e6972d4a8bc79291cba6f8cfa93841cb171028ac556d5147d5800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -377,7 +435,19 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositAssetWithReferral.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "depositAssetWithReferral.referralId",
+            "type": "string",
+            "allowedValue": "any(66)"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a189b88365ed852f2b3a226968645ec513866eb89e2ce23ca5ffe66d97901bbf300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -420,7 +490,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "requestRedeem.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a345bf5b677c273edf3df491d7bd7de73fd9298e92b0f63624ef296f9eaa1165300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -462,7 +539,8 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": []
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a925b1e8b8cdaf80b85cc25132ec56400c80a256325d7b8adec7f74c9c355782200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -522,7 +600,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "requestRedeemOfAsset.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4525985d7a1318c2452e7054d710e6ff44d250d3a26cae8cfb871d6e9dd767b3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -583,7 +668,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "requestRedeemOfAsset.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afcdf6b34407ec564cd6aea31ab77d977a789719007afbbb63be04b2c199abbc4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -644,7 +736,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "requestRedeemOfAsset.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a60fd9f450487dc25f3c4256a69f6a2cb9181ce4e4bd4d8068d5b98b5a122a715000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -698,7 +797,8 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": []
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a07bfc51a0a0104b450effa77c8697fed2173bf30849d03d0be7efd0a4f82f603000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -753,7 +853,8 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": []
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac0a11d338360f7ccdc5247c6e236bdb2ffc528e7147ac8cd2f969c0f489fc8c1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -808,7 +909,8 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": []
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa17f6f464ad75968715ba0e520f5fd92b8518cc0158d2f1d35c41b5b6f4f3241000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -863,7 +965,14 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "cancelRedeemRequestPartially.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af70392fa4dee1fca30ae22d31bcf915891f44f908fba91accd0df607819c76f9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -918,7 +1027,14 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "cancelRedeemRequestPartially.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa3a0abab3995b0ad0d4924f5cd9b8ac8d7efc0fa4890d67eecf65cacaa890944000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -973,7 +1089,14 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "cancelRedeemRequestPartially.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3573b3ea3fd71ffc9f4a07817f74f9aa9d76fdebe14622f0f96308618f18529e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1028,7 +1151,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5b31544bf08be43f878c266a0aa4bdb743e9f5b659b302b4a42553fa78a00899000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1088,7 +1218,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdrawAsset.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa796638821deca9cd9f822dc9369d50a4bb53f7044e1e577b4a15a7125dc09e5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1148,7 +1285,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdrawAsset.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2c1243df0885c9f7c9714395fad65cee7347890476e5d37739f24c603ddd50a4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1209,7 +1353,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdrawAsset.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa8f0ac2aa2a85ca59952cd77a64e302ffdde4e88b4cd8e4661da5c05dbb61859000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1264,7 +1415,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeem.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9d51211ff0601aedea0b10707e546bef9ec918db985d53792961f0a586a29b73000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1325,7 +1483,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeemAsset.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae74c1111e69064f7d0d93ec7ad9ad79222c14ed3213fbe97de2ef3081918f1c8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1386,7 +1551,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeemAsset.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a73763a82a1bb5c7042d3cbf1aa7d51763ee84e3191c4b07e3c471cfdaa85c515000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1447,7 +1619,14 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeemAsset.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8ca3741e5df85d081d7d2f45d2016942130fa7aadfc7885f330a3ce7fd251855000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",

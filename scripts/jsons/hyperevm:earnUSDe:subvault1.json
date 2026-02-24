@@ -3,7 +3,8 @@
   "vault": "0x25eb235e86814775De245fab4a3752a44a0dfc30",
   "subvault": "0x6754E55170bfe9Fd8ca88620c66e7F0f70C0e401",
   "chain": "hyperevm",
-  "merkle_root": "0x4c1e1b8cbaa3fc47ebf5f878fe7a8bc318f44dea796297d0d309ceb672c03cb9",
+  "merkle_root": "0x8e4efa4eb3cbb8e5964407aebc0a931d6640f4bcbebdf2f8df3001491b9b245d",
+  "vault_symbol": "earnUSDe",
   "merkle_proofs": [
     {
       "description": {
@@ -42,13 +43,21 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae66cc5fc6a94c0aefbde07730b816af62fb29abc1457c37bd3d307d42fdb926a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x4b0fa0b95e8ce2bf92a647375e04d3aa581bf1ba3370372f3da729570778b182",
-        "0xca91a14c347f657b65d53280c855dc096a42aaf74e640143e96041db73ba6893"
+        "0xca91a14c347f657b65d53280c855dc096a42aaf74e640143e96041db73ba6893",
+        "0x91f8583fcf015758b6b7e28cb8e7f75ebfd7b34159a479651997b9f540dfa85e"
       ]
     },
     {
@@ -82,12 +91,20 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae189fd75b1519e163a3b4cea8d0de33bf098169f5c09df4e5858484859aac4c0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x6df501aaa85d7bc999acbb77ea0a27cc66a58ef986db1a785f1f8c9e985db595"
+        "0x6df501aaa85d7bc999acbb77ea0a27cc66a58ef986db1a785f1f8c9e985db595",
+        "0x91f8583fcf015758b6b7e28cb8e7f75ebfd7b34159a479651997b9f540dfa85e"
       ]
     },
     {
@@ -121,13 +138,104 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a154ec6f4c2c3b8b02a390ede979cf31ca60016a7ea67bfae65e3317005655927000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x4b652b75dded2eca1cdeffdc1dc1a512b53abfab103cbbdecc55ee59a620952e",
-        "0xca91a14c347f657b65d53280c855dc096a42aaf74e640143e96041db73ba6893"
+        "0xca91a14c347f657b65d53280c855dc096a42aaf74e640143e96041db73ba6893",
+        "0x91f8583fcf015758b6b7e28cb8e7f75ebfd7b34159a479651997b9f540dfa85e"
+      ]
+    },
+    {
+      "description": {
+        "integration": "funding_rate_strategy",
+        "protocol": "Hyperliquid",
+        "description": "ICoreWriter(0x3333333333333333333333333333333333333333).sendRawAction(1,9,0xb945c6b249e8C64987c95249Bf2b644B68Ba1b15,earnusde_trading_key)",
+        "parameters": {
+          "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "typeId": "1",
+          "actionId": "9",
+          "wallet": "0xb945c6b249e8C64987c95249Bf2b644B68Ba1b15",
+          "name": "'earnusde_trading_key'"
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": []
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a71fb6f8d9648070eb870db1eb21ccae4ba429de8d03436bbefd9a30b52e0c5000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000010cffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000",
+      "proof": [
+        "0x764cb61a478d5ed701e7cd6220109b7ab9035bc7866ac9997ed8d4fb21e29814",
+        "0x4c1e1b8cbaa3fc47ebf5f878fe7a8bc318f44dea796297d0d309ceb672c03cb9"
+      ]
+    },
+    {
+      "description": {
+        "integration": "funding_rate_strategy",
+        "protocol": "Hyperliquid",
+        "description": "ICoreWriter(0x3333333333333333333333333333333333333333).sendRawAction(1,6,0x6754E55170bfe9Fd8ca88620c66e7F0f70C0e401,0,any)",
+        "parameters": {
+          "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "typeId": "1",
+          "actionId": "6",
+          "destination": "0x6754E55170bfe9Fd8ca88620c66e7F0f70C0e401",
+          "token": "0",
+          "weis": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "encoded_spotSend.weis",
+            "type": "uint64",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6c4c21c76953403af003664afccde6553a5b4d333fbcbeb5a68074657dfb693b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff0000000000000000000000000000000000000000",
+      "proof": [
+        "0xbb2b49d3d312c2f8b9df1ed81422ca8c5134043027f5f096c1354e7f83ff9369",
+        "0x4c1e1b8cbaa3fc47ebf5f878fe7a8bc318f44dea796297d0d309ceb672c03cb9"
       ]
     }
   ]

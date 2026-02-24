@@ -3,7 +3,8 @@
   "vault": "0x071537fdED831729ccDF16cAF48d035aBE12EB0c",
   "subvault": "0x4E2126de8129f5cb650D86C3E730FEF29D794644",
   "chain": "plasma",
-  "merkle_root": "0x62c6c6175a30b3fe39616ca8868a1eab19b998bfbf8325a7dba783dafc2eb788",
+  "merkle_root": "0x1a3696ddad264758b91f65832b8e5b7dfeafe75fc3d83dee4e60442b846a4dfd",
+  "vault_symbol": "earnUSDe",
   "merkle_proofs": [
     {
       "description": {
@@ -42,27 +43,34 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acea2eed46299c72f6c8029069cf01011b494477b5b8552b964fa117f092ccdb9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x0229b2df39b5d7ca8f53278de5675f0b8d2d6eb53468461afe6107c244a36d4a",
-        "0xee485daf610dee41f73266447265bb52bc71ab1d304c9148e69bd611b656da09",
-        "0x2c449bcfe676bc149239f6695144d9279e4d4087901b62ae758addfe75f3ba9e",
-        "0x80e7c4e2e6e59a94d2441748536ed5c51ae87b98216741ab91ee1a1708c71ddf",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0xfefe9ce901e31cfb168fec984bf656bb23d70db2dad3fa04aa80b443c1fd4be5",
+        "0x1098e2b89c36db07c8b8cae3048662d14b2016b6bc31d3248ded73f0bd2523b9",
+        "0x6ed66325d0a226db18072355ef311645b8dbbd89864102c1a785aa10b600eb39",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
       "description": {
         "integration": "bridge_usdt_to_ethereum",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(0x02ca37966753bDdDf11216B73B16C1dE756A7CF9).send((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
+        "description": "ILayerZeroOFT(0x02ca37966753bDdDf11216B73B16C1dE756A7CF9).send{value: any}((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x02ca37966753bDdDf11216B73B16C1dE756A7CF9",
-          "value": "0"
+          "value": "any"
         },
         "innerParameters": {
           "_sendParam": {
@@ -203,27 +211,43 @@
             }
           ],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "send._sendParam.amountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.minAmountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._fee.nativeFee",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a459dea5af1d29aee4e0891f57b0b17ef1c5bc091779f6c8f1832d253d3d43cd500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a459dea5af1d29aee4e0891f57b0b17ef1c5bc091779f6c8f1832d253d3d43cd500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x1ece35ef4d6f9feb722597cff211bfd79760f57fc78b6131bb9cf47fbeda9707",
-        "0x8d18c7cb2d0af81bf248d3d7199d246d5b4fac2b0c122baa5856bf501c3acf40",
-        "0xb7d46fea4dc1a68d5c1345576a57bdd7a82fe539161c53e24699170ed6f82ddf",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x07da84e29f4c315c5587ec0e31f7f81efc8f86597b741f6e830c7a54d09e93b0",
+        "0x1098e2b89c36db07c8b8cae3048662d14b2016b6bc31d3248ded73f0bd2523b9",
+        "0x6ed66325d0a226db18072355ef311645b8dbbd89864102c1a785aa10b600eb39",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
       "description": {
         "integration": "bridge_usde_to_plasma",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDe).send((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
+        "description": "ILayerZeroOFT(USDe).send{value: any}((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
-          "value": "0"
+          "value": "any"
         },
         "innerParameters": {
           "_sendParam": {
@@ -364,26 +388,43 @@
             }
           ],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "send._sendParam.amountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.minAmountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._fee.nativeFee",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7c1b7f33f8c4d1f4b58c0065ca6bfdf90c2d48bc6a6d9662747e46912b66dd8900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7c1b7f33f8c4d1f4b58c0065ca6bfdf90c2d48bc6a6d9662747e46912b66dd8900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x90e2580cbb723927f6d1bfb41660a7aee0b6cb2e80e4183c7c455ee5a1bd17ad",
-        "0x89a4141a9704f9c526c5f88c9712047ce96c1105df4e7bfa42f6d25a3a696951",
-        "0xda6372c5d566716744fbc567fc46597c1439592cedab0ada5f0e8de8f32b35f4",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0xd6250731ba9aba61b101424e36d9fdb3691e86b1112e156993830a413230fb4e",
+        "0x641fc224a5ec237334bdd61b1ead8020fb6f2732face7a865435e9292e26081e",
+        "0x14b3170387b33970f9bc383d6e9d6348746c18f6f9321699574692cfd721bb27",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     },
     {
       "description": {
         "integration": "bridge_susde_to_plasma",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(sUSDe).send((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
+        "description": "ILayerZeroOFT(sUSDe).send{value: any}((30101,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,any,any,0x,0x,0x),(any,0),0x4E2126de8129f5cb650D86C3E730FEF29D794644)",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
-          "value": "0"
+          "value": "any"
         },
         "innerParameters": {
           "_sendParam": {
@@ -524,15 +565,33 @@
             }
           ],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "send._sendParam.amountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.minAmountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._fee.nativeFee",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8f449c10b00af6127cc1e92110c656642b9ff77e2f70f71facf08a87b9704cc200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8f449c10b00af6127cc1e92110c656642b9ff77e2f70f71facf08a87b9704cc200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa14728fdcd7b317406bac0c051f4f38387aefe9f2f3dc41e88418f56f1dd5287",
-        "0x641fc224a5ec237334bdd61b1ead8020fb6f2732face7a865435e9292e26081e",
-        "0x079aa311782b9cf47dd12d49a3318125136166adc4d21769ae8c1560f909a721",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0x44098f5e90c1ce53ac274daa8ad9f2864be28b1ff1a4fe64a1f79e836e422aee",
+        "0x5d86227bde97d6c9f30ce6b83027998a5eecc572e6bc36a822bd64cd54e9e62f",
+        "0x7588f0a3bf3a9e0db12b7aa05bc0db133a61050d222c8b75c0bb95e9048f3740",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -572,23 +631,30 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abad90a086874368111b9072da514c1bd58c2f694fc3612c15c3af64bf8b30100000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x44098f5e90c1ce53ac274daa8ad9f2864be28b1ff1a4fe64a1f79e836e422aee",
-        "0xf576d9c63308c267040dead414a85099abe819d6ac6e337e63c402e08aa8fec4",
-        "0x75d940e3c9e48c7a0ffe3c735ca93dd781a011af66fcbc2bcc808c1abfa175e4",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x3ffebcdd072b2aa17c4c39661b0eca6204b6b31673b84edc457645045713fa25",
+        "0x6ddec0867907d64cbd031aca7dff95d390770a89cfd09c2e84a9cad9d47a95df",
+        "0x7588f0a3bf3a9e0db12b7aa05bc0db133a61050d222c8b75c0bb95e9048f3740",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
       "description": {
         "integration": "bridge_syrup_usdt_to_plasma",
         "protocol": "CCIP",
-        "description": "ICCIPRouterClient(0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3).ccipSend{value: any}(5009297550715157269,(0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,0x,[(syrupUSDT,any)],0x0000000000000000000000000000000000000000,0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))",
+        "description": "ICCIPRouterClient(0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3).ccipSend{value: any}(5009297550715157269,(0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,0x,(((syrupUSDT,any))),0x0000000000000000000000000000000000000000,0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))",
         "parameters": {
           "caller": "0xDB79E77E950Fe04fa92aEaB9da0d3ea894C2209E",
           "target": "0xcDca5D374e46A6DDDab50bD2D9acB8c796eC35C3",
@@ -599,12 +665,14 @@
           "message": {
             "receiver": "0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049",
             "data": "0x",
-            "tokenAmounts": [
-              {
-                "token": "0xc4374775489cb9c56003bf2c9b12495fc64f0771",
-                "amount": "any"
+            "tokenAmounts": {
+              "0": {
+                "": {
+                  "token": "0xc4374775489cb9c56003bf2c9b12495fc64f0771",
+                  "amount": "any"
+                }
               }
-            ],
+            },
             "feeToken": "0x0000000000000000000000000000000000000000",
             "extraArgs": "0x181dcf1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
           }
@@ -671,15 +739,22 @@
             }
           ],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "ccipSend.message.tokenAmounts[0]..amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5e5cc71cfe97b32adbe9d8024cb923ab68716b62149812bda1da4fa935c23c5a00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000284ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xd6250731ba9aba61b101424e36d9fdb3691e86b1112e156993830a413230fb4e",
-        "0xc135c63a8303c0fa9ea8b6af7d9da8ffa8476504bebb94bdfcbe6d3fd114cff9",
-        "0x80e7c4e2e6e59a94d2441748536ed5c51ae87b98216741ab91ee1a1708c71ddf",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0xee485daf610dee41f73266447265bb52bc71ab1d304c9148e69bd611b656da09",
+        "0xe470ea3190af8b65b4b59512dee5e5b21bfbe9b4849252588ff4e0add15e08f2",
+        "0x6ed66325d0a226db18072355ef311645b8dbbd89864102c1a785aa10b600eb39",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -719,16 +794,23 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6c6d0097e474a2ec8afe438715fcd1a84231994f6987c498bed15c5b0af94fd0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x24ed7f638c55dd4d1a232c1e9eaf22f9cf7af68a634212c73454267a14bbd378",
-        "0x8d18c7cb2d0af81bf248d3d7199d246d5b4fac2b0c122baa5856bf501c3acf40",
-        "0xb7d46fea4dc1a68d5c1345576a57bdd7a82fe539161c53e24699170ed6f82ddf",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x2940b2bf928bae06d5bd6a979f2463c0c1de00f7c0fdde021f9e4569f82f6d9f",
+        "0xedb5deb491eb88701e48f4de2c43b04ece7371ee8022195181c1906c0ce9f838",
+        "0x3ab43f3233843b3ad641d688b6223d7fc968e104024e6db97f1687276a305e87",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -768,15 +850,22 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0fa06610beea0d9a46a8121c5970c512fee117238c91a8fe8366316153577f68000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xc2c41907b2e63c3df6eae10b08913e29e8186f278e69d09ee627e0b6f21ed831",
-        "0xc9841a0571898d4b6162f1f6a41f8d388c657ff6d4dbbd10fdb4ab8c9045f0f6",
-        "0x079aa311782b9cf47dd12d49a3318125136166adc4d21769ae8c1560f909a721",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0xff09d572cf76b4db5c7cca6bc49059d5775e3245713eddb3628e9921c3a7c7ce",
+        "0x14b3170387b33970f9bc383d6e9d6348746c18f6f9321699574692cfd721bb27",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     },
     {
@@ -816,16 +905,23 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac978d59552299872f852439a2e6c7659cf680b1977b7473b3307a22e78ba4972000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x38f4bf801c60e6f0572066bc5f1d7fa8ca523fea9d84d1e79785cc80fe79cf54",
-        "0x564930500601e64892b5f300d678a29746b548c655f8c89e08483101bad424c0",
-        "0x75d940e3c9e48c7a0ffe3c735ca93dd781a011af66fcbc2bcc808c1abfa175e4",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x40de0cafe8e9087d0895cb4a834cce9c6e25d6bca27524a88565c8e1827ffc89",
+        "0x6ddec0867907d64cbd031aca7dff95d390770a89cfd09c2e84a9cad9d47a95df",
+        "0x7588f0a3bf3a9e0db12b7aa05bc0db133a61050d222c8b75c0bb95e9048f3740",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -865,15 +961,22 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7a5c9be35628e40b4cee6185fc5b30ab72a72d4a63f96e1278ba4372f83da2a6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x98bbd909c136f48ce02712eb436c9a0ee11b8ef4ac99119659d715d64fdcdc2c",
-        "0x641fc224a5ec237334bdd61b1ead8020fb6f2732face7a865435e9292e26081e",
-        "0x079aa311782b9cf47dd12d49a3318125136166adc4d21769ae8c1560f909a721",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0x90e2580cbb723927f6d1bfb41660a7aee0b6cb2e80e4183c7c455ee5a1bd17ad",
+        "0x89a4141a9704f9c526c5f88c9712047ce96c1105df4e7bfa42f6d25a3a696951",
+        "0xc0654982fed538ba74dfa785d77e5266dbc3f56eb94f09d8618f27e40933eb0b",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     },
     {
@@ -913,15 +1016,22 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae3de7c705e6112d32365d9a1f541591774d55d24df77788ffe32846614e51896000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xdafc07aec288f45b8589fa00b37b1b61224916234e7968cd885a7b8b81796247",
-        "0xc135c63a8303c0fa9ea8b6af7d9da8ffa8476504bebb94bdfcbe6d3fd114cff9",
-        "0x80e7c4e2e6e59a94d2441748536ed5c51ae87b98216741ab91ee1a1708c71ddf",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0xd7c31a007efbde26d34350e387e1b432452f230c3bf942bc98b126dae5d7104f",
+        "0x641fc224a5ec237334bdd61b1ead8020fb6f2732face7a865435e9292e26081e",
+        "0x14b3170387b33970f9bc383d6e9d6348746c18f6f9321699574692cfd721bb27",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     },
     {
@@ -955,16 +1065,23 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a570cf4f4c51cdbfecd8f2018cb55bf34826391b9417c4731f3be05054f0b6ea9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x04070c280ced0bd24f50caa2db62bcd64dbf65e55b46b2418943bad6cc30c5ee",
-        "0xee485daf610dee41f73266447265bb52bc71ab1d304c9148e69bd611b656da09",
-        "0x2c449bcfe676bc149239f6695144d9279e4d4087901b62ae758addfe75f3ba9e",
-        "0x80e7c4e2e6e59a94d2441748536ed5c51ae87b98216741ab91ee1a1708c71ddf",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0xfefe9ce901e31cfb168fec984bf656bb23d70db2dad3fa04aa80b443c1fd4be5",
+        "0x1098e2b89c36db07c8b8cae3048662d14b2016b6bc31d3248ded73f0bd2523b9",
+        "0x6ed66325d0a226db18072355ef311645b8dbbd89864102c1a785aa10b600eb39",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -998,16 +1115,23 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad82cdf8c0c9c01accb7e9a898bbe32744e5aba2100ba80d84f577d7a3d2b2c91000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x40de0cafe8e9087d0895cb4a834cce9c6e25d6bca27524a88565c8e1827ffc89",
-        "0xf576d9c63308c267040dead414a85099abe819d6ac6e337e63c402e08aa8fec4",
-        "0x75d940e3c9e48c7a0ffe3c735ca93dd781a011af66fcbc2bcc808c1abfa175e4",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x47265a7b6d43fbc4da9f03d94b10a35ad510d960ff8526619a9c7649e955fb1a",
+        "0x5d86227bde97d6c9f30ce6b83027998a5eecc572e6bc36a822bd64cd54e9e62f",
+        "0x7588f0a3bf3a9e0db12b7aa05bc0db133a61050d222c8b75c0bb95e9048f3740",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -1041,15 +1165,22 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af870a8982941a2372712d6e089649ab1dd9e773dc989fe69b985087788e5242c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x07da84e29f4c315c5587ec0e31f7f81efc8f86597b741f6e830c7a54d09e93b0",
-        "0x2c449bcfe676bc149239f6695144d9279e4d4087901b62ae758addfe75f3ba9e",
-        "0x80e7c4e2e6e59a94d2441748536ed5c51ae87b98216741ab91ee1a1708c71ddf",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0xdafc07aec288f45b8589fa00b37b1b61224916234e7968cd885a7b8b81796247",
+        "0xe470ea3190af8b65b4b59512dee5e5b21bfbe9b4849252588ff4e0add15e08f2",
+        "0x6ed66325d0a226db18072355ef311645b8dbbd89864102c1a785aa10b600eb39",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -1083,15 +1214,22 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a45f26b86e5642cfffc13287913077da375a7742076814ebd3211fbc909f0ae39000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x50651d0a486ad45c454481e2d166fbc45151b9379b65d81d2c27cebbb9040d8e",
-        "0x216b60750cd01fbcbfed69eae016b492383a6efddff552e12411d455e9cf4b1e",
-        "0xda6372c5d566716744fbc567fc46597c1439592cedab0ada5f0e8de8f32b35f4",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0xe32846e3f0fbc770facf09225efef197536b59d161ca97a77bafb5c747f8908e",
+        "0xc0654982fed538ba74dfa785d77e5266dbc3f56eb94f09d8618f27e40933eb0b",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     },
     {
@@ -1125,16 +1263,23 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8d7ffc3b40bd0f950c16be702ce3cfc1287590d5d07e85e4bcdd1550e1fa872b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x3ffebcdd072b2aa17c4c39661b0eca6204b6b31673b84edc457645045713fa25",
-        "0x564930500601e64892b5f300d678a29746b548c655f8c89e08483101bad424c0",
-        "0x75d940e3c9e48c7a0ffe3c735ca93dd781a011af66fcbc2bcc808c1abfa175e4",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x2a6f3a4937e133cc227352ec5d84c86abba9126e61c78211b58e3cfdc5ccfc5f",
+        "0x654aad33390245e610370e4e3b9473d60fd1cf7d2eb3a483e9bc59fe89f06425",
+        "0x3ab43f3233843b3ad641d688b6223d7fc968e104024e6db97f1687276a305e87",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -1168,15 +1313,22 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a456f6957c91f7a45e7259e5ab8dca27e480256593c40a7e96a0243a73d54d69d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x6ae3471ddaa158c6296d21364d5e5d033260919860944ac5139d87c682f44fab",
-        "0x216b60750cd01fbcbfed69eae016b492383a6efddff552e12411d455e9cf4b1e",
-        "0xda6372c5d566716744fbc567fc46597c1439592cedab0ada5f0e8de8f32b35f4",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0xe32846e3f0fbc770facf09225efef197536b59d161ca97a77bafb5c747f8908e",
+        "0xc0654982fed538ba74dfa785d77e5266dbc3f56eb94f09d8618f27e40933eb0b",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     },
     {
@@ -1210,16 +1362,23 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a685c814251a38e41c99ff4cc926aa2515f3134f6c909062eb00648c93887c81e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x2940b2bf928bae06d5bd6a979f2463c0c1de00f7c0fdde021f9e4569f82f6d9f",
-        "0x6b5e926630a2e0adab1e621c947edca9c9006193346b5e0d5a772985326f5909",
-        "0xb7d46fea4dc1a68d5c1345576a57bdd7a82fe539161c53e24699170ed6f82ddf",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x38f4bf801c60e6f0572066bc5f1d7fa8ca523fea9d84d1e79785cc80fe79cf54",
+        "0x654aad33390245e610370e4e3b9473d60fd1cf7d2eb3a483e9bc59fe89f06425",
+        "0x3ab43f3233843b3ad641d688b6223d7fc968e104024e6db97f1687276a305e87",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -1253,15 +1412,22 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ada9aed9423138a8c59593cb8563a92a4dff24b9ba0e09d63989acb4b0eb664de000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x71240af2b697c0f46d1b3b6b99001e2fd388df32ec97f939c4825fa5ccc5d81c",
+        "0xa14728fdcd7b317406bac0c051f4f38387aefe9f2f3dc41e88418f56f1dd5287",
         "0x89a4141a9704f9c526c5f88c9712047ce96c1105df4e7bfa42f6d25a3a696951",
-        "0xda6372c5d566716744fbc567fc46597c1439592cedab0ada5f0e8de8f32b35f4",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0xc0654982fed538ba74dfa785d77e5266dbc3f56eb94f09d8618f27e40933eb0b",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     },
     {
@@ -1295,16 +1461,23 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a833df65e68a47e56d70df011feae235388fda24e5fa9fd57f497e3b2da8be182000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x2a6f3a4937e133cc227352ec5d84c86abba9126e61c78211b58e3cfdc5ccfc5f",
-        "0x6b5e926630a2e0adab1e621c947edca9c9006193346b5e0d5a772985326f5909",
-        "0xb7d46fea4dc1a68d5c1345576a57bdd7a82fe539161c53e24699170ed6f82ddf",
-        "0xf9665af4597a020375699d30a1bc9be46d88011a6572810c95c8c4c3fe1dd8d7",
-        "0x8d1b2d5cddba0d5f1b3906ded05b1e7152c2155510613ebe0646160f6ea1eee4"
+        "0x1ece35ef4d6f9feb722597cff211bfd79760f57fc78b6131bb9cf47fbeda9707",
+        "0xedb5deb491eb88701e48f4de2c43b04ece7371ee8022195181c1906c0ce9f838",
+        "0x3ab43f3233843b3ad641d688b6223d7fc968e104024e6db97f1687276a305e87",
+        "0xc283b7b94c5807ad8f86bf986d9a9faa00190cae8c61d5073f34deff0fd9124d",
+        "0x2a25e5ac92a6854c8859f5144251160423417c0e0e74fde6627d48cd8b4841c9"
       ]
     },
     {
@@ -1338,15 +1511,22 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ada2ed84e228f46076a84b440aefd43cca9554b038630e366729020890e0d3fa0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xb69d3293dff5975495cd6b5fb0830fbd22d79e271d3604ce63f9a9c1b9b38620",
-        "0xc9841a0571898d4b6162f1f6a41f8d388c657ff6d4dbbd10fdb4ab8c9045f0f6",
-        "0x079aa311782b9cf47dd12d49a3318125136166adc4d21769ae8c1560f909a721",
-        "0x1f350a3975fc71d64d9185e4b3a3016fa52af2d3aa63471cba0feb9e01818837"
+        "0xff09d572cf76b4db5c7cca6bc49059d5775e3245713eddb3628e9921c3a7c7ce",
+        "0x14b3170387b33970f9bc383d6e9d6348746c18f6f9321699574692cfd721bb27",
+        "0xf9695271052957fea10e5f51a8c6d14d43251562c344bed1b2156b2a29b229e8"
       ]
     }
   ]
