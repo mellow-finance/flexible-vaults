@@ -1,8 +1,10 @@
 {
   "title": "mezo:mbhBTC:subvault1",
   "vault": "0x807D4778abA870e4222904f5b528F68B350cE0E0",
+  "subvault": "0xC4A1DB6F577aEE8cbAf655B61f87394D78aef6E9",
   "chain": "mezo",
   "merkle_root": "0xf4cc04c5789f2315c530c98b2bba1ba6bada0e604eab11d292c165a4594f9f8f",
+  "vault_symbol": "mbhBTC",
   "merkle_proofs": [
     {
       "description": {
@@ -41,7 +43,24 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "openTrove._debtAmount",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "openTrove._upperHint",
+            "type": "address",
+            "allowedValue": "any"
+          },
+          {
+            "path": "openTrove._lowerHint",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314de415cb240a8a60ccf949c40867457a5bc2b5909edb668874c006234df7e48339000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -82,7 +101,19 @@
           ],
           "outputs": [],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "addColl._upperHint",
+            "type": "address",
+            "allowedValue": "any"
+          },
+          {
+            "path": "addColl._lowerHint",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314da33393c7571608207c23edb9fab4220e86d5ef6fb3a214030f786e75273fa030000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -129,7 +160,24 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdrawColl._amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "withdrawColl._upperHint",
+            "type": "address",
+            "allowedValue": "any"
+          },
+          {
+            "path": "withdrawColl._lowerHint",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d0fc239a9be070ac3de871f8280e253ec2cde2982027ae2b567d2cd265aaf5a6d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -175,7 +223,24 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdrawMUSD._amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "withdrawMUSD._upperHint",
+            "type": "address",
+            "allowedValue": "any"
+          },
+          {
+            "path": "withdrawMUSD._lowerHint",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d1009ef7a69fb0a4cc523d5ef9b5471fa51caf1cc208c8eef388009e12d460264000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -221,7 +286,24 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "repayMUSD._amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayMUSD._upperHint",
+            "type": "address",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayMUSD._lowerHint",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d7e0a3194a90a53d79cb0396dfe26a4c848765e098d28023f304a622b7576473d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -248,7 +330,8 @@
           "inputs": [],
           "outputs": [],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": []
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d7cf9d0377b125a2009505c080a199f38ca6833cd91e8d1bb70bc17475c43081e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
