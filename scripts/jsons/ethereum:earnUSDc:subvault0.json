@@ -1,0 +1,1262 @@
+{
+  "title": "ethereum:earnUSDc:subvault0",
+  "vault": "0xbF9f76bA554eA5DAfBf736320792D87C1eE362aB",
+  "subvault": "0xCFdE79D2fcCBaC4E9917B902272520868a2Ca914",
+  "chain": "ethereum",
+  "merkle_root": "0xfcff4ae0cac5558476d717193c9a681d8f89fe9f42d00880256b628007268ffb",
+  "vault_symbol": "earnUSDc",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "bridge_usdc_to_monad",
+        "protocol": "CCTP",
+        "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa4ea5a210d4462d091238254b23ed6ff1b1b8375bd30524be8ad0ddd86abc6a7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1763260d42843d2a581608a12037ad96a8f2f851a2183ead979ab7a1697d03f9",
+        "0x61c1ee2d4e011969af84294716343d84ec78e8aef44442ad6a3d29df7fedf4f1",
+        "0xc74302dfaed9b4685161e7c654164415014965779406e107e54f7681c6a49153",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "bridge_usdc_to_monad",
+        "protocol": "CCTP",
+        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,15,0x000000000000000000000000161761C4B0ffF56a81c200f4abBbD1A91abC7485,USDC,0x000000000000000000000000f168327c812343B5B05F93b5CFbdF36cb644a605,0,2000)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDomain": "15",
+          "mintRecipient": "0x000000000000000000000000161761C4B0ffF56a81c200f4abBbD1A91abC7485",
+          "burnToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "destinationCaller": "0x000000000000000000000000f168327c812343B5B05F93b5CFbdF36cb644a605",
+          "maxFee": "0",
+          "minFinalityThreshold": "2000"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositForBurn",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDomain",
+              "type": "uint32",
+              "internalType": "uint32"
+            },
+            {
+              "name": "mintRecipient",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "burnToken",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "destinationCaller",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "maxFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minFinalityThreshold",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "_nonce",
+              "type": "uint64",
+              "internalType": "uint64"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "depositForBurn.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0b8fd6b2d95502d4d070858ab779a0633606f84827f706a5d6ed079462a3c46f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd3e6307b4134b0c7933b9b38c3776ceb3bb0239c86d9f8582202ce4117c8ac92",
+        "0x3fdc88a9e84235a81a37d9417cbfdcc8f5e81b50580218b0962a56aabd212b2d",
+        "0xf3f4864cf7d2990e3e917b04d3275e05bda90df9f3654caebd0911bb4b23f15e",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "bridge_usdc_to_hyperevm",
+        "protocol": "CCTP",
+        "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa4ea5a210d4462d091238254b23ed6ff1b1b8375bd30524be8ad0ddd86abc6a7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1763260d42843d2a581608a12037ad96a8f2f851a2183ead979ab7a1697d03f9",
+        "0x61c1ee2d4e011969af84294716343d84ec78e8aef44442ad6a3d29df7fedf4f1",
+        "0xc74302dfaed9b4685161e7c654164415014965779406e107e54f7681c6a49153",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "bridge_usdc_to_hyperevm",
+        "protocol": "CCTP",
+        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,19,0x00000000000000000000000084d85B50f872D1C0F237c6cbAE6FE04121c5c7b7,USDC,0x000000000000000000000000a72C923278529fc331c1A8542e2502F9bf92a5b1,0,2000)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDomain": "19",
+          "mintRecipient": "0x00000000000000000000000084d85B50f872D1C0F237c6cbAE6FE04121c5c7b7",
+          "burnToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "destinationCaller": "0x000000000000000000000000a72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "maxFee": "0",
+          "minFinalityThreshold": "2000"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositForBurn",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDomain",
+              "type": "uint32",
+              "internalType": "uint32"
+            },
+            {
+              "name": "mintRecipient",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "burnToken",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "destinationCaller",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "maxFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minFinalityThreshold",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "_nonce",
+              "type": "uint64",
+              "internalType": "uint64"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "depositForBurn.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7a6c058d172b5b34c74757bbb0d8d0c3bf47dec2ebff5594cc67a0d38ca1126d00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4814b3488343e73b88b0ae09a504c2f3b718516666781c906c160bd11cdfae78",
+        "0x09037fe132c9e557c85cf2abca771e4e88a8b4c49915fe4b98b3650e0309a404",
+        "0x3a5e93120818edfe9102a9c722f76559d68a598dfa6cfa70c16440e2e99eb79a",
+        "0xa37345ce6782bd80a86ddf4e579644b5b059c4693ccd9d9629bdb6a317a7af15",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "bridge_usdc_to_base",
+        "protocol": "CCTP",
+        "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa4ea5a210d4462d091238254b23ed6ff1b1b8375bd30524be8ad0ddd86abc6a7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1763260d42843d2a581608a12037ad96a8f2f851a2183ead979ab7a1697d03f9",
+        "0x61c1ee2d4e011969af84294716343d84ec78e8aef44442ad6a3d29df7fedf4f1",
+        "0xc74302dfaed9b4685161e7c654164415014965779406e107e54f7681c6a49153",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "bridge_usdc_to_base",
+        "protocol": "CCTP",
+        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,6,0x00000000000000000000000009fb07e46b7817950F0c15De539A8Fd16447709D,USDC,0x000000000000000000000000158A4f139803CA7B2A1074ffc6dC1a7987E566D8,0,2000)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDomain": "6",
+          "mintRecipient": "0x00000000000000000000000009fb07e46b7817950F0c15De539A8Fd16447709D",
+          "burnToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "destinationCaller": "0x000000000000000000000000158A4f139803CA7B2A1074ffc6dC1a7987E566D8",
+          "maxFee": "0",
+          "minFinalityThreshold": "2000"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositForBurn",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDomain",
+              "type": "uint32",
+              "internalType": "uint32"
+            },
+            {
+              "name": "mintRecipient",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "burnToken",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "destinationCaller",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "maxFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minFinalityThreshold",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "_nonce",
+              "type": "uint64",
+              "internalType": "uint64"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "depositForBurn.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2c634a524f89162892e5731e755a790b0d8e0d327c73bab81b2403ef174f799c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x483f9251f0747ff26689c1fa309fad48673c15d269ab938686d675717ff52cfa",
+        "0xcc5a7270c4c29cc160b08f97e40f78f5c94bd41825e5897a2415dba15673fc61",
+        "0xf59e8ad3ba99d36b08063e1bc60833de60a9ed0dee86dd45f4d25aac184e8cc0",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "IERC20(USDC).approve(earnUSDc_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x53E137244d97C8262e0c307363860947623a2237",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2a19ec826389488601868738ca1349a7c609efd94f7f0fce280e6bbb6b2f302b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x2b72fd66aff0c3ac2454e2fbf553abf792cb8f456e37d6456c391a4ed4852e30",
+        "0x578968d3bae3005fb37e78865da83e48d1e6aa5b03058b986c630d14b7ac1a3b",
+        "0xa6d135d0ee26655081952e9cafe61f453de75e6d432823e2ab181e7aea8ad541",
+        "0xa37345ce6782bd80a86ddf4e579644b5b059c4693ccd9d9629bdb6a317a7af15",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "IERC20(USDT).approve(earnUSDc_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x53E137244d97C8262e0c307363860947623a2237",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a482aa5de91d6ecaa4a177bce017e5a591ce20c0ea8648606bc1d953c4a5adfce000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xfd5399da20362a0b40ffead60911700a2b9168b4ec21b4dcf368510160486336",
+        "0x66d9d664a400be6356561604f0cbf7bf6f9c0196ec7c6cd91a46d29522855cb3",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "IERC20(USDS).approve(earnUSDc_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0xdC035D45d973E3EC169d2276DDab16f1e407384F",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x53E137244d97C8262e0c307363860947623a2237",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa4002a27d4dc536520181c6ffd1242c98dbb58fcb34ba58a5820c6e4d3d0f1a9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3c6d5731a0cfd3180f4770b94dec42817a2330d0bae3182c3866f7d4d72bac2c",
+        "0x66bb0011b4e0e5e42a0aaa7a8847d5f255dc4d24de1235101baa7491ef6e8b9f",
+        "0x3a5e93120818edfe9102a9c722f76559d68a598dfa6cfa70c16440e2e99eb79a",
+        "0xa37345ce6782bd80a86ddf4e579644b5b059c4693ccd9d9629bdb6a317a7af15",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "IERC20(PYUSD).approve(earnUSDc_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x53E137244d97C8262e0c307363860947623a2237",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaa0a3cee967aa4701b3feed9ce01f153bff919bd84ed6196b0900c8e39b00dd2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x46b8b8fb813afe958f84443c564f38d062aff3b380992cfbf43dff2ce25d7f8d",
+        "0x09037fe132c9e557c85cf2abca771e4e88a8b4c49915fe4b98b3650e0309a404",
+        "0x3a5e93120818edfe9102a9c722f76559d68a598dfa6cfa70c16440e2e99eb79a",
+        "0xa37345ce6782bd80a86ddf4e579644b5b059c4693ccd9d9629bdb6a317a7af15",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "IERC20(syrupUSDC).approve(earnUSDc_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x53E137244d97C8262e0c307363860947623a2237",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af932c7f0c3f94cdcdb5b047ba0a571e6adafc03c5cd7ec167f2064d06df2eff3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x410dcfa431906995c0c19529a404348c9c84cccce8e188ee4f381e0b51f91654",
+        "0x66bb0011b4e0e5e42a0aaa7a8847d5f255dc4d24de1235101baa7491ef6e8b9f",
+        "0x3a5e93120818edfe9102a9c722f76559d68a598dfa6cfa70c16440e2e99eb79a",
+        "0xa37345ce6782bd80a86ddf4e579644b5b059c4693ccd9d9629bdb6a317a7af15",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDC,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac3dbac7f1ed3f99d4a8470b98e11aff4025cc91947da7205b33043a780de0645000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1140e44934355e82003a32c94e53fea2e236aa686e78ea4256d26b87b86c76ae",
+        "0xd88b874fdeed17f818d304a6c8791d71658cf00006f23ba92211bd39643891a8",
+        "0xc74302dfaed9b4685161e7c654164415014965779406e107e54f7681c6a49153",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDT,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a01549236d4249c2e938645135a8041a112caecee6dbd7aff033ee2bcd3746ba9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf4f8117884922beb30bdf11d40f43083f85b044132a286ad5265bed6a2f594be",
+        "0x66d9d664a400be6356561604f0cbf7bf6f9c0196ec7c6cd91a46d29522855cb3",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDS,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xdC035D45d973E3EC169d2276DDab16f1e407384F",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa2bded95ab75f34dcea3c598d198ca47a1b0aa4e797e01272ad628424a1b9cfc000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6ba73092d2655b186c43a7c609f2a9194e40a966ee91685bbaecad8978e95ad5",
+        "0xff6fbac5142fd2bba4a1469c7d5af96d0262c3e1825ff9344e3697427102916d",
+        "0xf59e8ad3ba99d36b08063e1bc60833de60a9ed0dee86dd45f4d25aac184e8cc0",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(PYUSD,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9abd9a1ded6a7a35e211f584477542277aa87af216971cba0ca671d893474529000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x293d48186b4458412f267c0f2532fd32d2b13d8605112bfeb59796709776df61",
+        "0x578968d3bae3005fb37e78865da83e48d1e6aa5b03058b986c630d14b7ac1a3b",
+        "0xa6d135d0ee26655081952e9cafe61f453de75e6d432823e2ab181e7aea8ad541",
+        "0xa37345ce6782bd80a86ddf4e579644b5b059c4693ccd9d9629bdb6a317a7af15",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(syrupUSDC,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x80ac24aa929eaf5013f6436cda2a7ba190f5cc0b",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7b56054925d61dd5746c6773063506933caea61179ee1dce240cdbc0ffab9261000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xccc88a695fcc968705daa9776c3f7d02e6101a9c4bc143f557c28a900cef5611",
+        "0xc1cb6c0817af16683bce3e1e7b65e13f820119efd5f0990bc2444e152919e01b",
+        "0xf3f4864cf7d2990e3e917b04d3275e05bda90df9f3654caebd0911bb4b23f15e",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDC,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a71fd27ea9214dd58d53fe2a44ec40ed65b871133de30b618d8d3a0531d7503f1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0684a73d375bc1f33ef4e07881f6f8d86f42d3537530e26e5d6866a595d37f5c",
+        "0xd88b874fdeed17f818d304a6c8791d71658cf00006f23ba92211bd39643891a8",
+        "0xc74302dfaed9b4685161e7c654164415014965779406e107e54f7681c6a49153",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDT,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aff9e2aac6894d7f5260c6f3769be4592e5203bcfc34f2c3a61c03305b9f648a4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4aca9ed689b4cda709e0d6051f49dd8a37bba43d1488e66249612f00e8bc4201",
+        "0xcc5a7270c4c29cc160b08f97e40f78f5c94bd41825e5897a2415dba15673fc61",
+        "0xf59e8ad3ba99d36b08063e1bc60833de60a9ed0dee86dd45f4d25aac184e8cc0",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDS,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xdC035D45d973E3EC169d2276DDab16f1e407384F",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaa631f53b83a4276ab339cd307804cd0e7e78219d16f64ca5f82d020f2334876000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xdc534acd8f814cee7ce8e2a20629c0b90a66c97e6cc77f3e8081fb91c3c06b53",
+        "0x3fdc88a9e84235a81a37d9417cbfdcc8f5e81b50580218b0962a56aabd212b2d",
+        "0xf3f4864cf7d2990e3e917b04d3275e05bda90df9f3654caebd0911bb4b23f15e",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(PYUSD,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa2f950d94a4e3896d3ca4f0ee046d59dea15a2cc25decdefdb10b8fa20db901e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x945438385c7463e3cb795a662562525179c1a7aeb47ef9d85b603793e462eaf8",
+        "0xc1cb6c0817af16683bce3e1e7b65e13f820119efd5f0990bc2444e152919e01b",
+        "0xf3f4864cf7d2990e3e917b04d3275e05bda90df9f3654caebd0911bb4b23f15e",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(syrupUSDC,any)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x53E137244d97C8262e0c307363860947623a2237",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x80ac24aa929eaf5013f6436cda2a7ba190f5cc0b",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a650cf0eed36eb5fb5303342ba2f9aae099e7974cec853e36a60e9cf73bdd461e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x64c47df9a531f6fcafc0eeb9e5b7207fedc485dc239451b192e904f90e424baf",
+        "0xff6fbac5142fd2bba4a1469c7d5af96d0262c3e1825ff9344e3697427102916d",
+        "0xf59e8ad3ba99d36b08063e1bc60833de60a9ed0dee86dd45f4d25aac184e8cc0",
+        "0x2c71914c3756db8590c4e837fbfe01029aac720ee824b2762c4a5cadfce5338d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "syrup_usdc",
+        "protocol": "SyrupUSDT",
+        "description": "ISyrup(syrupUSDC).requestRedeem(any,earnUSDc_Subvault_0)",
+        "parameters": {
+          "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
+          "target": "0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "owner": "0xCFdE79D2fcCBaC4E9917B902272520868a2Ca914"
+        },
+        "abi": {
+          "type": "function",
+          "name": "requestRedeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "requestRedeem.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aeefe898544f38f01fdaf01aa464521d25b9f5aa15bcfbb05c0d5f7a3deb386d6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x2749ac8524a71e59620807da8d328ab093b7bd02e84ffaf4dd722cd72056dadb",
+        "0x61c1ee2d4e011969af84294716343d84ec78e8aef44442ad6a3d29df7fedf4f1",
+        "0xc74302dfaed9b4685161e7c654164415014965779406e107e54f7681c6a49153",
+        "0x9900dd9a0eaf7b369874511b5849ee11c8a9cdbb40a00aea8197b01bb2caceed",
+        "0xa9a0cb81f6022ab41a0f03268b359a50fd050f86d45a280c8987cba8f3d7cdb3"
+      ]
+    }
+  ]
+}

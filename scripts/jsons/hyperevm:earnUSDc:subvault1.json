@@ -1,0 +1,180 @@
+{
+  "title": "hyperevm:earnUSDc:subvault1",
+  "vault": "0x965e679672D7201C0702F81736AFF27FD0A8D766",
+  "subvault": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9",
+  "chain": "hyperevm",
+  "merkle_root": "0xa5e3710d271baefc9c22db243f80449da8c9a6a54673abd83c1715e456e1c5c0",
+  "vault_symbol": "earnUSDc",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "hyperlend_supply",
+        "protocol": "AaveV3",
+        "description": "IERC20(USDC).approve(HyperlendPool,any)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x00A89d7a5A02160f20150EbEA7a2b5E4879A1A8b",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6696f1f9d0515ed129427c017dd62197e54e55f083d8dec7b3f717548ef918b4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xe0f1ea9853d4c477cbfaa1b0e526876d86ee6727b35353761a67bcaa0c97613a",
+        "0xfa5995e52893f42da3d1b239fab9a966c01cf222993efa0cc75b83feadbd21fe"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperlend_supply",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(HyperlendPool).supply(USDC,any,earnUSDc_Subvault_1,0)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0x00A89d7a5A02160f20150EbEA7a2b5E4879A1A8b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "amount": "any",
+          "onBehalfOf": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9",
+          "referralCode": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "supply.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a61408e06110df4cde799e723aa686297b315f540e7f6b0f0ffad78d7ef8b6d30000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbbaad8858d0435ced400ebc6c3fb65cecfa634b868496d662a7ad0401e7e71e5",
+        "0xfa5995e52893f42da3d1b239fab9a966c01cf222993efa0cc75b83feadbd21fe"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperlend_supply",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(HyperlendPool).withdraw(USDC,any,earnUSDc_Subvault_1)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0x00A89d7a5A02160f20150EbEA7a2b5E4879A1A8b",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "amount": "any",
+          "to": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac37d2c0874184e043f20cb2faa75e7c560f0bd8a4a45f09db176446407f80d45000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0644eef9e60dae2ea2e1689f1f09c4d4d3bbcd4eefb988af49e5d8c908e057ca"
+      ]
+    }
+  ]
+}
