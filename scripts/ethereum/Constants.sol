@@ -26,6 +26,7 @@ library Constants {
     address public constant CRV = 0xD533a949740bb3306d119CC777fa900bA034cd52;
     address public constant FLUID = 0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb;
     address public constant SYRUP_USDT = 0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D;
+    address public constant SYRUP_USDC = 0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b;
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
@@ -56,6 +57,7 @@ library Constants {
     address public constant AAVE_V3_ORACLE = 0x54586bE62E3c3580375aE3723C145253060Ca0C2;
 
     address public constant MORPHO = 0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb;
+    address public constant MORPHO_TOKEN = 0x58D97B57BB95320F9a05dC918Aef65434969c2B2;
     bytes32 public constant MORPHO_WSTUSR_USDC_MARKET_ID =
         0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc;
 
