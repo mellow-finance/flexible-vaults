@@ -27,6 +27,7 @@ library Constants {
     address public constant FLUID = 0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb;
     address public constant SYRUP_USDT = 0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D;
     address public constant SYRUP_USDC = 0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b;
+    address public constant PYUSD = 0x6c3ea9036406852006290770BEdFcAbA0e23A0e8;
 
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;

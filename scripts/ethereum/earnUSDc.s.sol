@@ -79,7 +79,8 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
         if (true) {
-            _updatePermissions();
+            address swapModule = _deploySwapModule(0xCFdE79D2fcCBaC4E9917B902272520868a2Ca914);
+            console.log(swapModule);
             return;
         }
 
@@ -443,8 +444,14 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[5] memory lidoLeverage =
-            [Constants.USDC, Constants.USDT, Constants.USDS, Constants.SYRUP_USDC, Constants.MORPHO_TOKEN];
+        address[6] memory lidoLeverage = [
+            Constants.USDC,
+            Constants.USDT,
+            Constants.USDS,
+            Constants.PYUSD,
+            Constants.SYRUP_USDC,
+            Constants.MORPHO_TOKEN
+        ];
         address[] memory actors =
             ArraysLibrary.makeAddressArray(abi.encode(curator, lidoLeverage, lidoLeverage, _routers()));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
@@ -455,9 +462,11 @@ contract Deploy is Script, Test {
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE
                 ],
                 [
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
