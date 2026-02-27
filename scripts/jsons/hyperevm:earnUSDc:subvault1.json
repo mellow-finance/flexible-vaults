@@ -3,7 +3,7 @@
   "vault": "0x965e679672D7201C0702F81736AFF27FD0A8D766",
   "subvault": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9",
   "chain": "hyperevm",
-  "merkle_root": "0xa5e3710d271baefc9c22db243f80449da8c9a6a54673abd83c1715e456e1c5c0",
+  "merkle_root": "0x7c8bfb3ccba6a1a7dd2be5dc1e537749f48bd1acba80852b592ab81dbb1258ae",
   "vault_symbol": "earnUSDc",
   "merkle_proofs": [
     {
@@ -55,8 +55,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6696f1f9d0515ed129427c017dd62197e54e55f083d8dec7b3f717548ef918b4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xe0f1ea9853d4c477cbfaa1b0e526876d86ee6727b35353761a67bcaa0c97613a",
-        "0xfa5995e52893f42da3d1b239fab9a966c01cf222993efa0cc75b83feadbd21fe"
+        "0x80264b33c9d88dab84b874b4968233b934204ecb5d998ccf58b1579ea8b5c4f0",
+        "0xa95d35770ca9ec32740be40fe5c3321108d9f2aa16d9c4c1dd88736cc4ca3b0d",
+        "0x4a74c9715cb1e09c386d47dee59367f658f81c6a745697101200e3d19126af65"
       ]
     },
     {
@@ -114,8 +115,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a61408e06110df4cde799e723aa686297b315f540e7f6b0f0ffad78d7ef8b6d30000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xbbaad8858d0435ced400ebc6c3fb65cecfa634b868496d662a7ad0401e7e71e5",
-        "0xfa5995e52893f42da3d1b239fab9a966c01cf222993efa0cc75b83feadbd21fe"
+        "0xd28e56fb1d33530c9f061a4890f001c2c789cd7bc60ee11171ab07affb77942e",
+        "0x650629e6b7a83b2f990db1674907c9e0d9493b06a8707bdd801f37dd04ff3487",
+        "0xb59387bee1caff3bd9d6c45377c5cc69ff6bef0009efaba51e793ed179121c00"
       ]
     },
     {
@@ -173,7 +175,291 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac37d2c0874184e043f20cb2faa75e7c560f0bd8a4a45f09db176446407f80d45000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x0644eef9e60dae2ea2e1689f1f09c4d4d3bbcd4eefb988af49e5d8c908e057ca"
+        "0xee23951d8656be414a25c5faf3da3ba72b8dcc408523f01a320017f30694f605",
+        "0x8001c8a836067c717bf82c902d8dd0e8db9ea5ca4ab75fed2b87992b03f95b01",
+        "0xb59387bee1caff3bd9d6c45377c5cc69ff6bef0009efaba51e793ed179121c00"
+      ]
+    },
+    {
+      "description": {
+        "integration": "grearbox_ultra_yield_usdc",
+        "protocol": "ERC4626",
+        "description": "IERC20(USDC).approve(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27,any)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1254623a23a9e5f451a334f7b951c9a35ae6783a96653e748add8b1b3138a36c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbbaad8858d0435ced400ebc6c3fb65cecfa634b868496d662a7ad0401e7e71e5",
+        "0xa95d35770ca9ec32740be40fe5c3321108d9f2aa16d9c4c1dd88736cc4ca3b0d",
+        "0x4a74c9715cb1e09c386d47dee59367f658f81c6a745697101200e3d19126af65"
+      ]
+    },
+    {
+      "description": {
+        "integration": "grearbox_ultra_yield_usdc",
+        "protocol": "ERC4626",
+        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).deposit(any,earnUSDc_Subvault_1)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0a3278ab16abe8006e9700c7b4615c2afa8270c4d16fc0bab4b61d1c4c633a24000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xe0f1ea9853d4c477cbfaa1b0e526876d86ee6727b35353761a67bcaa0c97613a",
+        "0x650629e6b7a83b2f990db1674907c9e0d9493b06a8707bdd801f37dd04ff3487",
+        "0xb59387bee1caff3bd9d6c45377c5cc69ff6bef0009efaba51e793ed179121c00"
+      ]
+    },
+    {
+      "description": {
+        "integration": "grearbox_ultra_yield_usdc",
+        "protocol": "ERC4626",
+        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).mint(any,earnUSDc_Subvault_1)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9"
+        },
+        "abi": {
+          "type": "function",
+          "name": "mint",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "mint.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a54a6041d9a0d63bbe4c96eb22c942db6b2c532f98d8910c08e257cf2dfa68a1f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xfa5995e52893f42da3d1b239fab9a966c01cf222993efa0cc75b83feadbd21fe",
+        "0x8001c8a836067c717bf82c902d8dd0e8db9ea5ca4ab75fed2b87992b03f95b01",
+        "0xb59387bee1caff3bd9d6c45377c5cc69ff6bef0009efaba51e793ed179121c00"
+      ]
+    },
+    {
+      "description": {
+        "integration": "grearbox_ultra_yield_usdc",
+        "protocol": "ERC4626",
+        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).withdraw(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9",
+          "owner": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9b4ab095a836e2977fae0d2a455ce7f4cac665dc1b28b1024fd0307de5b976ac000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x69cca306407f761900701769d610a1edccabe25da107586d406fbe03e3453c8a",
+        "0x8607ac7615dea8c902347486083a6fda2beab126a2ef849e529443ce0ad1f90e",
+        "0x4a74c9715cb1e09c386d47dee59367f658f81c6a745697101200e3d19126af65"
+      ]
+    },
+    {
+      "description": {
+        "integration": "grearbox_ultra_yield_usdc",
+        "protocol": "ERC4626",
+        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).redeem(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
+        "parameters": {
+          "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
+          "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9",
+          "owner": "0x3f3AA0A87B3F17976E942695e4E950f1778D9EC9"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "redeem.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3234eb0364c00dc5e45e4a8daf7d6946578b52f4c2e2b22eb457e2eacd3b7581000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x223c5d62b7519d35ae69fea6d0e86159d6f51269dec7407ea1ac99a21f232346",
+        "0x8607ac7615dea8c902347486083a6fda2beab126a2ef849e529443ce0ad1f90e",
+        "0x4a74c9715cb1e09c386d47dee59367f658f81c6a745697101200e3d19126af65"
       ]
     }
   ]
