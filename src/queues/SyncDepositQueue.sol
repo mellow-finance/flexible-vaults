@@ -9,7 +9,7 @@ import "../libraries/TransferLibrary.sol";
 import "./SyncQueue.sol";
 
 contract SyncDepositQueue is ISyncDepositQueue, SyncQueue {
-    bytes32 private _syncDepositQueueStorageSlot;
+    bytes32 private immutable _syncDepositQueueStorageSlot;
 
     /// @inheritdoc ISyncDepositQueue
     bytes32 public constant SET_SYNC_DEPOSIT_PARAMS_ROLE =
