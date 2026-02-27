@@ -52,13 +52,15 @@ contract Deploy is Script, Test {
         bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 0xfb0c8ebe780e611d780090d3524240fb65aae408dbdb87d6cd3e7e86f2850498,
-                0xa5e3710d271baefc9c22db243f80449da8c9a6a54673abd83c1715e456e1c5c0
+                0x7c8bfb3ccba6a1a7dd2be5dc1e537749f48bd1acba80852b592ab81dbb1258ae
             )
         );
         for (uint256 i = 0; i < roots.length; i++) {
             address subvault = IVaultModule(vault).subvaultAt(i);
             IVerifier verifier = IVerifierModule(subvault).verifier();
-            verifier.setMerkleRoot(roots[i]);
+            if (verifier.merkleRoot() != roots[i]) {
+                verifier.setMerkleRoot(roots[i]);
+            }
         }
     }
 

@@ -184,7 +184,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC20(USDC).approve(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27,any)",
+        "description": "IERC20(USDC).approve(Felix_USDC_Metamorpho,any)",
         "parameters": {
           "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
           "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
@@ -238,7 +238,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).deposit(any,earnUSDc_Subvault_1)",
+        "description": "IERC4626(Felix_USDC_Metamorpho).deposit(any,earnUSDc_Subvault_1)",
         "parameters": {
           "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
           "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
@@ -292,7 +292,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).mint(any,earnUSDc_Subvault_1)",
+        "description": "IERC4626(Felix_USDC_Metamorpho).mint(any,earnUSDc_Subvault_1)",
         "parameters": {
           "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
           "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
@@ -346,7 +346,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).withdraw(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
+        "description": "IERC4626(Felix_USDC_Metamorpho).withdraw(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
         "parameters": {
           "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
           "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",
@@ -406,7 +406,7 @@
       "description": {
         "integration": "grearbox_ultra_yield_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27).redeem(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
+        "description": "IERC4626(Felix_USDC_Metamorpho).redeem(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
         "parameters": {
           "caller": "0xa72C923278529fc331c1A8542e2502F9bf92a5b1",
           "target": "0x8A862fD6c12f9ad34C9c2ff45AB2b6712e8CEa27",

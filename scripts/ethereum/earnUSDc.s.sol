@@ -62,8 +62,8 @@ contract Deploy is Script, Test {
         address vault = 0xbF9f76bA554eA5DAfBf736320792D87C1eE362aB;
         bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
             abi.encode(
-                0xfcff4ae0cac5558476d717193c9a681d8f89fe9f42d00880256b628007268ffb,
-                0x4e3c2b805c665721a72f54ee1f08bcf3079a6310074abcf4c83ba7024fe99014
+                0xad3ffb74f2b984737124978e381c6da320405244825bb4355462742b569e1793,
+                0xdfceff3a93b90b29137cc61a10f3fc9a6bd49c7d909cb1ff7594e7f83127efe2
             )
         );
         for (uint256 i = 0; i < roots.length; i++) {
@@ -79,8 +79,7 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
         if (true) {
-            address swapModule = _deploySwapModule(0xCFdE79D2fcCBaC4E9917B902272520868a2Ca914);
-            console.log(swapModule);
+            _updatePermissions();
             return;
         }
 
