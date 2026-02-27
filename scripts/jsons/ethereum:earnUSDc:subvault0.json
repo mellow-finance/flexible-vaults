@@ -435,7 +435,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDC).approve(0x91FD358d3b2977bb88244953ff4331624cd90846,any)",
+        "description": "IERC20(USDC).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -490,7 +490,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDT).approve(0x91FD358d3b2977bb88244953ff4331624cd90846,any)",
+        "description": "IERC20(USDT).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -546,7 +546,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDS).approve(0x91FD358d3b2977bb88244953ff4331624cd90846,any)",
+        "description": "IERC20(USDS).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0xdC035D45d973E3EC169d2276DDab16f1e407384F",
@@ -602,7 +602,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(PYUSD).approve(0x91FD358d3b2977bb88244953ff4331624cd90846,any)",
+        "description": "IERC20(PYUSD).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
@@ -658,7 +658,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(syrupUSDC).approve(0x91FD358d3b2977bb88244953ff4331624cd90846,any)",
+        "description": "IERC20(syrupUSDC).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b",
@@ -714,7 +714,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pushAssets(USDC,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -764,7 +764,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pushAssets(USDT,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -814,7 +814,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pushAssets(USDS,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDS,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -864,7 +864,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pushAssets(PYUSD,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(PYUSD,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -913,7 +913,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pushAssets(syrupUSDC,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(syrupUSDC,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -962,7 +962,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pullAssets(USDC,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -1012,7 +1012,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pullAssets(USDT,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -1062,7 +1062,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pullAssets(USDS,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDS,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -1111,7 +1111,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pullAssets(PYUSD,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(PYUSD,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
@@ -1161,7 +1161,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x91FD358d3b2977bb88244953ff4331624cd90846).pullAssets(syrupUSDC,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(syrupUSDC,any)",
         "parameters": {
           "caller": "0xD3CB3Bb74C23B09509102B91C95A076dd3694533",
           "target": "0x91FD358d3b2977bb88244953ff4331624cd90846",
