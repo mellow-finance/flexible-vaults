@@ -164,7 +164,7 @@
           "value": "0"
         },
         "innerParameters": {
-          "typeId": "1",
+          "version": "1",
           "actionId": "9",
           "wallet": "0xb945c6b249e8C64987c95249Bf2b644B68Ba1b15",
           "name": "'earnusde_trading_key'"
@@ -203,7 +203,7 @@
           "value": "0"
         },
         "innerParameters": {
-          "typeId": "1",
+          "version": "1",
           "actionId": "6",
           "destination": "0x6754E55170bfe9Fd8ca88620c66e7F0f70C0e401",
           "token": "0",

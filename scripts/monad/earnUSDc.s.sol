@@ -58,8 +58,7 @@ contract Deploy is Script, Test {
         address vault = 0x01344cF9B0159E7b809Ce4c80B6A7ea64a23cd87;
         bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
             abi.encode(
-                0x9236fd9d840f1b05a2c9181ef4c45ca6031829a282e4ebc5a2f2a4aacb3d2a92,
-                0x2e64da17ae68cc18f5cbd0265e3e26210735a04a9edf7455e5e56d15d3b986ab
+                0xf4cb0944513837999732ee09ccaad458a5742c85ffca86a00bdcd6db920eaf3d
             )
         );
         for (uint256 i = 0; i < roots.length; i++) {

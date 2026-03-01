@@ -3,7 +3,7 @@
   "vault": "0x25eb235e86814775De245fab4a3752a44a0dfc30",
   "subvault": "0xfE9A7df88be49Bca543665e17b05D268781c700f",
   "chain": "hyperevm",
-  "merkle_root": "0xa1bbd4b7d55c944fa75f98979b68ee6a5fd86e4aa87db9ea26426e401d978322",
+  "merkle_root": "0xb6d33cde5ba6b04ff549fd53096b979484747b35cd46d76a72d825bc25ebc541",
   "vault_symbol": "earnUSDe",
   "merkle_proofs": [
     {
@@ -55,14 +55,14 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20add2793923df1827983c9a7a9dabe691492c3d29909e4d0cfc4027c933a20c75a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x5420d4ea8018d3e8ab0c4f053db386183bfc1da421478e8cc56fbfc5b4a834a5"
+        "0x22ac735a4d10ce7416c58fe772964148d16c163ac8ee218336973075f8a09a00"
       ]
     },
     {
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
-        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,USDC,0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19,0,2000)",
+        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,0,0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049,USDC,0x0000000000000000000000003236FdfE07f2886Af61c0A559aFc2c5869D06009,0,2000)",
         "parameters": {
           "caller": "0x0E1661C48246c9E21ec4063B72D683c09757e777",
           "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
@@ -73,7 +73,7 @@
           "destinationDomain": "0",
           "mintRecipient": "0x0000000000000000000000000D18b333A11DeD583537eAa9b447A3127A773049",
           "burnToken": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
-          "destinationCaller": "0x00000000000000000000000046137B2cE78FD950800b74408E6d0f8139145C19",
+          "destinationCaller": "0x0000000000000000000000003236FdfE07f2886Af61c0A559aFc2c5869D06009",
           "maxFee": "0",
           "minFinalityThreshold": "2000"
         },
@@ -135,7 +135,7 @@
         ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab1d785ebe7555539fbea021145ed0a4ea1844957800a0670bf868f1cb3020b0800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4d05983f3ce4ef834927769a4e363021530872f20fb78d689ce86041242fb12c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xb7b13e8fc7b0b1ebc8647cfe0eaaf11abaf3c25e11b99849f304a699caa52371"
       ]

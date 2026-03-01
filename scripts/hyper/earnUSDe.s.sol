@@ -59,32 +59,19 @@ contract Deploy is Script, Test {
     }
 
     function _updatePermissions() internal {
-        // bytes memory inner = abi.encode(0xb945c6b249e8C64987c95249Bf2b644B68Ba1b15, string("earnusde_trading_key"));
-        // bytes memory outer = abi.encodePacked(uint8(1), uint24(9), inner);
-        // bytes memory data = abi.encodeCall(IX.sendRawAction, (outer));
-
-        // address caller = 0x0E1661C48246c9E21ec4063B72D683c09757e777;
-        // address target = 0x3333333333333333333333333333333333333333;
-        // uint256 value = 0;
-        address subvault = 0x6754E55170bfe9Fd8ca88620c66e7F0f70C0e401;
-        _update(subvault, 0xdaf428e8c83e788e4dfd233cd15f589e7c86baced37b05059c03abc165f40b2e);
-
-        // bytes32[] memory proof = new bytes32[](3);
-        // proof[0] = 0x47303a539ab888efaaebcd9e4b55b3cc3180aa20929ee194bc82b40d1084e413;
-        // proof[1] = 0xca91a14c347f657b65d53280c855dc096a42aaf74e640143e96041db73ba6893;
-        // proof[2] = 0x6df501aaa85d7bc999acbb77ea0a27cc66a58ef986db1a785f1f8c9e985db595;
-        // IVerifierModule(subvault).verifier().verifyCall(
-        //     caller,
-        //     target,
-        //     value,
-        //     data,
-        //     IVerifier.VerificationPayload({
-        //         verificationType: IVerifier.VerificationType.CUSTOM_VERIFIER,
-        //         verificationData: hex"0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac0136fa8e291b8403f2e46d1995dbd074ea46e6f4f5a42bccb97c9b61163f16600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
-        //         proof: proof
-        //     })
-        // );
-        // revert("ok");
+        address vault = 0x25eb235e86814775De245fab4a3752a44a0dfc30;
+        bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
+            abi.encode(
+                0xb6d33cde5ba6b04ff549fd53096b979484747b35cd46d76a72d825bc25ebc541
+            )
+        );
+        for (uint256 i = 0; i < roots.length; i++) {
+            address subvault = IVaultModule(vault).subvaultAt(i);
+            IVerifier verifier = IVerifierModule(subvault).verifier();
+            if (verifier.merkleRoot() != roots[i]) {
+                verifier.setMerkleRoot(roots[i]);
+            }
+        }
     }
 
     function run() external {
@@ -92,7 +79,6 @@ contract Deploy is Script, Test {
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
-
         if (true) {
             _updatePermissions();
             return;
