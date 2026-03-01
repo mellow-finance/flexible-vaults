@@ -62,14 +62,16 @@ contract Deploy is Script, Test {
         address vault = 0xbF9f76bA554eA5DAfBf736320792D87C1eE362aB;
         bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
             abi.encode(
-                0xad3ffb74f2b984737124978e381c6da320405244825bb4355462742b569e1793,
+                0x0c964a5e0bd52d9d4ef85f1d47bf2ba646cc5a75b86bda1c6c2055f70e9204c2,
                 0xdfceff3a93b90b29137cc61a10f3fc9a6bd49c7d909cb1ff7594e7f83127efe2
             )
         );
         for (uint256 i = 0; i < roots.length; i++) {
             address subvault = IVaultModule(vault).subvaultAt(i);
             IVerifier verifier = IVerifierModule(subvault).verifier();
-            verifier.setMerkleRoot(roots[i]);
+            if (verifier.merkleRoot() != roots[i]) {
+                verifier.setMerkleRoot(roots[i]);
+            }
         }
     }
 
@@ -79,6 +81,8 @@ contract Deploy is Script, Test {
 
         vm.startBroadcast(deployerPk);
         if (true) {
+            // curator = 0xD3CB3Bb74C23B09509102B91C95A076dd3694533;
+            // _deploySwapModule(0xCFdE79D2fcCBaC4E9917B902272520868a2Ca914);
             _updatePermissions();
             return;
         }
