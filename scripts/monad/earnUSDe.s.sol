@@ -57,9 +57,7 @@ contract Deploy is Script, Test {
     function _updatePermissions() internal {
         address vault = 0x29C70eC3e16b71aD7a6077d70b854E5E5e800704;
         bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
-            abi.encode(
-                0x60de5585b8319f33d625c3d593cbaaafe899b5e97b8d4146ec4cc75de6dab126
-            )
+            abi.encode(0x60de5585b8319f33d625c3d593cbaaafe899b5e97b8d4146ec4cc75de6dab126)
         );
         for (uint256 i = 0; i < roots.length; i++) {
             address subvault = IVaultModule(vault).subvaultAt(i);
@@ -77,7 +75,6 @@ contract Deploy is Script, Test {
             _updatePermissions();
             return;
         }
-
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;

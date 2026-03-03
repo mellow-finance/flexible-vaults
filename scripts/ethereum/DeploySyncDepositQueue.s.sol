@@ -22,17 +22,13 @@ contract Deploy is Script {
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
-        address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
-
         vm.startBroadcast(deployerPk);
 
-        bytes memory bytecode =
-            abi.encodePacked(type(SyncDepositQueue).creationCode, abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
-        address instance = IF(0x0000000000FFe8B47B3e2130213B802212439497).safeCreate2(
-            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a31f80ea8ecdc2d1140a0f00c0, bytecode
+        bytes32 salt = bytes32(0xe98be1e5538fcbd716c506052eb1fd5d6fc495a30ebd93b475ef8e28937c0040);
+        address instance = address(
+            new SyncDepositQueue{salt: salt}(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
         );
         console.log("SyncDepositQueue: %s", instance);
-
         vm.stopBroadcast();
         // revert("ok");
     }

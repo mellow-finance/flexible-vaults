@@ -55,9 +55,7 @@ contract Deploy is Script, Test {
     function _updatePermissions() internal {
         address vault = 0xE3E95F153356d0C16C1F263BF039e82C6cdcfA28;
         bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
-            abi.encode(
-                0x0252e86c11e16beb61e2e173a82c0969c06fa358d82d9879689018b5dfaaea6f
-            )
+            abi.encode(0x0252e86c11e16beb61e2e173a82c0969c06fa358d82d9879689018b5dfaaea6f)
         );
         for (uint256 i = 0; i < roots.length; i++) {
             address subvault = IVaultModule(vault).subvaultAt(i);
