@@ -198,7 +198,7 @@ library Constants {
             accountFactory: Factory(0xCa027f59521E808EFdaF6f338D4269833451118A),
             consensusImplementation: Consensus(0x0000000167598d2C78E2313fD5328E16bD9A0b13),
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
-            syncDepositQueueImplementation: SyncDepositQueue(payable(0x000000002E2aeaC5Fe65AaB6fE2E6AE0e44F1A3A)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0x000000000b98f77a017b5d3468400c5C597a3Bde)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
             redeemQueueImplementation: RedeemQueue(payable(0x000000000c139266BA06170Ed1DeacA6d11903c1)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x0000000b2082667589A16c4cF18e9f923781c471)),
