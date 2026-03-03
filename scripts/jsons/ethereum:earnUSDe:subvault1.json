@@ -411,7 +411,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IERC20(syrupUSDT).approve(0xbc4E61930cE55c80a11A0f79A3b9898f227DfCa6,any)",
+        "description": "IERC20(syrupUSDT).approve(FluidVault_syrupUSDT/USDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -465,7 +465,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IERC20(USDT).approve(0xbc4E61930cE55c80a11A0f79A3b9898f227DfCa6,any)",
+        "description": "IERC20(USDT).approve(FluidVault_syrupUSDT/USDT,any)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -519,7 +519,7 @@
       "description": {
         "integration": "maple_loop_fluid",
         "protocol": "Fluid",
-        "description": "IFluidVault(0xbc4E61930cE55c80a11A0f79A3b9898f227DfCa6).operate{value: any}(10751,any,any,earnUSDe_Subvault_1)",
+        "description": "IFluidVault(FluidVault_syrupUSDT/USDT).operate{value: any}(10751,any,any,earnUSDe_Subvault_1)",
         "parameters": {
           "caller": "0x46137B2cE78FD950800b74408E6d0f8139145C19",
           "target": "0xbc4E61930cE55c80a11A0f79A3b9898f227DfCa6",
