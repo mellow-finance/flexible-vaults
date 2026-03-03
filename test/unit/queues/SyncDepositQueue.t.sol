@@ -15,6 +15,22 @@ contract DepositQueueTest is FixtureTest {
         assetsDefault.push(asset);
     }
 
+    function testCreateSyncDepositQueue() external {
+        Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
+        vm.startPrank(deployment.vaultAdmin);
+        deployment.vault.setQueueLimit(deployment.vault.queueLimit() + 1);
+        uint256 penaltyD6 = 1e4; // 0.01%
+        uint32 maxAge = 365 days;
+        deployment.vault.createQueue(2, true, deployment.vaultAdmin, asset, abi.encode(penaltyD6, maxAge));
+        vm.stopPrank();
+        uint256 index = deployment.vault.getQueueCount(asset);
+        address q = deployment.vault.queueAt(asset, index - 1);
+        SyncDepositQueue queue = SyncDepositQueue(q);
+        (uint256 penaltyD6_, uint32 maxAge_) = queue.syncDepositParams();
+        assertEq(penaltyD6_, penaltyD6, "Penalty should be set correctly");
+        assertEq(maxAge_, maxAge, "Max age should be set correctly");
+    }
+
     function testDeposit() external {
         Deployment memory deployment = createVault(vaultAdmin, vaultProxyAdmin, assetsDefault);
         SyncDepositQueue queue = SyncDepositQueue(addSyncDepositQueue(deployment, vaultProxyAdmin, asset));
