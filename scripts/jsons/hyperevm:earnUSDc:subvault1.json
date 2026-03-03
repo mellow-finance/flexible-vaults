@@ -182,7 +182,7 @@
     },
     {
       "description": {
-        "integration": "grearbox_ultra_yield_usdc",
+        "integration": "felix_usdc",
         "protocol": "ERC4626",
         "description": "IERC20(USDC).approve(Felix_USDC_Metamorpho,any)",
         "parameters": {
@@ -236,7 +236,7 @@
     },
     {
       "description": {
-        "integration": "grearbox_ultra_yield_usdc",
+        "integration": "felix_usdc",
         "protocol": "ERC4626",
         "description": "IERC4626(Felix_USDC_Metamorpho).deposit(any,earnUSDc_Subvault_1)",
         "parameters": {
@@ -290,7 +290,7 @@
     },
     {
       "description": {
-        "integration": "grearbox_ultra_yield_usdc",
+        "integration": "felix_usdc",
         "protocol": "ERC4626",
         "description": "IERC4626(Felix_USDC_Metamorpho).mint(any,earnUSDc_Subvault_1)",
         "parameters": {
@@ -344,7 +344,7 @@
     },
     {
       "description": {
-        "integration": "grearbox_ultra_yield_usdc",
+        "integration": "felix_usdc",
         "protocol": "ERC4626",
         "description": "IERC4626(Felix_USDC_Metamorpho).withdraw(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
         "parameters": {
@@ -404,7 +404,7 @@
     },
     {
       "description": {
-        "integration": "grearbox_ultra_yield_usdc",
+        "integration": "felix_usdc",
         "protocol": "ERC4626",
         "description": "IERC4626(Felix_USDC_Metamorpho).redeem(any,earnUSDc_Subvault_1,earnUSDc_Subvault_1)",
         "parameters": {
