@@ -26,12 +26,12 @@ library SwapModuleLibrary {
         pure
         returns (IVerifier.VerificationPayload[] memory leaves)
     {
-        /*  
+        /*
             1. assets[i].approve(swapModule)
             2. swapModule.pushAssets(assets[i], any)
             3. swapModule.pullAssets(assets[i], any)
-            
-            or 
+
+            or
 
             1. swapModule.pushAssets{value: x=any}(ETH, x)
             2. swapModule.pullAssets{value: x=any}(ETH, x)

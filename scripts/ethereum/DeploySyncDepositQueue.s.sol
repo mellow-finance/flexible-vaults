@@ -1,19 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../../test/Imports.sol";
 import "forge-std/Script.sol";
 
 import "@openzeppelin/contracts/utils/Create2.sol";
 
+import "../../test/Imports.sol";
 import "./Constants.sol";
-
-interface IF {
-    function safeCreate2(bytes32 salt, bytes calldata initializationCode)
-        external
-        payable
-        returns (address deploymentAddress);
-}
 
 contract Deploy is Script {
     string public constant DEPLOYMENT_NAME = "Mellow";
@@ -25,9 +18,7 @@ contract Deploy is Script {
         vm.startBroadcast(deployerPk);
 
         bytes32 salt = bytes32(0xe98be1e5538fcbd716c506052eb1fd5d6fc495a30ebd93b475ef8e28937c0040);
-        address instance = address(
-            new SyncDepositQueue{salt: salt}(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
-        );
+        address instance = address(new SyncDepositQueue{salt: salt}(DEPLOYMENT_NAME, DEPLOYMENT_VERSION));
         console.log("SyncDepositQueue: %s", instance);
         vm.stopBroadcast();
         // revert("ok");

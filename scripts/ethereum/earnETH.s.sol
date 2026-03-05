@@ -315,7 +315,8 @@ contract Deploy is Script, Test {
             reports[1].priceD18 = 1 ether;
             reports[2].priceD18 = uint224(WSTETHInterface(Constants.WSTETH).getStETHByWstETH(1 ether));
             reports[3].priceD18 = uint224(OracleSubmitter(GGV_ACCOUNTANT).getRate());
-            reports[4].priceD18 = uint224(1e36 / Vault(payable(Constants.STRETH)).oracle().getReport(Constants.ETH).priceD18);
+            reports[4].priceD18 =
+                uint224(1e36 / Vault(payable(Constants.STRETH)).oracle().getReport(Constants.ETH).priceD18);
             reports[5].priceD18 = uint224(
                 WSTETHInterface(Constants.WSTETH).getStETHByWstETH(IERC4626(Constants.DVV).previewRedeem(1 ether))
             );
