@@ -5,8 +5,8 @@ import "forge-std/Script.sol";
 
 import "@openzeppelin/contracts/utils/Create2.sol";
 
-import "../../test/Imports.sol";
 import "./Constants.sol";
+import "scripts/common/interfaces/Imports.sol";
 
 contract Deploy is Script {
     string public constant DEPLOYMENT_NAME = "Mellow";

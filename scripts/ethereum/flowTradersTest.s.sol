@@ -52,9 +52,7 @@ contract Deploy is DeployAbstractScript {
         }
         depositQueue.deposit{value: value}(amount, address(0), new bytes32[](0));
         IShareManager shareManager = vault.shareManager();
-        console.log(
-            "%s %s deposited, shares received:", symbol, amount, shareManager.sharesOf(deployer)
-        );
+        console.log("%s %s deposited, shares received:", symbol, amount, shareManager.sharesOf(deployer));
         vm.stopBroadcast();
     }
 

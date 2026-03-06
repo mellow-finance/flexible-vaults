@@ -19,23 +19,15 @@ interface IAaveOracle {
     function getSourceOfAsset(address) external view returns (address);
 }
 
-import {GGVOracle} from "./GGVOracle.sol";
-import {strETHOracle} from "./strETHOracle.sol";
-
 contract Deploy is Script, Test {
     address public immutable USD = address(bytes20(keccak256("usd-token-address")));
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
+        // address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
 
-        GGVOracle ggvOracle = new GGVOracle();
-        strETHOracle strETHOracle = new strETHOracle();
-
-        console.log(ggvOracle.latestAnswer());
-        console.log(strETHOracle.latestAnswer());
         // revert("ok");
 
         // IAaveOracle aaveOracle = IAaveOracle(0xC9Fb4fbE842d57EAc1dF3e641a281827493A630e);
