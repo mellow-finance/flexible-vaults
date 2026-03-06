@@ -18,6 +18,7 @@ abstract contract DeployAbstractScript is Test {
     enum QueueVersion {
         DEFAULT,
         SIGNATURE,
+        DEPRECATED,
         SYNC
     }
 
@@ -144,6 +145,8 @@ abstract contract DeployAbstractScript is Test {
         SubvaultCalls[] memory calls = stepTwo(vault_);
 
         checkDeployment(address(vault_), calls, config, Constants.protocolDeployment());
+
+        revert("Simulation complete");
     }
 
     /**
@@ -218,8 +221,8 @@ abstract contract DeployAbstractScript is Test {
             oracleVersion: oracleVersion,
             timelockController: address(0),
             oracleSubmitter: address(0),
-            deployer: address(0),
-            emptyVault: false
+            deployer: address(0)
+           // emptyVault: false
         });
 
         deployVault.registry().validateDeployConfig(config);
