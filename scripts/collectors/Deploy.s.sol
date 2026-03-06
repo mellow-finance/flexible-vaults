@@ -28,7 +28,7 @@ contract Deploy is Script, Test {
         // address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
 
-        // revert("ok");
+        revert("ok");
 
         // IAaveOracle aaveOracle = IAaveOracle(0xC9Fb4fbE842d57EAc1dF3e641a281827493A630e);
 
