@@ -100,7 +100,7 @@ contract Deploy is Script, Test {
             version: 0,
             proxyAdmin: proxyAdmin,
             vaultAdmin: lazyVaultAdmin,
-            shareManagerVersion: 0,
+            shareManagerVersion: 2,
             shareManagerParams: abi.encode(bytes32(0), name, symbol),
             feeManagerVersion: 0,
             feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(0), uint24(0)),

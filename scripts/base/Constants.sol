@@ -55,7 +55,7 @@ library Constants {
             consensusImplementation: Consensus(0x000000007e6b679B9196a1609e5Bc2405eDFd6Aa),
             depositQueueImplementation: DepositQueue(payable(0x00000000B2d2373aAF1C370cFE4e1Ee8BDE7C546)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x000000000Af33501e5BDAF9B481Ad2712a024727)),
-            syncDepositQueueImplementation: SyncDepositQueue(payable(0x00000000c4Bf4fdF6Be7BD1e8A833A9007393445)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0)),
             feeManagerImplementation: FeeManager(0x00000000C18039E1F415fe07C33A316232238648),
             oracleImplementation: Oracle(0x000000009adE4dAE1f868775A3f087945983f062),
             redeemQueueImplementation: RedeemQueue(payable(0x0000000045d70ee8145135f08309fF5B1A63d43F)),

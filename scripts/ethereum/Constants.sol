@@ -29,6 +29,10 @@ library Constants {
     address public constant SYRUP_USDC = 0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b;
     address public constant PYUSD = 0x6c3ea9036406852006290770BEdFcAbA0e23A0e8;
 
+    address public constant GHO = 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f;
+    address public constant AURA = 0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF;
+    address public constant BAL = 0xba100000625a3754423978a60c9317c58a424e3D;
+
     address public constant USDE = 0x4c9EDD5852cd905f086C759E8383e09bff1E68B3;
     address public constant SUSDE = 0x9D39A5DE30e57443BfF2A8307A4256c8797A3497;
 
@@ -111,9 +115,7 @@ library Constants {
     address public constant GGV = 0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09;
     address public constant DVV = 0x5E362eb2c0706Bd1d134689eC75176018385430B;
 
-    address public constant EARN_USD = 0x8FFa4D9FBa523044429D2E51aC055726959942d8;
-    address public constant EARN_USDC = 0x8F281A5fC4Fc588842923DE678ccC48Fc36AB631;
-    address public constant EARN_USDE = 0x2816f240109845661ba27b3D0148f211c5921553;
+    address public constant EARN_USD = 0x014e6DA8F283C4aF65B2AA0f201438680A004452;
     address public constant EARN_ETH = 0x6a37725ca7f4CE81c004c955f7280d5C704a249e;
 
     address public constant TQETH = 0xDbC81B33A23375A90c8Ba4039d5738CB6f56fE8d;

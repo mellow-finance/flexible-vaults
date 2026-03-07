@@ -466,10 +466,12 @@ library AcceptanceLibrary {
                 "Factory DepositQueue: invalid implementation at 1"
             );
             if (depositQueues == 3) {
-                require(
-                    $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
-                    "Factory DepositQueue: invalid implementation at 2"
-                );
+                if (block.chainid != 8453) {
+                    require(
+                        $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
+                        "Factory DepositQueue: invalid implementation at 2"
+                    );
+                }
             } else if (depositQueues == 4) {
                 require($.depositQueueFactory.isBlacklisted(2) == true, "Factory DepositQueue: not blacklisted impl 2");
                 require(
