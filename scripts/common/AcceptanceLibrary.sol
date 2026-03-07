@@ -456,7 +456,7 @@ library AcceptanceLibrary {
 
         {
             uint256 depositQueues = $.depositQueueFactory.implementations();
-            require(1 < depositQueues && depositQueues < 4, "Factory DepositQueue: invalid implementations length");
+            require(1 < depositQueues && depositQueues <= 4, "Factory DepositQueue: invalid implementations length");
             require(
                 $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
                 "Factory DepositQueue: invalid implementation at 0"
@@ -469,6 +469,12 @@ library AcceptanceLibrary {
                 require(
                     $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
                     "Factory DepositQueue: invalid implementation at 2"
+                );
+            } else if (depositQueues == 4) {
+                require($.depositQueueFactory.isBlacklisted(2) == true, "Factory DepositQueue: not blacklisted impl 2");
+                require(
+                    $.depositQueueFactory.implementationAt(3) == address($.syncDepositQueueImplementation),
+                    "Factory DepositQueue: invalid implementation at 3"
                 );
             }
         }

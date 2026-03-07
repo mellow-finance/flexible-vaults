@@ -20,7 +20,6 @@ import "forge-std/Script.sol";
 import "forge-std/Test.sol";
 
 import "./Constants.sol";
-import "./earnUSDLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
 
@@ -40,39 +39,22 @@ contract Deploy is Script, Test {
     address public lidoPauser = 0xA916fD5252160A7E56A6405741De76dc0Da5A0Cd;
     address public mellowPauser = 0x6E887aF318c6b29CEE42Ea28953Bd0BAdb3cE638;
 
-    uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
     uint256 public constant DEFAULT_PENALTY_D6 = 200; // 0.02%
     uint32 public constant DEFAULT_MAX_AGE = 24 hours;
 
     string public name = "Lido Earn USD";
     string public symbol = "earnUSD";
 
-    address public constant conservativeVault = 0xdd1f1E4aE980cE03051315e30d163d2A062bf8Ec;
-    address public constant exoticVault = 0x6f4cd5d8C9e3962139Da896B63A8eceD8771b15E;
-
     address[2] public depositAssets = [Constants.USDC, Constants.USDT];
-
     address[] public assets_ = ArraysLibrary.makeAddressArray(abi.encode(depositAssets));
-
-    function upgradePermissions() internal {
-        _createSubvault0Verifier(IVaultModule(Constants.EARN_USD).subvaultAt(0), Constants.EARN_USDC);
-        _createSubvault1Verifier(IVaultModule(Constants.EARN_USD).subvaultAt(1), Constants.EARN_USDE);
-    }
+    TimelockController timelockController;
 
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
-
-        if (true) {
-            upgradePermissions();
-            return;
-        }
-
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
-        TimelockController timelockController;
-
         {
             address[] memory proposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
             address[] memory executors = ArraysLibrary.makeAddressArray(abi.encode(lidoPauser, mellowPauser));
@@ -156,7 +138,7 @@ contract Deploy is Script, Test {
             // DepositQueue
             vault.createQueue(0, true, proxyAdmin, asset, new bytes(0));
             // AsyncDepositQueue
-            vault.createQueue(2, true, proxyAdmin, asset, abi.encode(DEFAULT_PENALTY_D6, DEFAULT_MAX_AGE));
+            vault.createQueue(3, true, proxyAdmin, asset, abi.encode(DEFAULT_PENALTY_D6, DEFAULT_MAX_AGE));
         }
 
         // Updated version of RedeemQueue contract
@@ -167,8 +149,8 @@ contract Deploy is Script, Test {
         Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
 
         // subvault setup
-        address[] memory verifiers = new address[](2);
-        SubvaultCalls[] memory calls = new SubvaultCalls[](2);
+        address[] memory verifiers = new address[](1);
+        SubvaultCalls[] memory calls = new SubvaultCalls[](1);
 
         {
             IRiskManager riskManager = vault.riskManager();
@@ -178,25 +160,6 @@ contract Deploy is Script, Test {
                 verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
                 address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
 
-                bytes32 merkleRoot;
-                (merkleRoot, calls[subvaultIndex]) = _createSubvault0Verifier(vault.subvaultAt(0), conservativeVault);
-                IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
-
-                riskManager.allowSubvaultAssets(
-                    subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT))
-                );
-                riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
-            }
-
-            // Veda subvault
-            {
-                uint256 subvaultIndex = 1;
-                verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-                address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
-
-                bytes32 merkleRoot;
-                (merkleRoot, calls[subvaultIndex]) = _createSubvault1Verifier(subvault, exoticVault);
-                IVerifier(verifiers[subvaultIndex]).setMerkleRoot(merkleRoot);
                 riskManager.allowSubvaultAssets(
                     subvault, ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT))
                 );
@@ -259,7 +222,6 @@ contract Deploy is Script, Test {
         vault.renounceRole(Permissions.SET_VAULT_LIMIT_ROLE, deployer);
         vault.renounceRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
         vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
-        vault.renounceRole(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
 
         console.log("Vault %s", address(vault));
 
@@ -316,20 +278,11 @@ contract Deploy is Script, Test {
             reports[1].priceD18 =
                 uint224(uint256(IAggregatorV3(0x3E7d1eAB13ad0104d2750B8863b489D65364e32D).latestAnswer()) * 1e22);
 
-            IOracle oracle = vault.oracle();
             oracleSubmitter.submitReports(reports);
-            uint256 timestamp = oracle.getReport(Constants.USDC).timestamp;
-            uint32[] memory timestamps_ = new uint32[](reports.length);
-            uint224[] memory prices_ = new uint224[](reports.length);
-            for (uint256 i = 0; i < reports.length; i++) {
-                timestamps_[i] = uint32(timestamp);
-                prices_[i] = uint224(oracle.getReport(assets_[i]).priceD18);
-            }
-            oracleSubmitter.acceptReports(assets_, prices_, timestamps_);
         }
 
-        oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
-        oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        _acceptReports(oracleSubmitter, deployer);
+
         {
             address syncDepositQueue = address(vault.queueAt(Constants.USDC, 1));
             IERC20(Constants.USDC).approve(syncDepositQueue, 1e6);
@@ -349,7 +302,7 @@ contract Deploy is Script, Test {
                 vault: vault,
                 calls: calls,
                 initParams: initParams,
-                holders: _getExpectedHolders(address(timelockController), address(oracleSubmitter)),
+                holders: _getExpectedHolders(address(oracleSubmitter), deployer),
                 depositHook: address($.redirectingDepositHook),
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
@@ -365,7 +318,25 @@ contract Deploy is Script, Test {
         revert("ok");
     }
 
-    function _getExpectedHolders(address timelockController, address oracleSubmitter)
+    function _acceptReports(OracleSubmitter oracleSubmitter, address deployer) internal {
+        IOracle oracle = oracleSubmitter.oracle();
+        uint256 n = oracle.supportedAssets();
+        address[] memory assets = new address[](n);
+        uint32[] memory timestamps = new uint32[](n);
+        uint224[] memory prices = new uint224[](n);
+        for (uint256 i = 0; i < n; i++) {
+            address a = oracle.supportedAssetAt(i);
+            IOracle.DetailedReport memory r = oracle.getReport(a);
+            assets[i] = a;
+            timestamps[i] = r.timestamp;
+            prices[i] = r.priceD18;
+        }
+        oracleSubmitter.acceptReports(assets, prices, timestamps);
+        oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+    }
+
+    function _getExpectedHolders(address oracleSubmitter, address deployer)
         internal
         view
         returns (Vault.RoleHolder[] memory holders)
@@ -397,30 +368,10 @@ contract Deploy is Script, Test {
         holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
         holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
 
+        holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
+
         assembly {
             mstore(holders, i)
         }
-    }
-
-    function _createSubvault0Verifier(address subvault, address vault)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        string[] memory descriptions = earnUSDLibrary.getSubvault0Descriptions(curator, subvault, vault);
-        IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = earnUSDLibrary.getSubvault0Proofs(curator, subvault, vault);
-        ProofLibrary.storeProofs(string.concat("ethereum:", symbol, ":subvault0"), merkleRoot, leaves, descriptions);
-        calls = earnUSDLibrary.getSubvault0SubvaultCalls(curator, subvault, vault, leaves);
-    }
-
-    function _createSubvault1Verifier(address subvault, address vault)
-        internal
-        returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        string[] memory descriptions = earnUSDLibrary.getSubvault1Descriptions(curator, subvault, vault);
-        IVerifier.VerificationPayload[] memory leaves;
-        (merkleRoot, leaves) = earnUSDLibrary.getSubvault1Proofs(curator, subvault, vault);
-        ProofLibrary.storeProofs(string.concat("ethereum:", symbol, ":subvault1"), merkleRoot, leaves, descriptions);
-        calls = earnUSDLibrary.getSubvault1SubvaultCalls(curator, subvault, vault, leaves);
     }
 }
