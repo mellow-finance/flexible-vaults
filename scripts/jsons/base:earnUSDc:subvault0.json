@@ -1,9 +1,9 @@
 {
   "title": "base:earnUSDc:subvault0",
-  "vault": "0xE3E95F153356d0C16C1F263BF039e82C6cdcfA28",
-  "subvault": "0x09fb07e46b7817950F0c15De539A8Fd16447709D",
+  "vault": "0xb7651cae9c8de82B188990CFD44aB728dC2Fa061",
+  "subvault": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
   "chain": "base",
-  "merkle_root": "0x0252e86c11e16beb61e2e173a82c0969c06fa358d82d9879689018b5dfaaea6f",
+  "merkle_root": "0x28f3296f8256904bf05fa9c2938e44683c0ca41c666cd474de3887f163363fcb",
   "vault_symbol": "earnUSDc",
   "merkle_proofs": [
     {
@@ -12,7 +12,7 @@
         "protocol": "CCTP",
         "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
         "parameters": {
-          "caller": "0x158A4f139803CA7B2A1074ffc6dC1a7987E566D8",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
           "value": "0"
         },
@@ -44,6 +44,39 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "params": [
+            "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "approve.amount",
@@ -53,27 +86,29 @@
         ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af863df5d705eb6dd23845c9b1ba24d157665a0d4c8d9394c3ef8921858764ae5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4ac9ea2f917e80f215d1e211fbd8bef8692d99a52972be51ce50b15c4cd60aba000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa8dee48c7c6db84a83544010671081f6744119de57116c966906f9605ecc2115"
+        "0xa8ac03cb8f221511d7b243c5d8d3cc7c2e5a874665a1a90bd561e28addcfff33",
+        "0xe00debfd57d4896727ce3c564f996e5cd4dd756dce6de1b1263d6a8847ae1cfd",
+        "0xa570fc96cfc0282cdc937dcff074b3a115687c4b36f8c395e1105e137c641c41"
       ]
     },
     {
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
-        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,0,0x000000000000000000000000CFdE79D2fcCBaC4E9917B902272520868a2Ca914,USDC,0x0000000000000000000000003236FdfE07f2886Af61c0A559aFc2c5869D06009,0,2000)",
+        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,0,0x000000000000000000000000D6D3a0f4dd3d48bF3653c0549aac6b3516dD933B,USDC,0x0000000000000000000000009745F161b0160a99924845BeFCE1d7b9Daee6899,0,2000)",
         "parameters": {
-          "caller": "0x158A4f139803CA7B2A1074ffc6dC1a7987E566D8",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
           "value": "0"
         },
         "innerParameters": {
           "amount": "any",
           "destinationDomain": "0",
-          "mintRecipient": "0x000000000000000000000000CFdE79D2fcCBaC4E9917B902272520868a2Ca914",
+          "mintRecipient": "0x000000000000000000000000D6D3a0f4dd3d48bF3653c0549aac6b3516dD933B",
           "burnToken": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
-          "destinationCaller": "0x0000000000000000000000003236FdfE07f2886Af61c0A559aFc2c5869D06009",
+          "destinationCaller": "0x0000000000000000000000009745F161b0160a99924845BeFCE1d7b9Daee6899",
           "maxFee": "0",
           "minFinalityThreshold": "2000"
         },
@@ -126,6 +161,69 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "params": [
+            "any",
+            "0",
+            "0x000000000000000000000000D6D3a0f4dd3d48bF3653c0549aac6b3516dD933B",
+            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+            "0x0000000000000000000000009745F161b0160a99924845BeFCE1d7b9Daee6899",
+            "0",
+            "2000"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "depositForBurn",
+            "inputs": [
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "destinationDomain",
+                "type": "uint32",
+                "internalType": "uint32"
+              },
+              {
+                "name": "mintRecipient",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "burnToken",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "destinationCaller",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "maxFee",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "minFinalityThreshold",
+                "type": "uint32",
+                "internalType": "uint32"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "_nonce",
+                "type": "uint64",
+                "internalType": "uint64"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "depositForBurn.amount",
@@ -135,9 +233,1335 @@
         ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ade840a9f23b96286c51a3c13d39b8820b735f8eaef51fbede6e79098a262d83600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adf4adabc184d39fcd5aa499ff5e02dbfca5e0c7b0e2ac1855df2fe304dfddf9600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xe4e1468cb004374a1fbc37de52ab1d8ccdf7bab11ad3f4665c63ccd9a47402ac"
+        "0xd263b0404ebdde2f5f7b4d711839c529ec301ea1ee37a463215a9534ee4e5334",
+        "0xf0f26743b0ea59ecdd47f9c8007c23d104584ca078f60ca7359b40a5614ef52c",
+        "0xa570fc96cfc0282cdc937dcff074b3a115687c4b36f8c395e1105e137c641c41"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IERC20(cbBTC).approve(Morpho,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+          "params": [
+            "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a06440aec4bc1cbc95b0bd75118bb9861309093e9ea097f0b0d465d7de441c543000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xeeb430f4b824111bb645f690592771e060af5b597f37b0e37f367ee374b3fe81",
+        "0x09c6b4a8937d02acad72c6ca0c682b3c228948a9905858108c9bfa195de11147",
+        "0x61700bdea425a93488aec5536e7cdcd44627f84afac7b3123599e3d67aef7e1b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IERC20(USDC).approve(Morpho,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "params": [
+            "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab69d1c1a4a0c3886c2ae35db6dce65fe218dede6dffd7b71b38e9c8ebc2d202c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x009bb4ef4afcb981abfcf380ba3fbbc05a5cad2944b416a11aa07872b2a5a4ac",
+        "0x9079ea3edb0206b9230e211b06c9911780fe1551e5a9e8217bf162c6c6342bff",
+        "0xfb8d4ca49953bbd60bbd19194e6ab716947ca3c84b85c11bc43f8916aca06bd1",
+        "0x61700bdea425a93488aec5536e7cdcd44627f84afac7b3123599e3d67aef7e1b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IMorpho(Morpho).supply((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,0x)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "collateralToken": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+            "oracle": "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+            "irm": "0x46415998764C29aB2a25CbeA6254146D50D22687",
+            "lltv": "860000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+          "data": "0x"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "marketParams",
+              "type": "tuple",
+              "internalType": "struct IMorpho.MarketParams",
+              "components": [
+                {
+                  "name": "loanToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "collateralToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "oracle",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "irm",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "lltv",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assetsSupplied",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "sharesSupplied",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "params": [
+            [
+              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+              "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+              "0x46415998764C29aB2a25CbeA6254146D50D22687",
+              "860000000000000000"
+            ],
+            "any",
+            "any",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+            "0x"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "supply",
+            "inputs": [
+              {
+                "name": "marketParams",
+                "type": "tuple",
+                "internalType": "struct IMorpho.MarketParams",
+                "components": [
+                  {
+                    "name": "loanToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "collateralToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "oracle",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "irm",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "lltv",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "assetsSupplied",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "sharesSupplied",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "supply.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "supply.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3f12a18b5f31e7f01483dbd6b8ed3fa67371c891a5287d781eb5c9cfe64908da000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x482c3e4cb28310d9f839e65ac08bd2f4716457352b5ec7b4416c002234a36e3c",
+        "0xe00debfd57d4896727ce3c564f996e5cd4dd756dce6de1b1263d6a8847ae1cfd",
+        "0xa570fc96cfc0282cdc937dcff074b3a115687c4b36f8c395e1105e137c641c41"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IMorpho(Morpho).supplyCollateral((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,earnUSDc_Subvault_0,0x)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "collateralToken": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+            "oracle": "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+            "irm": "0x46415998764C29aB2a25CbeA6254146D50D22687",
+            "lltv": "860000000000000000"
+          },
+          "assets": "any",
+          "onBehalf": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+          "data": "0x"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supplyCollateral",
+          "inputs": [
+            {
+              "name": "marketParams",
+              "type": "tuple",
+              "internalType": "struct IMorpho.MarketParams",
+              "components": [
+                {
+                  "name": "loanToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "collateralToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "oracle",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "irm",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "lltv",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "params": [
+            [
+              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+              "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+              "0x46415998764C29aB2a25CbeA6254146D50D22687",
+              "860000000000000000"
+            ],
+            "any",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+            "0x"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "supplyCollateral",
+            "inputs": [
+              {
+                "name": "marketParams",
+                "type": "tuple",
+                "internalType": "struct IMorpho.MarketParams",
+                "components": [
+                  {
+                    "name": "loanToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "collateralToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "oracle",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "irm",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "lltv",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "supplyCollateral.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a950fd03668befd01566b64da7c2e83976df507f91ec7edf6f6abf24eb5c0b56100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3f268d0200b1a17a2e901abc98eaeae5444655364efff60540079cd5ef3299f7",
+        "0xb81064197d3b6e34f0ad91bb7696eddf8168dcccac6ac578a9bf553d965922ff",
+        "0xfb8d4ca49953bbd60bbd19194e6ab716947ca3c84b85c11bc43f8916aca06bd1",
+        "0x61700bdea425a93488aec5536e7cdcd44627f84afac7b3123599e3d67aef7e1b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IMorpho(Morpho).repay((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,0x)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "collateralToken": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+            "oracle": "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+            "irm": "0x46415998764C29aB2a25CbeA6254146D50D22687",
+            "lltv": "860000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+          "data": "0x"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repay",
+          "inputs": [
+            {
+              "name": "marketParams",
+              "type": "tuple",
+              "internalType": "struct IMorpho.MarketParams",
+              "components": [
+                {
+                  "name": "loanToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "collateralToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "oracle",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "irm",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "lltv",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assetsRepaid",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "sharesRepaid",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "params": [
+            [
+              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+              "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+              "0x46415998764C29aB2a25CbeA6254146D50D22687",
+              "860000000000000000"
+            ],
+            "any",
+            "any",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+            "0x"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repay",
+            "inputs": [
+              {
+                "name": "marketParams",
+                "type": "tuple",
+                "internalType": "struct IMorpho.MarketParams",
+                "components": [
+                  {
+                    "name": "loanToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "collateralToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "oracle",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "irm",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "lltv",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "assetsRepaid",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "sharesRepaid",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repay.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repay.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c2a668b3281b8bb3eca46d4a353d6e3049159b7e39e8a7f79d9e3572f66768a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc47ad9b2a9d73fbc2a4451d2f2e83a7c726b50910ee873ec8590bede2cae4d2c",
+        "0xf0f26743b0ea59ecdd47f9c8007c23d104584ca078f60ca7359b40a5614ef52c",
+        "0xa570fc96cfc0282cdc937dcff074b3a115687c4b36f8c395e1105e137c641c41"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IMorpho(Morpho).borrow((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "collateralToken": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+            "oracle": "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+            "irm": "0x46415998764C29aB2a25CbeA6254146D50D22687",
+            "lltv": "860000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+          "receiver": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrow",
+          "inputs": [
+            {
+              "name": "marketParams",
+              "type": "tuple",
+              "internalType": "struct IMorpho.MarketParams",
+              "components": [
+                {
+                  "name": "loanToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "collateralToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "oracle",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "irm",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "lltv",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assetsBorrowed",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "sharesBorrowed",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "params": [
+            [
+              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+              "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+              "0x46415998764C29aB2a25CbeA6254146D50D22687",
+              "860000000000000000"
+            ],
+            "any",
+            "any",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "borrow",
+            "inputs": [
+              {
+                "name": "marketParams",
+                "type": "tuple",
+                "internalType": "struct IMorpho.MarketParams",
+                "components": [
+                  {
+                    "name": "loanToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "collateralToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "oracle",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "irm",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "lltv",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "assetsBorrowed",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "sharesBorrowed",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "borrow.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "borrow.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6fd175b70da57097d67b4c165df82a63faa89cd8b5457791d51d75c8f9a468bb00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1dc0748167b351ac11f6a6dac84642853ba52d6ad214ca2ef79f675ccac5affd",
+        "0xb81064197d3b6e34f0ad91bb7696eddf8168dcccac6ac578a9bf553d965922ff",
+        "0xfb8d4ca49953bbd60bbd19194e6ab716947ca3c84b85c11bc43f8916aca06bd1",
+        "0x61700bdea425a93488aec5536e7cdcd44627f84afac7b3123599e3d67aef7e1b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IMorpho(Morpho).withdraw((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "collateralToken": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+            "oracle": "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+            "irm": "0x46415998764C29aB2a25CbeA6254146D50D22687",
+            "lltv": "860000000000000000"
+          },
+          "assets": "any",
+          "shares": "any",
+          "onBehalf": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+          "receiver": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "marketParams",
+              "type": "tuple",
+              "internalType": "struct IMorpho.MarketParams",
+              "components": [
+                {
+                  "name": "loanToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "collateralToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "oracle",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "irm",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "lltv",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assetsWithdrawn",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "sharesWithdrawn",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "params": [
+            [
+              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+              "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+              "0x46415998764C29aB2a25CbeA6254146D50D22687",
+              "860000000000000000"
+            ],
+            "any",
+            "any",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdraw",
+            "inputs": [
+              {
+                "name": "marketParams",
+                "type": "tuple",
+                "internalType": "struct IMorpho.MarketParams",
+                "components": [
+                  {
+                    "name": "loanToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "collateralToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "oracle",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "irm",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "lltv",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "assetsWithdrawn",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "sharesWithdrawn",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "withdraw.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac28bf3813e36c4e69ca96410f7cd75d82e1a96cc8f34435e751e182d16a2142500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xdae881e203638df36fc3d88fce7ee5bd3cc581fd710607a08c36aa9c58aac101",
+        "0x09c6b4a8937d02acad72c6ca0c682b3c228948a9905858108c9bfa195de11147",
+        "0x61700bdea425a93488aec5536e7cdcd44627f84afac7b3123599e3d67aef7e1b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "morpho_cbbtc_usdc",
+        "protocol": "Morpho",
+        "description": "IMorpho(Morpho).withdrawCollateral((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "marketParams": {
+            "loanToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "collateralToken": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+            "oracle": "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+            "irm": "0x46415998764C29aB2a25CbeA6254146D50D22687",
+            "lltv": "860000000000000000"
+          },
+          "assets": "any",
+          "onBehalf": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+          "receiver": "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdrawCollateral",
+          "inputs": [
+            {
+              "name": "marketParams",
+              "type": "tuple",
+              "internalType": "struct IMorpho.MarketParams",
+              "components": [
+                {
+                  "name": "loanToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "collateralToken",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "oracle",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "irm",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "lltv",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+          "params": [
+            [
+              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+              "0x663BECd10daE6C4A3Dcd89F1d76c1174199639B9",
+              "0x46415998764C29aB2a25CbeA6254146D50D22687",
+              "860000000000000000"
+            ],
+            "any",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977",
+            "0x6CD300d6D848cb315EfaE2d874b2Ec8Ad4897977"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdrawCollateral",
+            "inputs": [
+              {
+                "name": "marketParams",
+                "type": "tuple",
+                "internalType": "struct IMorpho.MarketParams",
+                "components": [
+                  {
+                    "name": "loanToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "collateralToken",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "oracle",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "irm",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "lltv",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdrawCollateral.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a44ac645fe7be7c2c6fc2f7221484d25e767e9b144f21c3048483ddd2fe391b0900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1070cd2286bb45130039a3d413dd661281131d8789fdd0ae444fc2411fc2697c",
+        "0x9079ea3edb0206b9230e211b06c9911780fe1551e5a9e8217bf162c6c6342bff",
+        "0xfb8d4ca49953bbd60bbd19194e6ab716947ca3c84b85c11bc43f8916aca06bd1",
+        "0x61700bdea425a93488aec5536e7cdcd44627f84afac7b3123599e3d67aef7e1b"
       ]
     }
   ]

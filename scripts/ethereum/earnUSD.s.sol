@@ -49,11 +49,31 @@ contract Deploy is Script, Test {
     address[] public assets_ = ArraysLibrary.makeAddressArray(abi.encode(depositAssets));
     TimelockController timelockController;
 
+    function _updatePermissions() internal {
+        address vault = 0x014e6DA8F283C4aF65B2AA0f201438680A004452;
+        bytes32[] memory roots = ArraysLibrary.makeBytes32Array(
+            abi.encode(0x3d1503344580ab876cd12a28c6a2322b5dd90253d354a8d6666476ed011923d8)
+        );
+        for (uint256 i = 0; i < roots.length; i++) {
+            address subvault = IVaultModule(vault).subvaultAt(i);
+            IVerifier verifier = IVerifierModule(subvault).verifier();
+            if (verifier.merkleRoot() != roots[i]) {
+                verifier.setMerkleRoot(roots[i]);
+            }
+        }
+    }
+
+
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
         vm.startBroadcast(deployerPk);
+        if (true) {
+            _updatePermissions();
+            return;
+        }
+
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         {
             address[] memory proposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, deployer));
