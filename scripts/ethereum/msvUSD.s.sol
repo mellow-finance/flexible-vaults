@@ -42,9 +42,38 @@ contract Deploy is Script, Test {
         console.log("submitter: %s", address(submitter));
     }
 
+    function testMerkle() internal {
+        bytes32 merkleRoot = 0x0486d4f796ab8f981c9bad0d8a2ad60e405ce408c7a4bc74a3a69d51a81dae28;
+        Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
+
+        vm.startPrank(lazyVaultAdmin);
+        vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, lazyVaultAdmin);
+        subvault.verifier().setMerkleRoot(merkleRoot);
+        vm.stopPrank();
+
+        bytes4 swapSelector = 0xe21fd0e9; // IMetaAggregationRouterV2.swap.selector
+
+        IVerifier.VerificationPayload memory payload =
+            ProofLibrary.makeVerificationPayloadCompact(curator, Constants.KYBERSWAP_ROUTER, swapSelector);
+        payload.proof = new bytes32[](6);
+        payload.proof[0] = 0xc9bf73a082e08f38b22fd9748beef74f08ad3d2213c25cd0377a1313c87966e7;
+        payload.proof[1] = 0x68befa8076cc91e3fd515c5baedd3005d51926a40367e80f19ad1b9308d52344;
+        payload.proof[2] = 0xe44a498ad89c92f8728bbf1c3722f8bef93f27d9dfdaeada123bb50fd51cc300;
+        payload.proof[3] = 0x72169cda38b37f8720e194de49fae330f554f9f97b3a4d6ff4ca63a5e863af65;
+        payload.proof[4] = 0xf40341ff4fb0b74ed103df2c5d736cb153bf518da56c7d1aa38132dd698ce004;
+        payload.proof[5] = 0x6098363448cdd393f943579927faaf1257f18032386dedba9d2d22dd47b353b1;
+
+        assertTrue(
+            subvault.verifier().getVerificationResult(
+                curator, Constants.KYBERSWAP_ROUTER, 0, abi.encode(swapSelector), payload
+            ),
+            "proof should be valid"
+        );
+    }
+
     function run() external {
-        _createSubvault0Proofs();
-        revert("ok");
+        testMerkle();
+        return;
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 

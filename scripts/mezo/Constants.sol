@@ -13,11 +13,16 @@ library Constants {
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
     address public constant BTC = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-    address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
+    address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186; // 18 decimals
     address public constant mcbBTC = 0x6a7CD8E1384d49f502b4A4CE9aC9eb320835c5d7;
-    address public constant mUSDC = 0x04671C72Aab5AC02A03c1098314b1BB6B560c197;
-    address public constant mUSDT = 0xeB5a5d39dE4Ea42C2Aa6A57EcA2894376683bB8E;
+    address public constant mUSDC = 0x04671C72Aab5AC02A03c1098314b1BB6B560c197; // 6 decimals
+    address public constant mUSDT = 0xeB5a5d39dE4Ea42C2Aa6A57EcA2894376683bB8E; // 6 decimals
     address public constant mUSDe = 0xdf6542260a9F768f07030E4895083F804241F4C4;
+
+    /// @notice uni v2 like pools
+    address public constant MEZO_ROUTER = 0xAc93A67f15342E8Ef611396B13919204c8799Cd4;
+    address public constant MEZO_mUSDC_MUSD_POOl = 0xEd812AEc0Fecc8fD882Ac3eccC43f3aA80A6c356;
+    address public constant MEZO_MUSD_mUSDT_POOl = 0x10906a9E9215939561597b4C8e4b98F93c02031A;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory) {
         return ProtocolDeployment({
