@@ -3847,28 +3847,21 @@
           "value": "0"
         },
         "innerParameters": {
-          "params": "bytes"
+          "anyParams": "any"
         },
         "abi": {
           "type": "function",
           "name": "swap",
           "inputs": [
             {
-              "name": "params",
+              "name": "swapParams",
               "type": "bytes",
               "internalType": "bytes"
             }
           ],
           "outputs": [],
           "stateMutability": "payable"
-        },
-        "requiredPaths": [
-          {
-            "path": "swap.params",
-            "type": "bytes",
-            "allowedValue": "any"
-          }
-        ]
+        }
       },
       "verificationType": 1,
       "verificationData": "0xbcd786b56b1dc0af3a0604410b2fb1823745a8c8f2206663b64e01746444b105",
