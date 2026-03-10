@@ -3847,14 +3847,14 @@
           "value": "0"
         },
         "innerParameters": {
-          "data": "bytes"
+          "params": "bytes"
         },
         "abi": {
           "type": "function",
           "name": "swap",
           "inputs": [
             {
-              "name": "swapParams",
+              "name": "params",
               "type": "bytes",
               "internalType": "bytes"
             }
@@ -3864,7 +3864,7 @@
         },
         "requiredPaths": [
           {
-            "path": "swap.data",
+            "path": "swap.params",
             "type": "bytes",
             "allowedValue": "any"
           }
