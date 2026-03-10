@@ -42,6 +42,8 @@ contract Deploy is Script {
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
     function run() external {
+        _createSubvault2Proofs(0x9E8Eb7f8894C373E50f735370e21b9C5312f2702, 0xa802438DD8F0c9c9AfA66cD889e861aAF0dB00B8);
+        revert("ok");
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 

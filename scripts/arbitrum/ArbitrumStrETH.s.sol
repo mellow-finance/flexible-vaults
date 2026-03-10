@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "../../test/Imports.sol";
 import "forge-std/Script.sol";
 import "forge-std/Test.sol";
+import "scripts/common/interfaces/Imports.sol";
 
 import "../common/ArraysLibrary.sol";
 import "../common/Permissions.sol";

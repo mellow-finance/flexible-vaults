@@ -344,7 +344,13 @@ contract Deploy is DeployAbstractScript {
             0,
             proxyAdmin,
             abi.encode(
-                lazyVaultAdmin, subvault, address(0), /* Constants.AAVE_V3_ORACLE */ 0.995e8, actors, permissions
+                lazyVaultAdmin,
+                subvault,
+                address(0),
+                /* Constants.AAVE_V3_ORACLE */
+                0.995e8,
+                actors,
+                permissions
             )
         );
         console.log("Deployed SwapModule at", swapModule);

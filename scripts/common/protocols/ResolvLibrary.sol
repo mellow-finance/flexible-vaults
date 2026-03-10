@@ -46,7 +46,7 @@ library ResolvLibrary {
         /*
             asset.approve(usrManager, any)
             usr.approve(usrManager, any)
-            
+
             usrManager.requestMint(asset, amount, minLpAmount)
             usrManager.requestBurn(lpAmount, asset, minAssetAmount)
 

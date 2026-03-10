@@ -1,14 +1,16 @@
 {
-  "title": "mezo:mezoBTC:subvault2",
+  "title": "mezo:mbhBTC:subvault2",
   "vault": "0x807D4778abA870e4222904f5b528F68B350cE0E0",
+  "subvault": "0x7684145E1dB121f5924570a27315480ac7f83584",
   "chain": "mezo",
-  "merkle_root": "0x582a73ffef87361345dc9c5edeed576d65f47dac618d279eb19e8ab2863722ee",
+  "merkle_root": "0xba471672fb00d6284d0644116e0dc30eadea9fee8a351345e71575c80a435690",
+  "vault_symbol": "mbhBTC",
   "merkle_proofs": [
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "IERC20(0x7b7C000000000000000000000000000000000000).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
+        "description": "IERC20(BTC).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x7b7C000000000000000000000000000000000000",
@@ -41,21 +43,28 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3aad3a401e9d86877d902495c41f9d1ddfd8415c596650c271e7a541c1c05574000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d3aad3a401e9d86877d902495c41f9d1ddfd8415c596650c271e7a541c1c05574000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xd1e9dc117528af24010ea2eaff608cece75c26e3ffe0cc606d94cf893f2e53ac",
-        "0x39f609f02477c6464038c2b21b4cc3fc06d80c086ddd7d20e834c3de68019951",
-        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+        "0xb7525af533c276805c45d39c4ed33d07980930122837e5497ec75a46ee0a0a9b",
+        "0xfd30c17d3860f04428cf94ec2c73887a66b70548108b8769d53ed8017fce40d0",
+        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
       ]
     },
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "IERC20(0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
+        "description": "IERC20(MUSD).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
@@ -88,21 +97,28 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9caadea7896ba52044c6537a78a4d99294e2c36446cd0b44fa4f323081f1f6ac000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d9caadea7896ba52044c6537a78a4d99294e2c36446cd0b44fa4f323081f1f6ac000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x6a60b33f4ecff055755d3cddc5f89becc468fdb22e39eff3597f86a84c33b28b",
-        "0x325ec063aea33548c97b6bf62349c240c378136f7087f24bddfea8d2a2a74223",
-        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+        "0xf90d6c3082de04b28c648b23d7d6cece45489e15283680c3c79216205ef07ffe",
+        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
+        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
       ]
     },
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).addLiquidity(0x7b7C000000000000000000000000000000000000,0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186,any,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
+        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).addLiquidity(BTC,MUSD,any,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
@@ -187,21 +203,53 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "addLiquidity.stable",
+            "type": "bool",
+            "allowedValue": "any"
+          },
+          {
+            "path": "addLiquidity.amountADesired",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "addLiquidity.amountBDesired",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "addLiquidity.amountAMin",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "addLiquidity.amountBMin",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "addLiquidity.deadline",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abdd342764aacb264fa2a405552f9b8eec513e50318524e439dd7710cd360e0ce00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314dbdd342764aacb264fa2a405552f9b8eec513e50318524e439dd7710cd360e0ce00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xc730732028095364222dbc5d7d34d6b17ff753baacc5ea9337c18e38d6ab1df7",
-        "0x5a22cb0387597d9f39f06f899f31077bbcbe797225f4d61bde213e9f3a8778bc",
-        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+        "0x99fa497dbe497db141d55386b639c454cbb7977cecef68fedc4905704b8d8339",
+        "0xc3b329fd8253b1034b8948cd4f46b3362d533a7c0c47689b6a7df8fe7130862c",
+        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
       ]
     },
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).removeLiquidity(0x7b7C000000000000000000000000000000000000,0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
+        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).removeLiquidity(BTC,MUSD,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
@@ -275,21 +323,49 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "removeLiquidity.stable",
+            "type": "bool",
+            "allowedValue": "any"
+          },
+          {
+            "path": "removeLiquidity.liquidity",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "removeLiquidity.amountAMin",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "removeLiquidity.amountBMin",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "removeLiquidity.deadline",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8c89d156d5f75afd92b4b843b4154f08d2d6014202602a475c0d6527bdd1858600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d8c89d156d5f75afd92b4b843b4154f08d2d6014202602a475c0d6527bdd1858600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa1d5005aa29f56265e26f57729e4e1a9e17ab7fd25041a7509648c049ec44723",
-        "0x1d459fcef2f7f2e33cc659895cff69db7d3b96e7b6502add445505605c94502b",
-        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+        "0x44b0a019658783bfea105fc7235824d6d07e2f315d87cb6d6348b4b728259f89",
+        "0x91ed8708d224fe539c6789fa64fbea54ff0f4a85ed8f2baf619a32c6836775ae",
+        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
+        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
       ]
     },
     {
       "description": {
         "integration": "tigrisCL",
-        "protocol": "TigrisCL",
-        "description": "IERC20(0x7b7C000000000000000000000000000000000000).approve(0x509Bc221df2B83927c695FA0bb0f5B21053C874c,any)",
+        "protocol": "NonfungiblePositionManager",
+        "description": "IERC20(BTC).approve(MEZO-CL-POS,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x7b7C000000000000000000000000000000000000",
@@ -322,22 +398,28 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a020333e04f4117206759d5d6e7fde644a510a58d57e8691c0e30757677c392ed000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d020333e04f4117206759d5d6e7fde644a510a58d57e8691c0e30757677c392ed000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x1f0842925f88f87015eb2af4b07abb72de07ad4f4fbe6634027d094ddaf38347",
-        "0xf65c6ee77a510a6ab969361fb2f75a7045755e7b3ff7e087446dd77087b759cc",
-        "0x39f609f02477c6464038c2b21b4cc3fc06d80c086ddd7d20e834c3de68019951",
-        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+        "0xffe4419ef40ca757c5e611cc08f02f67d8dc52fb8aa275785f8d2b672ddfa096",
+        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
+        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
       ]
     },
     {
       "description": {
         "integration": "tigrisCL",
-        "protocol": "TigrisCL",
-        "description": "IERC20(0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186).approve(0x509Bc221df2B83927c695FA0bb0f5B21053C874c,any)",
+        "protocol": "NonfungiblePositionManager",
+        "description": "IERC20(MUSD).approve(MEZO-CL-POS,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
@@ -370,21 +452,29 @@
             }
           ],
           "stateMutability": "nonpayable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab72d36964b722d5e8660e19a90ddc5bbd27942ac5121030691ceed064c1132bf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314db72d36964b722d5e8660e19a90ddc5bbd27942ac5121030691ceed064c1132bf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x92ef6a630b09b426885aa7b880daf54b9b7ef290f35beac46647cd7bd155922d",
-        "0x1d459fcef2f7f2e33cc659895cff69db7d3b96e7b6502add445505605c94502b",
-        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+        "0x59750ceabb146a7911539533f871876e5ef52e5e46f80b039f9d27bed175da83",
+        "0xfcc5e0c6c305c5613fdc37cb0e42c4f5f9fb614f1425a2172f43d8146a8b659a",
+        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
+        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
       ]
     },
     {
       "description": {
         "integration": "tigrisCL",
-        "protocol": "TigrisCL",
-        "description": "ITigrisCL(0x509Bc221df2B83927c695FA0bb0f5B21053C874c).increaseLiquidity((24,any,any,any,any,any))",
+        "protocol": "NonfungiblePositionManager",
+        "description": "INonfungiblePositionManager(MEZO-CL-POS).increaseLiquidity((24,any,any,any,any,any))",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
@@ -407,7 +497,7 @@
             {
               "name": "params",
               "type": "tuple",
-              "internalType": "struct ITigrisCL.IncreaseLiquidityParams",
+              "internalType": "struct INonfungiblePositionManager.IncreaseLiquidityParams",
               "components": [
                 {
                   "name": "tokenId",
@@ -460,21 +550,48 @@
             }
           ],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "increaseLiquidity.params.amount0Desired",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "increaseLiquidity.params.amount1Desired",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "increaseLiquidity.params.amount0Min",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "increaseLiquidity.params.amount1Min",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "increaseLiquidity.params.deadline",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a31280db21bbdcc71c64ee23b1d5d0fc9f8d93161c16b98b092f012af3936b82f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d31280db21bbdcc71c64ee23b1d5d0fc9f8d93161c16b98b092f012af3936b82f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x36b88a0578cbb1adb124f788dc13014d7e2b7019fb500eaec2dccede2b62f986",
-        "0x325ec063aea33548c97b6bf62349c240c378136f7087f24bddfea8d2a2a74223",
-        "0xb2952b6db3f76e6d87374d4a17a60debdaf801bbc21dee49b2875d274e6c5d0c"
+        "0x91cdcfc11349589f3b833e595a99fb0e0adef233324bbd95d42fbcb2981c1d24",
+        "0xc3b329fd8253b1034b8948cd4f46b3362d533a7c0c47689b6a7df8fe7130862c",
+        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
       ]
     },
     {
       "description": {
         "integration": "tigrisCL",
-        "protocol": "TigrisCL",
-        "description": "ITigrisCL(0x509Bc221df2B83927c695FA0bb0f5B21053C874c).decreaseLiquidity((any,any,any,any,any))",
+        "protocol": "NonfungiblePositionManager",
+        "description": "INonfungiblePositionManager(MEZO-CL-POS).decreaseLiquidity((any,any,any,any,any))",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
@@ -496,7 +613,7 @@
             {
               "name": "params",
               "type": "tuple",
-              "internalType": "struct ITigrisCL.DecreaseLiquidityParams",
+              "internalType": "struct INonfungiblePositionManager.DecreaseLiquidityParams",
               "components": [
                 {
                   "name": "tokenId",
@@ -539,22 +656,48 @@
             }
           ],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "decreaseLiquidity.params.tokenId",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "decreaseLiquidity.params.liquidity",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "decreaseLiquidity.params.amount0Min",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "decreaseLiquidity.params.amount1Min",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "decreaseLiquidity.params.deadline",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4dcfd36fc0dba57e7901e7e2bb184ef38b38294c6fc4b3ed274e3f972e40d77000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d4dcfd36fc0dba57e7901e7e2bb184ef38b38294c6fc4b3ed274e3f972e40d77000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x13470994ae49a0ca9fd4e2a56a4c9845d8d153798b22061df680e283beab9c7f",
-        "0xf65c6ee77a510a6ab969361fb2f75a7045755e7b3ff7e087446dd77087b759cc",
-        "0x39f609f02477c6464038c2b21b4cc3fc06d80c086ddd7d20e834c3de68019951",
-        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+        "0xb6f100ea27286a7bcef34a430bcda3f32c74c69bd45add3cabba62cf5960a3ba",
+        "0xfd30c17d3860f04428cf94ec2c73887a66b70548108b8769d53ed8017fce40d0",
+        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
       ]
     },
     {
       "description": {
         "integration": "tigrisCL",
-        "protocol": "TigrisCL",
-        "description": "ITigrisCL(0x509Bc221df2B83927c695FA0bb0f5B21053C874c).collect((any,0x7684145E1dB121f5924570a27315480ac7f83584,any,any))",
+        "protocol": "NonfungiblePositionManager",
+        "description": "INonfungiblePositionManager(MEZO-CL-POS).collect((any,0x7684145E1dB121f5924570a27315480ac7f83584,any,any))",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
@@ -575,7 +718,7 @@
             {
               "name": "params",
               "type": "tuple",
-              "internalType": "struct ITigrisCL.CollectParams",
+              "internalType": "struct INonfungiblePositionManager.CollectParams",
               "components": [
                 {
                   "name": "tokenId",
@@ -613,14 +756,81 @@
             }
           ],
           "stateMutability": "payable"
-        }
+        },
+        "requiredPaths": [
+          {
+            "path": "collect.params.tokenId",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "collect.params.amount0Max",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "collect.params.amount1Max",
+            "type": "uint128",
+            "allowedValue": "any"
+          }
+        ]
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab614c42d2006a233389e2d6f40479b96fe4ad33103b25dc1acdf31ec326c3f3b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314db614c42d2006a233389e2d6f40479b96fe4ad33103b25dc1acdf31ec326c3f3b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xc79cc365169e9cadfad849fffd1376f461bdb1bb2c7223bb12097133287c5555",
-        "0x5a22cb0387597d9f39f06f899f31077bbcbe797225f4d61bde213e9f3a8778bc",
-        "0x19c28e4aff014daa353877292a9c955d897be73d2bd772b7e9931e260747e7a5"
+        "0x3e65c554bcc752469e61022819058e8c24c30b2ee223db8147193c94f2d1c356",
+        "0x91ed8708d224fe539c6789fa64fbea54ff0f4a85ed8f2baf619a32c6836775ae",
+        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
+        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
+      ]
+    },
+    {
+      "description": {
+        "integration": "angleDistributor",
+        "protocol": "AngleDistributor",
+        "description": "IAngleDistributor(MerklDistributor).toggleOperator(0x7684145E1dB121f5924570a27315480ac7f83584,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "value": "0"
+        },
+        "innerParameters": {
+          "user": "0x7684145E1dB121f5924570a27315480ac7f83584",
+          "operator": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "toggleOperator",
+          "inputs": [
+            {
+              "name": "user",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "operator",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "requiredPaths": [
+          {
+            "path": "toggleOperator.operator",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314dec3b62cda11f55d2775c9db7502208b6ca89f15e68b8aa552891d2978bdc35b8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6a0e9169d02deac99dceabd54daba5325cd35b7582b5c37a8591cd2047ea7772",
+        "0xfcc5e0c6c305c5613fdc37cb0e42c4f5f9fb614f1425a2172f43d8146a8b659a",
+        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
+        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
       ]
     }
   ]

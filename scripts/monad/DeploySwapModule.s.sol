@@ -6,7 +6,7 @@ import "scripts/common/interfaces/Imports.sol";
 
 import "@openzeppelin/contracts/utils/Create2.sol";
 
-import "../../src/accounts/MellowAccountV1.sol";
+import "../../src/utils/SwapModule.sol";
 import "./Constants.sol";
 
 contract Deploy is Script {
@@ -19,18 +19,20 @@ contract Deploy is Script {
         address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
 
         vm.startBroadcast(deployerPk);
-        address impl =
-            address(new MellowAccountV1{salt: 0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3e10885251bd1dcac7f350030}());
 
-        IFactory accountFactory =
+        SwapModule impl = new SwapModule{salt: 0xe98be1e5538fcbd716c506052eb1fd5d6fc495a38d68cf46272e5289a2050048}(
+            DEPLOYMENT_NAME, DEPLOYMENT_VERSION, address(0), address(0), Constants.WMON
+        );
+
+        IFactory swapModuleFactory =
             IFactory(Constants.protocolDeployment().factory.create(0, proxyAdmin, abi.encode(deployer)));
 
-        accountFactory.proposeImplementation(address(impl));
-        accountFactory.acceptProposedImplementation(address(impl));
-        Ownable(address(accountFactory)).transferOwnership(proxyAdmin);
+        swapModuleFactory.proposeImplementation(address(impl));
+        swapModuleFactory.acceptProposedImplementation(address(impl));
+        Ownable(address(swapModuleFactory)).transferOwnership(proxyAdmin);
 
-        console.log("MellowAccount factory", address(accountFactory));
-        console.log("MellowAccountV1 implementation", address(impl));
+        console.log("SwapModuleFactory", address(swapModuleFactory));
+        console.log("SwapModule implementation", address(impl));
 
         vm.stopBroadcast();
         // revert("ok");

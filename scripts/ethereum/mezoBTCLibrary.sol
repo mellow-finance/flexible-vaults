@@ -175,7 +175,7 @@ library mezoBTCLibrary {
     }
 
     /*--------------------------------------------------------------------------------------
-                            Subvault 0 (Uniswap V3, V4, Swap Module, Angle Distributor)                            
+                            Subvault 0 (Uniswap V3, V4, Swap Module, Angle Distributor)
     --------------------------------------------------------------------------------------*/
 
     function _getBTCSubvault0Proofs(Info0 memory $)
@@ -252,7 +252,7 @@ library mezoBTCLibrary {
     }
 
     /*----------------------------------------------------------------------------
-                            Subvault 1 (YieldBasis)                             
+                            Subvault 1 (YieldBasis)
     ----------------------------------------------------------------------------*/
     function _getBTCSubvault1Proofs(Info1 memory $)
         private
@@ -306,7 +306,7 @@ library mezoBTCLibrary {
     }
 
     /*----------------------------------------------------------------------------
-                            Subvault 2 (Mezo Bridge)                             
+                            Subvault 2 (Mezo Bridge)
     ----------------------------------------------------------------------------*/
     function _getBTCSubvault2Proofs(Info2 memory $)
         private

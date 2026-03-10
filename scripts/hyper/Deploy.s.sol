@@ -3,15 +3,17 @@ pragma solidity 0.8.25;
 
 import "scripts/common/interfaces/Imports.sol";
 
-import "./Constants.sol";
+import "../common/DeployVaultFactory.sol";
+import "../common/DeployVaultFactoryRegistry.sol";
+import "../common/OracleSubmitterFactory.sol";
 import "forge-std/Script.sol";
 
 import "@openzeppelin/contracts/utils/Create2.sol";
-// import "src/ts.sol";
 
 contract Deploy is Script {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
+    uint256 startSalt = 1e20;
 
     struct Deployment {
         Factory baseFactory;
@@ -26,12 +28,17 @@ contract Deploy is Script {
         Factory vaultFactory;
         Factory verifierFactory;
         Factory erc20VerifierFactory;
+        Factory accountFactory;
+        Factory swapModuleFactory;
         address bitmaskVerifier;
         address erc20Verifier;
         address vaultConfigurator;
         address basicRedeemHook;
         address redirectingDepositHook;
         address oracleHelper;
+        address oracleSubmitterFactory;
+        address deployVaultFactory;
+        address deployVaultFactoryRegistry;
     }
 
     function run() external {
@@ -40,18 +47,50 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
-        address proxyAdmin = 0xf1549a73A3b088d8cD0144360b4Af1B2eAfE05b0;
+        address proxyAdmin = 0xb1E5a8F26C43d019f2883378548a350ecdD1423B;
         deployBase(deployer, proxyAdmin);
         vm.stopBroadcast();
+        revert("ok");
+    }
+
+    function deployDeployFactory() internal {}
+
+    function _findOptSalt(uint256 startSalt_, bytes memory creationCode, bytes memory constructorParams)
+        internal
+        pure
+        returns (bytes32 salt, address addr)
+    {
+        bytes32 bytecodeHash = keccak256(abi.encodePacked(creationCode, constructorParams));
+        address create2Deployer = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+        salt = bytes32(startSalt_);
+
+        uint256 thershold = 1 << (160 - 28);
+        assembly ("memory-safe") {
+            let ptr := mload(0x40)
+            mstore(add(ptr, 0x40), bytecodeHash)
+            mstore(ptr, create2Deployer)
+            let start := add(ptr, 0x0b)
+            mstore8(start, 0xff)
+
+            ptr := add(ptr, 0x20)
+
+            for {} 1 { salt := add(salt, 1) } {
+                mstore(ptr, salt)
+                addr := and(keccak256(start, 85), 0xffffffffffffffffffffffffffffffffffffffff)
+                if lt(addr, thershold) { break }
+            }
+        }
     }
 
     function _deployWithOptimalSalt(string memory title, bytes memory creationCode, bytes memory constructorParams)
         internal
         returns (address a)
     {
-        (bytes32 salt,) = _findOptSalt(1e10, creationCode, constructorParams);
+        (bytes32 salt, address addr) = _findOptSalt(startSalt, creationCode, constructorParams);
+        startSalt = uint256(salt) + 1;
         a = Create2.deploy(0, salt, abi.encodePacked(creationCode, constructorParams));
-        console.log("%s: %s; salt %s", title, a, uint256(salt));
+        require(a == addr, "mismatched address");
+        console.log("salt %s | %s: %s;", uint256(salt), title, a);
     }
 
     function deployBase(address deployer, address proxyAdmin) public returns (Deployment memory $) {
@@ -268,6 +307,17 @@ contract Deploy is Script {
             $.erc20VerifierFactory.transferOwnership(proxyAdmin);
         }
 
+        {
+            $.accountFactory = Factory($.baseFactory.create(0, proxyAdmin, abi.encode(deployer)));
+            console.log("Account factory: %s", address($.accountFactory));
+            address implementation =
+                _deployWithOptimalSalt("MellowAccountV1", type(MellowAccountV1).creationCode, abi.encode());
+
+            $.accountFactory.proposeImplementation(implementation);
+            $.accountFactory.acceptProposedImplementation(implementation);
+            $.accountFactory.transferOwnership(proxyAdmin);
+        }
+
         $.vaultConfigurator = _deployWithOptimalSalt(
             "VaultConfigurator",
             type(VaultConfigurator).creationCode,
@@ -286,32 +336,20 @@ contract Deploy is Script {
             _deployWithOptimalSalt("RedirectingDepositHook", type(RedirectingDepositHook).creationCode, new bytes(0));
 
         $.oracleHelper = _deployWithOptimalSalt("OracleHelper", type(OracleHelper).creationCode, new bytes(0));
-    }
 
-    function _findOptSalt(uint256 startSalt, bytes memory creationCode, bytes memory constructorParams)
-        internal
-        pure
-        returns (bytes32 salt, address addr)
-    {
-        bytes32 bytecodeHash = keccak256(abi.encodePacked(creationCode, constructorParams));
-        address create2Deployer = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
-        salt = bytes32(startSalt);
+        $.oracleSubmitterFactory =
+            _deployWithOptimalSalt("OracleSubmitterFactory", type(OracleSubmitterFactory).creationCode, new bytes(0));
 
-        uint256 thershold = 1 << (160 - 28);
-        assembly ("memory-safe") {
-            let ptr := mload(0x40)
-            mstore(add(ptr, 0x40), bytecodeHash)
-            mstore(ptr, create2Deployer)
-            let start := add(ptr, 0x0b)
-            mstore8(start, 0xff)
+        $.deployVaultFactoryRegistry = _deployWithOptimalSalt(
+            "DeployVaultFactoryRegistry", type(DeployVaultFactoryRegistry).creationCode, new bytes(0)
+        );
 
-            ptr := add(ptr, 0x20)
-
-            for {} 1 { salt := add(salt, 1) } {
-                mstore(ptr, salt)
-                addr := and(keccak256(start, 85), 0xffffffffffffffffffffffffffffffffffffffff)
-                if lt(addr, thershold) { break }
-            }
-        }
+        $.deployVaultFactory = _deployWithOptimalSalt(
+            "DeployVaultFactory",
+            type(DeployVaultFactory).creationCode,
+            abi.encode(
+                $.vaultConfigurator, address($.verifierFactory), $.oracleSubmitterFactory, $.deployVaultFactoryRegistry
+            )
+        );
     }
 }

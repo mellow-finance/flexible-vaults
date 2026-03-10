@@ -16,6 +16,10 @@ library Constants {
     address public constant WXPL = 0x6100E367285b01F48D07953803A2d8dCA5D19873;
     address public constant WSTUSR = 0x2a52B289bA68bBd02676640aA9F605700c9e5699;
     address public constant USDT0 = 0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb;
+
+    address public constant USDE = 0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34;
+    address public constant SUSDE = 0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2;
+
     address public constant SYRUP_USDT = 0xC4374775489CB9C56003BF2C9b12495fC64F0771;
     address public constant WETH = 0x9895D81bB462A195b4922ED7De0e3ACD007c32CB;
     address public constant WSTETH = 0xe48D935e6C9e735463ccCf29a7F11e32bC09136E;
@@ -67,7 +71,7 @@ library Constants {
             symbioticVaultFactory: address(0),
             symbioticFarmFactory: address(0),
             wsteth: WSTETH,
-            weth: WETH,
+            weth: WXPL,
             proxyAdmin: 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0,
             deployer: 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3,
             factoryImplementation: Factory(0x0000000397b71C8f3182Fd40D247330D218fdC72),
@@ -90,7 +94,7 @@ library Constants {
             depositQueueImplementation: DepositQueue(payable(0x00000006dA9f179BFE250Dd1c51cD2d3581930c8)),
             syncDepositQueueImplementation: SyncDepositQueue(payable(0)),
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
-            redeemQueueImplementation: RedeemQueue(payable(0x0000000285805eac535DADdb9648F1E10DfdC411)),
+            redeemQueueImplementation: RedeemQueue(payable(0)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x0000000b2082667589A16c4cF18e9f923781c471)),
             feeManagerImplementation: FeeManager(0x0000000dE74e5D51651326E0A3e1ACA94bEAF6E1),
             oracleImplementation: Oracle(0x0000000F0d3D1c31b72368366A4049C05E291D58),
@@ -111,8 +115,8 @@ library Constants {
             lidoDepositHook: LidoDepositHook(address(0)),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
             swapModuleImplementation: SwapModule(payable(0x00000000fF13abe88Ff02DC80d53D1d3B89b2E0F)),
-            mellowAccountV1Implementation: MellowAccountV1(address(0)),
-            accountFactory: Factory(address(0))
+            mellowAccountV1Implementation: MellowAccountV1(0x00000000028E2Bc6FABc9e8B9c7d5D411982Ff8e),
+            accountFactory: Factory(0x41C443F10a92D597e6c9E271140BC94c10f5159F)
         });
     }
 }

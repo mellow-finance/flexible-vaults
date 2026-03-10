@@ -27,6 +27,15 @@ contract PriceOracle is IPriceOracle, Ownable {
         return _assets.values();
     }
 
+    function setOracle(address token, address oracle, uint256 constValue) external onlyOwner {
+        oracles[token] = TokenOracle(constValue, oracle);
+        if (constValue > 0 || oracle != address(0)) {
+            _assets.add(token);
+        } else {
+            _assets.remove(token);
+        }
+    }
+
     function setOracles(address[] calldata tokens_, TokenOracle[] calldata oracles_) external onlyOwner {
         require(tokens_.length == oracles_.length, "PriceOracle: invalid input");
         for (uint256 i = 0; i < tokens_.length; i++) {
