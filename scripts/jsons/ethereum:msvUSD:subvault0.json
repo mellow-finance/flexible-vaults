@@ -3854,107 +3854,12 @@
           "name": "swap",
           "inputs": [
             {
-              "name": "execution",
-              "type": "tuple",
-              "internalType": "struct IKyberswap.SwapExecutionParams",
-              "components": [
-                {
-                  "name": "callTarget",
-                  "type": "address",
-                  "internalType": "address"
-                },
-                {
-                  "name": "approveTarget",
-                  "type": "address",
-                  "internalType": "address"
-                },
-                {
-                  "name": "targetData",
-                  "type": "bytes",
-                  "internalType": "bytes"
-                },
-                {
-                  "name": "desc",
-                  "type": "tuple",
-                  "internalType": "struct IKyberswap.SwapDescriptionV2",
-                  "components": [
-                    {
-                      "name": "srcToken",
-                      "type": "address",
-                      "internalType": "address"
-                    },
-                    {
-                      "name": "dstToken",
-                      "type": "address",
-                      "internalType": "address"
-                    },
-                    {
-                      "name": "srcReceivers",
-                      "type": "address[]",
-                      "internalType": "address[]"
-                    },
-                    {
-                      "name": "srcAmounts",
-                      "type": "uint256[]",
-                      "internalType": "uint256[]"
-                    },
-                    {
-                      "name": "feeReceivers",
-                      "type": "address[]",
-                      "internalType": "address[]"
-                    },
-                    {
-                      "name": "feeAmounts",
-                      "type": "uint256[]",
-                      "internalType": "uint256[]"
-                    },
-                    {
-                      "name": "dstReceiver",
-                      "type": "address",
-                      "internalType": "address"
-                    },
-                    {
-                      "name": "amount",
-                      "type": "uint256",
-                      "internalType": "uint256"
-                    },
-                    {
-                      "name": "minReturnAmount",
-                      "type": "uint256",
-                      "internalType": "uint256"
-                    },
-                    {
-                      "name": "flags",
-                      "type": "uint256",
-                      "internalType": "uint256"
-                    },
-                    {
-                      "name": "permit",
-                      "type": "bytes",
-                      "internalType": "bytes"
-                    }
-                  ]
-                },
-                {
-                  "name": "clientData",
-                  "type": "bytes",
-                  "internalType": "bytes"
-                }
-              ]
+              "name": "swapParams",
+              "type": "bytes",
+              "internalType": "bytes"
             }
           ],
-          "outputs": [
-            {
-              "name": "returnAmount",
-              "type": "uint256",
-              "internalType": "uint256"
-            },
-            {
-              "name": "gasUsed",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
+          "outputs": [],
           "stateMutability": "payable"
         },
         "requiredPaths": [
