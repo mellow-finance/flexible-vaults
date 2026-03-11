@@ -1,10 +1,10 @@
 {
-  "title": "ethereum:testFlow:subvault1",
+  "title": "ethereum:tFTV:subvault1",
   "vault": "0x46c9690085281A7A0de404e9fcC0f7082aeD2336",
   "subvault": "0x675d78dCD13EeAA0C6f7B7f3479a319d94562d93",
   "chain": "ethereum",
   "merkle_root": "0x854de2d071df96e564b78aa040ad823e8c2429e290a6f328778c4973578a9127",
-  "vault_symbol": "testFlow",
+  "vault_symbol": "tFTV",
   "merkle_proofs": [
     {
       "description": {
