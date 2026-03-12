@@ -3,9 +3,224 @@
   "vault": "0x6a37725ca7f4CE81c004c955f7280d5C704a249e",
   "subvault": "0x7F515C80fA4C1FCFF34F0329141A9C3b20468FE5",
   "chain": "ethereum",
-  "merkle_root": "0xe8a03ddbb577e1dc2a1bfb92931a8b69dce457fa9d6674554c4661bd5174e96a",
+  "merkle_root": "0xd0b21cbe6de6f9a8f2c6054f7fe36368ecde98f0d9ac746f883fa257a7f001ca",
   "vault_symbol": "earnETH",
   "merkle_proofs": [
+    {
+      "description": {
+        "integration": "GGV_ETH",
+        "protocol": "GGV",
+        "description": "ITeller(GGV_Teller).deposit{value: any}(ETH,any,any,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x4C74ccA483A278Bcb90Aea3f8F565e56202D82B2",
+          "value": "any"
+        },
+        "innerParameters": {
+          "depositAsset": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+          "depositAmount": "any",
+          "minimumMint": "any",
+          "referralAddress": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "depositAsset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "depositAmount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minimumMint",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "referralAddress",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x4C74ccA483A278Bcb90Aea3f8F565e56202D82B2",
+          "value": "any",
+          "params": [
+            "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "depositAsset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "depositAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "minimumMint",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "referralAddress",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "deposit.depositAmount",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "deposit.minimumMint",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "deposit.referralAddress",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a03c85eb43f31077f460f9e406a204dc8b0df78d7114dc8accbb89c974b706bd8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x99563861f027f4952b4e574ca0d9dbee51d7649186273521fe33e64108bdb0e0",
+        "0x3d1028d41c1cc01365edd9077df194d1cc6e1364785fc67a94a7e58ab8b25ac6",
+        "0x13dd07884f4bfa40a70ebf3940c933b1ad411067e188f9f1783c4d55a0c40432"
+      ]
+    },
+    {
+      "description": {
+        "integration": "GGV",
+        "protocol": "GGV",
+        "description": "IERC20(WETH).approve(GGV,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "params": [
+            "0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad6f1bbbe16ff7fd2932250e48243a5f1a10feeba1563c023805e5945048a091d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x22bbdcc46f3b05f45500082cdef14271535f2821076c32a6e2a296f0e2010b5b",
+        "0xddd4ca1eb50a8ef8b542b4d0e667d5d271f6b0d88716c3b5b571e7c47f06467e",
+        "0x0fd71a182506468050c58719386e1d4924a5e587c489d8265d3c401ded12cdde",
+        "0x8c99c54e21eef430de26f3370c11fb2c83b3a9d60da98fad1cea95911e1c9e15"
+      ]
+    },
     {
       "description": {
         "integration": "GGV",
@@ -44,6 +259,39 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "params": [
+            "0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "approve.amount",
@@ -55,9 +303,132 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8622cdfae3ff17001b63428f62db37e6fce23e657efe5821e0f4c072b197909e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
+        "0x4117c1f827a8c0f53f05e0214480ca8ed89a313242884867110710163eb3f21a",
+        "0xddd4ca1eb50a8ef8b542b4d0e667d5d271f6b0d88716c3b5b571e7c47f06467e",
+        "0x0fd71a182506468050c58719386e1d4924a5e587c489d8265d3c401ded12cdde",
+        "0x8c99c54e21eef430de26f3370c11fb2c83b3a9d60da98fad1cea95911e1c9e15"
+      ]
+    },
+    {
+      "description": {
+        "integration": "GGV",
+        "protocol": "GGV",
+        "description": "ITeller(GGV_Teller).deposit(WETH,any,any,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x4C74ccA483A278Bcb90Aea3f8F565e56202D82B2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "depositAsset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "depositAmount": "any",
+          "minimumMint": "any",
+          "referralAddress": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "depositAsset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "depositAmount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minimumMint",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "referralAddress",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x4C74ccA483A278Bcb90Aea3f8F565e56202D82B2",
+          "value": "0",
+          "params": [
+            "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "depositAsset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "depositAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "minimumMint",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "referralAddress",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.depositAmount",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "deposit.minimumMint",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "deposit.referralAddress",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae0bded48150c91e1779d8f918bc3a9cf5da8326492fb0791069569b79246915f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
         "0x5d2f97e53dca4bb52140ae74d27b2b9e3497dbe7b2389968c5b1d18b3a043270",
-        "0x9ac005e5daf1a7069dfb0554ceaa12f85ea83bc2dd91827c0b672e81c43c9b30",
-        "0xe35f5e1538357bc5956d16a7a8ecd0af429a797813abeeabcef807ba5ead5d73"
+        "0x89ff3081c95e64eb16ac768dd9feb09d9500fb83a027be8db1256af5ce43159e",
+        "0x13dd07884f4bfa40a70ebf3940c933b1ad411067e188f9f1783c4d55a0c40432"
       ]
     },
     {
@@ -110,6 +481,52 @@
           ],
           "stateMutability": "payable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x4C74ccA483A278Bcb90Aea3f8F565e56202D82B2",
+          "value": "0",
+          "params": [
+            "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "depositAsset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "depositAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "minimumMint",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "referralAddress",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "deposit.depositAmount",
@@ -131,9 +548,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9409a1a775da9f5e641fb826b1fa98b48c3c2d4bcd77865da26309155b42863d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xbfbcd31e2054b899f2e31a84d79acc9397e417e8a080183532aa02c78e3bcfb6",
-        "0x7dd41a4fe1996c019dcdcdba2b22283975e76e3a47957436e5d4520ffcdff13f",
-        "0xe35f5e1538357bc5956d16a7a8ecd0af429a797813abeeabcef807ba5ead5d73"
+        "0x72b8be9b67dac2ebeb87abe679ec76cf57e2326e8a3288cfca1027d9076a5bf1",
+        "0x3d1028d41c1cc01365edd9077df194d1cc6e1364785fc67a94a7e58ab8b25ac6",
+        "0x13dd07884f4bfa40a70ebf3940c933b1ad411067e188f9f1783c4d55a0c40432"
       ]
     },
     {
@@ -174,6 +591,39 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09",
+          "params": [
+            "0xe39682c3C44b73285A2556D4869041e674d1a6B7",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "approve.amount",
@@ -185,9 +635,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aeb703cfeef22bbebf022875e08aefa2afdced9dd84afabb4f68a15d3326cf720000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x22bbdcc46f3b05f45500082cdef14271535f2821076c32a6e2a296f0e2010b5b",
-        "0x9ac005e5daf1a7069dfb0554ceaa12f85ea83bc2dd91827c0b672e81c43c9b30",
-        "0xe35f5e1538357bc5956d16a7a8ecd0af429a797813abeeabcef807ba5ead5d73"
+        "0x4809a5274be6f0d3a93c9160907ad57cbb817e341621a8ee839c29e5b6aafa71",
+        "0x89ff3081c95e64eb16ac768dd9feb09d9500fb83a027be8db1256af5ce43159e",
+        "0x13dd07884f4bfa40a70ebf3940c933b1ad411067e188f9f1783c4d55a0c40432"
       ]
     },
     {
@@ -240,6 +690,51 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xe39682c3C44b73285A2556D4869041e674d1a6B7",
+          "params": [
+            "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "requestOnChainWithdraw",
+            "inputs": [
+              {
+                "name": "assetOut",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amountOfShares",
+                "type": "uint128",
+                "internalType": "uint128"
+              },
+              {
+                "name": "discount",
+                "type": "uint16",
+                "internalType": "uint16"
+              },
+              {
+                "name": "secondsToDeadline",
+                "type": "uint24",
+                "internalType": "uint24"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "requestId",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "requestOnChainWithdraw.amountOfShares",
@@ -261,9 +756,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9f743bd07bffe2ad1eb864fa2415d28615fdea4003d681144e8ccd8e16b3db87000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x99563861f027f4952b4e574ca0d9dbee51d7649186273521fe33e64108bdb0e0",
-        "0x7dd41a4fe1996c019dcdcdba2b22283975e76e3a47957436e5d4520ffcdff13f",
-        "0xe35f5e1538357bc5956d16a7a8ecd0af429a797813abeeabcef807ba5ead5d73"
+        "0xd5418e2f896f00325e60c2846ef96e301b65f6406ce454de4144d64709f50ba2",
+        "0x7d5877d98f370636c7bd5c6a3f91001d835ecd906c0e8e90342b9b82725a99e3",
+        "0x8c99c54e21eef430de26f3370c11fb2c83b3a9d60da98fad1cea95911e1c9e15"
       ]
     },
     {
@@ -349,6 +844,84 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xe39682c3C44b73285A2556D4869041e674d1a6B7",
+          "params": [
+            [
+              "any",
+              "0x7F515C80fA4C1FCFF34F0329141A9C3b20468FE5",
+              "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+              "any",
+              "any",
+              "any",
+              "any",
+              "any"
+            ]
+          ],
+          "abi": {
+            "type": "function",
+            "name": "cancelOnChainWithdraw",
+            "inputs": [
+              {
+                "name": "request",
+                "type": "tuple",
+                "internalType": "struct IBoringQueue.OnChainWithdraw",
+                "components": [
+                  {
+                    "name": "nonce",
+                    "type": "uint96",
+                    "internalType": "uint96"
+                  },
+                  {
+                    "name": "user",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "assetOut",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "amountOfShares",
+                    "type": "uint128",
+                    "internalType": "uint128"
+                  },
+                  {
+                    "name": "amountOfAssets",
+                    "type": "uint128",
+                    "internalType": "uint128"
+                  },
+                  {
+                    "name": "creationTime",
+                    "type": "uint40",
+                    "internalType": "uint40"
+                  },
+                  {
+                    "name": "secondsToMaturity",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "secondsToDeadline",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  }
+                ]
+              }
+            ],
+            "outputs": [
+              {
+                "name": "requestId",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "cancelOnChainWithdraw.request.nonce",
@@ -385,8 +958,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acd7d86b5bb33c22613d44ed96c850f7fdf2c38d5fa52b9f9268196cfda8ffcfc00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xddd4ca1eb50a8ef8b542b4d0e667d5d271f6b0d88716c3b5b571e7c47f06467e",
-        "0x46b501bec974de6e8438ab67f410d02feb46e2792b4282bab841a33ea4bcb99d"
+        "0xbfbcd31e2054b899f2e31a84d79acc9397e417e8a080183532aa02c78e3bcfb6",
+        "0x7d5877d98f370636c7bd5c6a3f91001d835ecd906c0e8e90342b9b82725a99e3",
+        "0x8c99c54e21eef430de26f3370c11fb2c83b3a9d60da98fad1cea95911e1c9e15"
       ]
     },
     {
@@ -489,6 +1063,101 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xe39682c3C44b73285A2556D4869041e674d1a6B7",
+          "params": [
+            [
+              "any",
+              "0x7F515C80fA4C1FCFF34F0329141A9C3b20468FE5",
+              "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+              "any",
+              "any",
+              "any",
+              "any",
+              "any"
+            ],
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "replaceOnChainWithdraw",
+            "inputs": [
+              {
+                "name": "oldRequest",
+                "type": "tuple",
+                "internalType": "struct IBoringQueue.OnChainWithdraw",
+                "components": [
+                  {
+                    "name": "nonce",
+                    "type": "uint96",
+                    "internalType": "uint96"
+                  },
+                  {
+                    "name": "user",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "assetOut",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "amountOfShares",
+                    "type": "uint128",
+                    "internalType": "uint128"
+                  },
+                  {
+                    "name": "amountOfAssets",
+                    "type": "uint128",
+                    "internalType": "uint128"
+                  },
+                  {
+                    "name": "creationTime",
+                    "type": "uint40",
+                    "internalType": "uint40"
+                  },
+                  {
+                    "name": "secondsToMaturity",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "secondsToDeadline",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  }
+                ]
+              },
+              {
+                "name": "discount",
+                "type": "uint16",
+                "internalType": "uint16"
+              },
+              {
+                "name": "secondsToDeadline",
+                "type": "uint24",
+                "internalType": "uint24"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "oldRequestId",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "newRequestId",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "replaceOnChainWithdraw.oldRequest.nonce",
@@ -535,8 +1204,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3e26e5cfbfe22425f7ba5103f84df05ec506eeb75c2fb072819d1049edf6d616000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xd5418e2f896f00325e60c2846ef96e301b65f6406ce454de4144d64709f50ba2",
-        "0x46b501bec974de6e8438ab67f410d02feb46e2792b4282bab841a33ea4bcb99d"
+        "0x20b7c4337f5469aa807f1ef59d17f3c833018daee85f1f039bc65344bf1ab696",
+        "0x0fd71a182506468050c58719386e1d4924a5e587c489d8265d3c401ded12cdde",
+        "0x8c99c54e21eef430de26f3370c11fb2c83b3a9d60da98fad1cea95911e1c9e15"
       ]
     }
   ]

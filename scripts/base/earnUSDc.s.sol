@@ -61,7 +61,6 @@ contract Deploy is Script, Test {
         }
     }
 
-
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);

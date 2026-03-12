@@ -69,7 +69,6 @@ contract Deploy is Script, Test {
         }
     }
 
-
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
@@ -79,7 +78,6 @@ contract Deploy is Script, Test {
             _updatePermissions();
             return;
         }
-
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
         TimelockController timelockController;
