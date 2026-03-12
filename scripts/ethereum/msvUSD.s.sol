@@ -20,6 +20,10 @@ import "./msvUSDLibrary.sol";
 
 import "../common/ArraysLibrary.sol";
 
+interface IEthereumMezoBridge {
+    function bridgeERC20(address token, uint256 amount, address recipient) external;
+}
+
 contract Deploy is Script, Test {
     // Actors
     address public proxyAdmin = 0x54977739CF18B316f47B1e10E3068Bb3F04e08B6;
@@ -42,7 +46,7 @@ contract Deploy is Script, Test {
         console.log("submitter: %s", address(submitter));
     }
 
-    function testMerkle() internal {
+    function testMerkle0() internal {
         bytes32 merkleRoot = 0x0486d4f796ab8f981c9bad0d8a2ad60e405ce408c7a4bc74a3a69d51a81dae28;
         Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
 
@@ -97,8 +101,40 @@ contract Deploy is Script, Test {
         vm.stopPrank();
     }
 
+    function testMerkle1() internal {
+        // "description": "IEthereumMezoBridge(0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c).bridgeERC20(USDC,any,msvUSD_Subvault_0_Mezo)",
+        bytes32 merkleRoot = 0x7dc8902709b6299885c4bf395da90f46e1ef5c8568959e273c27be186571fed3;
+        Subvault subvault = Subvault(payable(vault.subvaultAt(1)));
+
+        //vm.startPrank(lazyVaultAdmin);
+        //vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, lazyVaultAdmin);
+        //subvault.verifier().setMerkleRoot(merkleRoot);
+        //vm.stopPrank();
+        assertEq(subvault.verifier().merkleRoot(), merkleRoot, "merkle root mismatch");
+
+        bytes memory bridgeCalldata = abi.encodeCall(IEthereumMezoBridge.bridgeERC20, (Constants.USDC, 10e6, 0x6F05747CdFe61b998f928CE509547CB630A981a1));
+        IVerifier.VerificationPayload memory payload;
+        payload.verificationData = hex"0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab21639296f7d8708f9d8115d17b6e02e61e3d050762b5a34e9299c10255821db000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000";
+        payload.verificationType = IVerifier.VerificationType.CUSTOM_VERIFIER;
+        payload.proof = new bytes32[](3);
+        payload.proof[0] = 0x36adef90cb8431992a8911e1cf5f19820e1d10e509552879f8d4b9cf1f0bdc37;
+        payload.proof[1] = 0xa1b568b678a116913c6f18046041a731e1df62b083bcf34537a13ebe0c2e2f58;
+        payload.proof[2] = 0xc14e763954d695eeb487f081aca04592a4fa9a70162839ffc41ba4d01e1f4b45;
+
+        assertTrue(
+            subvault.verifier().getVerificationResult(
+                curator, 0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c, 0, bridgeCalldata, payload
+            ),
+            "bridge proof should be valid"
+        );
+
+        vm.startPrank(curator);
+        subvault.call(0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c, 0, bridgeCalldata, payload);
+        vm.stopPrank();
+    }
+
     function run() external {
-        testMerkle();
+        testMerkle1();
         return;
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);

@@ -22,11 +22,45 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x07AFFA6754458f88db83A72859948d9b794E131b)));
+        testMerkle();
+        return;
 
         //revert("ok");
 
-        _run();
+        //_run();
         //revert("ok");
+    }
+
+    function testMerkle() internal {
+        bytes32 merkleRoot = 0x6c41e41ec87397b8254c42d049fbec95004d4c575e104bd866562864b2af408e;
+        Subvault subvault = Subvault(payable(vault.subvaultAt(0)));
+
+        vm.startPrank(lazyVaultAdmin);
+        vault.grantRole(Permissions.SET_MERKLE_ROOT_ROLE, lazyVaultAdmin);
+        subvault.verifier().setMerkleRoot(merkleRoot);
+        vm.stopPrank();
+        assertEq(subvault.verifier().merkleRoot(), merkleRoot, "merkle root mismatch");
+
+        bytes memory approveCalldata = abi.encodeCall(IERC20.approve, (Constants.MEZO_ROUTER, 1 ether));
+        IVerifier.VerificationPayload memory approvePayload;
+        approvePayload.verificationData = hex"0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d0d81072987fa60fa684610f8ee416a9ce2bedbd9bed9d4e79751e2c4b9ec4087000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        approvePayload.verificationType = IVerifier.VerificationType.CUSTOM_VERIFIER;
+        approvePayload.proof = new bytes32[](4);
+        approvePayload.proof[0] = 0xa6d042cca5cd47c658e5cf9e731bb76a4df74b6e730ea886ebcbb8f9639da3f5;
+        approvePayload.proof[1] = 0xad8afa297794a5960b8135fcda9a75698712e5084b06801da3ce1c5737627310;
+        approvePayload.proof[2] = 0x5db9a87494230e8659672a4de669b0932659776cc748429ed207d881dec8c111;
+        approvePayload.proof[3] = 0x1c8685e54b7cd516573fe7a26acbe4cb050c47b373c88ae38d938d47f371a0f0;
+
+        assertTrue(
+            subvault.verifier().getVerificationResult(
+                curator, Constants.MUSD, 0, approveCalldata, approvePayload
+            ),
+            "approve proof should be valid"
+        );
+
+        vm.startPrank(curator);
+        subvault.call(Constants.MUSD, 0, approveCalldata, approvePayload);
+        vm.stopPrank();
     }
 
     function setUp() public override {
