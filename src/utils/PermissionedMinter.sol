@@ -154,11 +154,16 @@ contract PermissionedMinter is ERC20 {
         _burn(address(vault), shares);
 
         // renounce all roles
-        for (uint256 roleIndex = 0; roleIndex < vault.supportedRoles(); roleIndex++) {
+        bytes32[] memory roles = new bytes32[](vault.supportedRoles());
+        uint256 iterator = 0;
+        for (uint256 roleIndex = 0; roleIndex < roles.length; roleIndex++) {
             bytes32 role = vault.supportedRoleAt(roleIndex);
             if (vault.hasRole(role, address(this))) {
-                vault.renounceRole(role, address(this));
+                roles[iterator++] = role;
             }
+        }
+        for (uint256 roleIndex = 0; roleIndex < iterator; roleIndex++) {
+            vault.renounceRole(roles[roleIndex], address(this));
         }
     }
 }
