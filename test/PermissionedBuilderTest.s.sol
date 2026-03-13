@@ -11,7 +11,7 @@ import "../src/utils/PermissionedMinter.sol";
 contract Integration is Test {
     function test() external {
         Vault vault = Vault(payable(0x807D4778abA870e4222904f5b528F68B350cE0E0));
-        uint256 shares = 100 ether;
+        uint224 shares = 100 ether;
         address urd = makeAddr("urd");
         address admin = vault.getRoleMember(vault.DEFAULT_ADMIN_ROLE(), 0);
 

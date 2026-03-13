@@ -15,7 +15,7 @@ contract PermissionedMinter is ERC20 {
     Vault public immutable vault;
     address public immutable admin;
     address public immutable target;
-    uint256 public immutable shares;
+    uint224 public immutable shares;
     uint256 public immutable syncDepositQueueVersion;
 
     bool public minted = false;
@@ -25,7 +25,7 @@ contract PermissionedMinter is ERC20 {
         int256 vaultLimit;
     }
 
-    constructor(Vault vault_, address admin_, address target_, uint256 shares_, uint256 syncDepositQueueVersion_)
+    constructor(Vault vault_, address admin_, address target_, uint224 shares_, uint256 syncDepositQueueVersion_)
         ERC20("PhantomToken", "pt")
     {
         if (address(vault_) == address(0) || admin_ == address(0) || shares_ == 0 || target_ == address(0)) {
@@ -121,7 +121,7 @@ contract PermissionedMinter is ERC20 {
             revert("PermissionMinter: invalid share balance before deposit");
         }
 
-        ISyncDepositQueue(queue).deposit(uint224(shares), address(0), new bytes32[](0));
+        ISyncDepositQueue(queue).deposit(shares, address(0), new bytes32[](0));
 
         if (shareManager.totalSupply() != shares || shareManager.balanceOf(address(this)) != shares) {
             revert("PermissionMinter: invalid share balance after deposit");
