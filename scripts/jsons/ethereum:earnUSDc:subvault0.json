@@ -520,7 +520,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f).approve(earnUSDc_SwapModule_0,any)",
+        "description": "IERC20(GHO).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
@@ -790,7 +790,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF).approve(earnUSDc_SwapModule_0,any)",
+        "description": "IERC20(AURA).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF",
@@ -880,7 +880,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0xba100000625a3754423978a60c9317c58a424e3D).approve(earnUSDc_SwapModule_0,any)",
+        "description": "IERC20(BAL).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xba100000625a3754423978a60c9317c58a424e3D",
@@ -970,7 +970,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x58D97B57BB95320F9a05dC918Aef65434969c2B2).approve(earnUSDc_SwapModule_0,any)",
+        "description": "IERC20(MORPHO_token).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
@@ -1294,7 +1294,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(GHO,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -1528,7 +1528,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(AURA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -1606,7 +1606,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(0xba100000625a3754423978a60c9317c58a424e3D,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(BAL,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -1684,7 +1684,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(0x58D97B57BB95320F9a05dC918Aef65434969c2B2,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(MORPHO_token,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -1996,7 +1996,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(GHO,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -2230,7 +2230,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(AURA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -2308,7 +2308,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(0xba100000625a3754423978a60c9317c58a424e3D,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(BAL,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -2386,7 +2386,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(0x58D97B57BB95320F9a05dC918Aef65434969c2B2,any)",
+        "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(MORPHO_token,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x28c4c26b4d4eA70434906C270cF26B995583c08C",
@@ -2847,7 +2847,7 @@
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
-        "description": "IERC20(USDT).approve(0xC13e21B648A5Ee794902342038FF3aDAB66BE987,any)",
+        "description": "IERC20(USDT).approve(SparkLend,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -2937,7 +2937,7 @@
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
-        "description": "IERC20(USDC).approve(0xC13e21B648A5Ee794902342038FF3aDAB66BE987,any)",
+        "description": "IERC20(USDC).approve(SparkLend,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -3026,7 +3026,7 @@
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0xC13e21B648A5Ee794902342038FF3aDAB66BE987).supply(USDT,any,earnUSDc_Subvault_0,0)",
+        "description": "IAavePoolV3(SparkLend).supply(USDT,any,earnUSDc_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",
@@ -3128,7 +3128,7 @@
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0xC13e21B648A5Ee794902342038FF3aDAB66BE987).supply(USDC,any,earnUSDc_Subvault_0,0)",
+        "description": "IAavePoolV3(SparkLend).supply(USDC,any,earnUSDc_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",
@@ -3230,7 +3230,7 @@
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0xC13e21B648A5Ee794902342038FF3aDAB66BE987).withdraw(USDT,any,earnUSDc_Subvault_0)",
+        "description": "IAavePoolV3(SparkLend).withdraw(USDT,any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",
@@ -3332,7 +3332,7 @@
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(0xC13e21B648A5Ee794902342038FF3aDAB66BE987).withdraw(USDC,any,earnUSDc_Subvault_0)",
+        "description": "IAavePoolV3(SparkLend).withdraw(USDC,any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",
@@ -3908,7 +3908,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IERC20(0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2).approve(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb,any)",
+        "description": "IERC20(PT-reUSD-25JUN2026).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2",
@@ -3998,7 +3998,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IERC20(USDC).approve(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb,any)",
+        "description": "IERC20(USDC).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -4088,7 +4088,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb).supply((USDC,0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2,0x12d66602C691Aa93E90415aB22FB0760695AC768,0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC,915000000000000000),any,any,earnUSDc_Subvault_0,0x)",
+        "description": "IMorpho(Morpho).supply((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -4295,7 +4295,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb).supplyCollateral((USDC,0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2,0x12d66602C691Aa93E90415aB22FB0760695AC768,0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC,915000000000000000),any,earnUSDc_Subvault_0,0x)",
+        "description": "IMorpho(Morpho).supplyCollateral((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -4463,7 +4463,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb).repay((USDC,0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2,0x12d66602C691Aa93E90415aB22FB0760695AC768,0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC,915000000000000000),any,any,earnUSDc_Subvault_0,0x)",
+        "description": "IMorpho(Morpho).repay((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -4670,7 +4670,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb).borrow((USDC,0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2,0x12d66602C691Aa93E90415aB22FB0760695AC768,0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC,915000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
+        "description": "IMorpho(Morpho).borrow((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -4877,7 +4877,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb).withdraw((USDC,0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2,0x12d66602C691Aa93E90415aB22FB0760695AC768,0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC,915000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
+        "description": "IMorpho(Morpho).withdraw((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -5084,7 +5084,7 @@
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb).withdrawCollateral((USDC,0x3EAA0F0f0A5d3D595ae4e4b0D27f439d01c3E7b2,0x12d66602C691Aa93E90415aB22FB0760695AC768,0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC,915000000000000000),any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
+        "description": "IMorpho(Morpho).withdrawCollateral((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -5252,7 +5252,7 @@
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
-        "description": "IERC20(USDC).approve(0xbA1333333333a1BA1108E8412f11850A5C319bA9,any)",
+        "description": "IERC20(USDC).approve(BalancerVaultV3,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -5342,7 +5342,7 @@
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
-        "description": "IERC20(USDT).approve(0xbA1333333333a1BA1108E8412f11850A5C319bA9,any)",
+        "description": "IERC20(USDT).approve(BalancerVaultV3,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -5432,7 +5432,7 @@
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
-        "description": "IERC20(0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f).approve(0xbA1333333333a1BA1108E8412f11850A5C319bA9,any)",
+        "description": "IERC20(GHO).approve(BalancerVaultV3,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
@@ -5522,7 +5522,7 @@
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
-        "description": "ICompositeLiquidityRouter(0xb21A277466e7dB6934556a1Ce12eb3F032815c8A).addLiquidityProportionalToERC4626Pool(0x85B2b559bC2D21104C4DEFdd6EFcA8A20343361D,(any,any,any),(any,any,any),any,any,0x)",
+        "description": "ICompositeLiquidityRouter(CompositeLiquidityRouter).addLiquidityProportionalToERC4626Pool(Balancer_Aave_GHO/USDT/USDC,(any,any,any),(any,any,any),any,any,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xb21A277466e7dB6934556a1Ce12eb3F032815c8A",
@@ -5723,7 +5723,7 @@
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
-        "description": "ICompositeLiquidityRouter(0xb21A277466e7dB6934556a1Ce12eb3F032815c8A).removeLiquidityProportionalFromERC4626Pool(0x85B2b559bC2D21104C4DEFdd6EFcA8A20343361D,(any,any,any),any,(any,any,any),any,0x)",
+        "description": "ICompositeLiquidityRouter(CompositeLiquidityRouter).removeLiquidityProportionalFromERC4626Pool(Balancer_Aave_GHO/USDT/USDC,(any,any,any),any,(any,any,any),any,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xb21A277466e7dB6934556a1Ce12eb3F032815c8A",
@@ -5924,7 +5924,7 @@
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
-        "description": "IERC20(0x85B2b559bC2D21104C4DEFdd6EFcA8A20343361D).approve(0xA57b8d98dAE62B26Ec3bcC4a365338157060B234,any)",
+        "description": "IERC20(Balancer_Aave_GHO/USDT/USDC).approve(Aura_Booster,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x85B2b559bC2D21104C4DEFdd6EFcA8A20343361D",
@@ -6014,7 +6014,7 @@
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
-        "description": "IAuraBooster(0xA57b8d98dAE62B26Ec3bcC4a365338157060B234).deposit(246,any,any)",
+        "description": "IAuraBooster(Aura_Booster).deposit(246,any,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xA57b8d98dAE62B26Ec3bcC4a365338157060B234",
@@ -6121,7 +6121,7 @@
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
-        "description": "IAuraBaseRewardPool(0x8e89d41c563e6C3d9901ad75B75e2d8e140DEF04).withdrawAndUnwrap(any,any)",
+        "description": "IAuraBaseRewardPool(Balancer Aave GHO/USDT/USDC Aura Deposit Vault).withdrawAndUnwrap(any,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x8e89d41c563e6C3d9901ad75B75e2d8e140DEF04",
@@ -6216,7 +6216,7 @@
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
-        "description": "IAuraBaseRewardPool(0x8e89d41c563e6C3d9901ad75B75e2d8e140DEF04).getReward(earnUSDc_Subvault_0,any)",
+        "description": "IAuraBaseRewardPool(Balancer Aave GHO/USDT/USDC Aura Deposit Vault).getReward(earnUSDc_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x8e89d41c563e6C3d9901ad75B75e2d8e140DEF04",
