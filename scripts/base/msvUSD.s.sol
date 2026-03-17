@@ -21,15 +21,15 @@ contract Deploy is DeployAbstractScript {
         deployVault = Constants.deployVaultFactory;
 
         /// @dev just on-chain simulation
-        _simulate();
+        //_simulate();
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0)));
-        //_run();
-        revert("ok");
+        vault = Vault(payable(address(0x97D30E28B08f2F6eD777C179F5Ca50C408ccA51e)));
+        _run();
+        //revert("ok");
     }
 
     function setUp() public override {
@@ -54,8 +54,8 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill fee parameters
         depositFeeD6 = 0;
         redeemFeeD6 = 0;
-        performanceFeeD6 = 200000;
-        protocolFeeD6 = 10000;
+        performanceFeeD6 = 0;
+        protocolFeeD6 = 0;
 
         /// @dev fill security params
         securityParams = IOracle.SecurityParams({
@@ -176,27 +176,7 @@ contract Deploy is DeployAbstractScript {
         internal
         override
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
-    {
-        Subvault subvault = Subvault(payable(vault.subvaultAt(index)));
-        IVerifier verifier = subvault.verifier();
-
-        IVerifier.VerificationPayload[] memory leaves;
-        string[] memory descriptions;
-        string memory jsonSubvaultName;
-
-        if (index == 0) {
-            (merkleRoot, leaves, descriptions, calls, jsonSubvaultName) = _getSubvault0MerkleRoot(address(subvault));
-        } else {
-            revert("Invalid subvault index");
-        }
-        /*
-                ProofLibrary.storeProofs(jsonSubvaultName, merkleRoot, leaves, descriptions);
-
-                vm.prank(lazyVaultAdmin);
-                verifier.setMerkleRoot(merkleRoot);
-
-                AcceptanceLibrary.runVerifyCallsChecks(verifier, calls); */
-    }
+    {}
 
     function _getSubvault0MerkleRoot(address subvault)
         private
@@ -207,9 +187,7 @@ contract Deploy is DeployAbstractScript {
             SubvaultCalls memory calls,
             string memory jsonSubvaultName
         )
-    {
-        jsonSubvaultName = "base:mbhBTC:subvault0";
-    }
+    {}
 
     function _deploySwapModule(address subvault, address[] memory actors, bytes32[] memory permissions)
         internal
