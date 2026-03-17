@@ -3,14 +3,14 @@
   "vault": "0x807D4778abA870e4222904f5b528F68B350cE0E0",
   "subvault": "0x7684145E1dB121f5924570a27315480ac7f83584",
   "chain": "mezo",
-  "merkle_root": "0xba471672fb00d6284d0644116e0dc30eadea9fee8a351345e71575c80a435690",
+  "merkle_root": "0xf0384c0c7f87b80442643deafabf38ab1d28414dc5ddf6715821bc56a97f6e2d",
   "vault_symbol": "mbhBTC",
   "merkle_proofs": [
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "IERC20(BTC).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
+        "description": "IERC20(BTC).approve(Tigris_Router,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x7b7C000000000000000000000000000000000000",
@@ -44,6 +44,39 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x7b7C000000000000000000000000000000000000",
+          "params": [
+            "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "approve.amount",
@@ -55,16 +88,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d3aad3a401e9d86877d902495c41f9d1ddfd8415c596650c271e7a541c1c05574000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xb7525af533c276805c45d39c4ed33d07980930122837e5497ec75a46ee0a0a9b",
+        "0xb511defef6cfca875a8b4ddbf068558a49073c1443199daa905d82969b8f2406",
         "0xfd30c17d3860f04428cf94ec2c73887a66b70548108b8769d53ed8017fce40d0",
-        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
+        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
       ]
     },
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "IERC20(MUSD).approve(0xAc93A67f15342E8Ef611396B13919204c8799Cd4,any)",
+        "description": "IERC20(MUSD).approve(Tigris_Router,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
@@ -98,6 +132,39 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+          "params": [
+            "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "approve.amount",
@@ -110,15 +177,103 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d9caadea7896ba52044c6537a78a4d99294e2c36446cd0b44fa4f323081f1f6ac000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xf90d6c3082de04b28c648b23d7d6cece45489e15283680c3c79216205ef07ffe",
-        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
-        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
+        "0xbe74c1b258f3621b9f89e4dbfdc6a90e4a651e745466c8eac38a2e3cf9149508",
+        "0x1ea6b621e4cfd0bbe78fdc00e520f4e6f60ea376e0b22064d1477d94a50e7941"
       ]
     },
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).addLiquidity(BTC,MUSD,any,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
+        "description": "IERC20(Tigris_MUSDBTC_Pool).approve(Tigris_Router,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x52e604c44417233b6CcEDDDc0d640A405Caacefb",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x52e604c44417233b6CcEDDDc0d640A405Caacefb",
+          "params": [
+            "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d1a5198b2dc450b34ddd7c2f4d3bbee9b3256660841f2cbc01569dd590b1f2c14000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb6f100ea27286a7bcef34a430bcda3f32c74c69bd45add3cabba62cf5960a3ba",
+        "0xfd30c17d3860f04428cf94ec2c73887a66b70548108b8769d53ed8017fce40d0",
+        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigris",
+        "protocol": "Tigris",
+        "description": "ITigris(Tigris_Router).addLiquidity(BTC,MUSD,any,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
@@ -204,6 +359,91 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+          "params": [
+            "0x7b7C000000000000000000000000000000000000",
+            "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+            "any",
+            "any",
+            "any",
+            "any",
+            "any",
+            "0x7684145E1dB121f5924570a27315480ac7f83584",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "addLiquidity",
+            "inputs": [
+              {
+                "name": "tokenA",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "tokenB",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "stable",
+                "type": "bool",
+                "internalType": "bool"
+              },
+              {
+                "name": "amountADesired",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amountBDesired",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amountAMin",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amountBMin",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "to",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "deadline",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "amountA",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amountB",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "liquidity",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "addLiquidity.stable",
@@ -241,15 +481,16 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314dbdd342764aacb264fa2a405552f9b8eec513e50318524e439dd7710cd360e0ce00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x99fa497dbe497db141d55386b639c454cbb7977cecef68fedc4905704b8d8339",
-        "0xc3b329fd8253b1034b8948cd4f46b3362d533a7c0c47689b6a7df8fe7130862c",
-        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
+        "0xdf87ecd695d0bd6b5e432dc9b18b9c506353850e6333c1cb4a4abdaad4ece59e",
+        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
       ]
     },
     {
       "description": {
         "integration": "tigris",
         "protocol": "Tigris",
-        "description": "ITigris(0xAc93A67f15342E8Ef611396B13919204c8799Cd4).removeLiquidity(BTC,MUSD,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
+        "description": "ITigris(Tigris_Router).removeLiquidity(BTC,MUSD,any,any,any,any,0x7684145E1dB121f5924570a27315480ac7f83584,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
@@ -324,6 +565,80 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
+          "params": [
+            "0x7b7C000000000000000000000000000000000000",
+            "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+            "any",
+            "any",
+            "any",
+            "any",
+            "0x7684145E1dB121f5924570a27315480ac7f83584",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "removeLiquidity",
+            "inputs": [
+              {
+                "name": "tokenA",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "tokenB",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "stable",
+                "type": "bool",
+                "internalType": "bool"
+              },
+              {
+                "name": "liquidity",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amountAMin",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amountBMin",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "to",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "deadline",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "amountA",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amountB",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "removeLiquidity.stable",
@@ -357,8 +672,71 @@
       "proof": [
         "0x44b0a019658783bfea105fc7235824d6d07e2f315d87cb6d6348b4b728259f89",
         "0x91ed8708d224fe539c6789fa64fbea54ff0f4a85ed8f2baf619a32c6836775ae",
+        "0xe23f96f81335f5b74baa5cd1b2d5fa69d26bf124810f522fec9b74f8b628d3d0",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
+      ]
+    },
+    {
+      "description": {
+        "integration": "tigris",
+        "protocol": "Tigris",
+        "description": "ITigrisPool(Tigris_MUSDBTC_Pool).claimFees()",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x52e604c44417233b6CcEDDDc0d640A405Caacefb",
+          "value": "0"
+        },
+        "innerParameters": {},
+        "abi": {
+          "type": "function",
+          "name": "claimFees",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "claimed0",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "claimed1",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x52e604c44417233b6CcEDDDc0d640A405Caacefb",
+          "params": [],
+          "abi": {
+            "type": "function",
+            "name": "claimFees",
+            "inputs": [],
+            "outputs": [
+              {
+                "name": "claimed0",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "claimed1",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": []
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d2836dd34357b7fb186b4e4bac936ac2e30a37f7b97ab46318f2560102e872c8000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb7525af533c276805c45d39c4ed33d07980930122837e5497ec75a46ee0a0a9b",
         "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
-        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
+        "0x1ea6b621e4cfd0bbe78fdc00e520f4e6f60ea376e0b22064d1477d94a50e7941"
       ]
     },
     {
@@ -399,6 +777,39 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x7b7C000000000000000000000000000000000000",
+          "params": [
+            "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "approve.amount",
@@ -411,8 +822,8 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d020333e04f4117206759d5d6e7fde644a510a58d57e8691c0e30757677c392ed000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xffe4419ef40ca757c5e611cc08f02f67d8dc52fb8aa275785f8d2b672ddfa096",
-        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
-        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
+        "0xbe74c1b258f3621b9f89e4dbfdc6a90e4a651e745466c8eac38a2e3cf9149508",
+        "0x1ea6b621e4cfd0bbe78fdc00e520f4e6f60ea376e0b22064d1477d94a50e7941"
       ]
     },
     {
@@ -453,6 +864,39 @@
           ],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
+          "params": [
+            "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "approve.amount",
@@ -466,8 +910,8 @@
       "proof": [
         "0x59750ceabb146a7911539533f871876e5ef52e5e46f80b039f9d27bed175da83",
         "0xfcc5e0c6c305c5613fdc37cb0e42c4f5f9fb614f1425a2172f43d8146a8b659a",
-        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
-        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
+        "0xe23f96f81335f5b74baa5cd1b2d5fa69d26bf124810f522fec9b74f8b628d3d0",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
       ]
     },
     {
@@ -551,6 +995,82 @@
           ],
           "stateMutability": "payable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "params": [
+            [
+              "24",
+              "any",
+              "any",
+              "any",
+              "any",
+              "any"
+            ]
+          ],
+          "abi": {
+            "type": "function",
+            "name": "increaseLiquidity",
+            "inputs": [
+              {
+                "name": "params",
+                "type": "tuple",
+                "internalType": "struct INonfungiblePositionManager.IncreaseLiquidityParams",
+                "components": [
+                  {
+                    "name": "tokenId",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amount0Desired",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amount1Desired",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amount0Min",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amount1Min",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "deadline",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              }
+            ],
+            "outputs": [
+              {
+                "name": "liquidity",
+                "type": "uint128",
+                "internalType": "uint128"
+              },
+              {
+                "name": "amount0",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount1",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "increaseLiquidity.params.amount0Desired",
@@ -583,8 +1103,9 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d31280db21bbdcc71c64ee23b1d5d0fc9f8d93161c16b98b092f012af3936b82f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x91cdcfc11349589f3b833e595a99fb0e0adef233324bbd95d42fbcb2981c1d24",
-        "0xc3b329fd8253b1034b8948cd4f46b3362d533a7c0c47689b6a7df8fe7130862c",
-        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
+        "0xdf87ecd695d0bd6b5e432dc9b18b9c506353850e6333c1cb4a4abdaad4ece59e",
+        "0xcaf7f579bd3d0652e9eb08b2f804f333f63a4761b4cc4f4dc5ede22da4d57e48",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
       ]
     },
     {
@@ -657,6 +1178,71 @@
           ],
           "stateMutability": "payable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "params": [
+            [
+              "any",
+              "any",
+              "any",
+              "any",
+              "any"
+            ]
+          ],
+          "abi": {
+            "type": "function",
+            "name": "decreaseLiquidity",
+            "inputs": [
+              {
+                "name": "params",
+                "type": "tuple",
+                "internalType": "struct INonfungiblePositionManager.DecreaseLiquidityParams",
+                "components": [
+                  {
+                    "name": "tokenId",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "liquidity",
+                    "type": "uint128",
+                    "internalType": "uint128"
+                  },
+                  {
+                    "name": "amount0Min",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amount1Min",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "deadline",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              }
+            ],
+            "outputs": [
+              {
+                "name": "amount0",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount1",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "decreaseLiquidity.params.tokenId",
@@ -688,9 +1274,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d4dcfd36fc0dba57e7901e7e2bb184ef38b38294c6fc4b3ed274e3f972e40d77000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xb6f100ea27286a7bcef34a430bcda3f32c74c69bd45add3cabba62cf5960a3ba",
-        "0xfd30c17d3860f04428cf94ec2c73887a66b70548108b8769d53ed8017fce40d0",
-        "0xd33d2af859ee80f5506db2d5266ea8c258bbc66196aef23493d2adfb0377d8bd"
+        "0xe04559d45490a182381063a81902d55d7c740afb5c04a92e6396eb6d3de4b927",
+        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
+        "0x1ea6b621e4cfd0bbe78fdc00e520f4e6f60ea376e0b22064d1477d94a50e7941"
       ]
     },
     {
@@ -757,6 +1343,65 @@
           ],
           "stateMutability": "payable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x509Bc221df2B83927c695FA0bb0f5B21053C874c",
+          "params": [
+            [
+              "any",
+              "0x7684145E1dB121f5924570a27315480ac7f83584",
+              "any",
+              "any"
+            ]
+          ],
+          "abi": {
+            "type": "function",
+            "name": "collect",
+            "inputs": [
+              {
+                "name": "params",
+                "type": "tuple",
+                "internalType": "struct INonfungiblePositionManager.CollectParams",
+                "components": [
+                  {
+                    "name": "tokenId",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "recipient",
+                    "type": "address",
+                    "internalType": "address"
+                  },
+                  {
+                    "name": "amount0Max",
+                    "type": "uint128",
+                    "internalType": "uint128"
+                  },
+                  {
+                    "name": "amount1Max",
+                    "type": "uint128",
+                    "internalType": "uint128"
+                  }
+                ]
+              }
+            ],
+            "outputs": [
+              {
+                "name": "amount0",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount1",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "collect.params.tokenId",
@@ -780,8 +1425,8 @@
       "proof": [
         "0x3e65c554bcc752469e61022819058e8c24c30b2ee223db8147193c94f2d1c356",
         "0x91ed8708d224fe539c6789fa64fbea54ff0f4a85ed8f2baf619a32c6836775ae",
-        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
-        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
+        "0xe23f96f81335f5b74baa5cd1b2d5fa69d26bf124810f522fec9b74f8b628d3d0",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
       ]
     },
     {
@@ -816,6 +1461,33 @@
           "outputs": [],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "params": [
+            "0x7684145E1dB121f5924570a27315480ac7f83584",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "toggleOperator",
+            "inputs": [
+              {
+                "name": "user",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "operator",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "toggleOperator.operator",
@@ -829,8 +1501,8 @@
       "proof": [
         "0x6a0e9169d02deac99dceabd54daba5325cd35b7582b5c37a8591cd2047ea7772",
         "0xfcc5e0c6c305c5613fdc37cb0e42c4f5f9fb614f1425a2172f43d8146a8b659a",
-        "0x0bd7432a1201fc8e3e753bd7a01f191bea1ec47d4eecc0ad0d904fe95f972a4d",
-        "0x5594f8c8f6f1db5335c3386e2f721792e9d6e6561be3543611f33fb38ac87554"
+        "0xe23f96f81335f5b74baa5cd1b2d5fa69d26bf124810f522fec9b74f8b628d3d0",
+        "0x34d835cd00aa5466e9828fe6ec9e355d6026c03e1a9972a1239f82109e65185f"
       ]
     }
   ]

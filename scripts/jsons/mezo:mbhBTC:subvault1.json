@@ -44,7 +44,46 @@
           "outputs": [],
           "stateMutability": "payable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "value": "any",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "params": [
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "openTrove",
+            "inputs": [
+              {
+                "name": "_debtAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "_upperHint",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "_lowerHint",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
         "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
           {
             "path": "openTrove._debtAmount",
             "type": "uint256",
@@ -102,7 +141,40 @@
           "outputs": [],
           "stateMutability": "payable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "value": "any",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "params": [
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "addColl",
+            "inputs": [
+              {
+                "name": "_upperHint",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "_lowerHint",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
         "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
           {
             "path": "addColl._upperHint",
             "type": "address",
@@ -160,6 +232,39 @@
           ],
           "outputs": [],
           "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "params": [
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdrawColl",
+            "inputs": [
+              {
+                "name": "_amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "_upperHint",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "_lowerHint",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
         },
         "requiredPaths": [
           {
@@ -224,6 +329,39 @@
           "outputs": [],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "params": [
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdrawMUSD",
+            "inputs": [
+              {
+                "name": "_amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "_upperHint",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "_lowerHint",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "withdrawMUSD._amount",
@@ -287,6 +425,39 @@
           "outputs": [],
           "stateMutability": "nonpayable"
         },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "params": [
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repayMUSD",
+            "inputs": [
+              {
+                "name": "_amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "_upperHint",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "_lowerHint",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
         "requiredPaths": [
           {
             "path": "repayMUSD._amount",
@@ -330,6 +501,19 @@
           "inputs": [],
           "outputs": [],
           "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "params": [],
+          "abi": {
+            "type": "function",
+            "name": "closeTrove",
+            "inputs": [],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
         },
         "requiredPaths": []
       },
