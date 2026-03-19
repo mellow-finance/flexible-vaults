@@ -10,7 +10,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDC).approve(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539,any)",
+        "description": "IERC20(USDC).approve(msvUSD_SwapModule_0,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -100,7 +100,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDT).approve(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539,any)",
+        "description": "IERC20(USDT).approve(msvUSD_SwapModule_0,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -190,7 +190,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(CRV).approve(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539,any)",
+        "description": "IERC20(CRV).approve(msvUSD_SwapModule_0,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0xD533a949740bb3306d119CC777fa900bA034cd52",
@@ -280,7 +280,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539).pushAssets(USDC,any)",
+        "description": "ISwapModule(msvUSD_SwapModule_0).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x987aa80bCeed2b9Dd0C0884739C8301C6010C539",
@@ -358,7 +358,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539).pushAssets(USDT,any)",
+        "description": "ISwapModule(msvUSD_SwapModule_0).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x987aa80bCeed2b9Dd0C0884739C8301C6010C539",
@@ -436,7 +436,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539).pushAssets(CRV,any)",
+        "description": "ISwapModule(msvUSD_SwapModule_0).pushAssets(CRV,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x987aa80bCeed2b9Dd0C0884739C8301C6010C539",
@@ -514,7 +514,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539).pullAssets(USDC,any)",
+        "description": "ISwapModule(msvUSD_SwapModule_0).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x987aa80bCeed2b9Dd0C0884739C8301C6010C539",
@@ -592,7 +592,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539).pullAssets(USDT,any)",
+        "description": "ISwapModule(msvUSD_SwapModule_0).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x987aa80bCeed2b9Dd0C0884739C8301C6010C539",
@@ -670,7 +670,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x987aa80bCeed2b9Dd0C0884739C8301C6010C539).pullAssets(CRV,any)",
+        "description": "ISwapModule(msvUSD_SwapModule_0).pullAssets(CRV,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x987aa80bCeed2b9Dd0C0884739C8301C6010C539",
@@ -1108,7 +1108,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).supply(USDC,any,msvUSD_Subvault0,0)",
+        "description": "IAavePoolV3(AavePool(Core)).supply(USDC,any,msvUSD_Subvault_0,0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1210,7 +1210,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).supply(USDT,any,msvUSD_Subvault0,0)",
+        "description": "IAavePoolV3(AavePool(Core)).supply(USDT,any,msvUSD_Subvault_0,0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1312,7 +1312,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDC,any,msvUSD_Subvault0)",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDC,any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1414,7 +1414,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDT,any,msvUSD_Subvault0)",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDT,any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1516,7 +1516,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).borrow(USDC,any,2,0,msvUSD_Subvault0)",
+        "description": "IAavePoolV3(AavePool(Core)).borrow(USDC,any,2,0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1630,7 +1630,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).borrow(USDT,any,2,0,msvUSD_Subvault0)",
+        "description": "IAavePoolV3(AavePool(Core)).borrow(USDT,any,2,0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1744,7 +1744,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).repay(USDC,any,2,msvUSD_Subvault0)",
+        "description": "IAavePoolV3(AavePool(Core)).repay(USDC,any,2,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1858,7 +1858,7 @@
       "description": {
         "integration": "aave",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).repay(USDT,any,2,msvUSD_Subvault0)",
+        "description": "IAavePoolV3(AavePool(Core)).repay(USDT,any,2,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -2062,7 +2062,7 @@
       "description": {
         "integration": "fluid_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDC).deposit(any,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDC).deposit(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x9Fb7b4477576Fe5B32be4C1843aFB1e55F251B33",
@@ -2152,7 +2152,7 @@
       "description": {
         "integration": "fluid_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDC).mint(any,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDC).mint(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x9Fb7b4477576Fe5B32be4C1843aFB1e55F251B33",
@@ -2242,7 +2242,7 @@
       "description": {
         "integration": "fluid_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDC).withdraw(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDC).withdraw(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x9Fb7b4477576Fe5B32be4C1843aFB1e55F251B33",
@@ -2344,7 +2344,7 @@
       "description": {
         "integration": "fluid_usdc",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDC).redeem(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDC).redeem(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x9Fb7b4477576Fe5B32be4C1843aFB1e55F251B33",
@@ -2536,7 +2536,7 @@
       "description": {
         "integration": "fluid_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDT).deposit(any,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDT).deposit(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x5C20B550819128074FD538Edf79791733ccEdd18",
@@ -2626,7 +2626,7 @@
       "description": {
         "integration": "fluid_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDT).mint(any,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDT).mint(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x5C20B550819128074FD538Edf79791733ccEdd18",
@@ -2716,7 +2716,7 @@
       "description": {
         "integration": "fluid_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDT).withdraw(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDT).withdraw(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x5C20B550819128074FD538Edf79791733ccEdd18",
@@ -2818,7 +2818,7 @@
       "description": {
         "integration": "fluid_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(fUSDT).redeem(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(fUSDT).redeem(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x5C20B550819128074FD538Edf79791733ccEdd18",
@@ -2918,7 +2918,7 @@
     },
     {
       "description": {
-        "integration": "cctp_arbitrum",
+        "integration": "cctp",
         "protocol": "CCTP",
         "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
         "parameters": {
@@ -3008,7 +3008,7 @@
     },
     {
       "description": {
-        "integration": "cctp_arbitrum",
+        "integration": "cctp",
         "protocol": "CCTP",
         "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,3,0x0000000000000000000000009214Fb3563BC6FE429c608071CBc5278b0e43639,USDC,0x0000000000000000000000003c9B9D820188fF57c8482EbFdF1093b1EFeFf068,0,2000)",
         "parameters": {
@@ -3250,7 +3250,7 @@
       "description": {
         "integration": "oft",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30110,0x0000000000000000000000009214Fb3563BC6FE429c608071CBc5278b0e43639,any,any,0x,0x,0x),(any,0),msvUSD_Subvault0)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30110,0x0000000000000000000000009214Fb3563BC6FE429c608071CBc5278b0e43639,any,any,0x,0x,0x),(any,0),msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
@@ -4066,7 +4066,7 @@
       "description": {
         "integration": "stakeDAO_usdc_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-crv2pool-vault).deposit(any,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-crv2pool-vault).deposit(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x8841909AEf61357d7a05e7F24F40F0adC8b28150",
@@ -4156,7 +4156,7 @@
       "description": {
         "integration": "stakeDAO_usdc_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-crv2pool-vault).mint(any,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-crv2pool-vault).mint(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x8841909AEf61357d7a05e7F24F40F0adC8b28150",
@@ -4246,7 +4246,7 @@
       "description": {
         "integration": "stakeDAO_usdc_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-crv2pool-vault).withdraw(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-crv2pool-vault).withdraw(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x8841909AEf61357d7a05e7F24F40F0adC8b28150",
@@ -4348,7 +4348,7 @@
       "description": {
         "integration": "stakeDAO_usdc_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-crv2pool-vault).redeem(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-crv2pool-vault).redeem(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x8841909AEf61357d7a05e7F24F40F0adC8b28150",
@@ -5270,7 +5270,7 @@
       "description": {
         "integration": "stakeDAO_musd_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-MUSD/2pool-vault).deposit(any,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-MUSD/2pool-vault).deposit(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x912Ad922be2899c5160bF2cd1Ea62071F387F608",
@@ -5360,7 +5360,7 @@
       "description": {
         "integration": "stakeDAO_musd_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-MUSD/2pool-vault).mint(any,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-MUSD/2pool-vault).mint(any,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x912Ad922be2899c5160bF2cd1Ea62071F387F608",
@@ -5450,7 +5450,7 @@
       "description": {
         "integration": "stakeDAO_musd_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-MUSD/2pool-vault).withdraw(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-MUSD/2pool-vault).withdraw(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x912Ad922be2899c5160bF2cd1Ea62071F387F608",
@@ -5552,7 +5552,7 @@
       "description": {
         "integration": "stakeDAO_musd_usdt",
         "protocol": "ERC4626",
-        "description": "IERC4626(sd-MUSD/2pool-vault).redeem(any,msvUSD_Subvault0,msvUSD_Subvault0)",
+        "description": "IERC4626(sd-MUSD/2pool-vault).redeem(any,msvUSD_Subvault_0,msvUSD_Subvault_0)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x912Ad922be2899c5160bF2cd1Ea62071F387F608",
@@ -5920,7 +5920,7 @@
       "description": {
         "integration": "curve_usdc_usdt_reward_minter",
         "protocol": "CurveRewardMinter",
-        "description": "ICurveRewardMinter(0xd061D61a4d941c39E5453435B6345Dc261C2fcE0).mint(crv2pool-gauge)",
+        "description": "ICurveRewardMinter(TokenMinter).mint(crv2pool-gauge)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0xd061D61a4d941c39E5453435B6345Dc261C2fcE0",
@@ -5980,7 +5980,7 @@
       "description": {
         "integration": "curve_usdc_usdt_reward_minter",
         "protocol": "CurveRewardMinter",
-        "description": "ICurveRewardMinter(0xd061D61a4d941c39E5453435B6345Dc261C2fcE0).mint(MUSD/2pool-gauge)",
+        "description": "ICurveRewardMinter(TokenMinter).mint(MUSD/2pool-gauge)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0xd061D61a4d941c39E5453435B6345Dc261C2fcE0",
@@ -6040,7 +6040,7 @@
       "description": {
         "integration": "kyberswap",
         "protocol": "KyberSwap",
-        "description": "IERC20(FLUID).approve(0x6131B5fae19EA4f9D964eAc0408E4408b66337b5,any)",
+        "description": "IERC20(FLUID).approve(KyberSwapRouter,any)",
         "parameters": {
           "caller": "0x3c9B9D820188fF57c8482EbFdF1093b1EFeFf068",
           "target": "0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb",

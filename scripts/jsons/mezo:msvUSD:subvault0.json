@@ -10,7 +10,7 @@
       "description": {
         "integration": "ethereum_bridge",
         "protocol": "MezoEthereumBridge",
-        "description": "IERC20(MUSD).approve(mezo_ethereum_bridge,any)",
+        "description": "IERC20(MUSD).approve(AssetsBridgeCaller,any)",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186",
@@ -99,7 +99,7 @@
       "description": {
         "integration": "ethereum_bridge",
         "protocol": "MezoEthereumBridge",
-        "description": "IERC20(USDC).approve(mezo_ethereum_bridge,any)",
+        "description": "IERC20(USDC).approve(AssetsBridgeCaller,any)",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0x04671C72Aab5AC02A03c1098314b1BB6B560c197",
@@ -187,7 +187,7 @@
       "description": {
         "integration": "ethereum_bridge",
         "protocol": "MezoEthereumBridge",
-        "description": "IERC20(USDT).approve(mezo_ethereum_bridge,any)",
+        "description": "IERC20(USDT).approve(AssetsBridgeCaller,any)",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0xeB5a5d39dE4Ea42C2Aa6A57EcA2894376683bB8E",
@@ -275,7 +275,7 @@
       "description": {
         "integration": "ethereum_bridge",
         "protocol": "MezoEthereumBridge",
-        "description": "IMezoEthereumBridge(mezo_ethereum_bridge).bridgeOut(MUSD,any,0,packed(0xCa23f00bC2A5eb011B58b481e079c3Ecb4560352))",
+        "description": "IMezoEthereumBridge(AssetsBridgeCaller).bridgeOut(MUSD,any,0,packed(msvUSD_Subvault_1_Ethereum))",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0x7B7C000000000000000000000000000000000012",
@@ -413,7 +413,7 @@
       "description": {
         "integration": "ethereum_bridge",
         "protocol": "MezoEthereumBridge",
-        "description": "IMezoEthereumBridge(mezo_ethereum_bridge).bridgeOut(USDC,any,0,packed(0xCa23f00bC2A5eb011B58b481e079c3Ecb4560352))",
+        "description": "IMezoEthereumBridge(AssetsBridgeCaller).bridgeOut(USDC,any,0,packed(msvUSD_Subvault_1_Ethereum))",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0x7B7C000000000000000000000000000000000012",
@@ -551,7 +551,7 @@
       "description": {
         "integration": "ethereum_bridge",
         "protocol": "MezoEthereumBridge",
-        "description": "IMezoEthereumBridge(mezo_ethereum_bridge).bridgeOut(USDT,any,0,packed(0xCa23f00bC2A5eb011B58b481e079c3Ecb4560352))",
+        "description": "IMezoEthereumBridge(AssetsBridgeCaller).bridgeOut(USDT,any,0,packed(msvUSD_Subvault_1_Ethereum))",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0x7B7C000000000000000000000000000000000012",
@@ -954,7 +954,7 @@
       "description": {
         "integration": "mezo_router_1",
         "protocol": "Tigris",
-        "description": "ITigris(Tigris_Router).addLiquidity(USDC,MUSD,any,any,any,any,any,msvUSD_Subvault0,any)",
+        "description": "ITigris(Tigris_Router).addLiquidity(USDC,MUSD,any,any,any,any,any,msvUSD_Subvault_0,any)",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
@@ -1171,7 +1171,7 @@
       "description": {
         "integration": "mezo_router_1",
         "protocol": "Tigris",
-        "description": "ITigris(Tigris_Router).removeLiquidity(USDC,MUSD,any,any,any,any,msvUSD_Subvault0,any)",
+        "description": "ITigris(Tigris_Router).removeLiquidity(USDC,MUSD,any,any,any,any,msvUSD_Subvault_0,any)",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
@@ -1690,7 +1690,7 @@
       "description": {
         "integration": "mezo_router_2",
         "protocol": "Tigris",
-        "description": "ITigris(Tigris_Router).addLiquidity(MUSD,USDT,any,any,any,any,any,msvUSD_Subvault0,any)",
+        "description": "ITigris(Tigris_Router).addLiquidity(MUSD,USDT,any,any,any,any,any,msvUSD_Subvault_0,any)",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
@@ -1908,7 +1908,7 @@
       "description": {
         "integration": "mezo_router_2",
         "protocol": "Tigris",
-        "description": "ITigris(Tigris_Router).removeLiquidity(MUSD,USDT,any,any,any,any,msvUSD_Subvault0,any)",
+        "description": "ITigris(Tigris_Router).removeLiquidity(MUSD,USDT,any,any,any,any,msvUSD_Subvault_0,any)",
         "parameters": {
           "caller": "0x87D7b7E30f6335B23B545d70818Aa7efdf0faD4F",
           "target": "0xAc93A67f15342E8Ef611396B13919204c8799Cd4",
