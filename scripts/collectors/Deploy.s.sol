@@ -11,8 +11,8 @@ import {Constants as MezoConstants} from "../mezo/Constants.sol";
 
 import {Collector} from "../../src/collector/Collector.sol";
 
-import {AggregatorBasedOracle} from "./oracles/AggregatorBasedOracle.sol";
 import {PriceOracle} from "../../src/collector/oracles/PriceOracle.sol";
+import {AggregatorBasedOracle} from "./oracles/AggregatorBasedOracle.sol";
 
 import {MezoBTCOracle} from "./oracles/custom/MezoBTCOracle.sol";
 import {MezoCbBTCOracle} from "./oracles/custom/MezoCbBTCOracle.sol";
@@ -100,7 +100,6 @@ contract Deploy is Script, Test {
     }
 
     function _deployMezoOracles() internal {
-
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         // address deployer = vm.addr(deployerPk);
         vm.startBroadcast(deployerPk);
@@ -126,9 +125,6 @@ contract Deploy is Script, Test {
         oracles[1] = PriceOracle.TokenOracle(0, musdOracle);
         oracles[2] = PriceOracle.TokenOracle(0, usdcOracle);
         oracles[3] = PriceOracle.TokenOracle(0, usdtOracle);
-        console2.logBytes(abi.encodeCall(PriceOracle.setOracles, (
-            tokens,
-            oracles
-        )));
+        console2.logBytes(abi.encodeCall(PriceOracle.setOracles, (tokens, oracles)));
     }
 }

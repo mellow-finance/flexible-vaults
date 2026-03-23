@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/utils/math/Math.sol";
 import "../ICustomPriceOracle.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
 
 interface IAggregatorV3 {
     function latestRoundData()
