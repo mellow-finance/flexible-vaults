@@ -1,58 +1,156 @@
 {
   "title": "arbitrum:strETH:subvault0",
-  "merkle_root": "0x0c2fffab0e8e6e75e6bb8eed57fe7afe310c7b1a2ec9712f58bcbd47cf5c4bbf",
+  "vault": "0x40330720039352B309c70A5028322D1481F496d1",
+  "subvault": "0x222fa99C485a088564eb43fAA50Bc10b2497CDB2",
+  "chain": "arbitrum",
+  "merkle_root": "0xb48bc1bc970a4679a656c1f523c5d2cf1170aa49a3bd473f4f3b88fe4df2bd65",
+  "vault_symbol": "strETH",
   "merkle_proofs": [
     {
-      "verificationType": 3,
       "description": {
-        "description": "L2GatewayRouter.outboundTransfer(WstETH_ethereum, ethereumSubvault0, any, 0, 0, 0x)",
-        "abi": {
-          "inputs": [
-            {
-              "internalType": "address",
-              "name": "l1Token",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "to",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "bytes",
-              "name": "data",
-              "type": "bytes"
-            }
-          ],
-          "name": "outboundTransfer",
-          "outputs": [
-            {
-              "internalType": "bytes",
-              "name": "",
-              "type": "bytes"
-            }
-          ],
-          "stateMutability": "payable",
-          "type": "function"
-        },
+        "integration": "wsteth_ethereum_bridge",
+        "protocol": "NativeBridge",
+        "description": "IL1GatewayRouter(0x5288c571Fd7aD117beA99bF60FE0846C4E84F933).outboundTransfer{value: any}(wstETH,0x90c983DC732e65DB6177638f0125914787b8Cb78,any,any,any,0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000)",
         "parameters": {
-          "caller": "0x5dbf9287787a5825becb0321a276c9c92d570a75",
-          "target": "0x5288c571fd7ad117bea99bf60fe0846c4e84f933",
-          "value": "0"
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5288c571Fd7aD117beA99bF60FE0846C4E84F933",
+          "value": "any"
         },
         "innerParameters": {
-          "l1Token": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
-          "to": "0x90c983dc732e65db6177638f0125914787b8cb78",
-          "amount": "any",
-          "data": "0x"
-        }
+          "token_": "0x5979D7b546E38E414F7E9822514be443A4800529",
+          "to_": "0x90c983DC732e65DB6177638f0125914787b8Cb78",
+          "amount_": "any",
+          "maxGas_": "any",
+          "gasPriceBid_": "any",
+          "data_": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "abi": {
+          "type": "function",
+          "name": "outboundTransfer",
+          "inputs": [
+            {
+              "name": "token_",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "to_",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount_",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "maxGas_",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "gasPriceBid_",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "data_",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5288c571Fd7aD117beA99bF60FE0846C4E84F933",
+          "value": "any",
+          "params": [
+            "0x5979D7b546E38E414F7E9822514be443A4800529",
+            "0x90c983DC732e65DB6177638f0125914787b8Cb78",
+            "any",
+            "any",
+            "any",
+            "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "outboundTransfer",
+            "inputs": [
+              {
+                "name": "token_",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "to_",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount_",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "maxGas_",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "gasPriceBid_",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "data_",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "outboundTransfer.amount_",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "outboundTransfer.maxGas_",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "outboundTransfer.gasPriceBid_",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
       },
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7b1ef083ad803cc109dce56d48a4513f2390aa54de39430b812a3dc58d5e133300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a11d6b37bfdab0526cf07ec00e0d736e691c2796845b4cd6e241ad4f0b677bbd5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": []
     }
   ]
