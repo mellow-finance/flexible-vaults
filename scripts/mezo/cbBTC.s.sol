@@ -23,9 +23,35 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x06ED1E2167AA7FBf2476c5A2D220Bf702559Dcf8)));
 
-        //revert("ok");
+        address oracleSubmitterRole = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33;
+        IRiskManager riskManager = vault.riskManager();
+        IOracle oracle = vault.oracle();
+        IFeeManager feeManager = vault.feeManager();
+        OracleSubmitter oracleSubmitter = OracleSubmitter(0x5bBA2C09BEfAfB090672fFbF75685D3E5E292168);
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({
+            asset: Constants.mcbBTC,
+            priceD18: 10005155886643059498172516219
+        });
 
-        _run();
+        vm.startPrank(lazyVaultAdmin);
+        oracle.setSecurityParams(IOracle.SecurityParams({
+            maxAbsoluteDeviation: 50000000000000000000000000,
+            suspiciousAbsoluteDeviation: 10000000000000000000000000,
+            maxRelativeDeviationD18: 5000000000000000,
+            suspiciousRelativeDeviationD18: 1000000000000000,
+            timeout: 72000,
+            depositInterval: 3600,
+            redeemInterval: 172800
+        }));
+        vault.grantRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, lazyVaultAdmin);
+        riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max/2);
+        oracleSubmitter.submitReports(reports);
+        vm.stopPrank();
+
+        revert("ok");
+
+        //_run();
         // revert("ok");
     }
 

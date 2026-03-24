@@ -22,10 +22,26 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x807D4778abA870e4222904f5b528F68B350cE0E0)));
+        address oracleSubmitterRole = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33;
+        IRiskManager riskManager = vault.riskManager();
+        IOracle oracle = vault.oracle();
+        IFeeManager feeManager = vault.feeManager();
+        OracleSubmitter oracleSubmitter = OracleSubmitter(0x8AE60B53e36738aeD801c33A1DaA1085d06EF6D3);
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({
+            asset: Constants.BTC,
+            priceD18: 1001232505793688464
+        });
+       // vm.prank(feeManagerOwner);
+       // feeManager.setFees(0, 0, 0, 0);
+        vm.startPrank(lazyVaultAdmin);
+        //riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max/2);
+        oracleSubmitter.submitReports(reports);
+        vm.stopPrank();
 
-        //revert("ok");
+        revert("ok");
 
-        _run();
+        //_run();
         // revert("ok");
     }
 
