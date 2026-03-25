@@ -22,6 +22,14 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x807D4778abA870e4222904f5b528F68B350cE0E0)));
+
+        revert("ok");
+
+        //_run();
+        // revert("ok");
+    }
+
+    function simulateReport() internal {
         address oracleSubmitterRole = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33;
         IRiskManager riskManager = vault.riskManager();
         IOracle oracle = vault.oracle();
@@ -38,11 +46,6 @@ contract Deploy is DeployAbstractScript {
         //riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max/2);
         oracleSubmitter.submitReports(reports);
         vm.stopPrank();
-
-        revert("ok");
-
-        //_run();
-        // revert("ok");
     }
 
     function setUp() public override {
