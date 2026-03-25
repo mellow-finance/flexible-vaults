@@ -33,6 +33,6 @@ contract MezoUSDOracle is ICustomPriceOracle {
 
     function priceX96() external view returns (uint256) {
         (, int256 btcPrice,,,) = IAggregatorV3(SKIP_BTC_USD).latestRoundData(); // 18 decimals
-        return Math.mulDiv(2 ** 96, 1e18, uint256(btcPrice));
+        return Math.mulDiv(2 ** 96, 1e28, uint256(btcPrice));
     }
 }
