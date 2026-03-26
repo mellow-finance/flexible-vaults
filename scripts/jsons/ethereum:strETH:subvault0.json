@@ -3,7 +3,7 @@
   "vault": "0x277C6A642564A91ff78b008022D65683cEE5CCC5",
   "subvault": "0x90c983DC732e65DB6177638f0125914787b8Cb78",
   "chain": "ethereum",
-  "merkle_root": "0x71b504c7b3713da0a673dd749430208861b3b818fc52360b5779095f76e0dd48",
+  "merkle_root": "0xcd715d551e0b3173d7dd466c34d8bd1f4df89e12dc4b14a5d6e3276e50d5fcd3",
   "vault_symbol": "strETH",
   "merkle_proofs": [
     {
@@ -49,10 +49,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5914135fdd882f5a49b3be04c5f3eef46224194c0b69f82f92a55ece139dd20300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xba9f03ced01b843dd17cf6ff06dd7729cad6c7bbba4114bbdb5e0384b671c30a",
-        "0xc46e6f6dad71ae8a1f85cb54a56bcea1a0333c9928fadb3e2e46a278ad2527b0",
-        "0x19d3ee9d64ad11ae66db128290ba5a625e9961eb805c97363439732a7f9ecae5",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0xd90b0e25e31d9c586171a7e3358337876781524adac222d4348c535a3a7e5a70",
+        "0x27717e60dfd74e8f0ae22d4ee1620039c1ac9777c3ee64d7a364081fcb4e1203",
+        "0x92bbf50d773f0393b71a501844719dea11ebd51925722a9c05860549d99baaba",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
       ]
     },
     {
@@ -114,16 +114,17 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0c885559d3ac17793f8ca0c76ba0df3aa1a15f15e4b3f373bd6e3fead0aa161600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x068c1ae59f46b4b267371933fefe9ab0e2174cfdb9d8fc4bf2a62ef3f627ddcc",
-        "0xf2d83f2c20f5f264a8def456fda64e656a9d5e0c9eabadba764c576f2d5cd392",
-        "0x9eac05f0fcae93a868a676640f6cf2b9f64127a244baf4f1ba58f440ac9b71ed",
-        "0x51a5525731ee73fb621053800c0a2c777bb9ac168d214e94e54e825d1a078233"
+        "0x3b648025254e39156734aea98f55dcde9bdf22b462d4425bc6ca73d712429ba8",
+        "0xa6b6b15fe2b7c93a1f77a4f7eddab445cae32b7afdd7c7dd419c5b9b46eb5741",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(WETH).approve(0x25091725982e83f6aFDf6A17705FeECA5866B864,any)",
+        "description": "IERC20(WETH).approve(strETH_SwapModule_0,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -201,17 +202,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a11e597f6f19a86081c657be788b8b315c88dfe082d49e79fc0a15e075bda7fb0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xf281852e04b638285c63c288c0c963166ad94042c1fa1a9f75d6f2b21ebc29f7",
-        "0xc46e6f6dad71ae8a1f85cb54a56bcea1a0333c9928fadb3e2e46a278ad2527b0",
-        "0x19d3ee9d64ad11ae66db128290ba5a625e9961eb805c97363439732a7f9ecae5",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0xa451c3011efc457042dc47a9e535340484714fbc0b256df5a85ac667409b6d4c",
+        "0xb1b3cee391a215b4fc539a746968fc888851b5c24ebc965098a70b696a9fc1fa",
+        "0xf41733100552d587d29b01af98df770d34fdd941a42335c7b2c5fe7df5b96d36",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(wstETH).approve(0x25091725982e83f6aFDf6A17705FeECA5866B864,any)",
+        "description": "IERC20(wstETH).approve(strETH_SwapModule_0,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
@@ -289,17 +290,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a51eb1dda4ce0afed1a7f799cb057ef6355b03ea55c4c47b8f48825dfb9c9dc8a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x81303779d2d5367ec6bea2dbcd47fb23606267f3111e05edf9e5d8c910b2ed0d",
-        "0xf22b6437b0c2e9d83cf62ea3f82f2b619963a82c2e7509028e42ca38f47c06c3",
-        "0xfecc0e3f36c79235b1e990c1eacc5ad93b007af8d2b0ca0a0604d21134711ed6",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0xa0d4d071ac08e4346dc3655e462b1aa8fe62e108381e52bc903d8c0988169256",
+        "0xc973a1f110791c0eb07ec15cacf253a01343105152f4a93b667aebc17430e183",
+        "0xf41733100552d587d29b01af98df770d34fdd941a42335c7b2c5fe7df5b96d36",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x25091725982e83f6aFDf6A17705FeECA5866B864).pushAssets(WETH,any)",
+        "description": "ISwapModule(strETH_SwapModule_0).pushAssets(WETH,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x25091725982e83f6aFDf6A17705FeECA5866B864",
@@ -365,16 +366,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad0eb6f24864df9471b7df060978dae98e2f18131a9708a5625b777ad08f04b99000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x16fd827bb051cbaf432477e824e260004601ab376b6397a863871e186c088b6f",
-        "0x9eac05f0fcae93a868a676640f6cf2b9f64127a244baf4f1ba58f440ac9b71ed",
-        "0x51a5525731ee73fb621053800c0a2c777bb9ac168d214e94e54e825d1a078233"
+        "0xf282fe52a7fe0e339d3d263c36ec1c764828d11fb1cb86297577319d59f0240d",
+        "0xfc84b5bd464487167141900702a6025e9577cdcd561def0b9fdf282445074757",
+        "0x92bbf50d773f0393b71a501844719dea11ebd51925722a9c05860549d99baaba",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x25091725982e83f6aFDf6A17705FeECA5866B864).pushAssets(wstETH,any)",
+        "description": "ISwapModule(strETH_SwapModule_0).pushAssets(wstETH,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x25091725982e83f6aFDf6A17705FeECA5866B864",
@@ -440,17 +442,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a17706adb5a70668daefbc7309d5a48570478e2d6f9648d4250d665c9a4b91bfc000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa0d4d071ac08e4346dc3655e462b1aa8fe62e108381e52bc903d8c0988169256",
-        "0xf2759237af722d21b0f72a4cbc32011c5824bbefb3a08b74939dd6d6032e0926",
-        "0x19d3ee9d64ad11ae66db128290ba5a625e9961eb805c97363439732a7f9ecae5",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0xba9f03ced01b843dd17cf6ff06dd7729cad6c7bbba4114bbdb5e0384b671c30a",
+        "0xb1b3cee391a215b4fc539a746968fc888851b5c24ebc965098a70b696a9fc1fa",
+        "0xf41733100552d587d29b01af98df770d34fdd941a42335c7b2c5fe7df5b96d36",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x25091725982e83f6aFDf6A17705FeECA5866B864).pullAssets(WETH,any)",
+        "description": "ISwapModule(strETH_SwapModule_0).pullAssets(WETH,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x25091725982e83f6aFDf6A17705FeECA5866B864",
@@ -516,17 +518,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a847c61eb028500a0656596a0c82e5133022377191efcfaa429a90f6ce57ce23a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x6d616e1aaf8f9deab7b0ea72ea3d6754cb6b6ff29d300196bc85538e9ef2e1ca",
-        "0x32033c9aa4eba1601629d0808f3ef40b5172b79b2702c609859e0c0f4ce607d0",
-        "0xfecc0e3f36c79235b1e990c1eacc5ad93b007af8d2b0ca0a0604d21134711ed6",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0x81303779d2d5367ec6bea2dbcd47fb23606267f3111e05edf9e5d8c910b2ed0d",
+        "0xf9818548155de5bad4f354549e8acd75b34368346a9d1fd94661bab9c92cd573",
+        "0x6673b405c0fc36c505ad41be31ea8eb9abf5203ce4aac4de4c5539085f3cb734",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0x25091725982e83f6aFDf6A17705FeECA5866B864).pullAssets(wstETH,any)",
+        "description": "ISwapModule(strETH_SwapModule_0).pullAssets(wstETH,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x25091725982e83f6aFDf6A17705FeECA5866B864",
@@ -592,17 +594,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acf3e14b7b31ebbaeabb17b9ea6260306223838b3c939d8300d61fb98b1dbb5ac000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x29224bc8adf8b57a71337916665d4d07b1c018d3b7dee415931a9752862f9c62",
-        "0x1c0d590bb32924dae9225f12165ea6d63c014233714fdd1fba180583f20b19f0",
-        "0x319d3f58bc6c14d1713219379c0462157684a8a85c205accec23c41f0f6c8420",
-        "0x51a5525731ee73fb621053800c0a2c777bb9ac168d214e94e54e825d1a078233"
+        "0x6d616e1aaf8f9deab7b0ea72ea3d6754cb6b6ff29d300196bc85538e9ef2e1ca",
+        "0x289f8424ac71de970608f2f7b19da3c34e5280f2f31cb14da9bdeed14558df5e",
+        "0x6673b405c0fc36c505ad41be31ea8eb9abf5203ce4aac4de4c5539085f3cb734",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
       "description": {
         "integration": "wsteth_weth_native_bridge",
         "protocol": "NativeBridge",
-        "description": "IERC20(wstETH).approve(0x0F25c1DC2a9922304f2eac71DCa9B07E310e8E5a,any)",
+        "description": "IERC20(wstETH).approve(WstETH_NativeBrige_Arbitrum,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
@@ -680,17 +682,18 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5403c53163ab09e5cf877323b46dbbd0edf0a1bb2168252730be716396e7e088000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x597a8fcc373e22da1eadb24546732532b77aa7797dff77c1c0e307e75d163c23",
-        "0x1c0d590bb32924dae9225f12165ea6d63c014233714fdd1fba180583f20b19f0",
-        "0x319d3f58bc6c14d1713219379c0462157684a8a85c205accec23c41f0f6c8420",
-        "0x51a5525731ee73fb621053800c0a2c777bb9ac168d214e94e54e825d1a078233"
+        "0x24ea79d4c734abe7a3ca55487ecf691e4ed4e7f032338b9daf6404864ac71b1a",
+        "0xf277fdc3f4480084170a01b6a9244c9367f3d86084ec887e38ddc2afae716713",
+        "0xdc6ed541a7818758d7bfa178541f5e4d405a53d710148f17222b0503b2b8db12",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
       ]
     },
     {
       "description": {
         "integration": "wsteth_weth_native_bridge",
         "protocol": "NativeBridge",
-        "description": "IL1GatewayRouter(0x72Ce9c846789fdB6fC1f34aC4AD25Dd9ef7031ef).outboundTransfer{value: any}(wstETH,0x222fa99C485a088564eb43fAA50Bc10b2497CDB2,any,any,any,0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000)",
+        "description": "IL1GatewayRouter(WstETH_L1GatewayRouter_Arbitrum).outboundTransfer{value: any}(wstETH,strETH_Subvault_0_Arbitrum,any,any,any,0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x72Ce9c846789fdB6fC1f34aC4AD25Dd9ef7031ef",
@@ -832,10 +835,11 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5c43f8abb3da5de85e8f5cd7c3d47b66078ad5e191edc57b9ca1a718abb61c5b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x0eacf7635b6b7413f031e654e2bc2b2613ed55a0fdb5f04b7a33d418845c8ab3",
-        "0x13bfad62c104e948ebf92f9599447767d318a58df255ae81809e13f38e4422e1",
-        "0x319d3f58bc6c14d1713219379c0462157684a8a85c205accec23c41f0f6c8420",
-        "0x51a5525731ee73fb621053800c0a2c777bb9ac168d214e94e54e825d1a078233"
+        "0x17296f604be198636c93c4d3595079e5d58ef898400d96acef0fd649c6cf7cc1",
+        "0x1cd2af1b2dc4827d908acdd8cc246b957614a6f3105a739baf41ae6c242178c1",
+        "0xdc6ed541a7818758d7bfa178541f5e4d405a53d710148f17222b0503b2b8db12",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
       ]
     },
     {
@@ -920,10 +924,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa4446446d41cc59112178c62b0f9c118d09fc2426d2d9170477faa337f7e33d3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x8653763344f9e223ee2f4bfd4e1016408bb2737b099a1d7a746ec01ce6e41540",
-        "0xf22b6437b0c2e9d83cf62ea3f82f2b619963a82c2e7509028e42ca38f47c06c3",
-        "0xfecc0e3f36c79235b1e990c1eacc5ad93b007af8d2b0ca0a0604d21134711ed6",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0x75d58327179f19ff813c5ab0cabd3c91b019b58e912e5c78f5719061fba0b140",
+        "0xf9818548155de5bad4f354549e8acd75b34368346a9d1fd94661bab9c92cd573",
+        "0x6673b405c0fc36c505ad41be31ea8eb9abf5203ce4aac4de4c5539085f3cb734",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
@@ -1115,9 +1119,10 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c04345b814e55a223933b3a318fa92880f7b01faa008ffbc93e73f668c867e900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000284ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x046bb164798294052a43a8add0046e92ac5773c3e19912204599a3f79444e3b6",
-        "0xf2d83f2c20f5f264a8def456fda64e656a9d5e0c9eabadba764c576f2d5cd392",
-        "0x9eac05f0fcae93a868a676640f6cf2b9f64127a244baf4f1ba58f440ac9b71ed",
-        "0x51a5525731ee73fb621053800c0a2c777bb9ac168d214e94e54e825d1a078233"
+        "0x3b648025254e39156734aea98f55dcde9bdf22b462d4425bc6ca73d712429ba8",
+        "0xa6b6b15fe2b7c93a1f77a4f7eddab445cae32b7afdd7c7dd419c5b9b46eb5741",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
       ]
     },
     {
@@ -1202,17 +1207,17 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaea8ff419cd231881ef2c5d7babf0c89d1c7e8b9d10f9c2bb2eaaf40cf5a33eb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa451c3011efc457042dc47a9e535340484714fbc0b256df5a85ac667409b6d4c",
-        "0xf2759237af722d21b0f72a4cbc32011c5824bbefb3a08b74939dd6d6032e0926",
-        "0x19d3ee9d64ad11ae66db128290ba5a625e9961eb805c97363439732a7f9ecae5",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0x8653763344f9e223ee2f4bfd4e1016408bb2737b099a1d7a746ec01ce6e41540",
+        "0xc973a1f110791c0eb07ec15cacf253a01343105152f4a93b667aebc17430e183",
+        "0xf41733100552d587d29b01af98df770d34fdd941a42335c7b2c5fe7df5b96d36",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
       "description": {
         "integration": "lido_v2_withdrawals",
         "protocol": "LidoV2",
-        "description": "ILidoWithdrawalQueue(unstETH).requestWithdrawalsWstETH((any),0x90c983DC732e65DB6177638f0125914787b8Cb78)",
+        "description": "ILidoWithdrawalQueue(unstETH).requestWithdrawalsWstETH((any),strETH_Subvault_0)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x889edC2eDab5f40e902b864aD4d7AdE8E412F9B1",
@@ -1294,10 +1299,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a959f0dc22ad431cd6a6efff3ca0709e6a7853a2f19322d034ec16294b01bb0e1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x75d58327179f19ff813c5ab0cabd3c91b019b58e912e5c78f5719061fba0b140",
-        "0x32033c9aa4eba1601629d0808f3ef40b5172b79b2702c609859e0c0f4ce607d0",
-        "0xfecc0e3f36c79235b1e990c1eacc5ad93b007af8d2b0ca0a0604d21134711ed6",
-        "0x18b616bf2fc6e5b9b0dc322104e5ae0ed626491110cd187c575f687dec9d8901"
+        "0x597a8fcc373e22da1eadb24546732532b77aa7797dff77c1c0e307e75d163c23",
+        "0x289f8424ac71de970608f2f7b19da3c34e5280f2f31cb14da9bdeed14558df5e",
+        "0x6673b405c0fc36c505ad41be31ea8eb9abf5203ce4aac4de4c5539085f3cb734",
+        "0xea2d37c6cb44875f177ad9dd7996e892708d01a583f83486a682cad86ce47c1f"
       ]
     },
     {
@@ -1358,10 +1363,478 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a35a2bb49431a4cbe8d2f8731a90cc0dcbc2b311a2926823dc68cf052751f486700000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
+        "0x115cfe9c19c97a518254f6e131d64047f804609ce48249e4aaba54fe0aaa7391",
+        "0x16fd827bb051cbaf432477e824e260004601ab376b6397a863871e186c088b6f",
+        "0xa6b6b15fe2b7c93a1f77a4f7eddab445cae32b7afdd7c7dd419c5b9b46eb5741",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "dvv_withdrawals",
+        "protocol": "ERC4626",
+        "description": "IERC20(wstETH).approve(DVV,any)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "params": [
+            "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaff504622e60c46a4d1f2f82674e9b31ec8aac73c89da9d7171f1eedaf413aee000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0eacf7635b6b7413f031e654e2bc2b2613ed55a0fdb5f04b7a33d418845c8ab3",
+        "0x16fd827bb051cbaf432477e824e260004601ab376b6397a863871e186c088b6f",
+        "0xa6b6b15fe2b7c93a1f77a4f7eddab445cae32b7afdd7c7dd419c5b9b46eb5741",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "dvv_withdrawals",
+        "protocol": "ERC4626",
+        "description": "IERC4626(DVV).deposit(any,strETH_Subvault_0)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "params": [
+            "any",
+            "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a258544c2f3aeae8aefbbe2952e79c7870113121ea0d510136a4ec1f2b3aa3793000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
         "0x20fe0ce4d8c10a4febec97b6e1002045f1d7e5fe722a9c7da0c12972b4dfe4dc",
-        "0x13bfad62c104e948ebf92f9599447767d318a58df255ae81809e13f38e4422e1",
-        "0x319d3f58bc6c14d1713219379c0462157684a8a85c205accec23c41f0f6c8420",
-        "0x51a5525731ee73fb621053800c0a2c777bb9ac168d214e94e54e825d1a078233"
+        "0x1cd2af1b2dc4827d908acdd8cc246b957614a6f3105a739baf41ae6c242178c1",
+        "0xdc6ed541a7818758d7bfa178541f5e4d405a53d710148f17222b0503b2b8db12",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "dvv_withdrawals",
+        "protocol": "ERC4626",
+        "description": "IERC4626(DVV).mint(any,strETH_Subvault_0)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+        },
+        "abi": {
+          "type": "function",
+          "name": "mint",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "params": [
+            "any",
+            "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "mint",
+            "inputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "mint.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a042b75688cc7191ae6ba932caaff66bd20724c3e7da3e4635aff49e20cc67c0c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x29224bc8adf8b57a71337916665d4d07b1c018d3b7dee415931a9752862f9c62",
+        "0xf277fdc3f4480084170a01b6a9244c9367f3d86084ec887e38ddc2afae716713",
+        "0xdc6ed541a7818758d7bfa178541f5e4d405a53d710148f17222b0503b2b8db12",
+        "0x39baef00eaa56d872eccf89b3fc1453526fb55150f99f34d1af61bc690c2eed0",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "dvv_withdrawals",
+        "protocol": "ERC4626",
+        "description": "IERC4626(DVV).withdraw(any,strETH_Subvault_0,strETH_Subvault_0)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "receiver": "0x90c983DC732e65DB6177638f0125914787b8Cb78",
+          "owner": "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "params": [
+            "any",
+            "0x90c983DC732e65DB6177638f0125914787b8Cb78",
+            "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdraw",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "owner",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.assets",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a04930c6d73bc4d2d801f43c24b8fd2d222bd60c704dcbc858c5dcb8421125204000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf281852e04b638285c63c288c0c963166ad94042c1fa1a9f75d6f2b21ebc29f7",
+        "0x27717e60dfd74e8f0ae22d4ee1620039c1ac9777c3ee64d7a364081fcb4e1203",
+        "0x92bbf50d773f0393b71a501844719dea11ebd51925722a9c05860549d99baaba",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "dvv_withdrawals",
+        "protocol": "ERC4626",
+        "description": "IERC4626(DVV).redeem(any,strETH_Subvault_0,strETH_Subvault_0)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0x90c983DC732e65DB6177638f0125914787b8Cb78",
+          "owner": "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "params": [
+            "any",
+            "0x90c983DC732e65DB6177638f0125914787b8Cb78",
+            "0x90c983DC732e65DB6177638f0125914787b8Cb78"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "redeem",
+            "inputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "owner",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeem.shares",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab012644e48067aebdf52cb2babcb473bc58b8fae8ca37c793a1d9d6af2cebe5e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf2d83f2c20f5f264a8def456fda64e656a9d5e0c9eabadba764c576f2d5cd392",
+        "0xfc84b5bd464487167141900702a6025e9577cdcd561def0b9fdf282445074757",
+        "0x92bbf50d773f0393b71a501844719dea11ebd51925722a9c05860549d99baaba",
+        "0xd72294d9fae40b26094dfa8a6feb03c26128004114807066f70cbc98e42ebbcd"
       ]
     }
   ]
