@@ -1,0 +1,130 @@
+yarn run v1.22.22
+$ forge script ./scripts/mezo/msvUSD.s.sol:Deploy --fork-url $(grep MEZO_RPC .env | cut -d '=' -f2,3,4,5) --evm-version paris --broadcast --slow --verify --verifier custom --verifier-url https://api.explorer.mezo.org/api
+Compiling 8 files with Solc 0.8.25
+Solc 0.8.25 finished in 6.80s
+Compiler run successful with warnings:
+Warning (2519): This declaration shadows an existing declaration.
+   --> scripts/mezo/DeployAbstractScript.s.sol:170:101:
+    |
+170 |     function stepOne(IDeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
+    |                                                                                                     ^^^^^^^^^^^
+Note: The shadowed declaration is here:
+  --> scripts/mezo/DeployAbstractScript.s.sol:93:5:
+   |
+93 |     Vault internal vault;
+   |     ^^^^^^^^^^^^^^^^^^^^
+
+Warning (2519): This declaration shadows an existing declaration.
+   --> scripts/mezo/DeployAbstractScript.s.sol:179:22:
+    |
+179 |     function stepTwo(Vault vault) internal virtual returns (SubvaultCalls[] memory calls) {
+    |                      ^^^^^^^^^^^
+Note: The shadowed declaration is here:
+  --> scripts/mezo/DeployAbstractScript.s.sol:93:5:
+   |
+93 |     Vault internal vault;
+   |     ^^^^^^^^^^^^^^^^^^^^
+
+Warning (2519): This declaration shadows an existing declaration.
+   --> scripts/mezo/DeployAbstractScript.s.sol:323:28:
+    |
+323 |     function logDeployment(address vault) internal view {
+    |                            ^^^^^^^^^^^^^
+Note: The shadowed declaration is here:
+  --> scripts/mezo/DeployAbstractScript.s.sol:93:5:
+   |
+93 |     Vault internal vault;
+   |     ^^^^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+   --> scripts/mezo/DeployAbstractScript.s.sol:143:13:
+    |
+143 |             SubvaultCalls[] memory calls = stepTwo(vault);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+   --> scripts/mezo/DeployAbstractScript.s.sol:156:9:
+    |
+156 |         SubvaultCalls[] memory calls = stepTwo(vault_);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+  --> scripts/mezo/msvUSD.s.sol:13:9:
+   |
+13 |         ProtocolDeployment memory $ = Constants.protocolDeployment();
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+  --> scripts/mezo/msvUSD.s.sol:44:10:
+   |
+44 |         (bool success, ) = address(0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3).call(data);
+   |          ^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+   --> scripts/mezo/msvUSD.s.sol:118:9:
+    |
+118 |         ProtocolDeployment memory $ = Constants.protocolDeployment();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Warning (5667): Unused function parameter. Remove or comment out the variable name to silence this warning.
+   --> scripts/mezo/msvUSD.s.sol:179:62:
+    |
+179 |     function getVaultRoleHolders(address timelockController, address oracleSubmitter)
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^
+
+Traces:
+  [1772598] → new Deploy@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ ← [Return] 8467 bytes of code
+
+  [429568] Deploy::setUp()
+    └─ ← [Stop]
+
+  [950148] Deploy::run()
+    ├─ [0] VM::startPrank(0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3)
+    │   └─ ← [Return]
+    ├─ [12631] 0x07AFFA6754458f88db83A72859948d9b794E131b::grantRole(0x407fc42eadf1aba68b1d4a8c3c4aa2e8b6beac7957623f3694d0ad77bfb70e06, 0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3)
+    │   ├─ [7683] 0x0000000B39b91D795b9975219E228bCb4D33A6A3::grantRole(0x407fc42eadf1aba68b1d4a8c3c4aa2e8b6beac7957623f3694d0ad77bfb70e06, 0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3) [delegatecall]
+    │   │   └─ ← [Stop]
+    │   └─ ← [Return]
+    ├─ [6131] 0x07AFFA6754458f88db83A72859948d9b794E131b::grantRole(0x6788636e7899d6d227901dc9f8c4c785401c0991724cf908dc65388af686da6f, 0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3)
+    │   ├─ [5683] 0x0000000B39b91D795b9975219E228bCb4D33A6A3::grantRole(0x6788636e7899d6d227901dc9f8c4c785401c0991724cf908dc65388af686da6f, 0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3) [delegatecall]
+    │   │   └─ ← [Stop]
+    │   └─ ← [Return]
+    ├─ [4492] 0x07AFFA6754458f88db83A72859948d9b794E131b::setQueueLimit(4)
+    │   ├─ [4047] 0x0000000B39b91D795b9975219E228bCb4D33A6A3::setQueueLimit(4) [delegatecall]
+    │   │   ├─ emit QueueLimitSet(limit: 4)
+    │   │   └─ ← [Stop]
+    │   └─ ← [Return]
+    ├─ [879219] 0x07AFFA6754458f88db83A72859948d9b794E131b::createQueue(2, false, 0x76e5E9922DEF8A9DD7375856FCFE726904496C9C, 0x04671C72Aab5AC02A03c1098314b1BB6B560c197, 0x)
+    │   ├─ [878747] 0x0000000B39b91D795b9975219E228bCb4D33A6A3::createQueue(2, false, 0x76e5E9922DEF8A9DD7375856FCFE726904496C9C, 0x04671C72Aab5AC02A03c1098314b1BB6B560c197, 0x) [delegatecall]
+    │   │   ├─ [7701] 0xe3FDB2436c0F6B16F6b6ed903B90bE8BF0D0Cf85::isSupportedAsset(0x04671C72Aab5AC02A03c1098314b1BB6B560c197) [staticcall]
+    │   │   │   ├─ [2753] 0x0000000C705B7C7485F62Bc1DF7554fD6EB6C602::isSupportedAsset(0x04671C72Aab5AC02A03c1098314b1BB6B560c197) [delegatecall]
+    │   │   │   │   └─ ← [Return] true
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ [794104] 0x7f2F6B155B41F2DD8A8Ea0FbA3b4EA1ceDc6260e::create(2, 0x76e5E9922DEF8A9DD7375856FCFE726904496C9C, 0x00000000000000000000000004671c72aab5ac02a03c1098314b1bb6b560c19700000000000000000000000007affa6754458f88db83a72859948d9b794e131b00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000)
+    │   │   │   ├─ [789117] 0x00000008E7c244Fb6FA6Fc1fB5EC53Ec71c34386::create(2, 0x76e5E9922DEF8A9DD7375856FCFE726904496C9C, 0x00000000000000000000000004671c72aab5ac02a03c1098314b1bb6b560c19700000000000000000000000007affa6754458f88db83a72859948d9b794e131b00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000) [delegatecall]
+    │   │   │   │   ├─ [693109] → new TransparentUpgradeableProxy@0x20F092290b89C11D74a8b77937Bd46210c4f6b60
+    │   │   │   │   │   ├─ emit Upgraded(implementation: 0x0000000B04E01e31715f4137D664aB402268B9d0)
+    │   │   │   │   │   ├─ [139587] 0x0000000B04E01e31715f4137D664aB402268B9d0::initialize(0x00000000000000000000000004671c72aab5ac02a03c1098314b1bb6b560c19700000000000000000000000007affa6754458f88db83a72859948d9b794e131b00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000) [delegatecall]
+    │   │   │   │   │   │   ├─ emit Initialized(initParams: 0x00000000000000000000000004671c72aab5ac02a03c1098314b1bb6b560c19700000000000000000000000007affa6754458f88db83a72859948d9b794e131b00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000)
+    │   │   │   │   │   │   ├─ emit Initialized(version: 1)
+    │   │   │   │   │   │   └─ ← [Stop]
+    │   │   │   │   │   ├─ [236809] → new ProxyAdmin@0x852a9b1c4262867cc9F9d289020Ffe8D51d74e37
+    │   │   │   │   │   │   ├─ emit OwnershipTransferred(previousOwner: 0x0000000000000000000000000000000000000000, newOwner: 0x76e5E9922DEF8A9DD7375856FCFE726904496C9C)
+    │   │   │   │   │   │   └─ ← [Return] 1063 bytes of code
+    │   │   │   │   │   ├─ emit AdminChanged(previousAdmin: 0x0000000000000000000000000000000000000000, newAdmin: ProxyAdmin: [0x852a9b1c4262867cc9F9d289020Ffe8D51d74e37])
+    │   │   │   │   │   └─ ← [Return] 1159 bytes of code
+    │   │   │   │   ├─ emit Created(instance: TransparentUpgradeableProxy: [0x20F092290b89C11D74a8b77937Bd46210c4f6b60], version: 2, owner: 0x76e5E9922DEF8A9DD7375856FCFE726904496C9C, initParams: 0x00000000000000000000000004671c72aab5ac02a03c1098314b1bb6b560c19700000000000000000000000007affa6754458f88db83a72859948d9b794e131b00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000)
+    │   │   │   │   └─ ← [Return] TransparentUpgradeableProxy: [0x20F092290b89C11D74a8b77937Bd46210c4f6b60]
+    │   │   │   └─ ← [Return] TransparentUpgradeableProxy: [0x20F092290b89C11D74a8b77937Bd46210c4f6b60]
+    │   │   ├─ emit QueueCreated(queue: TransparentUpgradeableProxy: [0x20F092290b89C11D74a8b77937Bd46210c4f6b60], asset: 0x04671C72Aab5AC02A03c1098314b1BB6B560c197, isDepositQueue: false)
+    │   │   └─ ← [Stop]
+    │   └─ ← [Return]
+    ├─ [3411] 0x07AFFA6754458f88db83A72859948d9b794E131b::setQueueStatus(0x39df940a21817D9f818eb0C34F75D4F021F27A41, false)
+    │   ├─ [2953] 0x0000000B39b91D795b9975219E228bCb4D33A6A3::setQueueStatus(0x39df940a21817D9f818eb0C34F75D4F021F27A41, false) [delegatecall]
+    │   │   └─ ← [Revert] AccessControlUnauthorizedAccount(0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3, 0x6618a6d92147bbcacfb2ef2375976fc4c529eeeaeb72a66048296571370c6946)
+    │   └─ ← [Revert] AccessControlUnauthorizedAccount(0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3, 0x6618a6d92147bbcacfb2ef2375976fc4c529eeeaeb72a66048296571370c6946)
+    └─ ← [Revert] AccessControlUnauthorizedAccount(0xC6174983e96D508054cE1DBD778bE8F9f8007Ab3, 0x6618a6d92147bbcacfb2ef2375976fc4c529eeeaeb72a66048296571370c6946)
+
+
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

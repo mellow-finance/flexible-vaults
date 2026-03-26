@@ -1,0 +1,180 @@
+{
+  "title": "ethereum:mbhcbBTC:subvault2",
+  "vault": "0x63a76a4a94cAB1DD49fcf0d7E3FC53a78AC8Ec5C",
+  "subvault": "0x49897e605cB0767c14BE584C99e2495E25293a4C",
+  "chain": "ethereum",
+  "merkle_root": "0x95df44b7f5061d472482664b823519059ddd6d23ddc2234bad8636ce0ca6c457",
+  "vault_symbol": "mbhcbBTC",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "mezoBridgecbBTC",
+        "protocol": "EthereumMezoBridgeERC20",
+        "description": "IERC20(cbBTC).approve(MezoBridge,any)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+          "params": [
+            "0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6a2577988c718e5cf95f7d033bbe548b569ec9107553d088f15186d81a426e7b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1e006b0c91a0ca59836b712ecc39707c18b3125fdbd186b7e6413572e2c139f7"
+      ]
+    },
+    {
+      "description": {
+        "integration": "mezoBridgecbBTC",
+        "protocol": "EthereumMezoBridgeERC20",
+        "description": "IEthereumMezoBridge(MezoBridge).bridgeERC20(cbBTC,any,0x694066A256DcbAC4301843d17C863A52380B6316)",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c",
+          "value": "0"
+        },
+        "innerParameters": {
+          "token": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+          "amount": "any",
+          "recipient": "0x694066A256DcbAC4301843d17C863A52380B6316"
+        },
+        "abi": {
+          "type": "function",
+          "name": "bridgeERC20",
+          "inputs": [
+            {
+              "name": "token",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0xF6680EA3b480cA2b72D96ea13cCAF2cFd8e6908c",
+          "params": [
+            "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+            "any",
+            "0x694066A256DcbAC4301843d17C863A52380B6316"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "bridgeERC20",
+            "inputs": [
+              {
+                "name": "token",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "bridgeERC20.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af76d7c21eed923935035185526d154fc16394d95fbbf46d6bd33f36b615407e6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x23470e7e3892fecb9a68bdbbaa65dceb7757f41cc06c3e945d09f765ae15e90c"
+      ]
+    }
+  ]
+}

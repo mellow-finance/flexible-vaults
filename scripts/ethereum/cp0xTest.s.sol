@@ -80,7 +80,7 @@ contract Deploy is DeployAbstractScript {
 
         /// @dev fill security params
         securityParams = IOracle.SecurityParams({
-            maxAbsoluteDeviation: 1 ether, 
+            maxAbsoluteDeviation: 1 ether,
             suspiciousAbsoluteDeviation: 1 ether,
             maxRelativeDeviationD18: 1 ether,
             suspiciousRelativeDeviationD18: 1 ether,
@@ -152,12 +152,7 @@ contract Deploy is DeployAbstractScript {
             data: ""
         });
 
-        queues[2] = IDeployVaultFactory.QueueParams({
-            version: 2,
-            isDeposit: false,
-            asset: Constants.ETH,
-            data: "" 
-        });
+        queues[2] = IDeployVaultFactory.QueueParams({version: 2, isDeposit: false, asset: Constants.ETH, data: ""});
 
         queueLimit = 3;
     }

@@ -22,11 +22,65 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x06ED1E2167AA7FBf2476c5A2D220Bf702559Dcf8)));
+        simulateWithdrawal();
+        revert("ok");
 
-        //revert("ok");
-
-        _run();
+        //_run();
         // revert("ok");
+    }
+
+    function simulateReport() internal {
+        address oracleSubmitterRole = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33;
+        IRiskManager riskManager = vault.riskManager();
+        IOracle oracle = vault.oracle();
+        IFeeManager feeManager = vault.feeManager();
+        OracleSubmitter oracleSubmitter = OracleSubmitter(0x5bBA2C09BEfAfB090672fFbF75685D3E5E292168);
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({
+            asset: Constants.mcbBTC,
+            priceD18: 10005155886643059498172516219
+        });
+
+        vm.startPrank(lazyVaultAdmin);
+        oracle.setSecurityParams(IOracle.SecurityParams({
+            maxAbsoluteDeviation: 50000000000000000000000000,
+            suspiciousAbsoluteDeviation: 10000000000000000000000000,
+            maxRelativeDeviationD18: 5000000000000000,
+            suspiciousRelativeDeviationD18: 1000000000000000,
+            timeout: 72000,
+            depositInterval: 3600,
+            redeemInterval: 172800
+        }));
+        vault.grantRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, lazyVaultAdmin);
+        riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max/2);
+        oracleSubmitter.submitReports(reports);
+        vm.stopPrank();
+    }
+
+    function simulateWithdrawal() internal {
+
+        RedeemQueue redeemQueue = RedeemQueue(payable(0x110D867e90806E0BF09C55D8057bD18cc6b4A8ad));
+        address user = 0x2Fb3CCdA3fB91BA97b765dC8591c5070732dce12;
+        /* 
+            shares = (assets * priceD18) / 1e18
+            assets = (shares * 1e18) / priceD18
+        */
+        skip(2 days);
+        IOracle.Report[] memory reports = new IOracle.Report[](1);
+        reports[0] = IOracle.Report({
+            asset: Constants.mcbBTC,
+            priceD18: 10002700983111038040000000000 //10005146428842765416151516654
+        });
+        vm.prank(lazyVaultAdmin);
+        OracleSubmitter(0x5bBA2C09BEfAfB090672fFbF75685D3E5E292168).submitReports(reports);
+        
+        redeemQueue.handleBatches(2);
+        redeemQueue.requestsOf(user, 0, 100);
+
+        uint32[] memory timestamps = new uint32[](1);
+        timestamps[0] = 1774374368;
+        vm.prank(user);
+        redeemQueue.claim(user, timestamps);
     }
 
     function setUp() public override {

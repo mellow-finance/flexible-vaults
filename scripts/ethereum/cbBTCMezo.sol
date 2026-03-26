@@ -167,7 +167,7 @@ contract Deploy is DeployAbstractScript {
         vaultSymbol = "mbhcbBTC";
 
         /// @dev fill admin/operational addresses
-        proxyAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
+        proxyAdmin = 0xb7b2ee53731Fc80080ED2906431e08452BC58786; // 5/8
         lazyVaultAdmin = 0xd5aA2D083642e8Dec06a5e930144d0Af5a97496d; // 3/5
         activeVaultAdmin = 0xF912FdB104dFE5baF2a6f1C4778Bc644E89Aa458; // 2/3
         oracleUpdater = 0xa68b023D9ed2430E3c8cBbdE4c37b02467734c33; // 1/1 msig 0xF6edb1385eC1A61c33B9e8dcc348497dCceabE8D
