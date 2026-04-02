@@ -36,12 +36,9 @@ contract Deploy is DeployAbstractScript {
         IFeeManager feeManager = vault.feeManager();
         OracleSubmitter oracleSubmitter = OracleSubmitter(0x8AE60B53e36738aeD801c33A1DaA1085d06EF6D3);
         IOracle.Report[] memory reports = new IOracle.Report[](1);
-        reports[0] = IOracle.Report({
-            asset: Constants.BTC,
-            priceD18: 1001232505793688464
-        });
-       // vm.prank(feeManagerOwner);
-       // feeManager.setFees(0, 0, 0, 0);
+        reports[0] = IOracle.Report({asset: Constants.BTC, priceD18: 1001232505793688464});
+        // vm.prank(feeManagerOwner);
+        // feeManager.setFees(0, 0, 0, 0);
         vm.startPrank(lazyVaultAdmin);
         //riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max/2);
         oracleSubmitter.submitReports(reports);

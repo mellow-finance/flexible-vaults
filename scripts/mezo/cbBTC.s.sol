@@ -36,29 +36,27 @@ contract Deploy is DeployAbstractScript {
         IFeeManager feeManager = vault.feeManager();
         OracleSubmitter oracleSubmitter = OracleSubmitter(0x5bBA2C09BEfAfB090672fFbF75685D3E5E292168);
         IOracle.Report[] memory reports = new IOracle.Report[](1);
-        reports[0] = IOracle.Report({
-            asset: Constants.mcbBTC,
-            priceD18: 10005155886643059498172516219
-        });
+        reports[0] = IOracle.Report({asset: Constants.mcbBTC, priceD18: 10005155886643059498172516219});
 
         vm.startPrank(lazyVaultAdmin);
-        oracle.setSecurityParams(IOracle.SecurityParams({
-            maxAbsoluteDeviation: 50000000000000000000000000,
-            suspiciousAbsoluteDeviation: 10000000000000000000000000,
-            maxRelativeDeviationD18: 5000000000000000,
-            suspiciousRelativeDeviationD18: 1000000000000000,
-            timeout: 72000,
-            depositInterval: 3600,
-            redeemInterval: 172800
-        }));
+        oracle.setSecurityParams(
+            IOracle.SecurityParams({
+                maxAbsoluteDeviation: 50000000000000000000000000,
+                suspiciousAbsoluteDeviation: 10000000000000000000000000,
+                maxRelativeDeviationD18: 5000000000000000,
+                suspiciousRelativeDeviationD18: 1000000000000000,
+                timeout: 72000,
+                depositInterval: 3600,
+                redeemInterval: 172800
+            })
+        );
         vault.grantRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, lazyVaultAdmin);
-        riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max/2);
+        riskManager.setSubvaultLimit(vault.subvaultAt(0), type(int256).max / 2);
         oracleSubmitter.submitReports(reports);
         vm.stopPrank();
     }
 
     function simulateWithdrawal() internal {
-
         RedeemQueue redeemQueue = RedeemQueue(payable(0x110D867e90806E0BF09C55D8057bD18cc6b4A8ad));
         address user = 0x2Fb3CCdA3fB91BA97b765dC8591c5070732dce12;
         /* 
@@ -73,7 +71,7 @@ contract Deploy is DeployAbstractScript {
         });
         vm.prank(lazyVaultAdmin);
         OracleSubmitter(0x5bBA2C09BEfAfB090672fFbF75685D3E5E292168).submitReports(reports);
-        
+
         redeemQueue.handleBatches(2);
         redeemQueue.requestsOf(user, 0, 100);
 
