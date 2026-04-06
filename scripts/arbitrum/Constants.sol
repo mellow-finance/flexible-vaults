@@ -12,6 +12,7 @@ library Constants {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
+    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
     address public constant WSTETH = 0x5979D7b546E38E414F7E9822514be443A4800529;
     address public constant WSTETH_ETHEREUM = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
@@ -20,6 +21,8 @@ library Constants {
     address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
     address public constant CRV = 0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978;
     address public constant FLUID = 0x61E030A56D33e8260FdD81f03B162A79Fe3449Cd;
+
+    address public constant USDAI = 0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF;
 
     address public constant CCTP_ARBITRUM_TOKEN_MESSENGER = 0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d; // Arbitrum TokenMessenger М2 deposit for burn
     address public constant CCTP_ARBITRUM_MESSAGE_TRANSMITTER = 0xC30362313FBBA5cf9163F0bb16a0e01f01A896ca; // Arbitrum MessageTransmitter receive message
@@ -57,6 +60,8 @@ library Constants {
             eigenLayerRewardsCoordinator: address(0),
             symbioticVaultFactory: address(0),
             symbioticFarmFactory: address(0),
+            cowswapSettlement: COWSWAP_SETTLEMENT,
+            cowswapVaultRelayer: COWSWAP_VAULT_RELAYER,
             wsteth: WSTETH,
             weth: WETH,
             proxyAdmin: 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0,
@@ -99,7 +104,11 @@ library Constants {
             redirectingDepositHook: RedirectingDepositHook(0x00000004d3B17e5391eb571dDb8fDF95646ca827),
             lidoDepositHook: LidoDepositHook(address(0)),
             oracleHelper: OracleHelper(0x000000005F543c38d5ea6D0bF10A50974Eb55E35),
-            swapModuleImplementation: SwapModule(payable(0x0000000bb667353D37478ceEd142f4cEf51b9c9F))
+            swapModuleImplementation: SwapModule(payable(0x0000000bb667353D37478ceEd142f4cEf51b9c9F)),
+            burnableTokenizedShareManagerImplementation: BurnableTokenizedShareManager(address(0)),
+            syncDepositQueueImplementation: SyncDepositQueue(payable(0)),
+            mellowAccountV1Implementation: MellowAccountV1(address(0)),
+            accountFactory: Factory(address(0))
         });
     }
 }

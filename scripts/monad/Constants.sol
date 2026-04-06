@@ -9,6 +9,9 @@ import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
 import "../common/interfaces/Imports.sol";
 
 library Constants {
+    address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
+    address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
+
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 

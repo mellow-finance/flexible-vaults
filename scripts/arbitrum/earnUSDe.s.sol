@@ -37,6 +37,8 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
+    address public constant CUSTOM_AAVE_V3_ORACLE = address(0);
+
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
 
@@ -188,7 +190,7 @@ contract Deploy is Script, Test {
 
         for (uint256 i = 0; i < vault.getAssetCount(); i++) {
             address asset = vault.assetAt(i);
-            string memory symbol_ = asset == Constants.XPL ? "XPL" : IERC20Metadata(asset).symbol();
+            string memory symbol_ = asset == Constants.ETH ? "ETH" : IERC20Metadata(asset).symbol();
             for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
                 address queue = vault.queueAt(asset, j);
                 if (vault.isDepositQueue(queue)) {
@@ -246,28 +248,20 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[3] memory assets = [Constants.USDT0, Constants.USDE, Constants.SUSDE];
+        address[2] memory assets = [Constants.USDC, Constants.USDAI];
         address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
-                [
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE
-                ],
-                [
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
-                ],
+                [Permissions.SWAP_MODULE_TOKEN_IN_ROLE, Permissions.SWAP_MODULE_TOKEN_IN_ROLE],
+                [Permissions.SWAP_MODULE_TOKEN_OUT_ROLE, Permissions.SWAP_MODULE_TOKEN_OUT_ROLE],
                 Permissions.SWAP_MODULE_ROUTER_ROLE
             )
         );
         return swapModuleFactory.create(
             0,
             proxyAdmin,
-            abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+            abi.encode(lazyVaultAdmin, subvault, CUSTOM_AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
         );
     }
 

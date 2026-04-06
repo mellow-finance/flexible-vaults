@@ -29,6 +29,10 @@ library Constants {
     address public constant SYRUP_USDC = 0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b;
     address public constant PYUSD = 0x6c3ea9036406852006290770BEdFcAbA0e23A0e8;
 
+    address public constant FRXUSD = 0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29;
+    address public constant WFRAX = 0x04ACaF8D2865c0714F79da09645C13FD2888977f;
+    address public constant MSUSD = 0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA;
+
     address public constant GHO = 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f;
     address public constant AURA = 0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF;
     address public constant BAL = 0xba100000625a3754423978a60c9317c58a424e3D;
