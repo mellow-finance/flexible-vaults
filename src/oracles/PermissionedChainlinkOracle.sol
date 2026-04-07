@@ -12,7 +12,6 @@ contract PermissionedChainlinkOracle is Ownable {
     error InvalidPrice(); // Price out of allowed range
     error InvalidDecimals(); // Decimals > 36
     error InvalidAllowedRange(); // min > max or invalid bounds
-    error InvalidOwner(); // Owner cannot be zero address
 
     /// @notice Minimum allowed price (inclusive)
     int256 public immutable minAllowedAnswer;
@@ -49,9 +48,6 @@ contract PermissionedChainlinkOracle is Ownable {
         int256 maxAllowedAnswer_,
         string memory description_
     ) Ownable(owner_) {
-        if (owner_ == address(0)) {
-            revert InvalidOwner();
-        }
         if (decimals_ > 36) {
             revert InvalidDecimals();
         }
