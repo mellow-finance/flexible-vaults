@@ -37,7 +37,7 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
-    address public constant CUSTOM_AAVE_V3_ORACLE = address(0);
+    address public constant AAVE_CUSTOM_ORACLE = 0xfc2cbcB09EA9bDea2e041E2733E571bc2Bb80aB2;
 
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
@@ -81,23 +81,11 @@ contract Deploy is Script, Test {
 
         {
             uint256 i = 0;
-
-            // activeVaultAdmin roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
-            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
-
             // curator roles:
             holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
-            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
 
             // emergeny pauser roles:
-            holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
             holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
-            holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
 
             // deployer roles:
             holders[i++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
@@ -122,13 +110,13 @@ contract Deploy is Script, Test {
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
-                    maxAbsoluteDeviation: 0,
-                    suspiciousAbsoluteDeviation: 0,
-                    maxRelativeDeviationD18: 0,
-                    suspiciousRelativeDeviationD18: 0,
+                    maxAbsoluteDeviation: 1,
+                    suspiciousAbsoluteDeviation: 1,
+                    maxRelativeDeviationD18: 1,
+                    suspiciousRelativeDeviationD18: 1,
                     timeout: type(uint32).max >> 1,
-                    depositInterval: 1 seconds,
-                    redeemInterval: 1 seconds
+                    depositInterval: 1,
+                    redeemInterval: 1
                 }),
                 new address[](0)
             ),
@@ -160,28 +148,6 @@ contract Deploy is Script, Test {
         }
 
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
-
-        // emergency pause setup
-        timelockController.schedule(
-            address(vault.shareManager()),
-            0,
-            abi.encodeCall(
-                IShareManager.setFlags,
-                (
-                    IShareManager.Flags({
-                        hasMintPause: true,
-                        hasBurnPause: true,
-                        hasTransferPause: true,
-                        hasWhitelist: true,
-                        hasTransferWhitelist: true,
-                        globalLockup: type(uint32).max
-                    })
-                )
-            ),
-            bytes32(0),
-            bytes32(0),
-            0
-        );
 
         timelockController.renounceRole(timelockController.PROPOSER_ROLE(), deployer);
         timelockController.renounceRole(timelockController.CANCELLER_ROLE(), deployer);
@@ -248,20 +214,28 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[2] memory assets = [Constants.USDC, Constants.USDAI];
+        address[3] memory assets = [Constants.USDAI, Constants.SUSDAI, Constants.USDC];
         address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
-                [Permissions.SWAP_MODULE_TOKEN_IN_ROLE, Permissions.SWAP_MODULE_TOKEN_IN_ROLE],
-                [Permissions.SWAP_MODULE_TOKEN_OUT_ROLE, Permissions.SWAP_MODULE_TOKEN_OUT_ROLE],
+                [
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE
+                ],
+                [
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
+                ],
                 Permissions.SWAP_MODULE_ROUTER_ROLE
             )
         );
         return swapModuleFactory.create(
             0,
             proxyAdmin,
-            abi.encode(lazyVaultAdmin, subvault, CUSTOM_AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+            abi.encode(lazyVaultAdmin, subvault, AAVE_CUSTOM_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
         );
     }
 
@@ -280,7 +254,6 @@ contract Deploy is Script, Test {
         holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
 
         // emergeny pauser roles:
-        holders[i++] = Vault.RoleHolder(Permissions.SET_FLAGS_ROLE, address(timelockController));
         holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
 
         holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, deployer);

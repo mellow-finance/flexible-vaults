@@ -50,7 +50,6 @@ contract Deploy is Script, Test {
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
 
-    address[2] public depositAssets = [Constants.USDC, Constants.USDT];
     address[] assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT));
 
     address[] verifiers = new address[](1);
@@ -174,19 +173,19 @@ contract Deploy is Script, Test {
             })
         );
         vault.renounceRole(Permissions.SET_FLAGS_ROLE, deployer);
-        // vault.shareManager().setAccountInfo(
-        //     treasury, IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
-        // );
-        // vault.shareManager().setAccountInfo(
-        //     IVaultModule(Constants.EARN_USD).subvaultAt(1),
-        //     IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
-        // );
-        // vault.renounceRole(Permissions.SET_ACCOUNT_INFO_ROLE, deployer);
+        vault.shareManager().setAccountInfo(
+            treasury, IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
+        );
+        vault.shareManager().setAccountInfo(
+            IVaultModule(Constants.EARN_USD).subvaultAt(1),
+            IShareManager.AccountInfo({canDeposit: true, canTransfer: false, isBlacklisted: false})
+        );
+        vault.renounceRole(Permissions.SET_ACCOUNT_INFO_ROLE, deployer);
 
         // queues setup
 
-        for (uint256 i = 0; i < depositAssets.length; i++) {
-            address asset = depositAssets[i];
+        for (uint256 i = 0; i < assets_.length; i++) {
+            address asset = assets_[i];
             vault.createQueue(3, true, proxyAdmin, asset, abi.encode(DEFAULT_PENALTY_D6, DEFAULT_MAX_AGE));
         }
 
@@ -395,7 +394,6 @@ contract Deploy is Script, Test {
         holders[i++] = Vault.RoleHolder(Permissions.SET_QUEUE_STATUS_ROLE, address(timelockController));
 
         holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
-        holders[i++] = Vault.RoleHolder(Permissions.SET_ACCOUNT_INFO_ROLE, deployer);
 
         assembly {
             mstore(holders, i)

@@ -17,27 +17,6 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
-        if (true) {
-            // DeploymentParams memory params,
-            // uint256 index,
-            // string memory title,
-            // bytes memory creationCode,
-            // bytes memory constructorParams
-            ProtocolDeploymentLibrary._deploy(
-                ProtocolDeploymentLibrary.DeploymentParams({
-                    cowswapSettlement: Constants.COWSWAP_SETTLEMENT,
-                    cowswapVaultRelayer: Constants.COWSWAP_VAULT_RELAYER,
-                    weth: Constants.WETH,
-                    minLeadingZeros: 8,
-                    salt: ArraysLibrary.makeBytes32Array(abi.encode(0))
-                }),
-                0,
-                "Account"
-            );
-
-            revert("ok");
-        }
-
         ProtocolDeployment memory deployment = ProtocolDeploymentLibrary.deploy(
             deployer,
             proxyAdmin,
