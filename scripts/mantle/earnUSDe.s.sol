@@ -154,7 +154,7 @@ contract Deploy is Script, Test {
 
         for (uint256 i = 0; i < vault.getAssetCount(); i++) {
             address asset = vault.assetAt(i);
-            string memory symbol_ = asset == Constants.XPL ? "XPL" : IERC20Metadata(asset).symbol();
+            string memory symbol_ = asset == Constants.MNT ? "MNT" : IERC20Metadata(asset).symbol();
             for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
                 address queue = vault.queueAt(asset, j);
                 if (vault.isDepositQueue(queue)) {
@@ -207,12 +207,12 @@ contract Deploy is Script, Test {
     }
 
     function _routers() internal pure returns (address[1] memory result) {
-        result = [address(0x6131B5fae19EA4f9D964eAc0408E4408b66337b5)];
+        result = [address(0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE)]; // Li.Fi diamond
     }
 
     function _deploySwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[3] memory assets = [Constants.USDT0, Constants.USDE, Constants.SUSDE];
+        address[4] memory assets = [Constants.USDT0, Constants.USDE, Constants.SUSDE, Constants.WMNT];
         address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
@@ -220,9 +220,11 @@ contract Deploy is Script, Test {
                 [
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE
                 ],
                 [
+                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE

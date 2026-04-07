@@ -33,7 +33,7 @@ contract Deploy is Script {
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3dbd67913fc42eb9f5a040098,
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3253648a35e86bb3769030024,
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3eea2af40b4aadd8ee5048042,
-                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3c9d6f6579a13328464050002,
+                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3dac10345abeee55bbe060050, // fixed SyncDepositQueue
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a33a4f2e40558ea2c8680b000c
                         ],
                         [
@@ -69,8 +69,8 @@ contract Deploy is Script {
 
         vm.stopBroadcast();
 
-        // AcceptanceLibrary.runProtocolDeploymentChecks(deployment);
+        AcceptanceLibrary.runProtocolDeploymentChecks(deployment);
 
-        // revert("ok");
+        revert("ok");
     }
 }

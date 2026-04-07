@@ -59,7 +59,7 @@ contract Deploy is DeployAbstractScript {
     function simulateWithdrawal() internal {
         RedeemQueue redeemQueue = RedeemQueue(payable(0x110D867e90806E0BF09C55D8057bD18cc6b4A8ad));
         address user = 0x2Fb3CCdA3fB91BA97b765dC8591c5070732dce12;
-        /* 
+        /*
             shares = (assets * priceD18) / 1e18
             assets = (shares * 1e18) / priceD18
         */

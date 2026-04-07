@@ -154,7 +154,7 @@ library ProtocolDeploymentLibrary {
         string memory title,
         bytes memory creationCode,
         bytes memory constructorParams
-    ) private returns (uint256, address) {
+    ) internal returns (uint256, address) {
         bytes32 salt = params.salt[index];
 
         bytes memory bytecode = abi.encodePacked(creationCode, constructorParams);
@@ -162,6 +162,9 @@ library ProtocolDeploymentLibrary {
 
         uint256 requiredMask = type(uint160).max >> (4 * params.minLeadingZeros);
         if ((uint160(expectedAddress) | requiredMask) != requiredMask) {
+            console.log("Bytecode hash / deployer:");
+            console.logBytes32(keccak256(bytecode));
+            console.log(CREATE2_DEPLOYER);
             revert(string.concat("Not enough leading zeros for ", title));
         }
 

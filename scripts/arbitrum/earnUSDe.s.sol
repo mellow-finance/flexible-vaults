@@ -37,6 +37,8 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
+    address public constant AAVE_CUSTOM_ORACLE = 0xfc2cbcB09EA9bDea2e041E2733E571bc2Bb80aB2;
+
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
 
@@ -154,7 +156,7 @@ contract Deploy is Script, Test {
 
         for (uint256 i = 0; i < vault.getAssetCount(); i++) {
             address asset = vault.assetAt(i);
-            string memory symbol_ = asset == Constants.XPL ? "XPL" : IERC20Metadata(asset).symbol();
+            string memory symbol_ = asset == Constants.ETH ? "ETH" : IERC20Metadata(asset).symbol();
             for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
                 address queue = vault.queueAt(asset, j);
                 if (vault.isDepositQueue(queue)) {
@@ -212,7 +214,7 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[3] memory assets = [Constants.USDT0, Constants.USDE, Constants.SUSDE];
+        address[3] memory assets = [Constants.USDAI, Constants.SUSDAI, Constants.USDC];
         address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
@@ -233,7 +235,7 @@ contract Deploy is Script, Test {
         return swapModuleFactory.create(
             0,
             proxyAdmin,
-            abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+            abi.encode(lazyVaultAdmin, subvault, AAVE_CUSTOM_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
         );
     }
 
