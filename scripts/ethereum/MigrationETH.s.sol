@@ -29,8 +29,6 @@ interface IAaveV3Pool {
         external
         returns (uint256);
 
-    function setUserEMode(uint8 categoryId) external;
-
     function getUserAccountData(address user)
         external
         view
@@ -42,8 +40,6 @@ interface IAaveV3Pool {
             uint256 ltv,
             uint256 healthFactor
         );
-
-    function getUserEMode(address user) external view returns (uint16);
 }
 
 contract Deploy is Script, Test {
@@ -52,11 +48,23 @@ contract Deploy is Script, Test {
     address weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address wsteth = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
     address weeth = 0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee;
-    address aweeth = 0xBdfa7b7893081B35Fb54027489e2Bc7A38275129;
     address aaveV3Pool = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
 
     Vault strETH = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
     IGGV ggv = IGGV(0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09);
+
+    function logState(address holder, string memory name) public {
+        console.log("Aave position of %s", name);
+        (
+            uint256 totalCollateralBase,
+            uint256 totalDebtBase,
+            uint256 availableBorrowsBase,
+            uint256 currentLiquidationThreshold,
+            uint256 ltv,
+            uint256 healthFactor
+        ) = IAaveV3Pool(aaveV3Pool).getUserAccountData(holder);
+        console.log("collateral - debt = %s, hf %s", totalCollateralBase - totalDebtBase, healthFactor);
+    }
 
     function run() external {
         Subvault subvault = Subvault(payable(strETH.subvaultAt(1)));
@@ -81,10 +89,14 @@ contract Deploy is Script, Test {
             aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.supply, (wsteth, balance, address(subvault), 0)), payload
         );
 
+        uint256 wethAmount = 20000 ether;
+        uint256 weethAmount = wethAmount * 1 ether / 1092232420851952706;
+
+        logState(address(subvault), "strETH subvault0");
+        logState(address(ggv), "ggv");
+
         uint256 g = gasleft();
 
-        uint256 wethAmount = 20000 ether;
-        uint256 weethAmount = wethAmount * 1 ether / 1.0908926 ether;
         for (uint256 i = 0; i < 5; i++) {
             console.log("streth: borrow weth");
             // borrow WETH
@@ -113,6 +125,9 @@ contract Deploy is Script, Test {
         }
 
         console.log("Gas used:", g - gasleft());
+
+        logState(address(subvault), "strETH subvault0");
+        logState(address(ggv), "ggv");
 
         vm.stopPrank();
     }
