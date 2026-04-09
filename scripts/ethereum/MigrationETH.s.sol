@@ -53,16 +53,10 @@ contract Deploy is Script, Test {
     Vault strETH = Vault(payable(0x277C6A642564A91ff78b008022D65683cEE5CCC5));
     IGGV ggv = IGGV(0xef417FCE1883c6653E7dC6AF7c6F85CCDE84Aa09);
 
-    function logState(address holder, string memory name) public {
+    function logState(address holder, string memory name) public view {
         console.log("Aave position of %s", name);
-        (
-            uint256 totalCollateralBase,
-            uint256 totalDebtBase,
-            uint256 availableBorrowsBase,
-            uint256 currentLiquidationThreshold,
-            uint256 ltv,
-            uint256 healthFactor
-        ) = IAaveV3Pool(aaveV3Pool).getUserAccountData(holder);
+        (uint256 totalCollateralBase, uint256 totalDebtBase,,,, uint256 healthFactor) =
+            IAaveV3Pool(aaveV3Pool).getUserAccountData(holder);
         console.log("collateral - debt = %s, hf %s", totalCollateralBase - totalDebtBase, healthFactor);
     }
 
