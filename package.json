@@ -6,6 +6,7 @@
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
     "deploy:ethereum": "forge script ./scripts/ethereum/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "migrate:ethereum": "forge script ./scripts/ethereum/MigrationETH.s.sol:Deploy --fork-block-number 24842372 --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:ethereum:earnusde": "forge script ./scripts/ethereum/earnUSDe.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:mantle": "forge script ./scripts/mantle/Deploy.s.sol:Deploy --fork-url $(grep MANTLE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:mantle:earnusde": "forge script ./scripts/mantle/earnUSDe.s.sol:Deploy --fork-url $(grep MANTLE_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
