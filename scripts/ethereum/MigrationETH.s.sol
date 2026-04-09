@@ -73,43 +73,46 @@ contract Deploy is Script, Test {
 
         vm.startPrank(curator);
 
-        uint256 weethPrice = 1.093695 ether;
-
         IVerifier.VerificationPayload memory payload;
-
         uint256 balance = IERC20(wsteth).balanceOf(address(subvault));
+        console.log("streth: supply wsteth");
         subvault.call(wsteth, 0, abi.encodeCall(IERC20.approve, (aaveV3Pool, balance)), payload);
         subvault.call(
             aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.supply, (wsteth, balance, address(subvault), 0)), payload
         );
 
-        uint256 wethAmount = 15000 ether;
-        uint256 weethAmount = wethAmount;
+        uint256 g = gasleft();
 
-        for (uint256 i = 0; i < 4; i++) {
-            console.log("borrow weth");
+        uint256 wethAmount = 20000 ether;
+        uint256 weethAmount = wethAmount * 1 ether / 1.0908926 ether;
+        for (uint256 i = 0; i < 5; i++) {
+            console.log("streth: borrow weth");
             // borrow WETH
             subvault.call(
                 aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.borrow, (weth, wethAmount, 2, 0, address(subvault))), payload
             );
+            console.log("streth: transfer weth to ggv");
             // transfer WETH strETH -> GGV
             subvault.call(weth, 0, abi.encodeCall(IERC20.transfer, (address(ggv), wethAmount)), payload);
 
             // repay WETH
+            console.log("ggv: repay weth");
             ggv.manage(weth, abi.encodeCall(IERC20.approve, (aaveV3Pool, wethAmount)), 0);
             ggv.manage(aaveV3Pool, abi.encodeCall(IAaveV3Pool.repay, (weth, wethAmount, 2, address(ggv))), 0);
-            console.log("withdraw aweeth ggv -> streth");
+
+            console.log("ggv: withdraw weeth to streth");
             ggv.manage(aaveV3Pool, abi.encodeCall(IAaveV3Pool.withdraw, (weeth, weethAmount, address(subvault))), 0);
 
-            deal(address(weeth), address(subvault), 0);
-            deal(address(wsteth), address(subvault), weethAmount);
-
-            console.log("supply weeth streth");
-            subvault.call(wsteth, 0, abi.encodeCall(IERC20.approve, (aaveV3Pool, weethAmount)), payload);
+            console.log("streth: supply weeth");
+            subvault.call(weeth, 0, abi.encodeCall(IERC20.approve, (aaveV3Pool, weethAmount)), payload);
             subvault.call(
-                aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.supply, (wsteth, weethAmount, address(subvault), 0)), payload
+                aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.supply, (weeth, weethAmount, address(subvault), 0)), payload
             );
+
+            console.log("-------------------");
         }
+
+        console.log("Gas used:", g - gasleft());
 
         vm.stopPrank();
     }
