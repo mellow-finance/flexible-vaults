@@ -11,8 +11,7 @@ import "./DeployAbstractScript.s.sol";
 
 contract Deploy is DeployAbstractScript {
     function run() external {
-
-        deployVault = IDeployVaultFactory(0x9cbD8a4033fDa06809B5e0056287b512Bbf579Ef);//deployNewDeployVault();//
+        deployVault = IDeployVaultFactory(0x9cbD8a4033fDa06809B5e0056287b512Bbf579Ef); //deployNewDeployVault();//
 
         /// @dev just on-chain simulation
         //_simulate();
@@ -28,7 +27,7 @@ contract Deploy is DeployAbstractScript {
         deposit(Constants.USDC, address(0x717BA1D7b2D98e0F84A62329d91021130107feBE));
         _deploySwapModule(vault.subvaultAt(0));
         //_deploySwapModule(vault.subvaultAt(1));
-       // revert("ok");
+        // revert("ok");
     }
 
     function deployNewDeployVault() internal returns (IDeployVaultFactory deployVault) {
