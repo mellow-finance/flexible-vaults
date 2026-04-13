@@ -7,39 +7,14 @@ import "forge-std/Test.sol";
 import "../../src/vaults/Subvault.sol";
 import "../../src/vaults/Vault.sol";
 
+import "../../src/utils/EthMigrator.sol";
+
 interface IAuthority {
     function canCall(address user, address target, bytes4 functionSig) external view returns (bool);
 }
 
-interface IGGV {
-    function manage(address target, bytes calldata data, uint256 value) external returns (bytes memory result);
-
+interface IGGVAuthority {
     function authority() external view returns (address);
-}
-
-interface IAaveV3Pool {
-    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
-
-    function withdraw(address asset, uint256 amount, address to) external returns (uint256);
-
-    function borrow(address asset, uint256 amount, uint256 interestRateMode, uint16 referralCode, address onBehalfOf)
-        external;
-
-    function repay(address asset, uint256 amount, uint256 interestRateMode, address onBehalfOf)
-        external
-        returns (uint256);
-
-    function getUserAccountData(address user)
-        external
-        view
-        returns (
-            uint256 totalCollateralBase,
-            uint256 totalDebtBase,
-            uint256 availableBorrowsBase,
-            uint256 currentLiquidationThreshold,
-            uint256 ltv,
-            uint256 healthFactor
-        );
 }
 
 contract Deploy is Script, Test {
@@ -58,6 +33,12 @@ contract Deploy is Script, Test {
         (uint256 totalCollateralBase, uint256 totalDebtBase,,,, uint256 healthFactor) =
             IAaveV3Pool(aaveV3Pool).getUserAccountData(holder);
         console.log("collateral - debt = %s, hf %s", totalCollateralBase - totalDebtBase, healthFactor);
+
+        address aWeETH = IAaveV3Pool(aaveV3Pool).getReserveAToken(weeth);
+
+        address aWETHDebt = IAaveV3Pool(aaveV3Pool).getReserveVariableDebtToken(weth);
+        console.log("weeth collateral: %s", IERC20(aWeETH).balanceOf(holder));
+        console.log("weth debt: %s", IERC20(aWETHDebt).balanceOf(holder));
     }
 
     function run() external {
@@ -65,13 +46,15 @@ contract Deploy is Script, Test {
 
         {
             // grant required permissions in ggv authority
-            address authority = ggv.authority();
+            address authority = IGGVAuthority(address(ggv)).authority();
             vm.mockCall(authority, abi.encodePacked(IAuthority.canCall.selector), abi.encode(true));
 
             // grant required permissions in strETH verifier
             IVerifier verifier = subvault.verifier();
             vm.mockCall(address(verifier), abi.encodePacked(IVerifier.verifyCall.selector), abi.encode());
         }
+
+        EthMigrator migrator = new EthMigrator(curator);
 
         vm.startPrank(curator);
 
@@ -83,40 +66,12 @@ contract Deploy is Script, Test {
             aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.supply, (wsteth, balance, address(subvault), 0)), payload
         );
 
-        uint256 wethAmount = 20000 ether;
-        uint256 weethAmount = wethAmount * 1 ether / 1092232420851952706;
-
         logState(address(subvault), "strETH subvault0");
         logState(address(ggv), "ggv");
 
         uint256 g = gasleft();
 
-        for (uint256 i = 0; i < 5; i++) {
-            console.log("streth: borrow weth");
-            // borrow WETH
-            subvault.call(
-                aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.borrow, (weth, wethAmount, 2, 0, address(subvault))), payload
-            );
-            console.log("streth: transfer weth to ggv");
-            // transfer WETH strETH -> GGV
-            subvault.call(weth, 0, abi.encodeCall(IERC20.transfer, (address(ggv), wethAmount)), payload);
-
-            // repay WETH
-            console.log("ggv: repay weth");
-            ggv.manage(weth, abi.encodeCall(IERC20.approve, (aaveV3Pool, wethAmount)), 0);
-            ggv.manage(aaveV3Pool, abi.encodeCall(IAaveV3Pool.repay, (weth, wethAmount, 2, address(ggv))), 0);
-
-            console.log("ggv: withdraw weeth to streth");
-            ggv.manage(aaveV3Pool, abi.encodeCall(IAaveV3Pool.withdraw, (weeth, weethAmount, address(subvault))), 0);
-
-            console.log("streth: supply weeth");
-            subvault.call(weeth, 0, abi.encodeCall(IERC20.approve, (aaveV3Pool, weethAmount)), payload);
-            subvault.call(
-                aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.supply, (weeth, weethAmount, address(subvault), 0)), payload
-            );
-
-            console.log("-------------------");
-        }
+        migrator.migrate();
 
         console.log("Gas used:", g - gasleft());
 
