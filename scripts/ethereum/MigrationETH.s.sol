@@ -7,7 +7,7 @@ import "forge-std/Test.sol";
 import "../../src/vaults/Subvault.sol";
 import "../../src/vaults/Vault.sol";
 
-import "../../src/utils/EthMigrator.sol";
+import "../../src/utils/GGVMigrator.sol";
 
 interface IAuthority {
     function canCall(address user, address target, bytes4 functionSig) external view returns (bool);
@@ -31,12 +31,12 @@ contract Deploy is Script, Test {
     function logState(address holder, string memory name) public view {
         console.log("Aave position of %s", name);
         (uint256 totalCollateralBase, uint256 totalDebtBase,,,, uint256 healthFactor) =
-            IAaveV3Pool(aaveV3Pool).getUserAccountData(holder);
+            IAavePool(aaveV3Pool).getUserAccountData(holder);
         console.log("collateral - debt = %s, hf %s", totalCollateralBase - totalDebtBase, healthFactor);
 
-        address aWeETH = IAaveV3Pool(aaveV3Pool).getReserveAToken(weeth);
+        address aWeETH = IAavePool(aaveV3Pool).getReserveAToken(weeth);
 
-        address aWETHDebt = IAaveV3Pool(aaveV3Pool).getReserveVariableDebtToken(weth);
+        address aWETHDebt = IAavePool(aaveV3Pool).getReserveVariableDebtToken(weth);
         console.log("weeth collateral: %s", IERC20(aWeETH).balanceOf(holder));
         console.log("weth debt: %s", IERC20(aWETHDebt).balanceOf(holder));
     }
@@ -54,7 +54,7 @@ contract Deploy is Script, Test {
             vm.mockCall(address(verifier), abi.encodePacked(IVerifier.verifyCall.selector), abi.encode());
         }
 
-        EthMigrator migrator = new EthMigrator(curator);
+        GGVMigrator migrator = new GGVMigrator(curator);
 
         vm.startPrank(curator);
 
@@ -62,16 +62,14 @@ contract Deploy is Script, Test {
         uint256 balance = IERC20(wsteth).balanceOf(address(subvault));
         console.log("streth: supply wsteth");
         subvault.call(wsteth, 0, abi.encodeCall(IERC20.approve, (aaveV3Pool, balance)), payload);
-        subvault.call(
-            aaveV3Pool, 0, abi.encodeCall(IAaveV3Pool.supply, (wsteth, balance, address(subvault), 0)), payload
-        );
+        subvault.call(aaveV3Pool, 0, abi.encodeCall(IAavePool.supply, (wsteth, balance, address(subvault), 0)), payload);
 
         logState(address(subvault), "strETH subvault0");
         logState(address(ggv), "ggv");
 
         uint256 g = gasleft();
 
-        migrator.migrate();
+        migrator.migrate(0.13 ether);
 
         console.log("Gas used:", g - gasleft());
 
