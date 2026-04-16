@@ -32,6 +32,7 @@ library Constants {
     address public constant FRXUSD = 0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29;
     address public constant WFRAX = 0x04ACaF8D2865c0714F79da09645C13FD2888977f;
     address public constant MSUSD = 0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA;
+    address public constant SRUSDE = 0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003;
 
     address public constant GHO = 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f;
     address public constant AURA = 0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF;
@@ -69,6 +70,8 @@ library Constants {
     address public constant MORPHO_TOKEN = 0x58D97B57BB95320F9a05dC918Aef65434969c2B2;
     bytes32 public constant MORPHO_WSTUSR_USDC_MARKET_ID =
         0xd9e34b1eed46d123ac1b69b224de1881dbc88798bc7b70f504920f62f58f28cc;
+
+    address public constant PENDLE = 0x808507121B80c02388fAd14726482e061B8da827;
 
     address public constant EIGEN_LAYER_DELEGATION_MANAGER = 0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A;
     address public constant EIGEN_LAYER_STRATEGY_MANAGER = 0x858646372CC42E1A627fcE94aa7A7033e7CF075A;
