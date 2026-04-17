@@ -39,50 +39,29 @@ contract Deploy is Script {
 
         IAaveOracleFactory factory = IAaveOracleFactory(0x00000000DDc33fB8d6F89dC5d9725F5e27B53D6f);
 
-        uint256 length = 5;
-        address[] memory assets = ArraysLibrary.makeAddressArray(
-            abi.encode(Constants.SRUSDE, Constants.FRXUSD, Constants.MSUSD, Constants.PENDLE, Constants.WFRAX)
-        );
+        uint256 length = 2;
+        address[] memory assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDAI, Constants.SUSDAI));
         address[] memory sources = ArraysLibrary.makeAddressArray(
             abi.encode(
-                address(0),
-                0x9B4a96210bc8D9D55b1908B465D8B0de68B7fF83, // https://data.chain.link/feeds/ethereum/mainnet/frxusd-usd
-                address(0),
-                address(0),
-                0x6Ebc52C8C1089be9eB3945C4350B68B8E4C2233f // https://data.chain.link/feeds/ethereum/mainnet/fxs-usd
+                0xF3d6b05E69918d71807Ab005791daCcEC5de8C78, // https://data.chain.link/feeds/arbitrum/mainnet/usdai-usd
+                address(0)
             )
         );
 
         IPermissionedOracleFactory.InitParams[] memory sourceParams =
             new IPermissionedOracleFactory.InitParams[](length);
-        sourceParams[0] = IPermissionedOracleFactory.InitParams({
+        sourceParams[1] = IPermissionedOracleFactory.InitParams({
             owner: MELLOW_ORACLE_UPDATER,
             decimals: 8,
-            initialAnswer: 101823846,
-            minAllowedAnswer: 1.01e8,
-            maxAllowedAnswer: 1.1e8,
-            description: "srUSDe / USD"
-        });
-        sourceParams[2] = IPermissionedOracleFactory.InitParams({
-            owner: MELLOW_ORACLE_UPDATER,
-            decimals: 8,
-            initialAnswer: 0.9967e8,
-            minAllowedAnswer: 0.98e8,
-            maxAllowedAnswer: 1e8,
-            description: "msUSD / USD"
-        });
-        sourceParams[3] = IPermissionedOracleFactory.InitParams({
-            owner: MELLOW_ORACLE_UPDATER,
-            decimals: 8,
-            initialAnswer: 126396000,
-            minAllowedAnswer: 0,
-            maxAllowedAnswer: 10e8,
-            description: "PENDLE / USD"
+            initialAnswer: 107953695,
+            minAllowedAnswer: 107000000,
+            maxAllowedAnswer: 117000000,
+            description: "sUSDai / USD"
         });
 
         address aaveOracle = factory.create(
             IAaveOracleFactory.InitParams({
-                fallbackOracle: 0x54586bE62E3c3580375aE3723C145253060Ca0C2,
+                fallbackOracle: Constants.AAVE_V3_ORACLE,
                 assets: assets,
                 sources: sources,
                 sourceParams: sourceParams,
@@ -91,19 +70,10 @@ contract Deploy is Script {
             })
         );
 
-        address[] memory allAssets = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                Constants.USDC,
-                Constants.USDT,
-                Constants.USDE,
-                Constants.SUSDE,
-                Constants.SRUSDE,
-                Constants.FRXUSD,
-                Constants.MSUSD,
-                Constants.PENDLE,
-                Constants.WFRAX
-            )
-        );
+        console.log("custom AaveOracle:", aaveOracle);
+
+        address[] memory allAssets =
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDAI, Constants.SUSDAI));
         for (uint256 i = 0; i < allAssets.length; i++) {
             console.log(
                 "price of %s == %s",
@@ -111,5 +81,6 @@ contract Deploy is Script {
                 IAaveOracle(aaveOracle).getAssetPrice(allAssets[i])
             );
         }
+        // revert("ok");
     }
 }
