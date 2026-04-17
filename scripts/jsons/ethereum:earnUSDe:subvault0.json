@@ -10,7 +10,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(USDC).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(USDC).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -101,7 +101,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(USDT).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(USDT).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -192,7 +192,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(USDe).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(USDe).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
@@ -282,7 +282,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(sUSDe).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(sUSDe).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
@@ -373,7 +373,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(frxUSD).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
@@ -464,7 +464,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(msUSD).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA",
@@ -555,7 +555,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(srUSDe).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003",
@@ -646,7 +646,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(0x808507121B80c02388fAd14726482e061B8da827).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(PENDLE).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x808507121B80c02388fAd14726482e061B8da827",
@@ -737,7 +737,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(0x04ACaF8D2865c0714F79da09645C13FD2888977f).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(WFRAX).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x04ACaF8D2865c0714F79da09645C13FD2888977f",
@@ -828,7 +828,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(CRV).approve(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c,any)",
+        "description": "IERC20(CRV).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xD533a949740bb3306d119CC777fa900bA034cd52",
@@ -918,7 +918,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(USDC,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -997,7 +997,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(USDT,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1075,7 +1075,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(USDe,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(USDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1154,7 +1154,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(sUSDe,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1232,7 +1232,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(frxUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1311,7 +1311,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(msUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1390,7 +1390,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(srUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1468,7 +1468,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(0x808507121B80c02388fAd14726482e061B8da827,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(PENDLE,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1547,7 +1547,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(0x04ACaF8D2865c0714F79da09645C13FD2888977f,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(WFRAX,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1626,7 +1626,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pushAssets(CRV,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(CRV,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1705,7 +1705,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(USDC,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1784,7 +1784,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(USDT,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1863,7 +1863,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(USDe,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(USDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -1941,7 +1941,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(sUSDe,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -2019,7 +2019,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(frxUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -2097,7 +2097,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(msUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -2176,7 +2176,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(srUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -2255,7 +2255,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(0x808507121B80c02388fAd14726482e061B8da827,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(PENDLE,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -2333,7 +2333,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(0x04ACaF8D2865c0714F79da09645C13FD2888977f,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(WFRAX,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -2412,7 +2412,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c).pullAssets(CRV,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(CRV,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe49f6A72476b58c4DDA7d1F2613ac660B11Fbc4c",
@@ -2822,7 +2822,7 @@
       "description": {
         "integration": "usdt_plasma_oft_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bd33C99D72BDfe71BE4eFD5b6B2A42d3Daf96e0f,any,any,0x,0x,0x),(any,0),0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bd33C99D72BDfe71BE4eFD5b6B2A42d3Daf96e0f,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
@@ -3244,7 +3244,7 @@
       "description": {
         "integration": "usde_plasma_oft_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bd33C99D72BDfe71BE4eFD5b6B2A42d3Daf96e0f,any,any,0x,0x,0x),(any,0),0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bd33C99D72BDfe71BE4eFD5b6B2A42d3Daf96e0f,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -3666,7 +3666,7 @@
       "description": {
         "integration": "susde_plasma_oft_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(sUSDe_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bd33C99D72BDfe71BE4eFD5b6B2A42d3Daf96e0f,any,any,0x,0x,0x),(any,0),0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ILayerZeroOFT(sUSDe_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bd33C99D72BDfe71BE4eFD5b6B2A42d3Daf96e0f,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
@@ -4088,7 +4088,7 @@
       "description": {
         "integration": "usdt_mantle_oft_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30181,0x000000000000000000000000dF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2,any,any,0x,0x,0x),(any,0),0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30181,0x000000000000000000000000dF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
@@ -4510,7 +4510,7 @@
       "description": {
         "integration": "usde_mantle_oft_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30181,0x000000000000000000000000dF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2,any,any,0x,0x,0x),(any,0),0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30181,0x000000000000000000000000dF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -4932,7 +4932,7 @@
       "description": {
         "integration": "susde_mantle_oft_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(sUSDe_OFTAdapter).send{value: any}((30181,0x000000000000000000000000dF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2,any,any,0x,0x,0x),(any,0),0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ILayerZeroOFT(sUSDe_OFTAdapter).send{value: any}((30181,0x000000000000000000000000dF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
@@ -5596,7 +5596,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).supply(sUSDe,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0)",
+        "description": "IAavePoolV3(AavePool(Core)).supply(sUSDe,any,earnUSDe_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -5699,7 +5699,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).supply(USDe,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0)",
+        "description": "IAavePoolV3(AavePool(Core)).supply(USDe,any,earnUSDe_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -5801,7 +5801,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).withdraw(sUSDe,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(sUSDe,any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -5904,7 +5904,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDe,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDe,any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -6007,7 +6007,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).borrow(USDT,any,2,0,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IAavePoolV3(AavePool(Core)).borrow(USDT,any,2,0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -6122,7 +6122,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).repay(USDT,any,2,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IAavePoolV3(AavePool(Core)).repay(USDT,any,2,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -6236,7 +6236,7 @@
       "description": {
         "integration": "stakedao_frxusd_metamorpho",
         "protocol": "ERC4626",
-        "description": "IERC20(0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29).approve(0xCE13e39534082FCF8f13F6D84e6D95414D14271e,any)",
+        "description": "IERC20(frxUSD).approve(StakeDAO frxUSD Metamorpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
@@ -6326,7 +6326,7 @@
       "description": {
         "integration": "stakedao_frxusd_metamorpho",
         "protocol": "ERC4626",
-        "description": "IERC4626(0xCE13e39534082FCF8f13F6D84e6D95414D14271e).deposit(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD Metamorpho).deposit(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCE13e39534082FCF8f13F6D84e6D95414D14271e",
@@ -6417,7 +6417,7 @@
       "description": {
         "integration": "stakedao_frxusd_metamorpho",
         "protocol": "ERC4626",
-        "description": "IERC4626(0xCE13e39534082FCF8f13F6D84e6D95414D14271e).mint(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD Metamorpho).mint(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCE13e39534082FCF8f13F6D84e6D95414D14271e",
@@ -6508,7 +6508,7 @@
       "description": {
         "integration": "stakedao_frxusd_metamorpho",
         "protocol": "ERC4626",
-        "description": "IERC4626(0xCE13e39534082FCF8f13F6D84e6D95414D14271e).withdraw(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD Metamorpho).withdraw(any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCE13e39534082FCF8f13F6D84e6D95414D14271e",
@@ -6610,7 +6610,7 @@
       "description": {
         "integration": "stakedao_frxusd_metamorpho",
         "protocol": "ERC4626",
-        "description": "IERC4626(0xCE13e39534082FCF8f13F6D84e6D95414D14271e).redeem(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD Metamorpho).redeem(any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCE13e39534082FCF8f13F6D84e6D95414D14271e",
@@ -6804,7 +6804,7 @@
       "description": {
         "integration": "morpho_susde_msusd",
         "protocol": "Morpho",
-        "description": "IERC20(0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA).approve(Morpho,any)",
+        "description": "IERC20(msUSD).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA",
@@ -6895,7 +6895,7 @@
       "description": {
         "integration": "morpho_susde_msusd",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).supply((0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,sUSDe,0x5D916980D5Ae1737a8330Bf24dF812b2911Aae25,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x)",
+        "description": "IMorpho(Morpho).supply((msUSD,sUSDe,Morpho_sUSDe/msUSD_oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -7102,7 +7102,7 @@
       "description": {
         "integration": "morpho_susde_msusd",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).supplyCollateral((0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,sUSDe,0x5D916980D5Ae1737a8330Bf24dF812b2911Aae25,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x)",
+        "description": "IMorpho(Morpho).supplyCollateral((msUSD,sUSDe,Morpho_sUSDe/msUSD_oracle,Morpho_irm,915000000000000000),any,earnUSDe_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -7270,7 +7270,7 @@
       "description": {
         "integration": "morpho_susde_msusd",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).repay((0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,sUSDe,0x5D916980D5Ae1737a8330Bf24dF812b2911Aae25,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x)",
+        "description": "IMorpho(Morpho).repay((msUSD,sUSDe,Morpho_sUSDe/msUSD_oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -7478,7 +7478,7 @@
       "description": {
         "integration": "morpho_susde_msusd",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).borrow((0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,sUSDe,0x5D916980D5Ae1737a8330Bf24dF812b2911Aae25,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IMorpho(Morpho).borrow((msUSD,sUSDe,Morpho_sUSDe/msUSD_oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -7686,7 +7686,7 @@
       "description": {
         "integration": "morpho_susde_msusd",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).withdraw((0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,sUSDe,0x5D916980D5Ae1737a8330Bf24dF812b2911Aae25,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IMorpho(Morpho).withdraw((msUSD,sUSDe,Morpho_sUSDe/msUSD_oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -7894,7 +7894,7 @@
       "description": {
         "integration": "morpho_susde_msusd",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).withdrawCollateral((0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA,sUSDe,0x5D916980D5Ae1737a8330Bf24dF812b2911Aae25,Morpho_pt_reUSD/USDC_irm,915000000000000000),any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IMorpho(Morpho).withdrawCollateral((msUSD,sUSDe,Morpho_sUSDe/msUSD_oracle,Morpho_irm,915000000000000000),any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -8063,7 +8063,7 @@
       "description": {
         "integration": "curve_frxusd_msusd",
         "protocol": "CurveDynTokenPool",
-        "description": "IERC20(0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29).approve(0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b,any)",
+        "description": "IERC20(frxUSD).approve(Curve frxUSD/msUSD pool,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
@@ -8153,7 +8153,7 @@
       "description": {
         "integration": "curve_frxusd_msusd",
         "protocol": "CurveDynTokenPool",
-        "description": "IERC20(0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA).approve(0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b,any)",
+        "description": "IERC20(msUSD).approve(Curve frxUSD/msUSD pool,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA",
@@ -8244,7 +8244,7 @@
       "description": {
         "integration": "curve_frxusd_msusd",
         "protocol": "CurveDynTokenPool",
-        "description": "ICurvePool(0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b).add_liquidity((any,any),any)",
+        "description": "ICurvePool(Curve frxUSD/msUSD pool).add_liquidity((any,any),any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b",
@@ -8352,7 +8352,7 @@
       "description": {
         "integration": "curve_frxusd_msusd",
         "protocol": "CurveDynTokenPool",
-        "description": "ICurvePool(0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b).remove_liquidity(any,(any,any))",
+        "description": "ICurvePool(Curve frxUSD/msUSD pool).remove_liquidity(any,(any,any))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b",
@@ -8460,7 +8460,7 @@
       "description": {
         "integration": "stakedao_frxusd_msusd",
         "protocol": "ERC4626",
-        "description": "IERC20(0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b).approve(0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6,any)",
+        "description": "IERC20(Curve frxUSD/msUSD pool).approve(StakeDAO frxUSD/msUSD pool,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9A9e2e70919c75D80aAaA1D483c46CdBb8ac4d1b",
@@ -8551,7 +8551,7 @@
       "description": {
         "integration": "stakedao_frxusd_msusd",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6).deposit(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD/msUSD pool).deposit(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6",
@@ -8642,7 +8642,7 @@
       "description": {
         "integration": "stakedao_frxusd_msusd",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6).mint(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD/msUSD pool).mint(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6",
@@ -8732,7 +8732,7 @@
       "description": {
         "integration": "stakedao_frxusd_msusd",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6).withdraw(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD/msUSD pool).withdraw(any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6",
@@ -8834,7 +8834,7 @@
       "description": {
         "integration": "stakedao_frxusd_msusd",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6).redeem(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "IERC4626(StakeDAO frxUSD/msUSD pool).redeem(any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x4fdb3cb3DBD6D24B64276645c1ADCb85cbB39dC6",
@@ -8937,7 +8937,7 @@
       "description": {
         "integration": "stakedao_accountant",
         "protocol": "StakeDAO",
-        "description": "IStakeDAOAccountant(0x93b4B9bd266fFA8AF68e39EDFa8cFe2A62011Ce0).claim()",
+        "description": "IStakeDAOAccountant(StakeDAO accountant).claim()",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x93b4B9bd266fFA8AF68e39EDFa8cFe2A62011Ce0",
@@ -9016,7 +9016,7 @@
       "description": {
         "integration": "merkl",
         "protocol": "Merkl",
-        "description": "IMerklDistributor(MerklDistributor).toggleOperator(0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(earnUSDe_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
@@ -9095,7 +9095,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003).approve(0x888888888889758F76e7103c6CbF23ABbF58F946,any)",
+        "description": "IERC20(srUSDe).approve(PendleRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003",
@@ -9186,7 +9186,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0xc9bfeBc79a722C05Dc34bd2A227eF2db19Fd1b8E).approve(0x888888888889758F76e7103c6CbF23ABbF58F946,any)",
+        "description": "IERC20(SY srUSDe 25JUN2026).approve(PendleRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xc9bfeBc79a722C05Dc34bd2A227eF2db19Fd1b8E",
@@ -9277,7 +9277,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5).approve(0x888888888889758F76e7103c6CbF23ABbF58F946,any)",
+        "description": "IERC20(YT srUSDe 25JUN2026).approve(PendleRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5",
@@ -9368,7 +9368,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0x619D75E3b790eBC21c289f2805Bb7177A7D732E2).approve(0x888888888889758F76e7103c6CbF23ABbF58F946,any)",
+        "description": "IERC20(PT srUSDe 25JUN2026).approve(PendleRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x619D75E3b790eBC21c289f2805Bb7177A7D732E2",
@@ -9458,7 +9458,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003).approve(0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321,any)",
+        "description": "IERC20(srUSDe).approve(PendleLimitRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003",
@@ -9549,7 +9549,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0xc9bfeBc79a722C05Dc34bd2A227eF2db19Fd1b8E).approve(0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321,any)",
+        "description": "IERC20(SY srUSDe 25JUN2026).approve(PendleLimitRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xc9bfeBc79a722C05Dc34bd2A227eF2db19Fd1b8E",
@@ -9639,7 +9639,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5).approve(0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321,any)",
+        "description": "IERC20(YT srUSDe 25JUN2026).approve(PendleLimitRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5",
@@ -9730,7 +9730,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IERC20(0x619D75E3b790eBC21c289f2805Bb7177A7D732E2).approve(0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321,any)",
+        "description": "IERC20(PT srUSDe 25JUN2026).approve(PendleLimitRouter,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x619D75E3b790eBC21c289f2805Bb7177A7D732E2",
@@ -9821,7 +9821,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IPendleRouterV4(0x888888888889758F76e7103c6CbF23ABbF58F946).mintPyFromToken(0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5,any,(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,any,0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
+        "description": "IPendleRouterV4(PendleRouter).mintPyFromToken(earnUSDe_Subvault_0,YT srUSDe 25JUN2026,any,(srUSDe,any,srUSDe,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x888888888889758F76e7103c6CbF23ABbF58F946",
@@ -10070,7 +10070,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IPendleRouterV4(0x888888888889758F76e7103c6CbF23ABbF58F946).redeemPyToToken(0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5,any,(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,any,0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
+        "description": "IPendleRouterV4(PendleRouter).redeemPyToToken(earnUSDe_Subvault_0,YT srUSDe 25JUN2026,any,(srUSDe,any,srUSDe,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x888888888889758F76e7103c6CbF23ABbF58F946",
@@ -10320,7 +10320,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IPendleRouterV4(0x888888888889758F76e7103c6CbF23ABbF58F946).mintSyFromToken(0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0xc9bfeBc79a722C05Dc34bd2A227eF2db19Fd1b8E,any,(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,any,0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
+        "description": "IPendleRouterV4(PendleRouter).mintSyFromToken(earnUSDe_Subvault_0,SY srUSDe 25JUN2026,any,(srUSDe,any,srUSDe,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x888888888889758F76e7103c6CbF23ABbF58F946",
@@ -10560,7 +10560,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IPendleRouterV4(0x888888888889758F76e7103c6CbF23ABbF58F946).redeemSyToToken(0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0xc9bfeBc79a722C05Dc34bd2A227eF2db19Fd1b8E,any,(0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,any,0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
+        "description": "IPendleRouterV4(PendleRouter).redeemSyToToken(earnUSDe_Subvault_0,SY srUSDe 25JUN2026,any,(srUSDe,any,srUSDe,0x0000000000000000000000000000000000000000,(0,0x0000000000000000000000000000000000000000,0x,false)))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x888888888889758F76e7103c6CbF23ABbF58F946",
@@ -10800,7 +10800,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IPendleLimitRouter(0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321).preSignSingle((any,any,any,1,0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,any,any,any,0x))",
+        "description": "IPendleLimitRouter(PendleLimitRouter).preSignSingle((any,any,any,1,srUSDe,YT srUSDe 25JUN2026,earnUSDe_Subvault_0,earnUSDe_Subvault_0,any,any,any,0x))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321",
@@ -11042,7 +11042,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IPendleLimitRouter(0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321).preSignSingle((any,any,any,3,0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,any,any,any,0x))",
+        "description": "IPendleLimitRouter(PendleLimitRouter).preSignSingle((any,any,any,3,srUSDe,YT srUSDe 25JUN2026,earnUSDe_Subvault_0,earnUSDe_Subvault_0,any,any,any,0x))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321",
@@ -11284,7 +11284,7 @@
       "description": {
         "integration": "pendle_srusde",
         "protocol": "Pendle",
-        "description": "IPendleLimitRouter(0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321).cancelSingle((any,any,any,any,0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003,0x1Ff9C3b5d9969ddeC8E3F801b638DA08D769FDE5,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,any,any,any,0x))",
+        "description": "IPendleLimitRouter(PendleLimitRouter).cancelSingle((any,any,any,any,srUSDe,YT srUSDe 25JUN2026,earnUSDe_Subvault_0,earnUSDe_Subvault_0,any,any,any,0x))",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321",
@@ -11530,7 +11530,7 @@
       "description": {
         "integration": "twyne_pt_srusde_usde",
         "protocol": "Twyne",
-        "description": "IERC20(0x619D75E3b790eBC21c289f2805Bb7177A7D732E2).approve(0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0,any)",
+        "description": "IERC20(PT srUSDe 25JUN2026).approve(Twyne PT srUSDe/USDe vault,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x619D75E3b790eBC21c289f2805Bb7177A7D732E2",
@@ -11621,7 +11621,7 @@
       "description": {
         "integration": "twyne_pt_srusde_usde",
         "protocol": "Twyne",
-        "description": "IERC20(USDe).approve(0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0,any)",
+        "description": "IERC20(USDe).approve(Twyne PT srUSDe/USDe vault,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
@@ -11712,7 +11712,7 @@
       "description": {
         "integration": "twyne_pt_srusde_usde",
         "protocol": "Twyne",
-        "description": "ITwyneVault(0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0).depositUnderlying(any)",
+        "description": "ITwyneVault(Twyne PT srUSDe/USDe vault).depositUnderlying(any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0",
@@ -11779,7 +11779,7 @@
       "description": {
         "integration": "twyne_pt_srusde_usde",
         "protocol": "Twyne",
-        "description": "ITwyneVault(0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0).redeemUnderlying(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ITwyneVault(Twyne PT srUSDe/USDe vault).redeemUnderlying(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0",
@@ -11869,7 +11869,7 @@
       "description": {
         "integration": "twyne_pt_srusde_usde",
         "protocol": "Twyne",
-        "description": "ITwyneVault(0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0).borrow(any,0x6082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A)",
+        "description": "ITwyneVault(Twyne PT srUSDe/USDe vault).borrow(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0",
@@ -11948,7 +11948,7 @@
       "description": {
         "integration": "twyne_pt_srusde_usde",
         "protocol": "Twyne",
-        "description": "ITwyneVault(0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0).repay(any)",
+        "description": "ITwyneVault(Twyne PT srUSDe/USDe vault).repay(any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x93F8Ccd9B921999970871dEEaC142CE6a8EE9Cc0",
@@ -12015,7 +12015,7 @@
       "description": {
         "integration": "twyne_pt_srusde_usde",
         "protocol": "Twyne",
-        "description": "ITwyneCollateralVaultFactory(0xa1517cCe0bE75700A8838EA1cEE0dc383cd3A332).createCollateralVault(1,0x585a808d887F3887a586D36AB54aa0C2EF044229,AavePool(Core),9800,0x619D75E3b790eBC21c289f2805Bb7177A7D732E2)",
+        "description": "ITwyneCollateralVaultFactory(Twyne CollateralVaultFactory).createCollateralVault(1,Twyne PT srUSDe/USDe intermediate vault,AavePool(Core),9800,PT srUSDe 25JUN2026)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xa1517cCe0bE75700A8838EA1cEE0dc383cd3A332",

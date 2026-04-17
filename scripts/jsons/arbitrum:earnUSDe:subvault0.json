@@ -10,7 +10,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(USDC).approve(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4,any)",
+        "description": "IERC20(USDC).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -98,7 +98,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF).approve(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4,any)",
+        "description": "IERC20(USDai).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF",
@@ -187,7 +187,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "IERC20(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).approve(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4,any)",
+        "description": "IERC20(sUSDai).approve(earnUSDe_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -275,7 +275,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4).pushAssets(USDC,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCe50daADf0e3AaE397ad756Bf93650f9047818b4",
@@ -352,7 +352,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4).pushAssets(0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(USDai,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCe50daADf0e3AaE397ad756Bf93650f9047818b4",
@@ -428,7 +428,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4).pushAssets(0x0B2b2B2076d95dda7817e785989fE353fe955ef9,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(sUSDai,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCe50daADf0e3AaE397ad756Bf93650f9047818b4",
@@ -505,7 +505,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4).pullAssets(USDC,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCe50daADf0e3AaE397ad756Bf93650f9047818b4",
@@ -582,7 +582,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4).pullAssets(0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(USDai,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCe50daADf0e3AaE397ad756Bf93650f9047818b4",
@@ -659,7 +659,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xCe50daADf0e3AaE397ad756Bf93650f9047818b4).pullAssets(0x0B2b2B2076d95dda7817e785989fE353fe955ef9,any)",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(sUSDai,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xCe50daADf0e3AaE397ad756Bf93650f9047818b4",
@@ -974,7 +974,7 @@
       "description": {
         "integration": "susdai_4626",
         "protocol": "ERC4626",
-        "description": "IERC20(0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF).approve(0x0B2b2B2076d95dda7817e785989fE353fe955ef9,any)",
+        "description": "IERC20(USDai).approve(sUSDai,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF",
@@ -1063,7 +1063,7 @@
       "description": {
         "integration": "susdai_4626",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).deposit(any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IERC4626(sUSDai).deposit(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -1152,7 +1152,7 @@
       "description": {
         "integration": "susdai_4626",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).mint(any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IERC4626(sUSDai).mint(any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -1241,7 +1241,7 @@
       "description": {
         "integration": "susdai_4626",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).withdraw(any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IERC4626(sUSDai).withdraw(any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -1342,7 +1342,7 @@
       "description": {
         "integration": "susdai_4626",
         "protocol": "ERC4626",
-        "description": "IERC4626(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).redeem(any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IERC4626(sUSDai).redeem(any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -1442,7 +1442,7 @@
       "description": {
         "integration": "susdai_7540_redeem",
         "protocol": "ERC7540Redeem",
-        "description": "IERC7540Redeem(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).requestRedeem(any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IERC7540Redeem(sUSDai).requestRedeem(any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -1543,7 +1543,7 @@
       "description": {
         "integration": "fluid_susdai_usdc",
         "protocol": "Fluid",
-        "description": "IERC20(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).approve(0x1B4EC865915872AEc7A30423fdA2584C9fa894C5,any)",
+        "description": "IERC20(sUSDai).approve(Fluid sUSDai/USDC Vault,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -1632,7 +1632,7 @@
       "description": {
         "integration": "fluid_susdai_usdc",
         "protocol": "Fluid",
-        "description": "IERC20(USDC).approve(0x1B4EC865915872AEc7A30423fdA2584C9fa894C5,any)",
+        "description": "IERC20(USDC).approve(Fluid sUSDai/USDC Vault,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -1721,7 +1721,7 @@
       "description": {
         "integration": "fluid_susdai_usdc",
         "protocol": "Fluid",
-        "description": "IFluidVault(0x1B4EC865915872AEc7A30423fdA2584C9fa894C5).operate{value: any}(11607,any,any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IFluidVault(Fluid sUSDai/USDC Vault).operate{value: any}(11607,any,any,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x1B4EC865915872AEc7A30423fdA2584C9fa894C5",
@@ -1865,7 +1865,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IERC20(0x0B2b2B2076d95dda7817e785989fE353fe955ef9).approve(0x6c247b1F6182318877311737BaC0844bAa518F5e,any)",
+        "description": "IERC20(sUSDai).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
@@ -1954,7 +1954,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IERC20(USDC).approve(0x6c247b1F6182318877311737BaC0844bAa518F5e,any)",
+        "description": "IERC20(USDC).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -2043,7 +2043,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0x6c247b1F6182318877311737BaC0844bAa518F5e).supply((USDC,0x0B2b2B2076d95dda7817e785989fE353fe955ef9,0x8Db25aFE02C20783C7D4b52C738f8a560d53cdf9,0x66F30587FB8D4206918deb78ecA7d5eBbafD06DA,915000000000000000),any,any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x)",
+        "description": "IMorpho(Morpho).supply((USDC,sUSDai,Morpho sUSDai/USDC oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6c247b1F6182318877311737BaC0844bAa518F5e",
@@ -2249,7 +2249,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0x6c247b1F6182318877311737BaC0844bAa518F5e).supplyCollateral((USDC,0x0B2b2B2076d95dda7817e785989fE353fe955ef9,0x8Db25aFE02C20783C7D4b52C738f8a560d53cdf9,0x66F30587FB8D4206918deb78ecA7d5eBbafD06DA,915000000000000000),any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x)",
+        "description": "IMorpho(Morpho).supplyCollateral((USDC,sUSDai,Morpho sUSDai/USDC oracle,Morpho_irm,915000000000000000),any,earnUSDe_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6c247b1F6182318877311737BaC0844bAa518F5e",
@@ -2416,7 +2416,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0x6c247b1F6182318877311737BaC0844bAa518F5e).repay((USDC,0x0B2b2B2076d95dda7817e785989fE353fe955ef9,0x8Db25aFE02C20783C7D4b52C738f8a560d53cdf9,0x66F30587FB8D4206918deb78ecA7d5eBbafD06DA,915000000000000000),any,any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x)",
+        "description": "IMorpho(Morpho).repay((USDC,sUSDai,Morpho sUSDai/USDC oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6c247b1F6182318877311737BaC0844bAa518F5e",
@@ -2622,7 +2622,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0x6c247b1F6182318877311737BaC0844bAa518F5e).borrow((USDC,0x0B2b2B2076d95dda7817e785989fE353fe955ef9,0x8Db25aFE02C20783C7D4b52C738f8a560d53cdf9,0x66F30587FB8D4206918deb78ecA7d5eBbafD06DA,915000000000000000),any,any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IMorpho(Morpho).borrow((USDC,sUSDai,Morpho sUSDai/USDC oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6c247b1F6182318877311737BaC0844bAa518F5e",
@@ -2828,7 +2828,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0x6c247b1F6182318877311737BaC0844bAa518F5e).withdraw((USDC,0x0B2b2B2076d95dda7817e785989fE353fe955ef9,0x8Db25aFE02C20783C7D4b52C738f8a560d53cdf9,0x66F30587FB8D4206918deb78ecA7d5eBbafD06DA,915000000000000000),any,any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IMorpho(Morpho).withdraw((USDC,sUSDai,Morpho sUSDai/USDC oracle,Morpho_irm,915000000000000000),any,any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6c247b1F6182318877311737BaC0844bAa518F5e",
@@ -3034,7 +3034,7 @@
       "description": {
         "integration": "morpho_susdai_usdc",
         "protocol": "Morpho",
-        "description": "IMorpho(0x6c247b1F6182318877311737BaC0844bAa518F5e).withdrawCollateral((USDC,0x0B2b2B2076d95dda7817e785989fE353fe955ef9,0x8Db25aFE02C20783C7D4b52C738f8a560d53cdf9,0x66F30587FB8D4206918deb78ecA7d5eBbafD06DA,915000000000000000),any,0x57B3997728bFa5c4D98937A234EB6005cdF68a60,0x57B3997728bFa5c4D98937A234EB6005cdF68a60)",
+        "description": "IMorpho(Morpho).withdrawCollateral((USDC,sUSDai,Morpho sUSDai/USDC oracle,Morpho_irm,915000000000000000),any,earnUSDe_Subvault_0,earnUSDe_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6c247b1F6182318877311737BaC0844bAa518F5e",
