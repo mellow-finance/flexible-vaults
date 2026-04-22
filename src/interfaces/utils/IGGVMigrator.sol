@@ -38,5 +38,7 @@ interface IGGVMigrator {
 
     function migrate(uint256 maxUtilizationD18) external;
 
+    event Killed(uint256 indexed timestamp, address indexed caller);
+
     event Migrated(uint256 indexed timestamp, address indexed caller, uint256 indexed cumulativeError);
 }

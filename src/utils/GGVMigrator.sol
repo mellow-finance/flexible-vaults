@@ -79,6 +79,11 @@ contract GGVMigrator is IGGVMigrator, Ownable {
         }
     }
 
+    function kill() external onlyOwner {
+        migrated = true;
+        emit Killed(block.timestamp, _msgSender());
+    }
+
     function migrate(uint256 maxUtilizationD18) external onlyOwner {
         if (maxUtilizationD18 == 0 || maxUtilizationD18 >= 1 ether) {
             revert InvalidMaxUtilizationD18();
