@@ -3,14 +3,14 @@
   "vault": "0x277C6A642564A91ff78b008022D65683cEE5CCC5",
   "subvault": "0x888d2A3E9B600F360a3386c9D2fEdFa658E7fA29",
   "chain": "ethereum",
-  "merkle_root": "0x4cbc14a6debfa94796c692860ec8182a9551083814d654c6ec07ed96471abe0c",
+  "merkle_root": "0x0170f52cc06f6d9b9ecc008db9387f06c19efbe3abcb4afc9d08e50d3c86ea4f",
   "vault_symbol": "strETH",
   "merkle_proofs": [
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(syrupUSDT).approve(0xb6451d4EaEC79fD22b69086a5B760a166bd28C52,any)",
+        "description": "IERC20(syrupUSDT).approve(strETH_SwapModule_7,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -89,16 +89,16 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adc760319750e660fcc8e3c8a9f21f55eb991ec98b40036d792a6ca7ce5a69a38000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x601d1e741bfb09b36d906379d269841e9941ba23587248797cac3a9a7551293e",
-        "0x4213ecfe44cdc940c19e0ac40299d4e8a3a43010ccbf106c16c755ffa3641da3",
-        "0x12ec11bc55b872c0bcaffefdd73f38c5810881a703338f9903f7b4c22b8486dd",
-        "0x3cf2a5e318e467e5ac8ea94fa58f7b88e974624974cc5965d8f0019e33c3dc5d"
+        "0x42fba08bda5515f040efd66e9299f4c21cdd78944623b7edbd9afa344d37d8b3",
+        "0x92fbacc56c3e1d1e67346bb73f0ba3c79a61f4d12466af146ccd54481228f4df",
+        "0xfeba690f1c40e020be5fa9c9e8728fd458ac0541b20ac2be3e1e0f7aa3879bd9"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDT).approve(0xb6451d4EaEC79fD22b69086a5B760a166bd28C52,any)",
+        "description": "IERC20(USDT).approve(strETH_SwapModule_7,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -177,16 +177,104 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af9778f607e4d3a93d2a7af7ec57a9efc2c44d94ac8e19eaad37968cb62a424b7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x71f53e171816c1a8cb675fe8bdc00a43c645ec86423bc0402b535c6a86e32262",
-        "0xa31fe7635e66375fcccce14b973613cba5fe750157633ed4527862878904dace",
-        "0x12ec11bc55b872c0bcaffefdd73f38c5810881a703338f9903f7b4c22b8486dd",
-        "0x3cf2a5e318e467e5ac8ea94fa58f7b88e974624974cc5965d8f0019e33c3dc5d"
+        "0x15364c081ae3bc536344d01fb93bb2cff06cca031e02934779c8e17725ee2a33",
+        "0x5cdf0f5960c6373b5e52e9eddd856cf6a1b4745f6cdfd731344dd0f3256caf5a",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xb6451d4EaEC79fD22b69086a5B760a166bd28C52).pushAssets(syrupUSDT,any)",
+        "description": "IERC20(aEthUSDT).approve(strETH_SwapModule_7,any)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a",
+          "params": [
+            "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3b0be65755d6f25522171662453ef5748a728dfab1c92eebdb366b7019be1d19000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa674a5c6ca4589ac7d029b814244724a23a2c8028370aa8bb8b78e7fe15cd322",
+        "0x2eb7026eac1b76256619a52e7aec5072b9eb9500664502f6013d55e936eefd5d",
+        "0x9fe04f3b8cb833fb7d3ee17b8e66b1c0b1d5ddd6552997f89efae952198cdf6f",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(strETH_SwapModule_7).pushAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
@@ -252,16 +340,16 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9572ca0a7dfa562da0fb9c59ad21330512b32994ce32675b5c41ecf89fbd1ae1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xc2e837124dd0e2d171385d9a1f45f5f074a26c7c0f04f7fff054f8650b218fb3",
-        "0x15364c081ae3bc536344d01fb93bb2cff06cca031e02934779c8e17725ee2a33",
-        "0x8a8df2a75de9e3684f1399b55c1e4b2a1380ed218a4ec9662db48e393bf78b5a"
+        "0xe1334e30dfa43aad32e3c3e409e5248f7046ed5cf33bb9d4db6e142ac0152d8b",
+        "0xfb8bd0e26b013e5f1ba2068db5acbb185a9cbffc891827089629433a5695ab9b",
+        "0xfeba690f1c40e020be5fa9c9e8728fd458ac0541b20ac2be3e1e0f7aa3879bd9"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xb6451d4EaEC79fD22b69086a5B760a166bd28C52).pushAssets(USDT,any)",
+        "description": "ISwapModule(strETH_SwapModule_7).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
@@ -328,15 +416,92 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a681ce17f23c1bec939b27d841e36efb309e17f31d2a9147cc873ad48e8e9e973000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x950bcf1747a864c2943695f639811a69785d60801609b64c0a032591f650a725",
-        "0x2fb82c8e97bad1be7ef625275a35111850a8912cf1db854b37f058b27c562fc3",
-        "0x8a8df2a75de9e3684f1399b55c1e4b2a1380ed218a4ec9662db48e393bf78b5a"
+        "0x4213ecfe44cdc940c19e0ac40299d4e8a3a43010ccbf106c16c755ffa3641da3",
+        "0x5cdf0f5960c6373b5e52e9eddd856cf6a1b4745f6cdfd731344dd0f3256caf5a",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xb6451d4EaEC79fD22b69086a5B760a166bd28C52).pullAssets(syrupUSDT,any)",
+        "description": "ISwapModule(strETH_SwapModule_7).pushAssets(aEthUSDT,any)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
+          "params": [
+            "0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pushAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab29d3ec2dc9a76ee8e201af3588a1c764dbffd45aa98d09e4bc7a60714bfe72c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc2e837124dd0e2d171385d9a1f45f5f074a26c7c0f04f7fff054f8650b218fb3",
+        "0x284bc2be6802188e758985d801add0c8c4e8e6efaf273f59f93ce57896146d8e",
+        "0x9fe04f3b8cb833fb7d3ee17b8e66b1c0b1d5ddd6552997f89efae952198cdf6f",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(strETH_SwapModule_7).pullAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
@@ -402,16 +567,16 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a74696b14a910134dbdc5f59286611b46f16079b29ced785d7d12a198272ce962000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x42fba08bda5515f040efd66e9299f4c21cdd78944623b7edbd9afa344d37d8b3",
-        "0x8f0ac2f88e7ecbab36bc6208013e332ddf4fac48dde720dc177c8dbb0365f49c",
-        "0x3cf2a5e318e467e5ac8ea94fa58f7b88e974624974cc5965d8f0019e33c3dc5d"
+        "0xce816a5a12bc1ea32008b24f89044b2303184dd4839cb6a919d916e1c5aae41c",
+        "0xfb8bd0e26b013e5f1ba2068db5acbb185a9cbffc891827089629433a5695ab9b",
+        "0xfeba690f1c40e020be5fa9c9e8728fd458ac0541b20ac2be3e1e0f7aa3879bd9"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xb6451d4EaEC79fD22b69086a5B760a166bd28C52).pullAssets(USDT,any)",
+        "description": "ISwapModule(strETH_SwapModule_7).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
@@ -478,9 +643,85 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a03714b1326f166c635be75018ed984faeeabc442bdb5551b9903bee957bb797a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x79d5c4af7991e286fab37934be1da4ff6f821bdeb6fa840ea688c87b32f4224d",
-        "0xa31fe7635e66375fcccce14b973613cba5fe750157633ed4527862878904dace",
-        "0x12ec11bc55b872c0bcaffefdd73f38c5810881a703338f9903f7b4c22b8486dd",
-        "0x3cf2a5e318e467e5ac8ea94fa58f7b88e974624974cc5965d8f0019e33c3dc5d"
+        "0x15364c081ae3bc536344d01fb93bb2cff06cca031e02934779c8e17725ee2a33",
+        "0x5cdf0f5960c6373b5e52e9eddd856cf6a1b4745f6cdfd731344dd0f3256caf5a",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap_module",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(strETH_SwapModule_7).pullAssets(aEthUSDT,any)",
+        "parameters": {
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
+          "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
+          "params": [
+            "0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pullAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a28e85d14c3d4ca8b1cb712ba87034acc164622a453bbbe75578a97d1bd23c207000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb917e4e23d0ce4a6420495be3cc37e52e8cfdb45f70d69e9d9814d71cba0bc5d",
+        "0x2eb7026eac1b76256619a52e7aec5072b9eb9500664502f6013d55e936eefd5d",
+        "0x9fe04f3b8cb833fb7d3ee17b8e66b1c0b1d5ddd6552997f89efae952198cdf6f",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
       ]
     },
     {
@@ -565,9 +806,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a98b914f4d9f388f704cd609169e9fe6b0d28c5b1322b9a5a6162882c88cc1dfc000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xce816a5a12bc1ea32008b24f89044b2303184dd4839cb6a919d916e1c5aae41c",
-        "0x15364c081ae3bc536344d01fb93bb2cff06cca031e02934779c8e17725ee2a33",
-        "0x8a8df2a75de9e3684f1399b55c1e4b2a1380ed218a4ec9662db48e393bf78b5a"
+        "0xcbe878502fe847b16fe386b4beed35c20716bd1839cd34592ed54f6c96412611",
+        "0x284bc2be6802188e758985d801add0c8c4e8e6efaf273f59f93ce57896146d8e",
+        "0x9fe04f3b8cb833fb7d3ee17b8e66b1c0b1d5ddd6552997f89efae952198cdf6f",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
       ]
     },
     {
@@ -653,9 +895,9 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a05d0a0361f13b0a718d9121b7faee4425f4c437e500c0807041ecf0e0d6817b4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x574db6c20ec811169e8bf79854d7d2578bd76ef9f56ac1965e9d8107bf45c2f8",
-        "0x4213ecfe44cdc940c19e0ac40299d4e8a3a43010ccbf106c16c755ffa3641da3",
-        "0x12ec11bc55b872c0bcaffefdd73f38c5810881a703338f9903f7b4c22b8486dd",
-        "0x3cf2a5e318e467e5ac8ea94fa58f7b88e974624974cc5965d8f0019e33c3dc5d"
+        "0x42fba08bda5515f040efd66e9299f4c21cdd78944623b7edbd9afa344d37d8b3",
+        "0x92fbacc56c3e1d1e67346bb73f0ba3c79a61f4d12466af146ccd54481228f4df",
+        "0xfeba690f1c40e020be5fa9c9e8728fd458ac0541b20ac2be3e1e0f7aa3879bd9"
       ]
     },
     {
@@ -847,8 +1089,9 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2bfe32eac1d615ad6ae3faf4ec839e818568fa402affb6e81ad8071a23e1d42900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000284ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x80e80be24216e7f0f65cfe1d52c20ae1929efaa87b2eee2bbfebba04b93e8db3",
-        "0x2fb82c8e97bad1be7ef625275a35111850a8912cf1db854b37f058b27c562fc3",
-        "0x8a8df2a75de9e3684f1399b55c1e4b2a1380ed218a4ec9662db48e393bf78b5a"
+        "0x4213ecfe44cdc940c19e0ac40299d4e8a3a43010ccbf106c16c755ffa3641da3",
+        "0x5cdf0f5960c6373b5e52e9eddd856cf6a1b4745f6cdfd731344dd0f3256caf5a",
+        "0x373738e3a185d857647f8932b7ad60fb5db1f592dbb96ac7afb20fed77b078e3"
       ]
     },
     {
@@ -934,9 +1177,9 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5b669e11017e21d63439fda8ec84a3143fcc94be275229cae87523c96d40c245000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x1d7344a12304055dc1875356fb38a785a0c2669c04cf4c66a088fb386acb54d2",
-        "0xe1334e30dfa43aad32e3c3e409e5248f7046ed5cf33bb9d4db6e142ac0152d8b",
-        "0x8f0ac2f88e7ecbab36bc6208013e332ddf4fac48dde720dc177c8dbb0365f49c",
-        "0x3cf2a5e318e467e5ac8ea94fa58f7b88e974624974cc5965d8f0019e33c3dc5d"
+        "0xa31fe7635e66375fcccce14b973613cba5fe750157633ed4527862878904dace",
+        "0x92fbacc56c3e1d1e67346bb73f0ba3c79a61f4d12466af146ccd54481228f4df",
+        "0xfeba690f1c40e020be5fa9c9e8728fd458ac0541b20ac2be3e1e0f7aa3879bd9"
       ]
     },
     {
@@ -1262,9 +1505,9 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a43c711a976d53b8f73c15f7fae0a4f3dc434db8072703b7f182a443e151990d300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x2415475e3f73743cb02ac5834f64f6a0cf26cfc52ffffe8ddacedc60ca6dbb6c",
-        "0xe1334e30dfa43aad32e3c3e409e5248f7046ed5cf33bb9d4db6e142ac0152d8b",
-        "0x8f0ac2f88e7ecbab36bc6208013e332ddf4fac48dde720dc177c8dbb0365f49c",
-        "0x3cf2a5e318e467e5ac8ea94fa58f7b88e974624974cc5965d8f0019e33c3dc5d"
+        "0xa31fe7635e66375fcccce14b973613cba5fe750157633ed4527862878904dace",
+        "0x92fbacc56c3e1d1e67346bb73f0ba3c79a61f4d12466af146ccd54481228f4df",
+        "0xfeba690f1c40e020be5fa9c9e8728fd458ac0541b20ac2be3e1e0f7aa3879bd9"
       ]
     }
   ]
