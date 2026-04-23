@@ -11,7 +11,6 @@ contract GGVMigrator is IGGVMigrator, Ownable {
     address public constant WEETH = 0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee;
 
     IAavePool public constant AAVE = IAavePool(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2);
-    IAavePool public constant SPARK = IAavePool(0xC13e21B648A5Ee794902342038FF3aDAB66BE987);
 
     IAaveOracle public constant ORACLE = IAaveOracle(0x54586bE62E3c3580375aE3723C145253060Ca0C2);
 
