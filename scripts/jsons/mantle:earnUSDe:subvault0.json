@@ -1,0 +1,3314 @@
+{
+  "title": "mantle:earnUSDe:subvault0",
+  "vault": "0x8e85760747F7280254575F4e911A7a2814Fc266E",
+  "subvault": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2",
+  "chain": "mantle",
+  "merkle_root": "0xa43769625c710eebaa47d68ba979cd28179dd7fce8a2927694e2eaea95c3b8f2",
+  "vault_symbol": "earnUSDe",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "IERC20(USDT0).approve(earnUSDe_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+          "params": [
+            "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8a762393b9517e98f4432a4d44ae6a64a2ecdcf0f9647f8a4b84c5c8847fa1de000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x9547153ae9a7a425c5bd86714380586d073355e0237d8fba4290fd3eca2e666c",
+        "0x266c52e86d34274886a89269c2881a8ef7a65602842b08943f626474f92a26fa",
+        "0x773616ef6090c1a282cb5ab37f75d612942ec1daae285336ff5ddc10962cee7b",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "IERC20(USDe).approve(earnUSDe_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "params": [
+            "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a48eb811fbe4bfe6c11645a58292a30b2991ed6f9cf95a950e261a5727b296452000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x15af2af46a89e116def3cdd67f73131274130c59b83e59357dff4f0ecdae1cc4",
+        "0xb626dc156200a8f8deeffba03e6bcbec76afde3d1b9eef7058a229414aaf6281",
+        "0xac07ed73ef08a87f9c7aeb53ffa786dd2bf39f1588b30d3dbe92dd1232bfe048",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "IERC20(sUSDe).approve(earnUSDe_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "params": [
+            "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae8d1b883dd459821c41929cd17b07b3b853bbfcb58e7321970a05f3774c4fb11000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8fd53711984cd172bdcf47ecf35eab74b03a45c4d827662ce042d8bbf8d84ab1",
+        "0x266c52e86d34274886a89269c2881a8ef7a65602842b08943f626474f92a26fa",
+        "0x773616ef6090c1a282cb5ab37f75d612942ec1daae285336ff5ddc10962cee7b",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "IERC20(WMNT).approve(earnUSDe_SwapModule_0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x78c1b0C915c4FAA5FffA6CAbf0219DA63d7f4cb8",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+          "params": [
+            "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaec0daa060d38d61170e35806fa382f39df07161f21261851ad6678efcaecf86000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x11d6776c5ff5876dd0d904712811f65594d00ba103101cf0211e8e42fc75818d",
+        "0x15f3ce2bff17d459049458f44d72665cff2c79cb225d74590954901a5cec3995",
+        "0x178a99af60153fb1449a73b45b94859c2a7fea9ca41f504f35fd389807541297",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(USDT0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pushAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a41be3fba6c3feaac7ed73224c63ae501d021269ef0f3f2bc72103885e7abd99f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x5c0018c6bb606c2079d2617e1578e29bceea3a58948a8fe441dfa0593f904e13",
+        "0x78cffa132f2793b7bbf87506f2dfc6a0e7644a405aec5e9fe1a7fc93b47fc5d4",
+        "0xa8e9b6e284fd926aa48312f9e7947f8caceee6feac228eb64cd2e5983b7fe9a4",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(USDe,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pushAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aeaafbcea838089677220e20853ed2935e9596df9e1b5bdbf1791c222d8ee0904000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xadb6f5d7f745558118783a7151fbeea26b93586ca5c9118b595eb4bf60774027",
+        "0x76caf5cbb4f1eb569a70a70336c766455d6eeace786f42c51fa75eff9615bff6",
+        "0x196ae348800f81bd4a736d26e4c4072dec70bc2546811ff879e32490cad2d7bd",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(sUSDe,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pushAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4357870226fc46ec5e220a1285f0cad8cf2a1837622a4299fa1cfc0fab3d503f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x12bfa0aadc4b8c21eb84fd99a091b798217e36298fef8163bd4fe392bf1a5aa1",
+        "0x15f3ce2bff17d459049458f44d72665cff2c79cb225d74590954901a5cec3995",
+        "0x178a99af60153fb1449a73b45b94859c2a7fea9ca41f504f35fd389807541297",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pushAssets(WMNT,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pushAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pushAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pushAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a79764c1c0646c4c45308ddbe7e2a01a67665341e15e2293738451a8985aed4ab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x27c51a1bf03913f831076a3d2f2623f41bb93f7d2605d8dcde21f45704a49905",
+        "0xec2dcd6e5f8fff7e2b5a011b1ac80d26f48e639c2f61959a7cac29f4c2e7b9f5",
+        "0xac07ed73ef08a87f9c7aeb53ffa786dd2bf39f1588b30d3dbe92dd1232bfe048",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(USDT0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pullAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a02a3cf7d9fdf9c87f3e442fc12420b9d465bf86eea6990de341a3cebdf31823d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x47ec1557600a2190fa936be43ffc3431b8d97b01548909ab82a65107865fb2ef",
+        "0x32c9079c9b5a3569961ab4a7c981bfc7d97f8538e0a1ecbb2fb37dee17d58c78",
+        "0xa8e9b6e284fd926aa48312f9e7947f8caceee6feac228eb64cd2e5983b7fe9a4",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(USDe,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pullAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a12d3a850a2622a95e9e2561fc3e3dcae52fc0340f4a3de829c178da93b2455ad000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8fd00c76f1d48f6d5261e5a74fda58ed9dbc8b00f985d39c5569dd5f35daf1ce",
+        "0xc277ac157878f403d65e37e6620a26850aa60a2e7056b05853c80718e0532a46",
+        "0x59e46d378faa6ce0162c347e7801acd6784d8f9f55b22b7b74ec1eeb728b0666",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(sUSDe,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pullAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abb061d14a4932ca2695519fd3d97118f8f57e4c20c1933303ff37fe24820562e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0c122e6dd051a84c06feefe31de8fcf06bf2acdd5680b8418c2b698424a3489b",
+        "0xf5180316633d22f866f51b498bbef190921f1ecd26a2f09f7f07320ad5ab89ba",
+        "0x178a99af60153fb1449a73b45b94859c2a7fea9ca41f504f35fd389807541297",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "swap",
+        "protocol": "SwapModule",
+        "description": "ISwapModule(earnUSDe_SwapModule_0).pullAssets(WMNT,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+          "value": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "pullAssets",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x8b3270b6bC2272126dD350944D17bcB23A32C624",
+          "params": [
+            "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "pullAssets",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "pullAssets.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab92ec4ef0eccc6a9a027f332c2dd8ebc52f85af698a858e11053d8e9a3e144aa000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x06df835149104174e88e99b130776b34fc2b0aebf8240cb0f69b81eb5ab098bc",
+        "0xf8623ea35024292d24e3a1c6aaf5c7700f8f84ef024921da561846a99fb350da",
+        "0xcf5d29b5326a18ca13a87f21d473a153ed3276f8a2405adfccbf170ede0e9062",
+        "0x9103362676c95b1de934a7312d990dd3f15b88eab1b93394b666411da9b9ecdb",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "usdt_ethereum_bridge",
+        "protocol": "OFT",
+        "description": "ILayerZeroOFT(USDT_OFT).send{value: any}((30101,0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xcb768e263FB1C62214E7cab4AA8d036D76dc59CC",
+          "value": "any"
+        },
+        "innerParameters": {
+          "_sendParam": {
+            "dstEid": "30101",
+            "to": "0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A",
+            "amountLD": "any",
+            "minAmountLD": "any",
+            "extraOptions": "0x",
+            "composeMsg": "0x",
+            "oftCmd": "0x"
+          },
+          "_fee": {
+            "nativeFee": "any",
+            "lzTokenFee": "0"
+          },
+          "_refundAddress": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "send",
+          "inputs": [
+            {
+              "name": "_sendParam",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.SendParam",
+              "components": [
+                {
+                  "name": "dstEid",
+                  "type": "uint32",
+                  "internalType": "uint32"
+                },
+                {
+                  "name": "to",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "amountLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "minAmountLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "extraOptions",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                },
+                {
+                  "name": "composeMsg",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                },
+                {
+                  "name": "oftCmd",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                }
+              ]
+            },
+            {
+              "name": "_fee",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.MessagingFee",
+              "components": [
+                {
+                  "name": "nativeFee",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "lzTokenFee",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "_refundAddress",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.MessagingReceipt",
+              "components": [
+                {
+                  "name": "guid",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "nonce",
+                  "type": "uint64",
+                  "internalType": "uint64"
+                },
+                {
+                  "name": "fee",
+                  "type": "tuple",
+                  "internalType": "struct ILayerZeroOFT.MessagingFee",
+                  "components": [
+                    {
+                      "name": "nativeFee",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    },
+                    {
+                      "name": "lzTokenFee",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.OFTReceipt",
+              "components": [
+                {
+                  "name": "amountSentLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amountReceivedLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xcb768e263FB1C62214E7cab4AA8d036D76dc59CC",
+          "value": "any",
+          "params": [
+            [
+              "30101",
+              "0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A",
+              "any",
+              "any",
+              "0x",
+              "0x",
+              "0x"
+            ],
+            [
+              "any",
+              "0"
+            ],
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "send",
+            "inputs": [
+              {
+                "name": "_sendParam",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.SendParam",
+                "components": [
+                  {
+                    "name": "dstEid",
+                    "type": "uint32",
+                    "internalType": "uint32"
+                  },
+                  {
+                    "name": "to",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                  },
+                  {
+                    "name": "amountLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "minAmountLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "extraOptions",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  },
+                  {
+                    "name": "composeMsg",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  },
+                  {
+                    "name": "oftCmd",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ]
+              },
+              {
+                "name": "_fee",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.MessagingFee",
+                "components": [
+                  {
+                    "name": "nativeFee",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "lzTokenFee",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "_refundAddress",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.MessagingReceipt",
+                "components": [
+                  {
+                    "name": "guid",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                  },
+                  {
+                    "name": "nonce",
+                    "type": "uint64",
+                    "internalType": "uint64"
+                  },
+                  {
+                    "name": "fee",
+                    "type": "tuple",
+                    "internalType": "struct ILayerZeroOFT.MessagingFee",
+                    "components": [
+                      {
+                        "name": "nativeFee",
+                        "type": "uint256",
+                        "internalType": "uint256"
+                      },
+                      {
+                        "name": "lzTokenFee",
+                        "type": "uint256",
+                        "internalType": "uint256"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.OFTReceipt",
+                "components": [
+                  {
+                    "name": "amountSentLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amountReceivedLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.amountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.minAmountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._fee.nativeFee",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0418a746d688f64d12fa3cbd6c8726c9494d981e89376b5eb0211f1d4b55cd5900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x25ebdf6a96d0315ba0e84823f2d8e9771bbe8f5139cc6a92157048d05c32ef43",
+        "0xb626dc156200a8f8deeffba03e6bcbec76afde3d1b9eef7058a229414aaf6281",
+        "0xac07ed73ef08a87f9c7aeb53ffa786dd2bf39f1588b30d3dbe92dd1232bfe048",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "usde_ethereum_bridge",
+        "protocol": "OFT",
+        "description": "ILayerZeroOFT(USDe).send{value: any}((30101,0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+          "value": "any"
+        },
+        "innerParameters": {
+          "_sendParam": {
+            "dstEid": "30101",
+            "to": "0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A",
+            "amountLD": "any",
+            "minAmountLD": "any",
+            "extraOptions": "0x",
+            "composeMsg": "0x",
+            "oftCmd": "0x"
+          },
+          "_fee": {
+            "nativeFee": "any",
+            "lzTokenFee": "0"
+          },
+          "_refundAddress": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "send",
+          "inputs": [
+            {
+              "name": "_sendParam",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.SendParam",
+              "components": [
+                {
+                  "name": "dstEid",
+                  "type": "uint32",
+                  "internalType": "uint32"
+                },
+                {
+                  "name": "to",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "amountLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "minAmountLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "extraOptions",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                },
+                {
+                  "name": "composeMsg",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                },
+                {
+                  "name": "oftCmd",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                }
+              ]
+            },
+            {
+              "name": "_fee",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.MessagingFee",
+              "components": [
+                {
+                  "name": "nativeFee",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "lzTokenFee",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "_refundAddress",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.MessagingReceipt",
+              "components": [
+                {
+                  "name": "guid",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "nonce",
+                  "type": "uint64",
+                  "internalType": "uint64"
+                },
+                {
+                  "name": "fee",
+                  "type": "tuple",
+                  "internalType": "struct ILayerZeroOFT.MessagingFee",
+                  "components": [
+                    {
+                      "name": "nativeFee",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    },
+                    {
+                      "name": "lzTokenFee",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.OFTReceipt",
+              "components": [
+                {
+                  "name": "amountSentLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amountReceivedLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "value": "any",
+          "params": [
+            [
+              "30101",
+              "0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A",
+              "any",
+              "any",
+              "0x",
+              "0x",
+              "0x"
+            ],
+            [
+              "any",
+              "0"
+            ],
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "send",
+            "inputs": [
+              {
+                "name": "_sendParam",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.SendParam",
+                "components": [
+                  {
+                    "name": "dstEid",
+                    "type": "uint32",
+                    "internalType": "uint32"
+                  },
+                  {
+                    "name": "to",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                  },
+                  {
+                    "name": "amountLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "minAmountLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "extraOptions",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  },
+                  {
+                    "name": "composeMsg",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  },
+                  {
+                    "name": "oftCmd",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ]
+              },
+              {
+                "name": "_fee",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.MessagingFee",
+                "components": [
+                  {
+                    "name": "nativeFee",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "lzTokenFee",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "_refundAddress",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.MessagingReceipt",
+                "components": [
+                  {
+                    "name": "guid",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                  },
+                  {
+                    "name": "nonce",
+                    "type": "uint64",
+                    "internalType": "uint64"
+                  },
+                  {
+                    "name": "fee",
+                    "type": "tuple",
+                    "internalType": "struct ILayerZeroOFT.MessagingFee",
+                    "components": [
+                      {
+                        "name": "nativeFee",
+                        "type": "uint256",
+                        "internalType": "uint256"
+                      },
+                      {
+                        "name": "lzTokenFee",
+                        "type": "uint256",
+                        "internalType": "uint256"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.OFTReceipt",
+                "components": [
+                  {
+                    "name": "amountSentLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amountReceivedLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.amountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.minAmountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._fee.nativeFee",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa338f50e55df4d562de94032c4d0c50b96b3aa434cfae6b5f21dc70bc04d156400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xac8b667642ce702123c8bab8c23502909741caaf4c631acae01b5ac965448518",
+        "0x76caf5cbb4f1eb569a70a70336c766455d6eeace786f42c51fa75eff9615bff6",
+        "0x196ae348800f81bd4a736d26e4c4072dec70bc2546811ff879e32490cad2d7bd",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "susde_ethereum_bridge",
+        "protocol": "OFT",
+        "description": "ILayerZeroOFT(sUSDe).send{value: any}((30101,0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A,any,any,0x,0x,0x),(any,0),earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
+          "value": "any"
+        },
+        "innerParameters": {
+          "_sendParam": {
+            "dstEid": "30101",
+            "to": "0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A",
+            "amountLD": "any",
+            "minAmountLD": "any",
+            "extraOptions": "0x",
+            "composeMsg": "0x",
+            "oftCmd": "0x"
+          },
+          "_fee": {
+            "nativeFee": "any",
+            "lzTokenFee": "0"
+          },
+          "_refundAddress": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "send",
+          "inputs": [
+            {
+              "name": "_sendParam",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.SendParam",
+              "components": [
+                {
+                  "name": "dstEid",
+                  "type": "uint32",
+                  "internalType": "uint32"
+                },
+                {
+                  "name": "to",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "amountLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "minAmountLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "extraOptions",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                },
+                {
+                  "name": "composeMsg",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                },
+                {
+                  "name": "oftCmd",
+                  "type": "bytes",
+                  "internalType": "bytes"
+                }
+              ]
+            },
+            {
+              "name": "_fee",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.MessagingFee",
+              "components": [
+                {
+                  "name": "nativeFee",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "lzTokenFee",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            },
+            {
+              "name": "_refundAddress",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.MessagingReceipt",
+              "components": [
+                {
+                  "name": "guid",
+                  "type": "bytes32",
+                  "internalType": "bytes32"
+                },
+                {
+                  "name": "nonce",
+                  "type": "uint64",
+                  "internalType": "uint64"
+                },
+                {
+                  "name": "fee",
+                  "type": "tuple",
+                  "internalType": "struct ILayerZeroOFT.MessagingFee",
+                  "components": [
+                    {
+                      "name": "nativeFee",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    },
+                    {
+                      "name": "lzTokenFee",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "",
+              "type": "tuple",
+              "internalType": "struct ILayerZeroOFT.OFTReceipt",
+              "components": [
+                {
+                  "name": "amountSentLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "amountReceivedLD",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "value": "any",
+          "params": [
+            [
+              "30101",
+              "0x0000000000000000000000006082A97Bbb2e51d5aa429DE7DAa5a7Cb04c1B17A",
+              "any",
+              "any",
+              "0x",
+              "0x",
+              "0x"
+            ],
+            [
+              "any",
+              "0"
+            ],
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "send",
+            "inputs": [
+              {
+                "name": "_sendParam",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.SendParam",
+                "components": [
+                  {
+                    "name": "dstEid",
+                    "type": "uint32",
+                    "internalType": "uint32"
+                  },
+                  {
+                    "name": "to",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                  },
+                  {
+                    "name": "amountLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "minAmountLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "extraOptions",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  },
+                  {
+                    "name": "composeMsg",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  },
+                  {
+                    "name": "oftCmd",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ]
+              },
+              {
+                "name": "_fee",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.MessagingFee",
+                "components": [
+                  {
+                    "name": "nativeFee",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "lzTokenFee",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "_refundAddress",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.MessagingReceipt",
+                "components": [
+                  {
+                    "name": "guid",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                  },
+                  {
+                    "name": "nonce",
+                    "type": "uint64",
+                    "internalType": "uint64"
+                  },
+                  {
+                    "name": "fee",
+                    "type": "tuple",
+                    "internalType": "struct ILayerZeroOFT.MessagingFee",
+                    "components": [
+                      {
+                        "name": "nativeFee",
+                        "type": "uint256",
+                        "internalType": "uint256"
+                      },
+                      {
+                        "name": "lzTokenFee",
+                        "type": "uint256",
+                        "internalType": "uint256"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "",
+                "type": "tuple",
+                "internalType": "struct ILayerZeroOFT.OFTReceipt",
+                "components": [
+                  {
+                    "name": "amountSentLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  },
+                  {
+                    "name": "amountReceivedLD",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                  }
+                ]
+              }
+            ],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.amountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._sendParam.minAmountLD",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "send._fee.nativeFee",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1b5dc483ef4bd0be529e754addf675cff5d389e9d107e1dca714511a6b86411200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8fa6a70d755538c3175e157f7a5323533d3ed209b13c55ef82f6e415409512d4",
+        "0xcf5d29b5326a18ca13a87f21d473a153ed3276f8a2405adfccbf170ede0e9062",
+        "0x9103362676c95b1de934a7312d990dd3f15b88eab1b93394b666411da9b9ecdb",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IERC20(sUSDe).approve(AavePool,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "params": [
+            "0x458F293454fE0d67EC0655f3672301301DD51422",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a212ffb6c446ff724fabde9288af747b63eef5ca68bbdf2ab2f0b5bc2877f35ae000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8710472b3c953a78890943b1bf8a7bde8d6d3258b7fef3bf936b22a25d8ac751",
+        "0xc277ac157878f403d65e37e6620a26850aa60a2e7056b05853c80718e0532a46",
+        "0x59e46d378faa6ce0162c347e7801acd6784d8f9f55b22b7b74ec1eeb728b0666",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IERC20(USDe).approve(AavePool,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "params": [
+            "0x458F293454fE0d67EC0655f3672301301DD51422",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae651f0885dbf385eb6a5ccdb62b833d37c344275b93b8173d5df526de4215e01000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xeb169b13cea9e30fc9eae8dfafb5ff6340ba7782e5bf7491812e505c2ab76ed2",
+        "0x4af74fca2b5983d3dc2a167edae2e44e16d344b529a09a3553831b0df62b6ef1",
+        "0x9103362676c95b1de934a7312d990dd3f15b88eab1b93394b666411da9b9ecdb",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IERC20(USDT0).approve(AavePool,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+          "params": [
+            "0x458F293454fE0d67EC0655f3672301301DD51422",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afe9ba3e13a9847e07cea9e68b5a7dd369d07bdecf33601b338b8e62b9895c61f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x991314e1f14ad3701d6c3b285ab212e805ad011620aa592413f0638f3a19a339",
+        "0x79379b3b66a9d2bf57fa9bb5b79531ce60ac05c4dc33f0cdc0794742386b42b6",
+        "0x773616ef6090c1a282cb5ab37f75d612942ec1daae285336ff5ddc10962cee7b",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IERC20(WMNT).approve(AavePool,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x78c1b0C915c4FAA5FffA6CAbf0219DA63d7f4cb8",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+          "params": [
+            "0x458F293454fE0d67EC0655f3672301301DD51422",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6da381515779d49cc5decf84e6956df9d7ac5933245e75cb78f1bf44c4efd8b1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6bc3b5a6f1b5145b0c93577659cb331c1ef4dc199d07c4e7de610b7709c2f8bd",
+        "0x0e84465925ae4db53285ba9608fe4c7ccdf149e95a42cff0714c90f6fbb686b1",
+        "0x59e46d378faa6ce0162c347e7801acd6784d8f9f55b22b7b74ec1eeb728b0666",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).setUserEMode(1)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "categoryId": "1"
+        },
+        "abi": {
+          "type": "function",
+          "name": "setUserEMode",
+          "inputs": [
+            {
+              "name": "categoryId",
+              "type": "uint8",
+              "internalType": "uint8"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "1"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "setUserEMode",
+            "inputs": [
+              {
+                "name": "categoryId",
+                "type": "uint8",
+                "internalType": "uint8"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": []
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a66fe4d2e5f53e7a93f4ecdcf1e83c9fb12d45e449e6b93d53e80ff0f050d29a000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x38240acfc24b3475d43c72ae5f962fd9f97e71570a87953a3a342ec1844238e4",
+        "0xec2dcd6e5f8fff7e2b5a011b1ac80d26f48e639c2f61959a7cac29f4c2e7b9f5",
+        "0xac07ed73ef08a87f9c7aeb53ffa786dd2bf39f1588b30d3dbe92dd1232bfe048",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).supply(sUSDe,any,earnUSDe_Subvault_0,0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "amount": "any",
+          "onBehalfOf": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2",
+          "referralCode": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+            "any",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2",
+            "0"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "supply",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "referralCode",
+                "type": "uint16",
+                "internalType": "uint16"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "supply.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1362dca591d413d94b88509aeef658165ffdb29f9df2739b0605e2df3745e0df000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x97c03503b457e9f10cb0fb638c23c2af0aabea9c7c7a45d978404e18160a3103",
+        "0x79379b3b66a9d2bf57fa9bb5b79531ce60ac05c4dc33f0cdc0794742386b42b6",
+        "0x773616ef6090c1a282cb5ab37f75d612942ec1daae285336ff5ddc10962cee7b",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).supply(USDe,any,earnUSDe_Subvault_0,0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "amount": "any",
+          "onBehalfOf": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2",
+          "referralCode": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+            "any",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2",
+            "0"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "supply",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "referralCode",
+                "type": "uint16",
+                "internalType": "uint16"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "supply.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5e449af880c618dfbda03bc0beeaa9ca3475b56f0f9103b794ef72539069d447000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x49c5adeac14da332987b8d7f715e934e12e4bee76253cecbe4f35f3a26b23a5c",
+        "0x78cffa132f2793b7bbf87506f2dfc6a0e7644a405aec5e9fe1a7fc93b47fc5d4",
+        "0xa8e9b6e284fd926aa48312f9e7947f8caceee6feac228eb64cd2e5983b7fe9a4",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).withdraw(sUSDe,any,earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+          "amount": "any",
+          "to": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+            "any",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdraw",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "to",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a731379317fe95a86a8291464801020731b71e877b08145241ea8aa619b23fff5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb33c0732db24827085b92effa5cb0e635f91de453849fdbc6ef2ef0e87d37fdb",
+        "0xb2b960c852ac16c35c2bcd02d28433a1289aa11037cc49616d23e41052eb2f51",
+        "0x196ae348800f81bd4a736d26e4c4072dec70bc2546811ff879e32490cad2d7bd",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).withdraw(USDe,any,earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "amount": "any",
+          "to": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+            "any",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdraw",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "to",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3444950bcfb6b61f49458f69c7e17ec897327113fa7d16409eb5cadd68f0317a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x49b0e873d63c30d12c9c31c69d80db2da8bcebc0cdeb806684dd34ccf4c62dfd",
+        "0x32c9079c9b5a3569961ab4a7c981bfc7d97f8538e0a1ecbb2fb37dee17d58c78",
+        "0xa8e9b6e284fd926aa48312f9e7947f8caceee6feac228eb64cd2e5983b7fe9a4",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).borrow(USDT0,any,2,0,earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+          "amount": "any",
+          "interestRateMode": "2",
+          "referralCode": "0",
+          "onBehalfOf": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrow",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "interestRateMode",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+            "any",
+            "2",
+            "0",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "borrow",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "interestRateMode",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "referralCode",
+                "type": "uint16",
+                "internalType": "uint16"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "borrow.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a03d4ab042bb1aca6aec16c6e997ef583d622afbc5abc83c6e593459faf0f6c6700000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0c42bf919530c19e8fae1885f613be724ea722a9c0b0353809ae3489a221143f",
+        "0xf5180316633d22f866f51b498bbef190921f1ecd26a2f09f7f07320ad5ab89ba",
+        "0x178a99af60153fb1449a73b45b94859c2a7fea9ca41f504f35fd389807541297",
+        "0xce011edb8424b2dc941bc61476c00cc1ef58e8dcf16b8e980ed1928dc4f2f360",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).borrow(WMNT,any,2,0,earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+          "amount": "any",
+          "interestRateMode": "2",
+          "referralCode": "0",
+          "onBehalfOf": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrow",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "interestRateMode",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+            "any",
+            "2",
+            "0",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "borrow",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "interestRateMode",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "referralCode",
+                "type": "uint16",
+                "internalType": "uint16"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "borrow.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af00961a91cae3073aa6b9dee4ed167da4c0c6858bfde1f7385b3061aad6ce76f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbdba5e9a5dc2e4d498e0edb5bcaf42eb821d31b444c9fd138b9573c09c03dfc5",
+        "0xb2b960c852ac16c35c2bcd02d28433a1289aa11037cc49616d23e41052eb2f51",
+        "0x196ae348800f81bd4a736d26e4c4072dec70bc2546811ff879e32490cad2d7bd",
+        "0x50cecc6d646ba06f7c386b8ccc0b8d58c314d1e88f1693b8496ae9aac6cd5b17",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).repay(USDT0,any,2,earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+          "amount": "any",
+          "interestRateMode": "2",
+          "onBehalfOf": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repay",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "interestRateMode",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+            "any",
+            "2",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repay",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "interestRateMode",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repay.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa145edb7feb2a43a140221252a428a2860162f1d411e01fc91435115279a632a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x660b64aae8be8292467b5592f29475ff1e04448398721d3187da2e7f89bd55c6",
+        "0x0e84465925ae4db53285ba9608fe4c7ccdf149e95a42cff0714c90f6fbb686b1",
+        "0x59e46d378faa6ce0162c347e7801acd6784d8f9f55b22b7b74ec1eeb728b0666",
+        "0xd7aa09186de9695ca5265329c8fc17999df4168c571ff5c29b9432e7ebccd494",
+        "0x404cf0c053e364704e2968d18606e85098aa3fdebf7703578bcbc98c7334308a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_ethena",
+        "protocol": "AaveV3",
+        "description": "IAavePoolV3(AavePool).repay(WMNT,any,2,earnUSDe_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+          "amount": "any",
+          "interestRateMode": "2",
+          "onBehalfOf": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repay",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "interestRateMode",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x458F293454fE0d67EC0655f3672301301DD51422",
+          "params": [
+            "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+            "any",
+            "2",
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repay",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "interestRateMode",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repay.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a26a92ceb547690cde426738306f771869830727f6b4f255819f77c41391cefe7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd17a7fe948353a336a233128397484f31615bfc1feb82a7f6c9fd16e45d2e407",
+        "0x4af74fca2b5983d3dc2a167edae2e44e16d344b529a09a3553831b0df62b6ef1",
+        "0x9103362676c95b1de934a7312d990dd3f15b88eab1b93394b666411da9b9ecdb",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    },
+    {
+      "description": {
+        "integration": "merkl",
+        "protocol": "Merkl",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(earnUSDe_Subvault_0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "value": "0"
+        },
+        "innerParameters": {
+          "user": "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2",
+          "operator": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "toggleOperator",
+          "inputs": [
+            {
+              "name": "user",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "operator",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "params": [
+            "0xdF309792cb9feD4C453fA3B6aC0DDc5FBA8fa7f2",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "toggleOperator",
+            "inputs": [
+              {
+                "name": "user",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "operator",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "toggleOperator.operator",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aeba6e0b27a42146bb2496d2c0677556480b0c5a3704ce78c5721ea68c0128913000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0a2c5eed696c755d4af66b57c21c4c9e898c8296be0fb4ed5d40a5841a409c2c",
+        "0xf8623ea35024292d24e3a1c6aaf5c7700f8f84ef024921da561846a99fb350da",
+        "0xcf5d29b5326a18ca13a87f21d473a153ed3276f8a2405adfccbf170ede0e9062",
+        "0x9103362676c95b1de934a7312d990dd3f15b88eab1b93394b666411da9b9ecdb",
+        "0x1edfaf92e354edfb7f8cf29aa39b30d9e7d377935156ba25dbc35a5adae9b721"
+      ]
+    }
+  ]
+}

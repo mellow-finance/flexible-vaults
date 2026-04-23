@@ -221,9 +221,9 @@ abstract contract DeployAbstractScript is Test {
             oracleVersion: oracleVersion,
             timelockController: address(0),
             oracleSubmitter: address(0),
-            deployer: address(0)
+            deployer: address(0),
+            emptyVault: false
         });
-        // emptyVault: false
 
         deployVault.registry().validateDeployConfig(config);
     }

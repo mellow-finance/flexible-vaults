@@ -37,7 +37,7 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
-    address public constant AAVE_CUSTOM_ORACLE = 0xfc2cbcB09EA9bDea2e041E2733E571bc2Bb80aB2;
+    address public constant AAVE_CUSTOM_ORACLE = 0x1e69c602dD0b0881d0E6403228aB31a494031D9D;
 
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
