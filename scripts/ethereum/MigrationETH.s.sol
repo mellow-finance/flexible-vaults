@@ -44,19 +44,24 @@ contract Deploy is Script, Test {
     function run() external {
         Subvault subvault = Subvault(payable(strETH.subvaultAt(1)));
 
+        GGVMigrator migrator = new GGVMigrator(curator);
+
         {
             // grant required permissions in ggv authority
             address authority = IGGVAuthority(address(ggv)).authority();
             vm.mockCall(authority, abi.encodePacked(IAuthority.canCall.selector), abi.encode(true));
 
             // grant required permissions in strETH verifier
-            IVerifier verifier = subvault.verifier();
-            vm.mockCall(address(verifier), abi.encodePacked(IVerifier.verifyCall.selector), abi.encode());
+            vm.mockCall(
+                address(IVerifierModule(migrator.SUBVAULT()).verifier()),
+                abi.encodePacked(IVerifier.verifyCall.selector),
+                abi.encode()
+            );
         }
 
-        GGVMigrator migrator = new GGVMigrator(curator);
-
         vm.startPrank(curator);
+
+        deal(migrator.WETH(), migrator.SUBVAULT(), 20000 ether);
 
         IVerifier.VerificationPayload memory payload;
         uint256 balance = IERC20(wsteth).balanceOf(address(subvault));
@@ -69,7 +74,7 @@ contract Deploy is Script, Test {
 
         uint256 g = gasleft();
 
-        migrator.migrate(0.13 ether);
+        migrator.migrate(0.175 ether, 20000 ether, 10000 ether);
 
         console.log("Gas used:", g - gasleft());
 
