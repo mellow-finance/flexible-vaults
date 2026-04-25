@@ -1,7 +1,7 @@
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Language                              Files     Lines   Blanks  Comments     Code Complexity Complexity/Lines
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Solidity                                 48      5134      715       600     3819        791           853.64
+Solidity                                 49      5307      753       602     3952        815           869.73
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 src/accounts/MellowAccountV1.sol                   35        6         2       27          1             3.70
 src/factories/Factory.sol                         131       22        17       92          8             8.70
@@ -28,7 +28,7 @@ src/modules/VerifierModule.sol                     39       10         4       2
 src/oracles/Oracle.sol                            256       30        23      203         52            25.62
 src/oracles/OracleHelper.sol                      145        8        19      118         35            29.66
 src/oracles/OracleSubmitter.sol                    98       18         4       76         14            18.42
-~rc/oracles/PermissionedChainlinkOracle.sol       127       21        50       56          7            12.50
+~rc/oracles/PermissionedChainlinkOracle.sol       123       21        50       52          5             9.62
 src/permissions/BitmaskVerifier.sol                76        3        36       37          5            13.51
 src/permissions/Consensus.sol                     135       21        14      100         29            29.00
 src/permissions/MellowACL.sol                      64       13         6       45          7            15.56
@@ -46,13 +46,14 @@ src/queues/SignatureRedeemQueue.sol                34        8         1       2
 src/queues/SyncDepositQueue.sol                   134       23        12       99         17            17.17
 src/queues/SyncQueue.sol                           53       11         7       35          5            14.29
 src/strategies/SymbioticStrategy.sol               65        9         2       54          1             1.85
+src/utils/GGVMigrator.sol                         177       38         2      137         26            18.98
 src/utils/SwapModule.sol                          312       35        33      244         69            28.28
 src/vaults/Migrator.sol                           142       23         1      118         12            10.17
 src/vaults/Subvault.sol                            21        3         1       17          0             0.00
 src/vaults/Vault.sol                               56        5         1       50          1             2.00
 src/vaults/VaultConfigurator.sol                   74        7         2       65          0             0.00
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Total                                    48      5134      715       600     3819        791           853.64
+Total                                    49      5307      753       602     3952        815           869.73
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Processed 189590 bytes, 0.190 megabytes (SI)
+Processed 196805 bytes, 0.197 megabytes (SI)
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
