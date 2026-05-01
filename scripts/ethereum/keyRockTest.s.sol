@@ -21,10 +21,10 @@ contract Deploy is DeployAbstractScript {
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0x6C5430717c0e771cAD29bA8CbcaFd5119E2A3934)));
-        _run();
-
-        deposit(Constants.USDC, address(0x717BA1D7b2D98e0F84A62329d91021130107feBE));
+        vault = Vault(payable(address(0x2C9BD30aa18ABBC6BCC0b045d25bb4944630413B)));
+        // _run();
+        // return;
+        deposit(Constants.USDC, address(0xFE52C35425e926672AD194A6256124120FC33035));
         _deploySwapModule(vault.subvaultAt(0));
         //_deploySwapModule(vault.subvaultAt(1));
         // revert("ok");
@@ -74,15 +74,17 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill name and symbol
         vaultName = "test KeyRock";
         vaultSymbol = "tKR";
-
+        // 0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53 keyrock
+        // 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3 andrei
+        // 0x4d551d74e851Bd93Ce44D5F588Ba14623249CDda my
         /// @dev fill admin/operational addresses
-        proxyAdmin = 0x8c5Ade692Ea92eba5d2787a68b5B375D0f4f4c88;
-        lazyVaultAdmin = 0x8c5Ade692Ea92eba5d2787a68b5B375D0f4f4c88;
-        activeVaultAdmin = 0x9dE42108A439d2bB0Ba110076f292c5DdDb8A0D7;
-        oracleUpdater = 0x30545eF21791095dDAe537776d6e7FCc2dE07981;
-        curator = 0x7565b2884d05cd6b304029B40aDEa22679660ED7;
-        feeManagerOwner = 0x8c5Ade692Ea92eba5d2787a68b5B375D0f4f4c88;
-        pauser = 0xdEb7081da6397a364146d61064815D8FD9b7A873;
+        proxyAdmin = 0x278d1ac5625C6ff22258e94Ff57F77e40cDB6Fa0; // 0x8c5Ade692Ea92eba5d2787a68b5B375D0f4f4c88;
+        lazyVaultAdmin = 0x278d1ac5625C6ff22258e94Ff57F77e40cDB6Fa0; // 0x8c5Ade692Ea92eba5d2787a68b5B375D0f4f4c88;
+        activeVaultAdmin = 0xb242e2D255d322a85c12d19B01FC75D956178190; // 0x9dE42108A439d2bB0Ba110076f292c5DdDb8A0D7;
+        oracleUpdater = 0xDe38AE373174A9Db759714aE38Da83dF3Cd05644; // 0x30545eF21791095dDAe537776d6e7FCc2dE07981;
+        curator = 0x58323852338886642B65dcdFA574C87ea1397A04; // 0x7565b2884d05cd6b304029B40aDEa22679660ED7;
+        feeManagerOwner = 0x278d1ac5625C6ff22258e94Ff57F77e40cDB6Fa0; //0x8c5Ade692Ea92eba5d2787a68b5B375D0f4f4c88;
+        pauser = 0xf40cB5504f45551FD291f541eBBcE5747F7433C3; // 0xdEb7081da6397a364146d61064815D8FD9b7A873;
 
         timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin));
         timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, pauser));

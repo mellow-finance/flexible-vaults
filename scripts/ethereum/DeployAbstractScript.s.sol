@@ -157,7 +157,10 @@ abstract contract DeployAbstractScript is Test {
      */
     function stepOne(IDeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
         vault = deployVault.deployVault(config);
+        console.log("=============================================================");
         console.log("Deployed vault at:", address(vault));
+        console.log("=============================================================");
+        logDeployment(address(vault));
     }
 
     /*
