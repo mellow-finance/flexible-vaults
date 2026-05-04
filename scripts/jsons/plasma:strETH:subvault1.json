@@ -10,7 +10,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(syrupUSDT).approve(0xa330Cc14988321160fd26D9F202cBd845328B6e2,any)",
+        "description": "IERC20(syrupUSDT).approve(strETH_SwapModule_1,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xC4374775489CB9C56003BF2C9b12495fC64F0771",
@@ -98,7 +98,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDT0).approve(0xa330Cc14988321160fd26D9F202cBd845328B6e2,any)",
+        "description": "IERC20(USDT0).approve(strETH_SwapModule_1,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
@@ -187,7 +187,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xa330Cc14988321160fd26D9F202cBd845328B6e2).pushAssets(syrupUSDT,any)",
+        "description": "ISwapModule(strETH_SwapModule_1).pushAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xa330Cc14988321160fd26D9F202cBd845328B6e2",
@@ -263,7 +263,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xa330Cc14988321160fd26D9F202cBd845328B6e2).pushAssets(USDT0,any)",
+        "description": "ISwapModule(strETH_SwapModule_1).pushAssets(USDT0,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xa330Cc14988321160fd26D9F202cBd845328B6e2",
@@ -340,7 +340,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xa330Cc14988321160fd26D9F202cBd845328B6e2).pullAssets(syrupUSDT,any)",
+        "description": "ISwapModule(strETH_SwapModule_1).pullAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xa330Cc14988321160fd26D9F202cBd845328B6e2",
@@ -416,7 +416,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xa330Cc14988321160fd26D9F202cBd845328B6e2).pullAssets(USDT0,any)",
+        "description": "ISwapModule(strETH_SwapModule_1).pullAssets(USDT0,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xa330Cc14988321160fd26D9F202cBd845328B6e2",
