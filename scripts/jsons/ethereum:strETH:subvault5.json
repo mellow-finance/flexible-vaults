@@ -10,7 +10,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDC).approve(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4,any)",
+        "description": "IERC20(USDC).approve(strETH_SwapModule_5,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -99,7 +99,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDT).approve(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4,any)",
+        "description": "IERC20(USDT).approve(strETH_SwapModule_5,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -188,7 +188,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USDe).approve(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4,any)",
+        "description": "IERC20(USDe).approve(strETH_SwapModule_5,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
@@ -277,7 +277,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4).pushAssets(USDC,any)",
+        "description": "ISwapModule(strETH_SwapModule_5).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4",
@@ -354,7 +354,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4).pushAssets(USDT,any)",
+        "description": "ISwapModule(strETH_SwapModule_5).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4",
@@ -431,7 +431,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4).pushAssets(USDe,any)",
+        "description": "ISwapModule(strETH_SwapModule_5).pushAssets(USDe,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4",
@@ -507,7 +507,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4).pullAssets(USDC,any)",
+        "description": "ISwapModule(strETH_SwapModule_5).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4",
@@ -584,7 +584,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4).pullAssets(USDT,any)",
+        "description": "ISwapModule(strETH_SwapModule_5).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4",
@@ -661,7 +661,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4).pullAssets(USDe,any)",
+        "description": "ISwapModule(strETH_SwapModule_5).pullAssets(USDe,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xE3B023d3FF076E35448c936dA5e8F6adA6130ca4",
