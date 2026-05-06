@@ -722,7 +722,7 @@
       "description": {
         "integration": "spark_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(SparkLend).supply(wstETH,any,0x3883d8CdCdda03784908cFa2F34ED2cF1604e4d7,0)",
+        "description": "IAavePoolV3(SparkLend).supply(wstETH,any,strETH_Subvault_4,0)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",
@@ -821,7 +821,7 @@
       "description": {
         "integration": "spark_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(SparkLend).withdraw(wstETH,any,0x3883d8CdCdda03784908cFa2F34ED2cF1604e4d7)",
+        "description": "IAavePoolV3(SparkLend).withdraw(wstETH,any,strETH_Subvault_4)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",
@@ -921,7 +921,7 @@
       "description": {
         "integration": "spark_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(SparkLend).borrow(WETH,any,2,0,0x3883d8CdCdda03784908cFa2F34ED2cF1604e4d7)",
+        "description": "IAavePoolV3(SparkLend).borrow(WETH,any,2,0,strETH_Subvault_4)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",
@@ -1033,7 +1033,7 @@
       "description": {
         "integration": "spark_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(SparkLend).repay(WETH,any,2,0x3883d8CdCdda03784908cFa2F34ED2cF1604e4d7)",
+        "description": "IAavePoolV3(SparkLend).repay(WETH,any,2,strETH_Subvault_4)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xC13e21B648A5Ee794902342038FF3aDAB66BE987",

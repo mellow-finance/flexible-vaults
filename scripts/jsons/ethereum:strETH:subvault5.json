@@ -1788,7 +1788,7 @@
       "description": {
         "integration": "wstusr",
         "protocol": "ERC4626",
-        "description": "IERC4626(wstUSR).deposit(any,0xECf3BDE9f50F71edE67E05050123b64b519DF55C)",
+        "description": "IERC4626(wstUSR).deposit(any,strETH_Subvault_5)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
@@ -1877,7 +1877,7 @@
       "description": {
         "integration": "wstusr",
         "protocol": "ERC4626",
-        "description": "IERC4626(wstUSR).mint(any,0xECf3BDE9f50F71edE67E05050123b64b519DF55C)",
+        "description": "IERC4626(wstUSR).mint(any,strETH_Subvault_5)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
@@ -1966,7 +1966,7 @@
       "description": {
         "integration": "wstusr",
         "protocol": "ERC4626",
-        "description": "IERC4626(wstUSR).withdraw(any,0xECf3BDE9f50F71edE67E05050123b64b519DF55C,0xECf3BDE9f50F71edE67E05050123b64b519DF55C)",
+        "description": "IERC4626(wstUSR).withdraw(any,strETH_Subvault_5,strETH_Subvault_5)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
@@ -2067,7 +2067,7 @@
       "description": {
         "integration": "wstusr",
         "protocol": "ERC4626",
-        "description": "IERC4626(wstUSR).redeem(any,0xECf3BDE9f50F71edE67E05050123b64b519DF55C,0xECf3BDE9f50F71edE67E05050123b64b519DF55C)",
+        "description": "IERC4626(wstUSR).redeem(any,strETH_Subvault_5,strETH_Subvault_5)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x1202F5C7b4B9E47a1A484E8B270be34dbbC75055",
@@ -2257,7 +2257,7 @@
       "description": {
         "integration": "usdt_plasma_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bbf9400c09b0f649f3156989f1ccb9c016f943bb,any,any,0x,0x,0x),(any,0),0xECf3BDE9f50F71edE67E05050123b64b519DF55C)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x000000000000000000000000bbf9400c09b0f649f3156989f1ccb9c016f943bb,any,any,0x,0x,0x),(any,0),strETH_Subvault_5)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
@@ -2675,7 +2675,7 @@
       "description": {
         "integration": "wstusr_plasma_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(0xab17c1fE647c37ceb9b96d1c27DD189bf8451978).send{value: any}((30383,0x000000000000000000000000bbf9400c09b0f649f3156989f1ccb9c016f943bb,any,any,0x,0x,0x),(any,0),0xECf3BDE9f50F71edE67E05050123b64b519DF55C)",
+        "description": "ILayerZeroOFT(0xab17c1fE647c37ceb9b96d1c27DD189bf8451978).send{value: any}((30383,0x000000000000000000000000bbf9400c09b0f649f3156989f1ccb9c016f943bb,any,any,0x,0x,0x),(any,0),strETH_Subvault_5)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xab17c1fE647c37ceb9b96d1c27DD189bf8451978",

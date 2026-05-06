@@ -976,7 +976,7 @@
       "description": {
         "integration": "aave_prime_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Prime)).supply(wstETH,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0)",
+        "description": "IAavePoolV3(AavePool(Prime)).supply(wstETH,any,strETH_Subvault_1,0)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x4e033931ad43597d96D6bcc25c280717730B58B1",
@@ -1077,7 +1077,7 @@
       "description": {
         "integration": "aave_prime_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Prime)).withdraw(wstETH,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IAavePoolV3(AavePool(Prime)).withdraw(wstETH,any,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x4e033931ad43597d96D6bcc25c280717730B58B1",
@@ -1178,7 +1178,7 @@
       "description": {
         "integration": "aave_prime_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Prime)).borrow(WETH,any,2,0,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IAavePoolV3(AavePool(Prime)).borrow(WETH,any,2,0,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x4e033931ad43597d96D6bcc25c280717730B58B1",
@@ -1292,7 +1292,7 @@
       "description": {
         "integration": "aave_prime_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Prime)).repay(WETH,any,2,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IAavePoolV3(AavePool(Prime)).repay(WETH,any,2,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x4e033931ad43597d96D6bcc25c280717730B58B1",
@@ -1731,7 +1731,7 @@
       "description": {
         "integration": "aave_core_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).supply(wstETH,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0)",
+        "description": "IAavePoolV3(AavePool(Core)).supply(wstETH,any,strETH_Subvault_1,0)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1832,7 +1832,7 @@
       "description": {
         "integration": "aave_core_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).withdraw(wstETH,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(wstETH,any,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1933,7 +1933,7 @@
       "description": {
         "integration": "aave_core_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).borrow(WETH,any,2,0,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IAavePoolV3(AavePool(Core)).borrow(WETH,any,2,0,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -2046,7 +2046,7 @@
       "description": {
         "integration": "aave_core_wsteth_weth",
         "protocol": "AaveV3",
-        "description": "IAavePoolV3(AavePool(Core)).repay(WETH,any,2,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IAavePoolV3(AavePool(Core)).repay(WETH,any,2,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -2439,7 +2439,7 @@
       "description": {
         "integration": "morpho_wsteth_weth_1",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).supply((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0x)",
+        "description": "IMorpho(Morpho).supply((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,strETH_Subvault_1,0x)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -2645,7 +2645,7 @@
       "description": {
         "integration": "morpho_wsteth_weth_1",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).supplyCollateral((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0x)",
+        "description": "IMorpho(Morpho).supplyCollateral((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,strETH_Subvault_1,0x)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -2812,7 +2812,7 @@
       "description": {
         "integration": "morpho_wsteth_weth_1",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).repay((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0x)",
+        "description": "IMorpho(Morpho).repay((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,strETH_Subvault_1,0x)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -3018,7 +3018,7 @@
       "description": {
         "integration": "morpho_wsteth_weth_1",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).borrow((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IMorpho(Morpho).borrow((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,strETH_Subvault_1,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -3224,7 +3224,7 @@
       "description": {
         "integration": "morpho_wsteth_weth_1",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).withdraw((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IMorpho(Morpho).withdraw((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,any,strETH_Subvault_1,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
@@ -3430,7 +3430,7 @@
       "description": {
         "integration": "morpho_wsteth_weth_1",
         "protocol": "Morpho",
-        "description": "IMorpho(Morpho).withdrawCollateral((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080,0x893aa69FBAA1ee81B536f0FbE3A3453e86290080)",
+        "description": "IMorpho(Morpho).withdrawCollateral((WETH,wstETH,0xbD60A6770b27E084E8617335ddE769241B0e71D8,Morpho_irm,965000000000000000),any,strETH_Subvault_1,strETH_Subvault_1)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",

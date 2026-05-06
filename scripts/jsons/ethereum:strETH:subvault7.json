@@ -187,7 +187,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a).approve(strETH_SwapModule_7,any)",
+        "description": "IERC20(aEthUSDT).approve(strETH_SwapModule_7,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a",
@@ -515,7 +515,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(strETH_SwapModule_7).pushAssets(0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a,any)",
+        "description": "ISwapModule(strETH_SwapModule_7).pushAssets(aEthUSDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
@@ -820,7 +820,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(strETH_SwapModule_7).pullAssets(0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a,any)",
+        "description": "ISwapModule(strETH_SwapModule_7).pullAssets(aEthUSDT,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0xb6451d4EaEC79fD22b69086a5B760a166bd28C52",
@@ -972,7 +972,7 @@
       "description": {
         "integration": "syrup_usdt",
         "protocol": "SyrupUSDT",
-        "description": "ISyrup(syrupUSDT).requestRedeem(any,0x888d2A3E9B600F360a3386c9D2fEdFa658E7fA29)",
+        "description": "ISyrup(syrupUSDT).requestRedeem(any,strETH_Subvault_7)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x356B8d89c1e1239Cbbb9dE4815c39A1474d5BA7D",
@@ -1060,7 +1060,7 @@
       "description": {
         "integration": "syrup_usdt",
         "protocol": "SyrupUSDT",
-        "description": "ISyrupWithdrawalManager(0x86eBDf902d800F2a82038290B6DBb2A5eE29eB8C).removeSharesById(any,any)",
+        "description": "ISyrupWithdrawalManager(MapleWithdrawalManager(syrupUSDT)).removeSharesById(any,any)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x86eBDf902d800F2a82038290B6DBb2A5eE29eB8C",
@@ -1534,7 +1534,7 @@
       "description": {
         "integration": "usdt_pasma_oft_bridge",
         "protocol": "OFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x0000000000000000000000007696731721dddeC1502F35C52d9c83a768227daE,any,any,0x,0x,0x),(any,0),0x888d2A3E9B600F360a3386c9D2fEdFa658E7fA29)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x0000000000000000000000007696731721dddeC1502F35C52d9c83a768227daE,any,any,0x,0x,0x),(any,0),strETH_Subvault_7)",
         "parameters": {
           "caller": "0x5Dbf9287787A5825beCb0321A276C9c92d570a75",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
