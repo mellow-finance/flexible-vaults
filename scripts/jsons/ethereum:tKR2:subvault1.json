@@ -1,0 +1,1303 @@
+{
+  "title": "ethereum:tKR2:subvault1",
+  "vault": "0x6b59026041C560916cC5426c64b2578B95d86143",
+  "subvault": "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+  "chain": "ethereum",
+  "merkle_root": "0xe2fd730931ef7a3baa7ea0824da54e0afc3024dd4240f7ce7ffee33ab6160257",
+  "vault_symbol": "tKR2",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IERC20(USPS).approve(Termmax_Router,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xbF4e3fbE8B60062A00C7a6B1D97d0d49c2971A19",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xbF4e3fbE8B60062A00C7a6B1D97d0d49c2971A19",
+          "params": [
+            "0xC47591F5c023e44931c78D5A993834875b79FB11",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaa8285eb6121fad4fa58ae171555ec6a8a39a1c3316f9827cefed457804ea8f7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x1f15714a8dedc5893c2412c7c7acdf71d9dc5744f90391eab124661e67b6980e",
+        "0x31d132442a82d3d6440fddf4371fabf7888660d66b44a4aa6785b0c4d6959da3",
+        "0xadac2904fe3b1e1c051636fc3f536cdd05365198099b9668b59b000cb0e6466a",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IERC20(RLUSD).approve(Termmax_Router,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0x8292Bb45bf1Ee4d140127049757C2E0fF06317eD",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0x8292Bb45bf1Ee4d140127049757C2E0fF06317eD",
+          "params": [
+            "0xC47591F5c023e44931c78D5A993834875b79FB11",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a66292f1d7d8b3c68c2a5151fb0b0072af3940ec45d4ea6cddbe40d626ce28b7b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb985dc0cd978b89faea45f982a6d7f231c4d75634b2cc5044598543b98b01cbf",
+        "0x9b8d4cdf5e2060c0c44fc4485a9795c1d819b99f6a79be714dfb2f9654f1b968",
+        "0x3c5c95d43c2b33b39d1e4ce82b3c755f30b14cf8bac6b23f5be068e4912ac06b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IERC20(Termmax_Market_RLUSD/USPC_31_JUL_2026_GT).approve(Termmax_Router,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "params": [
+            "0xC47591F5c023e44931c78D5A993834875b79FB11",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a40c825372425c39d2cd77c8dbf2ae052a12d4b5d76d7d150c90763602616599a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x15255f40b9939d982a03b165470f9ab2d631b1713cc5847936394337c80a3e1f",
+        "0x31d132442a82d3d6440fddf4371fabf7888660d66b44a4aa6785b0c4d6959da3",
+        "0xadac2904fe3b1e1c051636fc3f536cdd05365198099b9668b59b000cb0e6466a",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "ITermMaxRouter(Termmax_Router).borrowTokenFromCollateral(tKR2_Subvault_1,Termmax_Market_RLUSD/USPC_31_JUL_2026,any,(any),(any),any,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+          "market": "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+          "collInAmt": "any",
+          "orders": [
+            "any"
+          ],
+          "tokenAmtsWantBuy": [
+            "any"
+          ],
+          "maxDebtAmt": "any",
+          "deadline": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrowTokenFromCollateral",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "market",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "collInAmt",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "orders",
+              "type": "address[]",
+              "internalType": "address[]"
+            },
+            {
+              "name": "tokenAmtsWantBuy",
+              "type": "uint128[]",
+              "internalType": "uint128[]"
+            },
+            {
+              "name": "maxDebtAmt",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "gtId",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "params": [
+            "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+            "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+            "any",
+            {
+              "dynamic_array": {
+                "length": "1",
+                "value": "any"
+              }
+            },
+            {
+              "dynamic_array": {
+                "length": "1",
+                "value": "any"
+              }
+            },
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "borrowTokenFromCollateral",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "market",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "collInAmt",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "orders",
+                "type": "address[]",
+                "internalType": "address[]"
+              },
+              {
+                "name": "tokenAmtsWantBuy",
+                "type": "uint128[]",
+                "internalType": "uint128[]"
+              },
+              {
+                "name": "maxDebtAmt",
+                "type": "uint128",
+                "internalType": "uint128"
+              },
+              {
+                "name": "deadline",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "gtId",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "borrowTokenFromCollateral.collInAmt",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "borrowTokenFromCollateral.orders[0]",
+            "type": "address",
+            "allowedValue": "any"
+          },
+          {
+            "path": "borrowTokenFromCollateral.tokenAmtsWantBuy[0]",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "borrowTokenFromCollateral.maxDebtAmt",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "borrowTokenFromCollateral.deadline",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a93657c64734c04682c240e7b005fcde12a6af23f129627eb88fb1af5596ee9e0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xbbea0f861c756f1a2d643bcafa0ed3430d1f4bf55ae5b6431a9a4a0cb0158a77",
+        "0x9b8d4cdf5e2060c0c44fc4485a9795c1d819b99f6a79be714dfb2f9654f1b968",
+        "0x3c5c95d43c2b33b39d1e4ce82b3c755f30b14cf8bac6b23f5be068e4912ac06b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "ITermMaxRouter(Termmax_Router).borrowTokenFromGt(tKR2_Subvault_1,Termmax_Market_RLUSD/USPC_31_JUL_2026,any,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+          "market": "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+          "gtId": "any",
+          "borrowAmt": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrowTokenFromGt",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "market",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "gtId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "borrowAmt",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "params": [
+            "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+            "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "borrowTokenFromGt",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "market",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "gtId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "borrowAmt",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "borrowTokenFromGt.gtId",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "borrowTokenFromGt.borrowAmt",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac08df174de11ea5807593a693200e5d3c587a1b43c0890db3d636c74e9a8fdcd000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc247ce56b1368754fdaad107655810efbabb97921c5f6c8a628a3a82cd2500c1",
+        "0x6b2987c7b218c3ec9797d4ae15729289a167dc98b803a3d54fbc7ca103122d98",
+        "0x3c5c95d43c2b33b39d1e4ce82b3c755f30b14cf8bac6b23f5be068e4912ac06b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "ITermMaxRouter(Termmax_Router).repayByTokenThroughFt(tKR2_Subvault_1,Termmax_Market_RLUSD/USPC_31_JUL_2026,any,(any),(any),any,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+          "market": "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+          "gtId": "any",
+          "orders": [
+            "any"
+          ],
+          "ftAmtsWantBuy": [
+            "any"
+          ],
+          "maxTokenIn": "any",
+          "deadline": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repayByTokenThroughFt",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "market",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "gtId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "orders",
+              "type": "address[]",
+              "internalType": "address[]"
+            },
+            {
+              "name": "ftAmtsWantBuy",
+              "type": "uint128[]",
+              "internalType": "uint128[]"
+            },
+            {
+              "name": "maxTokenIn",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "returnAmt",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "params": [
+            "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+            "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+            "any",
+            {
+              "dynamic_array": {
+                "length": "1",
+                "value": "any"
+              }
+            },
+            {
+              "dynamic_array": {
+                "length": "1",
+                "value": "any"
+              }
+            },
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repayByTokenThroughFt",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "market",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "gtId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "orders",
+                "type": "address[]",
+                "internalType": "address[]"
+              },
+              {
+                "name": "ftAmtsWantBuy",
+                "type": "uint128[]",
+                "internalType": "uint128[]"
+              },
+              {
+                "name": "maxTokenIn",
+                "type": "uint128",
+                "internalType": "uint128"
+              },
+              {
+                "name": "deadline",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "returnAmt",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repayByTokenThroughFt.gtId",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayByTokenThroughFt.orders[0]",
+            "type": "address",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayByTokenThroughFt.ftAmtsWantBuy[0]",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayByTokenThroughFt.maxTokenIn",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayByTokenThroughFt.deadline",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a51034d610121c02998c5346b6a00118fe32db4ef1027e2611c174b73473f913a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x96e8a13a14bf917d6f246c0acf282ca93936cf1cf96e262510cc70afbc137572",
+        "0x93e0e663f88ff16fc3ff2fbc63036bc28dda828cc6b5a3fda58d4761aa403016",
+        "0x970f9a7e5f4d0d10a70105e4c2484770066458fe4eb6eaec6c7a4034d4488473",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "ITermMaxRouter(Termmax_Router).repayGt(Termmax_Market_RLUSD/USPC_31_JUL_2026,any,any,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "value": "0"
+        },
+        "innerParameters": {
+          "market": "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+          "gtId": "any",
+          "maxRepayAmt": "any",
+          "byDebtToken": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repayGt",
+          "inputs": [
+            {
+              "name": "market",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "gtId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "maxRepayAmt",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "byDebtToken",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "repayAmt",
+              "type": "uint128",
+              "internalType": "uint128"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC47591F5c023e44931c78D5A993834875b79FB11",
+          "params": [
+            "0x4036493e7c6635cf0689e229b05dbab85e5b25c3",
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repayGt",
+            "inputs": [
+              {
+                "name": "market",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "gtId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "maxRepayAmt",
+                "type": "uint128",
+                "internalType": "uint128"
+              },
+              {
+                "name": "byDebtToken",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "repayAmt",
+                "type": "uint128",
+                "internalType": "uint128"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repayGt.gtId",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayGt.maxRepayAmt",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repayGt.byDebtToken",
+            "type": "bool",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aceddbe3b56889652ab742c0df5104417e3603ca5031c00cd9620ed4191e0c8c4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x682dd0b14600d84bd31fc3e9ab4894bd6aacdd6eba01f86e47544fd9177c4212",
+        "0x93e0e663f88ff16fc3ff2fbc63036bc28dda828cc6b5a3fda58d4761aa403016",
+        "0x970f9a7e5f4d0d10a70105e4c2484770066458fe4eb6eaec6c7a4034d4488473",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IGearingToken(Termmax_Market_RLUSD/USPC_31_JUL_2026_GT).addCollateral(any,any(32))",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "id": "any",
+          "collateralData": "any(32)"
+        },
+        "abi": {
+          "type": "function",
+          "name": "addCollateral",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "collateralData",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "params": [
+            "any",
+            "any(32)"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "addCollateral",
+            "inputs": [
+              {
+                "name": "id",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "collateralData",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "addCollateral.id",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "addCollateral.collateralData",
+            "type": "bytes",
+            "allowedValue": "any(32)"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3d870dfdc93da522df879f7d2b09f0b11df0bb250022152c3ea792b883ac1bee000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa43a7a566d9f4e25890932f2be56ddf9ad0cbce935cb27ddd57e7e2064b46e45",
+        "0x19710bd7994d205946a9e527778076a277e8b1eec2e925d5b5156a4dd5430ecd",
+        "0x970f9a7e5f4d0d10a70105e4c2484770066458fe4eb6eaec6c7a4034d4488473",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IGearingToken(Termmax_Market_RLUSD/USPC_31_JUL_2026_GT).removeCollateral(any,any(32))",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "id": "any",
+          "collateralData": "any(32)"
+        },
+        "abi": {
+          "type": "function",
+          "name": "removeCollateral",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "collateralData",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "params": [
+            "any",
+            "any(32)"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "removeCollateral",
+            "inputs": [
+              {
+                "name": "id",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "collateralData",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "removeCollateral.id",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "removeCollateral.collateralData",
+            "type": "bytes",
+            "allowedValue": "any(32)"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5a243f19c4132fee14d97a7d8d6eb87b71163928eb95ed22704ef65b0c70de20000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x561eabdb8cc6640bb7244b3795b7666b4cea49d3e4c69f4b89e18d10e1011d57",
+        "0xc61bf65c4d014f98a679c4bfa15befb7ffd8bc6c17d9bbe9151c8835a3c28192",
+        "0xadac2904fe3b1e1c051636fc3f536cdd05365198099b9668b59b000cb0e6466a",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IGearingToken(Termmax_Market_RLUSD/USPC_31_JUL_2026_GT).repay(any,any,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "id": "any",
+          "repayAmt": "any",
+          "byDebtToken": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repay",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "repayAmt",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "byDebtToken",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "params": [
+            "any",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repay",
+            "inputs": [
+              {
+                "name": "id",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "repayAmt",
+                "type": "uint128",
+                "internalType": "uint128"
+              },
+              {
+                "name": "byDebtToken",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repay.id",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repay.repayAmt",
+            "type": "uint128",
+            "allowedValue": "any"
+          },
+          {
+            "path": "repay.byDebtToken",
+            "type": "bool",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a55326dc3312287e6fd58a2776dbcd98fe90564a5382508367436ddb7f001bb04000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa9da973bdce0bf02cddbaebdef2bc5115921cf4daa2b7df95df1c36889be55c9",
+        "0x19710bd7994d205946a9e527778076a277e8b1eec2e925d5b5156a4dd5430ecd",
+        "0x970f9a7e5f4d0d10a70105e4c2484770066458fe4eb6eaec6c7a4034d4488473",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IGearingToken(Termmax_Market_RLUSD/USPC_31_JUL_2026_GT).augmentDebt(tKR2_Subvault_1,any,any)",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "caller": "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+          "id": "any",
+          "ftAmt": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "augmentDebt",
+          "inputs": [
+            {
+              "name": "caller",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "id",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "ftAmt",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "params": [
+            "0xAa6c2db41F44C6bec8038e00C2e7A487EAFBd329",
+            "any",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "augmentDebt",
+            "inputs": [
+              {
+                "name": "caller",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "id",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "ftAmt",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "augmentDebt.id",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "augmentDebt.ftAmt",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af33506c3ba1b956960bdf9114e706350fb15753c8c67a67c1ab29e8757d1f2cf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xdaa6a11b6c9a55587e583450f3f6507066e285973973e5d1549c462e8f82d29f",
+        "0x6b2987c7b218c3ec9797d4ae15729289a167dc98b803a3d54fbc7ca103122d98",
+        "0x3c5c95d43c2b33b39d1e4ce82b3c755f30b14cf8bac6b23f5be068e4912ac06b"
+      ]
+    },
+    {
+      "description": {
+        "integration": "termmax",
+        "protocol": "TermMax",
+        "description": "IGearingToken(Termmax_Market_RLUSD/USPC_31_JUL_2026_GT).merge((any,any))",
+        "parameters": {
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "value": "0"
+        },
+        "innerParameters": {
+          "ids": [
+            "any",
+            "any"
+          ]
+        },
+        "abi": {
+          "type": "function",
+          "name": "merge",
+          "inputs": [
+            {
+              "name": "ids",
+              "type": "uint256[]",
+              "internalType": "uint256[]"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "newId",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
+          "target": "0xC58B253a954B36195f587036C46Ec6098F77eA7e",
+          "params": [
+            {
+              "dynamic_array": {
+                "length": "2",
+                "value": "any"
+              }
+            }
+          ],
+          "abi": {
+            "type": "function",
+            "name": "merge",
+            "inputs": [
+              {
+                "name": "ids",
+                "type": "uint256[]",
+                "internalType": "uint256[]"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "newId",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "merge.ids[0]",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "merge.ids[1]",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaf14114779b88edc8d480f742f59efe22c59b8db3eb1829e93b5ea7bec686743000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x5b79602784ec2ba10f219b50823400531635dbeff6fe14323ef94650eae5ced8",
+        "0xc61bf65c4d014f98a679c4bfa15befb7ffd8bc6c17d9bbe9151c8835a3c28192",
+        "0xadac2904fe3b1e1c051636fc3f536cdd05365198099b9668b59b000cb0e6466a",
+        "0xcc85680f43de15fc98da10a02695aa57241a4691d32284295c260a96364e6cb5"
+      ]
+    }
+  ]
+}
