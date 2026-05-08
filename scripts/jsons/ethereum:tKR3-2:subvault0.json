@@ -1,0 +1,93 @@
+{
+  "title": "ethereum:tKR3-2:subvault0",
+  "vault": "0x5596c367d808A8c0AB40F3799ee8d97f37a10Ee5",
+  "subvault": "0xbFa623fF4D60D86D33c8d6d5E1eBad7BcF44688C",
+  "chain": "ethereum",
+  "merkle_root": "0xebe33bc54cf7eb92f3df520b30d12ebd00758d904bdc1585b45c147f040b5e00",
+  "vault_symbol": "tKR3-2",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "external_strategy",
+        "protocol": "Custody",
+        "description": "IERC20(USDC).transfer(0x6D9cA36bC9b0123A6bCaBDfd6aBed9c85Ec9453b,any)",
+        "parameters": {
+          "caller": "0x039db8459715b3797C4dfff26C3Ab036460ec500",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x6D9cA36bC9b0123A6bCaBDfd6aBed9c85Ec9453b",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x039db8459715b3797C4dfff26C3Ab036460ec500",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "params": [
+            "0x6D9cA36bC9b0123A6bCaBDfd6aBed9c85Ec9453b",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2f2c605c24d029bfedc05ad93921bc2abc612479dd8a35383b78a37bc14be0d6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": []
+    }
+  ]
+}

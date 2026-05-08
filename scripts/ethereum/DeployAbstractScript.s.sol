@@ -46,6 +46,7 @@ abstract contract DeployAbstractScript is Test {
      *   - run the script with Vault vault = Vault(payable(address(0)))
      *   - then run with the deployed vault address to finalize
      */
+    bool internal isEmptyVault;
     string public vaultName;
     string public vaultSymbol;
     address public proxyAdmin;
@@ -225,7 +226,7 @@ abstract contract DeployAbstractScript is Test {
             timelockController: address(0),
             oracleSubmitter: address(0),
             deployer: address(0),
-            emptyVault: false
+            emptyVault: isEmptyVault
         });
 
         deployVault.registry().validateDeployConfig(config);
