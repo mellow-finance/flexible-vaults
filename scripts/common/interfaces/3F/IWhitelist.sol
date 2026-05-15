@@ -39,4 +39,21 @@ interface IWhitelist {
     ///         the state to users.
     /// @param  a The address whose attestation status is being queried.
     function isWhitelisted(address a) external view returns (WhitelistStatus);
+
+    /// @notice Flips `targets` to the whitelisted state. Owner-only
+    ///         direct path — no validator signatures required. Sig-based
+    ///         submitters use `whitelistBySig` instead.
+    /// @dev    `whenNotPaused`: while paused, `isWhitelisted` is masked to
+    ///         the `Paused*` variants anyway, so flipping bits during
+    ///         pause would be invisible to integrators and arguably
+    ///         misleading. Mirrors the `whenNotPaused` gate on
+    ///         `whitelistBySig`.
+    ///
+    ///         Available only in Phase 1 — once `owner()` is renounced,
+    ///         `onlyOwner` reverts and this entry point is permanently
+    ///         unreachable; quorum-signed `whitelistBySig` remains.
+    /// @param  targets Addresses to whitelist. Already-whitelisted entries
+    ///                 are silently skipped (so the call stays idempotent
+    ///                 and emits one event per actual flip).
+    function whitelist(address[] calldata targets) external;
 }
