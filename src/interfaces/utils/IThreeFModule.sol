@@ -21,28 +21,29 @@ interface IThreeFModule is IFactoryEntity {
     /// @param whitelist            Address of the RequestWhitelist registry. Fixed after initialization.
     /// @param requestFactory       Address of the 3F RequestFactory. Fixed after initialization.
     ///                             Used to verify a request was deployed by the known factory via isRequest().
-    /// @param nonces               Per-request monotonically increasing counters used to cancel
-    ///                             pull-flow offers. Incremented by cancelOffer(request); curators
-    ///                             use nonces[request] + 1 when constructing offers for that request.
     /// @param isValidSignatureFlag Transient flag set to true during pull() to self-authorize
     ///                             the inner request.consume() call via ERC-1271.
     /// @param activeRequests       Set of Request addresses where this module currently holds a
     ///                             PT/YT position. Added on push/pull, removed on burn.
     ///                             Uses EnumerableSet for O(1) add, remove, and indexed access.
+    /// @param allowedRequests      Internal per-request allow list maintained by ALLOW_REQUEST_ROLE.
+    ///                             A request must be present here AND pass factory + whitelist checks
+    ///                             for isRequestAllowed() to return true.
     struct ThreeFModuleStorage {
         address subvault;
         address whitelist;
         address requestFactory;
-        mapping(address => uint256) nonces;
         bool isValidSignatureFlag;
         EnumerableSet.AddressSet activeRequests;
+        mapping(address => bool) allowedRequests;
     }
 
     // Errors
 
     error ZeroValue();
     error NotSubvault();
-    error NotAllowedRequest();
+    error RequestNotAllowed();
+    error RequestNotWhitelisted();
     error AssetMismatch();
     error InsufficientPtAuthorization();
     error InsufficientYtAuthorization();
@@ -55,12 +56,23 @@ interface IThreeFModule is IFactoryEntity {
     error NotRepaid();
     error WithdrawalNotAllowed();
     error InsufficientOutput();
+    error RequestNotActive();
+    error ZeroMinAssetOut();
     error InsufficientBalance();
 
     // Roles
 
-    /// @notice Role authorised to call push(), pull(), burn(), and cancelOffer().
-    function CALLER_ROLE() external view returns (bytes32);
+    /// @notice Role authorised to call push().
+    function PUSH_ROLE() external view returns (bytes32);
+
+    /// @notice Role authorised to call pull().
+    function PULL_ROLE() external view returns (bytes32);
+
+    /// @notice Role authorised to call burn().
+    function BURN_ROLE() external view returns (bytes32);
+
+    /// @notice Role authorised to call allowRequest() and disallowRequest().
+    function ALLOW_REQUEST_ROLE() external view returns (bytes32);
 
     // Immutables
 
@@ -78,12 +90,16 @@ interface IThreeFModule is IFactoryEntity {
     /// @notice Returns the 3F RequestFactory address.
     function requestFactory() external view returns (address);
 
-    /// @notice Returns true if request passes both factory and whitelist checks.
-    /// @dev Equivalent to: requestFactory.isRequest(request) &&
-    ///      whitelist.isWhitelisted(request) == WhitelistStatus.Whitelisted.
-    ///      Used internally before every interaction with a Request contract.
+    /// @notice Returns true if the request passes the internal allow list check.
+    /// @dev Does not check 3F contracts.
     /// @param request Address to validate.
     function isRequestAllowed(address request) external view returns (bool);
+
+    /// @notice Returns true if the request is deployed by the known factory and is whitelisted by 3F.
+    /// @dev Equivalent to: requestFactory.isRequest(request) &&
+    ///      whitelist.isWhitelisted(request) == WhitelistStatus.Whitelisted.
+    /// @param request Address to validate.
+    function isRequestWhitelisted(address request) external view returns (bool);
 
     /// @notice Returns the PT and YT internal balances credited to this module inside a Request.
     /// @dev Wraps request.balancesOf(address(this)).
@@ -124,15 +140,18 @@ interface IThreeFModule is IFactoryEntity {
     /// @return totalAssets Sum of pAssets + yAssets across the requested slice.
     function balance(uint256 offset, uint256 limit) external view returns (uint256 totalAssets);
 
-    /// @notice Returns the current nonce for a given Request. Curators must use nonce(request) + 1
-    ///         when constructing pull-flow offers for that request.
+    /// @notice Returns the next valid offer nonce for pull-flow offers targeting this module on a Request.
+    /// @dev    Wraps IOfferReceiver(request).nonce(address(this)) + 1.
+    ///         Curators must use a nonce >= nextNonce(request) when constructing pull-flow offers;
+    ///         pull() reverts StaleNonce if offer.nonce <= request.nonce(address(this)).
     /// @param request Address of the 3F Request contract.
-    function nonce(address request) external view returns (uint256);
+    function nextNonce(address request) external view returns (uint256);
 
     /// @notice ERC-1271 validation used during pull() to self-authorize request.consume().
     /// @dev Returns the magic value only when:
     ///      - isValidSignatureFlag is true (we are inside an active pull() call),
-    ///      - isRequestAllowed(msg.sender) is true.
+    ///      - isRequestAllowed(msg.sender) is true, and
+    ///      - isRequestWhitelisted(msg.sender) is true.
     ///      The flag is set immediately before request.consume() and cleared after it returns,
     ///      so this cannot be triggered outside the pull() execution context.
     /// @param hash      EIP-712 offer digest produced by the Request contract.
@@ -141,6 +160,17 @@ interface IThreeFModule is IFactoryEntity {
     function isValidSignature(bytes32 hash, bytes calldata signature) external view returns (bytes4 magicValue);
 
     // Mutable functions
+
+    /// @notice Adds a request to the internal allow list.
+    /// @dev Only callable by ALLOW_REQUEST_ROLE. Emits RequestAllowed.
+    ///      isRequestAllowed() still requires factory + whitelist checks to pass.
+    /// @param request Address of the 3F Request contract to allow.
+    function allowRequest(address request) external;
+
+    /// @notice Removes a request from the internal allow list.
+    /// @dev Only callable by ALLOW_REQUEST_ROLE. Emits RequestDisallowed.
+    /// @param request Address of the 3F Request contract to disallow.
+    function disallowRequest(address request) external;
 
     /// @notice Transfers asset from the Subvault into this module.
     /// @dev Only callable by the Subvault.
@@ -153,9 +183,9 @@ interface IThreeFModule is IFactoryEntity {
     function pullAssets(uint256 value) external;
 
     /// @notice Push flow: approves the Request, then mints PT/YT using an off-chain authorization.
-    /// @dev Only callable by CALLER_ROLE.
+    /// @dev Only callable by PUSH_ROLE.
     ///      Checks: isRequestAllowed(request), asset == module asset,
-    ///      mintAuthorization(this) covers maxPt and minYt.
+    ///      mintAuthorization(this) covers maxPt and minYt, module balance >= authPt.
     ///      Approves asset to request, calls request.mint(maxPt, minYt), resets approval.
     ///      PT/YT are credited as internal balances to this module inside the Request; no token
     ///      transfer to the Subvault occurs. Redeemable later via burn().
@@ -166,13 +196,11 @@ interface IThreeFModule is IFactoryEntity {
 
     /// @notice Pull flow: approves the Request, sets the ERC-1271 flag, calls request.consume()
     ///         with an empty signature, then clears the flag.
-    /// @dev Only callable by CALLER_ROLE. Marked nonReentrant.
+    /// @dev Only callable by PULL_ROLE. Marked nonReentrant.
     ///      offer.maker must equal address(this). offer.useCallback must be false.
     ///      Checks: isRequestAllowed(request), asset matches, offer.expiration >= block.timestamp,
-    ///      ptAmount <= offer.amount, ytAmount >= minYt.
-    ///      Approves ptAmount to request before consume and resets after.
-    ///      request.consume() calls back isValidSignature() on this module; the flag makes it return
-    ///      the magic value for the duration of the consume call only.
+    ///      offer.nonce > request.nonce(address(this)), ptAmount <= offer.amount, ytAmount >= minYt.
+    ///      Approves ptAmount to request before consume and resets approval after.
     ///      PT/YT are credited as internal balances to this module inside the Request; no token
     ///      transfer to the Subvault occurs. Redeemable later via burn().
     /// @param request  Address of the 3F Request contract.
@@ -182,30 +210,31 @@ interface IThreeFModule is IFactoryEntity {
     function pull(address request, Offer calldata offer, uint256 ptAmount, uint256 minYt) external;
 
     /// @notice Exit flow: redeems all PT/YT balances from a repaid Request.
-    /// @dev Only callable by CALLER_ROLE.
-    ///      Checks: isRequestAllowed(request), isRepaid(), canWithdraw().
+    /// @dev Only callable by BURN_ROLE.
+    ///      Checks: isRequestAllowed(request), request is active, minAssetOut > 0,
+    ///      isRepaid(), canWithdraw().
     ///      Calls request.burnAll(address(this), address(this)); assets stay in this module.
     ///      Reverts with InsufficientOutput if pAssets + yAssets < minAssetOut.
     /// @param request     Address of the 3F Request contract to exit.
     /// @param minAssetOut Minimum total asset amount (pAssets + yAssets) to accept.
     function burn(address request, uint256 minAssetOut) external;
 
-    /// @notice Cancels all pending pull-flow offers on a Request by incrementing the module nonce.
-    /// @dev Only callable by CALLER_ROLE.
-    ///      Checks: isRequestAllowed(request).
-    ///      Increments storage nonce, then calls request.setNonce(nonce).
-    ///      Any unconsumed offer with a nonce <= the new value becomes permanently invalid.
-    /// @param request Address of the 3F Request contract.
-    function cancelOffer(address request) external;
-
     // Events
 
     event AssetsPushed(uint256 value);
     event AssetsPulled(uint256 value);
 
-    /// @param ptBalance PT internal balance credited to this module inside the Request after mint.
-    /// @param ytBalance YT internal balance credited to this module inside the Request after mint.
-    event Pushed(address indexed request, uint128 maxPt, uint128 minYt, uint128 ptBalance, uint128 ytBalance);
+    event RequestAllowed(address indexed request);
+    event RequestDisallowed(address indexed request);
+
+    /// @notice Emitted when a request is added to the active positions set for the first time.
+    event RequestActivated(address indexed request);
+    /// @notice Emitted when a request is removed from the active positions set after all balances are redeemed.
+    event RequestDeactivated(address indexed request);
+
+    /// @param ptMinted PT amount newly minted to this module in this call (balanceAfter - balanceBefore).
+    /// @param ytMinted YT amount newly minted to this module in this call (balanceAfter - balanceBefore).
+    event Pushed(address indexed request, uint128 maxPt, uint128 minYt, uint128 ptMinted, uint128 ytMinted);
 
     /// @param ytAmount YT internal balance credited to this module inside the Request after consume.
     event Pulled(address indexed request, uint256 ptAmount, uint256 ytAmount);

@@ -3,29 +3,36 @@ pragma solidity 0.8.25;
 
 import {IOfferReceiver, Offer} from "../../scripts/common/interfaces/3F/IOfferReceiver.sol";
 import {IRequest} from "../../scripts/common/interfaces/3F/IRequest.sol";
-
 import {IRequestFactory} from "../../scripts/common/interfaces/3F/IRequestFactory.sol";
 import {IWhitelist} from "../../scripts/common/interfaces/3F/IWhitelist.sol";
 
 import "../interfaces/utils/IThreeFModule.sol";
 
+import "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../libraries/SlotLibrary.sol";
+import "../libraries/TransferLibrary.sol";
 import "../permissions/MellowACL.sol";
 
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    bytes4 private constant _ERC1271_MAGIC_VALUE = 0x1626ba7e;
-    bytes4 private constant _ERC1271_INVALID = 0xffffffff;
+    bytes4 private constant _MAGIC_VALUE = IERC1271.isValidSignature.selector;
+    bytes4 private constant _INVALID_SIGNATURE = bytes4(0xffffffff);
 
     /// @inheritdoc IThreeFModule
-    bytes32 public constant CALLER_ROLE = keccak256("utils.ThreeFModule.CALLER_ROLE");
+    bytes32 public constant PUSH_ROLE = keccak256("utils.ThreeFModule.PUSH_ROLE");
+    /// @inheritdoc IThreeFModule
+    bytes32 public constant PULL_ROLE = keccak256("utils.ThreeFModule.PULL_ROLE");
+    /// @inheritdoc IThreeFModule
+    bytes32 public constant BURN_ROLE = keccak256("utils.ThreeFModule.BURN_ROLE");
+    /// @inheritdoc IThreeFModule
+    bytes32 public constant ALLOW_REQUEST_ROLE = keccak256("utils.ThreeFModule.ALLOW_REQUEST_ROLE");
 
     /// @inheritdoc IThreeFModule
     address public immutable asset;
@@ -66,6 +73,11 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
 
     /// @inheritdoc IThreeFModule
     function isRequestAllowed(address request) public view returns (bool) {
+        return _threeFModuleStorage().allowedRequests[request];
+    }
+
+    /// @inheritdoc IThreeFModule
+    function isRequestWhitelisted(address request) public view returns (bool) {
         ThreeFModuleStorage storage $ = _threeFModuleStorage();
         return IRequestFactory($.requestFactory).isRequest(request)
             && IWhitelist($.whitelist).isWhitelisted(request) == IWhitelist.WhitelistStatus.Whitelisted;
@@ -112,57 +124,77 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
-    function nonce(address request) public view returns (uint256) {
-        return _threeFModuleStorage().nonces[request];
+    function nextNonce(address request) public view returns (uint256) {
+        return IOfferReceiver(request).nonce(address(this)) + 1;
     }
 
     /// @inheritdoc IThreeFModule
     function isValidSignature(bytes32, bytes calldata) external view returns (bytes4) {
-        if (_threeFModuleStorage().isValidSignatureFlag && isRequestAllowed(msg.sender)) {
-            return _ERC1271_MAGIC_VALUE;
+        address request = _msgSender();
+        if (_threeFModuleStorage().isValidSignatureFlag && isRequestAllowed(request) && isRequestWhitelisted(request)) {
+            return _MAGIC_VALUE;
         }
-        return _ERC1271_INVALID;
+        return _INVALID_SIGNATURE;
     }
 
     // Mutable functions
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
-        (address admin, address subvault_, address whitelist_, address requestFactory_, address curator) =
-            abi.decode(data, (address, address, address, address, address));
-        if (
-            admin == address(0) || subvault_ == address(0) || whitelist_ == address(0) || requestFactory_ == address(0)
-                || curator == address(0)
-        ) {
+        (
+            address admin,
+            address subvault_,
+            address whitelist_,
+            address requestFactory_,
+            address[] memory holders,
+            bytes32[] memory roles
+        ) = abi.decode(data, (address, address, address, address, address[], bytes32[]));
+        if (admin == address(0) || subvault_ == address(0) || whitelist_ == address(0) || requestFactory_ == address(0))
+        {
             revert ZeroValue();
         }
         ThreeFModuleStorage storage $ = _threeFModuleStorage();
         $.subvault = subvault_;
         $.whitelist = whitelist_;
         $.requestFactory = requestFactory_;
-        $.isValidSignatureFlag = false;
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
-        _grantRole(CALLER_ROLE, curator);
+        for (uint256 i = 0; i < holders.length; i++) {
+            if (holders[i] == address(0) || roles[i] == bytes32(0)) {
+                revert ZeroValue();
+            }
+            _grantRole(roles[i], holders[i]);
+        }
         emit Initialized(data);
     }
 
     /// @inheritdoc IThreeFModule
-    function pushAssets(uint256 value) external onlySubvault {
-        IERC20(asset).safeTransferFrom(_msgSender(), address(this), value);
+    function allowRequest(address request) external onlyRole(ALLOW_REQUEST_ROLE) {
+        _threeFModuleStorage().allowedRequests[request] = true;
+        emit RequestAllowed(request);
+    }
+
+    /// @inheritdoc IThreeFModule
+    function disallowRequest(address request) external onlyRole(ALLOW_REQUEST_ROLE) {
+        _threeFModuleStorage().allowedRequests[request] = false;
+        emit RequestDisallowed(request);
+    }
+
+    /// @inheritdoc IThreeFModule
+    function pushAssets(uint256 value) external onlySubvault nonReentrant {
+        TransferLibrary.receiveAssets(asset, _msgSender(), value);
         emit AssetsPushed(value);
     }
 
     /// @inheritdoc IThreeFModule
-    function pullAssets(uint256 value) external onlySubvault {
-        IERC20(asset).safeTransfer(_msgSender(), value);
+    function pullAssets(uint256 value) external onlySubvault nonReentrant {
+        TransferLibrary.sendAssets(asset, _msgSender(), value);
         emit AssetsPulled(value);
     }
 
     /// @inheritdoc IThreeFModule
-    function push(address request, uint128 maxPt, uint128 minYt) external onlyRole(CALLER_ROLE) {
-        if (!isRequestAllowed(request)) {
-            revert NotAllowedRequest();
-        }
+    function push(address request, uint128 maxPt, uint128 minYt) external nonReentrant onlyRole(PUSH_ROLE) {
+        _checkRequest(request);
+
         if (IRequest(request).asset() != asset) {
             revert AssetMismatch();
         }
@@ -174,7 +206,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         if (authYt < minYt) {
             revert InsufficientYtAuthorization();
         }
-        if (IERC20(asset).balanceOf(_this) < authPt) {
+        if (TransferLibrary.balanceOf(asset, _this) < authPt) {
             revert InsufficientBalance();
         }
         (uint128 ptBefore, uint128 ytBefore) = IRequest(request).balancesOf(_this);
@@ -182,7 +214,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         IRequest(request).mint(maxPt, minYt);
         IERC20(asset).forceApprove(request, 0);
         (uint128 ptAfter, uint128 ytAfter) = IRequest(request).balancesOf(_this);
-        _threeFModuleStorage().activeRequests.add(request);
+        _activateRequest(_threeFModuleStorage(), request);
         emit Pushed(request, maxPt, minYt, ptAfter - ptBefore, ytAfter - ytBefore);
     }
 
@@ -190,12 +222,11 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     function pull(address request, Offer calldata offer, uint256 ptAmount, uint256 minYt)
         external
         nonReentrant
-        onlyRole(CALLER_ROLE)
+        onlyRole(PULL_ROLE)
     {
+        _checkRequest(request);
+
         address _this = address(this);
-        if (!isRequestAllowed(request)) {
-            revert NotAllowedRequest();
-        }
         if (IRequest(request).asset() != asset) {
             revert AssetMismatch();
         }
@@ -212,10 +243,10 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
             revert ExceedsOfferAmount();
         }
         ThreeFModuleStorage storage $ = _threeFModuleStorage();
-        if (offer.nonce <= $.nonces[request]) {
+        if (offer.nonce <= IOfferReceiver(request).nonce(address(this))) {
             revert StaleNonce();
         }
-        if (IERC20(asset).balanceOf(_this) < ptAmount) {
+        if (TransferLibrary.balanceOf(asset, _this) < ptAmount) {
             revert InsufficientBalance();
         }
         IERC20(asset).forceApprove(request, ptAmount);
@@ -226,14 +257,19 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         if (ytAmount < minYt) {
             revert InsufficientYt();
         }
-        $.activeRequests.add(request);
+        _activateRequest($, request);
         emit Pulled(request, ptAmount, ytAmount);
     }
 
     /// @inheritdoc IThreeFModule
-    function burn(address request, uint256 minAssetOut) external onlyRole(CALLER_ROLE) {
-        if (!isRequestAllowed(request)) {
-            revert NotAllowedRequest();
+    function burn(address request, uint256 minAssetOut) external nonReentrant onlyRole(BURN_ROLE) {
+        _checkRequest(request);
+        ThreeFModuleStorage storage $ = _threeFModuleStorage();
+        if (!$.activeRequests.contains(request)) {
+            revert RequestNotActive();
+        }
+        if (minAssetOut == 0) {
+            revert ZeroMinAssetOut();
         }
         if (!IRequest(request).isRepaid()) {
             revert NotRepaid();
@@ -241,26 +277,37 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         if (!IRequest(request).canWithdraw()) {
             revert WithdrawalNotAllowed();
         }
-        ThreeFModuleStorage storage $ = _threeFModuleStorage();
         (uint256 ptShares, uint256 ytShares, uint256 pAssets, uint256 yAssets) =
             IRequest(request).burnAll(address(this), address(this));
         if (pAssets + yAssets < minAssetOut) {
             revert InsufficientOutput();
         }
-        $.activeRequests.remove(request);
+        _deactivateRequest($, request);
         emit Burned(request, ptShares, ytShares, pAssets, yAssets);
     }
 
-    /// @inheritdoc IThreeFModule
-    function cancelOffer(address request) external onlyRole(CALLER_ROLE) {
-        if (!isRequestAllowed(request)) {
-            revert NotAllowedRequest();
+    // Internal functions
+
+    function _activateRequest(ThreeFModuleStorage storage $, address request) internal {
+        if ($.activeRequests.add(request)) {
+            emit RequestActivated(request);
         }
-        ThreeFModuleStorage storage $ = _threeFModuleStorage();
-        IOfferReceiver(request).setNonce(++$.nonces[request]);
     }
 
-    // Internal functions
+    function _deactivateRequest(ThreeFModuleStorage storage $, address request) internal {
+        if ($.activeRequests.remove(request)) {
+            emit RequestDeactivated(request);
+        }
+    }
+
+    function _checkRequest(address request) internal view {
+        if (!isRequestAllowed(request)) {
+            revert RequestNotAllowed();
+        }
+        if (!isRequestWhitelisted(request)) {
+            revert RequestNotWhitelisted();
+        }
+    }
 
     function _threeFModuleStorage() internal view returns (ThreeFModuleStorage storage $) {
         bytes32 slot = _threeFModuleStorageSlot;

@@ -67,7 +67,7 @@ contract MockRequest {
     uint256 public burnYtS;
     uint256 public burnPA;
     uint256 public burnYA;
-    uint256 public lastNonce;
+    uint256 public makerNonce;
 
     function setAsset(address a) external {
         assetAddr = a;
@@ -149,8 +149,12 @@ contract MockRequest {
         return (burnPtS, burnYtS, burnPA, burnYA);
     }
 
-    function setNonce(uint256 n) external {
-        lastNonce = n;
+    function setMakerNonce(uint256 n) external {
+        makerNonce = n;
+    }
+
+    function nonce(address) external view returns (uint256) {
+        return makerNonce;
     }
 
     function test() internal pure {}
@@ -163,6 +167,11 @@ contract ThreeFModuleTest is Test {
     address curator = vm.createWallet("curator").addr;
     address subvault = vm.createWallet("subvault").addr;
     address stranger = vm.createWallet("stranger").addr;
+
+    bytes32 ALLOW_REQUEST_ROLE;
+    bytes32 PUSH_ROLE;
+    bytes32 PULL_ROLE;
+    bytes32 BURN_ROLE;
 
     MockToken token;
     MockWhitelist whitelist;
@@ -182,17 +191,35 @@ contract ThreeFModuleTest is Test {
         whitelist.set(address(request), IWhitelist.WhitelistStatus.Whitelisted);
 
         ThreeFModule impl = new ThreeFModule("Mellow", 1, address(token));
+        ALLOW_REQUEST_ROLE = impl.ALLOW_REQUEST_ROLE();
+        PUSH_ROLE = impl.PUSH_ROLE();
+        PULL_ROLE = impl.PULL_ROLE();
+        BURN_ROLE = impl.BURN_ROLE();
+
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(address(impl), admin, new bytes(0));
         module = ThreeFModule(address(proxy));
         module.initialize(_initData(admin, subvault, address(whitelist), address(factory), curator));
+        // admin holds ALLOW_REQUEST_ROLE — allow the default request
+        vm.prank(admin);
+        module.allowRequest(address(request));
     }
 
     function _initData(address admin_, address subvault_, address whitelist_, address factory_, address curator_)
         internal
-        pure
+        view
         returns (bytes memory)
     {
-        return abi.encode(admin_, subvault_, whitelist_, factory_, curator_);
+        address[] memory holders = new address[](4);
+        bytes32[] memory roles = new bytes32[](4);
+        holders[0] = admin_;
+        roles[0] = ALLOW_REQUEST_ROLE;
+        holders[1] = curator_;
+        roles[1] = PUSH_ROLE;
+        holders[2] = curator_;
+        roles[2] = PULL_ROLE;
+        holders[3] = curator_;
+        roles[3] = BURN_ROLE;
+        return abi.encode(admin_, subvault_, whitelist_, factory_, holders, roles);
     }
 
     function _offer(uint256 amount, uint256 nonce) internal view returns (Offer memory) {
@@ -227,7 +254,10 @@ contract ThreeFModuleTest is Test {
         assertEq(module.requestFactory(), address(factory));
         assertEq(module.asset(), address(token));
         assertTrue(module.hasRole(module.DEFAULT_ADMIN_ROLE(), admin));
-        assertTrue(module.hasRole(module.CALLER_ROLE(), curator));
+        assertTrue(module.hasRole(ALLOW_REQUEST_ROLE, admin));
+        assertTrue(module.hasRole(PUSH_ROLE, curator));
+        assertTrue(module.hasRole(PULL_ROLE, curator));
+        assertTrue(module.hasRole(BURN_ROLE, curator));
     }
 
     function testInitialize_DoubleInit() external {
@@ -251,8 +281,34 @@ contract ThreeFModuleTest is Test {
         _expectZeroValueOnFreshProxy(admin, subvault, address(whitelist), address(0), curator);
     }
 
-    function testInitialize_ZeroCurator() external {
+    function testInitialize_ZeroHolderInArray() external {
+        // Zero address in holders array triggers ZeroValue in the grant loop
         _expectZeroValueOnFreshProxy(admin, subvault, address(whitelist), address(factory), address(0));
+    }
+
+    function testInitialize_ZeroRoleInArray() external {
+        ThreeFModule impl = new ThreeFModule("Mellow", 2, address(token));
+        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(address(impl), admin, new bytes(0));
+        address[] memory holders = new address[](1);
+        bytes32[] memory roles = new bytes32[](1);
+        holders[0] = curator;
+        roles[0] = bytes32(0); // zero role → revert
+        vm.expectRevert(IThreeFModule.ZeroValue.selector);
+        ThreeFModule(address(proxy)).initialize(
+            abi.encode(admin, subvault, address(whitelist), address(factory), holders, roles)
+        );
+    }
+
+    function testInitialize_EmptyArraysAllowed() external {
+        // Empty holders/roles arrays are valid — just grants no extra roles
+        ThreeFModule impl = new ThreeFModule("Mellow", 2, address(token));
+        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(address(impl), admin, new bytes(0));
+        address[] memory holders = new address[](0);
+        bytes32[] memory roles = new bytes32[](0);
+        ThreeFModule(address(proxy)).initialize(
+            abi.encode(admin, subvault, address(whitelist), address(factory), holders, roles)
+        );
+        assertTrue(ThreeFModule(address(proxy)).hasRole(ThreeFModule(address(proxy)).DEFAULT_ADMIN_ROLE(), admin));
     }
 
     function _expectZeroValueOnFreshProxy(
@@ -268,34 +324,120 @@ contract ThreeFModuleTest is Test {
         ThreeFModule(address(proxy)).initialize(_initData(admin_, subvault_, whitelist_, factory_, curator_));
     }
 
-    // ─── isRequestAllowed ─────────────────────────────────────────────────────
+    // ─── isRequestAllowed (internal list only) ────────────────────────────────
 
-    function testIsRequestAllowed_BothValid() external view {
+    function testIsRequestAllowed_True() external view {
+        // setUp called allowRequest — internal list contains request
         assertTrue(module.isRequestAllowed(address(request)));
     }
 
-    function testIsRequestAllowed_NotInFactory() external {
-        factory.set(address(request), false);
-        assertFalse(module.isRequestAllowed(address(request)));
-    }
-
-    function testIsRequestAllowed_NotWhitelisted() external {
-        whitelist.set(address(request), IWhitelist.WhitelistStatus.NotWhitelisted);
-        assertFalse(module.isRequestAllowed(address(request)));
-    }
-
-    function testIsRequestAllowed_PausedWhitelisted() external {
-        whitelist.set(address(request), IWhitelist.WhitelistStatus.PausedWhitelisted);
-        assertFalse(module.isRequestAllowed(address(request)));
-    }
-
-    function testIsRequestAllowed_PausedNotWhitelisted() external {
-        whitelist.set(address(request), IWhitelist.WhitelistStatus.PausedNotWhitelisted);
+    function testIsRequestAllowed_False() external {
+        // disallow removes from internal list → false regardless of factory/whitelist
+        vm.prank(admin);
+        module.disallowRequest(address(request));
         assertFalse(module.isRequestAllowed(address(request)));
     }
 
     function testIsRequestAllowed_Unknown() external view {
+        // address never added to allow list → false
         assertFalse(module.isRequestAllowed(address(0xdead)));
+    }
+
+    // ─── isRequestWhitelisted (3F factory + whitelist only) ───────────────────
+
+    function testIsRequestWhitelisted_True() external view {
+        assertTrue(module.isRequestWhitelisted(address(request)));
+    }
+
+    function testIsRequestWhitelisted_False() external {
+        factory.set(address(request), false);
+        assertFalse(module.isRequestWhitelisted(address(request)));
+    }
+
+    function testIsRequestWhitelisted_NotWhitelisted() external {
+        whitelist.set(address(request), IWhitelist.WhitelistStatus.NotWhitelisted);
+        assertFalse(module.isRequestWhitelisted(address(request)));
+    }
+
+    function testIsRequestWhitelisted_PausedWhitelisted() external {
+        whitelist.set(address(request), IWhitelist.WhitelistStatus.PausedWhitelisted);
+        assertFalse(module.isRequestWhitelisted(address(request)));
+    }
+
+    function testIsRequestWhitelisted_PausedNotWhitelisted() external {
+        whitelist.set(address(request), IWhitelist.WhitelistStatus.PausedNotWhitelisted);
+        assertFalse(module.isRequestWhitelisted(address(request)));
+    }
+
+    function testIsRequestWhitelisted_Unknown() external view {
+        assertFalse(module.isRequestWhitelisted(address(0xdead)));
+    }
+
+    // ─── allowRequest / disallowRequest ───────────────────────────────────────
+
+    function testAllowRequest_Happy() external {
+        MockRequest req2 = new MockRequest();
+        req2.setAsset(address(token));
+        factory.set(address(req2), true);
+        whitelist.set(address(req2), IWhitelist.WhitelistStatus.Whitelisted);
+
+        assertFalse(module.isRequestAllowed(address(req2)));
+
+        vm.expectEmit(true, false, false, false, address(module));
+        emit IThreeFModule.RequestAllowed(address(req2));
+
+        vm.prank(admin);
+        module.allowRequest(address(req2));
+
+        assertTrue(module.isRequestAllowed(address(req2)));
+    }
+
+    function testAllowRequest_Idempotent() external {
+        // calling allowRequest twice is a no-op — doesn't revert
+        vm.startPrank(admin);
+        module.allowRequest(address(request));
+        vm.stopPrank();
+        assertTrue(module.isRequestAllowed(address(request)));
+    }
+
+    function testAllowRequest_NotRole() external {
+        vm.prank(stranger);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, ALLOW_REQUEST_ROLE
+            )
+        );
+        module.allowRequest(address(request));
+    }
+
+    function testDisallowRequest_Happy() external {
+        assertTrue(module.isRequestAllowed(address(request)));
+
+        vm.expectEmit(true, false, false, false, address(module));
+        emit IThreeFModule.RequestDisallowed(address(request));
+
+        vm.prank(admin);
+        module.disallowRequest(address(request));
+
+        assertFalse(module.isRequestAllowed(address(request)));
+    }
+
+    function testDisallowRequest_Idempotent() external {
+        // disallow on an already-disallowed request — no-op, no revert
+        vm.startPrank(admin);
+        module.disallowRequest(address(request));
+        vm.stopPrank();
+        assertFalse(module.isRequestAllowed(address(request)));
+    }
+
+    function testDisallowRequest_NotRole() external {
+        vm.prank(stranger);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, ALLOW_REQUEST_ROLE
+            )
+        );
+        module.disallowRequest(address(request));
     }
 
     // ─── pushAssets ───────────────────────────────────────────────────────────
@@ -339,18 +481,25 @@ contract ThreeFModuleTest is Test {
     function testPush_NotCaller() external {
         uint128 authPt = 100e18;
         token.mint(address(module), authPt);
-        bytes32 callerRole = module.CALLER_ROLE();
         vm.prank(stranger);
         vm.expectRevert(
-            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, callerRole)
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, PUSH_ROLE)
         );
         module.push(address(request), authPt, 10e18);
     }
 
     function testPush_RequestNotAllowed() external {
+        vm.prank(admin);
+        module.disallowRequest(address(request));
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.RequestNotAllowed.selector);
+        module.push(address(request), 100e18, 10e18);
+    }
+
+    function testPush_RequestNotWhitelisted() external {
         factory.set(address(request), false);
         vm.prank(curator);
-        vm.expectRevert(IThreeFModule.NotAllowedRequest.selector);
+        vm.expectRevert(IThreeFModule.RequestNotWhitelisted.selector);
         module.push(address(request), 100e18, 10e18);
     }
 
@@ -428,21 +577,30 @@ contract ThreeFModuleTest is Test {
         uint256 ptAmount = 50e18;
         token.mint(address(module), 100e18);
         Offer memory offer = _offer(80e18, 1);
-        bytes32 callerRole = module.CALLER_ROLE();
         vm.prank(stranger);
         vm.expectRevert(
-            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, callerRole)
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, PULL_ROLE)
         );
         module.pull(address(request), offer, ptAmount, 1e18);
     }
 
     function testPull_RequestNotAllowed() external {
+        token.mint(address(module), 100e18);
+        Offer memory offer = _offer(80e18, 1);
+        vm.prank(admin);
+        module.disallowRequest(address(request));
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.RequestNotAllowed.selector);
+        module.pull(address(request), offer, 50e18, 1e18);
+    }
+
+    function testPull_RequestNotWhitelisted() external {
         uint256 ptAmount = 50e18;
         factory.set(address(request), false);
         token.mint(address(module), 100e18);
         Offer memory offer = _offer(80e18, 1);
         vm.prank(curator);
-        vm.expectRevert(IThreeFModule.NotAllowedRequest.selector);
+        vm.expectRevert(IThreeFModule.RequestNotWhitelisted.selector);
         module.pull(address(request), offer, ptAmount, 1e18);
     }
 
@@ -556,23 +714,41 @@ contract ThreeFModuleTest is Test {
         assertEq(token.balanceOf(address(request)), ptAmount);
     }
 
-    function testPull_NonceAdvancesAfterCancel() external {
-        uint256 ptAmount = 50e18;
-        vm.prank(curator);
-        module.cancelOffer(address(request)); // stored nonce → 1
+    // ─── nextNonce ────────────────────────────────────────────────────────────
 
+    function testNextNonce_Default() external view {
+        // MockRequest.nonce returns 0 by default; nextNonce returns 1
+        assertEq(module.nextNonce(address(request)), 1);
+    }
+
+    function testNextNonce_AfterRequestNonceAdvances() external {
+        request.setMakerNonce(5);
+        assertEq(module.nextNonce(address(request)), 6);
+    }
+
+    function testNextNonce_OfferAtNextNonceSucceeds() external {
+        // Offer with nonce == nextNonce(request) should not revert StaleNonce
+        uint256 ptAmount = 50e18;
         token.mint(address(module), 100e18);
         request.setYtReturn(5e18);
+        request.setMakerNonce(3);
 
-        Offer memory stale = _offer(80e18, 1); // nonce=1 == stored
+        uint256 validNonce = module.nextNonce(address(request)); // 4
+        Offer memory offer = _offer(80e18, validNonce);
+        vm.prank(curator);
+        module.pull(address(request), offer, ptAmount, 1e18);
+        assertEq(token.balanceOf(address(request)), ptAmount);
+    }
+
+    function testNextNonce_OfferBelowNextNonceReverts() external {
+        uint256 ptAmount = 50e18;
+        token.mint(address(module), 100e18);
+        request.setMakerNonce(3); // nextNonce = 4
+
+        Offer memory stale = _offer(80e18, 3); // nonce == request.nonce → stale
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.StaleNonce.selector);
         module.pull(address(request), stale, ptAmount, 1e18);
-
-        Offer memory fresh = _offer(80e18, 2); // nonce=2 > stored=1
-        vm.prank(curator);
-        module.pull(address(request), fresh, ptAmount, 1e18);
-        assertEq(token.balanceOf(address(request)), ptAmount);
     }
 
     // ─── isValidSignature ─────────────────────────────────────────────────────
@@ -605,19 +781,27 @@ contract ThreeFModuleTest is Test {
 
     function testBurn_NotCaller() external {
         _setupBurn();
-        bytes32 callerRole = module.CALLER_ROLE();
         vm.prank(stranger);
         vm.expectRevert(
-            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, callerRole)
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, BURN_ROLE)
         );
         module.burn(address(request), 0);
     }
 
     function testBurn_RequestNotAllowed() external {
         _setupBurn();
+        vm.prank(admin);
+        module.disallowRequest(address(request));
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.RequestNotAllowed.selector);
+        module.burn(address(request), 0);
+    }
+
+    function testBurn_RequestNotWhitelisted() external {
+        _setupBurn();
         factory.set(address(request), false);
         vm.prank(curator);
-        vm.expectRevert(IThreeFModule.NotAllowedRequest.selector);
+        vm.expectRevert(IThreeFModule.RequestNotWhitelisted.selector);
         module.burn(address(request), 0);
     }
 
@@ -626,7 +810,7 @@ contract ThreeFModuleTest is Test {
         request.setRepaid(false);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.NotRepaid.selector);
-        module.burn(address(request), 0);
+        module.burn(address(request), 1);
     }
 
     function testBurn_CannotWithdraw() external {
@@ -634,7 +818,16 @@ contract ThreeFModuleTest is Test {
         request.setCanWithdraw(false);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.WithdrawalNotAllowed.selector);
-        module.burn(address(request), 0);
+        module.burn(address(request), 1);
+    }
+
+    function testBurn_RequestNotActive() external {
+        // request was never pushed/pulled — not in activeRequests
+        request.setRepaid(true);
+        request.setCanWithdraw(true);
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.RequestNotActive.selector);
+        module.burn(address(request), 1);
     }
 
     function testBurn_InsufficientOutput() external {
@@ -663,53 +856,8 @@ contract ThreeFModuleTest is Test {
     function testBurn_ZeroMinAssetOut() external {
         _setupBurn();
         vm.prank(curator);
-        module.burn(address(request), 0); // no slippage check
-        assertEq(module.activeRequestsCount(), 0);
-    }
-
-    // ─── cancelOffer ──────────────────────────────────────────────────────────
-
-    function testCancelOffer_NotCaller() external {
-        bytes32 callerRole = module.CALLER_ROLE();
-        vm.prank(stranger);
-        vm.expectRevert(
-            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, callerRole)
-        );
-        module.cancelOffer(address(request));
-    }
-
-    function testCancelOffer_RequestNotAllowed() external {
-        factory.set(address(request), false);
-        vm.prank(curator);
-        vm.expectRevert(IThreeFModule.NotAllowedRequest.selector);
-        module.cancelOffer(address(request));
-    }
-
-    function testCancelOffer_Happy() external {
-        assertEq(module.nonce(address(request)), 0);
-
-        vm.prank(curator);
-        module.cancelOffer(address(request));
-        assertEq(module.nonce(address(request)), 1);
-        assertEq(request.lastNonce(), 1);
-
-        vm.prank(curator);
-        module.cancelOffer(address(request));
-        assertEq(module.nonce(address(request)), 2);
-        assertEq(request.lastNonce(), 2);
-    }
-
-    function testCancelOffer_PerRequestIndependence() external {
-        MockRequest request2 = new MockRequest();
-        request2.setAsset(address(token));
-        factory.set(address(request2), true);
-        whitelist.set(address(request2), IWhitelist.WhitelistStatus.Whitelisted);
-
-        vm.prank(curator);
-        module.cancelOffer(address(request)); // nonce[request]=1
-
-        assertEq(module.nonce(address(request)), 1);
-        assertEq(module.nonce(address(request2)), 0); // unaffected
+        vm.expectRevert(IThreeFModule.ZeroMinAssetOut.selector);
+        module.burn(address(request), 0);
     }
 
     // ─── balance / view helpers ───────────────────────────────────────────────
@@ -733,6 +881,8 @@ contract ThreeFModuleTest is Test {
         request2.setMintAuth(50e18, 5e18);
         factory.set(address(request2), true);
         whitelist.set(address(request2), IWhitelist.WhitelistStatus.Whitelisted);
+        vm.prank(admin);
+        module.allowRequest(address(request2));
 
         token.mint(address(module), 150e18);
         vm.startPrank(curator);
@@ -773,5 +923,189 @@ contract ThreeFModuleTest is Test {
         (uint256 pAssets, uint256 yAssets) = module.convertToAssets(address(request));
         assertEq(pAssets, 60e18);
         assertEq(yAssets, 20e18);
+    }
+
+    // ─── activeRequests side effects ──────────────────────────────────────────
+
+    function testActiveRequests_AddDuplicate_NoSideEffect() external {
+        // EnumerableSet.add returns false when already present — no revert, set unchanged
+        uint128 authPt = 100e18;
+        token.mint(address(module), authPt);
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18); // adds request
+
+        assertEq(module.activeRequestsCount(), 1);
+
+        // Second push to the same request — add is a no-op
+        token.mint(address(module), authPt);
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+
+        assertEq(module.activeRequestsCount(), 1); // still 1, no duplicate
+        assertEq(module.activeRequestAt(0), address(request));
+    }
+
+    function testActiveRequests_RemoveNonExisting_RevertsRequestNotActive() external {
+        // burn() now guards against burning a never-activated request
+        request.setRepaid(true);
+        request.setCanWithdraw(true);
+
+        assertEq(module.activeRequestsCount(), 0);
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.RequestNotActive.selector);
+        module.burn(address(request), 1);
+    }
+
+    function testActiveRequests_RemoveAfterBurn_Correct() external {
+        uint128 authPt = 100e18;
+        token.mint(address(module), authPt);
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+        assertEq(module.activeRequestsCount(), 1);
+
+        request.setRepaid(true);
+        request.setCanWithdraw(true);
+        request.setBurnReturn(authPt, 10e18, 90e18, 10e18);
+
+        vm.prank(curator);
+        module.burn(address(request), 1);
+
+        assertEq(module.activeRequestsCount(), 0); // correctly removed
+    }
+
+    // ─── RequestActivated / RequestDeactivated events ─────────────────────────
+
+    function testRequestActivated_EmittedOnFirstPush() external {
+        uint128 authPt = 100e18;
+        token.mint(address(module), authPt);
+
+        vm.expectEmit(true, false, false, false, address(module));
+        emit IThreeFModule.RequestActivated(address(request));
+
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+    }
+
+    function testRequestActivated_NotEmittedOnSecondPush() external {
+        // First push activates
+        uint128 authPt = 100e18;
+        token.mint(address(module), authPt);
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+
+        // Second push to same request: add is a no-op → no RequestActivated event
+        token.mint(address(module), authPt);
+        vm.recordLogs();
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 activatedTopic = keccak256("RequestActivated(address)");
+        for (uint256 i = 0; i < logs.length; i++) {
+            assertNotEq(logs[i].topics[0], activatedTopic, "unexpected RequestActivated on 2nd push");
+        }
+    }
+
+    function testRequestActivated_EmittedOnFirstPull() external {
+        token.mint(address(module), 100e18);
+        request.setYtReturn(5e18);
+        Offer memory offer = _offer(80e18, 1);
+
+        vm.expectEmit(true, false, false, false, address(module));
+        emit IThreeFModule.RequestActivated(address(request));
+
+        vm.prank(curator);
+        module.pull(address(request), offer, 50e18, 1e18);
+    }
+
+    function testRequestActivated_NotEmittedOnPushAfterPull() external {
+        // Pull activates request first
+        token.mint(address(module), 100e18);
+        request.setYtReturn(5e18);
+        Offer memory offer = _offer(80e18, 1);
+        vm.prank(curator);
+        module.pull(address(request), offer, 50e18, 1e18);
+
+        // Push to same already-active request: no RequestActivated
+        token.mint(address(module), 100e18);
+        vm.recordLogs();
+        vm.prank(curator);
+        module.push(address(request), 100e18, 10e18);
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 activatedTopic = keccak256("RequestActivated(address)");
+        for (uint256 i = 0; i < logs.length; i++) {
+            assertNotEq(logs[i].topics[0], activatedTopic, "unexpected RequestActivated on push after pull");
+        }
+    }
+
+    function testRequestActivated_NotEmittedOnPullAfterPush() external {
+        // Push activates request first
+        uint128 authPt = 100e18;
+        token.mint(address(module), authPt);
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+
+        // Pull to same already-active request: no RequestActivated
+        token.mint(address(module), 100e18);
+        request.setYtReturn(5e18);
+        Offer memory offer = _offer(80e18, 1);
+
+        vm.recordLogs();
+        vm.prank(curator);
+        module.pull(address(request), offer, 50e18, 1e18);
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 activatedTopic = keccak256("RequestActivated(address)");
+        for (uint256 i = 0; i < logs.length; i++) {
+            assertNotEq(logs[i].topics[0], activatedTopic, "unexpected RequestActivated on pull after push");
+        }
+    }
+
+    function testRequestDeactivated_EmittedOnBurnAfterPush() external {
+        uint128 authPt = 100e18;
+        token.mint(address(module), authPt);
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+
+        request.setRepaid(true);
+        request.setCanWithdraw(true);
+        request.setBurnReturn(authPt, 10e18, 90e18, 10e18);
+
+        vm.expectEmit(true, false, false, false, address(module));
+        emit IThreeFModule.RequestDeactivated(address(request));
+
+        vm.prank(curator);
+        module.burn(address(request), 1);
+    }
+
+    function testRequestDeactivated_NotEmittedOnBurnWithoutPriorActivation() external {
+        // burn() reverts RequestNotActive before reaching the deactivate path — no event possible
+        request.setRepaid(true);
+        request.setCanWithdraw(true);
+
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.RequestNotActive.selector);
+        module.burn(address(request), 1);
+    }
+
+    function testRequestDeactivated_NotEmittedOnDoubleBurn() external {
+        // First burn deactivates. Second burn hits RequestNotActive before deactivate path.
+        uint128 authPt = 100e18;
+        token.mint(address(module), authPt);
+        vm.prank(curator);
+        module.push(address(request), authPt, 10e18);
+
+        request.setRepaid(true);
+        request.setCanWithdraw(true);
+        request.setBurnReturn(authPt, 10e18, 90e18, 10e18);
+
+        vm.prank(curator);
+        module.burn(address(request), 1); // first burn — emits RequestDeactivated
+
+        // Second burn: request no longer in activeRequests → RequestNotActive (no event emitted)
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.RequestNotActive.selector);
+        module.burn(address(request), 1);
     }
 }
