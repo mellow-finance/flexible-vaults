@@ -120,6 +120,9 @@ interface IRequest is IRequestInteractions {
         view
         returns (uint256 pAssets, uint256 yAssets);
 
+    /// @notice Returns the base name used for PT/YT tokens and EIP-712 domain construction.
+    function name() external view returns (string memory);
+
     /// @notice Redeems all PT and YT balances of owner and sends the underlying assets to receiver.
     /// @param owner    The address whose PT/YT balances are burned.
     /// @param receiver The address that receives the underlying assets.

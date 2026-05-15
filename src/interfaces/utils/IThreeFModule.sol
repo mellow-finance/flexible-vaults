@@ -2,7 +2,7 @@
 pragma solidity 0.8.25;
 
 import {Offer} from "../../../scripts/common/interfaces/3F/IOfferReceiver.sol";
-import {IRequestFactory} from "../../../scripts/common/interfaces/3F/IRequestFactory.sol";
+import {IRequestCallback} from "../../../scripts/common/interfaces/3F/IRequestCallback.sol";
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
@@ -11,31 +11,37 @@ import "../factories/IFactoryEntity.sol";
 /// @title IThreeFModule
 /// @notice Interface for the 3F liquidity module. A Subvault delegates all 3F auction
 ///         Request interactions to this module: push flow (authorization-based mint),
-///         pull flow (signed-offer consume), and exit (burnAll after repayment).
-///         The underlying asset is fixed at deployment and all safety checks are enforced here.
-interface IThreeFModule is IFactoryEntity {
+///         pull flow (standing ERC-1271 offer consumed by the 3F consumer), and exit
+///         (burnAll after repayment). The underlying asset is fixed at deployment and
+///         all safety checks are enforced here.
+interface IThreeFModule is IFactoryEntity, IRequestCallback {
     // Structs
 
+    /// @dev Per-offer authorization stored when authorizeOffer() is called.
+    ///      Keyed by the EIP-712 offer hash. Decremented on each partial fill; deleted when zero.
+    /// @param maxPt Remaining PT the module will lend for this offer.
+    ///              Must be > 0; used as an existence sentinel (0 means no authorization).
+    struct OfferAuthorization {
+        uint256 maxPt;
+    }
+
     /// @dev EIP-7201 namespaced storage layout for the module.
-    /// @param subvault             Address of the Subvault that owns this module.
-    /// @param whitelist            Address of the RequestWhitelist registry. Fixed after initialization.
-    /// @param requestFactory       Address of the 3F RequestFactory. Fixed after initialization.
-    ///                             Used to verify a request was deployed by the known factory via isRequest().
-    /// @param isValidSignatureFlag Transient flag set to true during pull() to self-authorize
-    ///                             the inner request.consume() call via ERC-1271.
-    /// @param activeRequests       Set of Request addresses where this module currently holds a
-    ///                             PT/YT position. Added on push/pull, removed on burn.
-    ///                             Uses EnumerableSet for O(1) add, remove, and indexed access.
-    /// @param allowedRequests      Internal per-request allow list maintained by ALLOW_REQUEST_ROLE.
-    ///                             A request must be present here AND pass factory + whitelist checks
-    ///                             for isRequestAllowed() to return true.
+    /// @param subvault          Address of the Subvault that owns this module.
+    /// @param whitelist         Address of the RequestWhitelist registry. Fixed after initialization.
+    /// @param requestFactory    Address of the 3F RequestFactory. Fixed after initialization.
+    ///                          Used to verify a request was deployed by the known factory via isRequest().
+    /// @param activeRequests    Set of Request addresses where this module currently holds a
+    ///                          PT/YT position. Added on push/pull, removed on burn.
+    /// @param allowedRequests   Internal per-request allow list maintained by ALLOW_REQUEST_ROLE.
+    /// @param authorizedOffers  Standing pull-flow authorizations keyed by EIP-712 offer hash.
+    ///                          Set in authorizeOffer(), cleared in onRequestConsumed().
     struct ThreeFModuleStorage {
         address subvault;
         address whitelist;
         address requestFactory;
-        bool isValidSignatureFlag;
         EnumerableSet.AddressSet activeRequests;
         mapping(address => bool) allowedRequests;
+        mapping(bytes32 => OfferAuthorization) authorizedOffers;
     }
 
     // Errors
@@ -48,10 +54,11 @@ interface IThreeFModule is IFactoryEntity {
     error InsufficientPtAuthorization();
     error InsufficientYtAuthorization();
     error InvalidMaker();
-    error CallbackNotAllowed();
+    error CallbackRequired();
     error OfferExpired();
     error StaleNonce();
-    error ExceedsOfferAmount();
+    error OfferNotAuthorized();
+    error ExceedsPtAuthorization();
     error InsufficientYt();
     error NotRepaid();
     error WithdrawalNotAllowed();
@@ -90,7 +97,7 @@ interface IThreeFModule is IFactoryEntity {
     /// @notice Returns the 3F RequestFactory address.
     function requestFactory() external view returns (address);
 
-    /// @notice Returns true if the request passes the internal allow list check.
+    /// @notice Returns true if the request is present in the internal allow list.
     /// @dev Does not check 3F contracts.
     /// @param request Address to validate.
     function isRequestAllowed(address request) external view returns (bool);
@@ -109,16 +116,13 @@ interface IThreeFModule is IFactoryEntity {
     function balancesOf(address request) external view returns (uint128 pt, uint128 yt);
 
     /// @notice Returns the push-flow mint authorization granted to this module by a Request.
-    /// @dev Wraps request.mintAuthorization(address(this)). Curator should call this before push()
-    ///      to confirm 3F has issued authorization and to size maxPt / minYt arguments.
+    /// @dev Wraps request.mintAuthorization(address(this)).
     /// @param request Address of the 3F Request contract.
     /// @return ptAmount Maximum PT the module is authorized to mint.
     /// @return ytAmount Minimum YT the Request guarantees in return.
     function mintAuthorization(address request) external view returns (uint128 ptAmount, uint128 ytAmount);
 
     /// @notice Estimates the underlying asset payout for this module's current PT/YT position.
-    /// @dev Calls request.balancesOf(address(this)) then request.convertToAssets(pt, yt).
-    ///      Useful for curator to preview the exit value before calling burn().
     /// @param request Address of the 3F Request contract.
     /// @return pAssets Expected principal assets on redemption.
     /// @return yAssets Expected yield assets on redemption.
@@ -132,28 +136,19 @@ interface IThreeFModule is IFactoryEntity {
     function activeRequestAt(uint256 index) external view returns (address);
 
     /// @notice Returns the total value of all PT/YT positions held by this module, denominated in asset.
-    /// @dev    Iterates activeRequests[offset .. offset+limit), calls convertToAssets on each.
-    ///         Use offset/limit to paginate and avoid OOG on large position sets.
-    ///         Call activeRequestsCount() first to know the total length.
     /// @param offset Zero-based start index in the active requests array.
     /// @param limit  Maximum number of requests to include in this call.
     /// @return totalAssets Sum of pAssets + yAssets across the requested slice.
     function balance(uint256 offset, uint256 limit) external view returns (uint256 totalAssets);
 
     /// @notice Returns the next valid offer nonce for pull-flow offers targeting this module on a Request.
-    /// @dev    Wraps IOfferReceiver(request).nonce(address(this)) + 1.
-    ///         Curators must use a nonce >= nextNonce(request) when constructing pull-flow offers;
-    ///         pull() reverts StaleNonce if offer.nonce <= request.nonce(address(this)).
+    /// @dev Wraps IOfferReceiver(request).nonce(address(this)) + 1.
     /// @param request Address of the 3F Request contract.
     function nextNonce(address request) external view returns (uint256);
 
-    /// @notice ERC-1271 validation used during pull() to self-authorize request.consume().
-    /// @dev Returns the magic value only when:
-    ///      - isValidSignatureFlag is true (we are inside an active pull() call),
-    ///      - isRequestAllowed(msg.sender) is true, and
-    ///      - isRequestWhitelisted(msg.sender) is true.
-    ///      The flag is set immediately before request.consume() and cleared after it returns,
-    ///      so this cannot be triggered outside the pull() execution context.
+    /// @notice ERC-1271 validation called by the Request during consume().
+    /// @dev Returns the magic value only when authorizedOffers[hash].maxPt > 0,
+    ///      i.e., the curator has pre-authorized this exact offer via authorizeOffer().
     /// @param hash      EIP-712 offer digest produced by the Request contract.
     /// @param signature Ignored; pass empty bytes.
     /// @return magicValue 0x1626ba7e on success, 0xffffffff otherwise.
@@ -163,7 +158,6 @@ interface IThreeFModule is IFactoryEntity {
 
     /// @notice Adds a request to the internal allow list.
     /// @dev Only callable by ALLOW_REQUEST_ROLE. Emits RequestAllowed.
-    ///      isRequestAllowed() still requires factory + whitelist checks to pass.
     /// @param request Address of the 3F Request contract to allow.
     function allowRequest(address request) external;
 
@@ -187,34 +181,37 @@ interface IThreeFModule is IFactoryEntity {
     ///      Checks: isRequestAllowed(request), asset == module asset,
     ///      mintAuthorization(this) covers maxPt and minYt, module balance >= authPt.
     ///      Approves asset to request, calls request.mint(maxPt, minYt), resets approval.
-    ///      PT/YT are credited as internal balances to this module inside the Request; no token
-    ///      transfer to the Subvault occurs. Redeemable later via burn().
     /// @param request Address of the 3F Request contract.
     /// @param maxPt   Maximum PT amount to commit; reverts if authorized PT < maxPt.
     /// @param minYt   Minimum YT amount to accept; reverts if authorized YT < minYt.
     function push(address request, uint128 maxPt, uint128 minYt) external;
 
-    /// @notice Pull flow: approves the Request, sets the ERC-1271 flag, calls request.consume()
-    ///         with an empty signature, then clears the flag.
-    /// @dev Only callable by PULL_ROLE. Marked nonReentrant.
-    ///      offer.maker must equal address(this). offer.useCallback must be false.
-    ///      Checks: isRequestAllowed(request), asset matches, offer.expiration >= block.timestamp,
-    ///      offer.nonce > request.nonce(address(this)), ptAmount <= offer.amount, ytAmount >= minYt.
-    ///      Approves ptAmount to request before consume and resets approval after.
-    ///      PT/YT are credited as internal balances to this module inside the Request; no token
-    ///      transfer to the Subvault occurs. Redeemable later via burn().
-    /// @param request  Address of the 3F Request contract.
-    /// @param offer    Offer struct; maker must equal address(this), useCallback must be false.
-    /// @param ptAmount PT amount to mint; must be <= offer.amount.
-    /// @param minYt    Minimum YT amount to accept from the consume call.
-    function pull(address request, Offer calldata offer, uint256 ptAmount, uint256 minYt) external;
+    /// @notice Pull flow step 1: constructs and stores an ERC-1271 authorization for a new offer.
+    /// @dev Only callable by PULL_ROLE.
+    ///      Checks: isRequestAllowed(request), asset matches, amount > 0, duration > 0.
+    ///      Constructs the Offer internally: maker=address(this), nonce=nextNonce(request),
+    ///      expiration=block.timestamp+duration, useCallback=true.
+    ///      Stores OfferAuthorization{maxPt=amount} keyed by the EIP-712 offer hash.
+    ///      The 3F consumer then calls request.consume(offer, "", ptAmount) independently;
+    ///      the Request validates isValidSignature and calls back onRequestConsumed().
+    /// @param request        Address of the 3F Request contract.
+    /// @param amount         Maximum PT the module is willing to lend (= Offer.amount); must be > 0.
+    /// @param expectedReturn Total YT expected for a full fill (= Offer.expectedReturn).
+    /// @param duration       Offer validity window in seconds; expiration = block.timestamp + duration.
+    function authorizeOffer(address request, uint256 amount, uint256 expectedReturn, uint256 duration) external;
+
+    /// @notice Cancels all pending offers for a request by advancing its on-chain nonce.
+    /// @dev Only callable by PULL_ROLE. Calls request.setNonce(nonce(address(this)) + 1).
+    ///      Any stored authorizations with nonces <= the new nonce become unreachable via consume().
+    ///      Emits OfferCancelled.
+    /// @param request Address of the 3F Request contract.
+    function cancelOffer(address request) external;
 
     /// @notice Exit flow: redeems all PT/YT balances from a repaid Request.
     /// @dev Only callable by BURN_ROLE.
     ///      Checks: isRequestAllowed(request), request is active, minAssetOut > 0,
     ///      isRepaid(), canWithdraw().
     ///      Calls request.burnAll(address(this), address(this)); assets stay in this module.
-    ///      Reverts with InsufficientOutput if pAssets + yAssets < minAssetOut.
     /// @param request     Address of the 3F Request contract to exit.
     /// @param minAssetOut Minimum total asset amount (pAssets + yAssets) to accept.
     function burn(address request, uint256 minAssetOut) external;
@@ -236,8 +233,26 @@ interface IThreeFModule is IFactoryEntity {
     /// @param ytMinted YT amount newly minted to this module in this call (balanceAfter - balanceBefore).
     event Pushed(address indexed request, uint128 maxPt, uint128 minYt, uint128 ptMinted, uint128 ytMinted);
 
-    /// @param ytAmount YT internal balance credited to this module inside the Request after consume.
-    event Pulled(address indexed request, uint256 ptAmount, uint256 ytAmount);
+    /// @param offerHash     EIP-712 hash of the constructed offer.
+    /// @param amount        Offer.amount — max PT the consumer may pull per consume call.
+    /// @param expectedReturn Offer.expectedReturn — total YT for a full fill.
+    /// @param nonce         Offer.nonce assigned by the module.
+    /// @param expiration    Offer.expiration computed as block.timestamp + duration.
+    event OfferAuthorized(
+        address indexed request,
+        bytes32 indexed offerHash,
+        uint256 amount,
+        uint256 expectedReturn,
+        uint256 nonce,
+        uint256 expiration
+    );
+
+    /// @param newNonce The nonce value that was set on the Request to invalidate pending offers.
+    event OfferCancelled(address indexed request, uint256 newNonce);
+
+    /// @param principal PT amount pulled (approved to the Request in onRequestConsumed).
+    /// @param yield     YT amount credited to this module by the Request.
+    event Pulled(address indexed request, uint256 principal, uint256 yield);
 
     /// @param ptShares PT shares redeemed.
     /// @param ytShares YT shares redeemed.
