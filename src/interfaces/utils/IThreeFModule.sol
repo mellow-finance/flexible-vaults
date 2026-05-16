@@ -210,7 +210,9 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     event OfferCancelled(address indexed request, uint256 newNonce);
 
     /// @notice Emitted inside onRequestConsumed() when the module approves assets to the Request.
-    event OfferConsumed(address indexed request, bytes32 indexed offerHash, Offer offer, uint256 principal, uint256 yield);
+    event OfferConsumed(
+        address indexed request, bytes32 indexed offerHash, Offer offer, uint256 principal, uint256 yield
+    );
 
     /// @param ptShares PT shares redeemed.
     /// @param ytShares YT shares redeemed.
