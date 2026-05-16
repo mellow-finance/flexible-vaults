@@ -84,7 +84,7 @@ contract ThreeFModuleIntegration is Test {
         IRequest(request).authorizeMinting(address(module), authPt, authYt);
         deal(USDC, address(module), authPt);
         vm.prank(curator);
-        module.push(request, authPt, authYt);
+        module.push(request);
     }
 
     /// Simulate OPERATOR repaying `request` and marking it as repaid.
@@ -187,20 +187,20 @@ contract ThreeFModuleIntegration is Test {
 
     function testMintAuthorization_Zero_NO_CI() external {
         address request = _createRequest();
-        (uint128 pt, uint128 yt) = module.mintAuthorization(request);
+        (uint128 pt, uint128 yt) = IRequest(request).mintAuthorization(address(module));
         assertEq(pt, 0);
         assertEq(yt, 0);
     }
 
     function testBalancesOf_Zero_NO_CI() external {
         address request = _createRequest();
-        (uint128 pt, uint128 yt) = module.balancesOf(request);
+        (uint128 pt, uint128 yt) = IRequest(request).balancesOf(address(module));
         assertEq(pt, 0);
         assertEq(yt, 0);
     }
 
     function testBalance_NoPositions_NO_CI() external view {
-        assertEq(module.balance(0, 10), 0);
+        assertEq(module.allowedRequestsCount(), 0);
     }
 
     function testIsValidSignature_OutsidePull_NO_CI() external view {
@@ -215,23 +215,8 @@ contract ThreeFModuleIntegration is Test {
         deal(USDC, address(module), maxPt);
 
         vm.prank(curator);
-        vm.expectRevert(IThreeFModule.InsufficientPtAuthorization.selector);
-        module.push(request, maxPt, 1);
-    }
-
-    function testPush_InsufficientYtAuthorization_NO_CI() external {
-        address request = _createRequest();
-        uint128 authPt = 1000 * uint128(USDC_UNIT);
-        uint128 authYt = 10 * uint128(USDC_UNIT);
-        uint128 minYt = authYt + 1; // one above what the operator authorized
-
-        vm.prank(OPERATOR);
-        IRequest(request).authorizeMinting(address(module), authPt, authYt);
-        deal(USDC, address(module), authPt);
-
-        vm.prank(curator);
-        vm.expectRevert(IThreeFModule.InsufficientYtAuthorization.selector);
-        module.push(request, authPt, minYt);
+        vm.expectRevert(IThreeFModule.InsufficientAuthorization.selector);
+        module.push(request);
     }
 
     function testPush_Happy_NO_CI() external {
@@ -241,10 +226,8 @@ contract ThreeFModuleIntegration is Test {
 
         _pushIntoRequest(request, authPt, authYt);
 
-        (uint128 pt,) = module.balancesOf(request);
+        (uint128 pt,) = IRequest(request).balancesOf(address(module));
         assertGt(pt, 0);
-        assertEq(module.activeRequestsCount(), 1);
-        assertEq(module.activeRequestAt(0), request);
         assertEq(IERC20(USDC).balanceOf(address(module)), 0);
     }
 
@@ -266,25 +249,9 @@ contract ThreeFModuleIntegration is Test {
 
     function testAuthorizeOffer_Happy_NO_CI() external {
         address request = _createRequest();
-        uint256 amount = 500 * USDC_UNIT;
-        uint256 expectedReturn = 50 * USDC_UNIT;
-        uint256 duration = 1 hours;
-
-        // Compute the offer the module will construct
-        uint256 offerNonce = IOfferReceiver(request).nonce(address(module)) + 1;
-        uint256 expiration = block.timestamp + duration;
-        Offer memory expectedOffer = Offer({
-            maker: address(module),
-            amount: amount,
-            expectedReturn: expectedReturn,
-            nonce: offerNonce,
-            expiration: expiration,
-            useCallback: true
-        });
-        bytes32 offerHash = module.hashOffer(request, expectedOffer);
 
         vm.prank(curator);
-        module.authorizeOffer(request, amount, expectedReturn, duration);
+        (, bytes32 offerHash) = module.authorizeOffer(request, 500 * USDC_UNIT, 50 * USDC_UNIT, 1 hours);
 
         assertEq(module.isValidSignature(offerHash, ""), bytes4(0x1626ba7e));
     }
@@ -299,43 +266,19 @@ contract ThreeFModuleIntegration is Test {
 
         deal(USDC, address(module), amount);
 
-        // Read nonce and timestamp before the authorize call to reconstruct the offer
-        uint256 offerNonce = IOfferReceiver(request).nonce(address(module)) + 1;
-        uint256 expiration = block.timestamp + duration;
-
         vm.prank(curator);
-        module.authorizeOffer(request, amount, expectedReturn, duration);
+        (Offer memory offer, bytes32 offerHash) = module.authorizeOffer(request, amount, expectedReturn, duration);
 
-        // Reconstruct the exact offer the module created internally
-        Offer memory offer = Offer({
-            maker: address(module),
-            amount: amount,
-            expectedReturn: expectedReturn,
-            nonce: offerNonce,
-            expiration: expiration,
-            useCallback: true
-        });
-
-        // CONSUMER calls consume with empty signature — ERC-1271 is used
         vm.prank(CONSUMER);
         uint256 ytAmount = IRequest(request).consume(offer, "", ptAmount);
 
-        // PT/YT credited to the module inside the request
-        (uint128 pt, uint128 yt) = module.balancesOf(request);
+        (uint128 pt, uint128 yt) = IRequest(request).balancesOf(address(module));
         assertEq(pt, ptAmount);
-        assertEq(ytAmount, expectedReturn); // full fill: ytAmount == expectedReturn
+        assertEq(ytAmount, expectedReturn);
         assertGt(yt, 0);
 
-        // Module USDC spent, approval consumed by transferFrom
         assertEq(IERC20(USDC).balanceOf(address(module)), 0);
         assertEq(IERC20(USDC).allowance(address(module), request), 0);
-
-        // Request activated
-        assertEq(module.activeRequestsCount(), 1);
-        assertEq(module.activeRequestAt(0), request);
-
-        // Authorization fully consumed (maxPt hit zero)
-        bytes32 offerHash = module.hashOffer(request, offer);
         assertEq(module.isValidSignature(offerHash, ""), bytes4(0xffffffff));
     }
 
@@ -347,74 +290,32 @@ contract ThreeFModuleIntegration is Test {
 
         // ── First offer: 400 USDC ─────────────────────────────────────────────
         uint256 amount1 = 400 * USDC_UNIT;
-        uint256 nonce1 = IOfferReceiver(request).nonce(address(module)) + 1;
         deal(USDC, address(module), amount1);
         vm.prank(curator);
-        module.authorizeOffer(request, amount1, 40 * USDC_UNIT, duration);
-
-        Offer memory offer1 = Offer({
-            maker: address(module),
-            amount: amount1,
-            expectedReturn: 40 * USDC_UNIT,
-            nonce: nonce1,
-            expiration: block.timestamp + duration,
-            useCallback: true
-        });
+        (Offer memory offer1,) = module.authorizeOffer(request, amount1, 40 * USDC_UNIT, duration);
 
         vm.prank(CONSUMER);
         IRequest(request).consume(offer1, "", amount1);
 
-        // Nonce advanced to nonce1 after first consume
-        assertEq(IOfferReceiver(request).nonce(address(module)), nonce1);
-        assertEq(module.activeRequestsCount(), 1);
+        assertEq(IOfferReceiver(request).nonce(address(module)), offer1.nonce);
 
-        // ── Second offer: 600 USDC (nonce2 = nonce1 + 1) ─────────────────────
+        // ── Second offer: 600 USDC (nonce auto-incremented) ───────────────────
         uint256 amount2 = 600 * USDC_UNIT;
-        uint256 nonce2 = IOfferReceiver(request).nonce(address(module)) + 1;
         deal(USDC, address(module), amount2);
         vm.prank(curator);
-        module.authorizeOffer(request, amount2, 60 * USDC_UNIT, duration);
-
-        Offer memory offer2 = Offer({
-            maker: address(module),
-            amount: amount2,
-            expectedReturn: 60 * USDC_UNIT,
-            nonce: nonce2,
-            expiration: block.timestamp + duration,
-            useCallback: true
-        });
+        (Offer memory offer2,) = module.authorizeOffer(request, amount2, 60 * USDC_UNIT, duration);
 
         vm.prank(CONSUMER);
         IRequest(request).consume(offer2, "", amount2);
 
         // Both fills complete — combined PT/YT position
-        (uint128 pt, uint128 yt) = module.balancesOf(request);
+        (uint128 pt, uint128 yt) = IRequest(request).balancesOf(address(module));
         assertGt(pt, 0);
         assertGt(yt, 0);
         assertEq(IERC20(USDC).balanceOf(address(module)), 0);
-        assertEq(module.activeRequestsCount(), 1); // still the same request
     }
 
     // ─── burn flow ────────────────────────────────────────────────────────────
-
-    function testBurn_RequestNotActive_NO_CI() external {
-        address request = _createRequest();
-
-        // No push/pull done — request is allowed+whitelisted but not active
-        vm.prank(curator);
-        vm.expectRevert(IThreeFModule.RequestNotActive.selector);
-        module.burn(request, 1);
-    }
-
-    function testBurn_ZeroMinAssetOut_NO_CI() external {
-        address request = _createRequest();
-        _pushIntoRequest(request, 1000 * uint128(USDC_UNIT), 100 * uint128(USDC_UNIT));
-
-        // Active but minAssetOut == 0 — checked before isRepaid
-        vm.prank(curator);
-        vm.expectRevert(IThreeFModule.ZeroMinAssetOut.selector);
-        module.burn(request, 0);
-    }
 
     function testBurn_NotRepaid_NO_CI() external {
         address request = _createRequest();
@@ -422,20 +323,7 @@ contract ThreeFModuleIntegration is Test {
 
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.NotRepaid.selector);
-        module.burn(request, 1);
-    }
-
-    function testBurn_InsufficientOutput_NO_CI() external {
-        address request = _createRequest();
-        uint128 authPt = 1000 * uint128(USDC_UNIT);
-        uint128 authYt = 100 * uint128(USDC_UNIT);
-
-        _pushIntoRequest(request, authPt, authYt);
-        _repayRequest(request, authPt);
-
-        vm.prank(curator);
-        vm.expectRevert(IThreeFModule.InsufficientOutput.selector);
-        module.burn(request, type(uint256).max);
+        module.burn(request);
     }
 
     function testBurn_Happy_NO_CI() external {
@@ -451,9 +339,8 @@ contract ThreeFModuleIntegration is Test {
 
         uint256 moduleBefore = IERC20(USDC).balanceOf(address(module));
         vm.prank(curator);
-        module.burn(request, 1);
+        module.burn(request);
 
         assertGt(IERC20(USDC).balanceOf(address(module)), moduleBefore);
-        assertEq(module.activeRequestsCount(), 0);
     }
 }
