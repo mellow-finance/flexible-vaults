@@ -153,10 +153,20 @@ contract MockRequest {
         lastSetNonce = n;
     }
 
+    bool public overrideMintResult;
+    uint128 public mintPtResult;
+    uint128 public mintYtResult;
+
+    function setMintResult(uint128 pt, uint128 yt) external {
+        mintPtResult = pt;
+        mintYtResult = yt;
+        overrideMintResult = true;
+    }
+
     function mint(uint128, uint128) external {
         IERC20(assetAddr).transferFrom(msg.sender, address(this), authPt);
-        _balPt += authPt;
-        _balYt += authYt;
+        _balPt += overrideMintResult ? mintPtResult : authPt;
+        _balYt += overrideMintResult ? mintYtResult : authYt;
     }
 
     /// @dev Simulates the real Request.consume() flow:
@@ -444,10 +454,11 @@ contract ThreeFModuleTest is Test {
         module.allowRequest(address(req2));
     }
 
-    function testAllowRequest_Idempotent() external {
+    function testAllowRequest_AlreadyAllowed() external {
+        // setUp already calls allowRequest once; a second call reverts
         vm.prank(admin);
+        vm.expectRevert(IThreeFModule.RequestAlreadyAllowed.selector);
         module.allowRequest(address(request));
-        assertTrue(module.isRequestAllowed(address(request)));
     }
 
     function testAllowRequest_NotRole() external {
@@ -472,10 +483,14 @@ contract ThreeFModuleTest is Test {
         assertFalse(module.isRequestAllowed(address(request)));
     }
 
-    function testDisallowRequest_Idempotent() external {
+    function testDisallowRequest_NotAllowed() external {
+        // request not in allow set — remove() returns false → RequestNotAllowed
         vm.prank(admin);
-        module.disallowRequest(address(request));
-        assertFalse(module.isRequestAllowed(address(request)));
+        module.disallowRequest(address(request)); // first call succeeds
+
+        vm.prank(admin);
+        vm.expectRevert(IThreeFModule.RequestNotAllowed.selector);
+        module.disallowRequest(address(request)); // already removed
     }
 
     function testDisallowRequest_NotRole() external {
@@ -582,6 +597,24 @@ contract ThreeFModuleTest is Test {
         assertEq(token.balanceOf(address(module)), 0);
         assertEq(token.balanceOf(address(request)), 100e18);
         assertEq(token.allowance(address(module), address(request)), 0);
+    }
+
+    function testPush_SlippageExceeded_ExcessPt() external {
+        // mint() credits more PT than authorized → ptMinted > maxPt
+        request.setMintResult(200e18, 10e18); // authPt=100e18 but mock adds 200e18
+        token.mint(address(module), 100e18);
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.SlippageExceeded.selector);
+        module.push(address(request));
+    }
+
+    function testPush_SlippageExceeded_InsufficientYt() external {
+        // mint() credits less YT than authorized → ytMinted < minYt
+        request.setMintResult(100e18, 5e18); // authYt=10e18 but mock adds 5e18
+        token.mint(address(module), 100e18);
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.SlippageExceeded.selector);
+        module.push(address(request));
     }
 
     function testPush_DoesNotDuplicateActiveRequest() external {
@@ -1016,6 +1049,19 @@ contract ThreeFModuleTest is Test {
         module.burn(address(request));
 
         assertEq(token.balanceOf(address(module)), totalOut);
+        assertEq(token.allowance(address(module), address(request)), 0);
+    }
+
+    function testBurn_ClearsLingeringApproval() external {
+        _setupBurn();
+        // Simulate a leftover approval (e.g. from a previously failed consume)
+        vm.prank(address(module));
+        token.approve(address(request), 999e18);
+        assertGt(token.allowance(address(module), address(request)), 0);
+
+        vm.prank(curator);
+        module.burn(address(request));
+
         assertEq(token.allowance(address(module), address(request)), 0);
     }
 

@@ -1,10 +1,18 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import {Offer} from "../../../scripts/common/interfaces/3F/IOfferReceiver.sol";
+import {IOfferReceiver, Offer} from "../../../scripts/common/interfaces/3F/IOfferReceiver.sol";
+import {IRequest} from "../../../scripts/common/interfaces/3F/IRequest.sol";
 import {IRequestCallback} from "../../../scripts/common/interfaces/3F/IRequestCallback.sol";
+import {IRequestFactory} from "../../../scripts/common/interfaces/3F/IRequestFactory.sol";
+import {IWhitelist} from "../../../scripts/common/interfaces/3F/IWhitelist.sol";
 
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "../factories/IFactoryEntity.sol";
@@ -19,10 +27,12 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     // Structs
 
     /// @dev Per-offer authorization stored when authorizeOffer() is called.
-    ///      Keyed by the EIP-712 offer hash. maxPt decremented on each partial fill; deleted when zero.
-    /// @param maxPt  Remaining PT the module will lend for this offer.
+    ///      Keyed by the EIP-712 offer hash. Deleted unconditionally in onRequestConsumed() because
+    ///      the 3F nonce advances on every consume, making the same offer hash unreplayable.
+    /// @param maxPt  Maximum PT the module will lend for this offer.
     ///               Must be > 0; used as an existence sentinel (0 means no authorization).
-    /// @param minYt  Minimum YT the module requires per consume callback.
+    /// @param minYt  Minimum YT for a full fill (= Offer.expectedReturn).
+    ///               Yield floor for a partial fill: mulDiv(minYt, principal, offer.amount).
     struct OfferAuthorization {
         uint256 maxPt;
         uint256 minYt;
@@ -53,13 +63,10 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     error RequestNotAllowed();
     error RequestWrongFactory();
     error RequestNotWhitelisted();
+    error RequestAlreadyAllowed();
     error AssetMismatch();
     error InsufficientAuthorization();
     error SlippageExceeded();
-    error InvalidMaker();
-    error CallbackRequired();
-    error OfferExpired();
-    error StaleNonce();
     error OfferNotAuthorized();
     error ExceedsPtAuthorization();
     error InsufficientYt();
@@ -122,7 +129,8 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
 
     /// @notice Adds a request to the internal allow set after validating asset and whitelist.
     /// @dev Only callable by ALLOW_REQUEST_ROLE. Validates asset match and whitelist status.
-    ///      Emits RequestAllowed.
+    ///      Reverts RequestAlreadyAllowed if the request is already in the set.
+    ///      Emits RequestAllowed on success.
     /// @param request Address of the 3F Request contract to allow.
     function allowRequest(address request) external;
 
@@ -149,8 +157,8 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     ///      SlippageExceeded. Within a single atomic transaction both sides resolve to the same
     ///      storage values, so the 3F-side check is a tautological no-op.
     ///
-    ///      - Authorization is one-time use: Request.mint clears it on success, so a second push()
-    ///        on the same request will find maxPt == 0 and revert InsufficientAuthorization.
+    ///      Authorization is one-time use: Request.mint clears it on success, so a second push()
+    ///      on the same request returns (0, 0) and reverts InsufficientAuthorization.
     ///
     ///      Post-conditions verified defensively after mint() returns:
     ///      - ptMinted <= maxPt  )
@@ -186,7 +194,8 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
 
     /// @notice Exit flow: redeems all PT/YT balances from a repaid Request.
     /// @dev Only callable by BURN_ROLE.
-    ///      Checks: isRequestAllowed(request), isRepaid(), canWithdraw().
+    ///      Checks: asset match, factory membership (isRequest()), isRepaid(), canWithdraw().
+    ///      Does NOT require the request to be in the internal allow set.
     ///      Calls request.burnAll(address(this), address(this)); assets stay in this module.
     /// @param request Address of the 3F Request contract to exit.
     function burn(address request) external;
@@ -199,17 +208,23 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     event RequestAllowed(address indexed request);
     event RequestDisallowed(address indexed request);
 
-    /// @param ptMinted PT amount newly minted to this module in this call.
-    /// @param ytMinted YT amount newly minted to this module in this call.
+    /// @param maxPt    Authorization PT cap read from mintAuthorization (= amount deposited).
+    /// @param minYt    Authorization YT floor read from mintAuthorization.
+    /// @param ptMinted PT credited to this module after mint().
+    /// @param ytMinted YT credited to this module after mint().
     event Pushed(address indexed request, uint128 maxPt, uint128 minYt, uint128 ptMinted, uint128 ytMinted);
 
-    /// @param offerHash EIP-712 hash of the constructed offer.
+    /// @param offerHash EIP-712 hash of the constructed offer; key in authorizedOffers storage.
+    /// @param offer     The full Offer struct constructed by the module.
     event OfferAuthorized(address indexed request, bytes32 indexed offerHash, Offer offer);
 
-    /// @param newNonce The nonce value that was set on the Request to invalidate pending offers.
+    /// @param newNonce The nonce set on the Request to invalidate all pending offers for this maker.
     event OfferCancelled(address indexed request, uint256 newNonce);
 
-    /// @notice Emitted inside onRequestConsumed() when the module approves assets to the Request.
+    /// @param offerHash EIP-712 hash of the consumed offer.
+    /// @param offer     The full Offer struct as received in the callback.
+    /// @param principal PT amount transferred from this module to the Request.
+    /// @param yield     YT amount the 3F consumer credited to this module.
     event OfferConsumed(
         address indexed request, bytes32 indexed offerHash, Offer offer, uint256 principal, uint256 yield
     );

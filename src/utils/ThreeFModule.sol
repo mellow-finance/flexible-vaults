@@ -1,32 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import {IOfferReceiver, Offer} from "../../scripts/common/interfaces/3F/IOfferReceiver.sol";
-import {IRequest} from "../../scripts/common/interfaces/3F/IRequest.sol";
-
-import {IRequestCallback} from "../../scripts/common/interfaces/3F/IRequestCallback.sol";
-import {IRequestFactory} from "../../scripts/common/interfaces/3F/IRequestFactory.sol";
-import {IWhitelist} from "../../scripts/common/interfaces/3F/IWhitelist.sol";
-
 import "../interfaces/utils/IThreeFModule.sol";
-
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-
 import "../libraries/SlotLibrary.sol";
 import "../libraries/TransferLibrary.sol";
 import "../permissions/MellowACL.sol";
-
-import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 
 contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
     using Math for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
-
-    // Version string from Request._domainNameAndVersion() — hardcoded in 3F source.
-    bytes private constant _REQUEST_VERSION = "0.0.1";
 
     /// @notice Role authorised to call push().
     bytes32 public constant PUSH_ROLE = keccak256("utils.ThreeFModule.PUSH_ROLE");
@@ -144,23 +127,24 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
 
     /// @inheritdoc IThreeFModule
     function allowRequest(address request) external onlyRole(ALLOW_REQUEST_ROLE) {
-        ThreeFModuleStorage storage $ = _threeFModuleStorage();
         if (IRequest(request).asset() != asset) {
             revert AssetMismatch();
         }
         if (!isRequestWhitelisted(request)) {
             revert RequestNotWhitelisted();
         }
-        if ($.allowedRequests.add(request)) {
-            emit RequestAllowed(request);
+        if (!_threeFModuleStorage().allowedRequests.add(request)) {
+            revert RequestAlreadyAllowed();
         }
+        emit RequestAllowed(request);
     }
 
     /// @inheritdoc IThreeFModule
     function disallowRequest(address request) external onlyRole(ALLOW_REQUEST_ROLE) {
-        if (_threeFModuleStorage().allowedRequests.remove(request)) {
-            emit RequestDisallowed(request);
+        if (!_threeFModuleStorage().allowedRequests.remove(request)) {
+            revert RequestNotAllowed();
         }
+        emit RequestDisallowed(request);
     }
 
     /// @inheritdoc IThreeFModule
@@ -272,6 +256,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
 
     /// @inheritdoc IThreeFModule
     function burn(address request) external nonReentrant onlyRole(BURN_ROLE) {
+        /// @dev intentionally skip _checkRequest() to allow burning of requests that may have been disallowed after minting
         if (IRequest(request).asset() != asset) {
             revert AssetMismatch();
         }
@@ -286,12 +271,18 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         }
         (uint256 ptShares, uint256 ytShares, uint256 pAssets, uint256 yAssets) =
             IRequest(request).burnAll(address(this), address(this));
-        IERC20(asset).forceApprove(request, 0);
+
+        if (IERC20(asset).allowance(address(this), request) > 0) {
+            IERC20(asset).forceApprove(request, 0);
+        }
         emit Burned(request, ptShares, ytShares, pAssets, yAssets);
     }
 
     // Internal functions
 
+    /// @dev Checks that `request` is allowed and whitelisted, reverts otherwise.
+    /// Checking asset is skipped, checked only at allowRequest(),
+    /// only allowed requests may be processed in push(), authorizeOffer() and onRequestConsumed().
     function _checkRequest(address request) internal view {
         if (!isRequestAllowed(request)) {
             revert RequestNotAllowed();
@@ -302,20 +293,19 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     function _hashOffer(address request, Offer memory offer) internal view returns (bytes32) {
-        // keccak256("Offer(address maker,uint256 amount,uint256 expectedReturn,uint256 nonce,uint256 expiration,bool useCallback)")
-        bytes32 offerTypeHash = 0x3ded0c963332962cf2d273c8fb4f3e69f4ef33407ca72484fcebb56263ad0664;
-        // keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)")
-        bytes32 domainTypeHash = 0x8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f;
         bytes32 domainSep = keccak256(
             abi.encode(
-                domainTypeHash,
+                0x8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f,
                 keccak256(bytes(IRequest(request).name())),
-                keccak256(_REQUEST_VERSION),
+                // Version string from Request._domainNameAndVersion() — hardcoded in 3F source.
+                keccak256("0.0.1"),
                 block.chainid,
                 request
             )
         );
-        bytes32 structHash = keccak256(abi.encode(offerTypeHash, offer));
+        // 0x3ded0... = keccak256("Offer(address maker,uint256 amount,uint256 expectedReturn,uint256 nonce,uint256 expiration,bool useCallback)")
+        bytes32 structHash =
+            keccak256(abi.encode(0x3ded0c963332962cf2d273c8fb4f3e69f4ef33407ca72484fcebb56263ad0664, offer));
         return keccak256(abi.encodePacked("\x19\x01", domainSep, structHash));
     }
 
