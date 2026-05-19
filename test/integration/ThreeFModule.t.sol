@@ -175,12 +175,13 @@ contract ThreeFModuleIntegration is Test {
         assertEq(IERC20(USDC).balanceOf(address(module)), 0);
     }
 
-    // ─── nextNonce ────────────────────────────────────────────────────────────
+    // ─── currentNonce / lastIssuedNonce ──────────────────────────────────────
 
-    function testNextNonce_Fresh_NO_CI() external {
+    function testCurrentNonce_Fresh_NO_CI() external {
         address request = _createRequest();
-        assertEq(module.nextNonce(request), IOfferReceiver(request).nonce(address(module)) + 1);
-        assertEq(module.nextNonce(request), 1);
+        assertEq(module.currentNonce(request), IOfferReceiver(request).nonce(address(module)));
+        assertEq(module.currentNonce(request), 0);
+        assertEq(module.lastIssuedNonce(request), 0);
     }
 
     // ─── view helpers ─────────────────────────────────────────────────────────

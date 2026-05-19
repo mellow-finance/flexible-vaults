@@ -8,6 +8,7 @@ import {IRequestFactory} from "../../../scripts/common/interfaces/3F/IRequestFac
 import {IWhitelist} from "../../../scripts/common/interfaces/3F/IWhitelist.sol";
 
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import "@openzeppelin/contracts/interfaces/IERC5267.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
@@ -48,12 +49,15 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     ///                          whitelist) at allow-time and re-checked at every operation.
     /// @param authorizedOffers  Standing pull-flow authorizations keyed by EIP-712 offer hash.
     ///                          Set in authorizeOffer(), cleared in onRequestConsumed().
+    /// @param lastIssuedNonce   Highest nonce assigned by authorizeOffer() per request.
+    ///                          Auto-increments to avoid collisions between concurrent outstanding offers.
     struct ThreeFModuleStorage {
         address subvault;
         address whitelist;
         address requestFactory;
         EnumerableSet.AddressSet allowedRequests;
         mapping(bytes32 => OfferAuthorization) authorizedOffers;
+        mapping(address => uint256) lastIssuedNonce;
     }
 
     // Errors
@@ -69,6 +73,9 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     error SlippageExceeded();
     error OfferNotAuthorized();
     error ExceedsPtAuthorization();
+    error NonceTooLow();
+    error NonceNotIssued();
+    error SameFactory();
     error InsufficientYt();
     error NotRepaid();
     error WithdrawalNotAllowed();
@@ -87,6 +94,9 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
 
     /// @notice Role authorised to call allowRequest() and disallowRequest().
     function ALLOW_REQUEST_ROLE() external view returns (bytes32);
+
+    /// @notice Role authorised to call setRequestFactory().
+    function FACTORY_UPDATE_ROLE() external view returns (bytes32);
 
     // Immutables
 
@@ -120,10 +130,15 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @param index Zero-based index into the allowed requests set.
     function allowedRequestAt(uint256 index) external view returns (address);
 
-    /// @notice Returns the next valid offer nonce for pull-flow offers targeting this module on a Request.
-    /// @dev Wraps IOfferReceiver(request).nonce(address(this)) + 1.
+    /// @notice Returns the current on-chain nonce for this module on a Request.
+    /// @dev Pending offer count = lastIssuedNonce(request) - currentNonce(request).
     /// @param request Address of the 3F Request contract.
-    function nextNonce(address request) external view returns (uint256);
+    function currentNonce(address request) external view returns (uint256);
+
+    /// @notice Returns the highest nonce assigned by authorizeOffer() for a given request.
+    /// @dev Starts at 0 (no offers issued). Monotonically increases with each authorizeOffer() call.
+    /// @param request Address of the 3F Request contract.
+    function lastIssuedNonce(address request) external view returns (uint256);
 
     // Mutable functions
 
@@ -138,6 +153,12 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @dev Only callable by ALLOW_REQUEST_ROLE. Emits RequestDisallowed.
     /// @param request Address of the 3F Request contract to disallow.
     function disallowRequest(address request) external;
+
+    /// @notice Updates the 3F RequestFactory address.
+    /// @dev Only callable by FACTORY_UPDATE_ROLE. Reverts ZeroValue on zero address.
+    ///      Emits RequestFactoryUpdated.
+    /// @param newFactory Address of the new RequestFactory.
+    function setRequestFactory(address newFactory) external;
 
     /// @notice Transfers asset from the Subvault into this module.
     /// @dev Only callable by the Subvault.
@@ -169,12 +190,13 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
 
     /// @notice Pull flow step 1: constructs and stores an ERC-1271 authorization for a new offer.
     /// @dev Only callable by PULL_ROLE.
-    ///      Constructs the Offer internally: maker=address(this), nonce=nextNonce(request),
+    ///      Nonce auto-assigned as max(lastIssuedNonce[request], onChainNonce) + 1 — guarantees each
+    ///      call produces a unique nonce even with multiple outstanding offers simultaneously.
+    ///      Constructs the Offer internally: maker=address(this), nonce=<auto>,
     ///      expiration=block.timestamp+duration, useCallback=true.
     ///      offer.amount = maxPt, offer.expectedReturn = minYt.
-    ///      Stores OfferAuthorization{maxPt, minYt} keyed by the EIP-712 offer hash.
-    ///      Since yield = mulDiv(expectedReturn, ptAmount, amount) = mulDiv(minYt, principal, maxPt),
-    ///      minYt is both the Offer.expectedReturn and the yield floor per full fill.
+    ///      Stores OfferAuthorization{maxPt, minYt} keyed by EIP-712 offer hash.
+    ///      Since yield = mulDiv(minYt, principal, maxPt), minYt is the yield floor per full fill.
     /// @param request  Address of the 3F Request contract.
     /// @param maxPt    Maximum PT the module will lend (= Offer.amount); must be > 0.
     /// @param minYt    Minimum YT for a full fill (= Offer.expectedReturn). Yield for any fill is
@@ -186,11 +208,17 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
         external
         returns (Offer memory offer, bytes32 offerHash);
 
-    /// @notice Cancels all pending offers for a request by advancing its on-chain nonce.
-    /// @dev Only callable by PULL_ROLE. Calls request.setNonce(nonce(address(this)) + 1).
+    /// @notice Cancels outstanding offers up to and including targetNonce by advancing the on-chain nonce.
+    /// @dev Only callable by PULL_ROLE.
+    ///      Reverts NonceTooLow if targetNonce <= current on-chain nonce (already past/consumed).
+    ///      Reverts NonceNotIssued if targetNonce > lastIssuedNonce (never assigned by this module).
+    ///      Calls request.setNonce(targetNonce); any offer with nonce <= targetNonce is then stale.
+    ///      Stale authorizedOffers entries remain in storage but are harmless — 3F's nonce check
+    ///      blocks consume() before the callback is ever reached.
     ///      Emits OfferCancelled.
-    /// @param request Address of the 3F Request contract.
-    function cancelOffer(address request) external;
+    /// @param request     Address of the 3F Request contract.
+    /// @param targetNonce Nonce to advance to; all offers with nonce <= targetNonce are cancelled.
+    function cancelOffer(address request, uint256 targetNonce) external;
 
     /// @notice Exit flow: redeems all PT/YT balances from a repaid Request.
     /// @dev Only callable by BURN_ROLE.
@@ -234,4 +262,8 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @param pAssets  Principal assets received.
     /// @param yAssets  Yield assets received.
     event Burned(address indexed request, uint256 ptShares, uint256 ytShares, uint256 pAssets, uint256 yAssets);
+
+    /// @param oldFactory Previous RequestFactory address.
+    /// @param newFactory New RequestFactory address.
+    event RequestFactoryUpdated(address indexed oldFactory, address indexed newFactory);
 }

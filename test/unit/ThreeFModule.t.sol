@@ -140,6 +140,22 @@ contract MockRequest {
         return "MockRequest";
     }
 
+    function eip712Domain()
+        external
+        view
+        returns (
+            bytes1 fields,
+            string memory name_,
+            string memory version,
+            uint256 chainId,
+            address verifyingContract,
+            bytes32 salt,
+            uint256[] memory extensions
+        )
+    {
+        return (bytes1(0x0f), "MockRequest", "0.0.1", block.chainid, address(this), bytes32(0), new uint256[](0));
+    }
+
     function nonce(address) external view returns (uint256) {
         return makerNonce;
     }
@@ -218,6 +234,7 @@ contract ThreeFModuleTest is Test {
     bytes32 PUSH_ROLE;
     bytes32 PULL_ROLE;
     bytes32 BURN_ROLE;
+    bytes32 FACTORY_UPDATE_ROLE;
 
     MockToken token;
     MockWhitelist whitelist;
@@ -241,6 +258,7 @@ contract ThreeFModuleTest is Test {
         PUSH_ROLE = impl.PUSH_ROLE();
         PULL_ROLE = impl.PULL_ROLE();
         BURN_ROLE = impl.BURN_ROLE();
+        FACTORY_UPDATE_ROLE = impl.FACTORY_UPDATE_ROLE();
 
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(address(impl), admin, new bytes(0));
         module = ThreeFModule(address(proxy));
@@ -503,6 +521,59 @@ contract ThreeFModuleTest is Test {
         module.disallowRequest(address(request));
     }
 
+    // ─── setRequestFactory ────────────────────────────────────────────────────
+
+    function testSetRequestFactory_NotRole() external {
+        vm.prank(stranger);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, FACTORY_UPDATE_ROLE
+            )
+        );
+        module.setRequestFactory(address(factory));
+    }
+
+    function testSetRequestFactory_ZeroAddress() external {
+        vm.prank(admin);
+        module.grantRole(FACTORY_UPDATE_ROLE, admin);
+        vm.prank(admin);
+        vm.expectRevert(IThreeFModule.ZeroValue.selector);
+        module.setRequestFactory(address(0));
+    }
+
+    function testSetRequestFactory_Happy() external {
+        address newFactory = address(new MockRequestFactory());
+        vm.prank(admin);
+        module.grantRole(FACTORY_UPDATE_ROLE, admin);
+
+        vm.expectEmit(true, true, false, false, address(module));
+        emit IThreeFModule.RequestFactoryUpdated(address(factory), newFactory);
+
+        vm.prank(admin);
+        module.setRequestFactory(newFactory);
+        assertEq(module.requestFactory(), newFactory);
+    }
+
+    function testSetRequestFactory_SameFactory() external {
+        vm.prank(admin);
+        module.grantRole(FACTORY_UPDATE_ROLE, admin);
+        vm.prank(admin);
+        vm.expectRevert(IThreeFModule.SameFactory.selector);
+        module.setRequestFactory(address(factory)); // same as current
+    }
+
+    function testSetRequestFactory_UpdateTwice() external {
+        address factory2 = address(new MockRequestFactory());
+        address factory3 = address(new MockRequestFactory());
+        vm.prank(admin);
+        module.grantRole(FACTORY_UPDATE_ROLE, admin);
+        vm.prank(admin);
+        module.setRequestFactory(factory2);
+        vm.prank(admin);
+        module.setRequestFactory(factory3);
+        assertEq(module.requestFactory(), factory3);
+    }
+
     // ─── pushAssets ───────────────────────────────────────────────────────────
 
     function testPushAssets_NotSubvault() external {
@@ -743,22 +814,27 @@ contract ThreeFModuleTest is Test {
         assertEq(module.isValidSignature(keccak256("other"), ""), bytes4(0xffffffff));
     }
 
-    function testAuthorizeOffer_SameNonceOverwrites() external {
-        // Without cancel/consume between calls, both use the same nonce → same hash → second overwrites.
+    function testAuthorizeOffer_SequentialNonces() external {
+        // Option C: each call gets a unique nonce even with no consume in between.
         (, bytes32 hash1) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
-        (, bytes32 hash2) = _authorizeOffer(80e18, 8e18, 1 hours, 0); // same nonce, overwrites
-        assertEq(hash1, hash2); // same hash
+        (, bytes32 hash2) = _authorizeOffer(60e18, 6e18, 1 hours, 0);
+        assertNotEq(hash1, hash2); // distinct hashes — both live simultaneously
         assertEq(module.isValidSignature(hash1, ""), bytes4(0x1626ba7e));
+        assertEq(module.isValidSignature(hash2, ""), bytes4(0x1626ba7e));
+        assertEq(module.lastIssuedNonce(address(request)), 2);
     }
 
     function testAuthorizeOffer_AfterCancelUsesHigherNonce() external {
         (, bytes32 hash1) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
+        // cancel nonce 1
         vm.prank(curator);
-        module.cancelOffer(address(request)); // advances request nonce
-        (, bytes32 hash2) = _authorizeOffer(80e18, 8e18, 1 hours, 0); // new nonce
+        module.cancelOffer(address(request), 1);
+        // next authorize starts from max(lastIssuedNonce=1, onChainNonce=1) + 1 = 2
+        (, bytes32 hash2) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
         assertNotEq(hash1, hash2);
-        assertEq(module.isValidSignature(hash1, ""), bytes4(0x1626ba7e)); // old still valid (not consumed)
-        assertEq(module.isValidSignature(hash2, ""), bytes4(0x1626ba7e)); // new also valid
+        // hash1 is still in authorizedOffers (stale but harmless — 3F nonce check blocks consume)
+        assertEq(module.isValidSignature(hash1, ""), bytes4(0x1626ba7e));
+        assertEq(module.isValidSignature(hash2, ""), bytes4(0x1626ba7e));
     }
 
     // ─── isValidSignature ─────────────────────────────────────────────────────
@@ -890,96 +966,163 @@ contract ThreeFModuleTest is Test {
         request.consume(offer, "", ptAmount);
     }
 
-    // ─── nextNonce ────────────────────────────────────────────────────────────
+    // ─── currentNonce / lastIssuedNonce ──────────────────────────────────────
 
-    function testNextNonce_Default() external view {
-        assertEq(module.nextNonce(address(request)), 1);
+    function testCurrentNonce_Default() external view {
+        assertEq(module.currentNonce(address(request)), 0);
     }
 
-    function testNextNonce_AfterRequestNonceAdvances() external {
+    function testCurrentNonce_AfterOnChainAdvances() external {
         request.setMakerNonce(5);
-        assertEq(module.nextNonce(address(request)), 6);
+        assertEq(module.currentNonce(address(request)), 5);
     }
 
-    function testNextNonce_OfferAtNextNonceSucceeds() external {
+    function testCurrentNonce_PendingOfferCount() external {
+        // pending = lastIssuedNonce - currentNonce
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // lastIssued=1, onChain=0 → 1 pending
+        assertEq(module.lastIssuedNonce(address(request)) - module.currentNonce(address(request)), 1);
+        _authorizeOffer(60e18, 6e18, 1 hours, 0); // lastIssued=2, onChain=0 → 2 pending
+        assertEq(module.lastIssuedNonce(address(request)) - module.currentNonce(address(request)), 2);
+    }
+
+    function testLastIssuedNonce_InitiallyZero() external view {
+        assertEq(module.lastIssuedNonce(address(request)), 0);
+    }
+
+    function testLastIssuedNonce_IncrementsWithEachAuthorize() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0);
+        assertEq(module.lastIssuedNonce(address(request)), 1);
+        _authorizeOffer(60e18, 6e18, 1 hours, 0);
+        assertEq(module.lastIssuedNonce(address(request)), 2);
+        _authorizeOffer(40e18, 4e18, 1 hours, 0);
+        assertEq(module.lastIssuedNonce(address(request)), 3);
+    }
+
+    function testLastIssuedNonce_ResumesAfterOnChainAdvance() external {
+        // If on-chain nonce overtakes lastIssuedNonce (e.g. by direct setNonce), next offer jumps ahead.
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // lastIssued=1
+        request.setMakerNonce(5); // onChain=5 > lastIssued=1
+        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
+        assertEq(offer.nonce, 6); // max(1,5)+1
+        assertEq(module.lastIssuedNonce(address(request)), 6);
+    }
+
+    function testNextNonce_OfferConsumedUsesCorrectNonce() external {
         request.setYtReturn(5e18);
-        request.setMakerNonce(3); // nextNonce = 4
+        request.setMakerNonce(3); // onChainNonce = 3; next offer gets nonce 4
         (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 100e18);
-        assertEq(offer.nonce, 4); // nonce was auto-assigned as nextNonce at time of authorize
+        assertEq(offer.nonce, 4);
         request.consume(offer, "", 50e18);
         assertEq(token.balanceOf(address(request)), 50e18);
-    }
-
-    function testNextNonce_OfferBelowNextNonceReverts() external {
-        // Cancel advances request nonce to 1. Authorize with default params (nonce=nextNonce=2) should work.
-        // But if we manually set makerNonce=3 and then try to authorize, nonce=4 is used and succeeds.
-        // The stale nonce check fires when the module reads request.nonce() > computed offer.nonce.
-        // Since nonce is auto-assigned this can't happen from authorizeOffer alone.
-        // Instead we verify via cancelOffer: after cancel, old hash is unreachable.
-        (, bytes32 oldHash) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
-        vm.prank(curator);
-        module.cancelOffer(address(request)); // advances nonce past offer.nonce
-        // old hash still in storage but request.nonce now >= offer.nonce → consume rejects nonce
-        assertEq(module.isValidSignature(oldHash, ""), bytes4(0x1626ba7e)); // storage still there
-            // A real consume would fail at the request level (stale nonce check), not at our callback
     }
 
     // ─── cancelOffer ──────────────────────────────────────────────────────────
 
     function testCancelOffer_NotCaller() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // issue nonce 1
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, PULL_ROLE)
         );
-        module.cancelOffer(address(request));
+        module.cancelOffer(address(request), 1);
     }
 
     function testCancelOffer_RequestNotAllowed() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0);
         vm.prank(admin);
         module.disallowRequest(address(request));
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.RequestNotAllowed.selector);
-        module.cancelOffer(address(request));
+        module.cancelOffer(address(request), 1);
     }
 
     function testCancelOffer_RequestNotWhitelisted() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0);
         factory.set(address(request), false);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.RequestNotWhitelisted.selector);
-        module.cancelOffer(address(request));
+        module.cancelOffer(address(request), 1);
     }
 
-    function testCancelOffer_Happy() external {
-        assertEq(request.makerNonce(), 0);
+    function testCancelOffer_NonceTooLow_AlreadyAtOnChain() external {
+        // targetNonce == onChainNonce: already at or below the current chain state
+        _authorizeOffer(80e18, 8e18, 1 hours, 0);
         vm.prank(curator);
-        module.cancelOffer(address(request));
+        module.cancelOffer(address(request), 1); // onChainNonce advances to 1
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.NonceTooLow.selector);
+        module.cancelOffer(address(request), 1); // targetNonce == onChainNonce → NonceTooLow
+    }
+
+    function testCancelOffer_NonceTooLow_BelowOnChain() external {
+        // Advance on-chain nonce externally past a previously issued nonce
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // lastIssued=1
+        request.setMakerNonce(3); // onChainNonce=3 > lastIssued=1; issue more
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // lastIssued=4
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.NonceTooLow.selector);
+        module.cancelOffer(address(request), 2); // 2 <= onChainNonce(3) → NonceTooLow
+    }
+
+    function testCancelOffer_NonceNotIssued() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // lastIssued=1
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.NonceNotIssued.selector);
+        module.cancelOffer(address(request), 2); // never issued
+    }
+
+    function testCancelOffer_NonceNotIssued_WhenNoOffersIssued() external {
+        // lastIssuedNonce=0, any targetNonce > 0 is NonceNotIssued
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.NonceNotIssued.selector);
+        module.cancelOffer(address(request), 1);
+    }
+
+    function testCancelOffer_Happy_Single() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // nonce 1
+        vm.prank(curator);
+        module.cancelOffer(address(request), 1);
         assertEq(request.makerNonce(), 1);
         assertEq(request.lastSetNonce(), 1);
     }
 
+    function testCancelOffer_Happy_Partial() external {
+        // Issue 3 offers; cancel only the first two
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // nonce 1
+        _authorizeOffer(60e18, 6e18, 1 hours, 0); // nonce 2
+        (, bytes32 h3) = _authorizeOffer(40e18, 4e18, 1 hours, 0); // nonce 3
+        vm.prank(curator);
+        module.cancelOffer(address(request), 2); // cancel nonces 1,2; nonce 3 still live
+        assertEq(request.makerNonce(), 2);
+        assertEq(module.isValidSignature(h3, ""), bytes4(0x1626ba7e));
+    }
+
+    function testCancelOffer_Happy_All() external {
+        (, bytes32 h1) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
+        (, bytes32 h2) = _authorizeOffer(60e18, 6e18, 1 hours, 0);
+        (, bytes32 h3) = _authorizeOffer(40e18, 4e18, 1 hours, 0);
+        vm.prank(curator);
+        module.cancelOffer(address(request), 3); // cancel all
+        assertEq(request.makerNonce(), 3);
+        // authorizedOffers entries remain (stale but harmless — 3F nonce check blocks consume)
+        assertEq(module.isValidSignature(h1, ""), bytes4(0x1626ba7e));
+        assertEq(module.isValidSignature(h2, ""), bytes4(0x1626ba7e));
+        assertEq(module.isValidSignature(h3, ""), bytes4(0x1626ba7e));
+    }
+
     function testCancelOffer_EmitsOfferCancelled() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0);
         vm.expectEmit(true, false, false, true, address(module));
         emit IThreeFModule.OfferCancelled(address(request), 1);
         vm.prank(curator);
-        module.cancelOffer(address(request));
-    }
-
-    function testCancelOffer_EmitsIncrementingNonce() external {
-        vm.prank(curator);
-        module.cancelOffer(address(request)); // nonce → 1
-
-        vm.expectEmit(true, false, false, true, address(module));
-        emit IThreeFModule.OfferCancelled(address(request), 2);
-
-        vm.prank(curator);
-        module.cancelOffer(address(request)); // nonce → 2
+        module.cancelOffer(address(request), 1);
     }
 
     function testCancelOffer_NextAuthorizeUsesHigherNonce() external {
+        _authorizeOffer(80e18, 8e18, 1 hours, 0); // lastIssued=1
         vm.prank(curator);
-        module.cancelOffer(address(request)); // request nonce → 1; nextNonce → 2
-
-        // New authorize picks nonce = 2
+        module.cancelOffer(address(request), 1); // onChainNonce=1
+        // max(lastIssued=1, onChain=1) + 1 = 2
         (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
         assertEq(offer.nonce, 2);
     }

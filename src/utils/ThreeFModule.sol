@@ -11,6 +11,12 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     using Math for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    //  keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)")
+    bytes32 private constant _DOMAIN_TYPEHASH = 0x8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f;
+
+    // keccak256("Offer(address maker,uint256 amount,uint256 expectedReturn,uint256 nonce,uint256 expiration,bool useCallback)");
+    bytes32 private constant _OFFER_TYPEHASH = 0x3ded0c963332962cf2d273c8fb4f3e69f4ef33407ca72484fcebb56263ad0664;
+
     /// @notice Role authorised to call push().
     bytes32 public constant PUSH_ROLE = keccak256("utils.ThreeFModule.PUSH_ROLE");
 
@@ -22,6 +28,9 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
 
     /// @notice Role authorised to call allowRequest() and disallowRequest().
     bytes32 public constant ALLOW_REQUEST_ROLE = keccak256("utils.ThreeFModule.ALLOW_REQUEST_ROLE");
+
+    /// @notice Role authorised to call setRequestFactory().
+    bytes32 public constant FACTORY_UPDATE_ROLE = keccak256("utils.ThreeFModule.FACTORY_UPDATE_ROLE");
 
     /// @inheritdoc IThreeFModule
     address public immutable asset;
@@ -83,8 +92,13 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
-    function nextNonce(address request) public view returns (uint256) {
-        return IOfferReceiver(request).nonce(address(this)) + 1;
+    function currentNonce(address request) public view returns (uint256) {
+        return IOfferReceiver(request).nonce(address(this));
+    }
+
+    /// @inheritdoc IThreeFModule
+    function lastIssuedNonce(address request) public view returns (uint256) {
+        return _threeFModuleStorage().lastIssuedNonce[request];
     }
 
     /// @inheritdoc IERC1271
@@ -148,6 +162,20 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
+    function setRequestFactory(address newFactory) external onlyRole(FACTORY_UPDATE_ROLE) {
+        if (newFactory == address(0)) {
+            revert ZeroValue();
+        }
+        ThreeFModuleStorage storage $ = _threeFModuleStorage();
+        address old = $.requestFactory;
+        if (newFactory == old) {
+            revert SameFactory();
+        }
+        $.requestFactory = newFactory;
+        emit RequestFactoryUpdated(old, newFactory);
+    }
+
+    /// @inheritdoc IThreeFModule
     function pushAssets(uint256 value) external onlySubvault nonReentrant {
         TransferLibrary.receiveAssets(asset, _msgSender(), value);
         emit AssetsPushed(value);
@@ -198,7 +226,9 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         if (maxPt == 0 || duration == 0) {
             revert ZeroValue();
         }
-        uint256 offerNonce = nextNonce(request);
+        ThreeFModuleStorage storage $ = _threeFModuleStorage();
+        uint256 offerNonce = $.lastIssuedNonce[request].max(IOfferReceiver(request).nonce(address(this))) + 1;
+        $.lastIssuedNonce[request] = offerNonce;
         uint256 expiration = block.timestamp + duration;
         offer = Offer({
             maker: address(this),
@@ -209,7 +239,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
             useCallback: true
         });
         offerHash = _hashOffer(request, offer);
-        _threeFModuleStorage().authorizedOffers[offerHash] = OfferAuthorization(maxPt, minYt);
+        $.authorizedOffers[offerHash] = OfferAuthorization(maxPt, minYt);
         emit OfferAuthorized(request, offerHash, offer);
     }
 
@@ -247,11 +277,17 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
-    function cancelOffer(address request) external nonReentrant onlyRole(PULL_ROLE) {
+    function cancelOffer(address request, uint256 targetNonce) external nonReentrant onlyRole(PULL_ROLE) {
         _checkRequest(request);
-        uint256 newNonce = nextNonce(request);
-        IOfferReceiver(request).setNonce(newNonce);
-        emit OfferCancelled(request, newNonce);
+        ThreeFModuleStorage storage $ = _threeFModuleStorage();
+        if (targetNonce <= IOfferReceiver(request).nonce(address(this))) {
+            revert NonceTooLow();
+        }
+        if (targetNonce > $.lastIssuedNonce[request]) {
+            revert NonceNotIssued();
+        }
+        IOfferReceiver(request).setNonce(targetNonce);
+        emit OfferCancelled(request, targetNonce);
     }
 
     /// @inheritdoc IThreeFModule
@@ -293,19 +329,11 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     function _hashOffer(address request, Offer memory offer) internal view returns (bytes32) {
+        (, string memory name, string memory version,,,,) = IERC5267(request).eip712Domain();
         bytes32 domainSep = keccak256(
-            abi.encode(
-                0x8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f,
-                keccak256(bytes(IRequest(request).name())),
-                // Version string from Request._domainNameAndVersion() — hardcoded in 3F source.
-                keccak256("0.0.1"),
-                block.chainid,
-                request
-            )
+            abi.encode(_DOMAIN_TYPEHASH, keccak256(bytes(name)), keccak256(bytes(version)), block.chainid, request)
         );
-        // 0x3ded0... = keccak256("Offer(address maker,uint256 amount,uint256 expectedReturn,uint256 nonce,uint256 expiration,bool useCallback)")
-        bytes32 structHash =
-            keccak256(abi.encode(0x3ded0c963332962cf2d273c8fb4f3e69f4ef33407ca72484fcebb56263ad0664, offer));
+        bytes32 structHash = keccak256(abi.encode(_OFFER_TYPEHASH, offer));
         return keccak256(abi.encodePacked("\x19\x01", domainSep, structHash));
     }
 
