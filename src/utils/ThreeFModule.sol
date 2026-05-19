@@ -20,7 +20,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     /// @notice Role authorised to call push().
     bytes32 public constant PUSH_ROLE = keccak256("utils.ThreeFModule.PUSH_ROLE");
 
-    /// @notice Role authorised to call authorizeOffer() and cancelOffer().
+    /// @notice Role authorised to call authorizeOffer() and cancelOffers().
     bytes32 public constant PULL_ROLE = keccak256("utils.ThreeFModule.PULL_ROLE");
 
     /// @notice Role authorised to call burn().
@@ -28,9 +28,6 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
 
     /// @notice Role authorised to call allowRequest() and disallowRequest().
     bytes32 public constant ALLOW_REQUEST_ROLE = keccak256("utils.ThreeFModule.ALLOW_REQUEST_ROLE");
-
-    /// @notice Role authorised to call setRequestFactory().
-    bytes32 public constant FACTORY_UPDATE_ROLE = keccak256("utils.ThreeFModule.FACTORY_UPDATE_ROLE");
 
     /// @inheritdoc IThreeFModule
     address public immutable asset;
@@ -162,20 +159,6 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
-    function setRequestFactory(address newFactory) external onlyRole(FACTORY_UPDATE_ROLE) {
-        if (newFactory == address(0)) {
-            revert ZeroValue();
-        }
-        ThreeFModuleStorage storage $ = _threeFModuleStorage();
-        address old = $.requestFactory;
-        if (newFactory == old) {
-            revert SameFactory();
-        }
-        $.requestFactory = newFactory;
-        emit RequestFactoryUpdated(old, newFactory);
-    }
-
-    /// @inheritdoc IThreeFModule
     function pushAssets(uint256 value) external onlySubvault nonReentrant {
         TransferLibrary.receiveAssets(asset, _msgSender(), value);
         emit AssetsPushed(value);
@@ -192,7 +175,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         _checkRequest(request);
         address _this = address(this);
         (uint128 maxPt, uint128 minYt) = IRequest(request).mintAuthorization(_this);
-        /// @dev throw an error, because request is silently returns
+        // (0,0) means no authorization exists; mint() would no-op silently without this guard
         if (maxPt == 0 && minYt == 0) {
             revert InsufficientAuthorization();
         }
@@ -277,7 +260,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
-    function cancelOffer(address request, uint256 targetNonce) external nonReentrant onlyRole(PULL_ROLE) {
+    function cancelOffers(address request, uint256 targetNonce) external nonReentrant onlyRole(PULL_ROLE) {
         _checkRequest(request);
         ThreeFModuleStorage storage $ = _threeFModuleStorage();
         if (targetNonce <= IOfferReceiver(request).nonce(address(this))) {
@@ -316,9 +299,9 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
 
     // Internal functions
 
-    /// @dev Checks that `request` is allowed and whitelisted, reverts otherwise.
-    /// Checking asset is skipped, checked only at allowRequest(),
-    /// only allowed requests may be processed in push(), authorizeOffer() and onRequestConsumed().
+    /// @dev Checks that `request` is in the allow set and currently whitelisted by 3F, reverts otherwise.
+    ///      Asset match is not re-checked here — it is validated once at allowRequest().
+    ///      Called by push(), authorizeOffer(), onRequestConsumed(), and cancelOffers().
     function _checkRequest(address request) internal view {
         if (!isRequestAllowed(request)) {
             revert RequestNotAllowed();

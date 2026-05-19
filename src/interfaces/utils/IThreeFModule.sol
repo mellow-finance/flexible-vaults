@@ -75,7 +75,6 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     error ExceedsPtAuthorization();
     error NonceTooLow();
     error NonceNotIssued();
-    error SameFactory();
     error InsufficientYt();
     error NotRepaid();
     error WithdrawalNotAllowed();
@@ -86,7 +85,7 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @notice Role authorised to call push().
     function PUSH_ROLE() external view returns (bytes32);
 
-    /// @notice Role authorised to call authorizeOffer() and cancelOffer().
+    /// @notice Role authorised to call authorizeOffer() and cancelOffers().
     function PULL_ROLE() external view returns (bytes32);
 
     /// @notice Role authorised to call burn().
@@ -94,9 +93,6 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
 
     /// @notice Role authorised to call allowRequest() and disallowRequest().
     function ALLOW_REQUEST_ROLE() external view returns (bytes32);
-
-    /// @notice Role authorised to call setRequestFactory().
-    function FACTORY_UPDATE_ROLE() external view returns (bytes32);
 
     // Immutables
 
@@ -128,6 +124,7 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
 
     /// @notice Returns the allowed request address at a given index.
     /// @param index Zero-based index into the allowed requests set.
+    /// @return Address of the allowed request at the given index.
     function allowedRequestAt(uint256 index) external view returns (address);
 
     /// @notice Returns the current on-chain nonce for this module on a Request.
@@ -150,15 +147,11 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     function allowRequest(address request) external;
 
     /// @notice Removes a request from the internal allow set.
-    /// @dev Only callable by ALLOW_REQUEST_ROLE. Emits RequestDisallowed.
+    /// @dev Only callable by ALLOW_REQUEST_ROLE.
+    ///      Reverts RequestNotAllowed if the request is not in the set.
+    ///      Emits RequestDisallowed on success.
     /// @param request Address of the 3F Request contract to disallow.
     function disallowRequest(address request) external;
-
-    /// @notice Updates the 3F RequestFactory address.
-    /// @dev Only callable by FACTORY_UPDATE_ROLE. Reverts ZeroValue on zero address.
-    ///      Emits RequestFactoryUpdated.
-    /// @param newFactory Address of the new RequestFactory.
-    function setRequestFactory(address newFactory) external;
 
     /// @notice Transfers asset from the Subvault into this module.
     /// @dev Only callable by the Subvault.
@@ -174,16 +167,16 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @dev Only callable by PUSH_ROLE.
     ///
     ///      Reads (maxPt, minYt) = mintAuthorization(this) and passes them directly to mint().
-    ///      Request.mint slippage check: if (ptMintAuth > maxPt || ytMintAuth < minYt) revert
-    ///      SlippageExceeded. Within a single atomic transaction both sides resolve to the same
-    ///      storage values, so the 3F-side check is a tautological no-op.
+    ///      3F's internal slippage check fires before any transfer if authorization mismatches;
+    ///      within a single atomic tx the values are identical so that check is a no-op.
     ///
-    ///      Authorization is one-time use: Request.mint clears it on success, so a second push()
-    ///      on the same request returns (0, 0) and reverts InsufficientAuthorization.
+    ///      Reverts InsufficientAuthorization when mintAuthorization returns (0, 0).
+    ///      Authorization is one-time use: mint() clears it, so a second push() on the same
+    ///      request returns (0, 0) and reverts InsufficientAuthorization.
     ///
-    ///      Post-conditions verified defensively after mint() returns:
-    ///      - ptMinted <= maxPt  )
-    ///      - ytMinted >= minYt  ) revert SlippageExceeded if violated
+    ///      Defensive post-conditions verified after mint() returns (reverts SlippageExceeded):
+    ///      - ptMinted <= maxPt
+    ///      - ytMinted >= minYt
     ///
     /// @param request Address of the 3F Request contract.
     function push(address request) external;
@@ -201,7 +194,7 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @param maxPt    Maximum PT the module will lend (= Offer.amount); must be > 0.
     /// @param minYt    Minimum YT for a full fill (= Offer.expectedReturn). Yield for any fill is
     ///                 proportional: yield = mulDiv(minYt, principal, maxPt).
-    /// @param duration Offer validity window in seconds; expiration = block.timestamp + duration.
+    /// @param duration Offer validity window in seconds; expiration = block.timestamp + duration; must be > 0.
     /// @return offer      The Offer struct constructed internally by the module.
     /// @return offerHash  EIP-712 hash of the offer; also the key in authorizedOffers storage.
     function authorizeOffer(address request, uint256 maxPt, uint256 minYt, uint256 duration)
@@ -218,7 +211,7 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     ///      Emits OfferCancelled.
     /// @param request     Address of the 3F Request contract.
     /// @param targetNonce Nonce to advance to; all offers with nonce <= targetNonce are cancelled.
-    function cancelOffer(address request, uint256 targetNonce) external;
+    function cancelOffers(address request, uint256 targetNonce) external;
 
     /// @notice Exit flow: redeems all PT/YT balances from a repaid Request.
     /// @dev Only callable by BURN_ROLE.
@@ -230,10 +223,16 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
 
     // Events
 
+    /// @param value Amount of asset received from the Subvault.
     event AssetsPushed(uint256 value);
+
+    /// @param value Amount of asset returned to the Subvault.
     event AssetsPulled(uint256 value);
 
+    /// @param request Address added to the allow set.
     event RequestAllowed(address indexed request);
+
+    /// @param request Address removed from the allow set.
     event RequestDisallowed(address indexed request);
 
     /// @param maxPt    Authorization PT cap read from mintAuthorization (= amount deposited).
@@ -246,7 +245,7 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @param offer     The full Offer struct constructed by the module.
     event OfferAuthorized(address indexed request, bytes32 indexed offerHash, Offer offer);
 
-    /// @param newNonce The nonce set on the Request to invalidate all pending offers for this maker.
+    /// @param newNonce The nonce value set on the Request; all offers with nonce <= newNonce are stale.
     event OfferCancelled(address indexed request, uint256 newNonce);
 
     /// @param offerHash EIP-712 hash of the consumed offer.
@@ -262,8 +261,4 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @param pAssets  Principal assets received.
     /// @param yAssets  Yield assets received.
     event Burned(address indexed request, uint256 ptShares, uint256 ytShares, uint256 pAssets, uint256 yAssets);
-
-    /// @param oldFactory Previous RequestFactory address.
-    /// @param newFactory New RequestFactory address.
-    event RequestFactoryUpdated(address indexed oldFactory, address indexed newFactory);
 }
