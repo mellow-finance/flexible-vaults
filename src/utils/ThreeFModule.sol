@@ -151,10 +151,12 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
-    function disallowRequest(address request) external onlyRole(ALLOW_REQUEST_ROLE) {
-        if (!_threeFModuleStorage().allowedRequests.remove(request)) {
+    function disallowRequest(address request) external nonReentrant onlyRole(ALLOW_REQUEST_ROLE) {
+        ThreeFModuleStorage storage $ = _threeFModuleStorage();
+        if (!$.allowedRequests.remove(request)) {
             revert RequestNotAllowed();
         }
+        _cancelOffers(request, $.lastIssuedNonce[request]);
         emit RequestDisallowed(request);
     }
 
@@ -171,28 +173,31 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IThreeFModule
-    function push(address request) external nonReentrant onlyRole(PUSH_ROLE) {
+    function push(address request, uint128 maxPt, uint128 minYt) external nonReentrant onlyRole(PUSH_ROLE) {
         _checkRequest(request);
         address _this = address(this);
-        (uint128 maxPt, uint128 minYt) = IRequest(request).mintAuthorization(_this);
+        (uint128 authPt, uint128 authYt) = IRequest(request).mintAuthorization(_this);
         // (0,0) means no authorization exists; mint() would no-op silently without this guard
-        if (maxPt == 0 && minYt == 0) {
+        if (authPt == 0 && authYt == 0) {
             revert InsufficientAuthorization();
         }
-        if (TransferLibrary.balanceOf(asset, _this) < maxPt) {
+        if (authPt > maxPt || authYt < minYt) {
+            revert InsufficientAuthorization();
+        }
+        if (TransferLibrary.balanceOf(asset, _this) < authPt) {
             revert InsufficientBalance();
         }
         (uint128 ptBefore, uint128 ytBefore) = IRequest(request).balancesOf(_this);
-        IERC20(asset).forceApprove(request, maxPt);
-        IRequest(request).mint(maxPt, minYt);
+        IERC20(asset).forceApprove(request, authPt);
+        IRequest(request).mint(authPt, authYt);
         IERC20(asset).forceApprove(request, 0);
         (uint128 ptAfter, uint128 ytAfter) = IRequest(request).balancesOf(_this);
         uint128 ptMinted = ptAfter - ptBefore;
         uint128 ytMinted = ytAfter - ytBefore;
-        if (ptMinted > maxPt || ytMinted < minYt) {
+        if (ptMinted > authPt || ytMinted < authYt) {
             revert SlippageExceeded();
         }
-        emit Pushed(request, maxPt, minYt, ptMinted, ytMinted);
+        emit Pushed(request, authPt, authYt, ptMinted, ytMinted);
     }
 
     /// @inheritdoc IThreeFModule
@@ -227,13 +232,23 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     /// @inheritdoc IRequestCallback
+    /// @notice Pull-flow callback invoked by the 3F Request before transferring principal asset from this module.
+    /// @dev Only the Request contract itself calls this (msg.sender == request).
     function onRequestConsumed(Offer calldata offer, bytes calldata, uint256 principal, uint256 yield)
         external
         nonReentrant
     {
+        if (principal == 0) {
+            revert ZeroValue();
+        }
+
         address request = _msgSender();
 
         _checkRequest(request);
+
+        if (block.timestamp > offer.expiration) {
+            revert OfferExpired();
+        }
 
         bytes32 offerHash = _hashOffer(request, offer);
         ThreeFModuleStorage storage $ = _threeFModuleStorage();
@@ -245,7 +260,8 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         if (principal > auth.maxPt) {
             revert ExceedsPtAuthorization();
         }
-
+        /// @dev exactly the same as at line 422 https://github.com/3FLabs/grunt/blob/main/src/request/Request.sol
+        /// ytAmount = offer.expectedReturn.mulDiv(ptAmount, offer.amount);
         if (yield < auth.minYt.mulDiv(principal, offer.amount)) {
             revert InsufficientYt();
         }
@@ -269,8 +285,7 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
         if (targetNonce > $.lastIssuedNonce[request]) {
             revert NonceNotIssued();
         }
-        IOfferReceiver(request).setNonce(targetNonce);
-        emit OfferCancelled(request, targetNonce);
+        _cancelOffers(request, targetNonce);
     }
 
     /// @inheritdoc IThreeFModule
@@ -298,6 +313,16 @@ contract ThreeFModule is IThreeFModule, MellowACL, ReentrancyGuardUpgradeable {
     }
 
     // Internal functions
+
+    /// @dev Advances the on-chain nonce to `targetNonce` if it hasn't been reached yet, emits OfferCancelled.
+    ///      No-ops silently when targetNonce <= currentNonce (e.g. no offers issued, all already consumed).
+    function _cancelOffers(address request, uint256 targetNonce) private {
+        if (targetNonce <= IOfferReceiver(request).nonce(address(this))) {
+            return;
+        }
+        IOfferReceiver(request).setNonce(targetNonce);
+        emit OfferCancelled(request, targetNonce);
+    }
 
     /// @dev Checks that `request` is in the allow set and currently whitelisted by 3F, reverts otherwise.
     ///      Asset match is not re-checked here — it is validated once at allowRequest().

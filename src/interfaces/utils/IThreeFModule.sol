@@ -79,6 +79,7 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     error NotRepaid();
     error WithdrawalNotAllowed();
     error InsufficientBalance();
+    error OfferExpired();
 
     // Roles
 
@@ -146,10 +147,12 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     /// @param request Address of the 3F Request contract to allow.
     function allowRequest(address request) external;
 
-    /// @notice Removes a request from the internal allow set.
+    /// @notice Removes a request from the internal allow set and atomically cancels all outstanding offers.
     /// @dev Only callable by ALLOW_REQUEST_ROLE.
+    ///      Advances the on-chain nonce to lastIssuedNonce[request] via the internal _cancelOffers,
+    ///      invalidating every offer issued since the last consume. No-op if no offers are pending.
     ///      Reverts RequestNotAllowed if the request is not in the set.
-    ///      Emits RequestDisallowed on success.
+    ///      Emits RequestDisallowed and, when offers were pending, OfferCancelled.
     /// @param request Address of the 3F Request contract to disallow.
     function disallowRequest(address request) external;
 
@@ -174,12 +177,18 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
     ///      Authorization is one-time use: mint() clears it, so a second push() on the same
     ///      request returns (0, 0) and reverts InsufficientAuthorization.
     ///
-    ///      Defensive post-conditions verified after mint() returns (reverts SlippageExceeded):
-    ///      - ptMinted <= maxPt
-    ///      - ytMinted >= minYt
+    ///      Pre-mint authorization guards (reverts InsufficientAuthorization):
+    ///      - authPt <= maxPt  (don't deposit more PT than the caller intended)
+    ///      - authYt >= minYt  (don't accept less YT than the caller intended)
     ///
-    /// @param request Address of the 3F Request contract.
-    function push(address request) external;
+    ///      Defensive post-conditions verified after mint() returns (reverts SlippageExceeded):
+    ///      - ptMinted <= authPt
+    ///      - ytMinted >= authYt
+    ///
+    /// @param request  Address of the 3F Request contract.
+    /// @param maxPt    Maximum PT the caller accepts depositing; reverts SlippageExceeded if authPt exceeds this.
+    /// @param minYt    Minimum YT the caller expects; reverts SlippageExceeded if authYt is below this.
+    function push(address request, uint128 maxPt, uint128 minYt) external;
 
     /// @notice Pull flow step 1: constructs and stores an ERC-1271 authorization for a new offer.
     /// @dev Only callable by PULL_ROLE.
@@ -202,9 +211,12 @@ interface IThreeFModule is IFactoryEntity, IRequestCallback, IERC1271 {
         returns (Offer memory offer, bytes32 offerHash);
 
     /// @notice Cancels outstanding offers up to and including targetNonce by advancing the on-chain nonce.
-    /// @dev Only callable by PULL_ROLE.
+    /// @dev Only callable by PULL_ROLE. Requires the request to be in the allow set and 3F-whitelisted.
+    ///      Intended for on-the-fly cancellation of active requests. For post-disallow cleanup,
+    ///      use disallowRequest() which cancels atomically.
     ///      Reverts NonceTooLow if targetNonce <= current on-chain nonce (already past/consumed).
     ///      Reverts NonceNotIssued if targetNonce > lastIssuedNonce (never assigned by this module).
+    ///      Reverts RequestNotAllowed / RequestNotWhitelisted if the request is not currently active.
     ///      Calls request.setNonce(targetNonce); any offer with nonce <= targetNonce is then stale.
     ///      Stale authorizedOffers entries remain in storage but are harmless — 3F's nonce check
     ///      blocks consume() before the callback is ever reached.

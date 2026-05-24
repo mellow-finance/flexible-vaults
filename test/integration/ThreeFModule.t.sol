@@ -84,7 +84,7 @@ contract ThreeFModuleIntegration is Test {
         IRequest(request).authorizeMinting(address(module), authPt, authYt);
         deal(USDC, address(module), authPt);
         vm.prank(curator);
-        module.push(request);
+        module.push(request, type(uint128).max, 0);
     }
 
     /// Simulate OPERATOR repaying `request` and marking it as repaid.
@@ -217,7 +217,7 @@ contract ThreeFModuleIntegration is Test {
 
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.InsufficientAuthorization.selector);
-        module.push(request);
+        module.push(request, type(uint128).max, 0);
     }
 
     function testPush_Happy_NO_CI() external {

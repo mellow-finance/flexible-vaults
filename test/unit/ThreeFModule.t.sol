@@ -204,6 +204,7 @@ contract MockRequest {
         if (offer.useCallback) {
             IRequestCallback(offer.maker).onRequestConsumed(offer, "", ptAmount, ytReturn);
         }
+        makerNonce = offer.nonce; // mirrors real 3F: _nonces[maker] = offer.nonce
         IERC20(assetAddr).transferFrom(offer.maker, address(this), ptAmount);
         _balPt += uint128(ptAmount);
         return ytReturn;
@@ -519,6 +520,51 @@ contract ThreeFModuleTest is Test {
         module.disallowRequest(address(request));
     }
 
+    function testDisallowRequest_CancelsOffers() external {
+        // Issue two offers then disallow — lastIssuedNonce=2 should be set on-chain
+        _authorizeOffer(80e18, 8e18, 1 hours, 0);
+        _authorizeOffer(60e18, 6e18, 1 hours, 0);
+        assertEq(module.lastIssuedNonce(address(request)), 2);
+
+        vm.expectEmit(true, false, false, true, address(module));
+        emit IThreeFModule.OfferCancelled(address(request), 2);
+
+        vm.prank(admin);
+        module.disallowRequest(address(request));
+
+        assertEq(request.makerNonce(), 2);
+    }
+
+    function testDisallowRequest_NoPendingOffers_NoEvent() external {
+        // No offers issued → _cancelOffers is a no-op; OfferCancelled must not be emitted
+        vm.recordLogs();
+        vm.prank(admin);
+        module.disallowRequest(address(request));
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 cancelledSig = keccak256("OfferCancelled(address,uint256)");
+        for (uint256 i = 0; i < logs.length; i++) {
+            assertNotEq(logs[i].topics[0], cancelledSig, "unexpected OfferCancelled emitted");
+        }
+    }
+
+    function testDisallowRequest_AllConsumed_NoEvent() external {
+        // Issue and consume nonce 1 → onChainNonce==lastIssuedNonce → nothing to cancel
+        request.setYtReturn(8e18);
+        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 80e18);
+        request.consume(offer, "", 80e18); // advances onChainNonce to 1
+
+        vm.recordLogs();
+        vm.prank(admin);
+        module.disallowRequest(address(request));
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 cancelledSig = keccak256("OfferCancelled(address,uint256)");
+        for (uint256 i = 0; i < logs.length; i++) {
+            assertNotEq(logs[i].topics[0], cancelledSig, "unexpected OfferCancelled emitted");
+        }
+    }
+
     // ─── pushAssets ───────────────────────────────────────────────────────────
 
     function testPushAssets_NotSubvault() external {
@@ -564,7 +610,7 @@ contract ThreeFModuleTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, PUSH_ROLE)
         );
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
     }
 
     function testPush_RequestNotAllowed() external {
@@ -572,14 +618,14 @@ contract ThreeFModuleTest is Test {
         module.disallowRequest(address(request));
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.RequestNotAllowed.selector);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
     }
 
     function testPush_RequestNotWhitelisted() external {
         factory.set(address(request), false);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.RequestNotWhitelisted.selector);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
     }
 
     function testPush_InsufficientAuthorization() external {
@@ -588,7 +634,7 @@ contract ThreeFModuleTest is Test {
         token.mint(address(module), 100e18);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.InsufficientAuthorization.selector);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
     }
 
     function testPush_InsufficientBalance() external {
@@ -596,11 +642,11 @@ contract ThreeFModuleTest is Test {
         token.mint(address(module), 100e18 - 1);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.InsufficientBalance.selector);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
     }
 
     function testPush_Happy() external {
-        // setUp: authPt=100e18, authYt=10e18
+        // setUp: authPt=100e18, authYt=10e18; pass exact expected values
         token.mint(address(module), 100e18);
         request.setBalances(0, 0);
 
@@ -608,39 +654,55 @@ contract ThreeFModuleTest is Test {
         emit IThreeFModule.Pushed(address(request), 100e18, 10e18, 100e18, 10e18);
 
         vm.prank(curator);
-        module.push(address(request));
+        module.push(address(request), 100e18, 10e18);
 
         assertEq(token.balanceOf(address(module)), 0);
         assertEq(token.balanceOf(address(request)), 100e18);
         assertEq(token.allowance(address(module), address(request)), 0);
     }
 
+    function testPush_InsufficientAuthorization_AuthPtExceedsMaxPt() external {
+        // Pre-mint: authPt=100e18 but caller only accepts 90e18 → revert before mint
+        token.mint(address(module), 100e18);
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.InsufficientAuthorization.selector);
+        module.push(address(request), 90e18, 10e18); // maxPt=90 < authPt=100
+    }
+
+    function testPush_InsufficientAuthorization_AuthYtBelowMinYt() external {
+        // Pre-mint: authYt=10e18 but caller wants at least 20e18 → revert before mint
+        token.mint(address(module), 100e18);
+        vm.prank(curator);
+        vm.expectRevert(IThreeFModule.InsufficientAuthorization.selector);
+        module.push(address(request), 100e18, 20e18); // minYt=20 > authYt=10
+    }
+
     function testPush_SlippageExceeded_ExcessPt() external {
-        // mint() credits more PT than authorized → ptMinted > maxPt
+        // Post-mint: mock credits more PT than authPt → ptMinted > authPt
         request.setMintResult(200e18, 10e18); // authPt=100e18 but mock adds 200e18
         token.mint(address(module), 100e18);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.SlippageExceeded.selector);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
     }
 
     function testPush_SlippageExceeded_InsufficientYt() external {
-        // mint() credits less YT than authorized → ytMinted < minYt
+        // Post-mint: mock credits less YT than authYt → ytMinted < authYt
         request.setMintResult(100e18, 5e18); // authYt=10e18 but mock adds 5e18
         token.mint(address(module), 100e18);
         vm.prank(curator);
         vm.expectRevert(IThreeFModule.SlippageExceeded.selector);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
     }
 
     function testPush_DoesNotDuplicateActiveRequest() external {
         token.mint(address(module), 100e18);
         vm.prank(curator);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
 
         token.mint(address(module), 100e18);
         vm.prank(curator);
-        module.push(address(request)); // no revert — idempotent
+        module.push(address(request), type(uint128).max, 0); // no revert — idempotent
     }
 
     // ─── onRequestConsumed: hash field sensitivity ────────────────────────────
@@ -777,7 +839,7 @@ contract ThreeFModuleTest is Test {
         // next authorize starts from max(lastIssuedNonce=1, onChainNonce=1) + 1 = 2
         (, bytes32 hash2) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
         assertNotEq(hash1, hash2);
-        // hash1 is still in authorizedOffers (stale but harmless — 3F nonce check blocks consume)
+        // hash1 still in authorizedOffers — stale but 3F's own nonce check blocks consumption
         assertEq(module.isValidSignature(hash1, ""), bytes4(0x1626ba7e));
         assertEq(module.isValidSignature(hash2, ""), bytes4(0x1626ba7e));
     }
@@ -788,10 +850,57 @@ contract ThreeFModuleTest is Test {
         assertEq(module.isValidSignature(keccak256("test"), ""), bytes4(0xffffffff));
     }
 
+    function testIsValidSignature_RemainsValidAfterDewhitelist() external {
+        // isValidSignature only checks maxPt > 0; whitelist/allow status is enforced in onRequestConsumed.
+        (, bytes32 offerHash) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
+        assertEq(module.isValidSignature(offerHash, ""), bytes4(0x1626ba7e));
+
+        factory.set(address(request), false); // de-whitelist does not change isValidSignature
+        assertEq(module.isValidSignature(offerHash, ""), bytes4(0x1626ba7e));
+    }
+
     // isValidSignature returning magic is verified implicitly by testPull_Happy
     // via MockRequest.consume() which requires the magic value to proceed.
 
     // ─── onRequestConsumed ────────────────────────────────────────────────────
+
+    function testOnRequestConsumed_PrincipalZero() external {
+        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 80e18);
+        vm.prank(address(request));
+        vm.expectRevert(IThreeFModule.ZeroValue.selector);
+        module.onRequestConsumed(offer, "", 0, 0);
+    }
+
+    function testOnRequestConsumed_OfferExpired() external {
+        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 80e18);
+        vm.warp(offer.expiration + 1);
+        vm.prank(address(request));
+        vm.expectRevert(IThreeFModule.OfferExpired.selector);
+        module.onRequestConsumed(offer, "", 80e18, 8e18);
+    }
+
+    function testOnRequestConsumed_ExceedsPtAuthorization() external {
+        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 100e18);
+        vm.prank(address(request));
+        vm.expectRevert(IThreeFModule.ExceedsPtAuthorization.selector);
+        module.onRequestConsumed(offer, "", 80e18 + 1, 8e18); // principal > maxPt
+    }
+
+    function testOnRequestConsumed_InsufficientYt() external {
+        // Full fill: yield must be >= minYt
+        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 80e18);
+        vm.prank(address(request));
+        vm.expectRevert(IThreeFModule.InsufficientYt.selector);
+        module.onRequestConsumed(offer, "", 80e18, 7e18); // 7e18 < 8e18 floor
+    }
+
+    function testOnRequestConsumed_InsufficientBalance() external {
+        // Fund with one less than the principal being consumed
+        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 79e18); // 79e18 < 80e18
+        vm.prank(address(request));
+        vm.expectRevert(IThreeFModule.InsufficientBalance.selector);
+        module.onRequestConsumed(offer, "", 80e18, 8e18);
+    }
 
     function testOnRequestConsumed_RequestNotAllowed() external {
         (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 80e18);
@@ -821,23 +930,6 @@ contract ThreeFModuleTest is Test {
         module.onRequestConsumed(offer, "", 50e18, 5e18);
     }
 
-    function testOnRequestConsumed_ExceedsPtAuthorization() external {
-        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 80e18);
-
-        vm.prank(address(request));
-        vm.expectRevert(IThreeFModule.ExceedsPtAuthorization.selector);
-        module.onRequestConsumed(offer, "", 80e18 + 1, 5e18);
-    }
-
-    function testOnRequestConsumed_InsufficientBalance() external {
-        _authorizeOffer(80e18, 8e18, 1 hours, 0); // no funds — advances nonce to 1
-        (Offer memory offer,) = _authorizeOffer(80e18, 8e18, 1 hours, 0);
-
-        vm.prank(address(request));
-        vm.expectRevert(IThreeFModule.InsufficientBalance.selector);
-        module.onRequestConsumed(offer, "", 50e18, 5e18);
-    }
-
     function testOnRequestConsumed_ApprovesAndClearsAuth() external {
         (Offer memory offer, bytes32 offerHash) = _authorizeOffer(80e18, 8e18, 1 hours, 80e18);
 
@@ -846,18 +938,6 @@ contract ThreeFModuleTest is Test {
 
         assertEq(token.allowance(address(module), address(request)), 80e18);
         assertEq(module.isValidSignature(offerHash, ""), bytes4(0xffffffff)); // deleted
-    }
-
-    function testOnRequestConsumed_InsufficientYt() external {
-        // Check: yield < floor(minYt * principal / offer.amount).
-        // offer.amount=80e18, minYt=8e18, principal=50e18 → floor(8*50/80) = 5e18.
-        // yield=4e18 < 5e18 → revert.
-        token.mint(address(module), 80e18);
-        vm.prank(curator);
-        (Offer memory offer,) = module.authorizeOffer(address(request), 80e18, 8e18, 1 hours);
-        vm.prank(address(request));
-        vm.expectRevert(IThreeFModule.InsufficientYt.selector);
-        module.onRequestConsumed(offer, "", 50e18, 4e18); // floor(8*50/80)=5, 4 < 5 → revert
     }
 
     function testOnRequestConsumed_PartialFill_DeletesAuth() external {
@@ -1047,9 +1127,9 @@ contract ThreeFModuleTest is Test {
         (, bytes32 h2) = _authorizeOffer(60e18, 6e18, 1 hours, 0);
         (, bytes32 h3) = _authorizeOffer(40e18, 4e18, 1 hours, 0);
         vm.prank(curator);
-        module.cancelOffers(address(request), 3); // cancel all
+        module.cancelOffers(address(request), 3); // cancel all — onChainNonce=3
         assertEq(request.makerNonce(), 3);
-        // authorizedOffers entries remain (stale but harmless — 3F nonce check blocks consume)
+        // entries remain in storage; 3F's _validateOffer nonce check blocks actual consumption
         assertEq(module.isValidSignature(h1, ""), bytes4(0x1626ba7e));
         assertEq(module.isValidSignature(h2, ""), bytes4(0x1626ba7e));
         assertEq(module.isValidSignature(h3, ""), bytes4(0x1626ba7e));
@@ -1079,7 +1159,7 @@ contract ThreeFModuleTest is Test {
         uint128 authYt = 10e18;
         token.mint(address(module), authPt);
         vm.prank(curator);
-        module.push(address(request));
+        module.push(address(request), type(uint128).max, 0);
         request.setRepaid(true);
         request.setCanWithdraw(true);
         request.setBurnReturn(authPt, authYt, 90e18, authYt);
