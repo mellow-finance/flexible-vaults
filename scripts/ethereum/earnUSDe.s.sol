@@ -27,6 +27,10 @@ import "../common/ArraysLibrary.sol";
 
 import "../common/interfaces/IAggregatorV3.sol";
 
+interface IFactoryECV {
+    function createCollateralVault(uint8, address, address, uint256, address) external returns (address);
+}
+
 contract Deploy is Script, Test {
     // Actors
     address public proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
@@ -45,7 +49,7 @@ contract Deploy is Script, Test {
     uint32 public constant DEFAULT_MAX_AGE = 24 hours;
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
-    address public constant CUSTOM_AAVE_V3_ORACLE = 0xBB95c046Ce6a7C45a1172a514eE8623a1afE782d;
+    address public constant CUSTOM_AAVE_V3_ORACLE = 0xaF00F9561cf64ec5777C36f1F76974a8200C24fC;
 
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
@@ -406,17 +410,19 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[8] memory assets = [
-            Constants.USDC,
-            Constants.USDT,
-            Constants.SUSDE,
-            Constants.USDE,
-            Constants.CRV,
-            Constants.FRXUSD,
-            Constants.WFRAX,
-            Constants.MSUSD
-        ];
-        address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
+
+        address[] memory actors = ArraysLibrary.makeAddressArray(
+            abi.encode(
+                curator,
+                [Constants.USDC, Constants.USDT, Constants.SUSDE, Constants.USDE],
+                [Constants.FRXUSD, Constants.MSUSD, Constants.SRUSDE],
+                [Constants.WFRAX, Constants.PENDLE, Constants.CRV],
+                [Constants.USDC, Constants.USDT, Constants.SUSDE, Constants.USDE],
+                [Constants.FRXUSD, Constants.MSUSD, Constants.SRUSDE],
+                _routers()
+            )
+        );
+
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
@@ -424,9 +430,11 @@ contract Deploy is Script, Test {
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE
                 ],
                 [
+                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
@@ -439,7 +447,6 @@ contract Deploy is Script, Test {
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
                 ],
                 [
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE

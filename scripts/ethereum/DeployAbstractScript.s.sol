@@ -46,6 +46,7 @@ abstract contract DeployAbstractScript is Test {
      *   - run the script with Vault vault = Vault(payable(address(0)))
      *   - then run with the deployed vault address to finalize
      */
+    bool internal isEmptyVault;
     string public vaultName;
     string public vaultSymbol;
     address public proxyAdmin;
@@ -157,7 +158,10 @@ abstract contract DeployAbstractScript is Test {
      */
     function stepOne(IDeployVaultFactory.DeployVaultConfig memory config) internal virtual returns (Vault vault) {
         vault = deployVault.deployVault(config);
+        console.log("=============================================================");
         console.log("Deployed vault at:", address(vault));
+        console.log("=============================================================");
+        logDeployment(address(vault));
     }
 
     /*
@@ -221,9 +225,9 @@ abstract contract DeployAbstractScript is Test {
             oracleVersion: oracleVersion,
             timelockController: address(0),
             oracleSubmitter: address(0),
-            deployer: address(0)
+            deployer: address(0),
+            emptyVault: isEmptyVault
         });
-        // emptyVault: false
 
         deployVault.registry().validateDeployConfig(config);
     }
