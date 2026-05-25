@@ -22,7 +22,7 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x6b59026041C560916cC5426c64b2578B95d86143)));
-         //_run();
+        //_run();
         // return;
         // deposit(Constants.USDC, address(0xFE52C35425e926672AD194A6256124120FC33035));
         _deploySwapModule(vault.subvaultAt(0));
@@ -141,7 +141,8 @@ contract Deploy is DeployAbstractScript {
         subvaultParams[0].verifierVersion = 0;
         subvaultParams[0].limit = 100 ether; // 100 ETH
 
-        subvaultParams[1].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPS, Constants.RLUSD));
+        subvaultParams[1].assets =
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPS, Constants.RLUSD));
         subvaultParams[1].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[1].verifierVersion = 0;
         subvaultParams[1].limit = 100 ether; // 100 ETH
