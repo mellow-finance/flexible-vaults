@@ -23,8 +23,11 @@ interface IGGVMigrator {
     error CumulativeErrorTooHigh();
     error HealthFactorIsTooLow();
     error InsufficientWethDebt();
+    error InvalidBorrowAmount();
+    error InvalidRepayAmount();
     error InvalidMaxUtilizationD18();
-    error InvalidStrETHSubvault();
+    error InvalidSubvault();
+    error NotEnoughWETH();
     error NotEnoughWeETHCollateral();
     error TooManyIterations(uint256 iterations);
     error WethDebtTooHigh();
@@ -34,9 +37,11 @@ interface IGGVMigrator {
     function calculateSteps(uint256 maxUtilizationD18)
         external
         view
-        returns (uint256 iterations, uint256 wethPerStep, uint256 weethPerStep, address subvault);
+        returns (uint256 iterations, uint256 wethPerStep, uint256 weethPerStep);
 
-    function migrate(uint256 maxUtilizationD18) external;
+    function migrate(uint256 maxUtilizationD18, uint256 wethToRepay, uint256 wethToBorrow) external;
+
+    event Killed(uint256 indexed timestamp, address indexed caller);
 
     event Migrated(uint256 indexed timestamp, address indexed caller, uint256 indexed cumulativeError);
 }
