@@ -10,7 +10,7 @@
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
-        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).openTrove{value: any}(any,any,any)",
+        "description": "IBorrowerOperations(Borrower_Operations).openTrove{value: any}(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
@@ -113,7 +113,7 @@
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
-        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).addColl{value: any}(any,any)",
+        "description": "IBorrowerOperations(Borrower_Operations).addColl{value: any}(any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
@@ -199,7 +199,7 @@
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
-        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).withdrawColl(any,any,any)",
+        "description": "IBorrowerOperations(Borrower_Operations).withdrawColl(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
@@ -295,7 +295,7 @@
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
-        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).withdrawMUSD(any,any,any)",
+        "description": "IBorrowerOperations(Borrower_Operations).withdrawMUSD(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
@@ -391,7 +391,7 @@
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
-        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).repayMUSD(any,any,any)",
+        "description": "IBorrowerOperations(Borrower_Operations).repayMUSD(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
@@ -488,7 +488,7 @@
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
-        "description": "IBorrowerOperations(0x44b1bac67dDA612a41a58AAf779143B181dEe031).closeTrove()",
+        "description": "IBorrowerOperations(Borrower_Operations).closeTrove()",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
           "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
