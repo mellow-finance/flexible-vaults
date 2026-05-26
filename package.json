@@ -6,6 +6,7 @@
   "scripts": {
     "prettier": "forge fmt ./src/* ./test/* ./scripts/*",
     "deploy:ethereum": "forge script ./scripts/ethereum/Deploy.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
+    "deploy:ethereum:tkr": "forge script ./scripts/ethereum/keyRockTest1.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:ethereum:earnusde": "forge script ./scripts/ethereum/earnUSDe.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:ethereum:custom-aave-oracle": "forge script ./scripts/ethereum/DeployCustomAaveOracle.s.sol:Deploy --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
     "deploy:arbitrum:custom-aave-oracle": "forge script ./scripts/arbitrum/DeployCustomAaveOracle.s.sol:Deploy --fork-url $(grep ARBITRUM_RPC .env | cut -d '=' -f2,3,4,5) --broadcast --slow --verify --etherscan-api-key $(grep ETHERSCAN_API_KEY .env | cut -d '=' -f2)",
@@ -24,7 +25,7 @@
     "test:univ4": "forge script ./scripts/ethereum/test/TestUniswapV4.sol:TestUniswapV4 --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --fork-block-number 24368924",
     "test:integration": "ETH_RPC=$(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) yarn test:base --match-path './test/integration/**'",
     "test:whitelist": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 24333316 -vvv --match-path ./test/integration/WhitelistTest.t.sol",
-    "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 22730425 -vvv",
+    "test:base": "forge test --fork-url $ETH_RPC --gas-limit 10000000000000000 --fork-block-number 25093434 -vvv",
     "test:acceptance:ethereum": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 -vvv --match-path ./test/integration/AcceptanceTest.t.sol",
     "test:acceptance:impl": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 -vvv --match-path ./test/integration/AcceptanceTest.t.sol --match-test testImpl_*",
     "test:migration:redeem-queue": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 24297200 -vvv --match-path ./test/integration/RedeemQueueImplMigration.t.sol",
@@ -34,6 +35,7 @@
     "test:swap:integration": "forge test --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 -vvv --match-path ./test/integration/SwapModuleTest.t.sol",
     "coverage:report": "forge coverage --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 22730425 --force --report lcov && genhtml lcov.info -o report --branch-coverage && rm lcov.info",
     "coverage:report:swap": "forge coverage  --match-path ./test/unit/utils/SwapModule.t.sol --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 23437454 --report lcov && genhtml lcov.info  --ignore-errors inconsistent -o report --branch-coverage && rm lcov.info",
+    "coverage:report:3f": "forge coverage  --match-path ./test/unit/ThreeFModule.t.sol --fork-url $(grep ETH_RPC .env | cut -d '=' -f2,3,4,5) --gas-limit 10000000000000000 --fork-block-number 25093434 --report lcov && genhtml lcov.info  --ignore-errors inconsistent -o report --branch-coverage && rm lcov.info",
     "compile": "forge build --use 0.8.25 --cache-path cache",
     "sizes": "forge build --sizes --force",
     "scc:report": "scc src --sort names --no-cocomo --exclude-dir interfaces --by-file --format wide > scc-report.txt"
