@@ -209,8 +209,17 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
         int256 pendingAssetsBefore = $.pendingAssets[asset];
         int256 pendingSharesBefore = $.pendingShares[asset];
         int256 pendingAssetsAfter = pendingAssetsBefore + change;
-        int256 pendingSharesAfter = convertToShares(asset, pendingAssetsAfter);
-        int256 shares = pendingSharesAfter - pendingSharesBefore;
+
+        int256 shares;
+        int256 pendingSharesAfter;
+        if (change < 0 && pendingAssetsBefore > 0 && !_hasValidReport(asset)) {
+            shares = change * pendingSharesBefore / pendingAssetsBefore;
+            pendingSharesAfter = pendingSharesBefore + shares;
+        } else {
+            pendingSharesAfter = convertToShares(asset, pendingAssetsAfter);
+            shares = pendingSharesAfter - pendingSharesBefore;
+        }
+
         int256 newPendingBalance = $.pendingBalance + shares;
         if (change > 0 && $.vaultState.balance + newPendingBalance > $.vaultState.limit) {
             revert LimitExceeded($.vaultState.balance + newPendingBalance, $.vaultState.limit);
@@ -224,13 +233,12 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
     /// @inheritdoc IRiskManager
     function modifyVaultBalance(address asset, int256 change) external onlyQueueOrRole(MODIFY_VAULT_BALANCE_ROLE) {
         int256 shares = convertToShares(asset, change);
-        RiskManagerStorage storage $ = _riskManagerStorage();
-        int256 newBalance = $.vaultState.balance + shares;
-        if (change > 0 && newBalance + $.pendingBalance > $.vaultState.limit) {
-            revert LimitExceeded(newBalance + $.pendingBalance, $.vaultState.limit);
-        }
-        $.vaultState.balance = newBalance;
-        emit ModifyVaultBalance(asset, shares, newBalance);
+        _applyVaultBalanceChange(asset, shares);
+    }
+
+    /// @inheritdoc IRiskManager
+    function modifyVaultBalanceShares(int256 shares) external onlyQueueOrRole(MODIFY_VAULT_BALANCE_ROLE) {
+        _applyVaultBalanceChange(address(0), shares);
     }
 
     /// @inheritdoc IRiskManager
@@ -254,6 +262,22 @@ contract RiskManager is IRiskManager, ContextUpgradeable {
     }
 
     // Internal functions
+
+    function _hasValidReport(address asset) internal view returns (bool) {
+        RiskManagerStorage storage $ = _riskManagerStorage();
+        IOracle.DetailedReport memory report = IShareModule($.vault).oracle().getReport(asset);
+        return !report.isSuspicious && report.priceD18 != 0;
+    }
+
+    function _applyVaultBalanceChange(address asset, int256 shares) internal {
+        RiskManagerStorage storage $ = _riskManagerStorage();
+        int256 newBalance = $.vaultState.balance + shares;
+        if (shares > 0 && newBalance + $.pendingBalance > $.vaultState.limit) {
+            revert LimitExceeded(newBalance + $.pendingBalance, $.vaultState.limit);
+        }
+        $.vaultState.balance = newBalance;
+        emit ModifyVaultBalance(asset, shares, newBalance);
+    }
 
     function _riskManagerStorage() internal view returns (RiskManagerStorage storage $) {
         bytes32 slot = _riskManagerStorageSlot;

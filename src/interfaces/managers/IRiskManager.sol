@@ -97,6 +97,9 @@ interface IRiskManager is IFactoryEntity {
     /// @notice Modifies the vault's internal balance by a signed delta (in asset terms)
     function modifyVaultBalance(address asset, int256 delta) external;
 
+    /// @notice Modifies the vault's internal balance by a signed delta (in share terms)
+    function modifyVaultBalanceShares(int256 shares) external;
+
     /// @notice Modifies a subvault's internal balance by a signed delta (in asset terms)
     function modifySubvaultBalance(address subvault, address asset, int256 delta) external;
 
