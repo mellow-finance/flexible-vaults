@@ -195,7 +195,7 @@ contract RedeemQueue is IRedeemQueue, Queue {
         if (counter > 0) {
             if (demand > 0) {
                 vault_.callHook(demand);
-                IVaultModule(address(vault_)).riskManager().modifyVaultBalance(asset(), -int256(uint256(demand)));
+                IVaultModule(address(vault_)).riskManager().modifyVaultBalanceShares(-int256(shares));
                 $.totalDemandAssets -= demand;
             }
             $.batchIterator += counter;
