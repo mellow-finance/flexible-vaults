@@ -212,21 +212,13 @@ contract Deploy is Script, Test {
 
     function _deploySwapModule(address subvault) internal returns (address) {
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[3] memory assets = [Constants.USDT0, Constants.USDE, Constants.SUSDE];
+        address[2] memory assets = [Constants.USDT0, Constants.SYRUP_USDT];
         address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
         bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
             abi.encode(
                 Permissions.SWAP_MODULE_CALLER_ROLE,
-                [
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE
-                ],
-                [
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
-                ],
+                [Permissions.SWAP_MODULE_TOKEN_IN_ROLE, Permissions.SWAP_MODULE_TOKEN_IN_ROLE],
+                [Permissions.SWAP_MODULE_TOKEN_OUT_ROLE, Permissions.SWAP_MODULE_TOKEN_OUT_ROLE],
                 Permissions.SWAP_MODULE_ROUTER_ROLE
             )
         );
