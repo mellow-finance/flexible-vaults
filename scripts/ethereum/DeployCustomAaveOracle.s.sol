@@ -3,8 +3,6 @@ pragma solidity 0.8.25;
 
 import "forge-std/Script.sol";
 
-import {ChainlinkDecimalsAdapter} from "../../src/oracles/ChainlinkDecimalsAdapter.sol";
-
 import "../common/PermissionedOracleFactory.sol";
 import "./Constants.sol";
 
@@ -41,21 +39,20 @@ contract Deploy is Script {
 
         IAaveOracleFactory factory = IAaveOracleFactory(0x00000000DDc33fB8d6F89dC5d9725F5e27B53D6f);
 
-        address uspcSource = address(
-            new ChainlinkDecimalsAdapter(
-                0x02ae69C812DD749c32afb4F1723F6833EeF3d7a3, // USPC / USD (18 decimals)
-                18,
-                8,
-                "USPC / USD"
-            )
-        );
-
         uint256 length = 1;
         address[] memory assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USPC));
-        address[] memory sources = ArraysLibrary.makeAddressArray(abi.encode(uspcSource));
+        address[] memory sources = ArraysLibrary.makeAddressArray(abi.encode(address(0)));
 
         IPermissionedOracleFactory.InitParams[] memory sourceParams =
             new IPermissionedOracleFactory.InitParams[](length);
+        sourceParams[0] = IPermissionedOracleFactory.InitParams({
+            owner: 0x391a6d2c24486050778de38Ee22A3CD076cE4266,
+            decimals: 8,
+            initialAnswer: 100898704,
+            minAllowedAnswer: 1e8,
+            maxAllowedAnswer: 1.1e8,
+            description: "USPC / USD"
+        });
 
         address aaveOracle = factory.create(
             IAaveOracleFactory.InitParams({
