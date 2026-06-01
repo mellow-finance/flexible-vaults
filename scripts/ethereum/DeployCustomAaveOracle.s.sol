@@ -3,6 +3,8 @@ pragma solidity 0.8.25;
 
 import "forge-std/Script.sol";
 
+import {ChainlinkDecimalsAdapter} from "../../src/oracles/ChainlinkDecimalsAdapter.sol";
+
 import "../common/PermissionedOracleFactory.sol";
 import "./Constants.sol";
 
@@ -39,46 +41,21 @@ contract Deploy is Script {
 
         IAaveOracleFactory factory = IAaveOracleFactory(0x00000000DDc33fB8d6F89dC5d9725F5e27B53D6f);
 
-        uint256 length = 5;
-        address[] memory assets = ArraysLibrary.makeAddressArray(
-            abi.encode(Constants.SRUSDE, Constants.FRXUSD, Constants.MSUSD, Constants.PENDLE, Constants.WFRAX)
-        );
-        address[] memory sources = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                address(0),
-                0x9B4a96210bc8D9D55b1908B465D8B0de68B7fF83, // https://data.chain.link/feeds/ethereum/mainnet/frxusd-usd
-                address(0),
-                address(0),
-                0x6Ebc52C8C1089be9eB3945C4350B68B8E4C2233f // https://data.chain.link/feeds/ethereum/mainnet/fxs-usd
+        address uspcSource = address(
+            new ChainlinkDecimalsAdapter(
+                0x02ae69C812DD749c32afb4F1723F6833EeF3d7a3, // USPC / USD (18 decimals)
+                18,
+                8,
+                "USPC / USD"
             )
         );
 
+        uint256 length = 1;
+        address[] memory assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USPC));
+        address[] memory sources = ArraysLibrary.makeAddressArray(abi.encode(uspcSource));
+
         IPermissionedOracleFactory.InitParams[] memory sourceParams =
             new IPermissionedOracleFactory.InitParams[](length);
-        sourceParams[0] = IPermissionedOracleFactory.InitParams({
-            owner: MELLOW_ORACLE_UPDATER,
-            decimals: 8,
-            initialAnswer: 101823846,
-            minAllowedAnswer: 1.01e8,
-            maxAllowedAnswer: 1.1e8,
-            description: "srUSDe / USD"
-        });
-        sourceParams[2] = IPermissionedOracleFactory.InitParams({
-            owner: MELLOW_ORACLE_UPDATER,
-            decimals: 8,
-            initialAnswer: 0.9967e8,
-            minAllowedAnswer: 0.98e8,
-            maxAllowedAnswer: 1e8,
-            description: "msUSD / USD"
-        });
-        sourceParams[3] = IPermissionedOracleFactory.InitParams({
-            owner: MELLOW_ORACLE_UPDATER,
-            decimals: 8,
-            initialAnswer: 126396000,
-            minAllowedAnswer: 0,
-            maxAllowedAnswer: 10e8,
-            description: "PENDLE / USD"
-        });
 
         address aaveOracle = factory.create(
             IAaveOracleFactory.InitParams({
@@ -91,25 +68,10 @@ contract Deploy is Script {
             })
         );
 
-        address[] memory allAssets = ArraysLibrary.makeAddressArray(
-            abi.encode(
-                Constants.USDC,
-                Constants.USDT,
-                Constants.USDE,
-                Constants.SUSDE,
-                Constants.SRUSDE,
-                Constants.FRXUSD,
-                Constants.MSUSD,
-                Constants.PENDLE,
-                Constants.WFRAX
-            )
+        console.log(
+            "price of %s == %s",
+            IERC20Metadata(Constants.USPC).symbol(),
+            IAaveOracle(aaveOracle).getAssetPrice(Constants.USPC)
         );
-        for (uint256 i = 0; i < allAssets.length; i++) {
-            console.log(
-                "price of %s == %s",
-                IERC20Metadata(allAssets[i]).symbol(),
-                IAaveOracle(aaveOracle).getAssetPrice(allAssets[i])
-            );
-        }
     }
 }
