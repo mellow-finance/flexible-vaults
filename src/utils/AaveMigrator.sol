@@ -3,8 +3,6 @@ pragma solidity 0.8.25;
 
 import "../interfaces/utils/IAaveMigrator.sol";
 
-import "forge-std/console.sol";
-
 contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
     using SafeCast for uint256;
     using SignedMath for int256;
