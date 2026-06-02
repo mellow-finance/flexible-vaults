@@ -27,10 +27,6 @@ import "../common/ArraysLibrary.sol";
 
 import "../common/interfaces/IAggregatorV3.sol";
 
-interface IFactoryECV {
-    function createCollateralVault(uint8, address, address, uint256, address) external returns (address);
-}
-
 contract Deploy is Script, Test {
     // Actors
     address public proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
@@ -52,7 +48,7 @@ contract Deploy is Script, Test {
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
 
-    address[] assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT));
+    address[] assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDE));
 
     address[] verifiers = new address[](1);
 
@@ -142,8 +138,8 @@ contract Deploy is Script, Test {
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
-                    maxAbsoluteDeviation: 0.005 ether,
-                    suspiciousAbsoluteDeviation: 0.001 ether,
+                    maxAbsoluteDeviation: 0.005e30,
+                    suspiciousAbsoluteDeviation: 0.001e30,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
                     timeout: 20 hours,
@@ -154,7 +150,7 @@ contract Deploy is Script, Test {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 3,
+            queueLimit: 4,
             roleHolders: holders
         });
 
@@ -333,7 +329,7 @@ contract Deploy is Script, Test {
                 depositHook: address($.redirectingDepositHook),
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
-                depositQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT)),
+                depositQueueAssets: assets_,
                 redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
                 subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
