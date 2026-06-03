@@ -46,7 +46,7 @@ contract Deploy is Script {
         IPermissionedOracleFactory.InitParams[] memory sourceParams =
             new IPermissionedOracleFactory.InitParams[](length);
         sourceParams[0] = IPermissionedOracleFactory.InitParams({
-            owner: 0x391a6d2c24486050778de38Ee22A3CD076cE4266,
+            owner: MELLOW_ORACLE_UPDATER,
             decimals: 8,
             initialAnswer: 100898704,
             minAllowedAnswer: 1e8,
