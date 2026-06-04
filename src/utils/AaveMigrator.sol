@@ -4,8 +4,7 @@ pragma solidity 0.8.25;
 import "../interfaces/utils/IAaveMigrator.sol";
 
 contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
-    using SafeCast for uint256;
-    using SignedMath for int256;
+    using Math for uint256;
 
     uint256 public constant MAX_ALLOWED_ITERATIONS = 30;
 
@@ -21,10 +20,13 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
     address public immutable debtAToken;
     address public immutable debtVariableDebtToken;
 
+    uint256 public immutable collateralUnit;
+    uint256 public immutable debtUnit;
+
     uint256 public immutable minAllowedSourceHFD18;
     uint256 public immutable minAllowedTargetHFD18;
 
-    uint256 public immutable minAllowedMigrationAmount;
+    uint256 public immutable minAllowedMigratingDebt;
     uint256 public immutable maxAllowedError;
 
     bool public migrated = false;
@@ -39,7 +41,7 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
         address debt_,
         uint256 minAllowedSourceHFD18_,
         uint256 minAllowedTargetHFD18_,
-        uint256 minAllowedMigrationAmount_,
+        uint256 minAllowedMigratingDebt_,
         uint256 maxAllowedError_
     ) Ownable(owner_) {
         pool = IAavePool(pool_);
@@ -54,10 +56,13 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
         debtAToken = pool.getReserveAToken(debt);
         debtVariableDebtToken = pool.getReserveVariableDebtToken(debt);
 
+        collateralUnit = 10 ** IERC20Metadata(collateral).decimals();
+        debtUnit = 10 ** IERC20Metadata(debt).decimals();
+
         minAllowedSourceHFD18 = minAllowedSourceHFD18_;
         minAllowedTargetHFD18 = minAllowedTargetHFD18_;
 
-        minAllowedMigrationAmount = minAllowedMigrationAmount_;
+        minAllowedMigratingDebt = minAllowedMigratingDebt_;
         maxAllowedError = maxAllowedError_;
     }
 
@@ -82,10 +87,7 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
         uint256 debtToMigrate = debtAmount * percentageD6 / 1e6;
         expectedDebtAfter = debtAmount - debtToMigrate;
 
-        if (
-            debtToMigrate < minAllowedMigrationAmount
-                || expectedDebtAfter > maxAllowedError && expectedDebtAfter < minAllowedMigrationAmount
-        ) {
+        if (debtToMigrate < minAllowedMigratingDebt) {
             revert InsufficientDebt();
         }
 
@@ -93,7 +95,14 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
         maxBorrowValue = Math.mulDiv(maxBorrowValue, maxUtilizationD18, 1 ether);
 
         uint256 debtPrice = oracle.getAssetPrice(debt);
-        uint256 maxBorrowDebt = Math.mulDiv(maxBorrowValue, 1 ether, debtPrice);
+        if (
+            _convertToValue(expectedDebtAfter, debtPrice) > maxAllowedError
+                && expectedDebtAfter < minAllowedMigratingDebt
+        ) {
+            revert InvalidDebtAfterMigration();
+        }
+
+        uint256 maxBorrowDebt = Math.mulDiv(maxBorrowValue, debtUnit, debtPrice);
 
         maxBorrowDebt = Math.min(
             maxBorrowDebt,
@@ -111,7 +120,7 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
 
         debtPerStep = debtToMigrate / iterations;
         uint256 collateralPrice = oracle.getAssetPrice(collateral);
-        collateralPerStep = Math.mulDiv(debtPerStep, debtPrice, collateralPrice);
+        collateralPerStep = Math.mulDiv(debtPerStep * collateralUnit, debtPrice, collateralPrice * debtUnit);
 
         uint256 collateralAmount = IERC20(collateralAToken).balanceOf(address(sourceSubvault));
         if (collateralPerStep * iterations > collateralAmount) {
@@ -127,7 +136,7 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
 
     /// @inheritdoc IAaveMigrator
     function migrate(uint256 maxUtilizationD18, uint256 percentageD6) external onlyOwner nonReentrant {
-        if (maxUtilizationD18 == 0 || maxUtilizationD18 >= 1 ether) {
+        if (maxUtilizationD18 == 0 || maxUtilizationD18 > 1 ether) {
             revert InvalidMaxUtilizationD18();
         }
 
@@ -147,6 +156,7 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
         uint256 sourceEquityBefore = checkHFAndGetEquity(address(sourceSubvault), minAllowedSourceHFD18);
         uint256 targetEquityBefore = checkHFAndGetEquity(address(targetSubvault), minAllowedTargetHFD18);
 
+        bytes memory response;
         for (uint256 i = 0; i < iterations; i++) {
             targetSubvault.call(
                 address(pool),
@@ -154,14 +164,28 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
                 abi.encodeCall(IAavePool.borrow, (debt, debtPerStep, 2, 0, address(targetSubvault))),
                 payload
             );
-            targetSubvault.call(
-                address(debt), 0, abi.encodeCall(IERC20.transfer, (address(sourceSubvault), debtPerStep)), payload
-            );
+            {
+                response = targetSubvault.call(
+                    address(debt), 0, abi.encodeCall(IERC20.transfer, (address(sourceSubvault), debtPerStep)), payload
+                );
+                if (response.length != 0 && !abi.decode(response, (bool))) {
+                    revert ERC20TransferFailed();
+                }
+            }
 
             if (IERC20(debt).allowance(address(sourceSubvault), address(pool)) != 0) {
-                sourceSubvault.call(debt, 0, abi.encodeCall(IERC20.approve, (address(pool), 0)), payload);
+                response = sourceSubvault.call(debt, 0, abi.encodeCall(IERC20.approve, (address(pool), 0)), payload);
+                if (response.length != 0 && !abi.decode(response, (bool))) {
+                    revert ERC20ApproveFailed();
+                }
             }
-            sourceSubvault.call(debt, 0, abi.encodeCall(IERC20.approve, (address(pool), debtPerStep)), payload);
+            {
+                response =
+                    sourceSubvault.call(debt, 0, abi.encodeCall(IERC20.approve, (address(pool), debtPerStep)), payload);
+                if (response.length != 0 && !abi.decode(response, (bool))) {
+                    revert ERC20ApproveFailed();
+                }
+            }
             sourceSubvault.call(
                 address(pool),
                 0,
@@ -176,11 +200,20 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
             );
 
             if (IERC20(collateral).allowance(address(targetSubvault), address(pool)) != 0) {
-                targetSubvault.call(collateral, 0, abi.encodeCall(IERC20.approve, (address(pool), 0)), payload);
+                response =
+                    targetSubvault.call(collateral, 0, abi.encodeCall(IERC20.approve, (address(pool), 0)), payload);
+                if (response.length != 0 && !abi.decode(response, (bool))) {
+                    revert ERC20ApproveFailed();
+                }
             }
-            targetSubvault.call(
-                collateral, 0, abi.encodeCall(IERC20.approve, (address(pool), collateralPerStep)), payload
-            );
+            {
+                response = targetSubvault.call(
+                    collateral, 0, abi.encodeCall(IERC20.approve, (address(pool), collateralPerStep)), payload
+                );
+                if (response.length != 0 && !abi.decode(response, (bool))) {
+                    revert ERC20ApproveFailed();
+                }
+            }
             targetSubvault.call(
                 address(pool),
                 0,
@@ -194,8 +227,8 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
         {
             uint256 sourceEquityAfter = checkHFAndGetEquity(address(sourceSubvault), minAllowedSourceHFD18);
             uint256 targetEquityAfter = checkHFAndGetEquity(address(targetSubvault), minAllowedTargetHFD18);
-            cumulativeError = (sourceEquityAfter.toInt256() - sourceEquityBefore.toInt256()).abs()
-                + (targetEquityAfter.toInt256() - targetEquityBefore.toInt256()).abs();
+            cumulativeError =
+                _dist(sourceEquityAfter, sourceEquityBefore) + _dist(targetEquityAfter, targetEquityBefore);
         }
 
         if (cumulativeError > maxAllowedError) {
@@ -203,15 +236,24 @@ contract AaveMigrator is IAaveMigrator, Ownable, ReentrancyGuard {
         }
 
         uint256 sourceDebt = IERC20(debtVariableDebtToken).balanceOf(address(sourceSubvault));
-        if (sourceDebt > maxAllowedError + expectedDebtAfter || sourceDebt + maxAllowedError < expectedDebtAfter) {
-            revert DebtTooHigh();
+        uint256 debtPrice = oracle.getAssetPrice(debt);
+        if (_convertToValue(_dist(sourceDebt, expectedDebtAfter), debtPrice) > maxAllowedError) {
+            revert TooHighDeviation();
         }
 
-        if (sourceDebt <= maxAllowedError) {
+        if (_convertToValue(sourceDebt, debtPrice) <= maxAllowedError) {
             migrated = true;
             emit Migrated(block.timestamp, _msgSender(), cumulativeError);
         } else {
             emit PartiallyMigrated(block.timestamp, _msgSender(), cumulativeError, percentageD6);
         }
+    }
+
+    function _dist(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a.max(b) - a.min(b);
+    }
+
+    function _convertToValue(uint256 amount, uint256 debtPriceD8) internal view returns (uint256) {
+        return amount * debtPriceD8 / debtUnit;
     }
 }

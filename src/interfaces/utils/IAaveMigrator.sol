@@ -4,10 +4,9 @@ pragma solidity 0.8.25;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
-import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
-import {SignedMath} from "@openzeppelin/contracts/utils/math/SignedMath.sol";
 
 import {ICallModule} from "../modules/ICallModule.sol";
 import {IVaultModule} from "../modules/IVaultModule.sol";
@@ -26,7 +25,7 @@ interface IAaveMigrator {
     /// @notice Account health factor is below the configured minimum.
     error HealthFactorIsTooLow();
 
-    /// @notice Requested migration amount is too small.
+    /// @notice Amount of debt selected for migration is below the minimum allowed threshold.
     error InsufficientDebt();
 
     /// @notice Maximum target utilization must be in range (0, 1e18).
@@ -35,15 +34,25 @@ interface IAaveMigrator {
     /// @notice Migration percentage must be in range (0, 1e6].
     error InvalidPercentageD6();
 
-    /// @notice Source position does not have enough collateral to support migration.
+    /// @notice Source position does not have enough collateral to migrate the requested debt amount.
     error NotEnoughCollateral();
 
-    /// @notice Migration would require more iterations than allowed.
+    /// @notice Migration would require more iterations than allowed or cannot be executed.
     /// @param iterations Calculated number of required migration steps.
     error TooManyIterations(uint256 iterations);
 
-    /// @notice Remaining debt after migration exceeds the allowed tolerance.
-    error DebtTooHigh();
+    /// @notice Remaining debt after migration would be below the minimum migration threshold
+    ///         while still exceeding the tolerated residual value.
+    error InvalidDebtAfterMigration();
+
+    /// @notice Actual remaining source debt deviates from the expected value beyond the allowed tolerance.
+    error TooHighDeviation();
+
+    /// @notice ERC20 transfer operation returned false.
+    error ERC20TransferFailed();
+
+    /// @notice ERC20 approve operation returned false.
+    error ERC20ApproveFailed();
 
     /**
      * @notice Validates account health factor and returns current equity.
@@ -58,16 +67,20 @@ interface IAaveMigrator {
 
     /**
      * @notice Calculates migration parameters for a given migration percentage.
-     * @dev Determines the number of migration iterations required based on:
-     *      - target subvault borrow capacity;
-     *      - available debt liquidity;
+     * @dev Simulates migration constraints using:
+     *      - source debt size;
+     *      - target subvault borrowing capacity;
+     *      - available debt asset liquidity in Aave;
      *      - configured utilization limit.
+     *
+     *      Reverts if the migration is not feasible under the current conditions.
+     *
      * @param maxUtilizationD18 Maximum allowed utilization of target borrowing capacity (1e18 precision).
      * @param percentageD6 Percentage of source debt to migrate (1e6 precision).
      * @return iterations Number of migration loops required.
-     * @return debtPerStep Debt amount migrated in each iteration.
-     * @return collateralPerStep Collateral amount migrated in each iteration.
-     * @return expectedDebtAfter Expected remaining debt on the source subvault.
+     * @return debtPerStep Debt amount migrated during each iteration.
+     * @return collateralPerStep Collateral amount migrated during each iteration.
+     * @return expectedDebtAfter Expected remaining debt on the source subvault after migration.
      */
     function calculateSteps(uint256 maxUtilizationD18, uint256 percentageD6)
         external
@@ -82,17 +95,21 @@ interface IAaveMigrator {
 
     /**
      * @notice Migrates a portion of an Aave position from the source subvault to the target subvault.
-     * @dev For each iteration:
-     *      1. Target borrows debt asset.
-     *      2. Debt is transferred to source.
-     *      3. Source repays debt.
-     *      4. Source withdraws collateral.
-     *      5. Target supplies received collateral.
+     * @dev Migration is performed iteratively to avoid exceeding the target borrow capacity.
+     *      For each iteration:
+     *      1. Target subvault borrows the debt asset from Aave.
+     *      2. Borrowed debt is transferred to the source subvault.
+     *      3. Source subvault repays a portion of its debt.
+     *      4. Source subvault withdraws proportional collateral.
+     *      5. Target subvault supplies the received collateral back to Aave.
      *
-     *      Final state is validated using:
+     *      After all iterations complete, the migration validates:
      *      - source and target health factors;
-     *      - equity conservation checks;
-     *      - expected remaining source debt.
+     *      - cumulative equity preservation;
+     *      - expected remaining debt on the source position.
+     *
+     *      Emits {Migrated} when the remaining debt is within the configured tolerance,
+     *      otherwise emits {PartiallyMigrated}.
      *
      * @param maxUtilizationD18 Maximum utilization of target borrow capacity (1e18 precision).
      * @param percentageD6 Percentage of source debt to migrate (1e6 precision).
