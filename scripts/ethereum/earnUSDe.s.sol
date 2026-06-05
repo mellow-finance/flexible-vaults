@@ -27,10 +27,6 @@ import "../common/ArraysLibrary.sol";
 
 import "../common/interfaces/IAggregatorV3.sol";
 
-interface IFactoryECV {
-    function createCollateralVault(uint8, address, address, uint256, address) external returns (address);
-}
-
 contract Deploy is Script, Test {
     // Actors
     address public proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
@@ -49,12 +45,10 @@ contract Deploy is Script, Test {
     uint32 public constant DEFAULT_MAX_AGE = 24 hours;
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
-    address public constant CUSTOM_AAVE_V3_ORACLE = 0xaF00F9561cf64ec5777C36f1F76974a8200C24fC;
-
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
 
-    address[] assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT));
+    address[] assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT, Constants.USDE));
 
     address[] verifiers = new address[](1);
 
@@ -144,8 +138,8 @@ contract Deploy is Script, Test {
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
-                    maxAbsoluteDeviation: 0.005 ether,
-                    suspiciousAbsoluteDeviation: 0.001 ether,
+                    maxAbsoluteDeviation: 0.005e30,
+                    suspiciousAbsoluteDeviation: 0.001e30,
                     maxRelativeDeviationD18: 0.005 ether,
                     suspiciousRelativeDeviationD18: 0.001 ether,
                     timeout: 20 hours,
@@ -156,7 +150,7 @@ contract Deploy is Script, Test {
             ),
             defaultDepositHook: address($.redirectingDepositHook),
             defaultRedeemHook: address($.basicRedeemHook),
-            queueLimit: 3,
+            queueLimit: 4,
             roleHolders: holders
         });
 
@@ -313,7 +307,7 @@ contract Deploy is Script, Test {
             for (uint256 i = 0; i < reports.length; i++) {
                 address asset = assets_[i];
                 reports[i].asset = asset;
-                uint256 priceD8 = IAaveOracle(CUSTOM_AAVE_V3_ORACLE).getAssetPrice(asset);
+                uint256 priceD8 = IAaveOracle(Constants.AAVE_V3_ORACLE).getAssetPrice(asset);
                 reports[i].priceD18 = uint224(priceD8 * 10 ** (28 - IERC20Metadata(asset).decimals()));
                 console.log("Reported price for asset: %s %s", IERC20Metadata(asset).symbol(), reports[i].priceD18);
             }
@@ -335,7 +329,7 @@ contract Deploy is Script, Test {
                 depositHook: address($.redirectingDepositHook),
                 redeemHook: address($.basicRedeemHook),
                 assets: assets_,
-                depositQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USDT)),
+                depositQueueAssets: assets_,
                 redeemQueueAssets: ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC)),
                 subvaultVerifiers: verifiers,
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(timelockController))),
@@ -414,11 +408,8 @@ contract Deploy is Script, Test {
         address[] memory actors = ArraysLibrary.makeAddressArray(
             abi.encode(
                 curator,
-                [Constants.USDC, Constants.USDT, Constants.SUSDE, Constants.USDE],
-                [Constants.FRXUSD, Constants.MSUSD, Constants.SRUSDE],
-                [Constants.WFRAX, Constants.PENDLE, Constants.CRV],
-                [Constants.USDC, Constants.USDT, Constants.SUSDE, Constants.USDE],
-                [Constants.FRXUSD, Constants.MSUSD, Constants.SRUSDE],
+                [Constants.USDC, Constants.USDT, Constants.SUSDE, Constants.USDE, Constants.SYRUP_USDT],
+                [Constants.USDC, Constants.USDT, Constants.SUSDE, Constants.USDE, Constants.SYRUP_USDT],
                 _routers()
             )
         );
@@ -434,19 +425,8 @@ contract Deploy is Script, Test {
                     Permissions.SWAP_MODULE_TOKEN_IN_ROLE
                 ],
                 [
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE
-                ],
-                [
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
-                ],
-                [
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
                     Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
@@ -457,7 +437,7 @@ contract Deploy is Script, Test {
         return swapModuleFactory.create(
             0,
             proxyAdmin,
-            abi.encode(lazyVaultAdmin, subvault, CUSTOM_AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
+            abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
         );
     }
 }
