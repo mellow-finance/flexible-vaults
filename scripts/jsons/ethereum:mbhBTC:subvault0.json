@@ -2413,220 +2413,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(0,13),(encoded(143327,any,any,any,),encoded(tBTC,cbBTC))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143327, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "0",
-              "actionSecond": "13"
-            },
-            "params": [
-              {
-                "tokenId": "143327",
-                "liquidity": "any",
-                "amount0Max": "any",
-                "amount1Max": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "0",
-                    "13"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143327",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_increaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_settleParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount0Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount1Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab049d1dc333b2fc10cd27a2a58ffd06226adf221d75c1514b7615d90146a7c23000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2640,220 +2454,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(0,13),(encoded(143330,any,any,any,),encoded(tBTC,cbBTC))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143330, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "0",
-              "actionSecond": "13"
-            },
-            "params": [
-              {
-                "tokenId": "143330",
-                "liquidity": "any",
-                "amount0Max": "any",
-                "amount1Max": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "0",
-                    "13"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143330",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_increaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_settleParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount0Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount1Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1e74f12c070e9dbf3a7cc4c802d5f46dd48b5164e003b358b7a7efc795f0ac27000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2867,220 +2495,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(0,13),(encoded(143331,any,any,any,),encoded(tBTC,cbBTC))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143331, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "0",
-              "actionSecond": "13"
-            },
-            "params": [
-              {
-                "tokenId": "143331",
-                "liquidity": "any",
-                "amount0Max": "any",
-                "amount1Max": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "0",
-                    "13"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143331",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_increaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_settleParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount0Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount1Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3ed70a2f760b4d986abd7a564a6b21991c314caf30f5b1f1a9695296aa517a94000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -3094,220 +2536,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(0,13),(encoded(143332,any,any,any,),encoded(tBTC,cbBTC))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(increaseLiquidity(tokenId=143332, amount0Desired=any, amount1Desired=any, amount0Min=any, amount1Min=any, data=any), settle(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "0",
-              "actionSecond": "13"
-            },
-            "params": [
-              {
-                "tokenId": "143332",
-                "liquidity": "any",
-                "amount0Max": "any",
-                "amount1Max": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "0",
-                    "13"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143332",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_increaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Max",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_settleParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount0Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_increaseLiquidityParams.amount1Max",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acd1cacb0dc5d7fdc1360ba1a973f0996bf5978410929a74307e438ff14421ba6000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -3321,227 +2577,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143327,any,any,any,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143327, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143327",
-                "liquidity": "any",
-                "amount0Min": "any",
-                "amount1Min": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143327",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount0Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount1Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a191109f3c375106e70cf8195a63eec5607810a8d8782062ac440926f17064af200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -3555,227 +2618,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143330,any,any,any,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143330, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143330",
-                "liquidity": "any",
-                "amount0Min": "any",
-                "amount1Min": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143330",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount0Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount1Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8e649276ce9af9d3a026946dd696b4fd5fb84d375f5aeea78c87dab09de9a54000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -3789,227 +2659,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143331,any,any,any,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143331, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143331",
-                "liquidity": "any",
-                "amount0Min": "any",
-                "amount1Min": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143331",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount0Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount1Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aae6ba5ea915a59884d5bc47a1c649f8dbf6d747f6883313f84332f524d92873100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -4023,227 +2700,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143332,any,any,any,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(decreaseLiquidity(tokenId=143332, liquidity=any, amount0Min=any, amount1Min=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143332",
-                "liquidity": "any",
-                "amount0Min": "any",
-                "amount1Min": "any",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143332",
-                      "any",
-                      "any",
-                      "any",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.liquidity",
-            "type": "uint128",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount0Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.unlockData_encoded_actionsParams.params[0]._encoded_decreaseLiquidityParams.amount1Min",
-            "type": "uint256",
-            "allowedValue": "any"
-          },
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a720790d54aae42293b00b993fcbd661fd8ef1d453cafec76d63c2719bfe80f3c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -4257,212 +2741,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143327,0,0,0,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(collect(tokenId=143327, liquidity=0, amount0Max=any, amount1Max=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143327",
-                "liquidity": "0",
-                "amount0Min": "0",
-                "amount1Min": "0",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143327",
-                      "0",
-                      "0",
-                      "0",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a191109f3c375106e70cf8195a63eec5607810a8d8782062ac440926f17064af200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -4476,212 +2782,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143330,0,0,0,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(collect(tokenId=143330, liquidity=0, amount0Max=any, amount1Max=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143330",
-                "liquidity": "0",
-                "amount0Min": "0",
-                "amount1Min": "0",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143330",
-                      "0",
-                      "0",
-                      "0",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8e649276ce9af9d3a026946dd696b4fd5fb84d375f5aeea78c87dab09de9a54000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -4695,212 +2823,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143331,0,0,0,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(collect(tokenId=143331, liquidity=0, amount0Max=any, amount1Max=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143331",
-                "liquidity": "0",
-                "amount0Min": "0",
-                "amount1Min": "0",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143331",
-                      "0",
-                      "0",
-                      "0",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aae6ba5ea915a59884d5bc47a1c649f8dbf6d747f6883313f84332f524d92873100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -4914,212 +2864,34 @@
     },
     {
       "description": {
-        "integration": "uniswapV4",
-        "protocol": "UniswapV4",
-        "description": "IPositionManagerV4(UniswapV4PositionManager).modifyLiquidities(encoded(packed(1,17),(encoded(143332,0,0,0,),encoded(tBTC,cbBTC,mbhBTC_ethereum_subvault0))),any)",
+        "description": "PositionManagerV4.modifyLiquidities(collect(tokenId=143332, liquidity=0, amount0Max=any, amount1Max=any, data=any), take(currency0=tBTC, currency1=cbBTC))",
+        "abi": {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "unlockData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "modifyLiquidities",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
         "parameters": {
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+          "caller": "0x7df72e9bbd03d8c6faf41c0dd8ce46be2878c6fa",
+          "target": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
           "value": "0"
         },
         "innerParameters": {
-          "unlockData": {
-            "actions": {
-              "actionFirst": "1",
-              "actionSecond": "17"
-            },
-            "params": [
-              {
-                "tokenId": "143332",
-                "liquidity": "0",
-                "amount0Min": "0",
-                "amount1Min": "0",
-                "hookData": ""
-              },
-              {
-                "token0": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                "token1": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                "recipient": "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-              }
-            ]
-          },
-          "deadline": "any"
-        },
-        "abi": {
-          "type": "function",
-          "name": "modifyLiquidities",
-          "inputs": [
-            {
-              "name": "unlockData",
-              "type": "bytes",
-              "internalType": "bytes"
-            },
-            {
-              "name": "deadline",
-              "type": "uint256",
-              "internalType": "uint256"
-            }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        "raw": {
-          "type": "function",
-          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
-          "target": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
-          "params": [
-            {
-              "type": "encoded",
-              "params": [
-                {
-                  "type": "packed",
-                  "params": [
-                    "1",
-                    "17"
-                  ],
-                  "abi": {
-                    "type": "function",
-                    "name": "packed_actions",
-                    "inputs": [
-                      {
-                        "name": "actionFirst",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      },
-                      {
-                        "name": "actionSecond",
-                        "type": "uint8",
-                        "internalType": "uint8"
-                      }
-                    ],
-                    "outputs": [],
-                    "stateMutability": "nonpayable"
-                  }
-                },
-                [
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "143332",
-                      "0",
-                      "0",
-                      "0",
-                      ""
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_decreaseLiquidityParams",
-                      "inputs": [
-                        {
-                          "name": "tokenId",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "liquidity",
-                          "type": "uint128",
-                          "internalType": "uint128"
-                        },
-                        {
-                          "name": "amount0Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "amount1Min",
-                          "type": "uint256",
-                          "internalType": "uint256"
-                        },
-                        {
-                          "name": "hookData",
-                          "type": "bytes",
-                          "internalType": "bytes"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  },
-                  {
-                    "type": "encoded",
-                    "params": [
-                      "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
-                      "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
-                      "0xC22642ad548183aFbe389dc667d698C60f3D9a22"
-                    ],
-                    "abi": {
-                      "type": "function",
-                      "name": "encoded_takeParams",
-                      "inputs": [
-                        {
-                          "name": "token0",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "token1",
-                          "type": "address",
-                          "internalType": "address"
-                        },
-                        {
-                          "name": "recipient",
-                          "type": "address",
-                          "internalType": "address"
-                        }
-                      ],
-                      "outputs": [],
-                      "stateMutability": "nonpayable"
-                    }
-                  }
-                ]
-              ],
-              "abi": {
-                "type": "function",
-                "name": "encoded_actionsParams",
-                "inputs": [
-                  {
-                    "name": "actions",
-                    "type": "bytes",
-                    "internalType": "bytes"
-                  },
-                  {
-                    "name": "params",
-                    "type": "bytes[]",
-                    "internalType": "bytes[]"
-                  }
-                ],
-                "outputs": [],
-                "stateMutability": "nonpayable"
-              }
-            },
-            "any"
-          ],
-          "abi": {
-            "type": "function",
-            "name": "modifyLiquidities",
-            "inputs": [
-              {
-                "name": "unlockData",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-              }
-            ],
-            "outputs": [],
-            "stateMutability": "nonpayable"
-          }
-        },
-        "requiredPaths": [
-          {
-            "path": "modifyLiquidities.deadline",
-            "type": "uint256",
-            "allowedValue": "any"
-          }
-        ]
+          "unlockData": "anyBytes",
+          "deadline": "anyInt"
+        }
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a720790d54aae42293b00b993fcbd661fd8ef1d453cafec76d63c2719bfe80f3c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000304ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
