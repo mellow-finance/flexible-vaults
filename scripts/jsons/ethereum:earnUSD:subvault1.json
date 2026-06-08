@@ -1,0 +1,711 @@
+{
+  "title": "ethereum:earnUSD:subvault1",
+  "vault": "0x014e6DA8F283C4aF65B2AA0f201438680A004452",
+  "subvault": "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242",
+  "chain": "ethereum",
+  "merkle_root": "0x3b7a7dc82cb5a678f0a369510d9dab0cab2b30660a4cf56ef6171accf2ea0afa",
+  "vault_symbol": "earnUSD",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "earnUSDe_USDC",
+        "protocol": "CoreVault",
+        "description": "IERC20(USDC).approve(earnUSDe_SyncDepositQueue_USDC,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xBb647898e0CF0aE81Ac480d04A8a9973763eBD2D",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "params": [
+            "0xBb647898e0CF0aE81Ac480d04A8a9973763eBD2D",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a88de6480d31c81e0bfa966b7fa0ae8afb2e22392d33c2d9b77dc2527716031aa000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x9c22722448b16eabfdfd8a5276c78e154ac3b633487de5fa85cc89d067a1cfdf",
+        "0xc417fb056db716e85171711fc5d153b788bb2427efb759009686940a658b5d31",
+        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_USDC",
+        "protocol": "CoreVault",
+        "description": "IDepositQueue(earnUSDe_SyncDepositQueue_USDC).deposit(any,any,())",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xBb647898e0CF0aE81Ac480d04A8a9973763eBD2D",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "referral": "any",
+          "merkleProof": []
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint224",
+              "internalType": "uint224"
+            },
+            {
+              "name": "referral",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "merkleProof",
+              "type": "bytes32[]",
+              "internalType": "bytes32[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "value": "0",
+          "target": "0xBb647898e0CF0aE81Ac480d04A8a9973763eBD2D",
+          "params": [
+            "any",
+            "any",
+            []
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint224",
+                "internalType": "uint224"
+              },
+              {
+                "name": "referral",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "merkleProof",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint224",
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
+          },
+          {
+            "path": "deposit.referral",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad1eb947187aa635abf1fe8d9a031b45144433bbe880df4687ca00276dfe757c7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf58e4c116eaaec3555092cf58c4db2654a61ee019aacec41befff483c1ebddcd",
+        "0x80ef957b630de39eeaf79c4c3de3ec87f992383e5f606c4586a8808ed761d225",
+        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_USDC",
+        "protocol": "CoreVault",
+        "description": "IRedeemQueue(earnUSDe_RedeemQueue_USDC).redeem(any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x8B857170F2a6C10Ce64ec8b920428ca977fb7710",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x8B857170F2a6C10Ce64ec8b920428ca977fb7710",
+          "params": [
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "redeem",
+            "inputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeem.shares",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target.vault().shareManager()"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac9af7a878a0e5b6c0bf54c59617c2c08c19a0ec070deb7d131255a3ae224d03000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x192c7bc49fd58400cd83dbf46112f39b3c944b55620b226aa914897246fcae04",
+        "0x21531e364bc9c7a7591430c04f00abe2be9cfeb683722e19f529bc8f4390ea91",
+        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_USDC",
+        "protocol": "CoreVault",
+        "description": "IRedeemQueue(earnUSDe_RedeemQueue_USDC).claim(earnUSD_Subvault_1,(any))",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x8B857170F2a6C10Ce64ec8b920428ca977fb7710",
+          "value": "0"
+        },
+        "innerParameters": {
+          "account": "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242",
+          "timestamps": [
+            "any"
+          ]
+        },
+        "abi": {
+          "type": "function",
+          "name": "claim",
+          "inputs": [
+            {
+              "name": "account",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "timestamps",
+              "type": "uint32[]",
+              "internalType": "uint32[]"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "assets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x8B857170F2a6C10Ce64ec8b920428ca977fb7710",
+          "params": [
+            "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242",
+            [
+              "any"
+            ]
+          ],
+          "abi": {
+            "type": "function",
+            "name": "claim",
+            "inputs": [
+              {
+                "name": "account",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "timestamps",
+                "type": "uint32[]",
+                "internalType": "uint32[]"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "assets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "claim.timestamps[0]",
+            "type": "uint32",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7be961645824e50d706da3d46a3b4d0fb02afbb113fb8312fba34edc6afc8f61000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x930010fc95beef2e19b27867e3393fe57dd4497e9f8a718f0befb722242ff7b2",
+        "0xc417fb056db716e85171711fc5d153b788bb2427efb759009686940a658b5d31",
+        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_USDT",
+        "protocol": "CoreVault",
+        "description": "IERC20(USDT).approve(earnUSDe_SyncDepositQueue_USDT,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xa01aEfeC7A3384C8440e99084458030BDbdD7404",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "params": [
+            "0xa01aEfeC7A3384C8440e99084458030BDbdD7404",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a12e83dab1f3833149aa949d10537fb9b98dda39c9dda879f016d75022a15dabf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x680d9962b530137545a0f84afb3e00c136650c331b8472df38cbb1a2de1eb557",
+        "0x21531e364bc9c7a7591430c04f00abe2be9cfeb683722e19f529bc8f4390ea91",
+        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_USDT",
+        "protocol": "CoreVault",
+        "description": "IDepositQueue(earnUSDe_SyncDepositQueue_USDT).deposit(any,any,())",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xa01aEfeC7A3384C8440e99084458030BDbdD7404",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "referral": "any",
+          "merkleProof": []
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint224",
+              "internalType": "uint224"
+            },
+            {
+              "name": "referral",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "merkleProof",
+              "type": "bytes32[]",
+              "internalType": "bytes32[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "value": "0",
+          "target": "0xa01aEfeC7A3384C8440e99084458030BDbdD7404",
+          "params": [
+            "any",
+            "any",
+            []
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint224",
+                "internalType": "uint224"
+              },
+              {
+                "name": "referral",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "merkleProof",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint224",
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
+          },
+          {
+            "path": "deposit.referral",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab7b4d9de15e460f08f7cfd3fe4388c9bb637c7dd381385cc8b81c1ee5fa02e28000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xe30fafdf0ab65b26de57481e252e68c6820a5fa23be3b97139f2d78c3a666524",
+        "0x80ef957b630de39eeaf79c4c3de3ec87f992383e5f606c4586a8808ed761d225",
+        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_USDe",
+        "protocol": "CoreVault",
+        "description": "IERC20(USDe).approve(earnUSDe_SyncDepositQueue_USDe,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xAcb2E510e8FcdaB3808cC5B9d206374cAB527947",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x4c9edd5852cd905f086c759e8383e09bff1e68b3",
+          "params": [
+            "0xAcb2E510e8FcdaB3808cC5B9d206374cAB527947",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7a9373d477b48a95359591d55b813b2af5c4ed9d8e5548269ac4f468c649f22c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xac4e69e31ca328183188dbf4ca71738ef69501f5c72ee43d61df8408cbcf4d9a",
+        "0xa679ff01a424ada1dc8e362f9aeab1fea538c003a271be653cb0c05c7a658001",
+        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_USDe",
+        "protocol": "CoreVault",
+        "description": "IDepositQueue(earnUSDe_SyncDepositQueue_USDe).deposit(any,any,())",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xAcb2E510e8FcdaB3808cC5B9d206374cAB527947",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "referral": "any",
+          "merkleProof": []
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint224",
+              "internalType": "uint224"
+            },
+            {
+              "name": "referral",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "merkleProof",
+              "type": "bytes32[]",
+              "internalType": "bytes32[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "value": "0",
+          "target": "0xAcb2E510e8FcdaB3808cC5B9d206374cAB527947",
+          "params": [
+            "any",
+            "any",
+            []
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint224",
+                "internalType": "uint224"
+              },
+              {
+                "name": "referral",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "merkleProof",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint224",
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
+          },
+          {
+            "path": "deposit.referral",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adbfd9e55bd000018af67fc972f086da291c0bbb1b80fef3ac3220f985b5ce557000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa7301bf64089823f0deb456019dec26880b7250ff8aa08417c14f0d239975987",
+        "0xa679ff01a424ada1dc8e362f9aeab1fea538c003a271be653cb0c05c7a658001",
+        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+      ]
+    }
+  ]
+}
