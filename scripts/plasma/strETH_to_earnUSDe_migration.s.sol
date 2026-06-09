@@ -213,8 +213,7 @@ contract Deploy is Script, Test {
             {
                 _grantRequiredPermissions(migrator_syrupUSDT_USDT0);
                 vm.startPrank(migrator_syrupUSDT_USDT0.owner());
-                migrator_syrupUSDT_USDT0.migrate(0.2 ether, 0.33e6);
-                migrator_syrupUSDT_USDT0.migrate(0.2 ether, 0.5e6);
+                migrator_syrupUSDT_USDT0.migrate(0.4 ether, 0.66e6);
                 migrator_syrupUSDT_USDT0.migrate(0.26 ether, 1e6);
                 vm.stopPrank();
             }
