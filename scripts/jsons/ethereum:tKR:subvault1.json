@@ -1,0 +1,9 @@
+{
+  "title": "ethereum:tKR:subvault1",
+  "vault": "0x2C9BD30aa18ABBC6BCC0b045d25bb4944630413B",
+  "subvault": "0x77878B31aED92e5DbaCC70C0a3bf0E3c7b174182",
+  "chain": "ethereum",
+  "merkle_root": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "vault_symbol": "tKR",
+  "merkle_proofs": []
+}
