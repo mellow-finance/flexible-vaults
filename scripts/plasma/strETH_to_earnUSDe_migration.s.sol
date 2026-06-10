@@ -59,6 +59,9 @@ contract Deploy is Script, Test {
     }
 
     function _grantRequiredPermissions(AaveMigrator migrator) internal {
+        if (true) {
+            return;
+        }
         // source subvault permissions
         vm.startPrank(mellowLazyAdmin);
         {
@@ -85,6 +88,26 @@ contract Deploy is Script, Test {
             IAccessControl(verifier.vault()).grantRole(Permissions.ALLOW_CALL_ROLE, mellowLazyAdmin);
             IAccessControl(verifier.vault()).grantRole(Permissions.CALLER_ROLE, address(migrator));
             verifier.allowCalls(calls);
+            console.log("========================================");
+            console.log("========================================");
+
+            console.log("Mellow side:");
+            console.log("on behalf of %s", mellowLazyAdmin);
+            console.log(
+                "Vault(%s).grantRole(%s, %s)",
+                address(verifier.vault()),
+                vm.toString(Permissions.ALLOW_CALL_ROLE),
+                mellowLazyAdmin
+            );
+            console.log(
+                "Vault(%s).grantRole(%s, %s)",
+                address(verifier.vault()),
+                vm.toString(Permissions.CALLER_ROLE),
+                address(migrator)
+            );
+            console.log("(%s).call(%s)", address(verifier), vm.toString(abi.encodeCall(verifier.allowCalls, calls)));
+            console.log("========================================");
+            console.log("========================================");
         }
         vm.stopPrank();
 
@@ -118,6 +141,25 @@ contract Deploy is Script, Test {
             IAccessControl(verifier.vault()).grantRole(Permissions.ALLOW_CALL_ROLE, lidoLazyAdmin);
             IAccessControl(verifier.vault()).grantRole(Permissions.CALLER_ROLE, address(migrator));
             verifier.allowCalls(calls);
+            // console.log("========================================");
+            // console.log("========================================");
+            // console.log("Lido side:");
+            // console.log("on behalf of %s", lidoLazyAdmin);
+            // console.log(
+            //     "Vault(%s).grantRole(%s, %s)",
+            //     address(verifier.vault()),
+            //     vm.toString(Permissions.ALLOW_CALL_ROLE),
+            //     lidoLazyAdmin
+            // );
+            // console.log(
+            //     "Vault(%s).grantRole(%s, %s)",
+            //     address(verifier.vault()),
+            //     vm.toString(Permissions.CALLER_ROLE),
+            //     address(migrator)
+            // );
+            // console.log("(%s).call(%s)", address(verifier), vm.toString(abi.encodeCall(verifier.allowCalls, calls)));
+            // console.log("========================================");
+            // console.log("========================================");
         }
         vm.stopPrank();
     }
