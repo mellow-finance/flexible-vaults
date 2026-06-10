@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.25;
 
-import {IOfferReceiver, Offer} from "../../../scripts/common/interfaces/3F/IOfferReceiver.sol";
-import {IRequest} from "../../../scripts/common/interfaces/3F/IRequest.sol";
-import {IRequestCallback} from "../../../scripts/common/interfaces/3F/IRequestCallback.sol";
-import {IRequestFactory} from "../../../scripts/common/interfaces/3F/IRequestFactory.sol";
-import {IWhitelist} from "../../../scripts/common/interfaces/3F/IWhitelist.sol";
+import {IOfferReceiver, Offer} from "../external/3F/IOfferReceiver.sol";
+import {IRequest} from "../external/3F/IRequest.sol";
+import {IRequestCallback} from "../external/3F/IRequestCallback.sol";
+import {IRequestFactory} from "../external/3F/IRequestFactory.sol";
+import {IWhitelist} from "../external/3F/IWhitelist.sol";
 
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/interfaces/IERC5267.sol";

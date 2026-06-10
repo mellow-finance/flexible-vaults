@@ -9,10 +9,10 @@ import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import {Offer} from "../../scripts/common/interfaces/3F/IOfferReceiver.sol";
-import {IRequest} from "../../scripts/common/interfaces/3F/IRequest.sol";
-import {IRequestCallback} from "../../scripts/common/interfaces/3F/IRequestCallback.sol";
-import {IWhitelist} from "../../scripts/common/interfaces/3F/IWhitelist.sol";
+import {Offer} from "../../src/interfaces/external/3F/IOfferReceiver.sol";
+import {IRequest} from "../../src/interfaces/external/3F/IRequest.sol";
+import {IRequestCallback} from "../../src/interfaces/external/3F/IRequestCallback.sol";
+import {IWhitelist} from "../../src/interfaces/external/3F/IWhitelist.sol";
 import {IThreeFModule} from "../../src/interfaces/utils/IThreeFModule.sol";
 import "../../src/utils/ThreeFModule.sol";
 

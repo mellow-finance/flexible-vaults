@@ -6,10 +6,10 @@ import "forge-std/Test.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import {IOfferReceiver, Offer} from "../../scripts/common/interfaces/3F/IOfferReceiver.sol";
-import {IRequest} from "../../scripts/common/interfaces/3F/IRequest.sol";
-import {IRequestFactory} from "../../scripts/common/interfaces/3F/IRequestFactory.sol";
-import {IWhitelist} from "../../scripts/common/interfaces/3F/IWhitelist.sol";
+import {IOfferReceiver, Offer} from "../../src/interfaces/external/3F/IOfferReceiver.sol";
+import {IRequest} from "../../src/interfaces/external/3F/IRequest.sol";
+import {IRequestFactory} from "../../src/interfaces/external/3F/IRequestFactory.sol";
+import {IWhitelist} from "../../src/interfaces/external/3F/IWhitelist.sol";
 import {IThreeFModule} from "../../src/interfaces/utils/IThreeFModule.sol";
 import "../../src/utils/ThreeFModule.sol";
 
