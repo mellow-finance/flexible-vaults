@@ -99,7 +99,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "IERC20(USPS).approve(tKR2_SwapModule_0,any)",
+        "description": "IERC20(USPC).approve(tKR2_SwapModule_0,any)",
         "parameters": {
           "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
           "target": "0xbF4e3fbE8B60062A00C7a6B1D97d0d49c2971A19",
@@ -351,7 +351,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(tKR2_SwapModule_0).pushAssets(USPS,any)",
+        "description": "ISwapModule(tKR2_SwapModule_0).pushAssets(USPC,any)",
         "parameters": {
           "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
           "target": "0xfa47b6435A1173C5E76C83B497502Ff4EC7110F1",
@@ -581,7 +581,7 @@
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
-        "description": "ISwapModule(tKR2_SwapModule_0).pullAssets(USPS,any)",
+        "description": "ISwapModule(tKR2_SwapModule_0).pullAssets(USPC,any)",
         "parameters": {
           "caller": "0x391a6d2c24486050778de38Ee22A3CD076cE4266",
           "target": "0xfa47b6435A1173C5E76C83B497502Ff4EC7110F1",
@@ -804,7 +804,8 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
         ]
       },
@@ -892,7 +893,8 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
         ]
       },
@@ -981,7 +983,8 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
         ]
       },
@@ -1069,7 +1072,8 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
         ]
       },
@@ -1170,7 +1174,8 @@
           {
             "path": "supply.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "supply.asset"
           }
         ]
       },
@@ -1270,7 +1275,8 @@
           {
             "path": "supply.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "supply.asset"
           }
         ]
       },
@@ -1370,7 +1376,8 @@
           {
             "path": "withdraw.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "withdraw.asset"
           }
         ]
       },
@@ -1471,7 +1478,8 @@
           {
             "path": "withdraw.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "withdraw.asset"
           }
         ]
       },
@@ -1584,7 +1592,8 @@
           {
             "path": "borrow.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "borrow.asset"
           }
         ]
       },
@@ -1697,7 +1706,8 @@
           {
             "path": "borrow.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "borrow.asset"
           }
         ]
       },
@@ -1809,7 +1819,8 @@
           {
             "path": "repay.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "repay.asset"
           }
         ]
       },
@@ -1922,7 +1933,8 @@
           {
             "path": "repay.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "repay.asset"
           }
         ]
       },
