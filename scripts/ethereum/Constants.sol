@@ -29,7 +29,7 @@ library Constants {
     address public constant SYRUP_USDC = 0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b;
     address public constant PYUSD = 0x6c3ea9036406852006290770BEdFcAbA0e23A0e8;
 
-    address public constant USPS = 0xbF4e3fbE8B60062A00C7a6B1D97d0d49c2971A19;
+    address public constant USPC = 0xbF4e3fbE8B60062A00C7a6B1D97d0d49c2971A19;
     address public constant RLUSD = 0x8292Bb45bf1Ee4d140127049757C2E0fF06317eD;
 
     address public constant FRXUSD = 0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29;
