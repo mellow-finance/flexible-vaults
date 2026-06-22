@@ -48,6 +48,7 @@ import "../../../scripts/common/DeployVaultFactory.sol";
 import "../../../scripts/common/DeployVaultFactoryRegistry.sol";
 import "../../../scripts/common/OracleSubmitterFactory.sol";
 import "../../../src/utils/SwapModule.sol";
+import "../../../src/utils/ThreeFModule.sol";
 
 import {ProtocolDeployment} from "../ProtocolDeploymentLibrary.sol";
 
