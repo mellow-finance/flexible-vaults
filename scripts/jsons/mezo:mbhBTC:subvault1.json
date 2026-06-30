@@ -3,13 +3,14 @@
   "vault": "0x807D4778abA870e4222904f5b528F68B350cE0E0",
   "subvault": "0xC4A1DB6F577aEE8cbAf655B61f87394D78aef6E9",
   "chain": "mezo",
-  "merkle_root": "0xf4cc04c5789f2315c530c98b2bba1ba6bada0e604eab11d292c165a4594f9f8f",
+  "merkle_root": "0xacc0932fa887e894425211c688beabba5cabb7a19b4a6455ed4615077801615d",
   "vault_symbol": "mbhBTC",
   "merkle_proofs": [
     {
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
+        "interface": "IBorrowerOperations",
         "description": "IBorrowerOperations(Borrower_Operations).openTrove{value: any}(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
@@ -105,14 +106,15 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314de415cb240a8a60ccf949c40867457a5bc2b5909edb668874c006234df7e48339000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x0da5aa46ecd187bc39f454d2cc3231a3e5f8ff3d9ecd6a49591ce5dd0d28ffb0",
-        "0x17ebb81520726a773804819d166a359330b790de425bb69682820ccbb66df0f9",
-        "0x8affe04775fd6ad72eba19cc132f88a8734c978fa0307bb0c477179616a86b8f"
+        "0xae63b624f09450fb7d73027d6f1bf2edded137742edf4b06053188391f68364e",
+        "0xe2420e874f522574f1ae525b475e716b5e4d71a622ec9644318720f4bcbfda62"
       ]
     },
     {
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
+        "interface": "IBorrowerOperations",
         "description": "IBorrowerOperations(Borrower_Operations).addColl{value: any}(any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
@@ -191,14 +193,15 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314da33393c7571608207c23edb9fab4220e86d5ef6fb3a214030f786e75273fa030000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x0ba2b36f33dbe25ea6aec0182d34af4fb6ac2a56866b1aff43426cae968e9b06",
-        "0x6de1ec23507e8025e7829707d7bf214388a5cae04323967eafb3958973eddd10",
-        "0x8affe04775fd6ad72eba19cc132f88a8734c978fa0307bb0c477179616a86b8f"
+        "0xc40f5af93d6d96ef087377bba7b46f3fde7e4941a7021dec3560e37e7daf5288",
+        "0xe55f939338b14174f5b341524bae8975ddd8200a3111916c9597ae4406544144"
       ]
     },
     {
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
+        "interface": "IBorrowerOperations",
         "description": "IBorrowerOperations(Borrower_Operations).withdrawColl(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
@@ -287,14 +290,16 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d0fc239a9be070ac3de871f8280e253ec2cde2982027ae2b567d2cd265aaf5a6d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xc40f5af93d6d96ef087377bba7b46f3fde7e4941a7021dec3560e37e7daf5288",
-        "0x45cb731e0438400871e1e0392f501929049353954023a95d18f8d918ca4cead4"
+        "0x402eb765ac248041a504f9944805863854abc2815b20281620a00fe90f8cc2b5",
+        "0x6de1ec23507e8025e7829707d7bf214388a5cae04323967eafb3958973eddd10",
+        "0xe2420e874f522574f1ae525b475e716b5e4d71a622ec9644318720f4bcbfda62"
       ]
     },
     {
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
+        "interface": "IBorrowerOperations",
         "description": "IBorrowerOperations(Borrower_Operations).withdrawMUSD(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
@@ -383,14 +388,15 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d1009ef7a69fb0a4cc523d5ef9b5471fa51caf1cc208c8eef388009e12d460264000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x6e85f8be21cae5c662640f6f50f9f072b71469a5bb9c80838ad5e470067df8c9",
-        "0x45cb731e0438400871e1e0392f501929049353954023a95d18f8d918ca4cead4"
+        "0x17ebb81520726a773804819d166a359330b790de425bb69682820ccbb66df0f9",
+        "0xe55f939338b14174f5b341524bae8975ddd8200a3111916c9597ae4406544144"
       ]
     },
     {
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
+        "interface": "IBorrowerOperations",
         "description": "IBorrowerOperations(Borrower_Operations).repayMUSD(any,any,any)",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
@@ -480,14 +486,15 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d7e0a3194a90a53d79cb0396dfe26a4c848765e098d28023f304a622b7576473d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x31b639f7bdb39a29f85cfa62f21db63b12c6e35ed5dde716513161bec6770586",
-        "0x17ebb81520726a773804819d166a359330b790de425bb69682820ccbb66df0f9",
-        "0x8affe04775fd6ad72eba19cc132f88a8734c978fa0307bb0c477179616a86b8f"
+        "0xae63b624f09450fb7d73027d6f1bf2edded137742edf4b06053188391f68364e",
+        "0xe2420e874f522574f1ae525b475e716b5e4d71a622ec9644318720f4bcbfda62"
       ]
     },
     {
       "description": {
         "integration": "borrowerOperation",
         "protocol": "BorrowerOperation",
+        "interface": "IBorrowerOperations",
         "description": "IBorrowerOperations(Borrower_Operations).closeTrove()",
         "parameters": {
           "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
@@ -521,8 +528,50 @@
       "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d7cf9d0377b125a2009505c080a199f38ca6833cd91e8d1bb70bc17475c43081e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x066568809f02eb6b35d6f89eaffeaf74c13c062951ce73815671259994fb8a99",
+        "0xc40f5af93d6d96ef087377bba7b46f3fde7e4941a7021dec3560e37e7daf5288",
+        "0xe55f939338b14174f5b341524bae8975ddd8200a3111916c9597ae4406544144"
+      ]
+    },
+    {
+      "description": {
+        "integration": "borrowerOperation",
+        "protocol": "BorrowerOperation",
+        "interface": "IBorrowerOperations",
+        "description": "IBorrowerOperations(Borrower_Operations).claimCollateral()",
+        "parameters": {
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "value": "0"
+        },
+        "innerParameters": {},
+        "abi": {
+          "type": "function",
+          "name": "claimCollateral",
+          "inputs": [],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x7dF72E9BBD03D8c6FAf41C0dd8CE46be2878C6Fa",
+          "target": "0x44b1bac67dDA612a41a58AAf779143B181dEe031",
+          "params": [],
+          "abi": {
+            "type": "function",
+            "name": "claimCollateral",
+            "inputs": [],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": []
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000819ba998e0dfe0dafdd6b23dbf103314d898d0a9d2ad43510f6b46d843103224245ce4927afa2c9f5fecce911589ee87f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6e85f8be21cae5c662640f6f50f9f072b71469a5bb9c80838ad5e470067df8c9",
         "0x6de1ec23507e8025e7829707d7bf214388a5cae04323967eafb3958973eddd10",
-        "0x8affe04775fd6ad72eba19cc132f88a8734c978fa0307bb0c477179616a86b8f"
+        "0xe2420e874f522574f1ae525b475e716b5e4d71a622ec9644318720f4bcbfda62"
       ]
     }
   ]
