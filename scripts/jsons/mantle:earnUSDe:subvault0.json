@@ -10,6 +10,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(USDT0).approve(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -99,6 +100,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(USDe).approve(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -188,6 +190,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(sUSDe).approve(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -277,6 +280,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(WMNT).approve(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -366,6 +370,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pushAssets(USDT0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -443,6 +448,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pushAssets(USDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -520,6 +526,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pushAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -597,6 +604,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pushAssets(WMNT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -674,6 +682,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pullAssets(USDT0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -750,6 +759,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pullAssets(USDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -826,6 +836,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pullAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -903,6 +914,7 @@
       "description": {
         "integration": "swap",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(0x72b4c5Dc7E7e26BD077d78D5417F0Bf5b86a00EA).pullAssets(WMNT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -980,6 +992,7 @@
       "description": {
         "integration": "usdt_ethereum_bridge",
         "protocol": "OFT",
+        "interface": "ILayerZeroOFT",
         "description": "ILayerZeroOFT(USDT_OFT).send{value: any}((30101,0x00000000000000000000000031B7d5A2B1CE1871Dd642F6aeCC0Ef68d126B95A,any,any,0x,0x,0x),(any,0),0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1296,7 +1309,8 @@
             "allowedValue": "any",
             "erc20_path": "native"
           }
-        ]
+        ],
+        "intent": "Bridge {{send._sendParam.amountLD}} to {{send._sendParam.to}} ({{send._sendParam.dstEid}})"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abf56d2261933d1542d00fe9171610d0ca67c447a96a0494241e082b62320c1a900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1312,6 +1326,7 @@
       "description": {
         "integration": "usde_ethereum_bridge",
         "protocol": "OFT",
+        "interface": "ILayerZeroOFT",
         "description": "ILayerZeroOFT(USDe).send{value: any}((30101,0x00000000000000000000000031B7d5A2B1CE1871Dd642F6aeCC0Ef68d126B95A,any,any,0x,0x,0x),(any,0),0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1628,7 +1643,8 @@
             "allowedValue": "any",
             "erc20_path": "native"
           }
-        ]
+        ],
+        "intent": "Bridge {{send._sendParam.amountLD}} to {{send._sendParam.to}} ({{send._sendParam.dstEid}})"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4643162013ccc9465631f819eebd66989ee13227d8caeb3aebcef757906494d000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1644,6 +1660,7 @@
       "description": {
         "integration": "susde_ethereum_bridge",
         "protocol": "OFT",
+        "interface": "ILayerZeroOFT",
         "description": "ILayerZeroOFT(sUSDe).send{value: any}((30101,0x00000000000000000000000031B7d5A2B1CE1871Dd642F6aeCC0Ef68d126B95A,any,any,0x,0x,0x),(any,0),0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1960,7 +1977,8 @@
             "allowedValue": "any",
             "erc20_path": "native"
           }
-        ]
+        ],
+        "intent": "Bridge {{send._sendParam.amountLD}} to {{send._sendParam.to}} ({{send._sendParam.dstEid}})"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a06d062923f60edcc2b8ff01b242400954c1458f52791c05b9200906510c8979300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1976,6 +1994,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IERC20",
         "description": "IERC20(sUSDe).approve(AavePool,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2050,7 +2069,8 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a212ffb6c446ff724fabde9288af747b63eef5ca68bbdf2ab2f0b5bc2877f35ae000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -2066,6 +2086,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IERC20",
         "description": "IERC20(USDe).approve(AavePool,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2140,7 +2161,8 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae651f0885dbf385eb6a5ccdb62b833d37c344275b93b8173d5df526de4215e01000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -2156,6 +2178,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IERC20",
         "description": "IERC20(WMNT).approve(AavePool,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2230,7 +2253,8 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6da381515779d49cc5decf84e6956df9d7ac5933245e75cb78f1bf44c4efd8b1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -2246,6 +2270,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IERC20",
         "description": "IERC20(USDT0).approve(AavePool,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2320,7 +2345,8 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afe9ba3e13a9847e07cea9e68b5a7dd369d07bdecf33601b338b8e62b9895c61f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -2336,6 +2362,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).setUserEMode(1)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2379,7 +2406,8 @@
             "stateMutability": "nonpayable"
           }
         },
-        "requiredPaths": []
+        "requiredPaths": [],
+        "intent": "Set Aave e-mode category to {{setUserEMode.categoryId}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a66fe4d2e5f53e7a93f4ecdcf1e83c9fb12d45e449e6b93d53e80ff0f050d29a000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2395,6 +2423,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).supply(sUSDe,any,0x18b50CbAAf4C48855b29E548E4d0248C71A15392,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2481,7 +2510,8 @@
             "allowedValue": "any",
             "erc20_path": "supply.asset"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.amount}} to Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6f4d9743e48afca8f7f03f6792e329e0150df4f96056a8c1fed0644b7d7704b4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2496,6 +2526,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).supply(USDe,any,0x18b50CbAAf4C48855b29E548E4d0248C71A15392,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2582,7 +2613,8 @@
             "allowedValue": "any",
             "erc20_path": "supply.asset"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.amount}} to Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac41b725a3c1a89543553510bb8b3e4ebfde6bd181c34f47a4cf7994b120fa4aa000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2598,6 +2630,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).supply(WMNT,any,0x18b50CbAAf4C48855b29E548E4d0248C71A15392,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2684,7 +2717,8 @@
             "allowedValue": "any",
             "erc20_path": "supply.asset"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.amount}} to Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adfed91b5cd0e7c47b292f567f4c3e267ef5147467a2e4ce1bcdd8775096c9e61000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2700,6 +2734,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).withdraw(sUSDe,any,0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2786,7 +2821,8 @@
             "allowedValue": "any",
             "erc20_path": "withdraw.asset"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.amount}} from Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab2ca566385d74ed76fd93560e82fc20c8e8f98d85a0396802b3c62085366b7d1000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2802,6 +2838,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).withdraw(USDe,any,0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2888,7 +2925,8 @@
             "allowedValue": "any",
             "erc20_path": "withdraw.asset"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.amount}} from Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7aea4e1ac569d16711515165505dec589c78b7c7a2654fc083846e06714b6dfd000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -2904,6 +2942,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).withdraw(WMNT,any,0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2990,7 +3029,8 @@
             "allowedValue": "any",
             "erc20_path": "withdraw.asset"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.amount}} from Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a92cdcff321954a83976834fc236808aff8d04a38ab79efe1d9a73e510c31efba000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -3006,6 +3046,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).borrow(USDT0,any,2,0,0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3104,7 +3145,8 @@
             "allowedValue": "any",
             "erc20_path": "borrow.asset"
           }
-        ]
+        ],
+        "intent": "Borrow {{borrow.amount}} from Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaa6d0a271164f3f678a96c218a744a566af8da0f4352690152722301c97667ae00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -3120,6 +3162,7 @@
       "description": {
         "integration": "aave_ethena",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool).repay(USDT0,any,2,0x18b50CbAAf4C48855b29E548E4d0248C71A15392)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3218,7 +3261,8 @@
             "allowedValue": "any",
             "erc20_path": "repay.asset"
           }
-        ]
+        ],
+        "intent": "Repay {{repay.amount}} to Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a30e3095e0afd6e3000d41548bf567e7aaa910844dbf07f7b72cd46424292d5c5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -3234,6 +3278,7 @@
       "description": {
         "integration": "merkl",
         "protocol": "Merkl",
+        "interface": "IMerklDistributor",
         "description": "IMerklDistributor(MerklDistributor).toggleOperator(0x18b50CbAAf4C48855b29E548E4d0248C71A15392,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
