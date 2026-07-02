@@ -283,6 +283,12 @@ abstract contract DeployAbstractScript is Test {
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(deployment.timelockController))),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(timelockProposers)),
                 timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(timelockExecutors))
+            }),
+            AcceptanceLibrary.OracleSubmitterDeployment({
+                admin: proxyAdmin,
+                oracleSubmitter: deployment.oracleSubmitter,
+                submitter: oracleUpdater,
+                accepter: activeVaultAdmin
             })
         );
         checkTimelockControllerRoles(vaultAddress);

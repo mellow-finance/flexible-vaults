@@ -240,7 +240,7 @@ contract Deploy is DeployAbstractScript {
 
     function _deploySwapModule(address subvault) internal returns (address swapModule) {
         // allow to swap not allowed assets because of LPing
-        address[3] memory swapModuleAssets = [Constants.USDC, Constants.USPS, Constants.RLUSD];
+        address[3] memory swapModuleAssets = [Constants.USDC, Constants.USPC, Constants.RLUSD];
 
         address[] memory actors = ArraysLibrary.makeAddressArray(
             abi.encode(curator, swapModuleAssets, swapModuleAssets, Constants.KYBERSWAP_ROUTER)

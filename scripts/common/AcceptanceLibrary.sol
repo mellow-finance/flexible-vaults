@@ -775,6 +775,9 @@ library AcceptanceLibrary {
         require(vault.supportedRoles() == cnt, "Vault: invalid number of supported roles");
         for (uint256 i = 0; i < cnt; i++) {
             if (vault.getRoleMemberCount(permissions[i]) != count[i]) {
+                for (uint256 j = 0; j < vault.getRoleMemberCount(permissions[i]); j++) {
+                    console.log("holder #%s: %s", j, vault.getRoleMember(permissions[i], j));
+                }
                 revert("Vault: expected role not supported or number of role holders does not match");
             }
             for (uint256 j = 0; j < holders.length; j++) {
