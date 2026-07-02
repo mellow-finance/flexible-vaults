@@ -9,6 +9,8 @@ import "../common/OracleSubmitterFactory.sol";
 import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
 
+import {TransferDepositHook} from "../../src/hooks/TransferDepositHook.sol";
+
 contract Deploy is DeployAbstractScript {
     function run() external {
         deployVault = IDeployVaultFactory(0x9cbD8a4033fDa06809B5e0056287b512Bbf579Ef); //deployNewDeployVault();//
@@ -21,12 +23,13 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0x5596c367d808A8c0AB40F3799ee8d97f37a10Ee5)));
-        _run();
+        // _run();
         // return;
         //deposit(Constants.USDC, address(0x4B4977D887056cD6C45D73F697eB6C49eF0da764));
         // _deploySwapModule(vault.subvaultAt(0));
         // _deploySwapModule(vault.subvaultAt(1));
-        // revert("ok");
+        _deployTransferDepositHook();
+        //revert("ok");
     }
 
     function deployNewDeployVault() internal returns (IDeployVaultFactory deployVault) {
@@ -237,7 +240,7 @@ contract Deploy is DeployAbstractScript {
 
     function _deploySwapModule(address subvault) internal returns (address swapModule) {
         // allow to swap not allowed assets because of LPing
-        address[3] memory swapModuleAssets = [Constants.USDC, Constants.USPS, Constants.RLUSD];
+        address[3] memory swapModuleAssets = [Constants.USDC, Constants.USPC, Constants.RLUSD];
 
         address[] memory actors = ArraysLibrary.makeAddressArray(
             abi.encode(curator, swapModuleAssets, swapModuleAssets, Constants.KYBERSWAP_ROUTER)
@@ -266,5 +269,36 @@ contract Deploy is DeployAbstractScript {
         console.log("Subvault %s, SwapModule at", subvault, swapModule);
         vm.stopBroadcast();
         return swapModule;
+    }
+
+    /// @dev Deploys a TransferDepositHook for this vault (sKRAA / tKR3-2).
+    ///      On each processed deposit the hook (delegatecalled by the vault) pushes the assets into
+    ///      subvault0 via hookPushAssets, then has subvault0 transfer them out to the external strategy
+    ///      custody (ethereum_external_strategy). That USDC transfer is already whitelisted by
+    ///      subvault0's verifier merkle root (see permission-builder tKR3-2.yaml: external_strategy/Custody).
+    /// @dev The HOT_DEPLOYER only deploys the hook. To activate it, the msig (holder of SET_HOOK_ROLE)
+    ///      must wire it on the ShareModule, e.g. setCustomHook(<sKRAA SyncDepositQueue>, hook)
+    ///      or setDefaultDepositHook(hook).
+    function _deployTransferDepositHook() internal returns (address hook) {
+        // ethereum_external_strategy (Custody) — destination for forwarded deposits
+        address externalStrategy = 0x6D9cA36bC9b0123A6bCaBDfd6aBed9c85Ec9453b;
+        address subvault = vault.subvaultAt(0); // sKRAA_subvault_0 (0xbFa623fF4D60D86D33c8d6d5E1eBad7BcF44688C)
+
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        vm.startBroadcast(deployerPk);
+        hook = address(new TransferDepositHook(Constants.USDC, address(vault), subvault, externalStrategy));
+        console.log("TransferDepositHook (tKR3-2 -> external_strategy) at", hook);
+        vm.stopBroadcast();
+
+        // @dev simulation/fork only: impersonate the msig (DEFAULT_ADMIN_ROLE) to grant SET_HOOK_ROLE
+        //      and wire the hook as the default deposit hook. On-chain this is executed by the msig
+        //      multisig (not via vm.prank), e.g. grantRole(SET_HOOK_ROLE, msig) + setDefaultDepositHook(hook).
+        vm.startPrank(lazyVaultAdmin);
+        vault.grantRole(vault.SET_HOOK_ROLE(), lazyVaultAdmin);
+        vault.setDefaultDepositHook(hook);
+        vm.stopPrank();
+        console.log("Default deposit hook set to", hook);
+
+        return hook;
     }
 }

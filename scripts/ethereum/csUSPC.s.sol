@@ -10,6 +10,8 @@ import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
 
 contract Deploy is DeployAbstractScript {
+    address internal constant customOracle = 0x4B30d453aA138CADFff8D4a9Cdb2503146FfF318; // with USPC
+
     function run() external {
         deployVault = IDeployVaultFactory(0x9cbD8a4033fDa06809B5e0056287b512Bbf579Ef); //deployNewDeployVault();//
 
@@ -21,18 +23,15 @@ contract Deploy is DeployAbstractScript {
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0x6b59026041C560916cC5426c64b2578B95d86143)));
+        vault = Vault(payable(address(0xd3CcB5c59cDC8089DCE8e711c5da50A62572f422)));
         //_run();
-        // return;
-        // deposit(Constants.USDC, address(0xFE52C35425e926672AD194A6256124120FC33035));
+        // deposit(Constants.USDC, address(0x94629C3b0A228E7C46a6D3E5ECBb4F68Cbc6Df43));
         _deploySwapModule(vault.subvaultAt(0));
-        _deploySwapModule(vault.subvaultAt(1));
-        // revert("ok");
+       // revert("ok");
     }
 
     function deployNewDeployVault() internal returns (IDeployVaultFactory deployVault) {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         vm.startBroadcast(deployerPk);
@@ -70,22 +69,31 @@ contract Deploy is DeployAbstractScript {
         vm.stopBroadcast();
     }
 
+    function deployMellowAccount(address proxyOwner, address owner, string memory name) internal returns (address mellowAccount) {
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        vm.startBroadcast(deployerPk);
+        mellowAccount = address($.accountFactory.create(0, proxyOwner, abi.encode(owner)));
+        console.log("MellowAccount deployed at %s (%s)", mellowAccount, name);
+        vm.stopBroadcast();
+    }
+
     function setUp() public override {
         /// @dev fill name and symbol
-        vaultName = "test KeyRock #2";
-        vaultSymbol = "tKR2";
-        // 0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53 keyrock
-        // 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3 andrei
-        // 0x4d551d74e851Bd93Ce44D5F588Ba14623249CDda my
-        address msig = 0x391a6d2c24486050778de38Ee22A3CD076cE4266;
+        vaultName = "Coinshift USPC loop";
+        vaultSymbol = "CsUSPC";
+        address keyrokFordefi = 0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53;
+        address mellowTempAdmin = 0x5740175Dc9D57E7121A73A5BAa2A68BbA59503A4;
+        
         /// @dev fill admin/operational addresses
-        proxyAdmin = msig;
-        lazyVaultAdmin = msig;
-        activeVaultAdmin = msig;
-        oracleUpdater = msig;
-        curator = msig;
-        feeManagerOwner = msig;
-        pauser = msig;
+        proxyAdmin = mellowTempAdmin;
+        lazyVaultAdmin = 0xCd217F2DD550745f63F61528f061D6c98F728eDD; //deployMellowAccount(proxyAdmin, keyrokFordefi, "Lazy Vault Admin");
+        activeVaultAdmin = 0xA2f404725007FfD4918Ea5552855959D334e02f3; //deployMellowAccount(proxyAdmin, keyrokFordefi, "Active Vault Admin");
+        oracleUpdater = mellowTempAdmin;
+        curator = 0x5582c12eFB3A47Fa2ea981bf28B8db881A36bf64; //deployMellowAccount(proxyAdmin, keyrokFordefi, "Curator");
+        feeManagerOwner = mellowTempAdmin;
+        pauser = mellowTempAdmin;
 
         timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin));
         timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, pauser));
@@ -93,18 +101,18 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill fee parameters
         depositFeeD6 = 0;
         redeemFeeD6 = 0;
-        performanceFeeD6 = 0;
-        protocolFeeD6 = 0;
+        performanceFeeD6 = 1e5; // 10%
+        protocolFeeD6 = 1e4; // 1%
 
         /// @dev fill security params
         securityParams = IOracle.SecurityParams({
-            maxAbsoluteDeviation: type(uint224).max / 2, // no price deviation limit
-            suspiciousAbsoluteDeviation: type(uint224).max / 2,
-            maxRelativeDeviationD18: type(uint64).max / 2,
-            suspiciousRelativeDeviationD18: type(uint64).max / 2,
-            timeout: 1 seconds,
-            depositInterval: 1 seconds, // does not affect sync deposit queue
-            redeemInterval: 1 seconds // no redemptions allowed
+            maxAbsoluteDeviation: 0.005 * 1e30, // 0.5%
+            suspiciousAbsoluteDeviation: 0.001 * 1e30, // 0.1%
+            maxRelativeDeviationD18: 0.005 * 1e18, // 0.5%
+            suspiciousRelativeDeviationD18: 0.001 * 1e18, // 0.1%
+            timeout: 24 hours, // 24 hours
+            depositInterval: 24 hours, // 24 hours
+            redeemInterval: 48 hours // 48 hours
         });
 
         ProtocolDeployment memory $ = Constants.protocolDeployment();
@@ -117,7 +125,7 @@ contract Deploy is DeployAbstractScript {
         shareManagerWhitelistMerkleRoot = bytes32(0);
 
         /// @dev fill risk manager params
-        riskManagerLimit = 100 ether; // 100 ETH
+        riskManagerLimit = 1e8 ether; // 100M USDC
 
         /// @dev fill versions
         vaultVersion = 0;
@@ -134,18 +142,13 @@ contract Deploy is DeployAbstractScript {
         override
         returns (IDeployVaultFactory.SubvaultParams[] memory subvaultParams)
     {
-        subvaultParams = new IDeployVaultFactory.SubvaultParams[](2);
+        subvaultParams = new IDeployVaultFactory.SubvaultParams[](1);
 
-        subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC));
+        subvaultParams[0].assets =
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPC, Constants.RLUSD));
         subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[0].verifierVersion = 0;
-        subvaultParams[0].limit = 100 ether; // 100 ETH
-
-        subvaultParams[1].assets =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPC, Constants.RLUSD));
-        subvaultParams[1].version = uint256(SubvaultVersion.DEFAULT);
-        subvaultParams[1].verifierVersion = 0;
-        subvaultParams[1].limit = 100 ether; // 100 ETH
+        subvaultParams[0].limit = 1e8 ether; // 100M USDC
     }
 
     /// @dev fill in queue parameters
@@ -155,7 +158,7 @@ contract Deploy is DeployAbstractScript {
         override
         returns (IDeployVaultFactory.QueueParams[] memory queues, uint256 queueLimit)
     {
-        queues = new IDeployVaultFactory.QueueParams[](2);
+        queues = new IDeployVaultFactory.QueueParams[](3);
 
         queues[0] = IDeployVaultFactory.QueueParams({
             version: uint256(QueueVersion.DEFAULT),
@@ -165,13 +168,20 @@ contract Deploy is DeployAbstractScript {
         });
 
         queues[1] = IDeployVaultFactory.QueueParams({
+            version: uint256(QueueVersion.SYNC), // SyncDepositQueue, impl: 0x000000000b98f77a017b5d3468400c5C597a3Bde
+            isDeposit: true,
+            asset: Constants.USDC,
+            data: abi.encode(0, uint32(24 hours)) // (uint256 penaltyD6, uint32 maxAge)
+        });
+
+        queues[2] = IDeployVaultFactory.QueueParams({
             version: uint256(2),
             isDeposit: false,
             asset: Constants.USDC,
-            data: "" // penaltyD6 = 0%, maxAge = maximum
+            data: ""
         });
 
-        queueLimit = 2;
+        queueLimit = queues.length;
     }
 
     /// @dev fill in allowed assets/base asset and subvault assets
@@ -183,9 +193,9 @@ contract Deploy is DeployAbstractScript {
     {
         allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPC, Constants.RLUSD));
         allowedAssetsPrices = new uint224[](allowedAssets.length);
-        allowedAssetsPrices[0] = uint224(1e30); // 6 decimals
-        allowedAssetsPrices[1] = uint224(1e30); // 6 decimals
-        allowedAssetsPrices[2] = uint224(1e18); // 18 decimals
+        allowedAssetsPrices[0] = uint224(1e30); // USDC 6 decimals
+        allowedAssetsPrices[1] = uint224(1e30); // USPC 6 decimals
+        allowedAssetsPrices[2] = uint224(1e18); // RLUSD 18 decimals
     }
 
     /// @dev fill in vault role holders
@@ -266,15 +276,14 @@ contract Deploy is DeployAbstractScript {
             )
         );
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
 
         IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
 
         vm.startBroadcast(deployerPk);
         swapModule = swapModuleFactory.create(
-            0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
+            0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, customOracle, 0.995e8, actors, permissions)
         );
-        console.log("Subvault %s, SwapModule at", subvault, swapModule);
+        console.log("Subvault %s, SwapModule at %s | oracle: %s", subvault, swapModule, customOracle);
         vm.stopBroadcast();
         return swapModule;
     }
