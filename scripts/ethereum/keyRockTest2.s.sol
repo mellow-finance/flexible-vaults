@@ -142,7 +142,7 @@ contract Deploy is DeployAbstractScript {
         subvaultParams[0].limit = 100 ether; // 100 ETH
 
         subvaultParams[1].assets =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPS, Constants.RLUSD));
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPC, Constants.RLUSD));
         subvaultParams[1].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[1].verifierVersion = 0;
         subvaultParams[1].limit = 100 ether; // 100 ETH
@@ -181,7 +181,7 @@ contract Deploy is DeployAbstractScript {
         override
         returns (address[] memory allowedAssets, uint224[] memory allowedAssetsPrices)
     {
-        allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPS, Constants.RLUSD));
+        allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC, Constants.USPC, Constants.RLUSD));
         allowedAssetsPrices = new uint224[](allowedAssets.length);
         allowedAssetsPrices[0] = uint224(1e30); // 6 decimals
         allowedAssetsPrices[1] = uint224(1e30); // 6 decimals
@@ -248,7 +248,7 @@ contract Deploy is DeployAbstractScript {
 
     function _deploySwapModule(address subvault) internal returns (address swapModule) {
         // allow to swap not allowed assets because of LPing
-        address[3] memory swapModuleAssets = [Constants.USDC, Constants.USPS, Constants.RLUSD];
+        address[3] memory swapModuleAssets = [Constants.USDC, Constants.USPC, Constants.RLUSD];
 
         address[] memory actors = ArraysLibrary.makeAddressArray(
             abi.encode(curator, swapModuleAssets, swapModuleAssets, Constants.KYBERSWAP_ROUTER)
