@@ -34,11 +34,14 @@ interface ISyncRedeemQueue is ISyncQueue {
         uint256 penaltyD6;
         /// @notice Maximum allowed age of an oracle report, in seconds.
         uint32 maxAge;
-        /// @notice Current daily limit usage, denominated in shares.
+        /// @notice Current leaky-bucket usage, denominated in shares.
         /// @dev Usage decays linearly over time at a rate of `dailyLimit / 24 hours`.
         uint256 usage;
-        /// @notice Maximum number of shares that can be synchronously redeemed over a rolling 24-hour period.
-        /// @dev Must be divisible by `24 hours` to prevent rounding during linear usage decay.
+        /// @notice Maximum leaky-bucket capacity for synchronous redemptions, denominated in shares.
+        /// @dev This is not a strict rolling 24-hour cap. Because usage refills linearly over time,
+        ///      up to `2 * dailyLimit` shares may be redeemed within some 24-hour periods:
+        ///      `dailyLimit` from initially available capacity plus `dailyLimit` from refill.
+        ///      Risk limits should account for this burst behavior.
         uint256 dailyLimit;
         /// @notice Timestamp of the latest usage synchronization.
         uint256 latestRequestTimestamp;
@@ -53,7 +56,9 @@ interface ISyncRedeemQueue is ISyncQueue {
     /// @return penaltyD6 Penalty applied to synchronous redemptions, denominated in D6 precision.
     /// @return maxAge Maximum allowed age of an oracle report, in seconds.
     /// @return usage Stored daily limit usage before accounting for decay since the latest synchronization.
-    /// @return dailyLimit Maximum number of shares that can be synchronously redeemed over 24 hours.
+    /// @return dailyLimit Maximum leaky-bucket capacity for synchronous redemptions, denominated in shares.
+    ///                    Not a strict rolling 24-hour cap; worst-case 24-hour throughput can reach
+    ///                    up to `2 * dailyLimit`.
     /// @return latestRequestTimestamp Timestamp of the latest usage synchronization.
     function syncRedeemParams()
         external
@@ -76,7 +81,9 @@ interface ISyncRedeemQueue is ISyncQueue {
     /// @dev The caller must have `SET_SYNC_REDEEM_PARAMS_ROLE` in the vault.
     /// @param penaltyD6 Penalty applied to synchronous redemptions, denominated in D6 precision.
     /// @param maxAge Maximum allowed age of an oracle report, in seconds.
-    /// @param dailyLimit Maximum number of shares that can be synchronously redeemed over 24 hours.
+    /// @param dailyLimit Maximum leaky-bucket capacity for synchronous redemptions, denominated in shares.
+    ///                    Not a strict rolling 24-hour cap; worst-case 24-hour throughput can reach
+    ///                    up to `2 * dailyLimit`.
     function setSyncRedeemParams(uint256 penaltyD6, uint32 maxAge, uint256 dailyLimit) external;
 
     /// @notice Synchronously redeems shares for the underlying asset.

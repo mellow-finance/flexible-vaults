@@ -104,7 +104,7 @@ contract SyncRedeemQueue is ISyncRedeemQueue, SyncQueue {
 
         uint256 sharesToRedeem = Math.mulDiv(shares, 1e6 - $.penaltyD6, 1e6);
         IFeeManager feeManager = vault_.feeManager();
-        uint256 feeShares = feeManager.calculateRedeemFee(shares);
+        uint256 feeShares = feeManager.calculateRedeemFee(sharesToRedeem);
         if (feeShares > 0) {
             sharesToRedeem -= feeShares;
         }
