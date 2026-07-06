@@ -46,7 +46,7 @@ contract SyncRedeemQueue is ISyncRedeemQueue, SyncQueue {
         if (timespan > 0) {
             usage = Math.saturatingSub(usage, Math.mulDiv(dailyLimit, timespan, 24 hours));
         }
-        remainingDailyLimit_ = dailyLimit - usage;
+        remainingDailyLimit_ = Math.saturatingSub(dailyLimit, usage);
     }
 
     /// @inheritdoc ISyncRedeemQueue
@@ -55,6 +55,8 @@ contract SyncRedeemQueue is ISyncRedeemQueue, SyncQueue {
     }
 
     // Mutable functions
+
+    receive() external payable {}
 
     /// @inheritdoc IFactoryEntity
     function initialize(bytes calldata data) external initializer {
@@ -108,6 +110,9 @@ contract SyncRedeemQueue is ISyncRedeemQueue, SyncQueue {
         }
 
         uint256 assets = Math.mulDiv(sharesToRedeem, 1 ether, priceD18);
+        if (assets == 0) {
+            revert ZeroValue();
+        }
         {
             uint256 liquidAssets = vault_.getLiquidAssets();
             if (assets > liquidAssets) {
