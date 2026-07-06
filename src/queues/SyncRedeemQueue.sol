@@ -77,7 +77,7 @@ contract SyncRedeemQueue is ISyncRedeemQueue, SyncQueue {
 
     /// @inheritdoc ISyncRedeemQueue
     function redeem(uint256 shares, address receiver) external nonReentrant {
-        if (shares == 0) {
+        if (shares == 0 || receiver == address(0)) {
             revert ZeroValue();
         }
         address caller = _msgSender();
