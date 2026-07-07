@@ -9,32 +9,31 @@ import "../common/OracleSubmitterFactory.sol";
 import "../common/ProofLibrary.sol";
 import "./DeployAbstractScript.s.sol";
 
-import {TransferDepositHook} from "../../src/hooks/TransferDepositHook.sol";
-
 contract Deploy is DeployAbstractScript {
     function run() external {
+        _simulateXReserveDepositToRemote();
+        return;
         deployVault = IDeployVaultFactory(0x9cbD8a4033fDa06809B5e0056287b512Bbf579Ef); //deployNewDeployVault();//
 
         /// @dev just on-chain simulation
-        // _simulate();
+       // _simulate();
+       // revert("ok");
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
-        vault = Vault(payable(address(0x5596c367d808A8c0AB40F3799ee8d97f37a10Ee5)));
-        // _run();
-        // return;
-        //deposit(Constants.USDC, address(0x4B4977D887056cD6C45D73F697eB6C49eF0da764));
-        // _deploySwapModule(vault.subvaultAt(0));
-        // _deploySwapModule(vault.subvaultAt(1));
-        _deployTransferDepositHook();
+        vault = Vault(payable(address(0xb93AEac27E82eb2A8555F7fEf3984CfACEB20275)));
+        //_run();
+        //deposit(Constants.USDC, address(0xaD0F7fE1264baECF2b3102cF2514285FCb1BdC41));
+        // swap module - skip
+        //_deploySwapModule(vault.subvaultAt(0));
+        // xReserve test tx (simulation only)
         //revert("ok");
     }
 
     function deployNewDeployVault() internal returns (IDeployVaultFactory deployVault) {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         vm.startBroadcast(deployerPk);
@@ -72,23 +71,31 @@ contract Deploy is DeployAbstractScript {
         vm.stopBroadcast();
     }
 
+    function deployMellowAccount(address proxyOwner, address owner, string memory name) internal returns (address mellowAccount) {
+        ProtocolDeployment memory $ = Constants.protocolDeployment();
+
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        vm.startBroadcast(deployerPk);
+        mellowAccount = address($.accountFactory.create(0, proxyOwner, abi.encode(owner)));
+        console.log("MellowAccount deployed at %s (%s)", mellowAccount, name);
+        vm.stopBroadcast();
+    }
+
     function setUp() public override {
         /// @dev fill name and symbol
-        //isEmptyVault = true;
-        vaultName = "test KeyRock #3-2";
-        vaultSymbol = "tKR3-2";
-        // 0xc79829aF88e34a229a2C573c170e0619AFF9d64A keyrock Tim
-        // 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3 andrei
-        // 0x4d551d74e851Bd93Ce44D5F588Ba14623249CDda my
-        address msig = 0x039db8459715b3797C4dfff26C3Ab036460ec500;
+        vaultName = "test KeyRock Canton";
+        vaultSymbol = "tKRC";
+        address keyrokFordefi = 0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53;
+        address mellowTempAdmin = 0x2B0c1b06f098E024AAA2c8f73CAEa44Ae5585467; // deployer + keyrokFordefi 1/2
+
         /// @dev fill admin/operational addresses
-        proxyAdmin = msig;
-        lazyVaultAdmin = msig;
-        activeVaultAdmin = msig;
-        oracleUpdater = msig;
-        curator = msig;
-        feeManagerOwner = msig;
-        pauser = msig;
+        proxyAdmin = mellowTempAdmin;
+        lazyVaultAdmin = mellowTempAdmin;
+        activeVaultAdmin = mellowTempAdmin;
+        oracleUpdater = mellowTempAdmin;
+        curator = mellowTempAdmin;
+        feeManagerOwner = mellowTempAdmin;
+        pauser = mellowTempAdmin;
 
         timelockProposers = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin));
         timelockExecutors = ArraysLibrary.makeAddressArray(abi.encode(lazyVaultAdmin, pauser));
@@ -96,8 +103,8 @@ contract Deploy is DeployAbstractScript {
         /// @dev fill fee parameters
         depositFeeD6 = 0;
         redeemFeeD6 = 0;
-        performanceFeeD6 = 0;
-        protocolFeeD6 = 0;
+        performanceFeeD6 = 0; // 0%
+        protocolFeeD6 = 0; // 0%
 
         /// @dev fill security params
         securityParams = IOracle.SecurityParams({
@@ -121,7 +128,7 @@ contract Deploy is DeployAbstractScript {
         shareManagerWhitelistMerkleRoot = bytes32(0);
 
         /// @dev fill risk manager params
-        riskManagerLimit = 1e10 ether; // 1e10 ETH
+        riskManagerLimit = 1e8 ether; // 100M USDC
 
         /// @dev fill versions
         vaultVersion = 0;
@@ -140,10 +147,11 @@ contract Deploy is DeployAbstractScript {
     {
         subvaultParams = new IDeployVaultFactory.SubvaultParams[](1);
 
-        subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC));
+        subvaultParams[0].assets =
+            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC));
         subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[0].verifierVersion = 0;
-        subvaultParams[0].limit = 1e10 ether; // 1e10 ETH
+        subvaultParams[0].limit = 1e8 ether; // 100M USDC
     }
 
     /// @dev fill in queue parameters
@@ -177,7 +185,7 @@ contract Deploy is DeployAbstractScript {
     {
         allowedAssets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC));
         allowedAssetsPrices = new uint224[](allowedAssets.length);
-        allowedAssetsPrices[0] = uint224(1e30); // 6 decimals
+        allowedAssetsPrices[0] = uint224(1e30); // USDC 6 decimals
     }
 
     /// @dev fill in vault role holders
@@ -238,67 +246,114 @@ contract Deploy is DeployAbstractScript {
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {}
 
-    function _deploySwapModule(address subvault) internal returns (address swapModule) {
-        // allow to swap not allowed assets because of LPing
-        address[3] memory swapModuleAssets = [Constants.USDC, Constants.USPC, Constants.RLUSD];
+    /// @dev test transaction for src/permission_builder/protocols/xReserve.yaml using the proofs in
+    ///      scripts/jsons/ethereum:tKRC:subvault0.json: USDC.approve(xReserve) [merkle_proofs[0]]
+    ///      followed by IxReserve.depositToRemote [merkle_proofs[1]]. Simulation only — no broadcast.
+    function _simulateXReserveDepositToRemote() internal {
+        string memory json = vm.readFile("./scripts/jsons/ethereum:tKRC:subvault0.json");
 
-        address[] memory actors = ArraysLibrary.makeAddressArray(
-            abi.encode(curator, swapModuleAssets, swapModuleAssets, Constants.KYBERSWAP_ROUTER)
-        );
-        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
-            abi.encode(
-                Permissions.SWAP_MODULE_CALLER_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                Permissions.SWAP_MODULE_ROUTER_ROLE
-            )
-        );
-        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        address deployer = vm.addr(deployerPk);
+        Subvault subvault = Subvault(payable(vm.parseJsonAddress(json, ".subvault")));
+        address caller = vm.parseJsonAddress(json, ".merkle_proofs[0].description.parameters.caller");
 
-        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
+        // deposit the subvault's whole USDC balance (value/amount are masked/"any" in the proofs)
+        uint256 value = IERC20(Constants.USDC).balanceOf(address(subvault));
+        console.log("subvault %s USDC balance used as value: %s", address(subvault), value);
 
-        vm.startBroadcast(deployerPk);
-        swapModule = swapModuleFactory.create(
-            0, proxyAdmin, abi.encode(lazyVaultAdmin, subvault, Constants.AAVE_V3_ORACLE, 0.995e8, actors, permissions)
+        // 1) allowance call: USDC.approve(xReserve, value) via merkle_proofs[0]
+        _subvaultCall(
+            subvault,
+            caller,
+            vm.parseJsonAddress(json, ".merkle_proofs[0].description.parameters.target"),
+            _buildApproveData(json, ".merkle_proofs[0]", value),
+            _loadPayload(json, ".merkle_proofs[0]"),
+            "approve"
         );
-        console.log("Subvault %s, SwapModule at", subvault, swapModule);
-        vm.stopBroadcast();
-        return swapModule;
+
+        // 2) xReserve.depositToRemote(...) via merkle_proofs[1]
+        _subvaultCall(
+            subvault,
+            caller,
+            vm.parseJsonAddress(json, ".merkle_proofs[1].description.parameters.target"),
+            _buildDepositToRemoteData(json, ".merkle_proofs[1]", value),
+            _loadPayload(json, ".merkle_proofs[1]"),
+            "depositToRemote"
+        );
     }
 
-    /// @dev Deploys a TransferDepositHook for this vault (sKRAA / tKR3-2).
-    ///      On each processed deposit the hook (delegatecalled by the vault) pushes the assets into
-    ///      subvault0 via hookPushAssets, then has subvault0 transfer them out to the external strategy
-    ///      custody (ethereum_external_strategy). That USDC transfer is already whitelisted by
-    ///      subvault0's verifier merkle root (see permission-builder tKR3-2.yaml: external_strategy/Custody).
-    /// @dev The HOT_DEPLOYER only deploys the hook. To activate it, the msig (holder of SET_HOOK_ROLE)
-    ///      must wire it on the ShareModule, e.g. setCustomHook(<sKRAA SyncDepositQueue>, hook)
-    ///      or setDefaultDepositHook(hook).
-    function _deployTransferDepositHook() internal returns (address hook) {
-        // ethereum_external_strategy (Custody) — destination for forwarded deposits
-        address externalStrategy = 0x6D9cA36bC9b0123A6bCaBDfd6aBed9c85Ec9453b;
-        address subvault = vault.subvaultAt(0); // sKRAA_subvault_0 (0xbFa623fF4D60D86D33c8d6d5E1eBad7BcF44688C)
+    /// @dev verifies the call against the subvault verifier, then simulates it via subvault.call
+    function _subvaultCall(
+        Subvault subvault,
+        address caller,
+        address target,
+        bytes memory data,
+        IVerifier.VerificationPayload memory payload,
+        string memory label
+    ) internal {
+        require(
+            subvault.verifier().getVerificationResult(caller, target, 0, data, payload),
+            string.concat("xReserve: ", label, " not authorized by proof")
+        );
+        console.log("xReserve %s authorized | target: %s", label, target);
 
-        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        vm.startBroadcast(deployerPk);
-        hook = address(new TransferDepositHook(Constants.USDC, address(vault), subvault, externalStrategy));
-        console.log("TransferDepositHook (tKR3-2 -> external_strategy) at", hook);
-        vm.stopBroadcast();
+        // raw calldata for the outer subvault.call(where, value, data, payload) transaction
+        console.log("xReserve %s subvault.call raw calldata | to: %s", label, address(subvault));
+        console.logBytes(abi.encodeCall(subvault.call, (target, uint256(0), data, payload)));
 
-        // @dev simulation/fork only: impersonate the msig (DEFAULT_ADMIN_ROLE) to grant SET_HOOK_ROLE
-        //      and wire the hook as the default deposit hook. On-chain this is executed by the msig
-        //      multisig (not via vm.prank), e.g. grantRole(SET_HOOK_ROLE, msig) + setDefaultDepositHook(hook).
-        vm.startPrank(lazyVaultAdmin);
-        vault.grantRole(vault.SET_HOOK_ROLE(), lazyVaultAdmin);
-        vault.setDefaultDepositHook(hook);
-        vm.stopPrank();
-        console.log("Default deposit hook set to", hook);
+        // forge simulates without --broadcast
+        vm.prank(caller);
+        try subvault.call(target, 0, data, payload) returns (bytes memory) {
+            console.log("xReserve %s simulated successfully", label);
+        } catch (bytes memory reason) {
+            console.log("xReserve %s reverted during execution:", label);
+            console.logBytes(reason);
+        }
+    }
 
-        return hook;
+    /// @dev builds the USDC approve calldata; spender comes from the proof, amount is masked ("any")
+    function _buildApproveData(string memory json, string memory leaf, uint256 amount)
+        internal
+        pure
+        returns (bytes memory data)
+    {
+        data = abi.encodeWithSignature(
+            "approve(address,uint256)",
+            vm.parseJsonAddress(json, string.concat(leaf, ".description.innerParameters.spender")),
+            amount
+        );
+    }
+
+    /// @dev builds the depositToRemote calldata; fixed params come from the proof, `value` and
+    ///      maxFee are masked ("any") so the balance / a sample fee are accepted by the verifier
+    function _buildDepositToRemoteData(string memory json, string memory leaf, uint256 value)
+        internal
+        pure
+        returns (bytes memory data)
+    {
+        data = abi.encodeWithSignature(
+            "depositToRemote(uint256,uint32,bytes32,address,uint256,bytes)",
+            value,
+            uint32(
+                vm.parseUint(vm.parseJsonString(json, string.concat(leaf, ".description.innerParameters.remoteDomain")))
+            ),
+            vm.parseJsonBytes32(json, string.concat(leaf, ".description.innerParameters.remoteRecipient")),
+            vm.parseJsonAddress(json, string.concat(leaf, ".description.innerParameters.localToken")),
+            0, // maxFee (masked) — sample value
+            vm.parseJsonBytes(json, string.concat(leaf, ".description.innerParameters.hookData"))
+        );
+    }
+
+    /// @dev reconstructs the verification payload (including merkle proof) from the json
+    function _loadPayload(string memory json, string memory leaf)
+        internal
+        pure
+        returns (IVerifier.VerificationPayload memory payload)
+    {
+        payload = IVerifier.VerificationPayload({
+            verificationType: IVerifier.VerificationType(
+                uint8(vm.parseJsonUint(json, string.concat(leaf, ".verificationType")))
+            ),
+            verificationData: vm.parseJsonBytes(json, string.concat(leaf, ".verificationData")),
+            proof: vm.parseJsonBytes32Array(json, string.concat(leaf, ".proof"))
+        });
     }
 }

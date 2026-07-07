@@ -161,7 +161,6 @@ abstract contract DeployAbstractScript is Test {
         console.log("=============================================================");
         console.log("Deployed vault at:", address(vault));
         console.log("=============================================================");
-        logDeployment(address(vault));
     }
 
     /*
@@ -182,6 +181,7 @@ abstract contract DeployAbstractScript is Test {
 
         Vault.RoleHolder[] memory holders = getVaultRoleHolders(address(0), address(0));
         deployVault.finalizeDeployment(vault, subvaultRoots, holders);
+        logDeployment(address(vault));
     }
 
     function getConfig() internal returns (IDeployVaultFactory.DeployVaultConfig memory config) {
@@ -283,6 +283,12 @@ abstract contract DeployAbstractScript is Test {
                 timelockControllers: ArraysLibrary.makeAddressArray(abi.encode(address(deployment.timelockController))),
                 timelockProposers: ArraysLibrary.makeAddressArray(abi.encode(timelockProposers)),
                 timelockExecutors: ArraysLibrary.makeAddressArray(abi.encode(timelockExecutors))
+            }),
+            AcceptanceLibrary.OracleSubmitterDeployment({
+                admin: proxyAdmin,
+                oracleSubmitter: deployment.oracleSubmitter,
+                submitter: oracleUpdater,
+                accepter: activeVaultAdmin
             })
         );
         checkTimelockControllerRoles(vaultAddress);
