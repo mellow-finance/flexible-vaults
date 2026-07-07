@@ -1,0 +1,135 @@
+{
+  "title": "ethereum:tKRC:subvault0",
+  "vault": "0xb93AEac27E82eb2A8555F7fEf3984CfACEB20275",
+  "subvault": "0x6De3A012F3da9001a0CA673BECbf175e860c415f",
+  "chain": "ethereum",
+  "merkle_root": "0x9726dd3c08c0c93f19e4af601b3fd3789c3f835be6e5e0c0fef1b43807da8213",
+  "vault_symbol": "tKRC",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "xreserve",
+        "protocol": "xReserve",
+        "interface": "IxReserve",
+        "description": "IxReserve(0x8888888199b2Df864bf678259607d6D5EBb4e3Ce).depositToRemote(any,10001,0x92b59baaf73eb6ed7c968e005de0e971a71ff5c66b6524f884369a5809ad80be,USDC,any,0x306f61793838796668367545365877444f3431373a3a3132323034636132393064356335333834336535383062633635613535393431653462656564353066623964353837326238623866633734626431653537636565313164)",
+        "parameters": {
+          "caller": "0x2B0c1b06f098E024AAA2c8f73CAEa44Ae5585467",
+          "target": "0x8888888199b2Df864bf678259607d6D5EBb4e3Ce",
+          "value": "0"
+        },
+        "innerParameters": {
+          "value": "any",
+          "remoteDomain": "10001",
+          "remoteRecipient": "0x92b59baaf73eb6ed7c968e005de0e971a71ff5c66b6524f884369a5809ad80be",
+          "localToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "maxFee": "any",
+          "hookData": "0x306f61793838796668367545365877444f3431373a3a3132323034636132393064356335333834336535383062633635613535393431653462656564353066623964353837326238623866633734626431653537636565313164"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositToRemote",
+          "inputs": [
+            {
+              "name": "value",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "remoteDomain",
+              "type": "uint32",
+              "internalType": "uint32"
+            },
+            {
+              "name": "remoteRecipient",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "localToken",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "maxFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "hookData",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x2B0c1b06f098E024AAA2c8f73CAEa44Ae5585467",
+          "target": "0x8888888199b2Df864bf678259607d6D5EBb4e3Ce",
+          "params": [
+            "any",
+            "10001",
+            "0x92b59baaf73eb6ed7c968e005de0e971a71ff5c66b6524f884369a5809ad80be",
+            "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "any",
+            "0x306f61793838796668367545365877444f3431373a3a3132323034636132393064356335333834336535383062633635613535393431653462656564353066623964353837326238623866633734626431653537636565313164"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "depositToRemote",
+            "inputs": [
+              {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "remoteDomain",
+                "type": "uint32",
+                "internalType": "uint32"
+              },
+              {
+                "name": "remoteRecipient",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "localToken",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "maxFee",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "hookData",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositToRemote.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "depositToRemote.maxFee",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ]
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6941c9eb12d41abe6ed5088aed64380016cfcebdd17911e869192774175426ab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": []
+    }
+  ]
+}
