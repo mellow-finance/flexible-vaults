@@ -11,6 +11,8 @@ import "./DeployAbstractScript.s.sol";
 
 contract Deploy is DeployAbstractScript {
     function run() external {
+        _simulateXReserveDepositToRemote();
+        return;
         deployVault = IDeployVaultFactory(0x9cbD8a4033fDa06809B5e0056287b512Bbf579Ef); //deployNewDeployVault();//
 
         /// @dev just on-chain simulation
@@ -22,10 +24,11 @@ contract Deploy is DeployAbstractScript {
         //  else -> step two
         /// @dev fill in Vault address to run stepTwo
         vault = Vault(payable(address(0xb93AEac27E82eb2A8555F7fEf3984CfACEB20275)));
-        _run();
-        //deposit(Constants.USDC, address(0x94629C3b0A228E7C46a6D3E5ECBb4F68Cbc6Df43));
+        //_run();
+        //deposit(Constants.USDC, address(0xaD0F7fE1264baECF2b3102cF2514285FCb1BdC41));
         // swap module - skip
         //_deploySwapModule(vault.subvaultAt(0));
+        // xReserve test tx (simulation only)
         //revert("ok");
     }
 
@@ -242,4 +245,115 @@ contract Deploy is DeployAbstractScript {
         override
         returns (bytes32 merkleRoot, SubvaultCalls memory calls)
     {}
+
+    /// @dev test transaction for src/permission_builder/protocols/xReserve.yaml using the proofs in
+    ///      scripts/jsons/ethereum:tKRC:subvault0.json: USDC.approve(xReserve) [merkle_proofs[0]]
+    ///      followed by IxReserve.depositToRemote [merkle_proofs[1]]. Simulation only — no broadcast.
+    function _simulateXReserveDepositToRemote() internal {
+        string memory json = vm.readFile("./scripts/jsons/ethereum:tKRC:subvault0.json");
+
+        Subvault subvault = Subvault(payable(vm.parseJsonAddress(json, ".subvault")));
+        address caller = vm.parseJsonAddress(json, ".merkle_proofs[0].description.parameters.caller");
+
+        // deposit the subvault's whole USDC balance (value/amount are masked/"any" in the proofs)
+        uint256 value = IERC20(Constants.USDC).balanceOf(address(subvault));
+        console.log("subvault %s USDC balance used as value: %s", address(subvault), value);
+
+        // 1) allowance call: USDC.approve(xReserve, value) via merkle_proofs[0]
+        _subvaultCall(
+            subvault,
+            caller,
+            vm.parseJsonAddress(json, ".merkle_proofs[0].description.parameters.target"),
+            _buildApproveData(json, ".merkle_proofs[0]", value),
+            _loadPayload(json, ".merkle_proofs[0]"),
+            "approve"
+        );
+
+        // 2) xReserve.depositToRemote(...) via merkle_proofs[1]
+        _subvaultCall(
+            subvault,
+            caller,
+            vm.parseJsonAddress(json, ".merkle_proofs[1].description.parameters.target"),
+            _buildDepositToRemoteData(json, ".merkle_proofs[1]", value),
+            _loadPayload(json, ".merkle_proofs[1]"),
+            "depositToRemote"
+        );
+    }
+
+    /// @dev verifies the call against the subvault verifier, then simulates it via subvault.call
+    function _subvaultCall(
+        Subvault subvault,
+        address caller,
+        address target,
+        bytes memory data,
+        IVerifier.VerificationPayload memory payload,
+        string memory label
+    ) internal {
+        require(
+            subvault.verifier().getVerificationResult(caller, target, 0, data, payload),
+            string.concat("xReserve: ", label, " not authorized by proof")
+        );
+        console.log("xReserve %s authorized | target: %s", label, target);
+
+        // raw calldata for the outer subvault.call(where, value, data, payload) transaction
+        console.log("xReserve %s subvault.call raw calldata | to: %s", label, address(subvault));
+        console.logBytes(abi.encodeCall(subvault.call, (target, uint256(0), data, payload)));
+
+        // forge simulates without --broadcast
+        vm.prank(caller);
+        try subvault.call(target, 0, data, payload) returns (bytes memory) {
+            console.log("xReserve %s simulated successfully", label);
+        } catch (bytes memory reason) {
+            console.log("xReserve %s reverted during execution:", label);
+            console.logBytes(reason);
+        }
+    }
+
+    /// @dev builds the USDC approve calldata; spender comes from the proof, amount is masked ("any")
+    function _buildApproveData(string memory json, string memory leaf, uint256 amount)
+        internal
+        pure
+        returns (bytes memory data)
+    {
+        data = abi.encodeWithSignature(
+            "approve(address,uint256)",
+            vm.parseJsonAddress(json, string.concat(leaf, ".description.innerParameters.spender")),
+            amount
+        );
+    }
+
+    /// @dev builds the depositToRemote calldata; fixed params come from the proof, `value` and
+    ///      maxFee are masked ("any") so the balance / a sample fee are accepted by the verifier
+    function _buildDepositToRemoteData(string memory json, string memory leaf, uint256 value)
+        internal
+        pure
+        returns (bytes memory data)
+    {
+        data = abi.encodeWithSignature(
+            "depositToRemote(uint256,uint32,bytes32,address,uint256,bytes)",
+            value,
+            uint32(
+                vm.parseUint(vm.parseJsonString(json, string.concat(leaf, ".description.innerParameters.remoteDomain")))
+            ),
+            vm.parseJsonBytes32(json, string.concat(leaf, ".description.innerParameters.remoteRecipient")),
+            vm.parseJsonAddress(json, string.concat(leaf, ".description.innerParameters.localToken")),
+            0, // maxFee (masked) — sample value
+            vm.parseJsonBytes(json, string.concat(leaf, ".description.innerParameters.hookData"))
+        );
+    }
+
+    /// @dev reconstructs the verification payload (including merkle proof) from the json
+    function _loadPayload(string memory json, string memory leaf)
+        internal
+        pure
+        returns (IVerifier.VerificationPayload memory payload)
+    {
+        payload = IVerifier.VerificationPayload({
+            verificationType: IVerifier.VerificationType(
+                uint8(vm.parseJsonUint(json, string.concat(leaf, ".verificationType")))
+            ),
+            verificationData: vm.parseJsonBytes(json, string.concat(leaf, ".verificationData")),
+            proof: vm.parseJsonBytes32Array(json, string.concat(leaf, ".proof"))
+        });
+    }
 }
