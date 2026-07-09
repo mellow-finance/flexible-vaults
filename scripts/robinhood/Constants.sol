@@ -58,7 +58,7 @@ library Constants {
         $.verifierImplementation = Verifier(0x000000007e86a96e279662108cc19bA4c32EdE3C);
         $.erc20VerifierImplementation = ERC20Verifier(0x00000000ACD80376E999Af8c424e5e33BD224A08);
         $.mellowAccountV1Implementation = MellowAccountV1(0x00000000860913f37fab81ce8ce4E5BD1f664482);
-        $.swapModuleImplementation = SwapModule(payable(0x0000000022B540Fe06d7a9c32d81163971b583D6));
+        $.swapModuleImplementation = SwapModule(payable(0x00000000a00c7cf7e467bfD2aDeF6ce698D8D63a));
         $.vaultImplementation = Vault(payable(0x0000000070f44289ec5ea3E5972f058f75B29801));
         $.bitmaskVerifier = BitmaskVerifier(0x0000000009E9368ad21fc19DCE1cFcf9Af6dE339);
         $.vaultConfigurator = VaultConfigurator(0x0000000005a67199ABE0f9C995EAB9DaDfA31Ccd);
