@@ -13,12 +13,11 @@ contract TestVerifContract {
         return 42;
     }
 }
-interface ISafe{
-    function createProxyWithNonce(
-        address _singleton,
-        bytes memory initializer,
-        uint256 saltNonce
-    ) external returns (address proxy);
+
+interface ISafe {
+    function createProxyWithNonce(address _singleton, bytes memory initializer, uint256 saltNonce)
+        external
+        returns (address proxy);
 }
 
 contract Deploy is Script {

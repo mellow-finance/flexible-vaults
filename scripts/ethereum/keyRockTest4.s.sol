@@ -16,8 +16,8 @@ contract Deploy is DeployAbstractScript {
         deployVault = IDeployVaultFactory(0x9cbD8a4033fDa06809B5e0056287b512Bbf579Ef); //deployNewDeployVault();//
 
         /// @dev just on-chain simulation
-       // _simulate();
-       // revert("ok");
+        // _simulate();
+        // revert("ok");
 
         /// @dev on-chain transaction
         //  if vault == address(0) -> step one
@@ -71,7 +71,10 @@ contract Deploy is DeployAbstractScript {
         vm.stopBroadcast();
     }
 
-    function deployMellowAccount(address proxyOwner, address owner, string memory name) internal returns (address mellowAccount) {
+    function deployMellowAccount(address proxyOwner, address owner, string memory name)
+        internal
+        returns (address mellowAccount)
+    {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -147,8 +150,7 @@ contract Deploy is DeployAbstractScript {
     {
         subvaultParams = new IDeployVaultFactory.SubvaultParams[](1);
 
-        subvaultParams[0].assets =
-            ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC));
+        subvaultParams[0].assets = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDC));
         subvaultParams[0].version = uint256(SubvaultVersion.DEFAULT);
         subvaultParams[0].verifierVersion = 0;
         subvaultParams[0].limit = 1e8 ether; // 100M USDC

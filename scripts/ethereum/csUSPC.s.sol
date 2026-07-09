@@ -27,7 +27,7 @@ contract Deploy is DeployAbstractScript {
         //_run();
         // deposit(Constants.USDC, address(0x94629C3b0A228E7C46a6D3E5ECBb4F68Cbc6Df43));
         _deploySwapModule(vault.subvaultAt(0));
-       // revert("ok");
+        // revert("ok");
     }
 
     function deployNewDeployVault() internal returns (IDeployVaultFactory deployVault) {
@@ -69,7 +69,10 @@ contract Deploy is DeployAbstractScript {
         vm.stopBroadcast();
     }
 
-    function deployMellowAccount(address proxyOwner, address owner, string memory name) internal returns (address mellowAccount) {
+    function deployMellowAccount(address proxyOwner, address owner, string memory name)
+        internal
+        returns (address mellowAccount)
+    {
         ProtocolDeployment memory $ = Constants.protocolDeployment();
 
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
@@ -85,7 +88,7 @@ contract Deploy is DeployAbstractScript {
         vaultSymbol = "CsUSPC";
         address keyrokFordefi = 0xf1a9676B03Dd3B2066214D2aD8B4B59ED6642C53;
         address mellowTempAdmin = 0x5740175Dc9D57E7121A73A5BAa2A68BbA59503A4;
-        
+
         /// @dev fill admin/operational addresses
         proxyAdmin = mellowTempAdmin;
         lazyVaultAdmin = 0xCd217F2DD550745f63F61528f061D6c98F728eDD; //deployMellowAccount(proxyAdmin, keyrokFordefi, "Lazy Vault Admin");
@@ -174,12 +177,8 @@ contract Deploy is DeployAbstractScript {
             data: abi.encode(0, uint32(24 hours)) // (uint256 penaltyD6, uint32 maxAge)
         });
 
-        queues[2] = IDeployVaultFactory.QueueParams({
-            version: uint256(2),
-            isDeposit: false,
-            asset: Constants.USDC,
-            data: ""
-        });
+        queues[2] =
+            IDeployVaultFactory.QueueParams({version: uint256(2), isDeposit: false, asset: Constants.USDC, data: ""});
 
         queueLimit = queues.length;
     }
