@@ -12,6 +12,12 @@ library Constants {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WETH = 0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73;
 
+    address public constant USDG = 0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168;
+    address public constant USDE = 0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34;
+
+    address public constant SYRUP_USDG = 0x40858070814a57FdF33a613ae84fE0a8b4a874f7;
+    address public constant SPUSDG = 0xde770c84FE66E063336b31737cFE9790f18c4087;
+
     address public constant COWSWAP_SETTLEMENT = address(0);
     address public constant COWSWAP_VAULT_RELAYER = address(0);
 

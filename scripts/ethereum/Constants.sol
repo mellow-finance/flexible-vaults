@@ -32,6 +32,9 @@ library Constants {
     address public constant USPC = 0xbF4e3fbE8B60062A00C7a6B1D97d0d49c2971A19;
     address public constant RLUSD = 0x8292Bb45bf1Ee4d140127049757C2E0fF06317eD;
 
+    address public constant USDG = 0xe343167631d89B6Ffc58B88d6b7fB0228795491D;
+    address public constant SYRUP_USDG = 0x87b65C4aAFFA76881f9E96F3e7ED945ddFC3Cd7A;
+
     address public constant FRXUSD = 0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29;
     address public constant WFRAX = 0x04ACaF8D2865c0714F79da09645C13FD2888977f;
     address public constant MSUSD = 0xab5eB14c09D416F0aC63661E57EDB7AEcDb9BEfA;
