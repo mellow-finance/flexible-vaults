@@ -3,13 +3,14 @@
   "vault": "0xDF0fb76Df2c21F79798949A4E886cd22D1C085d7",
   "subvault": "0xD6D3a0f4dd3d48bF3653c0549aac6b3516dD933B",
   "chain": "ethereum",
-  "merkle_root": "0x44fe43cb38d25b6e86316daa05f2cca9cf77c8878172c58bb89404635478ce63",
+  "merkle_root": "0x1bf9d888187b6b8042a322a588306d8c4f808d297c28045c800e92192eb61fe0",
   "vault_symbol": "earnUSDc",
   "merkle_proofs": [
     {
       "description": {
         "integration": "bridge_usdc_to_base",
         "protocol": "CCTP",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -81,25 +82,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a59443a346ae150ae6d03b5463614ff8b75d39cab1f6b764dc7752c4f40d7bd71000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xc87b1efbc6cebe9838575a2e1105f76e344e64ebf3bab2b91577b6048074d0e6",
         "0xab0a32026f4674c13a876246de0631dbb9deb05e1ab0220dd54a2fb127a70740",
-        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xc87fc9abea7a789a5e2835c3e98434c57d376109012acb842487477e631c9637",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "bridge_usdc_to_base",
         "protocol": "CCTP",
+        "interface": "ITokenMessenger",
         "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,6,0x0000000000000000000000006CD300d6D848cb315EfaE2d874b2Ec8Ad4897977,USDC,0x0000000000000000000000009745F161b0160a99924845BeFCE1d7b9Daee6899,0,2000)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -231,25 +235,29 @@
           {
             "path": "depositForBurn.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "depositForBurn.burnToken"
           }
-        ]
+        ],
+        "intent": "Bridge {{depositForBurn.amount}} via CCTP to {{depositForBurn.mintRecipient}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1241e7133ffc490ee9bf2730bbd446af01dc5aab38c17958f53212c525794a2f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x2e88a7fd1a3ba615d898747ffdef5a3c61d1c6c62e3f2acd440af2abf3534f53",
-        "0xaaf2e5ba35f455ad3d71b6786d36e42536ec57e06d298ae2dcb14e7b30c86cb0",
-        "0x8b6ca1c3d36aa75b7070d061df29a74f4b8576890543552bff18e11a300103a0",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x609c1f91021cebf69852a05eaf7fc71daff07441cc665404d9001fecff84eb0c",
+        "0x310199e8918893d58a1d3a295801016da9730e11f724df6ad36233e6066dbdab",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -321,25 +329,29 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acfd2b2863ab53d6044ad0134174a6d2f22e22a58c63d24ca97768232e71da92c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x34be3000c094c72ef427fc8d759ee7d6c185990637ec6798be25ba43f86e8ed2",
-        "0x8f9ad2363d9557cca887c3b35dd7ad099e38e52e1a29d2eab019ca2ea06520ce",
-        "0x6ebf1c8592692ecc4ed1b0943855f253d7cdd2c0ba5fcbec723dde96af8689f8",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x257972e917c17607b80d38a651da484ca98a080bc8d9bc51cb73c4775ac02871",
+        "0x310199e8918893d58a1d3a295801016da9730e11f724df6ad36233e6066dbdab",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(USDT).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -411,25 +423,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a25768c03ea64cd116cbdc3f4f6dffc099a7d1b8a419bd93b42706447dd878868000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x657f8c737bed25fb468431330981974d5ac2b7c0c34a8ca436dcc15bb673b312",
-        "0x6dad16c942fad4c2debbd2082c1267f1ea04ba588c5528351a65f3cc514169a4",
-        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x971a040ca95008581f830783a8ae10b29f4bf17ba9e57d91fef8aaf7a096291b",
+        "0xfd490b6d2384d151a5b3be7f978ce1322bc5fc7f74bb687e9d104b1738abea94",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(sUSDe).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -501,25 +516,29 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af007a0d34429d2689b43597931db8f98191f5409eba760d2e889b54d091b2071000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x27c4978297318088d13bffcd4c2d8b90d8bb66906c999bb014b046316a464441",
-        "0x257972e917c17607b80d38a651da484ca98a080bc8d9bc51cb73c4775ac02871",
-        "0x8b6ca1c3d36aa75b7070d061df29a74f4b8576890543552bff18e11a300103a0",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x9b929ba7b57b63109b7d53dcf1c4584c2abef0a16d96d4778d59571e39f10e39",
+        "0xa3b06d13bda63f148fe1eca8f753d950a5b9c40b83d87067d268815602056012",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(GHO).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -591,25 +610,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a89f844602a470840f8162a0316da6ebc54c6d4491377bee5b6f8bdc2e5368c20000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x76de9877afa75a7d48d9fe78e31b827b0588856feebfa91d1ffc8a305cf350b2",
         "0x91d3b243cf2041b8882da41cc2f0858dff5d12e3c0d89d5585b2f62007750e23",
-        "0x4970564dc56e387a9af75b8dd5a58b936b92a52d5b360feefbd59f21a24b0ba8",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(PYUSD).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -681,25 +703,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae7cee84f652f7f3434f863b20133a0c3e3a03490191b7a42248fe8236b739050000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x90119124dc4b3b8d63deaeda236143c01c571e6098dbf22b40f6a2fdef023bb6",
         "0x516c0ca838b18fe90b5617a52381f60f828fdc01732d7a275b4cd875951b9c1b",
-        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(syrupUSDC).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -771,25 +796,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c2f88d76357799e2fd1fb9a0ed1ec8e863463f1c655dfdc4c3ecb63b8cae00c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xcbd7c80af5cb840c08c9b8702e8dc78fd9aae305f07b88c7e6a629651b0ab725",
         "0xab0a32026f4674c13a876246de0631dbb9deb05e1ab0220dd54a2fb127a70740",
-        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xc87fc9abea7a789a5e2835c3e98434c57d376109012acb842487477e631c9637",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(syrupUSDT).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -861,25 +889,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0eeab348178bdbc5c78c428cce6f4a4332d3581ee6297b6886376eb2fe125b2e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xf991d01db3d758ff071a6831a77bd83959287cd1cf2d29f35845a339ff680e33",
-        "0x7da1790ebc2b2325e3650673d22340d01b3e4a60c4d203739b8b064147fdf2db",
-        "0xd6d4f72cb218482a79ca4e8a6d2ab08d3f9a2cb642ed21279aa5af34107b9f0f",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf338143fbbaf631a5927654a9d1e2ce6024f043541e5444a1eca13d1e0d33f91",
+        "0xcbcf12137a5fa138fbb522710af0fb38174c757ba7f2a7f6af18faac737ce9ac",
+        "0x2a4a539301cc5ac66459e379e6fc6bc3a9656e1e12cda756312a3db65352718c",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(AURA).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -951,25 +982,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adfe02c9523a2742073ba9b98159fd4d48391df0a6a5be6330496dca0308fc739000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x38e558fa49e86cdeac6718fa69d1e0c2e4971a4a0b4532e01cd63240a3afa509",
-        "0x609c1f91021cebf69852a05eaf7fc71daff07441cc665404d9001fecff84eb0c",
-        "0x6ebf1c8592692ecc4ed1b0943855f253d7cdd2c0ba5fcbec723dde96af8689f8",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x80eb61086f52c1549e1f73f7a297c351cba36571eb3ffaa86e73c8187fcfe11e",
+        "0x31531e7923f14a7ef7f014a9d52cda0d6ab36968f199fbde80d8321ad2280ea8",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(BAL).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1041,25 +1075,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af9d8f6ee700ec99d6bd98ddcaeb0a710183063b2c6a0257b31fbd702dad8b34a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xaabeb74600e37137a3c644a64047795dbde012687f1aedc2ff737ff8217c926b",
         "0xee54901e1d906c170450425934d85e8fe7b6724ddae16a250c1aeaff5b29fb4c",
-        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "IERC20",
         "description": "IERC20(MORPHO_token).approve(earnUSDc_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1131,25 +1168,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a797f58741613fa9d471e2e3321c0a1a66a6ea926619170808c8f465de91c9927000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x90e96fdd3cccfe17cf58a5919f0aaa65da4620161108c259f95a36d122931212",
         "0x28c7bcef18991ccb9b6a9b62728055b96315c12b18c591d6b33f0bc36b858e1d",
-        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1209,25 +1249,28 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2a3645fbcc4a3fc697b1ba7aba79d32e8e03a2f9a705fdf879886e49cdaf2650000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x66eb076476d392d323e51fe4acabb24f810903d93ec9a1e31ac508117c7715cc",
-        "0x6dad16c942fad4c2debbd2082c1267f1ea04ba588c5528351a65f3cc514169a4",
-        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x971a040ca95008581f830783a8ae10b29f4bf17ba9e57d91fef8aaf7a096291b",
+        "0xfd490b6d2384d151a5b3be7f978ce1322bc5fc7f74bb687e9d104b1738abea94",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1287,25 +1330,28 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a133c54719b8c3f5ee8963d06c6f2c00cb116a119e0c462a00bd082a239de6c40000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa417457b3a9e7eb900717e3f32565220e4394ac412ff4157543763da860b8fe9",
         "0x47b67e8095308b3ab53971f0155a127a8125da2b5a46a14c1d419db77146e9c5",
-        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1365,26 +1411,29 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaf5ee997d4571520d640291832449604fe6e5d433ac86f43dc941d2ebedcc32b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x1b47500457b9a5e23252ff4a15c5ccb04cc53103e01b23ff4886060319f29dc2",
-        "0xb387a63f7aa5bdc45118ae67e03cd202877154d7e6ef9f8247ece688639f7cd9",
-        "0x74ce73b27f342d0b79601851192ed6383e3272c51402dc1f76d003ca04cf06bd",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xaaf2e5ba35f455ad3d71b6786d36e42536ec57e06d298ae2dcb14e7b30c86cb0",
+        "0xa3b06d13bda63f148fe1eca8f753d950a5b9c40b83d87067d268815602056012",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(GHO,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1444,26 +1493,29 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a38c4c5ed9a7cd8231ff7a005c32c40005c52b72699a47b8021f0a2c3dfba6bd3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x1a9e4fddc46731f347f683a39d12d7f275d7a60cfc4edf0d5af8400637ae9009",
-        "0x9b929ba7b57b63109b7d53dcf1c4584c2abef0a16d96d4778d59571e39f10e39",
-        "0x74ce73b27f342d0b79601851192ed6383e3272c51402dc1f76d003ca04cf06bd",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xbd3e49a5d7809b5ab5e1970956c0012614ee8651fe1a36f0683e9854d620bc7c",
+        "0x1b17dafc95268c99793cc809cd29bfc1bdd71609dc3cd0a258e8e16b976ef29d",
+        "0x08b68eeb97110e7d729c25c34d463ee16ba5e7fe3173507b909647860a4ab24d",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(PYUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1523,26 +1575,29 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aed0162147e2991fbf98811a5a2db06f75a47c6190f75da45f91f825cbfd73a07000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x023dc3d62086ae0436d038986cc94a40a0b5fabe422c67d3ad33849085e0e6ba",
-        "0xbd3e49a5d7809b5ab5e1970956c0012614ee8651fe1a36f0683e9854d620bc7c",
-        "0xa7a6ad0d0cdeccfb42fde1392041561ac50cc98a1ee12ff14d98f0293d8047a0",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xfeabfc0ed566330aa6d57f60f6a7f2b37e4a5a9ff57a1774835a6a04ed6a96c8",
+        "0x5997584440d341817ed89259ddb13d0c033ee6896667b3c817a0efbfe92d4dd4",
+        "0x08b68eeb97110e7d729c25c34d463ee16ba5e7fe3173507b909647860a4ab24d",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(syrupUSDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1602,25 +1657,28 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4ef217b32aff16caae0a52818d971e8daa5f2beefad151df9bef649ad7e01f32000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x44d1095d8445155b7b0be3d8b6ea1057228fa934be4e8f8f9058a665508a0cb2",
-        "0x4e8de1fa9368a17d8449700cf835b6d4681df4db3b5c1311bca8e080db227cd5",
-        "0xc06c2017d2abf47bb19f03376d513824516893898b2e7b4b6366a0e142a09155",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x2f49c21ea106bc13c8686323b5067da951650ea404efc03997e5807a0e036f9e",
+        "0x3f03ddd0dce3dc34caeaddac0278d21b98f99407a08ca741088964e784087554",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1680,25 +1738,28 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a86828f19c15ab18e0f1736c5f65192861d93fa041f9dbe822959b2ffe9e6a6bb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x96b03f1c5be63e8a1a52e3a5dac04930f943b2fda8930837dc2c03182afe3a3c",
         "0xa3f828e605e6887b69a6a09845e1f6ea4599da0967da21be1bd210b4200dacc9",
-        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(AURA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1758,25 +1819,28 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a41b7e149f89b0724085b8395e523f1f62870ce4a82841fa02995c2353f191e30000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x465a2a15b8d0f049435efc3ecc1fe2941e6ac90cd270136d1772a46764f3b76c",
-        "0x4e8de1fa9368a17d8449700cf835b6d4681df4db3b5c1311bca8e080db227cd5",
-        "0xc06c2017d2abf47bb19f03376d513824516893898b2e7b4b6366a0e142a09155",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x2f49c21ea106bc13c8686323b5067da951650ea404efc03997e5807a0e036f9e",
+        "0x3f03ddd0dce3dc34caeaddac0278d21b98f99407a08ca741088964e784087554",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(BAL,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1836,25 +1900,28 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adb8063ecf42464475be8f70c4cc0ae1f20da67a2b21ffe6d319df4f0a38597f7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x371d628cb59b29e59862b0beeff9a5fdfc2f71b6bc30d61ca587229acbaf35ab",
-        "0x609c1f91021cebf69852a05eaf7fc71daff07441cc665404d9001fecff84eb0c",
-        "0x6ebf1c8592692ecc4ed1b0943855f253d7cdd2c0ba5fcbec723dde96af8689f8",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x80eb61086f52c1549e1f73f7a297c351cba36571eb3ffaa86e73c8187fcfe11e",
+        "0x31531e7923f14a7ef7f014a9d52cda0d6ab36968f199fbde80d8321ad2280ea8",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pushAssets(MORPHO_token,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1914,26 +1981,29 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a77efbd665b5a3ad598e9a2258692233c3687d618a05c12c97b4f4905e5709e27000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x274b259484527ccb52a9db3956209f22527128ceaecc33150e27a6377c481e30",
-        "0xb387a63f7aa5bdc45118ae67e03cd202877154d7e6ef9f8247ece688639f7cd9",
-        "0x74ce73b27f342d0b79601851192ed6383e3272c51402dc1f76d003ca04cf06bd",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xaaf2e5ba35f455ad3d71b6786d36e42536ec57e06d298ae2dcb14e7b30c86cb0",
+        "0xa3b06d13bda63f148fe1eca8f753d950a5b9c40b83d87067d268815602056012",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1993,25 +2063,29 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa4e100d07a75b18fb115e166e2686fdb174110fea8b92d74de0886f0e5b93ac9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x356814fe0ec015cdde1f732cdb9646c2702c0a49969eea81e32d76b8e23a69ef",
-        "0x8f9ad2363d9557cca887c3b35dd7ad099e38e52e1a29d2eab019ca2ea06520ce",
-        "0x6ebf1c8592692ecc4ed1b0943855f253d7cdd2c0ba5fcbec723dde96af8689f8",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x257972e917c17607b80d38a651da484ca98a080bc8d9bc51cb73c4775ac02871",
+        "0x310199e8918893d58a1d3a295801016da9730e11f724df6ad36233e6066dbdab",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2071,25 +2145,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a163676bea0c3dc9a009ff12b7771d753398b9124b468eb38167b21d132a5944d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x5682806fcec818a87f89437b650f57cee415722a2eabf140730a7660d332e72a",
-        "0x5f9f01e209d2d2fae77aaf05c127eb7372883bee623ec46fb57bda295ce6fa0a",
-        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x4e8de1fa9368a17d8449700cf835b6d4681df4db3b5c1311bca8e080db227cd5",
+        "0x9c6b4f55a40e75121d8c2ab52b933611f0a8f153501ffe867b4356cef927bfa9",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(sUSDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2149,25 +2226,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6d70441061075925863c08174a558c937a06b049262447e77a83b601d545264c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xb6aaa146749d3b17ab244766778efb29e42da8f27a01461bf4758b1ac51b50f6",
         "0x2cd315815192390239fea457b2677d8057cfa80b86372c5d87e6ca52166d14f3",
-        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(GHO,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2227,25 +2307,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a65225558e0bd06b3d4e40d6c06c8eb5a45ca13f0ee3fdeeccc3c3d43613e8b01000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x885809cd6b5a28add21a925466483e8613304f7f29e50ffbf2ad31344829a5d3",
         "0x34af80acc08cf533d5e9b509050678ed0d897d14add440408d490f9cc7ff0a59",
-        "0x4970564dc56e387a9af75b8dd5a58b936b92a52d5b360feefbd59f21a24b0ba8",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(PYUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2305,25 +2388,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afa281483b5d6cba190102a28edccde696d7ec1e6fed1caaaf52d0e4c33c9ed6b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x9e75652cccf0d304403f680b96e331a60ac5960c3e5180726806d7c1af715631",
         "0x0b6a9adfff25f1530d4fe564651a241fa5322f9605dc33a908e67d72b54d4438",
-        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(syrupUSDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2383,25 +2469,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab886f3a66e4eb58158a30b9a7eb47968dbc743a4c949ac7a9eb7796a4bc1e662000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x3f4327f0ab0ec99ea9076513c0ac0867be7fb0ee8b1c54de36f065e8469ab655",
-        "0x2f49c21ea106bc13c8686323b5067da951650ea404efc03997e5807a0e036f9e",
-        "0x5ff620e6cd3ea97e6e3f13dbd596f0ed18cc76ff202eb97d49b9e3eba24256cc",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x8f9ad2363d9557cca887c3b35dd7ad099e38e52e1a29d2eab019ca2ea06520ce",
+        "0x31531e7923f14a7ef7f014a9d52cda0d6ab36968f199fbde80d8321ad2280ea8",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(syrupUSDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2461,25 +2550,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a53025135c57b5b0d37b418e8b3104e57b95bf02c88cb162f4870be4eb9398c92000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xb11cd5f1d143053230bc569538b68dded9db4462ac346a627e076cc970f08881",
         "0xe1ba894467a06c61954735ea228f795e37913800b4a0b298bba97115906869b1",
-        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(AURA,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2539,25 +2631,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a14f3bab29243bcd428ce82e86b93d571f362fa8a3f848584d3ca22fee1aac250000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x40d2d7f7fb8d59dd1b31931eed27c0e98800cb24f6f5e5a4141e7631118a2c3b",
-        "0x80eb61086f52c1549e1f73f7a297c351cba36571eb3ffaa86e73c8187fcfe11e",
-        "0x5ff620e6cd3ea97e6e3f13dbd596f0ed18cc76ff202eb97d49b9e3eba24256cc",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0xf87fd00d47af6b2725a1108af5f18e21cf55202007377d851c4c4fe743570b3b",
+        "0x3f03ddd0dce3dc34caeaddac0278d21b98f99407a08ca741088964e784087554",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(BAL,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2617,26 +2712,29 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad9451df1491422d9b7d05e598b0d29150fe23bdd96960bcf5e2db2918fd1f97d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x0f00ad4a1685afe763a24ac038f9930acc8f94530cbb579be4df55a3583ff1ee",
-        "0x7bff973068202ed9f1a4c4683ea0bb5c24a3b58de80f57611e2769ad0e524243",
-        "0xa7a6ad0d0cdeccfb42fde1392041561ac50cc98a1ee12ff14d98f0293d8047a0",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xb387a63f7aa5bdc45118ae67e03cd202877154d7e6ef9f8247ece688639f7cd9",
+        "0x1b17dafc95268c99793cc809cd29bfc1bdd71609dc3cd0a258e8e16b976ef29d",
+        "0x08b68eeb97110e7d729c25c34d463ee16ba5e7fe3173507b909647860a4ab24d",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "swap_module",
         "protocol": "SwapModule",
+        "interface": "ISwapModule",
         "description": "ISwapModule(earnUSDc_SwapModule_0).pullAssets(MORPHO_token,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2696,25 +2794,28 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2e21be6546dd51a8179cbae543b63c1bceed8b13fd1f809e2bb27db21c827218000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xd2bfcf5a18fe742e16a42b5cdafcbdd621a9bedde50f6f2d696228191f8e2b80",
         "0xa3a924266486a1504801f1f1d04b98cdb9e6f8aa05ea46a0e5db20fee271af79",
-        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xc87fc9abea7a789a5e2835c3e98434c57d376109012acb842487477e631c9637",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "syrup_usdc",
         "protocol": "Syrup",
+        "interface": "ISyrup",
         "description": "ISyrup(syrupUSDC).requestRedeem(any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2786,25 +2887,28 @@
           {
             "path": "requestRedeem.shares",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Request redemption of {{requestRedeem.shares}} from Syrup"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a85ccc64c4dac2cc6ac43838980c59c6f251c73bbfc72cff1bc2ea3d28b281cbf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x84e16c9aa76acd87c1148e3527b8fa86a9a29aa4d35d70d9c0f3ef327851e888",
         "0x34af80acc08cf533d5e9b509050678ed0d897d14add440408d490f9cc7ff0a59",
-        "0x4970564dc56e387a9af75b8dd5a58b936b92a52d5b360feefbd59f21a24b0ba8",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "syrup_usdc",
         "protocol": "Syrup",
+        "interface": "ISyrupWithdrawalManager",
         "description": "ISyrupWithdrawalManager(0x1bc47a0Dd0FdaB96E9eF982fdf1F34DC6207cfE3).removeSharesById(any,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2891,25 +2995,28 @@
           {
             "path": "removeSharesById.sharesToRemove",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.pool()"
           }
-        ]
+        ],
+        "intent": "Remove {{removeSharesById.sharesToRemove}} from Syrup withdrawal request {{removeSharesById.requestId}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ace1c9823cf17883f99da0ff9fef98f4d81078d0651a3130a5211689fbcadcb45000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x999928554c5c643deffe101bda9964c03948c60036ca1d5e8c13eab6f7d097c8",
         "0x0b6a9adfff25f1530d4fe564651a241fa5322f9605dc33a908e67d72b54d4438",
-        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "syrup_usdt",
         "protocol": "Syrup",
+        "interface": "ISyrup",
         "description": "ISyrup(syrupUSDT).requestRedeem(any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -2981,25 +3088,29 @@
           {
             "path": "requestRedeem.shares",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Request redemption of {{requestRedeem.shares}} from Syrup"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0de12306f4d8ba28f12218c32600dd96cc18bbd5187a9285b655c769d54c324f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x336f34cb606915491526edf4d0ec2e0f10e323c1cc093da540c1729816e2b0ec",
-        "0xaaf2e5ba35f455ad3d71b6786d36e42536ec57e06d298ae2dcb14e7b30c86cb0",
-        "0x8b6ca1c3d36aa75b7070d061df29a74f4b8576890543552bff18e11a300103a0",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x609c1f91021cebf69852a05eaf7fc71daff07441cc665404d9001fecff84eb0c",
+        "0x310199e8918893d58a1d3a295801016da9730e11f724df6ad36233e6066dbdab",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "syrup_usdt",
         "protocol": "Syrup",
+        "interface": "ISyrupWithdrawalManager",
         "description": "ISyrupWithdrawalManager(MapleWithdrawalManager(syrupUSDT)).removeSharesById(any,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3086,25 +3197,28 @@
           {
             "path": "removeSharesById.sharesToRemove",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.pool()"
           }
-        ]
+        ],
+        "intent": "Remove {{removeSharesById.sharesToRemove}} from Syrup withdrawal request {{removeSharesById.requestId}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad6f54c15b52f532da284ef5f7383c32a2680d34d3eaa6143dc1c5f03eecf6bd8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x46aab016756588dd7e54cf5777c58e00b746ca5ed80e2830115c287a7f754928",
-        "0xf87fd00d47af6b2725a1108af5f18e21cf55202007377d851c4c4fe743570b3b",
-        "0xc06c2017d2abf47bb19f03376d513824516893898b2e7b4b6366a0e142a09155",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x6dad16c942fad4c2debbd2082c1267f1ea04ba588c5528351a65f3cc514169a4",
+        "0x9c6b4f55a40e75121d8c2ab52b933611f0a8f153501ffe867b4356cef927bfa9",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
-        "integration": "aave_usdt",
+        "integration": "aave_stables",
         "protocol": "AaveV3",
+        "interface": "IERC20",
         "description": "IERC20(USDT).approve(AavePool(Core),any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3179,23 +3293,118 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aebbaf398c74984f23ea641ca43fcc9bbd4c00de2cdd48483c18a223954df2cc2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xfeabfc0ed566330aa6d57f60f6a7f2b37e4a5a9ff57a1774835a6a04ed6a96c8",
-        "0x2fc81d67ba4dfe7a0b8bdb10c75f16818f37fb2db1afd88772f86b9dc08cdb5b",
-        "0xd6d4f72cb218482a79ca4e8a6d2ab08d3f9a2cb642ed21279aa5af34107b9f0f",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf991d01db3d758ff071a6831a77bd83959287cd1cf2d29f35845a339ff680e33",
+        "0x44e49cec43ffc36c579736b2006665c3c824b4a69e92f0b29b1d962189c43155",
+        "0x2a4a539301cc5ac66459e379e6fc6bc3a9656e1e12cda756312a3db65352718c",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
-        "integration": "aave_usdt",
+        "integration": "aave_stables",
         "protocol": "AaveV3",
+        "interface": "IERC20",
+        "description": "IERC20(USDC).approve(AavePool(Core),any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "params": [
+            "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa019e4e7bbe5c80a15ac37d91a661c9fd8c941b49c4665cd2deb4192bafef030000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x705bd1cdbfc21cf7aefc98f047255de897656364dddfd679b014a97415619bbe",
+        "0x5f9f01e209d2d2fae77aaf05c127eb7372883bee623ec46fb57bda295ce6fa0a",
+        "0xfd490b6d2384d151a5b3be7f978ce1322bc5fc7f74bb687e9d104b1738abea94",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_stables",
+        "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).supply(USDT,any,earnUSDc_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3282,23 +3491,130 @@
             "allowedValue": "any",
             "erc20_path": "supply.asset"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.amount}} to Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad6b98f0e05c23c373aa3c71efaf7878861f0b1b2453a1678cd1b29fef321e94d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x8d2acba80aa156ad369f2e688ba8963ed885f7a14860de1bbaab73387d5c5e61",
         "0x516c0ca838b18fe90b5617a52381f60f828fdc01732d7a275b4cd875951b9c1b",
-        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
-        "integration": "aave_usdt",
+        "integration": "aave_stables",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
+        "description": "IAavePoolV3(AavePool(Core)).supply(USDC,any,earnUSDc_Subvault_0,0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "amount": "any",
+          "onBehalfOf": "0xD6D3a0f4dd3d48bF3653c0549aac6b3516dD933B",
+          "referralCode": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "referralCode",
+              "type": "uint16",
+              "internalType": "uint16"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "params": [
+            "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "any",
+            "0xD6D3a0f4dd3d48bF3653c0549aac6b3516dD933B",
+            "0"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "supply",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "referralCode",
+                "type": "uint16",
+                "internalType": "uint16"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "supply.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "supply.asset"
+          }
+        ],
+        "intent": "Supply {{supply.amount}} to Aave"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c50f6d4aee6ab167c4a3002ea7cfc5ecb6554cf1dce8d5c3ac83bf68477418c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x757e60e204fe653eacbe65b29d9a410004602881642e8c075689956dbe3054ff",
+        "0x5f9f01e209d2d2fae77aaf05c127eb7372883bee623ec46fb57bda295ce6fa0a",
+        "0xfd490b6d2384d151a5b3be7f978ce1322bc5fc7f74bb687e9d104b1738abea94",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_stables",
+        "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).withdraw(USDT,any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3385,23 +3701,130 @@
             "allowedValue": "any",
             "erc20_path": "withdraw.asset"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.amount}} from Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a975f45ca096748350046e102ee2dd3bd1fd507ac99792b4b8ee8d1f2844ea640000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
+        "0xed13980dd3dd8d6fc9844a46ba679389ace2a84155eed0e3beead0000c931df7",
+        "0x4efc2c610e1f004531671b347994a549073b5b38b0c30e768d5f3bec3cd03c34",
+        "0x4e56376e38dfc8f6c0d5c481c33ff85458d482342228e7c625ba6909c04ed322",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_stables",
+        "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDC,any,earnUSDc_Subvault_0)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "amount": "any",
+          "to": "0xD6D3a0f4dd3d48bF3653c0549aac6b3516dD933B"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "asset",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "params": [
+            "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "any",
+            "0xD6D3a0f4dd3d48bF3653c0549aac6b3516dD933B"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdraw",
+            "inputs": [
+              {
+                "name": "asset",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "to",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "withdraw.asset"
+          }
+        ],
+        "intent": "Withdraw {{withdraw.amount}} from Aave"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2d5e228e21ef0c0834f0439d21d8899597e8c3836b37a09f8b7731b58799a2cf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
         "0xdeb338f3eabdf82133d1b9d4dba326a0bdec9d44edd1caf30333d661479bc734",
         "0x87f6200b79f0f4998c8eaf32f4dc9c0bf1ddc7dfbd0f7a4b3f3cef9a4a767f8d",
-        "0x3d195645c9f58aaafe178e349657522b892477cd1380348f66a7a75b76f0ce16",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
+        "interface": "IERC20",
         "description": "IERC20(USDT).approve(SparkLend,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3476,23 +3899,25 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a117864e9ae77d63220dfc3cfe0985399ee18fa868dce1e12530807e9ea96fdf2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x7960b51265eed0025c0a3b178a30bd778f4c36336b0006868df303155cb6d098",
         "0x91d3b243cf2041b8882da41cc2f0858dff5d12e3c0d89d5585b2f62007750e23",
-        "0x4970564dc56e387a9af75b8dd5a58b936b92a52d5b360feefbd59f21a24b0ba8",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(SparkLend,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3567,23 +3992,25 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5978dc95a875e4d152fb17ba84890bfafc80db1ebdf7fe82312425d4fa82c1ae000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xfc50ce958ba3c42d7a8ec51a3a3e0d89782f46df6aa78859ac2ea5428c297184",
-        "0x2fc81d67ba4dfe7a0b8bdb10c75f16818f37fb2db1afd88772f86b9dc08cdb5b",
-        "0xd6d4f72cb218482a79ca4e8a6d2ab08d3f9a2cb642ed21279aa5af34107b9f0f",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x7bff973068202ed9f1a4c4683ea0bb5c24a3b58de80f57611e2769ad0e524243",
+        "0x5997584440d341817ed89259ddb13d0c033ee6896667b3c817a0efbfe92d4dd4",
+        "0x08b68eeb97110e7d729c25c34d463ee16ba5e7fe3173507b909647860a4ab24d",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(SparkLend).supply(USDT,any,earnUSDc_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3670,23 +4097,25 @@
             "allowedValue": "any",
             "erc20_path": "supply.asset"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.amount}} to Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1c8a411a7a9ec2229009d4d79377b809343a8cce292b728996c8cc1734fef09a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa8e1380f1e1bd0c4863afee13b1872c22ce7146519ea2a1f67297d1d7734fe4b",
         "0xee54901e1d906c170450425934d85e8fe7b6724ddae16a250c1aeaff5b29fb4c",
-        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(SparkLend).supply(USDC,any,earnUSDc_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3773,23 +4202,25 @@
             "allowedValue": "any",
             "erc20_path": "supply.asset"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.amount}} to Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad018c4ef7007f7d555ebc67767355ace26fb0b26960dc5f4e03f6828887afc9e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x3f9afae0a99b83fc63c074dd15df92bce34e1dd40edb25268e84253f27216953",
-        "0x80eb61086f52c1549e1f73f7a297c351cba36571eb3ffaa86e73c8187fcfe11e",
-        "0x5ff620e6cd3ea97e6e3f13dbd596f0ed18cc76ff202eb97d49b9e3eba24256cc",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0xf87fd00d47af6b2725a1108af5f18e21cf55202007377d851c4c4fe743570b3b",
+        "0x3f03ddd0dce3dc34caeaddac0278d21b98f99407a08ca741088964e784087554",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(SparkLend).withdraw(USDT,any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3876,23 +4307,25 @@
             "allowedValue": "any",
             "erc20_path": "withdraw.asset"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.amount}} from Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abdad42d2ff05c59f9588a64d56b8454f9663596619436d7a2ecc60a8e90a2e86000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xf07d9a5075752635e0c4ed3ae03673b10d25fdad0cb601aa5b423f1aae7dced9",
-        "0x8d251f6677db4a4da7195d15ea3daa344a66551f776748f876469987975d2083",
-        "0x2181d16bb541796b62acb229b23ef0df1464a2d397cc076dfcd5d02d1837543f",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf8ab691806bf10f4d705247597841270f1c1335cb4864f7dcdf14f09569a1b4e",
+        "0xcbcf12137a5fa138fbb522710af0fb38174c757ba7f2a7f6af18faac737ce9ac",
+        "0x2a4a539301cc5ac66459e379e6fc6bc3a9656e1e12cda756312a3db65352718c",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "spark_stables",
         "protocol": "AaveV3",
+        "interface": "IAavePoolV3",
         "description": "IAavePoolV3(SparkLend).withdraw(USDC,any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -3979,23 +4412,25 @@
             "allowedValue": "any",
             "erc20_path": "withdraw.asset"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.amount}} from Aave"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af96aefd45af260b0f2f28154edd0aa7ab618acad3f7f18f80df4ac483c7f4e02000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xed55fed7fdfd6d6f01d408386667f8917d6bdac8ed0ebb0a18c3cf38c80c7d45",
-        "0xcea0b10a162682cadd276ffbeb427d3e5a513d1bf02693861fde55c66b2745da",
-        "0x2181d16bb541796b62acb229b23ef0df1464a2d397cc076dfcd5d02d1837543f",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xeb333b3bbb748cd276c395a1f451e883cf130d39c3505d0a2b2e7445f8767bf6",
+        "0x4efc2c610e1f004531671b347994a549073b5b38b0c30e768d5f3bec3cd03c34",
+        "0x4e56376e38dfc8f6c0d5c481c33ff85458d482342228e7c625ba6909c04ed322",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "sentora_pyusd",
         "protocol": "ERC4626",
+        "interface": "IERC20",
         "description": "IERC20(PYUSD).approve(Sentora_PYUSD_Metamorpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4067,25 +4502,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a812d809ba2c0916b3f985723b80e9d4579564014669ddf622f16da8276caf946000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x3a57cb0f13a519ee544d680b9651b985f26d64e03d9cbc3f6543d37283cf8fab",
-        "0x2f49c21ea106bc13c8686323b5067da951650ea404efc03997e5807a0e036f9e",
-        "0x5ff620e6cd3ea97e6e3f13dbd596f0ed18cc76ff202eb97d49b9e3eba24256cc",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x8f9ad2363d9557cca887c3b35dd7ad099e38e52e1a29d2eab019ca2ea06520ce",
+        "0x31531e7923f14a7ef7f014a9d52cda0d6ab36968f199fbde80d8321ad2280ea8",
+        "0x8d65ffae748bcca091670b54867ed2bbdc60904092565013e20ff87c0250ba8d",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "sentora_pyusd",
         "protocol": "ERC4626",
+        "interface": "IERC4626",
         "description": "IERC4626(Sentora_PYUSD_Metamorpho).deposit(any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4157,25 +4595,28 @@
           {
             "path": "deposit.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}} for {{deposit.receiver}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af8b631f4cdae6e175f59701d664575fce3f4695deaa0b341aad1422df6bebdff000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x97a3217c2250531eb2d2d53fb7468d41f3700d528fd7f8bd5d25f7a08263159d",
         "0xa3f828e605e6887b69a6a09845e1f6ea4599da0967da21be1bd210b4200dacc9",
-        "0x4b72a734a71d9a01134927a24b26a1f4c36fc9d7f016dc700ca82078916668f4",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "sentora_pyusd",
         "protocol": "ERC4626",
+        "interface": "IERC4626",
         "description": "IERC4626(Sentora_PYUSD_Metamorpho).mint(any,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4247,25 +4688,28 @@
           {
             "path": "mint.shares",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Mint {{mint.shares}} for {{mint.receiver}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adc15268a75092ad971d107d0185a7de9d9b97db66b325c55176652a451c3a9ca000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xd2e8514a1974ca46bbc5b9e36f4fcbd37b0c3c6eb60788b3a9ba7744dbf280f2",
-        "0x6e64788d52d0fdbaf26f750b22fde3a375cd4bd0c74b70338f726f90a077cbaf",
-        "0x3d195645c9f58aaafe178e349657522b892477cd1380348f66a7a75b76f0ce16",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x764030ca4fdeeaf494b75cefed11897cfb86f4da4d822d5f558c2126cc91c5fc",
+        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "sentora_pyusd",
         "protocol": "ERC4626",
+        "interface": "IERC4626",
         "description": "IERC4626(Sentora_PYUSD_Metamorpho).withdraw(any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4349,25 +4793,28 @@
           {
             "path": "withdraw.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.assets}} to {{withdraw.receiver}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a24df4579ab918c1153a20287d7d3dfc89693022211abe2a47ba631d990d714b4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xd04f39edac7f01563508f95cbf31f051ef9a9de876de8deab422714ad6cffe23",
         "0xa3a924266486a1504801f1f1d04b98cdb9e6f8aa05ea46a0e5db20fee271af79",
-        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xc87fc9abea7a789a5e2835c3e98434c57d376109012acb842487477e631c9637",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "sentora_pyusd",
         "protocol": "ERC4626",
+        "interface": "IERC4626",
         "description": "IERC4626(Sentora_PYUSD_Metamorpho).redeem(any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4451,25 +4898,28 @@
           {
             "path": "redeem.shares",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Redeem {{redeem.shares}} for {{redeem.receiver}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa2a0e12c30691d47b0178e0454188b258adf47411cbd621ba0b19ccb8e831eef000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x9428209aa70b0a1f905dc45dbba692352b6d976bcf20bbe6039bca2ab5ad9ad4",
         "0x28c7bcef18991ccb9b6a9b62728055b96315c12b18c591d6b33f0bc36b858e1d",
-        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
-        "0x92e55009713f400900a74211521162a70863b96923e6d8c08a7966377c4f7472",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
+        "0xf9fb8ebc29a1f1adfbd6a61ccfe32770c6be491e77a29751a304530ce743001e",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IERC20",
         "description": "IERC20(PT-reUSD-25JUN2026).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4541,25 +4991,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a031d653ae5d7eb09ece2b9e0608b2962634cae7130ec9d7701fcb3ace93f66ab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xba433855e16ac2977a8c11a6a7b51857ed3aa333547ed1869917d3ac0f52a53c",
         "0x2cd315815192390239fea457b2677d8057cfa80b86372c5d87e6ca52166d14f3",
-        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4631,25 +5084,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa38b6477c013075defbc23da338db5e389a506295df8d9e153dedb6d50c416b5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xeb333b3bbb748cd276c395a1f451e883cf130d39c3505d0a2b2e7445f8767bf6",
+        "0xdf9b6fbb0f67693dc3739107aadf6733d35f03ec9070d546be0d1693e6f7d75d",
         "0x87f6200b79f0f4998c8eaf32f4dc9c0bf1ddc7dfbd0f7a4b3f3cef9a4a767f8d",
-        "0x3d195645c9f58aaafe178e349657522b892477cd1380348f66a7a75b76f0ce16",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).supply((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_irm,915000000000000000),any,any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -4833,30 +5289,33 @@
           {
             "path": "supply.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "supply.marketParams.loanToken"
           },
           {
             "path": "supply.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.assets}} to Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acabb5f62099c248b76756a2f0b3c805303fcf444f4b420f8730d533f0e518358000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x61f3bb00e3dd8c9b4788183e8555f28ad4b94ebfb4724869f6e1ce107adaa02e",
-        "0x5f9f01e209d2d2fae77aaf05c127eb7372883bee623ec46fb57bda295ce6fa0a",
-        "0x8d3619e2dfefc08698195df224c7ba89635639c0b40d314c16279533566d1700",
-        "0x734f3ed769bbc4f3631a728f65f5438398452c3f58fda20a78739e08a8dfb313",
-        "0x213b5b5b2a5e1f5ac50449d4a10218b9f40d2f51448ba0b6b3120844cbb4f1f8",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x4e8de1fa9368a17d8449700cf835b6d4681df4db3b5c1311bca8e080db227cd5",
+        "0x9c6b4f55a40e75121d8c2ab52b933611f0a8f153501ffe867b4356cef927bfa9",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).supplyCollateral((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_irm,915000000000000000),any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -5006,25 +5465,28 @@
           {
             "path": "supplyCollateral.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "supplyCollateral.marketParams.collateralToken"
           }
-        ]
+        ],
+        "intent": "Supply {{supplyCollateral.assets}} as collateral to Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad9d232c68aae65bb89b97ed40c0e1b570cf3d6b3202f65e61da9199860160ec200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xc6c8cd5d8633fda86eda9124df68478d2583053fd1d09af6d96d1d54363a576e",
         "0x06d567f63db880cf12254d11b3417f684a71ab9939246870ee65b10150c66066",
-        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).repay((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_irm,915000000000000000),any,any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -5208,30 +5670,33 @@
           {
             "path": "repay.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "repay.marketParams.loanToken"
           },
           {
             "path": "repay.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Repay {{repay.assets}} to Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a58a4958aa8f92429f779feae2c946eb75091ab23501b1e32eec57b5912f4d4c2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa2a22b026aa5ed76792c22ff3de6a3ef9c35b934a091066870bb04fa88ac2677",
         "0xdf16d541e374f509c1a761414882283daba1615c2edfa94324fb4a9595fcfd79",
-        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).borrow((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_irm,915000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -5415,30 +5880,34 @@
           {
             "path": "borrow.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "borrow.marketParams.loanToken"
           },
           {
             "path": "borrow.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Borrow {{borrow.assets}} from Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a876b45199dae53e9113e769100e32a46812af647f36a6d3ceb295e49ecc4bc0b00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x2927bfd4b896489c63978a71c499eb7271db07e18811e2b9bf9d17557b4d910c",
-        "0x257972e917c17607b80d38a651da484ca98a080bc8d9bc51cb73c4775ac02871",
-        "0x8b6ca1c3d36aa75b7070d061df29a74f4b8576890543552bff18e11a300103a0",
-        "0x1dac03ca1c252f4db92048907ecbec2c03480f0b9e64c79e4de545ca2a67dac2",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x9b929ba7b57b63109b7d53dcf1c4584c2abef0a16d96d4778d59571e39f10e39",
+        "0xa3b06d13bda63f148fe1eca8f753d950a5b9c40b83d87067d268815602056012",
+        "0x465f71fa1ad510068d290be98a2d48025d961a9ba4459d5ab9e2ef6186e2a143",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).withdraw((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_irm,915000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -5622,30 +6091,33 @@
           {
             "path": "withdraw.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "withdraw.marketParams.loanToken"
           },
           {
             "path": "withdraw.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.assets}} from Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4144f1afe62c33ec4ce892c0971cc63e45b9b929a83b84d0958cecddf36d5d1800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xc3b21ad6cd7f5aedf533d299ffe77410cf2ba8e2ab47ead77516be4efd636092",
         "0x06d567f63db880cf12254d11b3417f684a71ab9939246870ee65b10150c66066",
-        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
-        "0x384fdb2507453caaf35291ac5aa58cbe6045b210719bacdff440310aebaf54f3",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "morpho_pt_reusd_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).withdrawCollateral((USDC,PT-reUSD-25JUN2026,Morpho_pt_reUSD/USDC_oracle,Morpho_irm,915000000000000000),any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -5795,26 +6267,29 @@
           {
             "path": "withdrawCollateral.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "withdrawCollateral.marketParams.collateralToken"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdrawCollateral.assets}} collateral from Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9eef8eeb1f28474edb69f8b1d14d8e8d7f5cc30b270c49c592396480f1d2283d00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x173c8c21bc5fc13c46bd5e652781a3d5d237699da77767f59fae00f1ed89faab",
-        "0x9b929ba7b57b63109b7d53dcf1c4584c2abef0a16d96d4778d59571e39f10e39",
-        "0x74ce73b27f342d0b79601851192ed6383e3272c51402dc1f76d003ca04cf06bd",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xbd3e49a5d7809b5ab5e1970956c0012614ee8651fe1a36f0683e9854d620bc7c",
+        "0x1b17dafc95268c99793cc809cd29bfc1bdd71609dc3cd0a258e8e16b976ef29d",
+        "0x08b68eeb97110e7d729c25c34d463ee16ba5e7fe3173507b909647860a4ab24d",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(BalancerVaultV3,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -5886,25 +6361,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a687d76e3286401ae8e78cd24f9385a8cb7a26fbbc12d39bec066028ac4bc1e8c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa3d63ba9c0e21d92ece0151a8371d9855521c6cded769ef635fbaf0ade8016ee",
         "0x47b67e8095308b3ab53971f0155a127a8125da2b5a46a14c1d419db77146e9c5",
-        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
+        "interface": "IERC20",
         "description": "IERC20(USDT).approve(BalancerVaultV3,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -5976,25 +6454,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20afc3cb1a7113f40b242403c42c850f195b64b959f1ee7cf6a97dd8c336b993e98000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xacfc27505fa80f106b21317d3fde638bddc0afcc0e2df716deaf50ce5e2289d4",
         "0xe1ba894467a06c61954735ea228f795e37913800b4a0b298bba97115906869b1",
-        "0x11a152627a228285fa7335194ae93a46945e11ed11c3442ba5e38a5f3980b748",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf060bd63baa3718ca30b974ee1275c3935275c0cd0befb7681e42a806f3e042b",
+        "0xc3ccadf7333155ec0bf5e80ebc0d7939a91660a141ec5538fd3583eb2a26e18e",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
+        "interface": "IERC20",
         "description": "IERC20(GHO).approve(BalancerVaultV3,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6066,26 +6547,29 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a86b4c103fd5bbe3b4edd88b9bc7b49e302924515120b196197c1991a3efb2446000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x15eecd09b7a1755bba9754bf016b06ae7d03fd4403a820502732e251516ac8b9",
-        "0x7bff973068202ed9f1a4c4683ea0bb5c24a3b58de80f57611e2769ad0e524243",
-        "0xa7a6ad0d0cdeccfb42fde1392041561ac50cc98a1ee12ff14d98f0293d8047a0",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xb387a63f7aa5bdc45118ae67e03cd202877154d7e6ef9f8247ece688639f7cd9",
+        "0x1b17dafc95268c99793cc809cd29bfc1bdd71609dc3cd0a258e8e16b976ef29d",
+        "0x08b68eeb97110e7d729c25c34d463ee16ba5e7fe3173507b909647860a4ab24d",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
+        "interface": "ICompositeLiquidityRouter",
         "description": "ICompositeLiquidityRouter(CompositeLiquidityRouter).addLiquidityProportionalToERC4626Pool(Balancer_Aave_GHO/USDT/USDC,(any,any,any),(any,any,any),any,any,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6263,31 +6747,34 @@
           {
             "path": "addLiquidityProportionalToERC4626Pool.exactBptAmountOut",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "addLiquidityProportionalToERC4626Pool.pool"
           },
           {
             "path": "addLiquidityProportionalToERC4626Pool.wethIsEth",
             "type": "bool",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Add proportional liquidity to {{addLiquidityProportionalToERC4626Pool.pool}} for {{addLiquidityProportionalToERC4626Pool.exactBptAmountOut}} pool tokens"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a60412f3a0a8cca1f4100415aaaf118e169c5b867067814479ea5ac57c78449cf00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000244ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x0a8a483a309d70eb297e282e60ed353cfccfd93869f6b6528b3f93a7d8467eab",
-        "0xbd3e49a5d7809b5ab5e1970956c0012614ee8651fe1a36f0683e9854d620bc7c",
-        "0xa7a6ad0d0cdeccfb42fde1392041561ac50cc98a1ee12ff14d98f0293d8047a0",
-        "0xfd641f1777230248d29b54d73e9d5ff6a69edbe3db375ed05774c156c1b5d597",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xfeabfc0ed566330aa6d57f60f6a7f2b37e4a5a9ff57a1774835a6a04ed6a96c8",
+        "0x5997584440d341817ed89259ddb13d0c033ee6896667b3c817a0efbfe92d4dd4",
+        "0x08b68eeb97110e7d729c25c34d463ee16ba5e7fe3173507b909647860a4ab24d",
+        "0xed8dfa41c16560593e275b8c5782e0c81d3ef52e25911ec8dd85518e6ff68409",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "balancer_gho_usdt_usdc_pool",
         "protocol": "BalancerCompositeLiquidityRouter",
+        "interface": "ICompositeLiquidityRouter",
         "description": "ICompositeLiquidityRouter(CompositeLiquidityRouter).removeLiquidityProportionalFromERC4626Pool(Balancer_Aave_GHO/USDT/USDC,(any,any,any),any,(any,any,any),any,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6450,7 +6937,8 @@
           {
             "path": "removeLiquidityProportionalFromERC4626Pool.exactBptAmountIn",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "removeLiquidityProportionalFromERC4626Pool.pool"
           },
           {
             "path": "removeLiquidityProportionalFromERC4626Pool.minAmountsOut[0]",
@@ -6472,23 +6960,25 @@
             "type": "bool",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Remove proportional liquidity from {{removeLiquidityProportionalFromERC4626Pool.pool}} by burning {{removeLiquidityProportionalFromERC4626Pool.exactBptAmountIn}} pool tokens"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac52276346d5eabdd74dfafffa6402d0f143d18588650026f3c1738eeb1daa00500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000244ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa14bf9f1e2dc96c39b81b4cded870fbb90fe1cc3b5fa69dfadc1b65dde220f6f",
         "0xdf16d541e374f509c1a761414882283daba1615c2edfa94324fb4a9595fcfd79",
-        "0x39cafe1d786f547783216279c2a5fedd6dd92a4fe402109f247e764310c08ef4",
-        "0x6952711fe6149753fda4a487f952d605c82e965d4c0a446bcb903e629eb9f66e",
-        "0x92562e426d2db8c88c4aeec4b6a5eaededdf57ec0ce1f928b4e77c2025adbf65",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x5a942362f74db255c9107065d43bd3d6abf6154992c85619076b5bfff117b242",
+        "0xd42314c7118cad10120e58ce9b3c94757ad908c5144abe10aa0617ace1014393",
+        "0xa0b4e9ff619e1cce7aed8a5b94fa26d817a3bcd9c528e1996748ce6360fe8d5f",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
+        "interface": "IERC20",
         "description": "IERC20(Balancer_Aave_GHO/USDT/USDC).approve(Aura_Booster,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6560,25 +7050,28 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a44bc5f4b19e218ac31b3778668f01555a1a271314f28c4fbfa2c96b7e32e33fa000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x4fcc1c1ee04d06183bb4237678e2448ddc54bdfd0c8f865366c571204d3b5285",
-        "0xf87fd00d47af6b2725a1108af5f18e21cf55202007377d851c4c4fe743570b3b",
-        "0xc06c2017d2abf47bb19f03376d513824516893898b2e7b4b6366a0e142a09155",
-        "0x2cfac00e711f957a0e9288e1123e2e9820e3e3c1e4dd5a825e1f8c7c6c8368d9",
-        "0xfbf270546624e55675672ce52ad43f1ded0527da34d10b2e6c607137cd7aefad",
-        "0xcd4b6609334bcd52838d2db48591f8b3b2e099f7be88089f03a71cde1bc41e78"
+        "0x6dad16c942fad4c2debbd2082c1267f1ea04ba588c5528351a65f3cc514169a4",
+        "0x9c6b4f55a40e75121d8c2ab52b933611f0a8f153501ffe867b4356cef927bfa9",
+        "0x2dfc4249857bc8b73ba0e8df07c09bb73bdcb876cc6a1c5c59cf1a6b51098f79",
+        "0x53592294c175d519c7c5b30a3379def8d30eec20ff36f7de41599001a3db1066",
+        "0xeb12e98181254b11e6489d81ea7442a9c5f758d1c51ca204d4301d9e2779ca78"
       ]
     },
     {
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
+        "interface": "IAuraBooster",
         "description": "IAuraBooster(Aura_Booster).deposit(246,any,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6669,23 +7162,25 @@
             "type": "bool",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit._amount}} into Aura pool {{deposit._pid}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aef2e198658e4b8dfd3df618a5ebd8acacbeb03fe2e0bb808cb2bfb42c1dc1cc0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xed13980dd3dd8d6fc9844a46ba679389ace2a84155eed0e3beead0000c931df7",
-        "0xcea0b10a162682cadd276ffbeb427d3e5a513d1bf02693861fde55c66b2745da",
-        "0x2181d16bb541796b62acb229b23ef0df1464a2d397cc076dfcd5d02d1837543f",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xf07d9a5075752635e0c4ed3ae03673b10d25fdad0cb601aa5b423f1aae7dced9",
+        "0x14f7189c893a999aa29d9b5279b11c3d6c132dc089af3da12808bdab284234e0",
+        "0x4e56376e38dfc8f6c0d5c481c33ff85458d482342228e7c625ba6909c04ed322",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
+        "interface": "IAuraBaseRewardPool",
         "description": "IAuraBaseRewardPool(Balancer Aave GHO/USDT/USDC Aura Deposit Vault).withdrawAndUnwrap(any,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6757,30 +7252,33 @@
           {
             "path": "withdrawAndUnwrap.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
           },
           {
             "path": "withdrawAndUnwrap.claim",
             "type": "bool",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Withdraw and unwrap {{withdrawAndUnwrap.amount}} from Aura"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a47bcd40559e8938439296892ba4d0a6ada6f6c91576ce075aa8b14e612f1e051000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xd5b0c80f34c229d361f3ef6b69924a0fba6a8ac6cefa7d7b6f28fc2c2bee789f",
-        "0x6e64788d52d0fdbaf26f750b22fde3a375cd4bd0c74b70338f726f90a077cbaf",
-        "0x3d195645c9f58aaafe178e349657522b892477cd1380348f66a7a75b76f0ce16",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0x764030ca4fdeeaf494b75cefed11897cfb86f4da4d822d5f558c2126cc91c5fc",
+        "0xf70f544a1cc3b3d7defdf292591b6b62bcc85302a63df686fecbd6c73d2afc90",
+        "0xd7302e601f3dce8ffa26c45888dc2996d8b2bec9e0a1f2fddeafc6ae07421cb3",
+        "0x5ff7551bcbf250f1db24b43376e31ce5fa9ced0e9ee8ef393608d0cf19c63d3d",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "aura_balancer_gho_usdt_usdc_pool",
         "protocol": "Aura",
+        "interface": "IAuraBaseRewardPool",
         "description": "IAuraBaseRewardPool(Balancer Aave GHO/USDT/USDC Aura Deposit Vault).getReward(earnUSDc_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6854,23 +7352,25 @@
             "type": "bool",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Claim Aura rewards for {{getReward._account}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad6a080a75e17eb77f722524ca9b2648d9ab5c6b99fccc72d5260411a7789e644000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xf8ab691806bf10f4d705247597841270f1c1335cb4864f7dcdf14f09569a1b4e",
-        "0x7da1790ebc2b2325e3650673d22340d01b3e4a60c4d203739b8b064147fdf2db",
-        "0xd6d4f72cb218482a79ca4e8a6d2ab08d3f9a2cb642ed21279aa5af34107b9f0f",
-        "0x4ff56f3e9f381d4a4a2859fdbd7385ca3d608afd6945ac0dbb238903088a4d37",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xfc50ce958ba3c42d7a8ec51a3a3e0d89782f46df6aa78859ac2ea5428c297184",
+        "0x44e49cec43ffc36c579736b2006665c3c824b4a69e92f0b29b1d962189c43155",
+        "0x2a4a539301cc5ac66459e379e6fc6bc3a9656e1e12cda756312a3db65352718c",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     },
     {
       "description": {
         "integration": "merkl",
         "protocol": "Merkl",
+        "interface": "IMerklDistributor",
         "description": "IMerklDistributor(MerklDistributor).toggleOperator(earnUSDc_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -6932,17 +7432,18 @@
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Toggle claim operator {{toggleOperator.operator}} for {{toggleOperator.user}} on Merkl"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8a832431a6939406de492b6b597867a9bcf0ee7ef14014660f63b032312378a2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xf338143fbbaf631a5927654a9d1e2ce6024f043541e5444a1eca13d1e0d33f91",
-        "0x8d251f6677db4a4da7195d15ea3daa344a66551f776748f876469987975d2083",
-        "0x2181d16bb541796b62acb229b23ef0df1464a2d397cc076dfcd5d02d1837543f",
-        "0x2764609a5b5d59253457d2a2e8fa09fc9b0bb110dc2f9772a9dd94a65d9c3aba",
-        "0x2c6710bcca3ae029c75d8cc6d8c3852cd5257e05021eb5adb1f4f35e3e81e8db",
-        "0x2a81b668a9de57ff6a81d71304858cdd252a1b123cfcf978276160c75af72047"
+        "0xed55fed7fdfd6d6f01d408386667f8917d6bdac8ed0ebb0a18c3cf38c80c7d45",
+        "0x14f7189c893a999aa29d9b5279b11c3d6c132dc089af3da12808bdab284234e0",
+        "0x4e56376e38dfc8f6c0d5c481c33ff85458d482342228e7c625ba6909c04ed322",
+        "0xdd2ea7e71365510d27399e8701af22d715aa85e76b1aaf9a26e3dd2e56af336e",
+        "0x7a6c94303f31ecccd001dd74ad8556b9a3c4c3f33115810f0709bbee16bed839",
+        "0x172ccf542e11f3adebc79c9a845d633e0f0a188a5f1a2fe4b1a253a271c35469"
       ]
     }
   ]
