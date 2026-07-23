@@ -82,9 +82,11 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a050875d7a0dc6e7a0fcb933795fc4a1b6d46a01cc3a912ca3136d6887f4a69fc000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -172,9 +174,11 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a60d5101c815197c4f7c135f0925fc6c017d120a7e2d9e7deb73bead99d58817c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -262,9 +266,11 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a14fefee83e4028a7b5629e9f467882e0fd3f565f17d62da4bd69eb62d0ed0372000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -352,9 +358,11 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a883095a0728d4ae5ba1d151af9f439247c151cd80892c545600844bc32f4ec37000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -430,9 +438,11 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac2abba93d4957570f384e8bfa0fc822c855070cdf353307ed35aefb4fcb62e9c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -508,9 +518,11 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a06d589881f6e3c37b9024ca0340ed0db6fd4c7ce7ef992307f80b0156fcc6166000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -586,9 +598,11 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad1e44ce1ac90c22579a2ca7b2aecc0a958e049922173d4cceb926a46ca817a9e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -664,9 +678,11 @@
           {
             "path": "pushAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pushAssets.asset"
           }
-        ]
+        ],
+        "intent": "Push {{pushAssets.value}} to the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a90bde3be5120f62c99d5f41f6561cc64afefcb3798c85f6147d160a043ec79dd000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -742,9 +758,11 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad57128c4fc4994203514ecbfdaf5dc85ec8acd13bacae032f9b0a1facebbc317000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -820,9 +838,11 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a58796ec0d743d94949f1d7c821d7e26ede8acda7ea9fc123bf11f95031c4f32f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -898,9 +918,11 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a31ebf890d27f8b0176bc2cc660f3e8661a252a765f1737f18109c59bf4ace04d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -976,9 +998,11 @@
           {
             "path": "pullAssets.value",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "pullAssets.asset"
           }
-        ]
+        ],
+        "intent": "Pull {{pullAssets.value}} from the swap module"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0fc10f43b62d1a652082f98a67876c840f1762f7fb34606d5b37745bd16b7c76000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -1404,7 +1428,7 @@
             "erc20_path": "target"
           }
         ],
-        "intent": "Approve CCIP router {{approve.spender}} to spend {{approve.amount}}"
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3434cdb73b4322ad4db17e49b03e0a21d13f5d5196cfb4c42a132bc6656dc1d5000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -3527,7 +3551,8 @@
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Toggle claim operator {{toggleOperator.operator}} for {{toggleOperator.user}} on Merkl"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a02bcb9f69efa867c1416c928dd566232d0fedae04411ddb2f3034e2d4baa4d0b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
