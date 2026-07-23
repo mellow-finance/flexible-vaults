@@ -939,7 +939,8 @@
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Toggle claim operator {{toggleOperator.operator}} for {{toggleOperator.user}} on Merkl"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a641e1f7b31789f961ff566ebc9f0e5c2414a56a240896df1b8625e988dba3956000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
