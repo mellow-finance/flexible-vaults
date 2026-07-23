@@ -204,7 +204,10 @@ contract Collector is OwnableUpgradeable {
                             r.queues[iterator].pendingValue = TransferLibrary.balanceOf(asset, queue);
                         }
                     } else {
-                        (r.queues[iterator].pendingValue, r.queues[iterator].values) = _collectRedeemQueueData(queue);
+                        if (!isSyncRedeemQueue(queue)) {
+                            (r.queues[iterator].pendingValue, r.queues[iterator].values) =
+                                _collectRedeemQueueData(queue);
+                        }
                     }
                     iterator++;
                 }
@@ -310,9 +313,12 @@ contract Collector is OwnableUpgradeable {
                 if (vault.isDepositQueue(queue)) {
                     continue;
                 }
-                try ISignatureQueue(queue).consensus() {
+                if (isSignatureQueue(queue)) {
                     continue;
-                } catch {}
+                }
+                if (isSyncRedeemQueue(queue)) {
+                    continue;
+                }
                 IRedeemQueue.Request[] memory redeemRequests =
                     IRedeemQueue(queue).requestsOf(account, 0, requests.length);
                 for (uint256 k = 0; k < redeemRequests.length; k++) {
@@ -363,6 +369,15 @@ contract Collector is OwnableUpgradeable {
     function isSyncDepositQueue(address queue) public view returns (bool) {
         try ISyncQueue(queue).name() returns (string memory name_) {
             if (keccak256(abi.encodePacked(name_)) == keccak256(abi.encodePacked("SyncDepositQueue"))) {
+                return true;
+            }
+        } catch {}
+        return false;
+    }
+
+    function isSyncRedeemQueue(address queue) public view returns (bool) {
+        try ISyncQueue(queue).name() returns (string memory name_) {
+            if (keccak256(abi.encodePacked(name_)) == keccak256(abi.encodePacked("SyncRedeemQueue"))) {
                 return true;
             }
         } catch {}
