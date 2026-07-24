@@ -1,0 +1,1448 @@
+{
+  "title": "arc:tKRArc:subvault0",
+  "vault": "0x258D0b0DF06Cdee94C175dc617b99735f549FDCF",
+  "subvault": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C",
+  "chain": "arc",
+  "merkle_root": "0x0cfb354513c804af6bf00669c5c982b12b015809dc67d00e71a04d3d41752282",
+  "vault_symbol": "tKRArc",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IERC20",
+        "description": "IERC20(0x3600000000000000000000000000000000000000).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x3600000000000000000000000000000000000000",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x3600000000000000000000000000000000000000",
+          "params": [
+            "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae3a476b2402eed4a70a4bb204cb7590597e8a07fa797f8c2a87dd556418cc2a4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x27cacd71fcb2abef28f8f13b2bce87ead86cb4353da5a4f40623dd54bdaf0826",
+        "0xf1fe4c42d40ce3dfe762efc84586eb581db689c94db0de9b563086b293c0e9cb",
+        "0x182acc6ee19bfa9b311f50886442376e44098967604a1e9547a0b6d763ea744b",
+        "0xdeee93a186b8ce07f2c69af8e8afd2351f77519cfc65f9e6de4b72e1b5ec2114"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IERC20",
+        "description": "IERC20(0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1",
+          "params": [
+            "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5142741507f9cf9685fadc115bd0490fb051974cdbb2220e705dbbb00e524d85000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf5e300b149f6d205277624c458a1ea168dd2342827232309b7e1a7f4b2e7fa77",
+        "0xd7bf721aadc36c023ec995e27b1d4efc640846bffd1706843e49d95a7e860812",
+        "0xdeee93a186b8ce07f2c69af8e8afd2351f77519cfc65f9e6de4b72e1b5ec2114"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IERC20",
+        "description": "IERC20(0x3600000000000000000000000000000000000000).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x3600000000000000000000000000000000000000",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x3600000000000000000000000000000000000000",
+          "params": [
+            "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ae3a476b2402eed4a70a4bb204cb7590597e8a07fa797f8c2a87dd556418cc2a4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x46669713be9abe59e90431986a99cfd57cb99ca9ffd9c7c30b18fec9939f28d0",
+        "0x3e042499e892631469ea8ebed33bc153aa3b9eecab4fb1228b15e10157c46c13",
+        "0x182acc6ee19bfa9b311f50886442376e44098967604a1e9547a0b6d763ea744b",
+        "0xdeee93a186b8ce07f2c69af8e8afd2351f77519cfc65f9e6de4b72e1b5ec2114"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IERC20",
+        "description": "IERC20(0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1",
+          "params": [
+            "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5142741507f9cf9685fadc115bd0490fb051974cdbb2220e705dbbb00e524d85000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xf5e300b149f6d205277624c458a1ea168dd2342827232309b7e1a7f4b2e7fa77",
+        "0xd7bf721aadc36c023ec995e27b1d4efc640846bffd1706843e49d95a7e860812",
+        "0xdeee93a186b8ce07f2c69af8e8afd2351f77519cfc65f9e6de4b72e1b5ec2114"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).supply(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "0",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "suppliedShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "suppliedAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "0",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "supply",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "suppliedShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "suppliedAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "supply.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Supply reserve {{supply.reserveId}} to Aave V4 on behalf of {{supply.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5345dd7da57d1556936127a6dc89a1edf5a5908b65b9e39107cc52d69718827f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x2e2f2c67608e15ef1ce9b679dfa604eafc48faa4ccfdfdc17bd11f75bb1eb496",
+        "0x3e042499e892631469ea8ebed33bc153aa3b9eecab4fb1228b15e10157c46c13",
+        "0x182acc6ee19bfa9b311f50886442376e44098967604a1e9547a0b6d763ea744b",
+        "0xdeee93a186b8ce07f2c69af8e8afd2351f77519cfc65f9e6de4b72e1b5ec2114"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).supply(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "1",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "supply",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "suppliedShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "suppliedAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "1",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "supply",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "suppliedShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "suppliedAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "supply.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Supply reserve {{supply.reserveId}} to Aave V4 on behalf of {{supply.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5dce553d303ba61ecd4643ab5754c41ba19190d782fc9cd16c92ebf52012424d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xe78442e36ccec847b5e9712a5c8bba544fab3125a7c4c45a319fc70c7444c111",
+        "0xb8637e4d66eb92ad2d05e1c6bf644a3693e166313941328c967fd7195f772224",
+        "0x827b8bfad40e45425ef96a9627262c0943ea343eff61e51bc7f8335cd5bcaea2",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).withdraw(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "0",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "withdrawnShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "withdrawnAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "0",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdraw",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "withdrawnShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "withdrawnAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Withdraw reserve {{withdraw.reserveId}} from Aave V4 to {{withdraw.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20abd4b747f13eb6fd35bb71e4f94343196ea1ee82f76fcb8d52d8adb4e07b94c8f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x9dddf810fb8c8c546abbc58a2d28f999da7f80ee19bf69952add7939937c8c20",
+        "0x709361e314a099925fd34951ee26c89c8600e0991d67e29e03bdf70d31711908",
+        "0xa2e6b1a641fbc5d83c69ed06fea51d790a5d2ba23904a50dc6c36ca09764b2aa",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).withdraw(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "1",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "withdrawnShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "withdrawnAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "1",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "withdraw",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "withdrawnShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "withdrawnAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "withdraw.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Withdraw reserve {{withdraw.reserveId}} from Aave V4 to {{withdraw.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab632de1279ef56237e7d692257f67a82683cb8ceba5291a2d414be545515c236000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xc6713e51b74f4a1c923b138813257be4bd1fa5ef3e38990a6144334e06de1699",
+        "0xb8637e4d66eb92ad2d05e1c6bf644a3693e166313941328c967fd7195f772224",
+        "0x827b8bfad40e45425ef96a9627262c0943ea343eff61e51bc7f8335cd5bcaea2",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).borrow(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "0",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrow",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "borrowedShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "borrowedAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "0",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "borrow",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "borrowedShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "borrowedAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "borrow.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Borrow reserve {{borrow.reserveId}} from Aave V4 on behalf of {{borrow.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a57facbf253f1dcaee0d2d25e9e441560516d88fca223070e94fba0efa519d6fb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa4be9fa68dbb4136c7a5f8020f1875f2c32c5ad47205e1a96d4e4d3a956ba6f3",
+        "0xdd0b1b59e136f5d9ef679b9fe7ddf66e99a2e9f48334d2e0abf71ba3c2a7e6d8",
+        "0x827b8bfad40e45425ef96a9627262c0943ea343eff61e51bc7f8335cd5bcaea2",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).borrow(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "1",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "borrow",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "borrowedShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "borrowedAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "1",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "borrow",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "borrowedShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "borrowedAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "borrow.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Borrow reserve {{borrow.reserveId}} from Aave V4 on behalf of {{borrow.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adaa6364978bcf78efed6ff97731fe3ef0fd9fe3db8c5995f41ab6a82182ab65d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xb7634a34a2af6f3b235ca44b4451113998efccf95dbb521f4caf04d658451320",
+        "0xdd0b1b59e136f5d9ef679b9fe7ddf66e99a2e9f48334d2e0abf71ba3c2a7e6d8",
+        "0x827b8bfad40e45425ef96a9627262c0943ea343eff61e51bc7f8335cd5bcaea2",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).repay(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "0",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repay",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "repaidShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "repaidAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "0",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repay",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "repaidShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "repaidAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repay.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Repay reserve {{repay.reserveId}} to Aave V4 for {{repay.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1b383b2be4a7011d2f09c10eb398467d9aa47c5d15458a686c37a86617770556000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x8ee629ab49bdeef69dad08de7fc289bc0ede045cbb00d429ad8197ef61e96a99",
+        "0x40e3154e6496ae8c8a106c279c1e2c7e605c341462e4b1b51c56d53c0efa192f",
+        "0xa2e6b1a641fbc5d83c69ed06fea51d790a5d2ba23904a50dc6c36ca09764b2aa",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).repay(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "1",
+          "amount": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "repay",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "repaidShares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "repaidAssets",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "1",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "repay",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "repaidShares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "repaidAssets",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "repay.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Repay reserve {{repay.reserveId}} to Aave V4 for {{repay.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af8f08b37003cdd4599baff556853db3e017ea55419571bf58d10d8c4e7e33dd3000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x989efc2d760adf886bfbb6a52e1c77538b0d5f7009372db959804784172309cf",
+        "0x709361e314a099925fd34951ee26c89c8600e0991d67e29e03bdf70d31711908",
+        "0xa2e6b1a641fbc5d83c69ed06fea51d790a5d2ba23904a50dc6c36ca09764b2aa",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).setUsingAsCollateral(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "0",
+          "usingAsCollateral": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "setUsingAsCollateral",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "usingAsCollateral",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "0",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "setUsingAsCollateral",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "usingAsCollateral",
+                "type": "bool",
+                "internalType": "bool"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "setUsingAsCollateral.usingAsCollateral",
+            "type": "bool",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Set Aave V4 reserve {{setUsingAsCollateral.reserveId}} usage as collateral for {{setUsingAsCollateral.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adf406b9b93f0c79f7f96239834d997f74f38ad95e77375685f40b5660193bc5b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x596d4bd2bc47f88f3de8550a49d40c544fff1c32c7713c1c1850241aa9db4454",
+        "0x40e3154e6496ae8c8a106c279c1e2c7e605c341462e4b1b51c56d53c0efa192f",
+        "0xa2e6b1a641fbc5d83c69ed06fea51d790a5d2ba23904a50dc6c36ca09764b2aa",
+        "0x8e8ab42621e3253e1469f831b1e96b1c4b451e9b6a2627bb91f8ae8cd5b2919a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "aave_v4",
+        "protocol": "AaveV4",
+        "interface": "IAaveV4Spoke",
+        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).setUsingAsCollateral(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "parameters": {
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "value": "0"
+        },
+        "innerParameters": {
+          "reserveId": "1",
+          "usingAsCollateral": "any",
+          "onBehalfOf": "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+        },
+        "abi": {
+          "type": "function",
+          "name": "setUsingAsCollateral",
+          "inputs": [
+            {
+              "name": "reserveId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "usingAsCollateral",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
+          "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
+          "params": [
+            "1",
+            "any",
+            "0x6DdD7214c6285CcED78db6364fe5A8947e90606C"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "setUsingAsCollateral",
+            "inputs": [
+              {
+                "name": "reserveId",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "usingAsCollateral",
+                "type": "bool",
+                "internalType": "bool"
+              },
+              {
+                "name": "onBehalfOf",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "setUsingAsCollateral.usingAsCollateral",
+            "type": "bool",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Set Aave V4 reserve {{setUsingAsCollateral.reserveId}} usage as collateral for {{setUsingAsCollateral.onBehalfOf}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20add5450bb3e94265d0a406152ffe17f40522ef95ad2f00cb0ad9e71911d81a858000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x2e2f2c67608e15ef1ce9b679dfa604eafc48faa4ccfdfdc17bd11f75bb1eb496",
+        "0xf1fe4c42d40ce3dfe762efc84586eb581db689c94db0de9b563086b293c0e9cb",
+        "0x182acc6ee19bfa9b311f50886442376e44098967604a1e9547a0b6d763ea744b",
+        "0xdeee93a186b8ce07f2c69af8e8afd2351f77519cfc65f9e6de4b72e1b5ec2114"
+      ]
+    }
+  ]
+}
