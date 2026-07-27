@@ -11,7 +11,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IERC20",
-        "description": "IERC20(0x3600000000000000000000000000000000000000).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "description": "IERC20(USDC).approve(AaveSpokeV4,any)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x3600000000000000000000000000000000000000",
@@ -102,7 +102,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IERC20",
-        "description": "IERC20(0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "description": "IERC20(EURC).approve(AaveSpokeV4,any)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1",
@@ -192,7 +192,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IERC20",
-        "description": "IERC20(0x3600000000000000000000000000000000000000).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "description": "IERC20(USDC).approve(AaveSpokeV4,any)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x3600000000000000000000000000000000000000",
@@ -283,7 +283,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IERC20",
-        "description": "IERC20(0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1).approve(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa,any)",
+        "description": "IERC20(EURC).approve(AaveSpokeV4,any)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1",
@@ -373,7 +373,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).supply(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).supply(0,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -485,7 +485,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).supply(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).supply(1,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -597,7 +597,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).withdraw(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).withdraw(0,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -709,7 +709,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).withdraw(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).withdraw(1,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -821,7 +821,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).borrow(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).borrow(0,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -933,7 +933,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).borrow(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).borrow(1,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -1045,7 +1045,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).repay(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).repay(0,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -1157,7 +1157,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).repay(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).repay(1,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -1269,7 +1269,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).setUsingAsCollateral(0,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).setUsingAsCollateral(0,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
@@ -1359,7 +1359,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa).setUsingAsCollateral(1,any,0x6DdD7214c6285CcED78db6364fe5A8947e90606C)",
+        "description": "IAaveV4Spoke(AaveSpokeV4).setUsingAsCollateral(1,any,Keyrock_Arc_Test_Sub0)",
         "parameters": {
           "caller": "0x23EB74357FaD0bf8e430Bd52ff424dB9997f0744",
           "target": "0x76cbD91f0Ae12cb1b9dE81F1D869911FA12fAeBa",
