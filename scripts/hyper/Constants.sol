@@ -11,6 +11,7 @@ import "../common/interfaces/Imports.sol";
 library Constants {
     address public constant USDC = 0xb88339CB7199b77E23DB6E890353E22632Ba630f;
     address public constant HYPE = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address public constant WHYPE = 0x5555555555555555555555555555555555555555;
 
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
@@ -53,6 +54,7 @@ library Constants {
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003e7D5d1EDF85b03b974aAc374d0FCB8A1)),
             redeemQueueImplementation: RedeemQueue(payable(0x00000002F8d3f0D03E9Ce461791F6A0a9d28D0f6)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x000000047f8812704050cB86E549Fe8f28512A2D)),
+            syncRedeemQueueImplementation: SyncRedeemQueue(payable(address(0))),
             feeManagerImplementation: FeeManager(0x00000003bf6bEC83fA8ff147b04176B82F591497),
             oracleImplementation: Oracle(0x00000001bdbaFbE0Fb55b7d74a6dB74D1DA6047E),
             riskManagerImplementation: RiskManager(0x0000000a0d139B4B7add54D70e2a4ED3c81C513C),
