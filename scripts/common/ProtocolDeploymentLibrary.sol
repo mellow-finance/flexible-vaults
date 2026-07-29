@@ -33,6 +33,7 @@ import {SyncDepositQueue} from "../../src/queues/SyncDepositQueue.sol";
 
 import {RedeemQueue} from "../../src/queues/RedeemQueue.sol";
 import {SignatureRedeemQueue} from "../../src/queues/SignatureRedeemQueue.sol";
+import {SyncRedeemQueue} from "../../src/queues/SyncRedeemQueue.sol";
 
 import {BasicShareManager} from "../../src/managers/BasicShareManager.sol";
 import {BurnableTokenizedShareManager} from "../../src/managers/BurnableTokenizedShareManager.sol";
@@ -86,6 +87,7 @@ struct ProtocolDeployment {
     SyncDepositQueue syncDepositQueueImplementation;
     RedeemQueue redeemQueueImplementation;
     SignatureRedeemQueue signatureRedeemQueueImplementation;
+    SyncRedeemQueue syncRedeemQueueImplementation;
     FeeManager feeManagerImplementation;
     Oracle oracleImplementation;
     RiskManager riskManagerImplementation;
@@ -165,6 +167,7 @@ library ProtocolDeploymentLibrary {
             console.log("Bytecode hash / deployer:");
             console.logBytes32(keccak256(bytecode));
             console.log(CREATE2_DEPLOYER);
+            console.logBytes(bytecode);
             revert(string.concat("Not enough leading zeros for ", title));
         }
 
@@ -222,6 +225,7 @@ library ProtocolDeploymentLibrary {
 
         d.redeemQueueImplementation = RedeemQueue(payable(d.redeemQueueFactory.implementationAt(0)));
         d.signatureRedeemQueueImplementation = SignatureRedeemQueue(payable(d.redeemQueueFactory.implementationAt(1)));
+        d.syncRedeemQueueImplementation = SyncRedeemQueue(payable(d.redeemQueueFactory.implementationAt(2)));
 
         d.feeManagerImplementation = FeeManager(d.feeManagerFactory.implementationAt(0));
         d.oracleImplementation = Oracle(d.oracleFactory.implementationAt(0));
@@ -387,6 +391,15 @@ library ProtocolDeploymentLibrary {
             "SignatureRedeemQueue",
             type(SignatureRedeemQueue).creationCode,
             abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION, $.consensusFactory)
+        );
+
+        index = _deployProposeAndAccept(
+            $.redeemQueueFactory,
+            params,
+            index,
+            "SyncRedeemQueue",
+            type(SyncRedeemQueue).creationCode,
+            abi.encode(DEPLOYMENT_NAME, DEPLOYMENT_VERSION)
         );
 
         index = _deployProposeAndAccept(
