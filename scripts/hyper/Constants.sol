@@ -10,6 +10,7 @@ import "../common/interfaces/Imports.sol";
 
 library Constants {
     address public constant USDC = 0xb88339CB7199b77E23DB6E890353E22632Ba630f;
+    address public constant USDT0 = 0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb;
     address public constant HYPE = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WHYPE = 0x5555555555555555555555555555555555555555;
     address public constant stHYPE = 0xfFaa4a3D97fE9107Cef8a3F48c069F577Ff76cC1;
