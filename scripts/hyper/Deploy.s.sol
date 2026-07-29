@@ -9,24 +9,20 @@ import {ArraysLibrary} from "../common/ArraysLibrary.sol";
 import {ProtocolDeployment, ProtocolDeploymentLibrary} from "../common/ProtocolDeploymentLibrary.sol";
 
 contract Deploy is Script {
-    /// @dev the salt set below is mined for this exact (deployer, proxyAdmin) identity — the base
-    ///      Factory proxy initcode embeds both, so the deterministic addresses only match arc when
-    ///      deploying as this deployer with this proxyAdmin.
-    address internal constant DEPLOYER = 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3;
-    address internal constant PROXY_ADMIN = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
-
     function run() external {
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
-        require(vm.addr(deployerPk) == DEPLOYER, "HOT_DEPLOYER must be the pinned deployer to match arc addresses");
-        vm.startBroadcast(deployerPk);
+        address deployer = vm.addr(deployerPk);
 
+        address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
+
+        vm.startBroadcast(deployerPk);
         ProtocolDeployment memory deployment = ProtocolDeploymentLibrary.deploy(
-            DEPLOYER,
-            PROXY_ADMIN,
+            deployer,
+            proxyAdmin,
             ProtocolDeploymentLibrary.DeploymentParams({
                 cowswapSettlement: address(0),
                 cowswapVaultRelayer: address(0),
-                weth: address(0),
+                weth: Constants.WHYPE,
                 minLeadingZeros: 8,
                 salt: ArraysLibrary.makeBytes32Array(
                     abi.encode(
@@ -43,6 +39,7 @@ contract Deploy is Script {
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a33f3964b9658a37a1521c00c0,
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3c381555325c0f512de020052,
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a39d3fdfb6ba68aafba2070050,
+                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a39d6a34c4b7770736210b0010, // SyncRedeemQueue
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a325a418919c68f29ffd060040,
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a315de2307b2dc0a3b77020083,
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a32edf144ba8e329a1c40c00c0
@@ -55,9 +52,9 @@ contract Deploy is Script {
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3b9749c1f9b20d6de9d000030
                         ],
                         [
-                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a377b984851164fb24773da182, // 0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3ec5e4cf2261f94efc60500a8
-                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a327064c975c06dbe66a1f4044,
-                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3d49a92b364e8d5272505000d,
+                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3dd995830c8ac6967e2030080, // SwapModule - varies the most
+                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a327064c975c06dbe66a1f4044, // Vault
+                            0xe98be1e5538fcbd716c506052eb1fd5d6fc495a3d49a92b364e8d5272505000d, // BitmaskVerifier (0x000000000000000000000000000000000000000000000000000000012bdbb854)
                             0xe98be1e5538fcbd716c506052eb1fd5d6fc495a31153e95f02680f466007000a
                         ],
                         [
@@ -74,6 +71,6 @@ contract Deploy is Script {
 
         AcceptanceLibrary.runProtocolDeploymentChecks(deployment);
 
-        revert("deployment complete");
+        // revert("ok");
     }
 }

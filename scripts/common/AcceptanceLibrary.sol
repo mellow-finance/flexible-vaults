@@ -123,6 +123,12 @@ library AcceptanceLibrary {
         );
 
         compareBytecode(
+            "SyncRedeemQueue",
+            address($.syncRedeemQueueImplementation),
+            address(new SyncRedeemQueue($.deploymentName, $.deploymentVersion))
+        );
+
+        compareBytecode(
             "FeeManager",
             address($.feeManagerImplementation),
             address(new FeeManager($.deploymentName, $.deploymentVersion))
@@ -492,34 +498,46 @@ library AcceptanceLibrary {
                 )
             )
         );
-        if (block.chainid == 1) {
-            require($.redeemQueueFactory.implementations() == 3, "Factory RedeemQueue: invalid implementations length");
-            require(
-                $.redeemQueueFactory.isBlacklisted(0) == true, "Factory RedeemQueue: implementation at 0 is blacklisted"
-            );
-            require(
-                $.redeemQueueFactory.implementationAt(1) == address($.signatureRedeemQueueImplementation),
-                "Factory RedeemQueue: invalid implementation at 1"
-            );
-            require(
-                $.redeemQueueFactory.implementationAt(2) == address($.redeemQueueImplementation),
-                "Factory RedeemQueue: invalid implementation at 1"
-            );
-        } else {
-            if (address($.redeemQueueImplementation) != address(0)) {
+        {
+            uint256 length = $.redeemQueueFactory.implementations();
+            if (block.chainid == 1) {
+                require(length == 3, "Factory RedeemQueue: invalid implementations length");
                 require(
-                    $.redeemQueueFactory.implementationAt(0) == address($.redeemQueueImplementation),
-                    "Factory RedeemQueue: invalid implementation at 0"
-                );
-            }
-            if (block.chainid != 9745) {
-                require(
-                    $.redeemQueueFactory.implementations() == 2, "Factory RedeemQueue: invalid implementations length"
+                    $.redeemQueueFactory.isBlacklisted(0) == true,
+                    "Factory RedeemQueue: implementation at 0 is blacklisted"
                 );
                 require(
                     $.redeemQueueFactory.implementationAt(1) == address($.signatureRedeemQueueImplementation),
                     "Factory RedeemQueue: invalid implementation at 1"
                 );
+                require(
+                    $.redeemQueueFactory.implementationAt(2) == address($.redeemQueueImplementation),
+                    "Factory RedeemQueue: invalid implementation at 1"
+                );
+            } else {
+                if (address($.redeemQueueImplementation) != address(0)) {
+                    require(
+                        $.redeemQueueFactory.implementationAt(0) == address($.redeemQueueImplementation),
+                        "Factory RedeemQueue: invalid implementation at 0"
+                    );
+                }
+                if (block.chainid != 9745) {
+                    if (length < 2) {
+                        revert("Factory RedeemQueue: invalid implementations length");
+                    }
+                    require(
+                        $.redeemQueueFactory.implementationAt(1) == address($.signatureRedeemQueueImplementation),
+                        "Factory RedeemQueue: invalid implementation at 1"
+                    );
+                    if (length == 3) {
+                        require(
+                            $.redeemQueueFactory.implementationAt(2) == address($.syncRedeemQueueImplementation),
+                            "Factory RedeemQueue: invalid implementation at 2"
+                        );
+                    } else {
+                        revert("Factory RedeemQueue: invalid implementations length");
+                    }
+                }
             }
         }
 

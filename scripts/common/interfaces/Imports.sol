@@ -37,6 +37,7 @@ import "../../../src/queues/RedeemQueue.sol";
 import "../../../src/queues/SignatureDepositQueue.sol";
 import "../../../src/queues/SignatureRedeemQueue.sol";
 import "../../../src/queues/SyncDepositQueue.sol";
+import "../../../src/queues/SyncRedeemQueue.sol";
 
 import "../../../src/vaults/Subvault.sol";
 import "../../../src/vaults/Vault.sol";
