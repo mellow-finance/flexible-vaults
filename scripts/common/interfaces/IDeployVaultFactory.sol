@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
 
 import "scripts/common/interfaces/IOracleSubmitterFactory.sol";
-import "src/vaults/VaultConfigurator.sol";
+import "../../../src/vaults/VaultConfigurator.sol";
 
 interface IDeployVaultFactory {
     error ZeroAddress();

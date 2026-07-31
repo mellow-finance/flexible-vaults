@@ -217,6 +217,7 @@ library Constants {
             signatureDepositQueueImplementation: SignatureDepositQueue(payable(0x00000003887dfBCEbD1e4097Ad89B690de7eFbf9)),
             redeemQueueImplementation: RedeemQueue(payable(0x000000000c139266BA06170Ed1DeacA6d11903c1)),
             signatureRedeemQueueImplementation: SignatureRedeemQueue(payable(0x0000000b2082667589A16c4cF18e9f923781c471)),
+            syncRedeemQueueImplementation: SyncRedeemQueue(payable(0x0000000038801C7281284f8F68B80B679F64a074)),
             feeManagerImplementation: FeeManager(0x0000000dE74e5D51651326E0A3e1ACA94bEAF6E1),
             oracleImplementation: Oracle(0x0000000F0d3D1c31b72368366A4049C05E291D58),
             riskManagerImplementation: RiskManager(0x0000000714cf2851baC1AE2f41871862e9D216fD),
