@@ -354,8 +354,8 @@ abstract contract DeployAbstractScript is Test {
     }
 
     function getSymbol(address token) internal view returns (string memory) {
-        if (token == Constants.BTC) {
-            return "BTC";
+        if (token == Constants.HYPE) {
+            return "HYPE";
         }
         return IERC20Metadata(token).symbol();
     }
