@@ -3,13 +3,14 @@
   "vault": "0x014e6DA8F283C4aF65B2AA0f201438680A004452",
   "subvault": "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242",
   "chain": "ethereum",
-  "merkle_root": "0x3b7a7dc82cb5a678f0a369510d9dab0cab2b30660a4cf56ef6171accf2ea0afa",
+  "merkle_root": "0x0102d740ae91f0c3444a6252ccd84bfd304e8939e2dcb842f58c8a43c01903bb",
   "vault_symbol": "earnUSD",
   "merkle_proofs": [
     {
       "description": {
         "integration": "earnUSDe_USDC",
         "protocol": "CoreVault",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(earnUSDe_SyncDepositQueue_USDC,any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -84,20 +85,22 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a88de6480d31c81e0bfa966b7fa0ae8afb2e22392d33c2d9b77dc2527716031aa000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x9c22722448b16eabfdfd8a5276c78e154ac3b633487de5fa85cc89d067a1cfdf",
-        "0xc417fb056db716e85171711fc5d153b788bb2427efb759009686940a658b5d31",
-        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+        "0x80ef957b630de39eeaf79c4c3de3ec87f992383e5f606c4586a8808ed761d225",
+        "0xc8a5986b006fd17837f3f245807614d944adcd7cf8c051c655f8071263b7812a"
       ]
     },
     {
       "description": {
         "integration": "earnUSDe_USDC",
         "protocol": "CoreVault",
+        "interface": "IDepositQueue",
         "description": "IDepositQueue(earnUSDe_SyncDepositQueue_USDC).deposit(any,any,())",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -178,20 +181,22 @@
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad1eb947187aa635abf1fe8d9a031b45144433bbe880df4687ca00276dfe757c7000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xf58e4c116eaaec3555092cf58c4db2654a61ee019aacec41befff483c1ebddcd",
-        "0x80ef957b630de39eeaf79c4c3de3ec87f992383e5f606c4586a8808ed761d225",
-        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+        "0x1a9ab05cc362e368832a1b5c23489c263496357ce04601f39814a73a3985ccb0",
+        "0x06bfc0920a1d90d51004dbfa500063612ec22f16671f32ed1b51770a5bea34e9"
       ]
     },
     {
       "description": {
         "integration": "earnUSDe_USDC",
         "protocol": "CoreVault",
+        "interface": "IRedeemQueue",
         "description": "IRedeemQueue(earnUSDe_RedeemQueue_USDC).redeem(any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -242,20 +247,23 @@
             "allowedValue": "any",
             "erc20_path": "target.vault().shareManager()"
           }
-        ]
+        ],
+        "intent": "Redeem {{redeem.shares}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac9af7a878a0e5b6c0bf54c59617c2c08c19a0ec070deb7d131255a3ae224d03000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x192c7bc49fd58400cd83dbf46112f39b3c944b55620b226aa914897246fcae04",
-        "0x21531e364bc9c7a7591430c04f00abe2be9cfeb683722e19f529bc8f4390ea91",
-        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+        "0x1a8747d287c4e1c130f4d6327932fcca3d07e044877415fa5f1bf30af763a331",
+        "0xc65ed10535ce22ef45fd3cff995c10210d02ee457dab6069e98e8caf846c3826",
+        "0xa679ff01a424ada1dc8e362f9aeab1fea538c003a271be653cb0c05c7a658001",
+        "0x06bfc0920a1d90d51004dbfa500063612ec22f16671f32ed1b51770a5bea34e9"
       ]
     },
     {
       "description": {
         "integration": "earnUSDe_USDC",
         "protocol": "CoreVault",
+        "interface": "IRedeemQueue",
         "description": "IRedeemQueue(earnUSDe_RedeemQueue_USDC).claim(earnUSD_Subvault_1,(any))",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -333,20 +341,22 @@
             "type": "uint32",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Claim redeemed assets for {{claim.account}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7be961645824e50d706da3d46a3b4d0fb02afbb113fb8312fba34edc6afc8f61000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x930010fc95beef2e19b27867e3393fe57dd4497e9f8a718f0befb722242ff7b2",
-        "0xc417fb056db716e85171711fc5d153b788bb2427efb759009686940a658b5d31",
-        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+        "0x80ef957b630de39eeaf79c4c3de3ec87f992383e5f606c4586a8808ed761d225",
+        "0xc8a5986b006fd17837f3f245807614d944adcd7cf8c051c655f8071263b7812a"
       ]
     },
     {
       "description": {
         "integration": "earnUSDe_USDT",
         "protocol": "CoreVault",
+        "interface": "IERC20",
         "description": "IERC20(USDT).approve(earnUSDe_SyncDepositQueue_USDT,any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -421,20 +431,23 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a12e83dab1f3833149aa949d10537fb9b98dda39c9dda879f016d75022a15dabf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x680d9962b530137545a0f84afb3e00c136650c331b8472df38cbb1a2de1eb557",
-        "0x21531e364bc9c7a7591430c04f00abe2be9cfeb683722e19f529bc8f4390ea91",
-        "0x878aaea6d6be96d85bdf83b0dad900189deff468d921870d0bdc833d2222b3fd"
+        "0x13b6786026b86a2032164f7475111e9fdb2d0d8daf5362b4baedd50ef17a9a22",
+        "0x2c09f0ab3c0e999bde50c7ca3678f7db064e74d343c0dd515187cae75048cb71",
+        "0xa679ff01a424ada1dc8e362f9aeab1fea538c003a271be653cb0c05c7a658001",
+        "0x06bfc0920a1d90d51004dbfa500063612ec22f16671f32ed1b51770a5bea34e9"
       ]
     },
     {
       "description": {
         "integration": "earnUSDe_USDT",
         "protocol": "CoreVault",
+        "interface": "IDepositQueue",
         "description": "IDepositQueue(earnUSDe_SyncDepositQueue_USDT).deposit(any,any,())",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -515,20 +528,22 @@
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab7b4d9de15e460f08f7cfd3fe4388c9bb637c7dd381385cc8b81c1ee5fa02e28000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xe30fafdf0ab65b26de57481e252e68c6820a5fa23be3b97139f2d78c3a666524",
-        "0x80ef957b630de39eeaf79c4c3de3ec87f992383e5f606c4586a8808ed761d225",
-        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+        "0x1a9ab05cc362e368832a1b5c23489c263496357ce04601f39814a73a3985ccb0",
+        "0x06bfc0920a1d90d51004dbfa500063612ec22f16671f32ed1b51770a5bea34e9"
       ]
     },
     {
       "description": {
         "integration": "earnUSDe_USDe",
         "protocol": "CoreVault",
+        "interface": "IERC20",
         "description": "IERC20(USDe).approve(earnUSDe_SyncDepositQueue_USDe,any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -603,20 +618,22 @@
             "allowedValue": "any",
             "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a7a9373d477b48a95359591d55b813b2af5c4ed9d8e5548269ac4f468c649f22c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xac4e69e31ca328183188dbf4ca71738ef69501f5c72ee43d61df8408cbcf4d9a",
-        "0xa679ff01a424ada1dc8e362f9aeab1fea538c003a271be653cb0c05c7a658001",
-        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+        "0x21531e364bc9c7a7591430c04f00abe2be9cfeb683722e19f529bc8f4390ea91",
+        "0xc8a5986b006fd17837f3f245807614d944adcd7cf8c051c655f8071263b7812a"
       ]
     },
     {
       "description": {
         "integration": "earnUSDe_USDe",
         "protocol": "CoreVault",
+        "interface": "IDepositQueue",
         "description": "IDepositQueue(earnUSDe_SyncDepositQueue_USDe).deposit(any,any,())",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -697,14 +714,173 @@
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adbfd9e55bd000018af67fc972f086da291c0bbb1b80fef3ac3220f985b5ce557000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xa7301bf64089823f0deb456019dec26880b7250ff8aa08417c14f0d239975987",
+        "0x21531e364bc9c7a7591430c04f00abe2be9cfeb683722e19f529bc8f4390ea91",
+        "0xc8a5986b006fd17837f3f245807614d944adcd7cf8c051c655f8071263b7812a"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_SyncRedeemQueues",
+        "protocol": "CoreVaultSyncRedeemQueue",
+        "interface": "ISyncRedeemQueue",
+        "description": "ISyncRedeemQueue(earnUSDe_SyncRedeemQueue_USDC).redeem(any,earnUSD_Subvault_1)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xaFd38D9a5F48f6953c0d110c4e0ecBA2381f7Fc5",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xaFd38D9a5F48f6953c0d110c4e0ecBA2381f7Fc5",
+          "params": [
+            "any",
+            "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "redeem",
+            "inputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeem.shares",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target.vault().shareManager()"
+          }
+        ],
+        "intent": "Redeem {{redeem.shares}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2e0560d5d53a50cd1c62d271eef291a834c76857423ebd552963d2366ac1b181000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x192c7bc49fd58400cd83dbf46112f39b3c944b55620b226aa914897246fcae04",
+        "0x2c09f0ab3c0e999bde50c7ca3678f7db064e74d343c0dd515187cae75048cb71",
         "0xa679ff01a424ada1dc8e362f9aeab1fea538c003a271be653cb0c05c7a658001",
-        "0xbddeed56846a1dbd505ddb896f719edc9bb808172745eda8662659b5e3b92243"
+        "0x06bfc0920a1d90d51004dbfa500063612ec22f16671f32ed1b51770a5bea34e9"
+      ]
+    },
+    {
+      "description": {
+        "integration": "earnUSDe_SyncRedeemQueues",
+        "protocol": "CoreVaultSyncRedeemQueue",
+        "interface": "ISyncRedeemQueue",
+        "description": "ISyncRedeemQueue(earnUSDe_SyncRedeemQueue_USDT).redeem(any,earnUSD_Subvault_1)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x978f41aF86E14901C77ebaB799c307886e7C2c54",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x978f41aF86E14901C77ebaB799c307886e7C2c54",
+          "params": [
+            "any",
+            "0xe3e0111e31FA3AEB7A528128F2DbAe1C15397242"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "redeem",
+            "inputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeem.shares",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target.vault().shareManager()"
+          }
+        ],
+        "intent": "Redeem {{redeem.shares}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aff878fd1ad55e5d55a831bd55ca8f8d7fbf0d92d1aac5c536e867650ea06876b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x680d9962b530137545a0f84afb3e00c136650c331b8472df38cbb1a2de1eb557",
+        "0xc65ed10535ce22ef45fd3cff995c10210d02ee457dab6069e98e8caf846c3826",
+        "0xa679ff01a424ada1dc8e362f9aeab1fea538c003a271be653cb0c05c7a658001",
+        "0x06bfc0920a1d90d51004dbfa500063612ec22f16671f32ed1b51770a5bea34e9"
       ]
     }
   ]
