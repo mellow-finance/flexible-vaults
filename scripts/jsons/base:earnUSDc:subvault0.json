@@ -10,6 +10,7 @@
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -81,9 +82,11 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4ac9ea2f917e80f215d1e211fbd8bef8692d99a52972be51ce50b15c4cd60aba000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -97,6 +100,7 @@
       "description": {
         "integration": "usdc_bridge_to_ethereum",
         "protocol": "CCTP",
+        "interface": "ITokenMessenger",
         "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,0,0x000000000000000000000000D6D3a0f4dd3d48bF3653c0549aac6b3516dD933B,USDC,0x0000000000000000000000009745F161b0160a99924845BeFCE1d7b9Daee6899,0,2000)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -228,9 +232,11 @@
           {
             "path": "depositForBurn.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "depositForBurn.burnToken"
           }
-        ]
+        ],
+        "intent": "Bridge {{depositForBurn.amount}} via CCTP to {{depositForBurn.mintRecipient}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20adf4adabc184d39fcd5aa499ff5e02dbfca5e0c7b0e2ac1855df2fe304dfddf9600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -244,6 +250,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IERC20",
         "description": "IERC20(cbBTC).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -315,9 +322,11 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a06440aec4bc1cbc95b0bd75118bb9861309093e9ea097f0b0d465d7de441c543000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -331,6 +340,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IERC20",
         "description": "IERC20(USDC).approve(Morpho,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -402,9 +412,11 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab69d1c1a4a0c3886c2ae35db6dce65fe218dede6dffd7b71b38e9c8ebc2d202c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -419,6 +431,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).supply((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -602,14 +615,16 @@
           {
             "path": "supply.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "supply.marketParams.loanToken"
           },
           {
             "path": "supply.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Supply {{supply.assets}} to Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3f12a18b5f31e7f01483dbd6b8ed3fa67371c891a5287d781eb5c9cfe64908da000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -623,6 +638,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).supplyCollateral((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -772,9 +788,11 @@
           {
             "path": "supplyCollateral.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "supplyCollateral.marketParams.collateralToken"
           }
-        ]
+        ],
+        "intent": "Supply {{supplyCollateral.assets}} as collateral to Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a950fd03668befd01566b64da7c2e83976df507f91ec7edf6f6abf24eb5c0b56100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -789,6 +807,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).repay((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -972,14 +991,16 @@
           {
             "path": "repay.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "repay.marketParams.loanToken"
           },
           {
             "path": "repay.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Repay {{repay.assets}} to Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3c2a668b3281b8bb3eca46d4a353d6e3049159b7e39e8a7f79d9e3572f66768a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -993,6 +1014,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).borrow((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1176,14 +1198,16 @@
           {
             "path": "borrow.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "borrow.marketParams.loanToken"
           },
           {
             "path": "borrow.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Borrow {{borrow.assets}} from Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a6fd175b70da57097d67b4c165df82a63faa89cd8b5457791d51d75c8f9a468bb00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1198,6 +1222,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).withdraw((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1381,14 +1406,16 @@
           {
             "path": "withdraw.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "withdraw.marketParams.loanToken"
           },
           {
             "path": "withdraw.shares",
             "type": "uint256",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdraw.assets}} from Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac28bf3813e36c4e69ca96410f7cd75d82e1a96cc8f34435e751e182d16a2142500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
@@ -1402,6 +1429,7 @@
       "description": {
         "integration": "morpho_cbbtc_usdc",
         "protocol": "Morpho",
+        "interface": "IMorpho",
         "description": "IMorpho(Morpho).withdrawCollateral((USDC,cbBTC,Morpho_cbBTC/USDC_oracle,Morpho_cbBTC/USDC_irm,860000000000000000),any,earnUSDc_Subvault_0,earnUSDc_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
@@ -1551,9 +1579,11 @@
           {
             "path": "withdrawCollateral.assets",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "withdrawCollateral.marketParams.collateralToken"
           }
-        ]
+        ],
+        "intent": "Withdraw {{withdrawCollateral.assets}} collateral from Morpho"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a44ac645fe7be7c2c6fc2f7221484d25e767e9b144f21c3048483ddd2fe391b0900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000164ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",

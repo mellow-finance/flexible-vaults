@@ -3,13 +3,14 @@
   "vault": "0x6a37725ca7f4CE81c004c955f7280d5C704a249e",
   "subvault": "0xC5901C2481ca9C26398A9Da258b13717894bfebF",
   "chain": "ethereum",
-  "merkle_root": "0xb571a376806e1571536b0b02ee191ec771c5ca4e908a8891eeaae3d82633dadb",
+  "merkle_root": "0x38f016b3a4be53ae2a0ae3d99dada4e46cb508fb066cdaed6c102e4749d2bb9f",
   "vault_symbol": "earnETH",
   "merkle_proofs": [
     {
       "description": {
         "integration": "strETH_ETH",
         "protocol": "CoreVault",
+        "interface": "IDepositQueue",
         "description": "IDepositQueue(strETH_DepositQueue_ETH).deposit{value: any}(any,any,())",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -87,27 +88,133 @@
           {
             "path": "deposit.assets",
             "type": "uint224",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
           },
           {
             "path": "deposit.referral",
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ade55946376cf0ccc4bfc1f3abb7499827e3734fa48ce6e6d88dd695b8e47eaa4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x1d8f55c0425ef7271a96a75e4c8bd7d0df641c4c798d48853599d63f96cd5ed7",
-        "0x944abf9194e141c1f3db1ea8b2f69941a9e0a9339e82f583927f4632ac2e3a29",
-        "0x72084182021308478c068c01cb0c6ff5454769eb3ea27282b81251b2d3541ae9"
+        "0xfbdd492e033037720c1653d2d257f6d950c7a444417f6065d58f127d4d8fca95",
+        "0xee2c1e29f07e180bd457f84d648a0fb9d413c8933b869141dfa4c1a036f5d01d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_ETH",
+        "protocol": "CoreVault",
+        "interface": "IDepositQueue",
+        "description": "IDepositQueue(strETH_SyncDepositQueue_ETH).deposit{value: any}(any,any,())",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x3b261535055C9Faf248Fe5b23A743184b6d4BeEd",
+          "value": "any"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "referral": "any",
+          "merkleProof": []
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint224",
+              "internalType": "uint224"
+            },
+            {
+              "name": "referral",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "merkleProof",
+              "type": "bytes32[]",
+              "internalType": "bytes32[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "value": "any",
+          "target": "0x3b261535055c9faf248fe5b23a743184b6d4beed",
+          "params": [
+            "any",
+            "any",
+            []
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint224",
+                "internalType": "uint224"
+              },
+              {
+                "name": "referral",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "merkleProof",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "msg.value",
+            "type": "uint256",
+            "allowedValue": "any"
+          },
+          {
+            "path": "deposit.assets",
+            "type": "uint224",
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
+          },
+          {
+            "path": "deposit.referral",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Deposit {{deposit.assets}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1b7d2079c3182a643f3797ed8d8f03013ef047c9e5c35aec59ec08ca022786cf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x6bfa06d3efb3e10101a8ffda47cbe9b0a5f6306f8dc6263e42b15dc914faa4a0",
+        "0x6d27233163ddd501d0b49010c554ae81654ef0d3cf2225d17f90a4dd0c16b107",
+        "0xfa93b201a076a0e96f26a323d870b845402d777baaef046815425b3b916b3b3d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
       ]
     },
     {
       "description": {
         "integration": "strETH_WETH",
         "protocol": "CoreVault",
+        "interface": "IERC20",
         "description": "IERC20(WETH).approve(strETH_DepositQueue_WETH,any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -179,22 +286,117 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1cb81d96417fabeebe2d7e657ff130dc08904cb21865c6e8ddd145887f0f1688000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x813ea54a1391eca9955048f203e0d53509ea7746dcfe7b65bbdadfd31f619ba6",
-        "0x37785e18e8d05814e44c9b4d55fe563ef092b7d801d43a5549bfe0ead693c6ac",
-        "0x72084182021308478c068c01cb0c6ff5454769eb3ea27282b81251b2d3541ae9"
+        "0x77cdb6a4425c2ca12ecfcab03d3f99de52300bbbd0d4ba09e0657ee855b7ba16",
+        "0x71eb0c6c85c11d2be1734ae30ed7694bced9442c53bbdc3244bbada0a531760e",
+        "0xfa93b201a076a0e96f26a323d870b845402d777baaef046815425b3b916b3b3d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
       ]
     },
     {
       "description": {
         "integration": "strETH_WETH",
         "protocol": "CoreVault",
+        "interface": "IERC20",
+        "description": "IERC20(WETH).approve(strETH_SyncDepositQueue_WETH,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x8a89f2c30673520a45839353c32c30bbe59fe616",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "params": [
+            "0x8a89f2c30673520a45839353c32c30bbe59fe616",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a779adf7d4981d6c5b202619f715d0d1bd57040da1a4c6169e6bac4e98d5f1d7f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x73041d3b0d711cc2a67463e3464a4c0c1d70c7be2ce06d07969a469a9fa92783",
+        "0x6d27233163ddd501d0b49010c554ae81654ef0d3cf2225d17f90a4dd0c16b107",
+        "0xfa93b201a076a0e96f26a323d870b845402d777baaef046815425b3b916b3b3d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_WETH",
+        "protocol": "CoreVault",
+        "interface": "IDepositQueue",
         "description": "IDepositQueue(strETH_DepositQueue_WETH).deposit(any,any,())",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -267,27 +469,128 @@
           {
             "path": "deposit.assets",
             "type": "uint224",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
           },
           {
             "path": "deposit.referral",
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab9f09c5ae5deef4045017b2d44e8bd1406889503117c2b797fc11113dff226f9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xe69b1a3eb81648f5563f34b6a9d3bd609e372790d69b347f94217b1dd99c4fd6",
+        "0x84cdee686e4f79c95b667a47364a6c548a6fcaeeb168539de23203287f39f2ce",
         "0x6d13b5791c3a6132cc778e1e941d2cbb61a5131e9de3414c908a67294d01f0f0",
-        "0x67842c6ecbaee872a42d85a8eae3e38719ea83f15d21a04a7079676f062e5279"
+        "0x9a599ebb1620140510ceb6f1b40ff8334fc567bd6d75482ab3fa4a0c9d6e1094",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_WETH",
+        "protocol": "CoreVault",
+        "interface": "IDepositQueue",
+        "description": "IDepositQueue(strETH_SyncDepositQueue_WETH).deposit(any,any,())",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x8a89f2c30673520A45839353C32C30bBe59FE616",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "referral": "any",
+          "merkleProof": []
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint224",
+              "internalType": "uint224"
+            },
+            {
+              "name": "referral",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "merkleProof",
+              "type": "bytes32[]",
+              "internalType": "bytes32[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "value": "0",
+          "target": "0x8a89f2c30673520a45839353c32c30bbe59fe616",
+          "params": [
+            "any",
+            "any",
+            []
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint224",
+                "internalType": "uint224"
+              },
+              {
+                "name": "referral",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "merkleProof",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint224",
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
+          },
+          {
+            "path": "deposit.referral",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Deposit {{deposit.assets}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2fc147247eb37439684f9a3de5d0b422613f459227451f9916950de0c80049df000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x813ea54a1391eca9955048f203e0d53509ea7746dcfe7b65bbdadfd31f619ba6",
+        "0x81f5faf428919e56dced27057bddbfe6815bda9b5d243e1fe6bf35095a602df3",
+        "0x62e9c3b0814bb457e625053713e7b99b79c168217d742420661af1e377da3ec1",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
       ]
     },
     {
       "description": {
         "integration": "strETH_WSTETH",
         "protocol": "CoreVault",
+        "interface": "IERC20",
         "description": "IERC20(wstETH).approve(strETH_DepositQueue_WSTETH,any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -359,23 +662,118 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a1afa6b626c4014ba413837445426a05406e6999c97d348598bce49e287ec08ed000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x03073ccca4060954178f215028b52647ded1c4c4dca1408b154999c2b3bfce60",
-        "0xfb6e9fedbc403d82f92195ca40bbb750748ae44c0cf906e691bbe70956a4902f",
-        "0x6d13b5791c3a6132cc778e1e941d2cbb61a5131e9de3414c908a67294d01f0f0",
-        "0x67842c6ecbaee872a42d85a8eae3e38719ea83f15d21a04a7079676f062e5279"
+        "0x199dfaaa4e620a5c1d2a65982353c5a7f13a612a222c41e783e9608bad6739c4",
+        "0x37785e18e8d05814e44c9b4d55fe563ef092b7d801d43a5549bfe0ead693c6ac",
+        "0xee2c1e29f07e180bd457f84d648a0fb9d413c8933b869141dfa4c1a036f5d01d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
       ]
     },
     {
       "description": {
         "integration": "strETH_WSTETH",
         "protocol": "CoreVault",
+        "interface": "IERC20",
+        "description": "IERC20(wstETH).approve(strETH_SyncDepositQueue_WSTETH,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x6c9abc05cdb7d1c339dcc359f40e8bde65c1bd99",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "params": [
+            "0x6c9abc05cdb7d1c339dcc359f40e8bde65c1bd99",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a63ff6dc10cfc98574efcebaeb254bc4ad80d1e5406c1d96865fede6265cddb62000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x03073ccca4060954178f215028b52647ded1c4c4dca1408b154999c2b3bfce60",
+        "0xfb6e9fedbc403d82f92195ca40bbb750748ae44c0cf906e691bbe70956a4902f",
+        "0x6d13b5791c3a6132cc778e1e941d2cbb61a5131e9de3414c908a67294d01f0f0",
+        "0x9a599ebb1620140510ceb6f1b40ff8334fc567bd6d75482ab3fa4a0c9d6e1094",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_WSTETH",
+        "protocol": "CoreVault",
+        "interface": "IDepositQueue",
         "description": "IDepositQueue(strETH_DepositQueue_WSTETH).deposit(any,any,())",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -448,27 +846,128 @@
           {
             "path": "deposit.assets",
             "type": "uint224",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
           },
           {
             "path": "deposit.referral",
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acf7489e289afbf2912f5b7d5191a5434bf8b3da66156d338dd25969f45523968000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x76d04d498bd9c56a351ad40b2ab82370743351d502e33c4716cb14420a64885c",
-        "0x37785e18e8d05814e44c9b4d55fe563ef092b7d801d43a5549bfe0ead693c6ac",
-        "0x72084182021308478c068c01cb0c6ff5454769eb3ea27282b81251b2d3541ae9"
+        "0x810f20d9430ac9b016f5bf95ba7ee7f5669b4ce9352b9e362696d7d9b66fbe00",
+        "0x81f5faf428919e56dced27057bddbfe6815bda9b5d243e1fe6bf35095a602df3",
+        "0x62e9c3b0814bb457e625053713e7b99b79c168217d742420661af1e377da3ec1",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
       ]
     },
     {
       "description": {
         "integration": "strETH_WSTETH",
         "protocol": "CoreVault",
+        "interface": "IDepositQueue",
+        "description": "IDepositQueue(strETH_SyncDepositQueue_WSTETH).deposit(any,any,())",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x6C9aBC05CDb7d1C339dcC359F40e8BDE65C1BD99",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "referral": "any",
+          "merkleProof": []
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint224",
+              "internalType": "uint224"
+            },
+            {
+              "name": "referral",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "merkleProof",
+              "type": "bytes32[]",
+              "internalType": "bytes32[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "value": "0",
+          "target": "0x6c9abc05cdb7d1c339dcc359f40e8bde65c1bd99",
+          "params": [
+            "any",
+            "any",
+            []
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint224",
+                "internalType": "uint224"
+              },
+              {
+                "name": "referral",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "merkleProof",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint224",
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
+          },
+          {
+            "path": "deposit.referral",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Deposit {{deposit.assets}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2b60c3391e7d75a8360b1522d655850e4051d30cabfa6deec071b230e0e3693d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa65897c741181be70c20cd062df4dcb24898df8bc1d61f69e9ee2105e6571e18",
+        "0x4044ba171e1d602cbf8215c867daf388adeed8680eb95ac7b9f14ffa0150a509",
+        "0x62e9c3b0814bb457e625053713e7b99b79c168217d742420661af1e377da3ec1",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_WSTETH",
+        "protocol": "CoreVault",
+        "interface": "IRedeemQueue",
         "description": "IRedeemQueue(strETH_RedeemQueue_WSTETH).redeem(any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -516,22 +1015,26 @@
           {
             "path": "redeem.shares",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.vault().shareManager()"
           }
-        ]
+        ],
+        "intent": "Redeem {{redeem.shares}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad13f2159b6fef84e16db31a51cc07322758fa6b72bd362d383e622dbed9446da00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x67f71f0a1d8ece474d8ecf9edc756191582e6f9ef9ef960aa2fc6ad94bdc05e9",
-        "0x944abf9194e141c1f3db1ea8b2f69941a9e0a9339e82f583927f4632ac2e3a29",
-        "0x72084182021308478c068c01cb0c6ff5454769eb3ea27282b81251b2d3541ae9"
+        "0xfbdd492e033037720c1653d2d257f6d950c7a444417f6065d58f127d4d8fca95",
+        "0xee2c1e29f07e180bd457f84d648a0fb9d413c8933b869141dfa4c1a036f5d01d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
       ]
     },
     {
       "description": {
         "integration": "strETH_WSTETH",
         "protocol": "CoreVault",
+        "interface": "IRedeemQueue",
         "description": "IRedeemQueue(strETH_RedeemQueue_WSTETH).claim(earnETH_Subvault_0,(any))",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -609,21 +1112,103 @@
             "type": "uint32",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Claim redeemed assets for {{claim.account}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aad010af03bf9158f0b9f77fec8798c10e65927aa1116c4a1dafb01586ef772ae000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x0821dad9e7bf64c95a03481162d91531835cdac5bd5d936e3e14ab28d8adf677",
+        "0x04999314883632aa35d447dfbfec27ddb5db964055770a80114830a1c0f7acd4",
         "0xfb6e9fedbc403d82f92195ca40bbb750748ae44c0cf906e691bbe70956a4902f",
         "0x6d13b5791c3a6132cc778e1e941d2cbb61a5131e9de3414c908a67294d01f0f0",
-        "0x67842c6ecbaee872a42d85a8eae3e38719ea83f15d21a04a7079676f062e5279"
+        "0x9a599ebb1620140510ceb6f1b40ff8334fc567bd6d75482ab3fa4a0c9d6e1094",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_WSTETH_SyncRedeemQueue",
+        "protocol": "CoreVaultSyncRedeemQueue",
+        "interface": "ISyncRedeemQueue",
+        "description": "ISyncRedeemQueue(strETH_SyncRedeemQueue_WSTETH).redeem(any,earnETH_Subvault_0)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x6eCd9fe8cA919CB6DBCdD07D47Ef8548E0c5C481",
+          "value": "0"
+        },
+        "innerParameters": {
+          "shares": "any",
+          "receiver": "0xC5901C2481ca9C26398A9Da258b13717894bfebF"
+        },
+        "abi": {
+          "type": "function",
+          "name": "redeem",
+          "inputs": [
+            {
+              "name": "shares",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x6eCd9fe8cA919CB6DBCdD07D47Ef8548E0c5C481",
+          "params": [
+            "any",
+            "0xC5901C2481ca9C26398A9Da258b13717894bfebF"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "redeem",
+            "inputs": [
+              {
+                "name": "shares",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "receiver",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "redeem.shares",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target.vault().shareManager()"
+          }
+        ],
+        "intent": "Redeem {{redeem.shares}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a3070c4322bb24116f7a5cd02956f6a77cc60c0ee39ac5e5d2c55cd522893646e000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa5e099243800f002755d3655f7101e0309b70bb96aa8fb74ab55dfd186c8e08f",
+        "0x4044ba171e1d602cbf8215c867daf388adeed8680eb95ac7b9f14ffa0150a509",
+        "0x62e9c3b0814bb457e625053713e7b99b79c168217d742420661af1e377da3ec1",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
       ]
     },
     {
       "description": {
         "integration": "strETH_DVV",
         "protocol": "CoreVault",
+        "interface": "IERC20",
         "description": "IERC20(DVV).approve(strETH_DepositQueue_DVV,any)",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -695,22 +1280,117 @@
           {
             "path": "approve.amount",
             "type": "uint256",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target"
           }
-        ]
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac8b35ba4f4de79d1c4b9d6f988cf3542b309b452f28c00c7549f0d5f552f9f03000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xcdc9a6d91abae4aae6ce7dc6f736c5709cd5c47947faa662e927e26f3a5367b0",
-        "0x0ed169b740b88e14725815672899a47dfdb6bb47b3876eb18a0630589b904dd8",
-        "0x67842c6ecbaee872a42d85a8eae3e38719ea83f15d21a04a7079676f062e5279"
+        "0x4a2c1bdc7d49526749fb9ccd7a3ab08f2686c6545af7a410e5aa1e6030338d8a",
+        "0x9a599ebb1620140510ceb6f1b40ff8334fc567bd6d75482ab3fa4a0c9d6e1094",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
       ]
     },
     {
       "description": {
         "integration": "strETH_DVV",
         "protocol": "CoreVault",
+        "interface": "IERC20",
+        "description": "IERC20(DVV).approve(strETH_SyncDepositQueue_DVV,any)",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0xbcdbf4d3b3b3345f8348c6aa557949deaa6bc57b",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0x5E362eb2c0706Bd1d134689eC75176018385430B",
+          "params": [
+            "0xbcdbf4d3b3b3345f8348c6aa557949deaa6bc57b",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa7e8ebd1e2cd8bf0b1cb9dfe1cbc51e9ea9225d21f90e786555c2fcc88f9b153000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x76d04d498bd9c56a351ad40b2ab82370743351d502e33c4716cb14420a64885c",
+        "0x71eb0c6c85c11d2be1734ae30ed7694bced9442c53bbdc3244bbada0a531760e",
+        "0xfa93b201a076a0e96f26a323d870b845402d777baaef046815425b3b916b3b3d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_DVV",
+        "protocol": "CoreVault",
+        "interface": "IDepositQueue",
         "description": "IDepositQueue(strETH_DepositQueue_DVV).deposit(any,any,())",
         "parameters": {
           "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
@@ -783,21 +1463,121 @@
           {
             "path": "deposit.assets",
             "type": "uint224",
-            "allowedValue": "any"
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
           },
           {
             "path": "deposit.referral",
             "type": "address",
             "allowedValue": "any"
           }
-        ]
+        ],
+        "intent": "Deposit {{deposit.assets}}"
       },
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a70d458842ce59c5bb934972366d9324f808fe69b77d5b7008cd81ad348c1926b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xdae60d87853c8341d9c77acf4902dc496b46a9c1eb1e21d4caebf18292bdaa71",
-        "0x0ed169b740b88e14725815672899a47dfdb6bb47b3876eb18a0630589b904dd8",
-        "0x67842c6ecbaee872a42d85a8eae3e38719ea83f15d21a04a7079676f062e5279"
+        "0x4a2c1bdc7d49526749fb9ccd7a3ab08f2686c6545af7a410e5aa1e6030338d8a",
+        "0x9a599ebb1620140510ceb6f1b40ff8334fc567bd6d75482ab3fa4a0c9d6e1094",
+        "0x74bc834304d015c3a63a7b445386b85068699282df4b1236f22d9ff34b4f2829"
+      ]
+    },
+    {
+      "description": {
+        "integration": "strETH_DVV",
+        "protocol": "CoreVault",
+        "interface": "IDepositQueue",
+        "description": "IDepositQueue(strETH_SyncDepositQueue_DVV).deposit(any,any,())",
+        "parameters": {
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "target": "0xBCDbf4D3b3b3345f8348C6aA557949DEaa6bC57B",
+          "value": "0"
+        },
+        "innerParameters": {
+          "assets": "any",
+          "referral": "any",
+          "merkleProof": []
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "assets",
+              "type": "uint224",
+              "internalType": "uint224"
+            },
+            {
+              "name": "referral",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "merkleProof",
+              "type": "bytes32[]",
+              "internalType": "bytes32[]"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "payable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+          "value": "0",
+          "target": "0xbcdbf4d3b3b3345f8348c6aa557949deaa6bc57b",
+          "params": [
+            "any",
+            "any",
+            []
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "assets",
+                "type": "uint224",
+                "internalType": "uint224"
+              },
+              {
+                "name": "referral",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "merkleProof",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "payable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.assets",
+            "type": "uint224",
+            "allowedValue": "any",
+            "erc20_path": "target.asset()"
+          },
+          {
+            "path": "deposit.referral",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Deposit {{deposit.assets}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2046d5b64b11eb3781c9e7530db0726e5cbbf316945b38f70285e12a0f8603a8000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x0821dad9e7bf64c95a03481162d91531835cdac5bd5d936e3e14ab28d8adf677",
+        "0x37785e18e8d05814e44c9b4d55fe563ef092b7d801d43a5549bfe0ead693c6ac",
+        "0xee2c1e29f07e180bd457f84d648a0fb9d413c8933b869141dfa4c1a036f5d01d",
+        "0xcf7ae2eae21def0c7ee0f126ec0e8388dc5d1139571a9bd5d2c3febf45b09965"
       ]
     }
   ]
