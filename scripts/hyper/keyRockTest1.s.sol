@@ -18,7 +18,7 @@ contract Deploy is DeployAbstractScript {
                 DeployVaultFactoryRegistry 0xecD23243e943c1cADFfacC6156b5B4dB3E641DBD
                 DeployVaultFactory         0xfE80C4F5682212Bb3f25D3174ed61c79f935D1Ad
         */
-        deployVault = IDeployVaultFactory(0xfE80C4F5682212Bb3f25D3174ed61c79f935D1Ad);// deployNewDeployVault();
+        deployVault = IDeployVaultFactory(0xfE80C4F5682212Bb3f25D3174ed61c79f935D1Ad); // deployNewDeployVault();
 
         /// @dev Vault mocked for now — un-stub and follow the two-step flow when ready:
         ///   - step one: run with vault == address(0) to deploy the vault

@@ -19,7 +19,7 @@ library Constants {
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
-        function protocolDeployment() internal pure returns (ProtocolDeployment memory $) {
+    function protocolDeployment() internal pure returns (ProtocolDeployment memory $) {
         $.deploymentName = "Mellow";
         $.deploymentVersion = 1;
         $.cowswapSettlement = address(0);

@@ -58,8 +58,9 @@ contract Deploy is Script {
         // 3) Configure prices. USD is the constant 18-decimal numeraire anchor; USDC, EURC and cirBTC
         //    read live Chainlink USD feeds via AggregatorBasedOracle (aggregator1 = address(0) => /USD).
         //    decimalShift = 36 - tokenDecimals - feedDecimals(8): USDC/EURC (6 dec) -> 22, cirBTC (8 dec) -> 20.
-        address[] memory tokens =
-            ArraysLibrary.makeAddressArray(abi.encode(collector.USD(), Constants.USDC, Constants.EURC, Constants.cirBTC));
+        address[] memory tokens = ArraysLibrary.makeAddressArray(
+            abi.encode(collector.USD(), Constants.USDC, Constants.EURC, Constants.cirBTC)
+        );
         PriceOracle.TokenOracle[] memory tokenOracles = new PriceOracle.TokenOracle[](4);
         tokenOracles[0] = PriceOracle.TokenOracle({constValue: STABLE_PRICE_X96, oracle: address(0)}); // USD
         tokenOracles[1] = PriceOracle.TokenOracle({
@@ -102,6 +103,6 @@ contract Deploy is Script {
         //     Vault(payable(0x0000000000000000000000000000000000000000)),
         //     Collector.Config({baseAssetFallback: Constants.USDC, oracleUpdateInterval: 1 days, redeemHandlingInterval: 1 hours})
         // );
-       // revert("success");
+        // revert("success");
     }
 }

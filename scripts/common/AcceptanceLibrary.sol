@@ -500,43 +500,17 @@ library AcceptanceLibrary {
         );
         {
             uint256 length = $.redeemQueueFactory.implementations();
-            if (block.chainid == 1) {
-                require(length == 3, "Factory RedeemQueue: invalid implementations length");
-                require(
-                    $.redeemQueueFactory.isBlacklisted(0) == true,
-                    "Factory RedeemQueue: implementation at 0 is blacklisted"
-                );
-                require(
-                    $.redeemQueueFactory.implementationAt(1) == address($.signatureRedeemQueueImplementation),
-                    "Factory RedeemQueue: invalid implementation at 1"
-                );
-                require(
-                    $.redeemQueueFactory.implementationAt(2) == address($.redeemQueueImplementation),
-                    "Factory RedeemQueue: invalid implementation at 1"
-                );
-            } else {
-                if (address($.redeemQueueImplementation) != address(0)) {
-                    require(
-                        $.redeemQueueFactory.implementationAt(0) == address($.redeemQueueImplementation),
-                        "Factory RedeemQueue: invalid implementation at 0"
-                    );
+            for (uint256 i = 0; i < length; i++) {
+                if ($.redeemQueueFactory.isBlacklisted(i)) {
+                    continue;
                 }
-                if (block.chainid != 9745) {
-                    if (length < 2) {
-                        revert("Factory RedeemQueue: invalid implementations length");
-                    }
-                    require(
-                        $.redeemQueueFactory.implementationAt(1) == address($.signatureRedeemQueueImplementation),
-                        "Factory RedeemQueue: invalid implementation at 1"
-                    );
-                    if (length == 3) {
-                        require(
-                            $.redeemQueueFactory.implementationAt(2) == address($.syncRedeemQueueImplementation),
-                            "Factory RedeemQueue: invalid implementation at 2"
-                        );
-                    } else {
-                        revert("Factory RedeemQueue: invalid implementations length");
-                    }
+                address queueImplementation = $.redeemQueueFactory.implementationAt(i);
+                if (
+                    queueImplementation != address($.redeemQueueImplementation)
+                        && queueImplementation != address($.signatureRedeemQueueImplementation)
+                        && queueImplementation != address($.syncRedeemQueueImplementation)
+                ) {
+                    revert("Factory RedeemQueue: invalid implementation found");
                 }
             }
         }

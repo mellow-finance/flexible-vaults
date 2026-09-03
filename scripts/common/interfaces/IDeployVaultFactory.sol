@@ -4,8 +4,8 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "scripts/common/interfaces/IDeployVaultFactoryRegistry.sol";
 
-import "scripts/common/interfaces/IOracleSubmitterFactory.sol";
 import "../../../src/vaults/VaultConfigurator.sol";
+import "scripts/common/interfaces/IOracleSubmitterFactory.sol";
 
 interface IDeployVaultFactory {
     error ZeroAddress();
