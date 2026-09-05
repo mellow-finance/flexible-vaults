@@ -167,7 +167,6 @@ library ProtocolDeploymentLibrary {
             console.log("Bytecode hash / deployer:");
             console.logBytes32(keccak256(bytecode));
             console.log(CREATE2_DEPLOYER);
-            console.logBytes(bytecode);
             revert(string.concat("Not enough leading zeros for ", title));
         }
 
