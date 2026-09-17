@@ -10,12 +10,12 @@ import {ProtocolDeployment, ProtocolDeploymentLibrary} from "../common/ProtocolD
 
 contract Deploy is Script {
     function run() external {
-        // Salts below are mined for this deployer; it is part of the FactoryFactory create2 preimage.
-        address deployer = 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3;
+        uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
+        address deployer = vm.addr(deployerPk);
 
         address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
 
-        vm.startBroadcast(deployer);
+        vm.startBroadcast(deployerPk);
         ProtocolDeployment memory deployment = ProtocolDeploymentLibrary.deploy(
             deployer,
             proxyAdmin,
@@ -71,6 +71,6 @@ contract Deploy is Script {
 
         AcceptanceLibrary.runProtocolDeploymentChecks(deployment);
 
-        revert("ok");
+        // revert("ok");
     }
 }
