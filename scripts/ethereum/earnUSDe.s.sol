@@ -53,11 +53,6 @@ contract Deploy is Script, Test {
     address[] verifiers = new address[](1);
 
     function run() external {
-        if (true) {
-            AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
-            return;
-        }
-
         uint256 deployerPk = uint256(bytes32(vm.envBytes("HOT_DEPLOYER")));
         address deployer = vm.addr(deployerPk);
 
