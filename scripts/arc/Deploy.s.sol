@@ -29,9 +29,6 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPk);
 
-        new TestVerifContract();
-        return;
-
         ProtocolDeployment memory deployment = ProtocolDeploymentLibrary.deploy(
             deployer,
             proxyAdmin,
