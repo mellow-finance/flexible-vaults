@@ -6,7 +6,7 @@ import {Script} from "forge-std/Script.sol";
 
 import {AcceptanceLibrary} from "../common/AcceptanceLibrary.sol";
 import {ArraysLibrary} from "../common/ArraysLibrary.sol";
-import {ProtocolDeployment, ProtocolDeploymentLibrary, RedeemQueue} from "../common/ProtocolDeploymentLibrary.sol";
+import {ProtocolDeployment, ProtocolDeploymentLibrary} from "../common/ProtocolDeploymentLibrary.sol";
 
 contract Deploy is Script {
     function run() external {
@@ -16,7 +16,6 @@ contract Deploy is Script {
         address proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
 
         vm.startBroadcast(deployerPk);
-
         ProtocolDeployment memory deployment = ProtocolDeploymentLibrary.deploy(
             deployer,
             proxyAdmin,
