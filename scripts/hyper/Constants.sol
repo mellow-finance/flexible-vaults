@@ -24,7 +24,7 @@ library Constants {
         $.deploymentVersion = 1;
         $.cowswapSettlement = address(0);
         $.cowswapVaultRelayer = address(0);
-        $.weth = address(0);
+        $.weth = WHYPE;
         $.proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
         $.deployer = 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3;
 
@@ -53,6 +53,7 @@ library Constants {
         $.oracleImplementation = Oracle(0x000000009adE4dAE1f868775A3f087945983f062);
         $.redeemQueueImplementation = RedeemQueue(payable(0x0000000045d70ee8145135f08309fF5B1A63d43F));
         $.signatureRedeemQueueImplementation = SignatureRedeemQueue(payable(0x000000008D14Ef3658805765107d9F12776f4138));
+        $.syncRedeemQueueImplementation = SyncRedeemQueue(payable(0x0000000091823b6654c7D724BCaca603Ff34bCd6));
         $.riskManagerImplementation = RiskManager(0x00000000CC26BC741E75B181738Ac2B16156179b);
         $.tokenizedShareManagerImplementation = TokenizedShareManager(0x00000000861e8B90B81f35C18cA14858Cc91d1Df);
         $.basicShareManagerImplementation = BasicShareManager(0x00000000e5F0cddA56447b2a29e2847A52c8725D);
@@ -62,7 +63,7 @@ library Constants {
         $.verifierImplementation = Verifier(0x000000007e86a96e279662108cc19bA4c32EdE3C);
         $.erc20VerifierImplementation = ERC20Verifier(0x00000000ACD80376E999Af8c424e5e33BD224A08);
         $.mellowAccountV1Implementation = MellowAccountV1(0x00000000860913f37fab81ce8ce4E5BD1f664482);
-        $.swapModuleImplementation = SwapModule(payable(0x00000000c324E2d11EcCB03A061F69B5FE123645));
+        $.swapModuleImplementation = SwapModule(payable(0x000000002a800854FAFFe1A9E5c1260b468EedC5));
         $.vaultImplementation = Vault(payable(0x0000000070f44289ec5ea3E5972f058f75B29801));
         $.bitmaskVerifier = BitmaskVerifier(0x0000000009E9368ad21fc19DCE1cFcf9Af6dE339);
         $.vaultConfigurator = VaultConfigurator(0x0000000005a67199ABE0f9C995EAB9DaDfA31Ccd);
