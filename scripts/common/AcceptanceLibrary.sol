@@ -253,300 +253,142 @@ library AcceptanceLibrary {
 
         compareBytecode("OracleHelper", address($.oracleHelper), address(new OracleHelper()));
 
-        compareBytecode(
-            "Factory Factory",
-            address($.factory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
+        address cleanFactory = address(
+            new TransparentUpgradeableProxy(
+                address($.factoryImplementation),
+                $.proxyAdmin,
+                abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
             )
         );
 
-        require($.factory.implementations() == 1, "Factory Factory: invalid implementations length");
-        require(
-            $.factory.implementationAt(0) == address($.factoryImplementation),
-            "Factory Factory: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.factory,
+            cleanFactory,
+            "Factory",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.factoryImplementation))
         );
 
-        compareBytecode(
-            "Factory ERC20Verifier",
-            address($.erc20VerifierFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        require($.erc20VerifierFactory.implementations() == 1, "Factory ERC20Verifier: invalid implementations length");
-        require(
-            $.erc20VerifierFactory.implementationAt(0) == address($.erc20VerifierImplementation),
-            "Factory ERC20Verifier: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.erc20VerifierFactory,
+            cleanFactory,
+            "ERC20Verifier",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.erc20VerifierImplementation))
         );
 
-        compareBytecode(
-            "Factory SymbioticVerifier",
-            address($.symbioticVerifierFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        if (address($.symbioticVerifierFactory) != address(0)) {
-            require(
-                $.symbioticVerifierFactory.implementations() == 1,
-                "Factory SymbioticVerifier: invalid implementations length"
-            );
-            require(
-                $.symbioticVerifierFactory.implementationAt(0) == address($.symbioticVerifierImplementation),
-                "Factory SymbioticVerifier: invalid implementation at 0"
-            );
-        }
-
-        compareBytecode(
-            "Factory EigenLayerVerifier",
-            address($.eigenLayerVerifierFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        if (address($.eigenLayerVerifierFactory) != address(0)) {
-            require(
-                $.eigenLayerVerifierFactory.implementations() == 1,
-                "Factory EigenLayerVerifier: invalid implementations length"
-            );
-            require(
-                $.eigenLayerVerifierFactory.implementationAt(0) == address($.eigenLayerVerifierImplementation),
-                "Factory EigenLayerVerifier: invalid implementation at 0"
-            );
-        }
-
-        compareBytecode(
-            "Factory RiskManager",
-            address($.riskManagerFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        require($.riskManagerFactory.implementations() == 1, "Factory RiskManager: invalid implementations length");
-        require(
-            $.riskManagerFactory.implementationAt(0) == address($.riskManagerImplementation),
-            "Factory RiskManager: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.symbioticVerifierFactory,
+            cleanFactory,
+            "SymbioticVerifier",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.symbioticVerifierImplementation))
         );
 
-        compareBytecode(
-            "Factory Subvault",
-            address($.subvaultFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        require($.subvaultFactory.implementations() == 1, "Factory Subvault: invalid implementations length");
-        require(
-            $.subvaultFactory.implementationAt(0) == address($.subvaultImplementation),
-            "Factory Subvault: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.eigenLayerVerifierFactory,
+            cleanFactory,
+            "EigenLayerVerifier",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.eigenLayerVerifierImplementation))
         );
 
-        compareBytecode(
-            "Factory Verifier",
-            address($.verifierFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        require($.verifierFactory.implementations() == 1, "Factory Verifier: invalid implementations length");
-        require(
-            $.verifierFactory.implementationAt(0) == address($.verifierImplementation),
-            "Factory Verifier: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.riskManagerFactory,
+            cleanFactory,
+            "RiskManager",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.riskManagerImplementation))
         );
 
-        compareBytecode(
-            "Factory Vault",
-            address($.vaultFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        require($.vaultFactory.implementations() == 1, "Factory Vault: invalid implementations length");
-        require(
-            $.vaultFactory.implementationAt(0) == address($.vaultImplementation),
-            "Factory Vault: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.subvaultFactory,
+            cleanFactory,
+            "Subvault",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.subvaultImplementation))
         );
 
-        compareBytecode(
-            "Factory ShareManager",
-            address($.shareManagerFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
+        _checkFactoryInstance(
+            $.verifierFactory,
+            cleanFactory,
+            "Verifier",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.verifierImplementation))
         );
 
-        {
-            uint256 shareManagers = $.shareManagerFactory.implementations();
-            require(1 < shareManagers && shareManagers < 4, "Factory ShareManager: invalid implementations length");
-            require(
-                $.shareManagerFactory.implementationAt(0) == address($.tokenizedShareManagerImplementation),
-                "Factory ShareManager: invalid implementation at 0"
-            );
-            require(
-                $.shareManagerFactory.implementationAt(1) == address($.basicShareManagerImplementation),
-                "Factory ShareManager: invalid implementation at 1"
-            );
-            if (shareManagers == 3) {
-                require(
-                    $.shareManagerFactory.implementationAt(2) == address($.burnableTokenizedShareManagerImplementation),
-                    "Factory ShareManager: invalid implementation at 2"
-                );
-            }
-        }
-
-        compareBytecode(
-            "Factory Consensus",
-            address($.consensusFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        require($.consensusFactory.implementations() == 1, "Factory Consensus: invalid implementations length");
-        require(
-            $.consensusFactory.implementationAt(0) == address($.consensusImplementation),
-            "Factory Consensus: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.vaultFactory,
+            cleanFactory,
+            "Vault",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.vaultImplementation))
         );
 
-        compareBytecode(
-            "Factory DepositQueue",
-            address($.depositQueueFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
+        _checkFactoryInstance(
+            $.shareManagerFactory,
+            cleanFactory,
+            "ShareManager",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(
+                abi.encode($.tokenizedShareManagerImplementation, $.basicShareManagerImplementation)
+            ),
+            ArraysLibrary.makeAddressArray(abi.encode($.burnableTokenizedShareManagerImplementation))
         );
 
-        {
-            uint256 depositQueues = $.depositQueueFactory.implementations();
-            require(1 < depositQueues && depositQueues <= 4, "Factory DepositQueue: invalid implementations length");
-            require(
-                $.depositQueueFactory.implementationAt(0) == address($.depositQueueImplementation),
-                "Factory DepositQueue: invalid implementation at 0"
-            );
-            require(
-                $.depositQueueFactory.implementationAt(1) == address($.signatureDepositQueueImplementation),
-                "Factory DepositQueue: invalid implementation at 1"
-            );
-            if (depositQueues == 3) {
-                if (block.chainid != 8453) {
-                    require(
-                        $.depositQueueFactory.implementationAt(2) == address($.syncDepositQueueImplementation),
-                        "Factory DepositQueue: invalid implementation at 2"
-                    );
-                }
-            } else if (depositQueues == 4) {
-                require($.depositQueueFactory.isBlacklisted(2) == true, "Factory DepositQueue: not blacklisted impl 2");
-                require(
-                    $.depositQueueFactory.implementationAt(3) == address($.syncDepositQueueImplementation),
-                    "Factory DepositQueue: invalid implementation at 3"
-                );
-            }
-        }
-
-        compareBytecode(
-            "Factory RedeemQueue",
-            address($.redeemQueueFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        {
-            uint256 length = $.redeemQueueFactory.implementations();
-            for (uint256 i = 0; i < length; i++) {
-                if ($.redeemQueueFactory.isBlacklisted(i)) {
-                    continue;
-                }
-                address queueImplementation = $.redeemQueueFactory.implementationAt(i);
-                if (
-                    queueImplementation != address($.redeemQueueImplementation)
-                        && queueImplementation != address($.signatureRedeemQueueImplementation)
-                        && queueImplementation != address($.syncRedeemQueueImplementation)
-                ) {
-                    revert("Factory RedeemQueue: invalid implementation found");
-                }
-            }
-        }
-
-        compareBytecode(
-            "Factory FeeManager",
-            address($.feeManagerFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
-        );
-        require($.feeManagerFactory.implementations() == 1, "Factory FeeManager: invalid implementations length");
-        require(
-            $.feeManagerFactory.implementationAt(0) == address($.feeManagerImplementation),
-            "Factory FeeManager: invalid implementation at 0"
+        _checkFactoryInstance(
+            $.consensusFactory,
+            cleanFactory,
+            "Consensus",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.consensusImplementation))
         );
 
-        compareBytecode(
-            "Factory Oracle",
-            address($.oracleFactory),
-            address(
-                new TransparentUpgradeableProxy(
-                    address($.factoryImplementation),
-                    $.proxyAdmin,
-                    abi.encodeCall(IFactoryEntity.initialize, (abi.encode($.deployer)))
-                )
-            )
+        _checkFactoryInstance(
+            $.depositQueueFactory,
+            cleanFactory,
+            "DepositQueue",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(
+                abi.encode($.depositQueueImplementation, $.signatureDepositQueueImplementation)
+            ),
+            ArraysLibrary.makeAddressArray(abi.encode($.syncDepositQueueImplementation))
         );
-        require($.oracleFactory.implementations() == 1, "Factory Oracle: invalid implementations length");
-        require(
-            $.oracleFactory.implementationAt(0) == address($.oracleImplementation),
-            "Factory Oracle: invalid implementation at 0"
+
+        _checkFactoryInstance(
+            $.redeemQueueFactory,
+            cleanFactory,
+            "RedeemQueue",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(
+                abi.encode($.redeemQueueImplementation, $.signatureRedeemQueueImplementation)
+            ),
+            ArraysLibrary.makeAddressArray(abi.encode($.syncRedeemQueueImplementation))
+        );
+
+        _checkFactoryInstance(
+            $.feeManagerFactory,
+            cleanFactory,
+            "FeeManager",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.feeManagerImplementation))
+        );
+
+        _checkFactoryInstance(
+            $.oracleFactory,
+            cleanFactory,
+            "Oracle",
+            $.proxyAdmin,
+            ArraysLibrary.makeAddressArray(abi.encode($.oracleImplementation))
+        );
+
+        _checkFactoryInstance(
+            $.accountFactory,
+            cleanFactory,
+            "Account",
+            $.proxyAdmin,
+            new address[](0),
+            ArraysLibrary.makeAddressArray(abi.encode($.mellowAccountV1Implementation))
         );
 
         (address implementation, address owner) = getProxyInfo(address($.factory));
@@ -986,6 +828,59 @@ library AcceptanceLibrary {
                 keccak256(abi.encode(securityParams_)) == keccak256(abi.encode(oracle.securityParams())),
                 "Oracle: invalid security params"
             );
+        }
+    }
+
+    function _checkFactoryInstance(
+        Factory factory,
+        address cleanFactory,
+        string memory name,
+        address expectedOwner,
+        address[] memory expectedImplementations
+    ) internal view {
+        _checkFactoryInstance(factory, cleanFactory, name, expectedOwner, expectedImplementations, new address[](0));
+    }
+
+    function _checkFactoryInstance(
+        Factory factory,
+        address cleanFactory,
+        string memory name,
+        address expectedOwner,
+        address[] memory expectedImplementations,
+        address[] memory optionalImplementations
+    ) internal view {
+        if (address(factory) == address(0)) {
+            return;
+        }
+        compareBytecode(string.concat("Factory ", name), address(factory), cleanFactory);
+
+        if (factory.owner() != expectedOwner) {
+            revert(string.concat("Invalid Factory ", name, " owner"));
+        }
+
+        uint256 implementations = factory.implementations();
+        uint256 matchingImplementations = 0;
+        for (uint256 i = 0; i < implementations; i++) {
+            address impl = factory.implementationAt(i);
+            if (factory.isBlacklisted(i)) {
+                if (
+                    ArraysLibrary.has(expectedImplementations, impl) || ArraysLibrary.has(optionalImplementations, impl)
+                ) {
+                    revert(string.concat("Factory ", name, " has valid implementation as blacklisted"));
+                }
+            } else {
+                if (ArraysLibrary.has(optionalImplementations, impl)) {
+                    continue;
+                }
+                if (!ArraysLibrary.has(expectedImplementations, impl)) {
+                    revert(string.concat("Factory ", name, " has unexpected whitelisted implementation"));
+                }
+                matchingImplementations++;
+            }
+        }
+
+        if (expectedImplementations.length > matchingImplementations) {
+            revert(string.concat("Factory ", name, " does not have all expected implementations whitelisted"));
         }
     }
 
