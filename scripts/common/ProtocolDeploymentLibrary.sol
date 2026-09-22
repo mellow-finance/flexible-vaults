@@ -535,6 +535,7 @@ library ProtocolDeploymentLibrary {
             _transferOwnership($.erc20VerifierFactory, proxyAdmin);
             _transferOwnership($.accountFactory, proxyAdmin);
             _transferOwnership($.swapModuleFactory, proxyAdmin);
+            _transferOwnership($.shareManagerFactory, proxyAdmin);
         }
 
         $.deployer = deployer;

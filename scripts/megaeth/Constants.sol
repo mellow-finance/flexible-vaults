@@ -9,34 +9,21 @@ import {IWSTETH as WSTETHInterface} from "../common/interfaces/IWSTETH.sol";
 import "../common/interfaces/Imports.sol";
 
 library Constants {
+    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address public constant WETH = 0x4200000000000000000000000000000000000006;
+
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
     address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
 
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
 
-    address public constant MON = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-    address public constant WMON = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A;
-    address public constant SHMON = 0x1B68626dCa36c7fE922fD2d55E4f631d962dE19c;
-
-    address public constant USDC = 0x754704Bc059F8C67012fEd69BC8A327a5aafb603;
-    address public constant USDT0 = 0xe7cd86e13AC4309349F30B3435a9d337750fC82D;
-    address public constant AUSD = 0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a;
-
-    address public constant MORPHO_STEAKHOUSE_MON = 0x80bDee8E6a274AE08F89a4A59Ba68046612a76eb;
-    address public constant MORPHO_STEAKHOUSE_USDC = 0x802c91d807A8DaCA257c4708ab264B6520964e44;
-    address public constant MORPHO_STEAKHOUSE_USDT = 0x961a59Fe249b9795FAE7fA35f9E89629689D5278;
-    address public constant MORPHO_STEAKHOUSE_AUSD = 0xBC03E505EE65f9fAa68a2D7e5A74452858C16D29;
-
-    address public constant AAVE_CORE = 0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585;
-    address public constant AAVE_V3_ORACLE = 0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4;
-
     function protocolDeployment() internal pure returns (ProtocolDeployment memory $) {
-        $.deploymentName = "Mellow";
-        $.deploymentVersion = 1;
+        $.deploymentName = DEPLOYMENT_NAME;
+        $.deploymentVersion = DEPLOYMENT_VERSION;
         $.cowswapSettlement = COWSWAP_SETTLEMENT;
         $.cowswapVaultRelayer = COWSWAP_VAULT_RELAYER;
-        $.weth = WMON;
+        $.weth = WETH;
         $.proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
         $.deployer = 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3;
 
@@ -53,9 +40,9 @@ library Constants {
         $.vaultFactory = Factory(0xBBCD2aC50aF2EA12Cc9cb7B16dBDa85859BeB3da);
         $.verifierFactory = Factory(0x9fBAF5AEB9F52bA57E1cC1D3050eac6d75Df8ae7);
         $.erc20VerifierFactory = Factory(0x711F6236e325634AA8c1F692b5312bfF3A8558D0);
-
         $.accountFactory = Factory(0x870DB41df0905cc5a790f6582a3dA99A4A33F923);
         $.swapModuleFactory = Factory(0xC5a52E4bB718Dfe86938e5cB967362EdA1E62698);
+
         $.consensusImplementation = Consensus(0x000000007e6b679B9196a1609e5Bc2405eDFd6Aa);
         $.depositQueueImplementation = DepositQueue(payable(0x00000000B2d2373aAF1C370cFE4e1Ee8BDE7C546));
         $.signatureDepositQueueImplementation =
@@ -65,6 +52,7 @@ library Constants {
         $.oracleImplementation = Oracle(0x000000009adE4dAE1f868775A3f087945983f062);
         $.redeemQueueImplementation = RedeemQueue(payable(0x0000000045d70ee8145135f08309fF5B1A63d43F));
         $.signatureRedeemQueueImplementation = SignatureRedeemQueue(payable(0x000000008D14Ef3658805765107d9F12776f4138));
+        $.syncRedeemQueueImplementation = SyncRedeemQueue(payable(0x0000000091823b6654c7D724BCaca603Ff34bCd6));
         $.riskManagerImplementation = RiskManager(0x00000000CC26BC741E75B181738Ac2B16156179b);
         $.tokenizedShareManagerImplementation = TokenizedShareManager(0x00000000861e8B90B81f35C18cA14858Cc91d1Df);
         $.basicShareManagerImplementation = BasicShareManager(0x00000000e5F0cddA56447b2a29e2847A52c8725D);
@@ -74,7 +62,7 @@ library Constants {
         $.verifierImplementation = Verifier(0x000000007e86a96e279662108cc19bA4c32EdE3C);
         $.erc20VerifierImplementation = ERC20Verifier(0x00000000ACD80376E999Af8c424e5e33BD224A08);
         $.mellowAccountV1Implementation = MellowAccountV1(0x00000000860913f37fab81ce8ce4E5BD1f664482);
-        $.swapModuleImplementation = SwapModule(payable(0x0000000079d3FAb70077e5B920Ce067f11676351));
+        $.swapModuleImplementation = SwapModule(payable(0x0000000022B540Fe06d7a9c32d81163971b583D6));
         $.vaultImplementation = Vault(payable(0x0000000070f44289ec5ea3E5972f058f75B29801));
         $.bitmaskVerifier = BitmaskVerifier(0x0000000009E9368ad21fc19DCE1cFcf9Af6dE339);
         $.vaultConfigurator = VaultConfigurator(0x0000000005a67199ABE0f9C995EAB9DaDfA31Ccd);
@@ -82,4 +70,6 @@ library Constants {
         $.redirectingDepositHook = RedirectingDepositHook(0x0000000024ABbd08686Abb2987831dEa88eF1180);
         $.oracleHelper = OracleHelper(0x000000007d2552AD746Af5c13f91B5e72f97c2B7);
     }
+
+    DeployVaultFactory public constant deployVaultFactory = DeployVaultFactory(address(0));
 }

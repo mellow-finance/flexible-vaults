@@ -25,7 +25,7 @@ library Constants {
         $.deploymentVersion = 1;
         $.cowswapSettlement = COWSWAP_SETTLEMENT;
         $.cowswapVaultRelayer = COWSWAP_VAULT_RELAYER;
-        $.weth = WMNT;
+        $.weth = WETH;
         $.proxyAdmin = 0x81698f87C6482bF1ce9bFcfC0F103C4A0Adf0Af0;
         $.deployer = 0xE98Be1E5538FCbD716C506052eB1Fd5d6fC495A3;
 
