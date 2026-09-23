@@ -8,7 +8,7 @@
   "merkle_proofs": [
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IERC20",
         "description": "IERC20(USDC).approve(AavePool(Core),any)",
@@ -100,7 +100,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IERC20",
         "description": "IERC20(USDt).approve(AavePool(Core),any)",
@@ -192,7 +192,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IERC20",
         "description": "IERC20(USDC).approve(AavePool(Core),any)",
@@ -284,7 +284,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IERC20",
         "description": "IERC20(USDt).approve(AavePool(Core),any)",
@@ -376,7 +376,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).supply(USDC,any,JAAA+_Subvault_0,0)",
@@ -479,7 +479,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).supply(USDt,any,JAAA+_Subvault_0,0)",
@@ -583,7 +583,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).withdraw(USDC,any,JAAA+_Subvault_0)",
@@ -686,7 +686,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).withdraw(USDt,any,JAAA+_Subvault_0)",
@@ -790,7 +790,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).borrow(USDC,any,2,0,JAAA+_Subvault_0)",
@@ -905,7 +905,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).borrow(USDt,any,2,0,JAAA+_Subvault_0)",
@@ -1020,7 +1020,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).repay(USDC,any,2,JAAA+_Subvault_0)",
@@ -1135,7 +1135,7 @@
     },
     {
       "description": {
-        "integration": "aave_stables",
+        "integration": "aave_v3_stables",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
         "description": "IAavePoolV3(AavePool(Core)).repay(USDt,any,2,JAAA+_Subvault_0)",
