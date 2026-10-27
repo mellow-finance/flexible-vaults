@@ -3,7 +3,7 @@
   "vault": "0xA002863144ce9682f078B2E08aEa97983cf3606E",
   "subvault": "0x48dc7E98551DcFD52e8Ee6D8A3bFa5ED8E2f051B",
   "chain": "hyperevm",
-  "merkle_root": "0x82ff52179b280bc361cf43b8b0bf93c1d65cb4fd1204ebd7603284979ad04fa6",
+  "merkle_root": "0x2f5ea6d8d25cb13877990c793beefd235c7a2c230c26291d06e4113609820089",
   "vault_symbol": "tHV",
   "merkle_proofs": [
     {
@@ -93,7 +93,7 @@
       "proof": [
         "0x180d9bd6bf342d4d42acc69272bd4e20f85baf4d59395e1db97c8aaca1c74102",
         "0xd5e54e7af5c05079530df6371833f67b044620efb16a01338f775cd3c8e2244c",
-        "0x7c7f94d26f1b2326674def3059ec027bfc77296c1f58dfa22d64444aa08ff2a3"
+        "0x328b62eb5485001a55c578783a03150a2b2fa06ae8a91b0122a97234393bfcfc"
       ]
     },
     {
@@ -170,7 +170,7 @@
       "proof": [
         "0x0a0f5a3b4d48b82efb6564a127454f2109c9b6905d3891b7381d8fef72fca5d3",
         "0xd5e54e7af5c05079530df6371833f67b044620efb16a01338f775cd3c8e2244c",
-        "0x7c7f94d26f1b2326674def3059ec027bfc77296c1f58dfa22d64444aa08ff2a3"
+        "0x328b62eb5485001a55c578783a03150a2b2fa06ae8a91b0122a97234393bfcfc"
       ]
     },
     {
@@ -246,7 +246,7 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a8de22857e8182a6f2064555ad4a97b281ab44753a92c112086fd9739ca26111d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0x1a0cd218209fe29ecf801f30edca155b30394d31a33fe282d730f7f3de4692ee",
-        "0x7c7f94d26f1b2326674def3059ec027bfc77296c1f58dfa22d64444aa08ff2a3"
+        "0x328b62eb5485001a55c578783a03150a2b2fa06ae8a91b0122a97234393bfcfc"
       ]
     },
     {
@@ -362,9 +362,10 @@
         "intent": "Add Hyperliquid API wallet"
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a68bb93152ee6749877fbc02c609d10ab1acbbb493d04f46be5bd70769b7fd46b00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aa6812f273a2122994578814754d861b6e830a3663622b7161a95c7fd8435799500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x754c2facd45ba0c4b341441611de30ef06216c842b4aa71abe24607c17dc7e02",
+        "0x59c5dced2b38d0bf349524611df9192ddcb8110facbf3f2d9edeebcea010f89f",
+        "0x52f8e8d261c031c6d1ffdd777dd7f48a33f31dea0ce20b6dc20c088430dbd09a",
         "0xefbb405b87a5588041c6e97f232385f9e701e2e516a5619376f972f4f1eb306d"
       ]
     },
@@ -373,7 +374,7 @@
         "integration": "merkl",
         "protocol": "Hyperliquid",
         "interface": "ICoreWriter",
-        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,6,encoded(0x48dc7E98551DcFD52e8Ee6D8A3bFa5ED8E2f051B,0,any)))",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,13,encoded(0x2000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000,4294967295,4294967295,0,any)))",
         "parameters": {
           "caller": "0x38892Fc08D9891c144ddB36e48a47Dee0D821965",
           "target": "0x3333333333333333333333333333333333333333",
@@ -382,9 +383,12 @@
         "innerParameters": {
           "data": {
             "version": "1",
-            "actionId": "6",
+            "actionId": "13",
             "data": {
-              "destination": "0x48dc7E98551DcFD52e8Ee6D8A3bFa5ED8E2f051B",
+              "destination": "0x2000000000000000000000000000000000000000",
+              "subAccount": "0x0000000000000000000000000000000000000000",
+              "sourceDex": "4294967295",
+              "destinationDex": "4294967295",
               "token": "0",
               "weis": "any"
             }
@@ -412,22 +416,40 @@
               "type": "packed",
               "params": [
                 "1",
-                "6",
+                "13",
                 {
                   "type": "encoded",
                   "params": [
-                    "0x48dc7E98551DcFD52e8Ee6D8A3bFa5ED8E2f051B",
+                    "0x2000000000000000000000000000000000000000",
+                    "0x0000000000000000000000000000000000000000",
+                    "4294967295",
+                    "4294967295",
                     "0",
                     "any"
                   ],
                   "abi": {
                     "type": "function",
-                    "name": "encoded_spotSend",
+                    "name": "encoded_sendAssets",
                     "inputs": [
                       {
                         "name": "destination",
                         "type": "address",
                         "internalType": "address"
+                      },
+                      {
+                        "name": "subAccount",
+                        "type": "address",
+                        "internalType": "address"
+                      },
+                      {
+                        "name": "sourceDex",
+                        "type": "uint32",
+                        "internalType": "uint32"
+                      },
+                      {
+                        "name": "destinationDex",
+                        "type": "uint256",
+                        "internalType": "uint256"
                       },
                       {
                         "name": "token",
@@ -486,17 +508,269 @@
         },
         "requiredPaths": [
           {
-            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_spotSend.weis",
+            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_sendAssets.weis",
             "type": "uint64",
             "allowedValue": "any"
           }
         ],
-        "intent": "Withdraw USDC from Hyperliquid Core to EVM"
+        "intent": "Withdraw USDC from Hyperliquid Core spot DEX to EVM"
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2105b88dcd854a99594e680cd1ed156ae39e7d9383290b6b5a54851fb6cff6d300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000124ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a79280b39298902798d01980ef81fdafcc0451a4c80c737919d0888c2ecd3ca2400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x9214ebaa64f15b1db7a7f55415b3479545f889a685b31fb17aa15232ac439459",
+        "0xc9cb6d47133e9c7520207ca064c84e9120d1c6d5e0e2b3ffd00130e24871a410",
+        "0x33a39276ed3dd5990c9412dadbe241bfc65babc35932b147013cca7d9bf9c8af",
+        "0xefbb405b87a5588041c6e97f232385f9e701e2e516a5619376f972f4f1eb306d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "merkl",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreWriter",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,16,encoded(0x48dc7E98551DcFD52e8Ee6D8A3bFa5ED8E2f051B,1)))",
+        "parameters": {
+          "caller": "0x38892Fc08D9891c144ddB36e48a47Dee0D821965",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "data": {
+            "version": "1",
+            "actionId": "16",
+            "data": {
+              "user": "0x48dc7E98551DcFD52e8Ee6D8A3bFa5ED8E2f051B",
+              "abstraction": "1"
+            }
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x38892Fc08D9891c144ddB36e48a47Dee0D821965",
+          "target": "0x3333333333333333333333333333333333333333",
+          "params": [
+            {
+              "type": "packed",
+              "params": [
+                "1",
+                "16",
+                {
+                  "type": "encoded",
+                  "params": [
+                    "0x48dc7E98551DcFD52e8Ee6D8A3bFa5ED8E2f051B",
+                    "1"
+                  ],
+                  "abi": {
+                    "type": "function",
+                    "name": "encoded_setAbstraction",
+                    "inputs": [
+                      {
+                        "name": "user",
+                        "type": "address",
+                        "internalType": "address"
+                      },
+                      {
+                        "name": "abstraction",
+                        "type": "uint8",
+                        "internalType": "uint8"
+                      }
+                    ],
+                    "outputs": [],
+                    "stateMutability": "nonpayable"
+                  }
+                }
+              ],
+              "abi": {
+                "type": "function",
+                "name": "packed_sendRawAction",
+                "inputs": [
+                  {
+                    "name": "version",
+                    "type": "uint8",
+                    "internalType": "uint8"
+                  },
+                  {
+                    "name": "actionId",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "data",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ],
+                "outputs": [],
+                "stateMutability": "nonpayable"
+              }
+            }
+          ],
+          "abi": {
+            "type": "function",
+            "name": "sendRawAction",
+            "inputs": [
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [],
+        "intent": "Set Hyperliquid account abstraction to manual mode"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a530745e0b9bbef98a37ec63d20d26bd0beca9e1579dc283fe8aa610333f4b75500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x56987905e52ebd5676a0112f11ed0f901f40ef08184933fb5a34383434810c0e",
+        "0x52f8e8d261c031c6d1ffdd777dd7f48a33f31dea0ce20b6dc20c088430dbd09a",
+        "0xefbb405b87a5588041c6e97f232385f9e701e2e516a5619376f972f4f1eb306d"
+      ]
+    },
+    {
+      "description": {
+        "integration": "merkl",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreWriter",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,7,encoded(any,any)))",
+        "parameters": {
+          "caller": "0x38892Fc08D9891c144ddB36e48a47Dee0D821965",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "data": {
+            "version": "1",
+            "actionId": "7",
+            "data": {
+              "weis": "any",
+              "toPerp": "any"
+            }
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x38892Fc08D9891c144ddB36e48a47Dee0D821965",
+          "target": "0x3333333333333333333333333333333333333333",
+          "params": [
+            {
+              "type": "packed",
+              "params": [
+                "1",
+                "7",
+                {
+                  "type": "encoded",
+                  "params": [
+                    "any",
+                    "any"
+                  ],
+                  "abi": {
+                    "type": "function",
+                    "name": "encoded_usdClassTransfer",
+                    "inputs": [
+                      {
+                        "name": "weis",
+                        "type": "uint64",
+                        "internalType": "uint64"
+                      },
+                      {
+                        "name": "toPerp",
+                        "type": "bool",
+                        "internalType": "bool"
+                      }
+                    ],
+                    "outputs": [],
+                    "stateMutability": "nonpayable"
+                  }
+                }
+              ],
+              "abi": {
+                "type": "function",
+                "name": "packed_sendRawAction",
+                "inputs": [
+                  {
+                    "name": "version",
+                    "type": "uint8",
+                    "internalType": "uint8"
+                  },
+                  {
+                    "name": "actionId",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "data",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ],
+                "outputs": [],
+                "stateMutability": "nonpayable"
+              }
+            }
+          ],
+          "abi": {
+            "type": "function",
+            "name": "sendRawAction",
+            "inputs": [
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_usdClassTransfer.weis",
+            "type": "uint64",
+            "allowedValue": "any"
+          },
+          {
+            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_usdClassTransfer.toPerp",
+            "type": "bool",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Transfer USDC between Spot and Perp accounts"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a958b298d967f7bbc811914dbfc27ece384b42c3514ddfcd6a054aab5749a87a900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x678f14b2acff8ab5ba31c77daaafd68001de2cfa4ab0585698a7797f643ed4de",
+        "0x33a39276ed3dd5990c9412dadbe241bfc65babc35932b147013cca7d9bf9c8af",
         "0xefbb405b87a5588041c6e97f232385f9e701e2e516a5619376f972f4f1eb306d"
       ]
     }
