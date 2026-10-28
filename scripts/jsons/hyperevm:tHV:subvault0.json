@@ -448,8 +448,8 @@
                       },
                       {
                         "name": "destinationDex",
-                        "type": "uint256",
-                        "internalType": "uint256"
+                        "type": "uint32",
+                        "internalType": "uint32"
                       },
                       {
                         "name": "token",
