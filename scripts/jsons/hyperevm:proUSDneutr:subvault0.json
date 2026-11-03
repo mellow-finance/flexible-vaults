@@ -1,0 +1,1021 @@
+{
+  "title": "hyperevm:proUSDneutr:subvault0",
+  "vault": "0xd3ce852d45b3425FAEBe39260145E69c5d716eb2",
+  "subvault": "0x531f5803EEC9689a12a7101836F099e6331F1AAa",
+  "chain": "hyperevm",
+  "merkle_root": "0x5d034b8cb72e73d2c350b85fd19defd53d1c2f92960a3cf592e5a7974bcfce91",
+  "vault_symbol": "proUSDneutr",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "cctp_to_ethereum",
+        "protocol": "CCTP",
+        "interface": "IERC20",
+        "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "params": [
+            "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a27c417aa6929d754a80c139f0298d497216e0c02536d4bfb78fefead50c96216000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x2fb3ee23aa727eb98121530484d990b331364098d7d3de838a413be2ffb4473a",
+        "0xf69fbbd944eafaeafcf7ee03a68dcfa1e64a63f9af1abb1ed054238d4ca16717",
+        "0xf95bbc770c6f7dc6774a9fcd4efef90dbc9e999ed042d0f05d0cd9a40d0b49a8",
+        "0xa0955b4ab8d06b2c03703370a8276bfa0ff6885d6f5253044c8b107f9f1e14d9"
+      ]
+    },
+    {
+      "description": {
+        "integration": "cctp_to_ethereum",
+        "protocol": "CCTP",
+        "interface": "ITokenMessenger",
+        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,0,0x000000000000000000000000A44Ce6A3d9e62a75dC8aF80B007c5E33d5c1246a,USDC,0x0000000000000000000000000000000000000000000000000000000000000000,0,2000)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDomain": "0",
+          "mintRecipient": "0x000000000000000000000000A44Ce6A3d9e62a75dC8aF80B007c5E33d5c1246a",
+          "burnToken": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "destinationCaller": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "maxFee": "0",
+          "minFinalityThreshold": "2000"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositForBurn",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDomain",
+              "type": "uint32",
+              "internalType": "uint32"
+            },
+            {
+              "name": "mintRecipient",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "burnToken",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "destinationCaller",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "maxFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minFinalityThreshold",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "_nonce",
+              "type": "uint64",
+              "internalType": "uint64"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "params": [
+            "any",
+            "0",
+            "0x000000000000000000000000A44Ce6A3d9e62a75dC8aF80B007c5E33d5c1246a",
+            "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "0",
+            "2000"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "depositForBurn",
+            "inputs": [
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "destinationDomain",
+                "type": "uint32",
+                "internalType": "uint32"
+              },
+              {
+                "name": "mintRecipient",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "burnToken",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "destinationCaller",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "maxFee",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "minFinalityThreshold",
+                "type": "uint32",
+                "internalType": "uint32"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "_nonce",
+                "type": "uint64",
+                "internalType": "uint64"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositForBurn.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "depositForBurn.burnToken"
+          }
+        ],
+        "intent": "Bridge {{depositForBurn.amount}} via CCTP to {{depositForBurn.mintRecipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac8d41773452f178e48509fb24a46f465d6d0f54c8abb118bd49a84d0f65c698900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4b1ee2444ec35108d8dc755e1bec7903bbf5c93256f4ccc55e3bc21b6463e7a7",
+        "0xf95bbc770c6f7dc6774a9fcd4efef90dbc9e999ed042d0f05d0cd9a40d0b49a8",
+        "0xa0955b4ab8d06b2c03703370a8276bfa0ff6885d6f5253044c8b107f9f1e14d9"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperliquid",
+        "protocol": "Hyperliquid",
+        "interface": "IERC20",
+        "description": "IERC20(USDC).approve(Hyperliquid_CoreDepositWallet,any)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+          "params": [
+            "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab52bdc8c85671b91a1f6d36e44eb83fa28733c44b3a13ce3d65a96ddb6fed9bb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa99df4a8f07b0265f60cd0e292a4410781f286fafcbd4fef225479570b81ea2c",
+        "0xe490521fe8bab468f3c945887d858afb74b5833113d5e63dcfb0dc9a72d3040b",
+        "0xa0955b4ab8d06b2c03703370a8276bfa0ff6885d6f5253044c8b107f9f1e14d9"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperliquid",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreDepositWallet",
+        "description": "ICoreDepositWallet(Hyperliquid_CoreDepositWallet).deposit(any,0)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDex": "0"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDex",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "params": [
+            "any",
+            "0"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "destinationDex",
+                "type": "uint32",
+                "internalType": "uint32"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Deposit USDC to Hyperliquid Core perp DEX"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a17cef650073c50167e95f54f9f8e4854602a00d40db248a26b525de3ad890e72000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x94ecf2d686d418f8f8da93f89aa58c2e59dc56bc766ac037d9dccf70e67ab74e",
+        "0x91caf2615d9f210d620bebfec3d72243891a94f98bf9425bcc2681a8df9e4ef3",
+        "0x2c94a1c9e3c45751249c21a47ed126ca921505fb4e7faf7c5e6c9a57da0ef4ac"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperliquid",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreDepositWallet",
+        "description": "ICoreDepositWallet(Hyperliquid_CoreDepositWallet).deposit(any,4294967295)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDex": "4294967295"
+        },
+        "abi": {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDex",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x6B9E773128f453f5c2C60935Ee2DE2CBc5390A24",
+          "params": [
+            "any",
+            "4294967295"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "deposit",
+            "inputs": [
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "destinationDex",
+                "type": "uint32",
+                "internalType": "uint32"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "deposit.amount",
+            "type": "uint256",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Deposit USDC to Hyperliquid Core spot DEX"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4298a12394dcc6d206a9c84e71afae037ed05023a15910fa86ba71918f6ba337000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3e62e713962e06f1d33a2ba762bfd0ad38923b95b1b75d706a5e6b53ad3cdb1c",
+        "0xf69fbbd944eafaeafcf7ee03a68dcfa1e64a63f9af1abb1ed054238d4ca16717",
+        "0xf95bbc770c6f7dc6774a9fcd4efef90dbc9e999ed042d0f05d0cd9a40d0b49a8",
+        "0xa0955b4ab8d06b2c03703370a8276bfa0ff6885d6f5253044c8b107f9f1e14d9"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperliquid",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreWriter",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,9,encoded(AEGIS HL trading USD wallet,AEGIS HL trading)))",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "data": {
+            "version": "1",
+            "actionId": "9",
+            "data": {
+              "wallet": "0x7483DB0e9aE259420a4c4Dec27CF023739715AA9",
+              "name": "AEGIS HL trading"
+            }
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "params": [
+            {
+              "type": "packed",
+              "params": [
+                "1",
+                "9",
+                {
+                  "type": "encoded",
+                  "params": [
+                    "0x7483DB0e9aE259420a4c4Dec27CF023739715AA9",
+                    "AEGIS HL trading"
+                  ],
+                  "abi": {
+                    "type": "function",
+                    "name": "encoded_addAPIWallet",
+                    "inputs": [
+                      {
+                        "name": "wallet",
+                        "type": "address",
+                        "internalType": "address"
+                      },
+                      {
+                        "name": "name",
+                        "type": "string",
+                        "internalType": "string"
+                      }
+                    ],
+                    "outputs": [],
+                    "stateMutability": "nonpayable"
+                  }
+                }
+              ],
+              "abi": {
+                "type": "function",
+                "name": "packed_sendRawAction",
+                "inputs": [
+                  {
+                    "name": "version",
+                    "type": "uint8",
+                    "internalType": "uint8"
+                  },
+                  {
+                    "name": "actionId",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "data",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ],
+                "outputs": [],
+                "stateMutability": "nonpayable"
+              }
+            }
+          ],
+          "abi": {
+            "type": "function",
+            "name": "sendRawAction",
+            "inputs": [
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [],
+        "intent": "Add Hyperliquid API wallet"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a5a8eab9c032f9c6a6de7fdb05ae1877f16dd39473d4da0e066ad57c24876296500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7e33dfd40c6cf5873f676d49c9ce9399637e79adb775ad294fd2ad4e456a1191",
+        "0x91caf2615d9f210d620bebfec3d72243891a94f98bf9425bcc2681a8df9e4ef3",
+        "0x2c94a1c9e3c45751249c21a47ed126ca921505fb4e7faf7c5e6c9a57da0ef4ac"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperliquid",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreWriter",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,13,encoded(Hyperliquid USDC index,ADDRESS_ZERO,4294967295,4294967295,0,any)))",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "data": {
+            "version": "1",
+            "actionId": "13",
+            "data": {
+              "destination": "0x2000000000000000000000000000000000000000",
+              "subAccount": "0x0000000000000000000000000000000000000000",
+              "sourceDex": "4294967295",
+              "destinationDex": "4294967295",
+              "token": "0",
+              "weis": "any"
+            }
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "params": [
+            {
+              "type": "packed",
+              "params": [
+                "1",
+                "13",
+                {
+                  "type": "encoded",
+                  "params": [
+                    "0x2000000000000000000000000000000000000000",
+                    "0x0000000000000000000000000000000000000000",
+                    "4294967295",
+                    "4294967295",
+                    "0",
+                    "any"
+                  ],
+                  "abi": {
+                    "type": "function",
+                    "name": "encoded_sendAssets",
+                    "inputs": [
+                      {
+                        "name": "destination",
+                        "type": "address",
+                        "internalType": "address"
+                      },
+                      {
+                        "name": "subAccount",
+                        "type": "address",
+                        "internalType": "address"
+                      },
+                      {
+                        "name": "sourceDex",
+                        "type": "uint32",
+                        "internalType": "uint32"
+                      },
+                      {
+                        "name": "destinationDex",
+                        "type": "uint32",
+                        "internalType": "uint32"
+                      },
+                      {
+                        "name": "token",
+                        "type": "uint64",
+                        "internalType": "uint64"
+                      },
+                      {
+                        "name": "weis",
+                        "type": "uint64",
+                        "internalType": "uint64"
+                      }
+                    ],
+                    "outputs": [],
+                    "stateMutability": "nonpayable"
+                  }
+                }
+              ],
+              "abi": {
+                "type": "function",
+                "name": "packed_sendRawAction",
+                "inputs": [
+                  {
+                    "name": "version",
+                    "type": "uint8",
+                    "internalType": "uint8"
+                  },
+                  {
+                    "name": "actionId",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "data",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ],
+                "outputs": [],
+                "stateMutability": "nonpayable"
+              }
+            }
+          ],
+          "abi": {
+            "type": "function",
+            "name": "sendRawAction",
+            "inputs": [
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_sendAssets.weis",
+            "type": "uint64",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Withdraw USDC from Hyperliquid Core spot DEX to EVM"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a82ad3a49bae866aa7189ffddd0906700b6c27f5de0ccc9e323009158d03982b100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa1b3407df07bd1a241899a5d89b0e7f7fbf2f4f995b48cc70e6e73fbee231448",
+        "0x8eeb7ef7668950caf470da0356ab6c63b1e789a999a78966379e6df8d9722631",
+        "0x2c94a1c9e3c45751249c21a47ed126ca921505fb4e7faf7c5e6c9a57da0ef4ac"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperliquid",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreWriter",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,16,encoded(proUSDneutr_Subvault_0,1)))",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "data": {
+            "version": "1",
+            "actionId": "16",
+            "data": {
+              "user": "0x531f5803EEC9689a12a7101836F099e6331F1AAa",
+              "abstraction": "1"
+            }
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "params": [
+            {
+              "type": "packed",
+              "params": [
+                "1",
+                "16",
+                {
+                  "type": "encoded",
+                  "params": [
+                    "0x531f5803EEC9689a12a7101836F099e6331F1AAa",
+                    "1"
+                  ],
+                  "abi": {
+                    "type": "function",
+                    "name": "encoded_setAbstraction",
+                    "inputs": [
+                      {
+                        "name": "user",
+                        "type": "address",
+                        "internalType": "address"
+                      },
+                      {
+                        "name": "abstraction",
+                        "type": "uint8",
+                        "internalType": "uint8"
+                      }
+                    ],
+                    "outputs": [],
+                    "stateMutability": "nonpayable"
+                  }
+                }
+              ],
+              "abi": {
+                "type": "function",
+                "name": "packed_sendRawAction",
+                "inputs": [
+                  {
+                    "name": "version",
+                    "type": "uint8",
+                    "internalType": "uint8"
+                  },
+                  {
+                    "name": "actionId",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "data",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ],
+                "outputs": [],
+                "stateMutability": "nonpayable"
+              }
+            }
+          ],
+          "abi": {
+            "type": "function",
+            "name": "sendRawAction",
+            "inputs": [
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [],
+        "intent": "Set Hyperliquid account abstraction to manual mode"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2a5a83e88e648761fb5e035f95edb73875cb10c332074c399147bba3166080d200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xef100048ead1cb1a43abc2fae003d7e38a09e8f3385574b5a92bd675b2ca0237",
+        "0xe490521fe8bab468f3c945887d858afb74b5833113d5e63dcfb0dc9a72d3040b",
+        "0xa0955b4ab8d06b2c03703370a8276bfa0ff6885d6f5253044c8b107f9f1e14d9"
+      ]
+    },
+    {
+      "description": {
+        "integration": "hyperliquid",
+        "protocol": "Hyperliquid",
+        "interface": "ICoreWriter",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,7,encoded(any,any)))",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "value": "0"
+        },
+        "innerParameters": {
+          "data": {
+            "version": "1",
+            "actionId": "7",
+            "data": {
+              "weis": "any",
+              "toPerp": "any"
+            }
+          }
+        },
+        "abi": {
+          "type": "function",
+          "name": "sendRawAction",
+          "inputs": [
+            {
+              "name": "data",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x3333333333333333333333333333333333333333",
+          "params": [
+            {
+              "type": "packed",
+              "params": [
+                "1",
+                "7",
+                {
+                  "type": "encoded",
+                  "params": [
+                    "any",
+                    "any"
+                  ],
+                  "abi": {
+                    "type": "function",
+                    "name": "encoded_usdClassTransfer",
+                    "inputs": [
+                      {
+                        "name": "weis",
+                        "type": "uint64",
+                        "internalType": "uint64"
+                      },
+                      {
+                        "name": "toPerp",
+                        "type": "bool",
+                        "internalType": "bool"
+                      }
+                    ],
+                    "outputs": [],
+                    "stateMutability": "nonpayable"
+                  }
+                }
+              ],
+              "abi": {
+                "type": "function",
+                "name": "packed_sendRawAction",
+                "inputs": [
+                  {
+                    "name": "version",
+                    "type": "uint8",
+                    "internalType": "uint8"
+                  },
+                  {
+                    "name": "actionId",
+                    "type": "uint24",
+                    "internalType": "uint24"
+                  },
+                  {
+                    "name": "data",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                  }
+                ],
+                "outputs": [],
+                "stateMutability": "nonpayable"
+              }
+            }
+          ],
+          "abi": {
+            "type": "function",
+            "name": "sendRawAction",
+            "inputs": [
+              {
+                "name": "data",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_usdClassTransfer.weis",
+            "type": "uint64",
+            "allowedValue": "any"
+          },
+          {
+            "path": "sendRawAction.data_packed_sendRawAction.data_encoded_usdClassTransfer.toPerp",
+            "type": "bool",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Transfer USDC between Spot and Perp accounts"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acc6ef9e41ec091a02e74b07e1ad56d792e5ae06dc6a87be00b52c6890f6ee77800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xa0c19e35e42d07f64c46cc5a11d3aaa686f8a0d6871c063c8482d7ff40784bfb",
+        "0x8eeb7ef7668950caf470da0356ab6c63b1e789a999a78966379e6df8d9722631",
+        "0x2c94a1c9e3c45751249c21a47ed126ca921505fb4e7faf7c5e6c9a57da0ef4ac"
+      ]
+    }
+  ]
+}

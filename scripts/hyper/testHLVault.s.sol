@@ -62,7 +62,6 @@ contract Deploy is Script, Test {
 
         Vault.RoleHolder[] memory holders = new Vault.RoleHolder[](42);
 
-
         console.log("------------------------------------");
         console.log("%s (%s)", name, symbol);
         console.log("------------------------------------");
@@ -146,7 +145,9 @@ contract Deploy is Script, Test {
 
         // uint256 version, bool isDeposit, address owner, address asset, bytes calldata data
         vault.createQueue(2, true, testActor, Constants.USDC, abi.encode(DEFAULT_PENALTY_D6, DEFAULT_MAX_AGE));
-        vault.createQueue(2, false, testActor, Constants.USDC, abi.encode(DEFAULT_PENALTY_D6, DEFAULT_MAX_AGE, 1000e18 days));
+        vault.createQueue(
+            2, false, testActor, Constants.USDC, abi.encode(DEFAULT_PENALTY_D6, DEFAULT_MAX_AGE, 1000e18 days)
+        );
 
         // subvault setup
 
@@ -246,5 +247,4 @@ contract Deploy is Script, Test {
         oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
         oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
     }
- 
 }

@@ -1,0 +1,608 @@
+{
+  "title": "ethereum:proUSDneutr:subvault0",
+  "vault": "0x305800DaADe579c33712674b139264E0c0a3e16D",
+  "subvault": "0xA44Ce6A3d9e62a75dC8aF80B007c5E33d5c1246a",
+  "chain": "ethereum",
+  "merkle_root": "0xcf43caa78aa0fee9e1f8c745895b48d7ff3ff5d8756975c4ec05b7b45b7a87f1",
+  "vault_symbol": "proUSDneutr",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "cctp_to_hyperevm",
+        "protocol": "CCTP",
+        "interface": "IERC20",
+        "description": "IERC20(USDC).approve(CCTP_TokenMessenger,any)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "spender": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "approve",
+          "inputs": [
+            {
+              "name": "spender",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "params": [
+            "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "approve",
+            "inputs": [
+              {
+                "name": "spender",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "approve.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Approve {{approve.spender}} to spend {{approve.amount}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a0b8e64701e7cf67b55ebc0c38b629db0f8eea43e72a3f73cad2a91a60fec571b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x4455301baf53cceafe03faaa26fa98ea318771751887ea0bb09918d643b82d4c",
+        "0x712eadc4fa9eb6ff6582896a24607e603ecdd02cb29c349feb4c132ace669a7a",
+        "0x613bb078c98367bfa03ebb23ef8411ae0bf4dcd16ef14a7021c311974246ef76"
+      ]
+    },
+    {
+      "description": {
+        "integration": "cctp_to_hyperevm",
+        "protocol": "CCTP",
+        "interface": "ITokenMessenger",
+        "description": "ITokenMessenger(CCTP_TokenMessenger).depositForBurn(any,19,0x000000000000000000000000531f5803EEC9689a12a7101836F099e6331F1AAa,USDC,0x0000000000000000000000000000000000000000000000000000000000000000,0,2000)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "value": "0"
+        },
+        "innerParameters": {
+          "amount": "any",
+          "destinationDomain": "19",
+          "mintRecipient": "0x000000000000000000000000531f5803EEC9689a12a7101836F099e6331F1AAa",
+          "burnToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "destinationCaller": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "maxFee": "0",
+          "minFinalityThreshold": "2000"
+        },
+        "abi": {
+          "type": "function",
+          "name": "depositForBurn",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "destinationDomain",
+              "type": "uint32",
+              "internalType": "uint32"
+            },
+            {
+              "name": "mintRecipient",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "burnToken",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "destinationCaller",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "maxFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "minFinalityThreshold",
+              "type": "uint32",
+              "internalType": "uint32"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "_nonce",
+              "type": "uint64",
+              "internalType": "uint64"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+          "params": [
+            "any",
+            "19",
+            "0x000000000000000000000000531f5803EEC9689a12a7101836F099e6331F1AAa",
+            "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "0",
+            "2000"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "depositForBurn",
+            "inputs": [
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "destinationDomain",
+                "type": "uint32",
+                "internalType": "uint32"
+              },
+              {
+                "name": "mintRecipient",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "burnToken",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "destinationCaller",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "maxFee",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "minFinalityThreshold",
+                "type": "uint32",
+                "internalType": "uint32"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "_nonce",
+                "type": "uint64",
+                "internalType": "uint64"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "depositForBurn.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "depositForBurn.burnToken"
+          }
+        ],
+        "intent": "Bridge {{depositForBurn.amount}} via CCTP to {{depositForBurn.mintRecipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af28aa572475f0ba5934ef16c3e3c385622ff7bc220e71b71e574b2143c6958e500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x012583ce47336f2558cdcdf814cba6e8ec6ea8fd27568e7a7b0bd7551a33aa95",
+        "0x712eadc4fa9eb6ff6582896a24607e603ecdd02cb29c349feb4c132ace669a7a",
+        "0x613bb078c98367bfa03ebb23ef8411ae0bf4dcd16ef14a7021c311974246ef76"
+      ]
+    },
+    {
+      "description": {
+        "integration": "cexes",
+        "protocol": "ERC20",
+        "interface": "IERC20",
+        "description": "IERC20(USDC).transfer(Aegis_Binance_Deposit_Wallet,any)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x7930F49aDC25c8EB2eCf15119200cf7Cd003EC26",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "params": [
+            "0x7930F49aDC25c8EB2eCf15119200cf7Cd003EC26",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Transfer {{transfer.amount}} to {{transfer.recipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ad972317ee47eccd75845ae05ddb0fc6e64d08d42eff986483db4de900d8ef70d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0xd437c5c1510c3300103a1268fdf26c769c7b9bab26afca022e1593a042aa4a9d",
+        "0x7060b3685940d7e15f5e6a65f7274c810845897b06aee461c57d3f6387d1d405"
+      ]
+    },
+    {
+      "description": {
+        "integration": "cexes",
+        "protocol": "ERC20",
+        "interface": "IERC20",
+        "description": "IERC20(USDC).transfer(Aegis_Bybit_Deposit_Wallet,any)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x569B5688d128C530c9aF1682F09B04710983dDF8",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "params": [
+            "0x569B5688d128C530c9aF1682F09B04710983dDF8",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Transfer {{transfer.amount}} to {{transfer.recipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a611e889fcf40ce0ba4949ecfaddfb9b0411f095d9a7b18c57b5af8443b5d18ab000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7493ec1b387d138b77f07d2545a7d17511a101c28f3056be8ed788a7d4452052",
+        "0xee63ae4e6971573a27e7cb85334c499db73a121369dd367e6906415d61c8cf75",
+        "0x613bb078c98367bfa03ebb23ef8411ae0bf4dcd16ef14a7021c311974246ef76"
+      ]
+    },
+    {
+      "description": {
+        "integration": "cexes",
+        "protocol": "ERC20",
+        "interface": "IERC20",
+        "description": "IERC20(USDT).transfer(Aegis_Binance_Deposit_Wallet,any)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x7930F49aDC25c8EB2eCf15119200cf7Cd003EC26",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "params": [
+            "0x7930F49aDC25c8EB2eCf15119200cf7Cd003EC26",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Transfer {{transfer.amount}} to {{transfer.recipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aad9c6280664be336f5865c202dbc0ace5447d53d6b78ae3a78e8f0076b101a18000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x878d5178453067e5a0107c1f52a85b87854332f82867d01d8c24cf16511edcee",
+        "0x7060b3685940d7e15f5e6a65f7274c810845897b06aee461c57d3f6387d1d405"
+      ]
+    },
+    {
+      "description": {
+        "integration": "cexes",
+        "protocol": "ERC20",
+        "interface": "IERC20",
+        "description": "IERC20(USDT).transfer(Aegis_Bybit_Deposit_Wallet,any)",
+        "parameters": {
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x569B5688d128C530c9aF1682F09B04710983dDF8",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "params": [
+            "0x569B5688d128C530c9aF1682F09B04710983dDF8",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Transfer {{transfer.amount}} to {{transfer.recipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a48b13e89b3ee18dcaf288867d982b51c466303bebbcb47b8bba218f974956a8d000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7b97c9a68e348c2537c823ddf6e91d778a073c1131484ca473088129cd3314f5",
+        "0xee63ae4e6971573a27e7cb85334c499db73a121369dd367e6906415d61c8cf75",
+        "0x613bb078c98367bfa03ebb23ef8411ae0bf4dcd16ef14a7021c311974246ef76"
+      ]
+    }
+  ]
+}

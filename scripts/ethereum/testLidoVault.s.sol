@@ -51,7 +51,6 @@ contract Deploy is Script, Test {
         vm.startBroadcast(deployerPk);
 
         {
-
             address verifier0 = 0xcc61f9A3cfe86DC2d361930a18F5E26185deC824;
             IVerifier(verifier0).setMerkleRoot(0x4e59b20cc749886a1750247e8691855367889c649c90e74677e051977d343e69);
 
