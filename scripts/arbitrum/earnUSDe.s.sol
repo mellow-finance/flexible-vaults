@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
+import "../../src/oracles/OracleSubmitter.sol";
 import "../../src/vaults/Subvault.sol";
 import "../../src/vaults/VaultConfigurator.sol";
 
@@ -30,6 +31,8 @@ contract Deploy is Script, Test {
     address public activeVaultAdmin = 0x982aB69785f5329BB59c36B19CBd4865353fEf10;
     address public immutable curator = 0x9745F161b0160a99924845BeFCE1d7b9Daee6899;
 
+    address public oracleUpdater = 0x93a797643d74fC81e7A51F3f84a9D78F930435D1;
+    address public oracleAccepter = lazyVaultAdmin;
     address public treasury = 0xcCf2daba8Bb04a232a2fDA0D01010D4EF6C69B85;
 
     address public lidoPauser = 0xA916fD5252160A7E56A6405741De76dc0Da5A0Cd;
@@ -37,11 +40,10 @@ contract Deploy is Script, Test {
 
     uint256 public constant DEFAULT_MULTIPLIER = 0.995e8;
 
-    address public constant AAVE_CUSTOM_ORACLE = 0x1e69c602dD0b0881d0E6403228aB31a494031D9D;
-
     string public name = "Experimental earnUSD";
     string public symbol = "earnUSDe";
 
+    address[] assets_ = ArraysLibrary.makeAddressArray(abi.encode(Constants.USDG));
     address[] verifiers = new address[](1);
 
     function run() external {
@@ -70,6 +72,8 @@ contract Deploy is Script, Test {
 
         console.log("Curator", curator);
 
+        console.log("OracleUpdater", oracleUpdater);
+        console.log("OracleAccepter", oracleAccepter);
         console.log("Treasury", treasury);
 
         console.log("LidoPauser", lidoPauser);
@@ -81,15 +85,28 @@ contract Deploy is Script, Test {
 
         {
             uint256 i = 0;
+
+            // activeVaultAdmin roles:
+            holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
+            holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
+
             // curator roles:
             holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
+            holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
 
             // emergeny pauser roles:
             holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
 
             // deployer roles:
+            holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.CREATE_SUBVAULT_ROLE, deployer);
             holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
+            holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
 
             assembly {
                 mstore(holders, i)
@@ -104,9 +121,9 @@ contract Deploy is Script, Test {
             shareManagerVersion: 0,
             shareManagerParams: abi.encode(bytes32(0), name, symbol),
             feeManagerVersion: 0,
-            feeManagerParams: abi.encode(lazyVaultAdmin, treasury, uint24(0), uint24(0), uint24(0), uint24(0)),
+            feeManagerParams: abi.encode(deployer, treasury, uint24(0), uint24(0), uint24(0), uint24(0)),
             riskManagerVersion: 0,
-            riskManagerParams: abi.encode(0),
+            riskManagerParams: abi.encode(type(int256).max / 2),
             oracleVersion: 0,
             oracleParams: abi.encode(
                 IOracle.SecurityParams({
@@ -114,11 +131,11 @@ contract Deploy is Script, Test {
                     suspiciousAbsoluteDeviation: 1,
                     maxRelativeDeviationD18: 1,
                     suspiciousRelativeDeviationD18: 1,
-                    timeout: type(uint32).max >> 1,
-                    depositInterval: 1,
-                    redeemInterval: 1
+                    timeout: type(uint32).max,
+                    depositInterval: 365 days,
+                    redeemInterval: 365 days
                 }),
-                new address[](0)
+                assets_
             ),
             defaultDepositHook: address(0),
             defaultRedeemHook: address(0),
@@ -132,45 +149,36 @@ contract Deploy is Script, Test {
             vault = Vault(payable(vault_));
         }
 
+        vault.feeManager().setBaseAsset(address(vault), Constants.USDG);
+        Ownable(address(vault.feeManager())).transferOwnership(lazyVaultAdmin);
+
         // subvault setup
 
         SubvaultCalls[] memory calls = new SubvaultCalls[](verifiers.length);
 
         {
-            uint256 subvaultIndex = 0;
-            verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
-            address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
-            address swapModule = _deploySwapModule(subvault);
+            IRiskManager riskManager = vault.riskManager();
+            {
+                uint256 subvaultIndex = 0;
+                verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
+                address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
 
-            console.log("Subvault 0:", subvault);
-            console.log("Verifier 0:", verifiers[0]);
-            console.log("SwapModule 0:", swapModule);
+                console.log("Subvault 0:", subvault);
+                console.log("Verifier 0:", verifiers[0]);
+
+                riskManager.allowSubvaultAssets(subvault, assets_);
+                riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
+            }
         }
 
         vault.renounceRole(Permissions.CREATE_SUBVAULT_ROLE, deployer);
+        vault.renounceRole(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, deployer);
+        vault.renounceRole(Permissions.SET_SUBVAULT_LIMIT_ROLE, deployer);
 
         timelockController.renounceRole(timelockController.PROPOSER_ROLE(), deployer);
         timelockController.renounceRole(timelockController.CANCELLER_ROLE(), deployer);
 
         console.log("Vault %s", address(vault));
-
-        for (uint256 i = 0; i < vault.getAssetCount(); i++) {
-            address asset = vault.assetAt(i);
-            string memory symbol_ = asset == Constants.ETH ? "ETH" : IERC20Metadata(asset).symbol();
-            for (uint256 j = 0; j < vault.getQueueCount(asset); j++) {
-                address queue = vault.queueAt(asset, j);
-                if (vault.isDepositQueue(queue)) {
-                    try SyncDepositQueue(queue).name() returns (string memory) {
-                        console.log("SyncDepositQueue (%s): %s", symbol_, queue);
-                    } catch {
-                        console.log("DepositQueue (%s): %s", symbol_, queue);
-                    }
-                } else {
-                    console.log("RedeemQueue (%s): %s", symbol_, queue);
-                }
-            }
-        }
-
         console.log("Oracle %s", address(vault.oracle()));
         console.log("ShareManager %s", address(vault.shareManager()));
         console.log("FeeManager %s", address(vault.feeManager()));
@@ -183,6 +191,33 @@ contract Deploy is Script, Test {
         }
         console.log("Timelock controller:", address(timelockController));
 
+        OracleSubmitter oracleSubmitter =
+            new OracleSubmitter(deployer, oracleUpdater, oracleAccepter, address(vault.oracle()));
+
+        oracleSubmitter.grantRole(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
+        oracleSubmitter.grantRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        oracleSubmitter.grantRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
+        oracleSubmitter.renounceRole(Permissions.DEFAULT_ADMIN_ROLE, deployer);
+
+        vault.grantRole(Permissions.SUBMIT_REPORTS_ROLE, address(oracleSubmitter));
+        vault.grantRole(Permissions.ACCEPT_REPORT_ROLE, address(oracleSubmitter));
+        vault.renounceRole(Permissions.DEFAULT_ADMIN_ROLE, deployer);
+
+        console.log("OracleSubmitter: %s", address(oracleSubmitter));
+
+        {
+            IOracle.Report[] memory reports = new IOracle.Report[](assets_.length);
+            for (uint256 i = 0; i < reports.length; i++) {
+                address asset = assets_[i];
+                reports[i].asset = asset;
+                reports[i].priceD18 = uint224(1e30);
+                console.log("Reported price for asset: %s %s", IERC20Metadata(asset).symbol(), reports[i].priceD18);
+            }
+            oracleSubmitter.submitReports(reports);
+        }
+
+        _acceptReports(oracleSubmitter, deployer);
+
         vm.stopBroadcast();
 
         AcceptanceLibrary.runProtocolDeploymentChecks(Constants.protocolDeployment());
@@ -192,10 +227,10 @@ contract Deploy is Script, Test {
                 vault: vault,
                 calls: calls,
                 initParams: initParams,
-                holders: _getExpectedHolders(address(timelockController), deployer),
+                holders: _getExpectedHolders(address(timelockController), address(oracleSubmitter), deployer),
                 depositHook: address(0),
                 redeemHook: address(0),
-                assets: new address[](0),
+                assets: assets_,
                 depositQueueAssets: new address[](0),
                 redeemQueueAssets: new address[](0),
                 subvaultVerifiers: verifiers,
@@ -208,38 +243,25 @@ contract Deploy is Script, Test {
         revert("ok");
     }
 
-    function _routers() internal pure returns (address[1] memory result) {
-        result = [address(0x6131B5fae19EA4f9D964eAc0408E4408b66337b5)];
+    function _acceptReports(OracleSubmitter oracleSubmitter, address deployer) internal {
+        IOracle oracle = oracleSubmitter.oracle();
+        uint256 n = oracle.supportedAssets();
+        address[] memory assets = new address[](n);
+        uint32[] memory timestamps = new uint32[](n);
+        uint224[] memory prices = new uint224[](n);
+        for (uint256 i = 0; i < n; i++) {
+            address a = oracle.supportedAssetAt(i);
+            IOracle.DetailedReport memory r = oracle.getReport(a);
+            assets[i] = a;
+            timestamps[i] = r.timestamp;
+            prices[i] = r.priceD18;
+        }
+        oracleSubmitter.acceptReports(assets, prices, timestamps);
+        oracleSubmitter.renounceRole(Permissions.SUBMIT_REPORTS_ROLE, deployer);
+        oracleSubmitter.renounceRole(Permissions.ACCEPT_REPORT_ROLE, deployer);
     }
 
-    function _deploySwapModule(address subvault) internal returns (address) {
-        IFactory swapModuleFactory = Constants.protocolDeployment().swapModuleFactory;
-        address[3] memory assets = [Constants.USDAI, Constants.SUSDAI, Constants.USDC];
-        address[] memory actors = ArraysLibrary.makeAddressArray(abi.encode(curator, assets, assets, _routers()));
-        bytes32[] memory permissions = ArraysLibrary.makeBytes32Array(
-            abi.encode(
-                Permissions.SWAP_MODULE_CALLER_ROLE,
-                [
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_IN_ROLE
-                ],
-                [
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE,
-                    Permissions.SWAP_MODULE_TOKEN_OUT_ROLE
-                ],
-                Permissions.SWAP_MODULE_ROUTER_ROLE
-            )
-        );
-        return swapModuleFactory.create(
-            0,
-            proxyAdmin,
-            abi.encode(lazyVaultAdmin, subvault, AAVE_CUSTOM_ORACLE, DEFAULT_MULTIPLIER, actors, permissions)
-        );
-    }
-
-    function _getExpectedHolders(address timelockController, address deployer)
+    function _getExpectedHolders(address timelockController, address oracleSubmitter, address deployer)
         internal
         view
         returns (Vault.RoleHolder[] memory holders)
@@ -250,8 +272,21 @@ contract Deploy is Script, Test {
         // lazyVaultAdmin roles:
         holders[i++] = Vault.RoleHolder(Permissions.DEFAULT_ADMIN_ROLE, lazyVaultAdmin);
 
+        // activeVaultAdmin roles:
+        holders[i++] = Vault.RoleHolder(Permissions.SET_VAULT_LIMIT_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.SET_SUBVAULT_LIMIT_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.ALLOW_SUBVAULT_ASSETS_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.MODIFY_VAULT_BALANCE_ROLE, activeVaultAdmin);
+        holders[i++] = Vault.RoleHolder(Permissions.MODIFY_SUBVAULT_BALANCE_ROLE, activeVaultAdmin);
+
         // curator roles:
         holders[i++] = Vault.RoleHolder(Permissions.CALLER_ROLE, curator);
+        holders[i++] = Vault.RoleHolder(Permissions.PULL_LIQUIDITY_ROLE, curator);
+        holders[i++] = Vault.RoleHolder(Permissions.PUSH_LIQUIDITY_ROLE, curator);
+
+        // oracle updater roles:
+        holders[i++] = Vault.RoleHolder(Permissions.SUBMIT_REPORTS_ROLE, oracleSubmitter);
+        holders[i++] = Vault.RoleHolder(Permissions.ACCEPT_REPORT_ROLE, oracleSubmitter);
 
         // emergeny pauser roles:
         holders[i++] = Vault.RoleHolder(Permissions.SET_MERKLE_ROOT_ROLE, address(timelockController));
