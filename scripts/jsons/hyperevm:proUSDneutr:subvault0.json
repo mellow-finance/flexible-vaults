@@ -3,7 +3,7 @@
   "vault": "0xd3ce852d45b3425FAEBe39260145E69c5d716eb2",
   "subvault": "0x531f5803EEC9689a12a7101836F099e6331F1AAa",
   "chain": "hyperevm",
-  "merkle_root": "0xb347d48c7ff1e39cd6a91b4ad3c7de4940014ac36a7c70da1ca4a3c7d425213a",
+  "merkle_root": "0x054d0cd73a1d6f3893e79c407b8b49365eb587489c206c6b66c62afe9c9a79b5",
   "vault_symbol": "proUSDneutr",
   "merkle_proofs": [
     {
@@ -91,10 +91,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a27c417aa6929d754a80c139f0298d497216e0c02536d4bfb78fefead50c96216000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x7e33dfd40c6cf5873f676d49c9ce9399637e79adb775ad294fd2ad4e456a1191",
-        "0xd8bfd7b41df2e7cfd10bd7c8e9faa44104bd4362e799fd10752fa8dee2f8bfd8",
+        "0x2fb3ee23aa727eb98121530484d990b331364098d7d3de838a413be2ffb4473a",
+        "0xfe595249fb52f86db4ec35281eba21112cb4f4151872b63bd215926684ec1c99",
         "0x62163c95d7fba66cf58dd7a883a5b33729ac65fbe4eb8098f045a9c03b43c977",
-        "0xc53db0470e8324cd4f1e9047f40870ba3007914302676408265f0c05374c11fb"
+        "0xecd7b0bbaea39bda85d1ef0d8f32bc541d90317a8797b6717dc1f3c83fc1ed86"
       ]
     },
     {
@@ -243,8 +243,8 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ac8d41773452f178e48509fb24a46f465d6d0f54c8abb118bd49a84d0f65c698900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xef100048ead1cb1a43abc2fae003d7e38a09e8f3385574b5a92bd675b2ca0237",
-        "0x1d3cf984d2a6a1efb93d1c86489c9d8be6893573b95355cd7327235cb9420a75",
-        "0xc53db0470e8324cd4f1e9047f40870ba3007914302676408265f0c05374c11fb"
+        "0x9387f6cbdbf368b5cf1a730145ede30dd54181732173ffb212ec6570485086c4",
+        "0xecd7b0bbaea39bda85d1ef0d8f32bc541d90317a8797b6717dc1f3c83fc1ed86"
       ]
     },
     {
@@ -333,8 +333,8 @@
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20ab52bdc8c85671b91a1f6d36e44eb83fa28733c44b3a13ce3d65a96ddb6fed9bb000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "proof": [
         "0xf69fbbd944eafaeafcf7ee03a68dcfa1e64a63f9af1abb1ed054238d4ca16717",
-        "0x1d3cf984d2a6a1efb93d1c86489c9d8be6893573b95355cd7327235cb9420a75",
-        "0xc53db0470e8324cd4f1e9047f40870ba3007914302676408265f0c05374c11fb"
+        "0x9387f6cbdbf368b5cf1a730145ede30dd54181732173ffb212ec6570485086c4",
+        "0xecd7b0bbaea39bda85d1ef0d8f32bc541d90317a8797b6717dc1f3c83fc1ed86"
       ]
     },
     {
@@ -409,10 +409,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a17cef650073c50167e95f54f9f8e4854602a00d40db248a26b525de3ad890e72000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x3e62e713962e06f1d33a2ba762bfd0ad38923b95b1b75d706a5e6b53ad3cdb1c",
-        "0xd8bfd7b41df2e7cfd10bd7c8e9faa44104bd4362e799fd10752fa8dee2f8bfd8",
+        "0xa0c19e35e42d07f64c46cc5a11d3aaa686f8a0d6871c063c8482d7ff40784bfb",
+        "0x4b1ee2444ec35108d8dc755e1bec7903bbf5c93256f4ccc55e3bc21b6463e7a7",
         "0x62163c95d7fba66cf58dd7a883a5b33729ac65fbe4eb8098f045a9c03b43c977",
-        "0xc53db0470e8324cd4f1e9047f40870ba3007914302676408265f0c05374c11fb"
+        "0xecd7b0bbaea39bda85d1ef0d8f32bc541d90317a8797b6717dc1f3c83fc1ed86"
       ]
     },
     {
@@ -487,10 +487,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a4298a12394dcc6d206a9c84e71afae037ed05023a15910fa86ba71918f6ba337000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x0670bc5b136457aa966b2b9ee9356d21166f1ef58a1c5cde8385eb7de290698a",
-        "0x3d715390b07af42ad0c20b9fc72f3f2c1d964216810e34c69d9f1d0ea900871c",
+        "0x3e62e713962e06f1d33a2ba762bfd0ad38923b95b1b75d706a5e6b53ad3cdb1c",
+        "0xfe595249fb52f86db4ec35281eba21112cb4f4151872b63bd215926684ec1c99",
         "0x62163c95d7fba66cf58dd7a883a5b33729ac65fbe4eb8098f045a9c03b43c977",
-        "0xc53db0470e8324cd4f1e9047f40870ba3007914302676408265f0c05374c11fb"
+        "0xecd7b0bbaea39bda85d1ef0d8f32bc541d90317a8797b6717dc1f3c83fc1ed86"
       ]
     },
     {
@@ -608,9 +608,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a264d2bfe0f104156785296a8897a05d1a2cb11e5a621bf323c3df4fe14b3e86800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa99df4a8f07b0265f60cd0e292a4410781f286fafcbd4fef225479570b81ea2c",
-        "0x91caf2615d9f210d620bebfec3d72243891a94f98bf9425bcc2681a8df9e4ef3",
-        "0xfa6aa9dedcc1afa557f2b2ff0940f691393f993faa0863c5ab438d4a11d4ce43"
+        "0xb319736b3fad07077d227d30d0e7f4470b070c95b2feb5f0bda40e39e21bd638",
+        "0x3fec0cc360ac389bc5e59c420407f09ccf03e16b56e2cf43b68e457a8b6d050f",
+        "0x1342055a7145345574e34979d904791c4abcc06d9635dc5814d70e046c2fe5a7"
       ]
     },
     {
@@ -618,7 +618,7 @@
         "integration": "hyperliquid",
         "protocol": "Hyperliquid",
         "interface": "ICoreWriter",
-        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,9,encoded(ADDRESS_ZERO,AEGIS HL trading)))",
+        "description": "ICoreWriter(Hyperliquid_CoreWriter).sendRawAction(packed(1,9,encoded([PROD] AEGIS HL second trading USD wallet,AEGIS HL trading)))",
         "parameters": {
           "caller": "0x4E35a93286692A2bb9b0360Ba8C1f17875274aCd",
           "target": "0x3333333333333333333333333333333333333333",
@@ -629,7 +629,7 @@
             "version": "1",
             "actionId": "9",
             "data": {
-              "wallet": "0x0000000000000000000000000000000000000000",
+              "wallet": "0x5193A4EaA5B17e4EAFd3c2f73F2a2311BB798808",
               "name": "AEGIS HL trading"
             }
           }
@@ -660,7 +660,7 @@
                 {
                   "type": "encoded",
                   "params": [
-                    "0x0000000000000000000000000000000000000000",
+                    "0x5193A4EaA5B17e4EAFd3c2f73F2a2311BB798808",
                     "AEGIS HL trading"
                   ],
                   "abi": {
@@ -726,12 +726,11 @@
         "intent": "Add Hyperliquid API wallet"
       },
       "verificationType": 3,
-      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af6c992bf6fe9176e30e6c071607bc700a7085f8e714963c78004e0db358943ad00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a60849923a8a980b3ffe83d89265bf492e310b99714635eaec87e17cea14a893b00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000144ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0x2fb3ee23aa727eb98121530484d990b331364098d7d3de838a413be2ffb4473a",
-        "0x3d715390b07af42ad0c20b9fc72f3f2c1d964216810e34c69d9f1d0ea900871c",
-        "0x62163c95d7fba66cf58dd7a883a5b33729ac65fbe4eb8098f045a9c03b43c977",
-        "0xc53db0470e8324cd4f1e9047f40870ba3007914302676408265f0c05374c11fb"
+        "0xb68ae3dac8954475fbb5edf2fdf55ce273c1022c263939b7046728fc47c4f44e",
+        "0x3fec0cc360ac389bc5e59c420407f09ccf03e16b56e2cf43b68e457a8b6d050f",
+        "0x1342055a7145345574e34979d904791c4abcc06d9635dc5814d70e046c2fe5a7"
       ]
     },
     {
@@ -883,9 +882,10 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a82ad3a49bae866aa7189ffddd0906700b6c27f5de0ccc9e323009158d03982b100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000184ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa1b3407df07bd1a241899a5d89b0e7f7fbf2f4f995b48cc70e6e73fbee231448",
-        "0xa420cf81b978f12f3d2b63e62a756a04e3838eb1518ace343a73285977053a3e",
-        "0xfa6aa9dedcc1afa557f2b2ff0940f691393f993faa0863c5ab438d4a11d4ce43"
+        "0x7e33dfd40c6cf5873f676d49c9ce9399637e79adb775ad294fd2ad4e456a1191",
+        "0x4b1ee2444ec35108d8dc755e1bec7903bbf5c93256f4ccc55e3bc21b6463e7a7",
+        "0x62163c95d7fba66cf58dd7a883a5b33729ac65fbe4eb8098f045a9c03b43c977",
+        "0xecd7b0bbaea39bda85d1ef0d8f32bc541d90317a8797b6717dc1f3c83fc1ed86"
       ]
     },
     {
@@ -1003,9 +1003,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a2a5a83e88e648761fb5e035f95edb73875cb10c332074c399147bba3166080d200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xb68ae3dac8954475fbb5edf2fdf55ce273c1022c263939b7046728fc47c4f44e",
-        "0x91caf2615d9f210d620bebfec3d72243891a94f98bf9425bcc2681a8df9e4ef3",
-        "0xfa6aa9dedcc1afa557f2b2ff0940f691393f993faa0863c5ab438d4a11d4ce43"
+        "0xa1b3407df07bd1a241899a5d89b0e7f7fbf2f4f995b48cc70e6e73fbee231448",
+        "0xd3569eee84ffbc5d5e991697309ff8496f6784d27e7b5199e31838833aa5d1bb",
+        "0x1342055a7145345574e34979d904791c4abcc06d9635dc5814d70e046c2fe5a7"
       ]
     },
     {
@@ -1134,9 +1134,9 @@
       "verificationType": 3,
       "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20acc6ef9e41ec091a02e74b07e1ad56d792e5ae06dc6a87be00b52c6890f6ee77800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000104ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
       "proof": [
-        "0xa0c19e35e42d07f64c46cc5a11d3aaa686f8a0d6871c063c8482d7ff40784bfb",
-        "0xa420cf81b978f12f3d2b63e62a756a04e3838eb1518ace343a73285977053a3e",
-        "0xfa6aa9dedcc1afa557f2b2ff0940f691393f993faa0863c5ab438d4a11d4ce43"
+        "0xa99df4a8f07b0265f60cd0e292a4410781f286fafcbd4fef225479570b81ea2c",
+        "0xd3569eee84ffbc5d5e991697309ff8496f6784d27e7b5199e31838833aa5d1bb",
+        "0x1342055a7145345574e34979d904791c4abcc06d9635dc5814d70e046c2fe5a7"
       ]
     }
   ]
