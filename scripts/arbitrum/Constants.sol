@@ -19,6 +19,9 @@ library Constants {
     address public constant WSTETH_ETHEREUM = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
     address public constant USDC = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
     address public constant USDT = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
+
+    address public constant USDG = 0x004B506865409877C9fA29bfb1ebA929984B9bbC;
+
     address public constant MUSD = 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186;
     address public constant CRV = 0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978;
     address public constant FLUID = 0x61E030A56D33e8260FdD81f03B162A79Fe3449Cd;
