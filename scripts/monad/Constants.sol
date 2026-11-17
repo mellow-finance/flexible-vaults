@@ -19,6 +19,8 @@ library Constants {
     address public constant WMON = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A;
     address public constant SHMON = 0x1B68626dCa36c7fE922fD2d55E4f631d962dE19c;
 
+    address public constant USDE = 0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34;
+
     address public constant USDC = 0x754704Bc059F8C67012fEd69BC8A327a5aafb603;
     address public constant USDT0 = 0xe7cd86e13AC4309349F30B3435a9d337750fC82D;
     address public constant AUSD = 0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a;
