@@ -180,7 +180,7 @@ contract Deploy is Script, Test {
                 address swapModule = _deploySwapModule(subvault);
                 console.log("SwapModule 0:", swapModule);
                 console.log("Subvault 0:", subvault);
-                console.log("Verifier 0:", verifiers[0]);
+                console.log("Verifier 0:", verifiers[subvaultIndex]);
                 riskManager.allowSubvaultAssets(subvault, assets_);
                 riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
             }
@@ -189,7 +189,7 @@ contract Deploy is Script, Test {
                 verifiers[subvaultIndex] = $.verifierFactory.create(0, proxyAdmin, abi.encode(vault, bytes32(0)));
                 address subvault = vault.createSubvault(0, proxyAdmin, verifiers[subvaultIndex]);
                 console.log("Subvault 1:", subvault);
-                console.log("Verifier 1:", verifiers[0]);
+                console.log("Verifier 1:", verifiers[subvaultIndex]);
                 riskManager.allowSubvaultAssets(subvault, assets_);
                 riskManager.setSubvaultLimit(subvault, type(int256).max / 2);
             }
