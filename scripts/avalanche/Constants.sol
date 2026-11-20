@@ -12,6 +12,7 @@ library Constants {
     address public constant AVAX = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WAVAX = 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7;
     address public constant USDC = 0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E;
+    address public constant USDE = 0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34;
     address public constant USDT = 0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7;
 
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
@@ -19,6 +20,8 @@ library Constants {
 
     string public constant DEPLOYMENT_NAME = "Mellow";
     uint256 public constant DEPLOYMENT_VERSION = 1;
+
+    address public constant AAVE_V3_ORACLE = 0xEBd36016B3eD09D4693Ed4251c67Bd858c3c7C9C;
 
     function protocolDeployment() internal pure returns (ProtocolDeployment memory $) {
         $.deploymentName = DEPLOYMENT_NAME;

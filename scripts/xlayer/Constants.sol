@@ -12,6 +12,10 @@ library Constants {
     address public constant OKB = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WOKB = 0xe538905cf8410324e03A5A23C1c177a474D59b2b;
 
+    address public constant USDC = 0xB6CEceAB302E2E4948951eE7843FC24E92933061;
+    address public constant USDE = 0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34;
+    address public constant USDT = 0x779Ded0c9e1022225f8E0630b35a9b54bE713736;
+
     address public constant COWSWAP_SETTLEMENT = address(0);
     address public constant COWSWAP_VAULT_RELAYER = address(0);
 
@@ -48,6 +52,7 @@ library Constants {
         $.signatureDepositQueueImplementation =
             SignatureDepositQueue(payable(0x000000000Af33501e5BDAF9B481Ad2712a024727));
         $.syncDepositQueueImplementation = SyncDepositQueue(payable(0x000000001CC8c3E40856E956db870095EF6C98bd));
+        $.syncRedeemQueueImplementation = SyncRedeemQueue(payable(0x0000000038801C7281284f8F68B80B679F64a074));
         $.feeManagerImplementation = FeeManager(0x00000000C18039E1F415fe07C33A316232238648);
         $.oracleImplementation = Oracle(0x000000009adE4dAE1f868775A3f087945983f062);
         $.redeemQueueImplementation = RedeemQueue(payable(0x0000000045d70ee8145135f08309fF5B1A63d43F));
@@ -61,7 +66,7 @@ library Constants {
         $.verifierImplementation = Verifier(0x000000007e86a96e279662108cc19bA4c32EdE3C);
         $.erc20VerifierImplementation = ERC20Verifier(0x00000000ACD80376E999Af8c424e5e33BD224A08);
         $.mellowAccountV1Implementation = MellowAccountV1(0x00000000860913f37fab81ce8ce4E5BD1f664482);
-        $.swapModuleImplementation = SwapModule(payable(0x0000000022B540Fe06d7a9c32d81163971b583D6));
+        $.swapModuleImplementation = SwapModule(payable(0x000000001E488fB29220aAEdCC8298aCF7d38265));
         $.vaultImplementation = Vault(payable(0x0000000070f44289ec5ea3E5972f058f75B29801));
         $.bitmaskVerifier = BitmaskVerifier(0x0000000009E9368ad21fc19DCE1cFcf9Af6dE339);
         $.vaultConfigurator = VaultConfigurator(0x0000000005a67199ABE0f9C995EAB9DaDfA31Ccd);
