@@ -12,6 +12,9 @@ library Constants {
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public constant WETH = 0x4200000000000000000000000000000000000006;
 
+    address public constant USDE = 0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34;
+    address public constant USDC = 0x2D270e6886d130D724215A266106e6832161EAEd;
+
     address public constant COWSWAP_SETTLEMENT = 0x9008D19f58AAbD9eD0D60971565AA8510560ab41;
     address public constant COWSWAP_VAULT_RELAYER = 0xC92E8bdf79f0507f65a392b0ab4667716BFE0110;
 
@@ -48,6 +51,7 @@ library Constants {
         $.signatureDepositQueueImplementation =
             SignatureDepositQueue(payable(0x000000000Af33501e5BDAF9B481Ad2712a024727));
         $.syncDepositQueueImplementation = SyncDepositQueue(payable(0x000000001CC8c3E40856E956db870095EF6C98bd));
+        $.syncRedeemQueueImplementation = SyncRedeemQueue(payable(0x0000000038801C7281284f8F68B80B679F64a074));
         $.feeManagerImplementation = FeeManager(0x00000000C18039E1F415fe07C33A316232238648);
         $.oracleImplementation = Oracle(0x000000009adE4dAE1f868775A3f087945983f062);
         $.redeemQueueImplementation = RedeemQueue(payable(0x0000000045d70ee8145135f08309fF5B1A63d43F));
