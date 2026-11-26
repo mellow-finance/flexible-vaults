@@ -1,0 +1,83 @@
+{
+  "title": "avalanche:mUSDep:subvault0",
+  "vault": "0x6f2A90bEDf2904Da68C80A798f9A2541522d8A80",
+  "subvault": "0x4A16f4b0971B4efd5Ba7ec22F1AD273BbAfE16AB",
+  "chain": "avalanche",
+  "merkle_root": "0x2f82fdcb7d85c161f04c520ce3af73e8dfb29b20c3f84e367273a64010055b18",
+  "vault_symbol": "mUSDep",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "merkl",
+        "protocol": "Merkl",
+        "interface": "IMerklDistributor",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(mUSDep_Subvault_0,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "value": "0"
+        },
+        "innerParameters": {
+          "user": "0x4A16f4b0971B4efd5Ba7ec22F1AD273BbAfE16AB",
+          "operator": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "toggleOperator",
+          "inputs": [
+            {
+              "name": "user",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "operator",
+              "type": "address",
+              "internalType": "address"
+            }
+          ],
+          "outputs": [],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
+          "params": [
+            "0x4A16f4b0971B4efd5Ba7ec22F1AD273BbAfE16AB",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "toggleOperator",
+            "inputs": [
+              {
+                "name": "user",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "operator",
+                "type": "address",
+                "internalType": "address"
+              }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "toggleOperator.operator",
+            "type": "address",
+            "allowedValue": "any"
+          }
+        ],
+        "intent": "Toggle claim operator {{toggleOperator.operator}} for {{toggleOperator.user}} on Merkl"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a39e8f7e65bde31d3eee8adc7aa32f5fb8d17be6bdb8e83f2156c2965dc11726a000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": []
+    }
+  ]
+}

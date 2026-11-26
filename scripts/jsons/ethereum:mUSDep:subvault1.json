@@ -1,0 +1,276 @@
+{
+  "title": "ethereum:mUSDep:subvault1",
+  "vault": "0xbedb021e7FCb96e6EBD5db436aC2e5d69D3BDB0C",
+  "subvault": "0x958A5A245afef6E2d5E3D6554715E6388B0906d6",
+  "chain": "ethereum",
+  "merkle_root": "0xe17c4d66ae9f9d3545ecab4f96c67826664ef953f033f346612a07dc3ffed83a",
+  "vault_symbol": "mUSDep",
+  "merkle_proofs": [
+    {
+      "description": {
+        "integration": "ethena_minter_transfer",
+        "protocol": "ERC20",
+        "interface": "IERC20",
+        "description": "IERC20(USDe).transfer(Ethena_Minter_Multisig,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x16B4c36fD53943e17b4DCA0079D95fFf37a117ae",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
+          "params": [
+            "0x16B4c36fD53943e17b4DCA0079D95fFf37a117ae",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Transfer {{transfer.amount}} to {{transfer.recipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20af0da817dd0bfadaf19b0105699c63019a40b1f4f34d38719af6048aee7edab00000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x3906f0c045d889f05f0edbbce69cd4fc33ad74ab43a98011bc20c0c7920ca729"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_minter_transfer",
+        "protocol": "ERC20",
+        "interface": "IERC20",
+        "description": "IERC20(USDC).transfer(Ethena_Minter_Multisig,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x16B4c36fD53943e17b4DCA0079D95fFf37a117ae",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "params": [
+            "0x16B4c36fD53943e17b4DCA0079D95fFf37a117ae",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Transfer {{transfer.amount}} to {{transfer.recipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20a9220ce34aedc9ad66dacf273d08253235d38c0de438c9e2a51251a0bbda2728b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x7816620c0cc1eadc506c85ed9de0799ea79f677ad01a5ff4f571c73b19f2ed68",
+        "0x7d5071d37fcdff7dabe52f21af356cb837aa9568538b162706bb75fda8167611"
+      ]
+    },
+    {
+      "description": {
+        "integration": "ethena_minter_transfer",
+        "protocol": "ERC20",
+        "interface": "IERC20",
+        "description": "IERC20(USDT).transfer(Ethena_Minter_Multisig,any)",
+        "parameters": {
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "value": "0"
+        },
+        "innerParameters": {
+          "recipient": "0x16B4c36fD53943e17b4DCA0079D95fFf37a117ae",
+          "amount": "any"
+        },
+        "abi": {
+          "type": "function",
+          "name": "transfer",
+          "inputs": [
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable"
+        },
+        "raw": {
+          "type": "function",
+          "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
+          "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "params": [
+            "0x16B4c36fD53943e17b4DCA0079D95fFf37a117ae",
+            "any"
+          ],
+          "abi": {
+            "type": "function",
+            "name": "transfer",
+            "inputs": [
+              {
+                "name": "recipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable"
+          }
+        },
+        "requiredPaths": [
+          {
+            "path": "transfer.amount",
+            "type": "uint256",
+            "allowedValue": "any",
+            "erc20_path": "target"
+          }
+        ],
+        "intent": "Transfer {{transfer.amount}} to {{transfer.recipient}}"
+      },
+      "verificationType": 3,
+      "verificationData": "0x0000000000000000000000000000000263fb29c3d6b0c5837883519ef05ea20aaa45adf2a099b4a8653f1f33c7001a5bffc57a5c246adbb9e3a3eea265981756000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": [
+        "0x2ea70731fd3ea42938f94b5b37b6d5421a28bf49c82cc62f8142de85eee50556",
+        "0x7d5071d37fcdff7dabe52f21af356cb837aa9568538b162706bb75fda8167611"
+      ]
+    }
+  ]
+}
