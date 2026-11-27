@@ -11,7 +11,7 @@
         "integration": "merkl",
         "protocol": "Merkl",
         "interface": "IMerklDistributor",
-        "description": "IMerklDistributor(MerklDistributor).toggleOperator(mUSDep_Subvault_0,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(MUSDep_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
@@ -328,7 +328,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AaveV3).supply(USDe,any,mUSDep_Subvault_0,0)",
+        "description": "IAavePoolV3(AaveV3).supply(USDe,any,MUSDep_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x2816cf15F6d2A220E789aA011D5EE4eB6c47FEbA",
@@ -431,7 +431,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AaveV3).withdraw(USDe,any,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AaveV3).withdraw(USDe,any,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x2816cf15F6d2A220E789aA011D5EE4eB6c47FEbA",
@@ -533,7 +533,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AaveV3).borrow(USDC,any,2,0,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AaveV3).borrow(USDC,any,2,0,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x2816cf15F6d2A220E789aA011D5EE4eB6c47FEbA",
@@ -648,7 +648,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AaveV3).repay(USDC,any,2,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AaveV3).repay(USDC,any,2,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x2816cf15F6d2A220E789aA011D5EE4eB6c47FEbA",
@@ -763,7 +763,7 @@
         "integration": "usde_bridge_ethereum",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe).send{value: any}((30101,0x000000000000000000000000338CF04f4b8CdA1422A5b22946c45CC785b71C8a,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe).send{value: any}((30101,0x000000000000000000000000338CF04f4b8CdA1422A5b22946c45CC785b71C8a,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
