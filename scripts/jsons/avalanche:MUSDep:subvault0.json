@@ -11,7 +11,7 @@
         "integration": "merkl",
         "protocol": "Merkl",
         "interface": "IMerklDistributor",
-        "description": "IMerklDistributor(MerklDistributor).toggleOperator(mUSDep_Subvault_0,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(MUSDep_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",

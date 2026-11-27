@@ -11,7 +11,7 @@
         "integration": "merkl",
         "protocol": "Merkl",
         "interface": "IMerklDistributor",
-        "description": "IMerklDistributor(MerklDistributor).toggleOperator(mUSDep_Subvault_0,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(MUSDep_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
@@ -91,7 +91,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "IERC20",
-        "description": "IERC20(USDe).approve(mUSDep_SwapModule_0,any)",
+        "description": "IERC20(USDe).approve(MUSDep_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
@@ -184,7 +184,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "IERC20",
-        "description": "IERC20(USDC).approve(mUSDep_SwapModule_0,any)",
+        "description": "IERC20(USDC).approve(MUSDep_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -277,7 +277,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "IERC20",
-        "description": "IERC20(USDT).approve(mUSDep_SwapModule_0,any)",
+        "description": "IERC20(USDT).approve(MUSDep_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -369,7 +369,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "IERC20",
-        "description": "IERC20(RLUSD).approve(mUSDep_SwapModule_0,any)",
+        "description": "IERC20(RLUSD).approve(MUSDep_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x8292Bb45bf1Ee4d140127049757C2E0fF06317eD",
@@ -461,7 +461,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "IERC20",
-        "description": "IERC20(USDG).approve(mUSDep_SwapModule_0,any)",
+        "description": "IERC20(USDG).approve(MUSDep_SwapModule_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0xe343167631d89B6Ffc58B88d6b7fB0228795491D",
@@ -554,7 +554,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pushAssets(USDe,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pushAssets(USDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -635,7 +635,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pushAssets(USDC,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pushAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -715,7 +715,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pushAssets(USDT,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pushAssets(USDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -796,7 +796,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pushAssets(RLUSD,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pushAssets(RLUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -877,7 +877,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pushAssets(USDG,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pushAssets(USDG,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -958,7 +958,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pullAssets(USDe,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pullAssets(USDe,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -1039,7 +1039,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pullAssets(USDC,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pullAssets(USDC,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -1120,7 +1120,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pullAssets(USDT,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pullAssets(USDT,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -1201,7 +1201,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pullAssets(RLUSD,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pullAssets(RLUSD,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -1282,7 +1282,7 @@
         "integration": "swap_module",
         "protocol": "SwapModule",
         "interface": "ISwapModule",
-        "description": "ISwapModule(mUSDep_SwapModule_0).pullAssets(USDG,any)",
+        "description": "ISwapModule(MUSDep_SwapModule_0).pullAssets(USDG,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x09BA59090B60106F4DE35A928d4a1FBf2f9933e8",
@@ -1703,7 +1703,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AavePool(Core)).supply(USDe,any,mUSDep_Subvault_0,0)",
+        "description": "IAavePoolV3(AavePool(Core)).supply(USDe,any,MUSDep_Subvault_0,0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1808,7 +1808,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDe,any,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AavePool(Core)).withdraw(USDe,any,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -1913,7 +1913,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AavePool(Core)).borrow(USDC,any,2,0,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AavePool(Core)).borrow(USDC,any,2,0,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -2030,7 +2030,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AavePool(Core)).borrow(USDT,any,2,0,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AavePool(Core)).borrow(USDT,any,2,0,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -2147,7 +2147,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AavePool(Core)).repay(USDC,any,2,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AavePool(Core)).repay(USDC,any,2,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -2264,7 +2264,7 @@
         "integration": "aave_v3",
         "protocol": "AaveV3",
         "interface": "IAavePoolV3",
-        "description": "IAavePoolV3(AavePool(Core)).repay(USDT,any,2,mUSDep_Subvault_0)",
+        "description": "IAavePoolV3(AavePool(Core)).repay(USDT,any,2,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
@@ -2567,7 +2567,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).supply(1,any,mUSDep_Subvault_0)",
+        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).supply(1,any,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9EbF0C19BF7dFE859820Cc09E846114b53814e52",
@@ -2681,7 +2681,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).withdraw(1,any,mUSDep_Subvault_0)",
+        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).withdraw(1,any,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9EbF0C19BF7dFE859820Cc09E846114b53814e52",
@@ -2795,7 +2795,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).borrow(0,any,mUSDep_Subvault_0)",
+        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).borrow(0,any,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9EbF0C19BF7dFE859820Cc09E846114b53814e52",
@@ -2909,7 +2909,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).repay(0,any,mUSDep_Subvault_0)",
+        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).repay(0,any,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9EbF0C19BF7dFE859820Cc09E846114b53814e52",
@@ -3023,7 +3023,7 @@
         "integration": "aave_v4",
         "protocol": "AaveV4",
         "interface": "IAaveV4Spoke",
-        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).setUsingAsCollateral(1,any,mUSDep_Subvault_0)",
+        "description": "IAaveV4Spoke(AaveV4_Sentora_Spoke).setUsingAsCollateral(1,any,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9EbF0C19BF7dFE859820Cc09E846114b53814e52",
@@ -4192,7 +4192,7 @@
         "integration": "usdt_bridge_monad",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30390,0x00000000000000000000000097D50B1cdf5F23DA6C1431B49Ea37D9d0afB8852,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30390,0x00000000000000000000000097D50B1cdf5F23DA6C1431B49Ea37D9d0afB8852,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
@@ -4620,7 +4620,7 @@
         "integration": "usdt_bridge_plasma",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x0000000000000000000000002ff49336f2FE0A917006Ac552EE536f988Eb06AE,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30383,0x0000000000000000000000002ff49336f2FE0A917006Ac552EE536f988Eb06AE,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
@@ -5048,7 +5048,7 @@
         "integration": "usdt_bridge_xlayer",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30274,0x000000000000000000000000FC6bB7eE251aBE0B0F2aa7e7Fc0149d18A935309,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDT_OFTAdapter).send{value: any}((30274,0x000000000000000000000000FC6bB7eE251aBE0B0F2aa7e7Fc0149d18A935309,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
@@ -5383,7 +5383,7 @@
         "integration": "usdg_bridge_robinhood",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDG_OFT).send{value: any}((30416,0x000000000000000000000000F9c2dcF676307Cd666f97c2fF6c60222e79D59DF,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDG_OFT).send{value: any}((30416,0x000000000000000000000000F9c2dcF676307Cd666f97c2fF6c60222e79D59DF,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x147BdE4F997f0d4C7544ED0C55eAcf1E5E6bf9c4",
@@ -5811,7 +5811,7 @@
         "integration": "usde_bridge_base",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30184,0x000000000000000000000000D8430a7Ad541aACA447a54b55DB7ae8213835db1,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30184,0x000000000000000000000000D8430a7Ad541aACA447a54b55DB7ae8213835db1,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -6239,7 +6239,7 @@
         "integration": "usde_bridge_ink",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30339,0x000000000000000000000000086B0d49E0a85Bc349cBF1DBB42abF21A816Ba50,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30339,0x000000000000000000000000086B0d49E0a85Bc349cBF1DBB42abF21A816Ba50,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -6667,7 +6667,7 @@
         "integration": "usde_bridge_monad",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30390,0x00000000000000000000000097D50B1cdf5F23DA6C1431B49Ea37D9d0afB8852,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30390,0x00000000000000000000000097D50B1cdf5F23DA6C1431B49Ea37D9d0afB8852,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -7095,7 +7095,7 @@
         "integration": "usde_bridge_plasma",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30383,0x0000000000000000000000002ff49336f2FE0A917006Ac552EE536f988Eb06AE,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30383,0x0000000000000000000000002ff49336f2FE0A917006Ac552EE536f988Eb06AE,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -7523,7 +7523,7 @@
         "integration": "usde_bridge_xlayer",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30274,0x000000000000000000000000FC6bB7eE251aBE0B0F2aa7e7Fc0149d18A935309,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30274,0x000000000000000000000000FC6bB7eE251aBE0B0F2aa7e7Fc0149d18A935309,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
@@ -7951,7 +7951,7 @@
         "integration": "usde_bridge_robinhood",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30416,0x000000000000000000000000F9c2dcF676307Cd666f97c2fF6c60222e79D59DF,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe_OFTAdapter).send{value: any}((30416,0x000000000000000000000000F9c2dcF676307Cd666f97c2fF6c60222e79D59DF,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",

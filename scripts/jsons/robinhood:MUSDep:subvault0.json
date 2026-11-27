@@ -11,7 +11,7 @@
         "integration": "merkl",
         "protocol": "Merkl",
         "interface": "IMerklDistributor",
-        "description": "IMerklDistributor(MerklDistributor).toggleOperator(mUSDep_Subvault_0,any)",
+        "description": "IMerklDistributor(MerklDistributor).toggleOperator(MUSDep_Subvault_0,any)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae",
@@ -270,7 +270,7 @@
         "integration": "morpho",
         "protocol": "Morpho",
         "interface": "IMorpho",
-        "description": "IMorpho(Morpho).supply((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,mUSDep_Subvault_0,0x)",
+        "description": "IMorpho(Morpho).supply((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,MUSDep_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
@@ -478,7 +478,7 @@
         "integration": "morpho",
         "protocol": "Morpho",
         "interface": "IMorpho",
-        "description": "IMorpho(Morpho).supplyCollateral((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,mUSDep_Subvault_0,0x)",
+        "description": "IMorpho(Morpho).supplyCollateral((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,MUSDep_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
@@ -646,7 +646,7 @@
         "integration": "morpho",
         "protocol": "Morpho",
         "interface": "IMorpho",
-        "description": "IMorpho(Morpho).repay((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,mUSDep_Subvault_0,0x)",
+        "description": "IMorpho(Morpho).repay((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,MUSDep_Subvault_0,0x)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
@@ -853,7 +853,7 @@
         "integration": "morpho",
         "protocol": "Morpho",
         "interface": "IMorpho",
-        "description": "IMorpho(Morpho).borrow((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,mUSDep_Subvault_0,mUSDep_Subvault_0)",
+        "description": "IMorpho(Morpho).borrow((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,MUSDep_Subvault_0,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
@@ -1060,7 +1060,7 @@
         "integration": "morpho",
         "protocol": "Morpho",
         "interface": "IMorpho",
-        "description": "IMorpho(Morpho).withdraw((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,mUSDep_Subvault_0,mUSDep_Subvault_0)",
+        "description": "IMorpho(Morpho).withdraw((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,any,MUSDep_Subvault_0,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
@@ -1267,7 +1267,7 @@
         "integration": "morpho",
         "protocol": "Morpho",
         "interface": "IMorpho",
-        "description": "IMorpho(Morpho).withdrawCollateral((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,mUSDep_Subvault_0,mUSDep_Subvault_0)",
+        "description": "IMorpho(Morpho).withdrawCollateral((USDG,USDe,Morpho_USDe/USDG_oracle,Morpho_irm,915000000000000000),any,MUSDep_Subvault_0,MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
@@ -1436,7 +1436,7 @@
         "integration": "usdg_bridge_ethereum",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDG_OFT).send{value: any}((30101,0x000000000000000000000000338CF04f4b8CdA1422A5b22946c45CC785b71C8a,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDG_OFT).send{value: any}((30101,0x000000000000000000000000338CF04f4b8CdA1422A5b22946c45CC785b71C8a,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x0d54755f5106BfdB43f7a35f5D49a23F940628d1",
@@ -1769,7 +1769,7 @@
         "integration": "usde_bridge_ethereum",
         "protocol": "OFT",
         "interface": "ILayerZeroOFT",
-        "description": "ILayerZeroOFT(USDe).send{value: any}((30101,0x000000000000000000000000338CF04f4b8CdA1422A5b22946c45CC785b71C8a,any,any,0x,0x,0x),(any,0),mUSDep_Subvault_0)",
+        "description": "ILayerZeroOFT(USDe).send{value: any}((30101,0x000000000000000000000000338CF04f4b8CdA1422A5b22946c45CC785b71C8a,any,any,0x,0x,0x),(any,0),MUSDep_Subvault_0)",
         "parameters": {
           "caller": "0x9745F161b0160a99924845BeFCE1d7b9Daee6899",
           "target": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
